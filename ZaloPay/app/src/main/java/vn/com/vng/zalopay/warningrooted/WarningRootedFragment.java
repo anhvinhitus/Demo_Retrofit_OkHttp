@@ -27,13 +27,14 @@ public class WarningRootedFragment extends BaseFragment {
 
     @OnClick(R.id.btnContinue)
     public void onClickBtnContinue() {
-        saveStateCheckboxRemind();
+        saveCheckboxState();
+        saveCheckboxRemind();
         getActivity().finish();
     }
 
     @OnClick(R.id.btnClose)
     public void onClickBtnClose() {
-        saveStateCheckboxRemind();
+        saveCheckboxState();
         quitApp();
     }
 
@@ -62,7 +63,18 @@ public class WarningRootedFragment extends BaseFragment {
         }
     }
 
-    private void saveStateCheckboxRemind() {
+    private boolean latestCheckboxState() {
+        return RootUtils.isCheckboxCheckedate();
+    }
+
+    private void saveCheckboxState() {
+        if (chkRemind == null) {
+            return;
+        }
+        RootUtils.setLastestCheckboxState(chkRemind.isChecked());
+    }
+
+    private void saveCheckboxRemind() {
         if (chkRemind == null) {
             return;
         }
@@ -97,6 +109,14 @@ public class WarningRootedFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        reloadLatestCheckboxState();
+    }
+
+    private void reloadLatestCheckboxState() {
+        if (chkRemind == null) {
+            return;
+        }
+        chkRemind.setChecked(latestCheckboxState());
     }
 
     @Override

@@ -17,7 +17,10 @@ public class RootUtils {
     private static final SharedPreferences mPreferences =
             PreferenceManager.getDefaultSharedPreferences(AndroidApplication.instance().getApplicationContext());
 
+    //should show or not WarningRooted page.
     private static final String PREF_WARNING_ROOTED_REMIND = "pref_warning_rooted_remind";
+    //last checkbox state. Default is true, if uncheck is false.
+    private static final String PREF_LASTEST_CHECKBOX_STATE = "pref_lastest_checkbox_state";
 
     public static boolean isHideWarningRooted() {
         return mPreferences.getBoolean(PREF_WARNING_ROOTED_REMIND, false);
@@ -29,6 +32,14 @@ public class RootUtils {
 
     public static boolean isDeviceRooted() {
         return checkRootMethod1() || checkRootMethod2() || checkRootMethod3();
+    }
+
+    public static void setLastestCheckboxState(boolean checked) {
+        mPreferences.edit().putBoolean(PREF_LASTEST_CHECKBOX_STATE, checked).apply();
+    }
+
+    public static boolean isCheckboxCheckedate(){
+        return mPreferences.getBoolean(PREF_LASTEST_CHECKBOX_STATE, true);
     }
 
     private static boolean checkRootMethod1() {
