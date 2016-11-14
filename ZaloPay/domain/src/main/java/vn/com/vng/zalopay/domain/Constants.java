@@ -28,7 +28,6 @@ public interface Constants {
     interface ProfileLevel2 {
         String PROFILE_LEVEL2 = "profile_level2";
         String PHONE_NUMBER = "phone_number";
-        String ZALOPAY_NAME = "zalopay_name";
         String RECEIVE_OTP = "receive_otp";
     }
 }

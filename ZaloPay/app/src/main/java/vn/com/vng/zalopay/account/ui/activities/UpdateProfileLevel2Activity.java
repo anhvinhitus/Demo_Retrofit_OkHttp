@@ -46,7 +46,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     private PaymentWrapper paymentWrapper;
     private SweetAlertDialog mProgressDialog;
     private String mCurrentPhone = null;
-    private String mCurrentZaloPayName = "";
 
     @Inject
     PreProfilePresenter presenter;
@@ -214,9 +213,8 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     }
 
     @Override
-    public void onUpdatePinSuccess(String phone, String zaloPayName) {
+    public void onUpdatePinSuccess(String phone) {
         mCurrentPhone = phone;
-        mCurrentZaloPayName = zaloPayName;
         nextPager();
     }
 
@@ -226,16 +224,10 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     }
 
     @Override
-    public void updateCurrentZaloPayName(String zaloPayName) {
-        mCurrentZaloPayName = zaloPayName;
-    }
-
-    @Override
     public void onConfirmOTPSuccess() {
         Timber.d("onConfirmOTPSucess, walletTransId: %s", walletTransId);
         showToast("Cập nhật thông tin thành công.");
         presenter.saveUserPhone(mCurrentPhone);
-        presenter.saveZaloPayName(mCurrentZaloPayName);
         //Reload PaymentSDK for load new payment permission
         EventBus.getDefault().post(new RefreshPaymentSdkEvent());
         if (!TextUtils.isEmpty(walletTransId)) {

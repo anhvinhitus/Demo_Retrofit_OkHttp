@@ -51,12 +51,9 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber, String zalopayName) {
-        if (!TextUtils.isEmpty(zalopayName)) {
-            zalopayName = zalopayName.toLowerCase();
-        }
+    public Observable<Boolean> updateUserProfileLevel2(String pin, String phonenumber) {
         pin = sha256Base(pin);
-        return mRequestService.updateProfile(mUser.zaloPayId, mUser.accesstoken, pin, phonenumber, zalopayName)
+        return mRequestService.updateProfile(mUser.zaloPayId, mUser.accesstoken, pin, phonenumber)
                 .map(baseResponse -> Boolean.TRUE);
     }
 
@@ -267,14 +264,10 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         return ObservableHelper.makeObservable(() -> {
             Map map = localStorage.getProfileLevel2();
             Object phoneNumber = map.get(Constants.ProfileLevel2.PHONE_NUMBER);
-            Object zaloPayName = map.get(Constants.ProfileLevel2.ZALOPAY_NAME);
             Object isReceivedOtp = map.get(Constants.ProfileLevel2.RECEIVE_OTP);
             ProfileLevel2 profileLevel2 = new ProfileLevel2();
             if (phoneNumber != null) {
                 profileLevel2.phoneNumber = phoneNumber.toString();
-            }
-            if (zaloPayName != null) {
-                profileLevel2.zaloPayName = zaloPayName.toString();
             }
             if (isReceivedOtp != null) {
                 profileLevel2.isReceivedOtp = Boolean.valueOf(isReceivedOtp.toString());
@@ -284,11 +277,11 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<Void> saveProfileInfo2(String phoneNumber, String zaloPayName, boolean receiveOtp) {
-        Timber.d("saveProfileInfo2 phone [%s] zalopayName [%s] receiveOtp [%s]",
-                phoneNumber, zaloPayName, receiveOtp);
+    public Observable<Void> saveProfileInfo2(String phoneNumber, boolean receiveOtp) {
+        Timber.d("saveProfileInfo2 phone [%s] receiveOtp [%s]",
+                phoneNumber, receiveOtp);
         return ObservableHelper.makeObservable(() -> {
-            localStorage.saveProfileInfo2(phoneNumber, zaloPayName, receiveOtp);
+            localStorage.saveProfileInfo2(phoneNumber, receiveOtp);
             return null;
         });
     }
@@ -296,7 +289,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Void> clearProfileInfo2() {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.saveProfileInfo2("", "", false);
+            localStorage.saveProfileInfo2("", false);
             return null;
         });
     }

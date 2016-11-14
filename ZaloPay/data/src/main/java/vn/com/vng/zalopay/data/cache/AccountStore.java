@@ -45,14 +45,14 @@ public interface AccountStore {
 
         Map getProfileLevel2();
 
-        void saveProfileInfo2(String phoneNumber, String zaloPayName, boolean receiveOtp);
+        void saveProfileInfo2(String phoneNumber, boolean receiveOtp);
     }
 
     interface RequestService {
 
         @FormUrlEncoded
         @POST("um/updateprofile")
-        Observable<BaseResponse> updateProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber, @Field("zalopayname") String zalopayname);
+        Observable<BaseResponse> updateProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
 
         @FormUrlEncoded
         @POST("um/verifyotpprofile")
@@ -104,7 +104,7 @@ public interface AccountStore {
 
         Observable<Boolean> validatePin(String pin);
 
-        Observable<Boolean> updateUserProfileLevel2(String pin, String phoneNumber, String zalopayName);
+        Observable<Boolean> updateUserProfileLevel2(String pin, String phoneNumber);
 
         Observable<Boolean> verifyOTPProfile(String otp);
 
@@ -137,7 +137,7 @@ public interface AccountStore {
 
         Observable<ProfileLevel2> getProfileLevel2Cache();
 
-        Observable<Void> saveProfileInfo2(String phoneNumber,String zaloPayName, boolean receiveOtp);
+        Observable<Void> saveProfileInfo2(String phoneNumber, boolean receiveOtp);
 
         Observable<Void> clearProfileInfo2();
     }

@@ -116,10 +116,9 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
     }
 
     @Override
-    public void saveProfileInfo2(String phoneNumber, String zaloPayName, boolean receiveOtp) {
+    public void saveProfileInfo2(String phoneNumber, boolean receiveOtp) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(Constants.ProfileLevel2.PHONE_NUMBER, TextUtils.isEmpty(phoneNumber) ? "" : phoneNumber);
-        jsonObject.addProperty(Constants.ProfileLevel2.ZALOPAY_NAME, TextUtils.isEmpty(zaloPayName) ? "" : zaloPayName);
         jsonObject.addProperty(Constants.ProfileLevel2.RECEIVE_OTP, receiveOtp);
 
         insertDataManifest(Constants.ProfileLevel2.PROFILE_LEVEL2, jsonObject.toString());

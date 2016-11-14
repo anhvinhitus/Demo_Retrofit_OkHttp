@@ -8,7 +8,6 @@ package vn.com.vng.zalopay.domain.model;
 public class ProfileLevel2 {
     public boolean isReceivedOtp;
     public String phoneNumber;
-    public String zaloPayName;
 
     @Override
     public boolean equals(Object o) {
@@ -17,16 +16,12 @@ public class ProfileLevel2 {
 
         ProfileLevel2 that = (ProfileLevel2) o;
 
-        if (phoneNumber != null ? !phoneNumber.equals(that.phoneNumber) : that.phoneNumber != null)
-            return false;
-        return zaloPayName != null ? zaloPayName.equals(that.zaloPayName) : that.zaloPayName == null;
+        return phoneNumber != null ? phoneNumber.equals(that.phoneNumber) : that.phoneNumber == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = phoneNumber != null ? phoneNumber.hashCode() : 0;
-        result = 31 * result + (zaloPayName != null ? zaloPayName.hashCode() : 0);
-        return result;
+        return phoneNumber != null ? phoneNumber.hashCode() : 0;
     }
 }
