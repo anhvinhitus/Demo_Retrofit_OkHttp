@@ -204,6 +204,7 @@
         <item name="zlp_textColorHint">@color/hint</item>
         <item name="zlp_underlineColor">@color/hint</item>
         <item name="zlp_validateOnFocusLost">true</item>
+        <item name="android:inputType">numberDecimal</item>
     </style>
 
     <!--  fresco:roundedCornerRadius="5dp"

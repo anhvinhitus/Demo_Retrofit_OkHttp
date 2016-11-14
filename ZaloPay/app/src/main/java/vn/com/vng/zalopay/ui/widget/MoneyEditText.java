@@ -43,7 +43,6 @@ public class MoneyEditText extends ZPEditText {
         if (isInEditMode()) {
             return;
         }
-        setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         initAmountWatcher();
     }
 
