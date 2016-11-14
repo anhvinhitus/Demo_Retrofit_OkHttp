@@ -5,6 +5,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
@@ -56,7 +57,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private void subscribeFetchTransactionLatest() {
-        mRxBus.toObserverable().subscribe(new DefaultSubscriber<Object>() {
+        Subscription subscription = mRxBus.toObserverable().subscribe(new DefaultSubscriber<Object>() {
             @Override
             public void onNext(Object o) {
                 if (o instanceof RecursiveData) {
