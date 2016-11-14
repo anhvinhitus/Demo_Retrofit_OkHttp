@@ -491,8 +491,9 @@ public class Navigator implements INavigator {
     }
 
 
-    public void startTransferViaAccountName(Context context) {
-        context.startActivity(new Intent(context, TransferViaZaloPayNameActivity.class));
+    public void startTransferViaAccountName(Fragment fragment) {
+        Intent intent = new Intent(fragment.getContext(), TransferViaZaloPayNameActivity.class);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID);
     }
 
     public void startEditAccountActivity(Context context) {

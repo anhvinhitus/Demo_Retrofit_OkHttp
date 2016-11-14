@@ -61,7 +61,7 @@ public class TransferHomeFragment extends BaseFragment implements
 
     @OnClick(R.id.layoutTransferViaAccount)
     public void onClickTransferViaAccountName() {
-        navigator.startTransferViaAccountName(getContext());
+        navigator.startTransferViaAccountName(this);
     }
 
     /**
@@ -203,6 +203,12 @@ public class TransferHomeFragment extends BaseFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_TRANSFER) {
+            if (resultCode == Activity.RESULT_OK) {
+                getActivity().finish();
+                return;
+            }
+        }
+        if (requestCode == Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID) {
             if (resultCode == Activity.RESULT_OK) {
                 getActivity().finish();
                 return;
