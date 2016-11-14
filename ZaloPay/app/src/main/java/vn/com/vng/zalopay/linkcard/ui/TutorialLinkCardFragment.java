@@ -39,6 +39,7 @@ public class TutorialLinkCardFragment extends BaseFragment {
     @OnClick(R.id.btnManagerCard)
     public void onCLickManagerCard() {
         navigator.startLinkCardActivity(getContext());
+        getActivity().finish();
     }
 
     public TutorialLinkCardFragment() {
