@@ -13,6 +13,6 @@ public class AndroidApplicationTest extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Timber.d("android application test created");
+        System.out.println("android application test created");
     }
 }

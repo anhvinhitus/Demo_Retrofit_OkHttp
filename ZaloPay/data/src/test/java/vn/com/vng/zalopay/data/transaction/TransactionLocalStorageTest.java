@@ -8,9 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.RuntimeEnvironment;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import vn.com.vng.zalopay.data.ApplicationTestCase;
@@ -79,7 +77,6 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
     }
 
     private void insertTransaction() {
-        System.out.println("entities size:" + entities.size());
         mLocalStorage.put(entities);
     }
 
@@ -88,12 +85,6 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
     public void putTest() {
         insertTransaction();
         List<TransHistoryEntity> result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
-        System.out.println("result :" + result);
-        if (result != null) {
-            System.out.println("result :" + result.size());
-            System.out.println("result :" + Arrays.toString(result.toArray()));
-        }
-
         assertTrue(result.containsAll(result));
     }
 
@@ -115,9 +106,6 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         mLocalStorage.updateStatusType(transid, TRANSACTION_STATUS_SUCCESS);
 
         TransHistoryEntity result = mLocalStorage.getTransaction(transid);
-        System.out.println("result " + result);
-
-        System.out.println("result statustype " + result.statustype + " id " + result.transid);
         assertEquals(result.statustype, TRANSACTION_STATUS_SUCCESS);
 
         mLocalStorage.updateStatusType(transid, TRANSACTION_STATUS_FAIL);
