@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.bottomsheetbehavior.BottomSheetBehaviorPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
@@ -241,6 +242,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new RNSharePackage(),
                 new BottomSheetBehaviorPackage(),
                 new GoogleAnalyticsBridgePackage(),
+                new LinearGradientPackage(),
                 new ReactIAPPackage(paymentService,
                         mUser, appId, mNetworkService)
         );
