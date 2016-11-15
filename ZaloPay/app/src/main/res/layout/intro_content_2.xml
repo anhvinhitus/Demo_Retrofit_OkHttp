@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-
     <TextView
         style="@style/TextView.SubTitle"
         android:layout_width="wrap_content"
@@ -16,7 +15,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="42dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="6dp"
         android:rotation="70"
         android:src="@drawable/ic_pro_arrow_left" />
 

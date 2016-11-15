@@ -103,7 +103,7 @@ public class NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), smallIcon);
             builder.setLargeIcon(bm);
-            builder.setSmallIcon(R.drawable.ic_notify);
+            builder.setSmallIcon(R.drawable.ic_notify_bar);
         } else {
             builder.setSmallIcon(smallIcon);
         }
