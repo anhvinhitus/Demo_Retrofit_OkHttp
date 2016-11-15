@@ -205,6 +205,7 @@
         <item name="zlp_underlineColor">@color/hint</item>
         <item name="zlp_validateOnFocusLost">true</item>
         <item name="android:inputType">numberDecimal</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="ZaloPayEditText.Money">

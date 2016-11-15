@@ -259,7 +259,7 @@
     <string name="slogan">Thanh toán trong <font size='18'>2</font> giây</string>
 
     <string name="lbl.update.profile.3.page.2">Hãy cung cấp ảnh CMND/Hộ chiếu của bạn để giao dịch được thực hiện theo luật của ngân hàng</string>
-    <string name="lbl.update.profile.3.page.1">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN</string>
+    <string name="lbl.update.profile.3.page.1">Nhập thông tin bên dưới để giao dịch và thanh toán được an toàn</string>
     <string name="lbl.nfc.fragment">Đặt điện thoại của bạn\nlên máy giao dịch để thanh toán</string>
 
     <!-- Link CARDS START-->
