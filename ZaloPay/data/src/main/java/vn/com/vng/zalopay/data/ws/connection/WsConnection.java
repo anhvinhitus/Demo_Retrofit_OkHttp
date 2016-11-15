@@ -39,8 +39,8 @@ import vn.com.vng.zalopay.domain.model.User;
  * Network handlers for Socket connection
  */
 public class WsConnection extends Connection {
-    private static final int TIMER_HEARTBEAT = 60;
-    private static final int SERVER_TIMEOUT = 2 * 60;
+    private static final int TIMER_HEARTBEAT = 30;
+    private static final int SERVER_TIMEOUT = 1 * 60;
     private static final int TIMER_CONNECTION_CHECK = 10;
     private String gcmToken;
 
