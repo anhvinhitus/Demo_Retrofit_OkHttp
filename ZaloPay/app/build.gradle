@@ -320,6 +320,13 @@ afterEvaluate {
 
 task installApp(type: Exec, dependsOn: 'installSandboxDebug') {
     commandLine 'adb', 'shell', 'am', 'start', '-n', 'vn.com.vng.zalopay/.ui.activity.SplashScreenActivity'
+    /* doFirst {
+     }*/
+    doLast {
+        def date = new Date()
+        def formattedDate = date.format('HH:mm:ss yyyyMMdd')
+        println('Install success at : ' + formattedDate);
+    }
 }
 
 dependencies {
