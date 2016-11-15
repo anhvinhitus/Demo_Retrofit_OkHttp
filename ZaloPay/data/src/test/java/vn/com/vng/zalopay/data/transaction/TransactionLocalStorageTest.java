@@ -8,68 +8,117 @@ import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.RuntimeEnvironment;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import vn.com.vng.zalopay.data.ApplicationTestCase;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
-import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by hieuvm on 11/14/16.
- */
-
 public class TransactionLocalStorageTest extends ApplicationTestCase {
-
-    private final String sResponseTransHistorySuccess = "{\"data\":[{\"userid\":\"160525000004005\",\"transid\":161114000000353,\"appid\":1,\"appuser\":\"160713000001505\",\"platform\":\"android\",\"description\":\"hdhdhdhd\",\"pmcid\":38,\"reqdate\":1479110258485,\"userchargeamt\":13111,\"amount\":11111,\"userfeeamt\":2000,\"type\":4,\"sign\":-1,\"username\":\"Mạnh Hiếu\",\"appusername\":\"Anh\",\"transstatus\":1,\"isretry\":false,\"isrefundsucc\":0}],\"returncode\":1,\"returnmessage\":\"\"}";
+    private static final String JSON_TRANSACTION = "{\n" +
+            "      \"userid\": \"160525000004005\",\n" +
+            "      \"transid\": 161111000000030,\n" +
+            "      \"appid\": 1,\n" +
+            "      \"appuser\": \"160525000004003\",\n" +
+            "      \"platform\": \"android\",\n" +
+            "      \"description\": \"sadf asd a\",\n" +
+            "      \"pmcid\": 38,\n" +
+            "      \"reqdate\": 1478834599840,\n" +
+            "      \"userchargeamt\": 12000,\n" +
+            "      \"amount\": 10000,\n" +
+            "      \"userfeeamt\": 2000,\n" +
+            "      \"type\": 4,\n" +
+            "      \"sign\": 1,\n" +
+            "      \"username\": \"Mạnh Hiếu\",\n" +
+            "      \"appusername\": \"Long Lê Văn\",\n" +
+            "      \"transstatus\": 1,\n" +
+            "      \"isretry\": false,\n" +
+            "      \"isrefundsucc\": 0\n" +
+            "    }";
 
     private TransactionStore.LocalStorage mLocalStorage;
 
     private Gson mGson;
 
-    private long transid = 1000;
-
     private final int TRANSACTION_STATUS_SUCCESS = 1;
     private final int TRANSACTION_STATUS_FAIL = 2;
+
+    private final int TRANSACTION_SIZE = 20; //row count jsonObject
+
+    private List<TransHistoryEntity> entities = new ArrayList<>();
 
     @Before
     public void setUp() throws Exception {
         DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, "zalopaytest.db", null);
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoSession daoSession = new DaoMaster(db).newSession();
-        mGson = new Gson();
         mLocalStorage = new TransactionLocalStorage(daoSession);
+
+        initData();
+    }
+
+    private void initData() {
+        mGson = new Gson();
+
+        for (int i = 0; i < TRANSACTION_SIZE; i++) {
+            TransHistoryEntity entity = mGson.fromJson(JSON_TRANSACTION, TransHistoryEntity.class);
+            int j = i + 1;
+            entity.transid = j;
+            entity.appid = j;
+            entity.userid = "user" + j;
+            entity.statustype = TRANSACTION_STATUS_SUCCESS;
+            entities.add(entity);
+        }
+    }
+
+    private void insertTransaction() {
+        System.out.println("entities size:" + entities.size());
+        mLocalStorage.put(entities);
     }
 
 
     @Test
     public void putTest() {
-        TransactionHistoryResponse response = mGson.fromJson(sResponseTransHistorySuccess, TransactionHistoryResponse.class);
-        response.data.get(0).transid = transid;
+        insertTransaction();
+        List<TransHistoryEntity> result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
+        System.out.println("result :" + result);
+        if (result != null) {
+            System.out.println("result :" + result.size());
+            System.out.println("result :" + Arrays.toString(result.toArray()));
+        }
 
-        mLocalStorage.put(response.data);
-        List<TransHistoryEntity> result = mLocalStorage.get(0, response.data.size(), TRANSACTION_STATUS_SUCCESS);
-        assertTrue(response.data.equals(result));
+        assertTrue(result.containsAll(result));
     }
 
-/*    @Test
+    @Test
     public void isHaveTransactionInDb() {
+
+        insertTransaction();
+
         boolean result = mLocalStorage.isHaveTransactionInDb();
         assertEquals(result, true);
-    }*/
+    }
+
 
     @Test
     public void updateStatusType() {
+        insertTransaction();
+        long transid = 1;
+
         mLocalStorage.updateStatusType(transid, TRANSACTION_STATUS_SUCCESS);
 
         TransHistoryEntity result = mLocalStorage.getTransaction(transid);
+        System.out.println("result " + result);
 
+        System.out.println("result statustype " + result.statustype + " id " + result.transid);
         assertEquals(result.statustype, TRANSACTION_STATUS_SUCCESS);
-
 
         mLocalStorage.updateStatusType(transid, TRANSACTION_STATUS_FAIL);
 
@@ -83,6 +132,7 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         mLocalStorage.setLoadedTransactionSuccess(true);
         boolean ret = mLocalStorage.isLoadedTransactionSuccess();
         assertEquals(ret, true);
+
     }
 
     @Test
