@@ -18,7 +18,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
+import rx.Subscription;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -99,6 +101,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     Bundle mLaunchOptions = new Bundle();
 
+
+    CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +123,15 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     @Override
+    public void onResume() {
+        Timber.d("onResume");
+        super.onResume();
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
+    }
+
+    @Override
     public void onPause() {
         Timber.d("onPause");
         super.onPause();
@@ -127,12 +141,11 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     @Override
-    public void onResume() {
-        Timber.d("onResume");
-        super.onResume();
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
+    public void onDestroy() {
+        if (mCompositeSubscription != null) {
+            mCompositeSubscription.unsubscribe();
         }
+        super.onDestroy();
     }
 
     @Override
@@ -260,9 +273,10 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     private void shouldMarkAllNotify() {
         if (ModuleName.NOTIFICATIONS.equals(getMainComponentName())) {
-            notificationRepository.markViewAllNotify()
+            Subscription subscription = notificationRepository.markViewAllNotify()
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<Boolean>());
+            mCompositeSubscription.add(subscription);
         }
     }
 }

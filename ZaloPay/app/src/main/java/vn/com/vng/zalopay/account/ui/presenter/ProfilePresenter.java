@@ -142,33 +142,27 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         }
     }
 
-    public void updateIdentity() {
+
+    private void updateLevel3(boolean isIdentity) {
         if (mView == null) {
             return;
         }
-
         if (getProfileLevel() < 2) {
-            mView.showDialogInfo(mView.getContext().getString(R.string.alert_need_update_level_2));
+            mView.showDialogUpdateProfile2(mView.getContext().getString(R.string.alert_need_update_level_2));
         } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
-            mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_identity));
+            int message = isIdentity ? R.string.waiting_approve_identity : R.string.waiting_approve_email;
+            mView.showDialogInfo(mView.getContext().getString(message));
         } else {
-            mNavigator.startUpdateProfile3Activity(mView.getContext(), true);
+            mNavigator.startUpdateProfile3Activity(mView.getContext(), isIdentity);
         }
     }
 
+    public void updateIdentity() {
+        updateLevel3(true);
+    }
+
     public void updateEmail() {
-
-        if (mView == null) {
-            return;
-        }
-
-        if (getProfileLevel() < 2) {
-            mView.showDialogInfo(mView.getContext().getString(R.string.alert_need_update_level_2));
-        } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
-            mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_email));
-        } else {
-            mNavigator.startUpdateProfile3Activity(mView.getContext());
-        }
+        updateLevel3(false);
     }
 
     private class ProfileSubscriber extends DefaultSubscriber<Boolean> {

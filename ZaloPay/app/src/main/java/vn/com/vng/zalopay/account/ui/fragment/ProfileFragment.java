@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -166,7 +167,24 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @Override
     public void showDialogInfo(String content) {
-        DialogManager.showSweetDialogCustom(getActivity(), content, getString(R.string.txt_close), SweetAlertDialog.INFO_TYPE, null);
+        DialogManager.showSweetDialogCustom(getActivity(), content, getString(R.string.txt_close), SweetAlertDialog.NORMAL_TYPE, null);
+    }
+
+    @Override
+    public void showDialogUpdateProfile2(String content) {
+        DialogManager.showSweetDialogOptionNotice(getActivity(), content, getString(R.string.btn_update), getString(R.string.txt_close), new ZPWOnEventConfirmDialogListener() {
+            @Override
+            public void onCancelEvent() {
+
+            }
+
+            @Override
+            public void onOKevent() {
+                if (navigator != null) {
+                    navigator.startUpdateProfileLevel2Activity(getContext());
+                }
+            }
+        });
     }
 
     private void setCMND(String cmnd) {
