@@ -43,6 +43,7 @@ import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 6/15/16.
@@ -153,6 +154,8 @@ public class NotificationHelper {
             skipStorage = true;
         } else if (notificationType == NotificationType.UPDATE_PLATFORM_INFORMATION) {
             refreshGatewayInfo();
+        } else if (notificationType == NotificationType.LINK_CARD_EXPIRED) {
+            removeLinkCard(notify);
         }
 
         if (!skipStorage) {
@@ -218,6 +221,28 @@ public class NotificationHelper {
         } catch (Exception ex) {
             Timber.e(ex, "Extract RedPacket error");
         }
+    }
+
+    private void removeLinkCard(NotificationData data) {
+        JsonObject embeddata = data.getEmbeddata();
+        if (embeddata == null) {
+            return;
+        }
+        int last4cardno = 0;
+        int first6cardno = 0;
+        if (embeddata.has("last4cardno")) {
+            last4cardno = embeddata.get("last4cardno").getAsInt();
+        }
+        if (embeddata.has("first6cardno")) {
+            first6cardno = embeddata.get("first6cardno").getAsInt();
+        }
+
+        if (last4cardno <= 0 || first6cardno <= 0) {
+            return;
+        }
+
+        //remove card
+        
     }
 
     private void updateTransactionStatus(NotificationData notify) {

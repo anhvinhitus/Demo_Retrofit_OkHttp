@@ -117,6 +117,15 @@ public class ZPEvents {
     public static final int UPDATEZPN_INUSED2 = 2208;
     public static final int UPDATEZPN_EDIT_DELETE = 2209;
     public static final int UPDATEZPN_EDIT_AFTERCHECK = 2210;
+    public static final int OTP_CHANGEPASSWORD_REQUEST = 2300;
+    public static final int OTP_CHANGEPASSWORD_INPUTWRONG = 2302;
+    public static final int #REF! = #REF!;
+    public static final int OTP_CHANGEPASSWORD_INPUTOK = 2303;
+    public static final int OTP_LEVEL2_REQUEST = 2304;
+    public static final int OTP_LEVEL2_INPUTWRONG = 2306;
+    public static final int OTP_LEVEL2_INPUTNONE = 2305;
+    public static final int OTP_LEVEL2_INPUTOK = 2307;
+    public static final int  = ;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -346,6 +355,24 @@ public class ZPEvents {
                 return "UpdateZPN_Edit_Delete";
             case UPDATEZPN_EDIT_AFTERCHECK:
                 return "UpdateZPN_Edit_AfterCheck";
+            case OTP_CHANGEPASSWORD_REQUEST:
+                return "OTP_ChangePassword_Request";
+            case OTP_CHANGEPASSWORD_INPUTWRONG:
+                return "OTP_ChangePassword_InputWrong";
+            case #REF!:
+                return "#REF!";
+            case OTP_CHANGEPASSWORD_INPUTOK:
+                return "OTP_ChangePassword_InputOK";
+            case OTP_LEVEL2_REQUEST:
+                return "OTP_Level2_Request";
+            case OTP_LEVEL2_INPUTWRONG:
+                return "OTP_Level2_InputWrong";
+            case OTP_LEVEL2_INPUTNONE:
+                return "OTP_Level2_InputNone";
+            case OTP_LEVEL2_INPUTOK:
+                return "OTP_Level2_InputOK";
+            case :
+                return "";
             default:
                 return "DefaultAction";
         }
@@ -579,6 +606,24 @@ public class ZPEvents {
                 return "UpdateZPN";
             case UPDATEZPN_EDIT_AFTERCHECK:
                 return "UpdateZPN";
+            case OTP_CHANGEPASSWORD_REQUEST:
+                return "OTP";
+            case OTP_CHANGEPASSWORD_INPUTWRONG:
+                return "OTP";
+            case #REF!:
+                return "#REF!";
+            case OTP_CHANGEPASSWORD_INPUTOK:
+                return "OTP";
+            case OTP_LEVEL2_REQUEST:
+                return "OTP";
+            case OTP_LEVEL2_INPUTWRONG:
+                return "OTP";
+            case OTP_LEVEL2_INPUTNONE:
+                return "OTP";
+            case OTP_LEVEL2_INPUTOK:
+                return "OTP";
+            case :
+                return "ReceiveMoney";
             default:
                 return "DefaultCategory";
         }
