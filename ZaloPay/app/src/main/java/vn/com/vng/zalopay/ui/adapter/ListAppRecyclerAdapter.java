@@ -145,11 +145,11 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         }
 
         private void loadImage(ImageView image, int resourceId) {
-            Glide.with(context).load(resourceId).centerCrop().placeholder(R.color.white).into(image);
+            Glide.with(context).load(resourceId).placeholder(R.color.white).into(image);
         }
 
         private void loadImage(ImageView image, String url) {
-            Glide.with(context).load(url).centerCrop().placeholder(R.drawable.ic_imagedefault).into(image);
+            Glide.with(context).load(url).placeholder(R.drawable.ic_imagedefault).into(image);
         }
 
     }
