@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -126,7 +127,7 @@ public class ZPEditText extends AppCompatEditText {
 
     private boolean checkCharactersCountAtBeginning;
 
-    private Bitmap[] clearButtonBitmaps;
+    private Bitmap clearButtonBitmaps;
 
     private boolean validateOnFocusLost;
 
@@ -247,7 +248,7 @@ public class ZPEditText extends AppCompatEditText {
         underlineColor = typedArray.getColor(R.styleable.ZPEditText_zlp_underlineColor, -1);
         autoValidate = typedArray.getBoolean(R.styleable.ZPEditText_zlp_autoValidate, false);
         showClearButton = typedArray.getBoolean(R.styleable.ZPEditText_zlp_clearButton, false);
-        clearButtonBitmaps = generateIconBitmaps(getResources(), R.drawable.ic_remove_circle, iconSize, baseColor, primaryColor, errorColor);
+        clearButtonBitmaps = BitmapFactory.decodeResource(getResources(), R.drawable.ic_remove_circle);
         iconPadding = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_iconPadding, getPixel(2));
         floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.ZPEditText_zlp_floatingLabelAlwaysShown, false);
         validateOnFocusLost = typedArray.getBoolean(R.styleable.ZPEditText_zlp_validateOnFocusLost, false);
@@ -885,7 +886,7 @@ public class ZPEditText extends AppCompatEditText {
         // draw the clear button
         if (hasFocus() && showClearButton && !TextUtils.isEmpty(getText()) && isEnabled()) {
             int buttonLeft = endX;
-            Bitmap clearButtonBitmap = clearButtonBitmaps[0];
+            Bitmap clearButtonBitmap = clearButtonBitmaps;
             buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) / 2;
             int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - clearButtonBitmap.getHeight()) / 2;
             canvas.drawBitmap(clearButtonBitmap, buttonLeft, iconTop, paint);
@@ -893,7 +894,7 @@ public class ZPEditText extends AppCompatEditText {
 
         // draw the underline
         if (!hideUnderline) {
-            lineStartY += getPaddingBottom() - getPixel(2);
+            lineStartY += getPaddingBottom() - getPixel(1);
             int lineStartX = getScrollX() + paddingLeftLine;
             int lineEndX = getScrollX() + getWidth() - paddingRightLine;
             if (!isInternalValid()) { // not valid
@@ -902,9 +903,9 @@ public class ZPEditText extends AppCompatEditText {
             } else if (!isEnabled()) { // disabled
                 paint.setColor(underlineColor != -1 ? underlineColor : baseColor);
                 float interval = getPixel(1);
-                for (float xOffset = 0; xOffset < getWidth(); xOffset += interval * 3) {
-                    canvas.drawRect(lineStartX + xOffset, lineStartY, startX + xOffset + interval, lineStartY + getPixel(1), paint);
-                }
+                // for (float xOffset = 0; xOffset < getWidth(); xOffset += interval * 3) {
+                canvas.drawRect(lineStartX, lineStartY, startX + interval, lineStartY + getPixel(1), paint);
+                // }
             } else if (hasFocus()) { // focused
                 paint.setColor(primaryColor);
                 canvas.drawRect(lineStartX, lineStartY, lineEndX, lineStartY + getPixel(2), paint);

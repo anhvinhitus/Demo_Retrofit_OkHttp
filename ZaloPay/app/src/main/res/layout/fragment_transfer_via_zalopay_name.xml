@@ -24,7 +24,7 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:background="@color/white">
 
                 <com.zalopay.ui.widget.edittext.ZPEditText
@@ -32,7 +32,7 @@
                     style="@style/ZaloPayEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing.medium.t"
+                    android:layout_gravity="bottom"
                     android:hint="@string/input.account.zalo.pay"
                     android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
                     android:maxLength="@integer/max_length_zalopay_name" />
