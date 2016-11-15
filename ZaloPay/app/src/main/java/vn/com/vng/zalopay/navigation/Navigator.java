@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
 import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardActivity;
+import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -184,11 +185,16 @@ public class Navigator implements INavigator {
         activity.startActivity(intent);
     }
 
-    public void startLinkCardActivity(Context context) {
-        startLinkCardActivity(context, null);
+    public void startLinkCardActivity(Context context, TutorialLinkCardFragment.ILinkCardListener listener) {
+        startLinkCardActivity(context, null, listener);
     }
 
-    public void startLinkCardActivity(Context context, Bundle bundle) {
+    public void startLinkCardActivity(Context context) {
+        startLinkCardActivity(context, null, null);
+    }
+
+    public void startLinkCardActivity(Context context, Bundle bundle,
+                                      final TutorialLinkCardFragment.ILinkCardListener listener) {
         if (!userConfig.hasCurrentUser()) {
             return;
         }
@@ -196,7 +202,6 @@ public class Navigator implements INavigator {
         if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
             showUpdateProfileInfoDialog(context);
         } else {
-
             long now = System.currentTimeMillis();
             int numberCard = 0;
             try {
@@ -204,7 +209,7 @@ public class Navigator implements INavigator {
                 List<DMappedCard> mapCardLis = shareData.getMappedCardList(userConfig.getCurrentUser().zaloPayId);
                 numberCard = mapCardLis.size();
             } catch (Exception ex) {
-                Timber.d(ex, "startLinkCardActivity");
+                Timber.e(ex, "startLinkCardActivity getMappedCardList exception");
             }
 
             Intent intent = intentLinkCard(context);
@@ -213,8 +218,24 @@ public class Navigator implements INavigator {
             }
             if (numberCard <= 0 || now - lastTimeCheckPassword < INTERVAL_CHECK_PASSWORD) {
                 context.startActivity(intent);
+                if (listener != null) {
+                    listener.onStartedLinkCardActivity();
+                }
             } else {
-                new PinProfileDialog(context, intent).show();
+                PinProfileDialog dialog = new PinProfileDialog(context, intent);
+                dialog.setListener(new PinProfileDialog.PinProfileListener() {
+                    @Override
+                    public void onPinSuccess() {
+                        if (listener != null) {
+                            listener.onStartedLinkCardActivity();
+                        }
+                    }
+
+                    @Override
+                    public void onPinError() {
+                    }
+                });
+                dialog.show();
             }
         }
     }

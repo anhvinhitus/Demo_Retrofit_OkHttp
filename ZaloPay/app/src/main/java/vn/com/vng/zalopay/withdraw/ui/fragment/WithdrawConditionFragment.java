@@ -57,7 +57,7 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     public void onClickSaveCard() {
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constants.Withdraw.GO_TO_WITHDRAW_CONDITION, true);
-        navigator.startLinkCardActivity(getActivity(), bundle);
+        navigator.startLinkCardActivity(getActivity(), bundle, null);
     }
 
     public WithdrawConditionFragment() {

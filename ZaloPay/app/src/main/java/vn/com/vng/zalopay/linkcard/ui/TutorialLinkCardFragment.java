@@ -23,6 +23,10 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
  */
 public class TutorialLinkCardFragment extends BaseFragment {
 
+    public interface ILinkCardListener {
+        void onStartedLinkCardActivity();
+    }
+
     private String mLastCardNumber;
     private String mImageFilePath;
     private String mBankName;
@@ -38,8 +42,15 @@ public class TutorialLinkCardFragment extends BaseFragment {
 
     @OnClick(R.id.btnManagerCard)
     public void onCLickManagerCard() {
-        navigator.startLinkCardActivity(getContext());
-        getActivity().finish();
+        navigator.startLinkCardActivity(getContext(), new ILinkCardListener(){
+
+            @Override
+            public void onStartedLinkCardActivity() {
+                if (getActivity() != null && !getActivity().isFinishing()) {
+                    getActivity().finish();
+                }
+            }
+        });
     }
 
     public TutorialLinkCardFragment() {
