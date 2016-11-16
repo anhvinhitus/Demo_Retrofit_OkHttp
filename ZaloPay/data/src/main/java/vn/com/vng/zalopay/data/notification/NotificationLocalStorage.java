@@ -24,6 +24,7 @@ import static java.util.Collections.emptyList;
 
 /**
  * Created by AnhHieu on 6/20/16.
+ * *
  */
 public class NotificationLocalStorage extends SqlBaseScopeImpl implements NotificationStore.LocalStorage {
 
@@ -62,8 +63,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (item != null) {
             boolean isExisted = isNotificationExisted(val.getMtaid(), val.getMtuid());
             if (isExisted) {
-                getDaoSession().getNotificationGDDao().insertOrReplace(item);
-                return -1;
+                return getDaoSession().getNotificationGDDao().insertOrReplace(item);
             } else {
                 return getDaoSession().getNotificationGDDao().insert(item);
             }
