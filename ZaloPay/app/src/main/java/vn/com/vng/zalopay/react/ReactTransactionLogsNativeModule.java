@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -118,7 +119,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
             value = Long.parseLong(id);
         } catch (NumberFormatException e) {
             Timber.i("Invalid format for number: %s", id);
-            promise.reject("-1", "Invalid input");
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), "Invalid input");
             return;
         }
 

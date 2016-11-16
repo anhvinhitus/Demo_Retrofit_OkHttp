@@ -6,6 +6,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
@@ -108,6 +110,11 @@ public class TransactionRepository implements TransactionStore.Repository {
                 .flatMap(timeStamp -> fetchTransactionHistory(timeStamp, TRANSACTION_ORDER_LATEST, statusType));
     }
 
+    public Observable<Boolean> fetchTransactionHistorySuccessOldest() {
+        return fetchTransactionHistoryOldest(TRANSACTION_STATUS_SUCCESS)
+                .map(response -> Boolean.TRUE);
+    }
+
     @Override
     public Observable<Boolean> fetchTransactionHistorySuccessLatest() {
         return fetchTransactionHistoryLatest(TRANSACTION_STATUS_SUCCESS)
@@ -202,6 +209,27 @@ public class TransactionRepository implements TransactionStore.Repository {
     @Override
     public Boolean isLoadedTransactionFail() {
         return mTransactionLocalStorage.isLoadedTransactionFail();
+    }
+
+    @Override
+    public Observable<Boolean> reloadTransactionHistoryTime(final long time) {
+        Observable<Long> _ObservableLatest = Observable.just(mTransactionLocalStorage.getLatestTimeTransaction(TRANSACTION_STATUS_SUCCESS));
+        Observable<Long> _ObservableOldest = Observable.just(mTransactionLocalStorage.getOldestTimeTransaction(TRANSACTION_STATUS_SUCCESS));
+        return Observable.zip(_ObservableLatest, _ObservableOldest, new Func2<Long, Long, Boolean>() {
+            @Override
+            public Boolean call(Long latestTime, Long oldestTime) {
+                return oldestTime > time;
+            }
+        }).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(Boolean aBoolean) {
+                if (aBoolean) {
+                    return fetchTransactionHistorySuccessOldest();
+                } else {
+                    return fetchTransactionHistorySuccessLatest();
+                }
+            }
+        });
     }
 
     private static class RecursiveData {

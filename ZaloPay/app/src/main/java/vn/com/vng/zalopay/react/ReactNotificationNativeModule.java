@@ -26,8 +26,8 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.react.error.PaymentError;
 
@@ -37,17 +37,20 @@ import vn.com.vng.zalopay.react.error.PaymentError;
  */
 class ReactNotificationNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
-    private NotificationStore.Repository repository;
+    private NotificationStore.Repository mNotificationRepository;
+    private TransactionStore.Repository mTransactionRepository;
     private final EventBus mEventBus;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     ReactNotificationNativeModule(ReactApplicationContext reactContext,
-                                  NotificationStore.Repository repository,
+                                  NotificationStore.Repository notificationRepository,
+                                  TransactionStore.Repository transactionRepository,
                                   EventBus eventBus) {
         super(reactContext);
-        this.repository = repository;
+        this.mNotificationRepository = notificationRepository;
         this.mEventBus = eventBus;
+        this.mTransactionRepository = transactionRepository;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -60,7 +63,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     @ReactMethod
     public void getNotification(int pageIndex, int count, Promise promise) {
         Timber.d("get notification index %s count %s", pageIndex, count);
-        Subscription subscription = repository.getNotification(pageIndex, count)
+        Subscription subscription = mNotificationRepository.getNotification(pageIndex, count)
                 .map(new Func1<List<NotificationData>, WritableArray>() {
 
                     @Override
@@ -73,10 +76,44 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     }
 
     @ReactMethod
+    public void reloadTransactionWithId(String transactionId, String notificationId, Promise promise) {
+        Timber.d("Reload transaction transId [%s] notificationId [%s] ", transactionId, notificationId);
+/*
+        long _notificationId = 0;
+        try {
+            _notificationId = Long.valueOf(notificationId);
+        } catch (NumberFormatException e) {
+            //empty
+        }
+
+        if (_notificationId >= 0) {
+            Subscription subscription = mNotificationRepository.getNotify(_notificationId)
+                    .flatMap(new Func1<NotificationData, Observable<TransHistory>>() {
+                        @Override
+                        public Observable<TransHistory> call(NotificationData notificationData) {
+                            return null;
+                        }
+                    })
+                    .map(new Func1<TransHistory, Pair<Integer, WritableArray>>() {
+                        @Override
+                        public Pair<Integer, WritableArray> call(TransHistory transHistory) {
+                            int code = PaymentError.ERR_CODE_SUCCESS.value();
+                            return new Pair<>(code, transformHistory(Collections.singletonList(transHistory)));
+                        }
+                    })
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new ReloadTransactionHistorySubscriber(promise));
+            compositeSubscription.add(subscription);
+        } else {
+            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), " Input NotificationId Invalid " + notificationId);
+        }*/
+    }
+
+    @ReactMethod
     public void updateStateReadWithNotificationId(String notificationid, Promise promise) {
         Timber.d("updateStateReadWithNotificationId %s ", notificationid);
         try {
-            repository.markAsRead(Long.parseLong(notificationid));
+            mNotificationRepository.markAsRead(Long.parseLong(notificationid));
         } catch (Exception ex) {
             Timber.w(ex, "message exception");
         }
@@ -95,14 +132,14 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
             return;
         }
 
-        Subscription subscription = repository.removeNotification(notifyId)
+        Subscription subscription = mNotificationRepository.removeNotification(notifyId)
                 .subscribe(new RemoveNotifySubscriber(promise));
         compositeSubscription.add(subscription);
     }
 
     @ReactMethod
     public void removeAllNotification(Promise promise) {
-        Subscription subscription = repository.removeAllNotification()
+        Subscription subscription = mNotificationRepository.removeAllNotification()
                 .subscribe(new RemoveNotifySubscriber(promise));
 
         compositeSubscription.add(subscription);
@@ -241,7 +278,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     private class RemoveNotifySubscriber extends DefaultSubscriber<Boolean> {
         private Promise promise;
 
-        public RemoveNotifySubscriber(Promise promise) {
+        RemoveNotifySubscriber(Promise promise) {
             this.promise = promise;
         }
 
