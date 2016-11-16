@@ -151,9 +151,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
 
-        mEdtEmailView.addValidator(new MinCharactersValidate(getString(R.string.invalid_email_empty), 1));
+       // mEdtEmailView.addValidator(new MinCharactersValidate(getString(R.string.invalid_email_empty), 1));
         mEdtEmailView.addValidator(new EmailValidate(getString(R.string.email_invalid)));
-        mEdtIdentityView.addValidator(new MinCharactersValidate(getString(R.string.exception_identity_empty), 1));
+      //  mEdtIdentityView.addValidator(new MinCharactersValidate(getString(R.string.exception_identity_empty), 1));
         mEdtIdentityView.addValidator(new PassportValidate(getString(R.string.cmnd_passport_invalid)));
     }
 

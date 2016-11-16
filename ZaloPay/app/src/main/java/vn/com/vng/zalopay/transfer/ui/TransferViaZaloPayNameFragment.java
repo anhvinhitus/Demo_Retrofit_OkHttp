@@ -74,7 +74,7 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        mEdtAccountNameView.addValidator(new MinCharactersValidate(getString(R.string.exception_account_name_length), 4));
+     //   mEdtAccountNameView.addValidator(new MinCharactersValidate(getString(R.string.exception_account_name_length), 4));
         mEdtAccountNameView.addValidator(new ZPEditTextValidate(getString(R.string.exception_transfer_for_self)) {
             @Override
             public boolean isValid(@NonNull CharSequence s) {

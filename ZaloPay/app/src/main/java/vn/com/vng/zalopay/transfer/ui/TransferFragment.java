@@ -43,6 +43,12 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class TransferFragment extends BaseFragment implements ITransferView {
 
+    public static TransferFragment newInstance(Bundle bundle) {
+        TransferFragment fragment = new TransferFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Inject
     TransferPresenter mPresenter;
 
@@ -72,6 +78,106 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @BindView(R.id.btnContinue)
     View btnContinue;
+
+    @Override
+    protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
+    }
+
+    @Override
+    protected int getResLayoutId() {
+        return R.layout.fragment_transfer;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Bundle argument = getArguments();
+        if (argument == null) {
+            return;
+        }
+
+        mPresenter.setView(this);
+
+        mPresenter.initView((ZaloFriend) Parcels.unwrap(argument.getParcelable(Constants.ARG_ZALO_FRIEND)),
+                (RecentTransaction) Parcels.unwrap(argument.getParcelable(Constants.ARG_TRANSFERRECENT)),
+                argument.getLong(Constants.ARG_AMOUNT),
+                argument.getString(Constants.ARG_MESSAGE));
+
+        mPresenter.setTransferMode(argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT));
+
+        rootView.setOnKeyboardStateListener(new OnKeyboardStateChangeListener() {
+            @Override
+            public void onKeyBoardShow(int height) {
+                if (edtTransferMsg == null || mScrollView == null) {
+                    return;
+                }
+                Timber.d("onKeyBoardShow: edtTransferMsg.isFocused() %s", edtTransferMsg.isFocused());
+                if (edtTransferMsg.isFocused()) {
+                    mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                    edtTransferMsg.requestFocusFromTouch();
+                } else {
+                    //Scroll down 24dp (height of error text)
+                    mScrollView.scrollBy(0, AndroidUtils.dp(24));
+                }
+            }
+
+            @Override
+            public void onKeyBoardHide() {
+                Timber.d("onKeyBoardHide");
+            }
+        });
+
+        mPresenter.onViewCreated();
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.resume();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        mPresenter.navigateBack();
+        return false;
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        mPresenter.destroyView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        mPresenter.destroy();
+        super.onDestroy();
+    }
+
+    @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = R.id.edtAmount)
+    public void OnAfterAmountChanged(Editable s) {
+        Timber.d("OnTextChangedAmount %s", edtAmount.isValid());
+        setEnableBtnContinue(edtAmount.isValid() && !TextUtils.isEmpty(mPresenter.getZaloPayId()));
+    }
+
+    @OnTextChanged(R.id.edtTransferMsg)
+    public void onTextChanged(CharSequence s) {
+        mPresenter.updateMessage(TextUtils.isEmpty(s) ? "" : s.toString());
+    }
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
@@ -137,14 +243,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     }
 
-
-    @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = R.id.edtAmount)
-    public void OnAfterAmountChanged(Editable s) {
-        Timber.d("OnTextChangedAmount %s", edtAmount.isValid());
-        setEnableBtnContinue(edtAmount.isValid() && !TextUtils.isEmpty(mPresenter.getZaloPayId()));
-    }
-
-
     private void setZaloPayName(String zalopayName) {
         if (TextUtils.isEmpty(zalopayName)) {
             mTextViewZaloPayName.setVisibility(View.INVISIBLE);
@@ -178,104 +276,11 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         tvDisplayName.setText(displayName);
     }
 
-    public static TransferFragment newInstance(Bundle bundle) {
-        TransferFragment fragment = new TransferFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Override
-    protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
-    }
-
-    @Override
-    protected int getResLayoutId() {
-        return R.layout.fragment_transfer;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        Bundle argument = getArguments();
-        if (argument == null) {
-            return;
-        }
-
-        mPresenter.setView(this);
-
-        mPresenter.initView((ZaloFriend) Parcels.unwrap(argument.getParcelable(Constants.ARG_ZALO_FRIEND)),
-                (RecentTransaction) Parcels.unwrap(argument.getParcelable(Constants.ARG_TRANSFERRECENT)),
-                argument.getLong(Constants.ARG_AMOUNT),
-                argument.getString(Constants.ARG_MESSAGE));
-
-        mPresenter.setTransferMode(argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT));
-
-        rootView.setOnKeyboardStateListener(new OnKeyboardStateChangeListener() {
-            @Override
-            public void onKeyBoardShow(int height) {
-                if (edtTransferMsg == null || mScrollView == null) {
-                    return;
-                }
-                Timber.d("onKeyBoardShow: edtTransferMsg.isFocused() %s", edtTransferMsg.isFocused());
-                if (edtTransferMsg.isFocused()) {
-                    mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                    edtTransferMsg.requestFocusFromTouch();
-                } else {
-                    //Scroll down 24dp (height of error text)
-                    mScrollView.scrollBy(0, AndroidUtils.dp(24));
-                }
-            }
-
-            @Override
-            public void onKeyBoardHide() {
-                Timber.d("onKeyBoardHide");
-            }
-        });
-
-        mPresenter.onViewCreated();
-    }
-
-    @OnTextChanged(R.id.edtTransferMsg)
-    public void onTextChanged(CharSequence s) {
-        mPresenter.updateMessage(TextUtils.isEmpty(s) ? "" : s.toString());
-    }
-
-    @Override
-    public void onPause() {
-        mPresenter.pause();
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.resume();
-    }
-
-    @Override
-    public void onDestroyView() {
-        mPresenter.destroyView();
-        super.onDestroyView();
-    }
-
     @Override
     public void setMinMaxMoney(long min, long max) {
         if (edtAmount != null) {
             edtAmount.setMinMaxMoney(min, max);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        mPresenter.destroy();
-        super.onDestroy();
     }
 
     @Override
@@ -302,12 +307,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                         mPresenter.transferMoney();
                     }
                 });
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        mPresenter.navigateBack();
-        return false;
     }
 
     @Override
