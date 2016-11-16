@@ -195,7 +195,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
 
     @Override
     public void showConfirmDialog(String message, ZPWOnEventConfirmDialogListener listener) {
-        DialogManager.showSweetDialogConfirm(getActivity(), message, getString(R.string.txt_update),
+        DialogManager.showSweetDialogOptionNotice(getActivity(), message, getString(R.string.txt_update),
                 getString(R.string.txt_close), listener);
     }
 
