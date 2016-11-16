@@ -381,7 +381,7 @@
 
     <string name="warning.rooted.title">Thiết bị đang sử dụng đã bị root.</string>
     <string name="warning.rooted.not.secure">Sử dụng Zalo Pay trên thiết bị này sẽ không đảm bảo an toàn và rất có thể dẫn đến việc lộ thông tin tài khoản.</string>
-    <string name="warning.rooted.recommend">Khuyến cáo không nên sử dụng Zalo Pay trên thiết bị này. Nhấn nút "Tiếp tục" để sử dụng Zalo Pay.</string>
+    <string name="warning.rooted.recommend">Khuyến cáo không nên sử dụng Zalo Pay trên thiết bị này. Nhấn nút \"Tiếp Tục\" để sử dụng Zalo Pay.</string>
     <string name="not.repeat">Không hỏi lại cho những lần sau</string>
     <string name="application.downloading">Ứng dụng đang được tải</string>
 </resources>
