@@ -55,7 +55,7 @@ ext {
 
     parcelerVersion = "1.1.5"
 
-    zalopayanalyticsVersion = "1.3"
+    zalopayanalyticsVersion = "1.4"
     debugviewerVersion = "1.0"
 
     cborVersion = "0.7"

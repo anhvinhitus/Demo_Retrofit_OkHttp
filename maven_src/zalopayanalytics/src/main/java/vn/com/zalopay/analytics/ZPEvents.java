@@ -118,14 +118,29 @@ public class ZPEvents {
     public static final int UPDATEZPN_EDIT_DELETE = 2209;
     public static final int UPDATEZPN_EDIT_AFTERCHECK = 2210;
     public static final int OTP_CHANGEPASSWORD_REQUEST = 2300;
+    public static final int OTP_CHANGEPASSWORD_INPUTNONE = 2301;
     public static final int OTP_CHANGEPASSWORD_INPUTWRONG = 2302;
-    public static final int #REF! = #REF!;
     public static final int OTP_CHANGEPASSWORD_INPUTOK = 2303;
     public static final int OTP_LEVEL2_REQUEST = 2304;
-    public static final int OTP_LEVEL2_INPUTWRONG = 2306;
     public static final int OTP_LEVEL2_INPUTNONE = 2305;
+    public static final int OTP_LEVEL2_INPUTWRONG = 2306;
     public static final int OTP_LEVEL2_INPUTOK = 2307;
-    public static final int  = ;
+    public static final int RECEIVEMONEY_LAUNCH = 2400;
+    public static final int RECEIVEMONEY_BACK = 2401;
+    public static final int RECEIVEMONEY_SETAMOUNT = 2402;
+    public static final int RECEIVEMONEY_SETMESSAGE = 2403;
+    public static final int RECEIVEMONEY_SETAMOUNTMESSAGE = 2404;
+    public static final int RECEIVEMONEY_CLEARINFO = 2405;
+    public static final int RECEIVEMONEY_RECEIVED_1 = 2406;
+    public static final int RECEIVEMONEY_RECEIVED_2 = 2407;
+    public static final int RECEIVEMONEY_RECEIVED_3 = 2408;
+    public static final int RECEIVEMONEY_RECEIVED_4 = 2409;
+    public static final int RECEIVEMONEY_RECEIVED_5 = 2410;
+    public static final int RECEIVEMONEY_RECEIVED_6 = 2411;
+    public static final int RECEIVEMONEY_RECEIVED_7 = 2412;
+    public static final int RECEIVEMONEY_RECEIVED_8 = 2413;
+    public static final int RECEIVEMONEY_RECEIVED_9 = 2414;
+    public static final int RECEIVEMONEY_RECEIVED_MORE = 2415;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -357,22 +372,52 @@ public class ZPEvents {
                 return "UpdateZPN_Edit_AfterCheck";
             case OTP_CHANGEPASSWORD_REQUEST:
                 return "OTP_ChangePassword_Request";
+            case OTP_CHANGEPASSWORD_INPUTNONE:
+                return "OTP_ChangePassword_InputNone";
             case OTP_CHANGEPASSWORD_INPUTWRONG:
                 return "OTP_ChangePassword_InputWrong";
-            case #REF!:
-                return "#REF!";
             case OTP_CHANGEPASSWORD_INPUTOK:
                 return "OTP_ChangePassword_InputOK";
             case OTP_LEVEL2_REQUEST:
                 return "OTP_Level2_Request";
-            case OTP_LEVEL2_INPUTWRONG:
-                return "OTP_Level2_InputWrong";
             case OTP_LEVEL2_INPUTNONE:
                 return "OTP_Level2_InputNone";
+            case OTP_LEVEL2_INPUTWRONG:
+                return "OTP_Level2_InputWrong";
             case OTP_LEVEL2_INPUTOK:
                 return "OTP_Level2_InputOK";
-            case :
-                return "";
+            case RECEIVEMONEY_LAUNCH:
+                return "ReceiveMoney_Launch";
+            case RECEIVEMONEY_BACK:
+                return "ReceiveMoney_Back";
+            case RECEIVEMONEY_SETAMOUNT:
+                return "ReceiveMoney_SetAmount";
+            case RECEIVEMONEY_SETMESSAGE:
+                return "ReceiveMoney_SetMessage";
+            case RECEIVEMONEY_SETAMOUNTMESSAGE:
+                return "ReceiveMoney_SetAmountMessage";
+            case RECEIVEMONEY_CLEARINFO:
+                return "ReceiveMoney_ClearInfo";
+            case RECEIVEMONEY_RECEIVED_1:
+                return "ReceiveMoney_Received_1";
+            case RECEIVEMONEY_RECEIVED_2:
+                return "ReceiveMoney_Received_2";
+            case RECEIVEMONEY_RECEIVED_3:
+                return "ReceiveMoney_Received_3";
+            case RECEIVEMONEY_RECEIVED_4:
+                return "ReceiveMoney_Received_4";
+            case RECEIVEMONEY_RECEIVED_5:
+                return "ReceiveMoney_Received_5";
+            case RECEIVEMONEY_RECEIVED_6:
+                return "ReceiveMoney_Received_6";
+            case RECEIVEMONEY_RECEIVED_7:
+                return "ReceiveMoney_Received_7";
+            case RECEIVEMONEY_RECEIVED_8:
+                return "ReceiveMoney_Received_8";
+            case RECEIVEMONEY_RECEIVED_9:
+                return "ReceiveMoney_Received_9";
+            case RECEIVEMONEY_RECEIVED_MORE:
+                return "ReceiveMoney_Received_More";
             default:
                 return "DefaultAction";
         }
@@ -608,21 +653,51 @@ public class ZPEvents {
                 return "UpdateZPN";
             case OTP_CHANGEPASSWORD_REQUEST:
                 return "OTP";
+            case OTP_CHANGEPASSWORD_INPUTNONE:
+                return "OTP";
             case OTP_CHANGEPASSWORD_INPUTWRONG:
                 return "OTP";
-            case #REF!:
-                return "#REF!";
             case OTP_CHANGEPASSWORD_INPUTOK:
                 return "OTP";
             case OTP_LEVEL2_REQUEST:
                 return "OTP";
-            case OTP_LEVEL2_INPUTWRONG:
-                return "OTP";
             case OTP_LEVEL2_INPUTNONE:
+                return "OTP";
+            case OTP_LEVEL2_INPUTWRONG:
                 return "OTP";
             case OTP_LEVEL2_INPUTOK:
                 return "OTP";
-            case :
+            case RECEIVEMONEY_LAUNCH:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_BACK:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_SETAMOUNT:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_SETMESSAGE:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_SETAMOUNTMESSAGE:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_CLEARINFO:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_RECEIVED_1:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_RECEIVED_2:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_RECEIVED_3:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_RECEIVED_4:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_RECEIVED_5:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_RECEIVED_6:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_RECEIVED_7:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_RECEIVED_8:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_RECEIVED_9:
+                return "ReceiveMoney";
+            case RECEIVEMONEY_RECEIVED_MORE:
                 return "ReceiveMoney";
             default:
                 return "DefaultCategory";
