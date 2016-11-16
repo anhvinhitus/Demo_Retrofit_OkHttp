@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -165,8 +166,14 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     }
 
     @Override
-    public void showDialogInfo(String content) {
-        DialogManager.showSweetDialogCustom(getActivity(), content, getString(R.string.txt_close), SweetAlertDialog.INFO_TYPE, null);
+    public void showDialogInfo(String message) {
+        DialogManager.showSweetDialogCustom(getActivity(), message, getString(R.string.txt_close), SweetAlertDialog.INFO_TYPE, null);
+    }
+
+    @Override
+    public void showConfirmDialog(String message, ZPWOnEventConfirmDialogListener listener) {
+        DialogManager.showSweetDialogConfirm(getActivity(), message, getString(R.string.txt_update),
+                getString(R.string.txt_close), listener);
     }
 
     private void setCMND(String cmnd) {
@@ -255,15 +262,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @OnClick(R.id.layoutAccountName)
     public void onClickEditAccountName() {
-        if (!TextUtils.isEmpty(mAccountNameView.getText())) {
-            return;
-        }
-        if (userConfig.getCurrentUser().profilelevel < 2) {
-            navigator.startUpdateProfileLevel2Activity(getContext());
-        } else {
-            navigator.startEditAccountActivity(getContext());
-            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);
-        }
+        mPresenter.updateZaloPayID();
     }
 
     @OnClick(R.id.layoutChangePin)
