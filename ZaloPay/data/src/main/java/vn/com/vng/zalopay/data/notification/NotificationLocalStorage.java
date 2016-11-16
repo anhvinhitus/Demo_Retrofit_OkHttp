@@ -198,6 +198,8 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
                         .limit(limit)
                         .offset(pageIndex * limit)
                         .orderDesc(NotificationGDDao.Properties.Timestamp)
+                        .where(NotificationGDDao.Properties.Message.isNotNull())
+                        .where(NotificationGDDao.Properties.Transid.gt(0))
                         .list());
     }
 
