@@ -16,25 +16,18 @@
 
 package vn.com.vng.zalopay.notification;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.google.gson.Gson;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
-    
+
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
@@ -59,15 +52,10 @@ public class MyGcmListenerService extends GcmListenerService {
             UserComponent userComponent = getUserComponent();
             Timber.d("Create notification with userComponent %s", userComponent);
             if (userComponent != null) {
-
-                Intent intent = new Intent(getApplicationContext(), NotificationActivity.class);
-
                 NotificationHelper notificationHelper = userComponent.notificationHelper();
-                notificationHelper.create(getApplicationContext(), 1, intent,
-                        R.mipmap.ic_launcher, getString(R.string.app_name), message);
+                notificationHelper.showNotificationSystem(message);
             }
         }
-
     }
 
     private void createUserComponent() {

@@ -42,10 +42,11 @@ import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 
 /**
  * Created by AnhHieu on 6/15/16.
+ * *
  */
 
 public class NotificationHelper {
-
+    private final int NOTIFICATION_ID = 1;
     private final NotificationStore.Repository mNotifyRepository;
     private final AccountStore.Repository mAccountRepository;
     private final Context mContext;
@@ -56,13 +57,13 @@ public class NotificationHelper {
     private final EventBus mEventBus;
 
     @Inject
-    public NotificationHelper(Context applicationContext, User user,
-                              NotificationStore.Repository notifyRepository,
-                              AccountStore.Repository accountRepository,
-                              RedPacketStore.Repository redPacketRepository,
-                              TransactionStore.Repository transactionRepository,
-                              BalanceStore.Repository balanceRepository,
-                              EventBus eventBus) {
+    NotificationHelper(Context applicationContext, User user,
+                       NotificationStore.Repository notifyRepository,
+                       AccountStore.Repository accountRepository,
+                       RedPacketStore.Repository redPacketRepository,
+                       TransactionStore.Repository transactionRepository,
+                       BalanceStore.Repository balanceRepository,
+                       EventBus eventBus) {
         Timber.d("Create new instance of NotificationHelper");
         this.mNotifyRepository = notifyRepository;
         this.mContext = applicationContext;
@@ -81,7 +82,7 @@ public class NotificationHelper {
         Timber.d("Finalize NotificationHelper");
     }
 
-    public void create(Context context, int id, Intent intent, int smallIcon, String contentTitle, String contentText) {
+    private void throwNotification(Context context, int id, Intent intent, int smallIcon, String contentTitle, String contentText) {
         NotificationManager manager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -112,7 +113,7 @@ public class NotificationHelper {
         manager.notify(id, n);
     }
 
-    public void processNotification(NotificationData notify) {
+    void processNotification(NotificationData notify) {
         if (notify == null) {
             return;
         }
@@ -240,29 +241,43 @@ public class NotificationHelper {
         }
     }
 
-    public void showNotificationSystem() {
+    /**
+     * Get count notification unread from DB & show
+     */
+    void showNotificationSystem() {
         Subscription subscription = mNotifyRepository.totalNotificationUnRead()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
     }
 
+    /**
+     * Show notification numbers
+     */
     private void showNotificationSystem(int numberUnread) {
-
         Timber.d("showNotificationSystem numberUnread %s", numberUnread);
 
         if (numberUnread == 0) {
             return;
         }
 
-        String title = mContext.getString(R.string.app_name);
-        String message = String.format(mContext.getString(R.string.you_have_unread_messages), numberUnread);
-        int notificationId = 1;
-        Intent intent = new Intent(mContext, NotificationActivity.class);
-
-        this.create(mContext, notificationId,
-                intent,
+        throwNotification(mContext,
+                NOTIFICATION_ID,
+                new Intent(mContext, NotificationActivity.class),
                 R.mipmap.ic_launcher,
-                title, message);
+                mContext.getString(R.string.app_name),
+                String.format(mContext.getString(R.string.you_have_unread_messages), numberUnread));
+    }
+
+    /**
+     * Show notification from Gcm
+     */
+    void showNotificationSystem(String message) {
+        throwNotification(mContext,
+                NOTIFICATION_ID,
+                new Intent(mContext, NotificationActivity.class),
+                R.mipmap.ic_launcher,
+                mContext.getString(R.string.app_name),
+                message);
     }
 
     private class NotificationSubscriber extends DefaultSubscriber<Integer> {
@@ -279,7 +294,7 @@ public class NotificationHelper {
     }
 
 
-    public void closeNotificationSystem() {
+    void closeNotificationSystem() {
         NotificationManagerCompat nm = NotificationManagerCompat.from(mContext);
         nm.cancelAll();
     }
@@ -305,7 +320,7 @@ public class NotificationHelper {
         return AndroidApplication.instance().getUserComponent();
     }
 
-    public void refreshGatewayInfo() {
+    private void refreshGatewayInfo() {
         mEventBus.post(new RefreshPaymentSdkEvent());
     }
 
