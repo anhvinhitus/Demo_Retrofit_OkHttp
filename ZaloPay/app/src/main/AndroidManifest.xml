@@ -245,8 +245,8 @@
             android:label="@string/title.activity.my.qr"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-
-        <activity android:name=".account.ui.activities.ProfileActivity">
+        <activity android:name=".account.ui.activities.ProfileActivity"
+            android:label="@string/personal">
             <intent-filter>
                 <data
                     android:host="goToProfileInfo"
