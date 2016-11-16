@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.gson.Gson;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -31,7 +32,6 @@ public class MyGcmListenerService extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
-
         if (data == null) {
             return;
         }
@@ -40,20 +40,27 @@ public class MyGcmListenerService extends GcmListenerService {
         String badgeNumber = data.getString("badgenumber");
         String embeddata = data.getString("embeddata");
 
-        Timber.d("onMessageReceived: from %s message %s embeddata %s badgeNumber %s ", from, message, embeddata, badgeNumber);
+        Timber.d("onMessageReceived: from %s message %s embeddata %s badgeNumber %s ",
+                from, message, embeddata, badgeNumber);
 
         createUserComponent();
 
-        sendNotification(message);
+        EmbedDataGcm embedDataGcm = null;
+        if (!TextUtils.isEmpty(embeddata)) {
+            Gson gson = new Gson();
+            embedDataGcm = gson.fromJson(embeddata, EmbedDataGcm.class);
+        }
+
+        sendNotification(message, embedDataGcm);
     }
 
-    private void sendNotification(String message) {
+    private void sendNotification(String message, EmbedDataGcm embedDataGcm) {
         if (!TextUtils.isEmpty(message)) {
             UserComponent userComponent = getUserComponent();
             Timber.d("Create notification with userComponent %s", userComponent);
             if (userComponent != null) {
                 NotificationHelper notificationHelper = userComponent.notificationHelper();
-                notificationHelper.showNotificationSystem(message);
+                notificationHelper.handleNotificationFromGcm(message, embedDataGcm);
             }
         }
     }

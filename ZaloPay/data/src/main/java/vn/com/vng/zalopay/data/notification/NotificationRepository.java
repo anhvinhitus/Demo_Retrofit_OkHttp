@@ -122,4 +122,9 @@ public class NotificationRepository implements NotificationStore.Repository {
                 receiverid,
                 embededdata);
     }
+
+    @Override
+    public Observable<Boolean> isNotificationExisted(long mtaid, long mtuid) {
+        return ObservableHelper.makeObservable(() -> localStorage.isNotificationExisted(mtaid, mtuid));
+    }
 }

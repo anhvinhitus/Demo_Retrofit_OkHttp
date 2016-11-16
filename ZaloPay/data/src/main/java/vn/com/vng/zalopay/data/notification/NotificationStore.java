@@ -5,12 +5,12 @@ import java.util.List;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
-import vn.com.vng.zalopay.data.api.response.BalanceResponse;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 
 /**
  * Created by AnhHieu on 6/20/16.
+ * *
  */
 public interface NotificationStore {
 
@@ -36,6 +36,17 @@ public interface NotificationStore {
         void delete(long id);
 
         void deleteAll();
+
+        /**
+         * Check notification exist.
+         * If notification has same mtaid/mtuid (only mtaid or mtuid) then return true.
+         * else return false.
+         *
+         * @param mtaid if has mtaid then hasn't mtuid.
+         * @param mtuid if has mtuid then hasn't mtaid.
+         * @return notification exist or didn't exist.
+         */
+        boolean isNotificationExisted(long mtaid, long mtuid);
     }
 
     interface RequestService {
@@ -73,5 +84,7 @@ public interface NotificationStore {
         Observable<Boolean> removeAllNotification();
 
         Observable<BaseResponse> sendNotification(String receiverid, String embededdata);
+
+        Observable<Boolean> isNotificationExisted(long mtaid, long mtuid);
     }
 }

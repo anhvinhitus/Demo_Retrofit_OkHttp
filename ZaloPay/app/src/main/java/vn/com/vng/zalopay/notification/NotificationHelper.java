@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 
@@ -271,13 +272,38 @@ public class NotificationHelper {
     /**
      * Show notification from Gcm
      */
-    void showNotificationSystem(String message) {
-        throwNotification(mContext,
-                NOTIFICATION_ID,
-                new Intent(mContext, NotificationActivity.class),
-                R.mipmap.ic_launcher,
-                mContext.getString(R.string.app_name),
-                message);
+    void handleNotificationFromGcm(final String message, final EmbedDataGcm embedDataGcm) {
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+        if (embedDataGcm == null) {
+            throwNotification(mContext,
+                    NOTIFICATION_ID,
+                    new Intent(mContext, NotificationActivity.class),
+                    R.mipmap.ic_launcher,
+                    mContext.getString(R.string.app_name),
+                    message);
+        } else {
+            mNotifyRepository.isNotificationExisted(embedDataGcm.mtaid, embedDataGcm.mtuid)
+                    .subscribe(new DefaultSubscriber<Boolean>() {
+                        @Override
+                        public void onNext(Boolean isExisted) {
+                            if (isExisted) {
+                                return;
+                            }
+                            NotificationData notificationData = new NotificationData();
+                            notificationData.setMtaid(embedDataGcm.mtaid);
+                            notificationData.setMtuid(embedDataGcm.mtuid);
+                            putNotification(notificationData);
+                            throwNotification(mContext,
+                                    NOTIFICATION_ID,
+                                    new Intent(mContext, NotificationActivity.class),
+                                    R.mipmap.ic_launcher,
+                                    mContext.getString(R.string.app_name),
+                                    message);
+                        }
+                    });
+        }
     }
 
     private class NotificationSubscriber extends DefaultSubscriber<Integer> {
