@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -12,6 +13,7 @@ import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -22,16 +24,17 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by longlv on 11/08/2016.
- *
+ * *
  */
 public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
         implements IPresenter<IBalanceManagementView> {
 
     private IBalanceManagementView mView;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private User mUser;
     private EventBus mEventBus;
@@ -39,7 +42,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
     private Navigator mNavigator;
 
     @Inject
-    public BalanceManagementPresenter(User user,
+    BalanceManagementPresenter(User user,
                                       EventBus eventBus,
                                       BalanceStore.Repository balanceRepository,
                                       Navigator navigator,
@@ -100,7 +103,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
         }
     }
 
-    protected void updateBalance() {
+    private void updateBalance() {
         Subscription subscription = mBalanceRepository.updateBalance()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
@@ -128,4 +131,40 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
 
     }
 
+    private int getProfileLevel() {
+        User user = mUserConfig.getCurrentUser();
+        if (user == null) {
+            return 0;
+        } else if (mUserConfig.getCurrentUser() == null) {
+            return 0;
+        } else {
+            return mUserConfig.getCurrentUser().profilelevel;
+        }
+    }
+
+    public void updateZaloPayID() {
+        if (!TextUtils.isEmpty(mUser.zalopayname)) {
+            return;
+        }
+        if (getProfileLevel() < 2) {
+            requireUpdateProfileLevel2();
+        }else{
+            mNavigator.startEditAccountActivity(mView.getContext());
+        }
+    }
+
+    private void requireUpdateProfileLevel2() {
+        mView.showConfirmDialog(mView.getContext().getString(R.string.alert_need_update_level_2),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
+                    }
+                });
+    }
 }
