@@ -622,9 +622,15 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
         @Override
         public void onNext(Person person) {
             Timber.d("onNext displayName %s avatar %s", person.displayName, person.avatar);
-            mTransaction.avatar = person.avatar;
-            mTransaction.displayName = person.displayName;
-            mTransaction.zaloPayName = person.zalopayname;
+            if (!TextUtils.isEmpty(person.avatar)) {
+                mTransaction.avatar = person.avatar;
+            }
+            if (!TextUtils.isEmpty(person.displayName)) {
+                mTransaction.displayName = person.displayName;
+            }
+            if (!TextUtils.isEmpty(person.zalopayname)) {
+                mTransaction.zaloPayName = person.zalopayname;
+            }
 
             mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
         }
