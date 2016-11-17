@@ -5,6 +5,8 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+import com.zalopay.apploader.ReactNativeHostable;
+import com.zalopay.apploader.zpmodal.ReactModalHostManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -18,17 +20,12 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
-
-import com.zalopay.apploader.ReactNativeHostable;
-
 import vn.com.vng.zalopay.navigation.INavigator;
-import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
+import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.RedPacketNativeModule;
 import vn.com.vng.zalopay.react.widget.icon.ReactIconTextViewManager;
 import vn.com.vng.zalopay.react.widget.input.ReactInputTextViewManager;
-
-import com.zalopay.apploader.zpmodal.ReactModalHostManager;
 
 /**
  * Created by huuhoa on 4/25/16.
