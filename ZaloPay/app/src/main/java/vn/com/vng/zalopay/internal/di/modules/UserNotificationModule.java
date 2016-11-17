@@ -24,8 +24,8 @@ public class UserNotificationModule {
 
     @UserScope
     @Provides
-    NotificationStore.LocalStorage provideNotificationLocalStorage(@Named("daosession") DaoSession session, User user) {
-        return new NotificationLocalStorage(session, user);
+    NotificationStore.LocalStorage provideNotificationLocalStorage(@Named("daosession") DaoSession session) {
+        return new NotificationLocalStorage(session);
     }
 
     @UserScope
@@ -41,7 +41,7 @@ public class UserNotificationModule {
                                                                 RxBus rxBus,
                                                                 NotificationStore.RequestService requestService,
                                                                 User user
-                                                                ) {
+    ) {
         return new NotificationRepository(storage, eventBus, rxBus, requestService, user);
     }
 }

@@ -15,11 +15,9 @@ import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.NotificationGD;
 import vn.com.vng.zalopay.data.cache.model.NotificationGDDao;
-import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.Enums;
-import vn.com.vng.zalopay.domain.model.User;
 
 import static java.util.Collections.emptyList;
 
@@ -28,16 +26,14 @@ import static java.util.Collections.emptyList;
  */
 public class NotificationLocalStorage extends SqlBaseScopeImpl implements NotificationStore.LocalStorage {
 
-    final JsonParser jsonParser;
-    final AsyncSession asyncSession;
+    private final JsonParser jsonParser;
+    private final AsyncSession asyncSession;
 
-    final User user;
 
-    public NotificationLocalStorage(DaoSession daoSession, User user) {
+    public NotificationLocalStorage(DaoSession daoSession) {
         super(daoSession);
         jsonParser = new JsonParser();
         asyncSession = getDaoSession().getNotificationGDDao().getSession().startAsyncSession();
-        this.user = user;
     }
 
     @Override
