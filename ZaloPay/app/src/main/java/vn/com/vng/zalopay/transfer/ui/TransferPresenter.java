@@ -319,6 +319,10 @@ public class TransferPresenter extends BaseUserPresenter implements TransferMone
                 return;
             }
 
+            if (TextUtils.isEmpty(mTransaction.getDisplayName())
+                    && TextUtils.isEmpty(mTransaction.getZaloPayName())) {
+                return;
+            }
             mTransferRepository.append(mTransaction,
                     Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString()))
                     .subscribeOn(Schedulers.io())
