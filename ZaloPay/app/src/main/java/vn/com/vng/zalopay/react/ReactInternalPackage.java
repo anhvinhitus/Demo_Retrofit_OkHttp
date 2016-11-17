@@ -25,6 +25,8 @@ import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.RedPacketNativeModule;
+import vn.com.vng.zalopay.react.widget.icon.ReactIconTextViewManager;
+import vn.com.vng.zalopay.react.widget.input.ReactInputTextViewManager;
 
 import com.zalopay.apploader.zpmodal.ReactModalHostManager;
 
@@ -93,6 +95,8 @@ public class ReactInternalPackage implements ReactPackage {
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         List<ViewManager> viewManagers = new ArrayList<>();
         viewManagers.add(new ReactModalHostManager(reactContext, mReactNativeHostable));
+        viewManagers.add(new ReactInputTextViewManager());
+        viewManagers.add(new ReactIconTextViewManager());
         return viewManagers;
     }
 }

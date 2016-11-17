@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -50,6 +51,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private final User mUser;
+    private Navigator mNavigator;
 
     ZaloPayNativeModule(ReactApplicationContext reactContext,
                         User user,
@@ -287,4 +289,10 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         return map;
     }
 
+    @ReactMethod
+    public void showNoInternetConnection() {
+        if (getCurrentActivity() != null) {
+            mNavigator.startTutorialConnectInternetActivity(getCurrentActivity());
+        }
+    }
 }
