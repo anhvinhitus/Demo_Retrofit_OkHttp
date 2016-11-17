@@ -39,6 +39,9 @@ public class NotificationData extends Event {
     @SerializedName("destuserid")
     public String destuserid;
 
+    @SerializedName("area")
+    public int area;
+
     @Expose(deserialize = false, serialize = false)
     public int notificationstate;
 

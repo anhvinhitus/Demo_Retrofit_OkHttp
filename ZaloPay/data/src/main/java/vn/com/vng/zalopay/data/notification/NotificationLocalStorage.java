@@ -124,6 +124,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         Timber.d("put embeddata [%s] notification state [%s]  ", embeddata, notificationEntity.notificationstate);
 
         _notification.setEmbeddata(embeddata);
+        _notification.setArea(notificationEntity.area);
         _notification.setUserid(notificationEntity.getUserid());
         _notification.setTransid(notificationEntity.getTransid());
         _notification.setNotificationstate(notificationEntity.notificationstate);
@@ -171,6 +172,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         _notification.setUserid(notificationGD.getUserid());
         _notification.setTransid(notificationGD.getTransid());
+        _notification.area = notificationGD.getArea() == null ? 0 : notificationGD.getArea();
         _notification.setNotificationState(notificationGD.getNotificationstate());
 
         return _notification;

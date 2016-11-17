@@ -177,28 +177,19 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         }
 
         WritableMap item = Arguments.createMap();
-        item.putBoolean("unread", !entity.isRead());
-
-        item.putString("message", entity.message);
-        item.putDouble("timestamp", entity.timestamp);
-
-        item.putInt("appid", entity.appid);
-        item.putString("destuserid", entity.destuserid);
-
-        item.putString("packageid", String.valueOf(entity.getPackageid()));
-        item.putString("bundleid", String.valueOf(entity.getBundleid()));
-        item.putString("avatarurl", entity.getAvatar());
-        item.putString("name", entity.getName());
-        item.putString("liximessage", entity.getLiximessage());
-
-        int transtype = entity.transtype;
-        int notificationtype = entity.notificationtype;
-
-        item.putString("title", "");
-        item.putInt("transtype", transtype);
-        item.putInt("notificationtype", notificationtype);
         item.putDouble("transid", entity.getTransid());
-
+        item.putInt("appid", entity.appid);
+        item.putDouble("timestamp", entity.timestamp);
+        item.putString("message", entity.message);
+        if (entity.embeddata != null && entity.embeddata.object != null) {
+            item.putString("embeddata", entity.embeddata.object.toString());
+        }
+        item.putInt("transtype", entity.transtype);
+        item.putInt("notificationtype", entity.notificationtype);
+        item.putString("userid", entity.userid);
+        item.putString("destuserid", entity.destuserid);
+        item.putInt("area", entity.area);
+        item.putBoolean("unread", !entity.isRead());
         item.putString("notificationid", String.valueOf(entity.notificationId));
         return item;
     }
