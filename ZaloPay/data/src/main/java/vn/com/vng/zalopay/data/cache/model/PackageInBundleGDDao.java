@@ -36,7 +36,7 @@ public class PackageInBundleGDDao extends AbstractDao<PackageInBundleGD, Long> {
         public final static Property Amount = new Property(7, Long.class, "amount", false, "AMOUNT");
         public final static Property SendMessage = new Property(8, String.class, "sendMessage", false, "SEND_MESSAGE");
         public final static Property IsLuckiest = new Property(9, Integer.class, "isLuckiest", false, "IS_LUCKIEST");
-    }
+    };
 
     private Query<PackageInBundleGD> sentBundleGD_SentPackagesQuery;
     private Query<PackageInBundleGD> receivePackageGD_ReceivePackagesQuery;

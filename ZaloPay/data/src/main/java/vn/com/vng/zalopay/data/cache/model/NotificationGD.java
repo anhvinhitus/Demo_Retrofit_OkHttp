@@ -13,6 +13,7 @@ public class NotificationGD {
     private String message;
     private String userid;
     private String destuserid;
+    private Integer area;
     private Integer notificationstate;
     private Integer notificationtype;
     private Long mtaid;
@@ -26,7 +27,7 @@ public class NotificationGD {
         this.id = id;
     }
 
-    public NotificationGD(Long id, Long transid, Integer appid, Long timestamp, String message, String userid, String destuserid, Integer notificationstate, Integer notificationtype, Long mtaid, Long mtuid, String embeddata) {
+    public NotificationGD(Long id, Long transid, Integer appid, Long timestamp, String message, String userid, String destuserid, Integer area, Integer notificationstate, Integer notificationtype, Long mtaid, Long mtuid, String embeddata) {
         this.id = id;
         this.transid = transid;
         this.appid = appid;
@@ -34,6 +35,7 @@ public class NotificationGD {
         this.message = message;
         this.userid = userid;
         this.destuserid = destuserid;
+        this.area = area;
         this.notificationstate = notificationstate;
         this.notificationtype = notificationtype;
         this.mtaid = mtaid;
@@ -95,6 +97,14 @@ public class NotificationGD {
 
     public void setDestuserid(String destuserid) {
         this.destuserid = destuserid;
+    }
+
+    public Integer getArea() {
+        return area;
+    }
+
+    public void setArea(Integer area) {
+        this.area = area;
     }
 
     public Integer getNotificationstate() {

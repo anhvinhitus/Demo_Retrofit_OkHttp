@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 44;
+    private static final int APP_DB_VERSION = 45;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -24,7 +24,7 @@ public class GreenDaoGenerator {
         addNotification(appSchema);
         addRedPacket(appSchema);
         addMerchantUser(appSchema);
-        
+
         new DaoGenerator().generateAll(appSchema, "./data/src/main/java");
     }
 
@@ -227,6 +227,7 @@ public class GreenDaoGenerator {
         notificationGD.addStringProperty("message");
         notificationGD.addStringProperty("userid");
         notificationGD.addStringProperty("destuserid");
+        notificationGD.addIntProperty("area");
         notificationGD.addIntProperty("notificationstate");
         notificationGD.addIntProperty("notificationtype");
         Property mtaid = notificationGD.addLongProperty("mtaid").getProperty();
