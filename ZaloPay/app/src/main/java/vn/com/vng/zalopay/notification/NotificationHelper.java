@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -43,6 +44,8 @@ import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
+import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -60,6 +63,7 @@ public class NotificationHelper {
     private final BalanceStore.Repository mBalanceRepository;
     private final User mUser;
     private final EventBus mEventBus;
+    private final UserConfig mUserConfig;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
@@ -70,7 +74,7 @@ public class NotificationHelper {
                               RedPacketStore.Repository redPacketRepository,
                               TransactionStore.Repository transactionRepository,
                               BalanceStore.Repository balanceRepository,
-                              EventBus eventBus
+                              EventBus eventBus, UserConfig userConfig
     ) {
         Timber.d("Create new instance of NotificationHelper");
         this.mNotifyRepository = notifyRepository;
@@ -81,6 +85,7 @@ public class NotificationHelper {
         this.mTransactionRepository = transactionRepository;
         this.mBalanceRepository = balanceRepository;
         this.mEventBus = eventBus;
+        this.mUserConfig = userConfig;
     }
 
     @Override
@@ -134,10 +139,10 @@ public class NotificationHelper {
 
         if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
             updateProfilePermission(notify);
-            AndroidApplication.instance().getAppComponent().userConfig().setWaitingApproveProfileLevel3(false);
+            mUserConfig.setWaitingApproveProfileLevel3(false);
             refreshGatewayInfo();
         } else if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_FAILED) {
-            AndroidApplication.instance().getAppComponent().userConfig().setWaitingApproveProfileLevel3(false);
+            mUserConfig.setWaitingApproveProfileLevel3(false);
         } else if (notificationType == NotificationType.SEND_RED_PACKET) {
             extractRedPacketFromNotification(notify);
         } else if (notificationType == NotificationType.RETRY_TRANSACTION) {
@@ -156,6 +161,8 @@ public class NotificationHelper {
             refreshGatewayInfo();
         } else if (notificationType == NotificationType.LINK_CARD_EXPIRED) {
             removeLinkCard(notify);
+        } else if (notificationType == NotificationType.MERCHANT_BILL) {
+            paymentOrderFromNotify(notify);
         }
 
         if (!skipStorage) {
@@ -237,12 +244,24 @@ public class NotificationHelper {
             first6cardno = embeddata.get("first6cardno").getAsInt();
         }
 
+        Timber.d("Remove link card last4cardno [%s] first6cardno [%s]", last4cardno, first6cardno);
         if (last4cardno <= 0 || first6cardno <= 0) {
             return;
         }
 
-        //remove card
-        
+        ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
+        params.accessToken = mUser.accesstoken;
+        params.userID = mUser.zaloPayId;
+        DMappedCard mapCard = new DMappedCard();
+        mapCard.cardname = "";
+        mapCard.first6cardno = String.valueOf(first6cardno);
+        mapCard.last4cardno = String.valueOf(last4cardno);
+        params.mapCard = mapCard;
+        CShareData.getInstance().removeCardOnCache(params);
+    }
+
+    private void paymentOrderFromNotify(NotificationData notify) {
+        Timber.d("paymentOrderFromNotify %s", notify);
     }
 
     private void updateTransactionStatus(NotificationData notify) {

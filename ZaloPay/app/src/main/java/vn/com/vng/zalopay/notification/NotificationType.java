@@ -28,6 +28,7 @@ public class NotificationType {
     public static final int RECOVERY_MONEY = 10;
     public static final int MERCHANT_TRANSFER = 11;
     public static final int LINK_CARD_EXPIRED = 112;
+    public static final int MERCHANT_BILL = 113; //Thanh toán đơn hàng
 
     static boolean isTransactionNotification(int notificationType) {
         return notificationType == ORDER_PAYMENT ||
