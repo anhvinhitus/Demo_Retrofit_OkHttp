@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="rect_scan_size">280dp</dimen>
+    <dimen name="margin_top_title_qr_code">-235dp</dimen>
+    <dimen name="margin_top_label_qr_code">-215dp</dimen>
+</resources>

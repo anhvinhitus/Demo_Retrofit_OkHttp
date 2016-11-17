@@ -69,5 +69,7 @@
 
     <dimen name="ic_partcipated_bank_width">108dp</dimen>
 
-    <dimen name="rect_scan_size">250dp</dimen>
+    <dimen name="rect_scan_size">230dp</dimen>
+    <dimen name="margin_top_title_qr_code">-200dp</dimen>
+    <dimen name="margin_top_label_qr_code">-180dp</dimen>
 </resources>
