@@ -18,6 +18,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.squareup.leakcanary.LeakCanary;
 import com.zalopay.apploader.logging.ReactNativeAppLoaderLogger;
+import com.zalopay.ui.widget.util.FontHelper;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import io.fabric.sdk.android.Fabric;
@@ -106,6 +107,7 @@ public class AndroidApplication extends Application {
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
         ZPAnalytics.trackEvent(ZPEvents.APP_LAUNCH);
 
+        FontHelper.init(getAssets());
     }
 
     private void initPaymentSdk() {
