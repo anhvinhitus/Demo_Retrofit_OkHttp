@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,7 +120,8 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
         public void bindView(final BankCard bankCard) {
             Timber.d("bindView bankCard.type:%s", bankCard.type);
             bindBankCard(mRoot, imgLogo, bankCard, true);
-            mCardNumber.setText(BankCardUtil.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno));
+            String bankCardNumber = BankCardUtil.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno);
+            mCardNumber.setText(Html.fromHtml(bankCardNumber));
         }
     }
 

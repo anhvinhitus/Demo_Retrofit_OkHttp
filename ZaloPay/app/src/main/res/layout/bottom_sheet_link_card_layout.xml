@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,7 +32,7 @@
             android:layout_marginTop="18dp"
             android:src="@drawable/ic_visa" />
 
-        <TextView
+        <com.zalopay.ui.widget.textview.TextViewWithFont
             android:id="@+id/tv_num_acc"
             style="@style/TextView.Default"
             android:layout_width="wrap_content"
@@ -43,9 +44,10 @@
             android:shadowDy="4"
             android:shadowRadius="4"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize.large.l"
+            android:textSize="@dimen/textsize.card.number"
             android:textStyle="normal"
-            tools:text="*** 0014" />
+            tools:text="*** 0014"
+            app:typefaceAsset="ocr-a-tribute" />
     </FrameLayout>
 
     <LinearLayout

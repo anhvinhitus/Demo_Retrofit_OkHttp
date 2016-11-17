@@ -54,7 +54,7 @@
         android:shadowDy="4"
         android:shadowRadius="4"
         android:textColor="@color/white"
-        android:textSize="@dimen/textsize.normal"
+        android:textSize="@dimen/textsize.card.number"
         android:textStyle="normal"
         app:typefaceAsset="ocr-a-tribute"
         tools:text="*** 0014"/>
