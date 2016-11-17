@@ -68,4 +68,6 @@
     <dimen name="separate_stroke">0.5dp</dimen>
 
     <dimen name="ic_partcipated_bank_width">108dp</dimen>
+
+    <dimen name="rect_scan_size">250dp</dimen>
 </resources>

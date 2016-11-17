@@ -105,7 +105,7 @@
     <string name="title.activity.tutorial.network.connection">Hướng dẫn kết nối mạng</string>
     <!--Activity lable END-->
 
-    <string name="label_qr_to_pay">Quét mã QR để thanh toán</string>
+    <string name="label_qr_to_pay">Hướng camera vào mã QR để thanh toán</string>
     <string name="label_invitation_code">Nhập mã kích hoạt ứng dụng.\nĐể có mã kích hoạt, liên hệ hotro@zalopay.vn</string>
 
     <!--Left Menu lable START-->

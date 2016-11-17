@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.scanners.qrcode;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -77,6 +78,7 @@ abstract class AbsQrScanFragment extends BaseFragment implements CameraPreview.S
         barcodeScannerView.decodeContinuous(callback);
         barcodeScannerView.getBarcodeView().addStateListener(this);
         getViewfinder().stopScanLine();
+        getViewfinder().setMaskColor(Color.parseColor("#76000000"));
     }
 
     protected CustomViewfinderView getViewfinder() {

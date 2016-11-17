@@ -3,29 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- <com.journeyapps.barcodescanner.BarcodeView
-         android:id="@+id/zxing_barcode_surface"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent" />
-
-     <com.journeyapps.barcodescanner.ViewfinderView
-         android:id="@+id/zxing_viewfinder_view"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         app:zxing_possible_result_points="@color/yellow"
-         app:zxing_result_view="@color/separate.login"
-         app:zxing_viewfinder_mask="@color/red" />
-
- -->
-
-
     <com.journeyapps.barcodescanner.BarcodeView
         android:id="@+id/zxing_barcode_surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:zxing_framing_rect_height="@dimen/rect_scan_size"
         app:zxing_framing_rect_width="@dimen/rect_scan_size" />
-
 
     <vn.com.vng.zalopay.qrcode.CustomViewfinderView
         android:id="@+id/zxing_viewfinder_view"

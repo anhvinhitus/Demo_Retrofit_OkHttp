@@ -14,7 +14,7 @@
     <TextView
         android:id="@+id/tvErrorMessage"
         style="@style/TextView.Title"
-        android:layout_width="210dp"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="40dp"
@@ -22,15 +22,24 @@
         android:singleLine="false"
         android:textColor="@color/white" />
 
+    <TextView
+        style="@style/TextView.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="-205dp"
+        android:text="@string/label_qr_to_pay"
+        android:textColor="@color/white" />
 
     <TextView
         style="@style/TextView.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="100dp"
-        android:text="@string/label_qr_to_pay"
-        android:textColor="@color/white" />
+        android:layout_marginTop="-225dp"
+        android:text="@string/scan.qr.code"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
 
 </FrameLayout>
 

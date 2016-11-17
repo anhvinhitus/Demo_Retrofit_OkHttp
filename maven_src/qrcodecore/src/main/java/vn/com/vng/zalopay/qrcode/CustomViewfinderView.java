@@ -107,4 +107,7 @@ public class CustomViewfinderView extends ViewfinderView {
         isEnableScanLine = false;
     }
 
+    public void setMaskColor(int mMaskColor) {
+        this.mMaskColor = mMaskColor;
+    }
 }
