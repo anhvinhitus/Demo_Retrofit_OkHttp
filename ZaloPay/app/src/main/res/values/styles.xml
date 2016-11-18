@@ -199,10 +199,10 @@
         <item name="zlp_checkCharactersCountAtBeginning">false</item>
         <item name="zlp_clearButton">true</item>
         <item name="zlp_floatingLabel">highlight</item>
-        <item name="android:maxLength">1</item>
         <item name="zlp_paddingLeftLine">0dp</item>
         <item name="zlp_textColorHint">@color/hint</item>
         <item name="zlp_underlineColor">@color/separate</item>
+        <item name="android:maxLines">1</item>
         <item name="zlp_validateOnFocusLost">true</item>
         <item name="android:inputType">numberDecimal</item>
         <item name="android:textSize">15sp</item>
