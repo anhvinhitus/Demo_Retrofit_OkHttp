@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.view.View;
 
@@ -26,12 +25,13 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 
 /**
  * Created by AnhHieu on 7/1/16.
+ * *
  */
-public abstract class AbsPickerImageFragment extends BaseFragment {
+public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
 
     private static final String AUTHORITY = "vn.com.vng.zalopay.provider";
 
@@ -67,7 +67,20 @@ public abstract class AbsPickerImageFragment extends BaseFragment {
         return photoFile;
     }
 
+    protected boolean isPermissionReadStorageAndRequest() {
+        return isPermissionGrantedAndRequest(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                Constants.Permission.REQUEST_READ_STORAGE);
+    }
+
+    protected boolean isPermissionCameraAndRequest() {
+        return isPermissionGrantedAndRequest(new String[]{Manifest.permission.CAMERA},
+                Constants.Permission.REQUEST_CAMERA);
+    }
+
     protected void startPickImage(int requestCode) {
+        if (!isPermissionReadStorageAndRequest()) {
+            return;
+        }
         try {
             Intent i = new Intent(
                     Intent.ACTION_PICK,
@@ -85,52 +98,39 @@ public abstract class AbsPickerImageFragment extends BaseFragment {
     protected void startCaptureImage(int requestCode, String name) {
         mRequestCode = requestCode;
         mImageName = name;
-        if (checkAndRequestPermission()) {
+        if (!isPermissionCameraAndRequest()) {
+            return;
+        }
+        try {
+            Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Uri contentUri = getCaptureImageOutputUri(name, true);
+            Timber.d("startCaptureImage: capture uri %s", contentUri.toString());
 
-            try {
-                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                Uri contentUri = getCaptureImageOutputUri(name, true);
-                Timber.d("startCaptureImage: capture uri %s", contentUri.toString());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            } else {
+                List<ResolveInfo> resInfoList =
+                        getContext().getPackageManager()
+                                .queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                } else {
-                    List<ResolveInfo> resInfoList =
-                            getContext().getPackageManager()
-                                    .queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
-
-                    for (ResolveInfo resolveInfo : resInfoList) {
-                        String packageName = resolveInfo.activityInfo.packageName;
-                        getContext().grantUriPermission(packageName, contentUri,
-                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
-                                        Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    }
+                for (ResolveInfo resolveInfo : resInfoList) {
+                    String packageName = resolveInfo.activityInfo.packageName;
+                    getContext().grantUriPermission(packageName, contentUri,
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
+                                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
+            }
 
 //            i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 //            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //            i.setClipData(ClipData.newRawUri(null, contentUri));
 
-                i.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+            i.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
 
-                startActivityForResult(i, requestCode);
-            } catch (Exception ex) {
-                Timber.w(ex, "startCaptureImage");
-            }
+            startActivityForResult(i, requestCode);
+        } catch (Exception ex) {
+            Timber.w(ex, "startCaptureImage");
         }
-
-    }
-
-    public boolean checkAndRequestPermission() {
-        boolean hasPermission = true;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                hasPermission = false;
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, Constants.Permission.REQUEST_CAMERA);
-            }
-        }
-        return hasPermission;
     }
 
     @Override

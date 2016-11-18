@@ -82,6 +82,7 @@ public interface Constants {
         int REQUEST_CAMERA = 100;
         int REQUEST_READ_SMS = 101;
         int REQUEST_READ_CONTACT = ZContactsModule.REQUEST_READ_CONTACT;
+        int REQUEST_READ_STORAGE = 103;
     }
 
     interface MoneyTransfer {
