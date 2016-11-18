@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="Mặt trước CMND"
+                android:text="@string/lbl.identify.front"
                 android:textSize="14dp" />
 
             <ImageView
@@ -96,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="Mặt sau CMND"
+                android:text="@string/lbl.identify.back"
                 android:textSize="14dp" />
 
             <ImageView
@@ -123,7 +123,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:singleLine="false"
-            android:text="Hãy đăng ảnh của bạn để hoàn tất thủ tục xác minh"
+			android:text="@string/lbl.recommend.upload.avatar"
             android:textSize="14dp" />
 
         <View

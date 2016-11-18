@@ -276,9 +276,12 @@
     <string name="confirm">Xác nhận</string>
     <string name="slogan">Thanh toán trong <font size='18'>2</font> giây</string>
 
-    <string name="lbl.update.profile.3.page.2">Hãy cung cấp ảnh CMND/Hộ chiếu của bạn để giao dịch được thực hiện theo luật của ngân hàng</string>
+	<string name="lbl.identify.front">Mặt trước</string>
+	<string name="lbl.identify.back">Mặt sau</string>
+    <string name="lbl.update.profile.3.page.2">Cung cấp ảnh CMND/Hộ chiếu của bạn để giao dịch được thực hiện theo luật ngân hàng</string>
     <string name="lbl.update.profile.3.page.1">Nhập thông tin bên dưới để giao dịch và thanh toán được an toàn</string>
     <string name="lbl.nfc.fragment">Đặt điện thoại của bạn\nlên máy giao dịch để thanh toán</string>
+	<string name="lbl.recommend.upload.avatar">Đăng ảnh của bạn để hoàn tất thủ tục xác minh</string>
 
     <!-- Link CARDS START-->
     <string name="intro.title.step1">BƯỚC 1</string>
@@ -339,11 +342,11 @@
     <string name="sacombank_bank">Sacombank</string>
     <string name="alert.need.update.level.2">Vui lòng cập nhật số điện thoại trước.</string>
 
-    <string name="miss_browser">Vui lòng kiểm tra lại trình duyệt web trên thiết bị của bạn!</string>
-    <string name="miss_playstore">Vui lòng kiểm tra lại google play store trên thiết bị của bạn!</string>
+    <string name="miss_browser">Vui lòng kiểm tra lại trình duyệt web trên thiết bị của bạn</string>
+    <string name="miss_playstore">Vui lòng kiểm tra lại google play store trên thiết bị của bạn</string>
     <string name="new_version">Phiên bản mới</string>
     <string name="need_update_to_use">Cần nâng cấp phiên bản Zalo Pay mới nhất để tiếp tục sử dụng ứng dụng</string>
-    <string name="recommend_update_to_use">Ứng dụng Zalo Pay đã có phiên bản mới. Hãy cập nhật để trải nghiệm những tính năng mới nhất!</string>
+    <string name="recommend_update_to_use">Ứng dụng Zalo Pay đã có phiên bản mới. Hãy cập nhật để trải nghiệm những tính năng mới nhất</string>
     <string name="view.detail">Xem chi tiết</string>
 
     <string name="update_to_use">Nâng cấp phiên bản Zalo Pay mới nhất để sử dụng tính năng này.</string>
@@ -358,9 +361,9 @@
 
     <!--WebView Resource Start-->
     <string name="appgame_alert_input_error">Dữ liệu giao dịch không hợp lệ</string>
-    <string name="appgame_alert_error_start_channel">Không thể khởi tạo cổng giao dịch!</string>
+    <string name="appgame_alert_error_start_channel">Không thể khởi tạo cổng giao dịch</string>
     <string name="appgame_waiting_loading">Đang tải trang.\nBạn có muốn tiếp tục đợi?</string>
-    <string name="appgame_error_loading">Tải trang thất bại.Vui lòng thử lại sau ít phút!</string>
+    <string name="appgame_error_loading">Tải trang thất bại.Vui lòng thử lại sau ít phút</string>
     <string name="load_data_error">Không tải được nội dung</string>
     <string name="delete">Xoá</string>
     <!--WebView Resource End-->
