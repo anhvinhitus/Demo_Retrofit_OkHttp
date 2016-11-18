@@ -134,22 +134,21 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/layoutAccountName"
+            android:id="@+id/layoutPhone"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingRight="@dimen/spacing.medium">
-
             <TextView
                 style="@style/TextView.Item.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/account_name" />
+                android:text="@string/hint_phone" />
 
             <TextView
-                android:id="@+id/tvAccountName"
+                android:id="@+id/tvPhone"
                 style="@style/TextView.Profile.Edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -166,22 +165,21 @@
             android:background="@color/separate" />
 
         <LinearLayout
-            android:id="@+id/layoutPhone"
+            android:id="@+id/layoutAccountName"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingRight="@dimen/spacing.medium">
-
             <TextView
                 style="@style/TextView.Item.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_phone" />
+                android:text="@string/account_name" />
 
             <TextView
-                android:id="@+id/tvPhone"
+                android:id="@+id/tvAccountName"
                 style="@style/TextView.Profile.Edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
