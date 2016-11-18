@@ -576,8 +576,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void setProfileInfo(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg) {
         Timber.d("setProfileInfo: foregroundImg %s backgroundImg %s avatarImg ", foregroundImg, backgroundImg, avatarImg);
 
-        setEmail(email);
-        setIdentity(identity);
+        if (!TextUtils.isEmpty(email)) {
+            setEmail(email);
+        }
+        if (!TextUtils.isEmpty(identity)) {
+            setIdentity(identity);
+        }
 
         mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
 
