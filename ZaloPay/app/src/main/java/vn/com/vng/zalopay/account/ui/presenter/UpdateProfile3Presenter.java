@@ -1,45 +1,49 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
+import static vn.com.vng.zalopay.utils.PhotoUtil.resizeImageByteArray;
+
 /**
  * Created by AnhHieu on 7/1/16.
- *
+ * *
  */
 public class UpdateProfile3Presenter extends BaseUserPresenter implements IPresenter<IUpdateProfile3View> {
 
-    IUpdateProfile3View mView;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private IUpdateProfile3View mView;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private AccountStore.Repository mAccountRepository;
     private Context mApplicationContext;
 
     @Inject
-    public UpdateProfile3Presenter(AccountStore.Repository accountRepository, Context applicationContext) {
+    UpdateProfile3Presenter(AccountStore.Repository accountRepository, Context applicationContext) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
     }
@@ -74,41 +78,53 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
                                final Uri avatarPath) {
 
         mView.showLoading();
-        AndroidApplication.instance().getAppComponent().threadExecutor()
-                .execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        update(identityNumber, email, fimgPath, bimgPath, avatarPath);
-                    }
-                });
+
+        update(identityNumber, email, fimgPath, bimgPath, avatarPath);
     }
 
+    private Observable<byte[]> resizeImage(final Uri imgPath) {
+        Timber.d("resizeImage path[%s]", imgPath);
+        return ObservableHelper.makeObservable(new Callable<byte[]>() {
+            @Override
+            public byte[] call() throws Exception {
+                return resizeImageByteArray(mApplicationContext, imgPath);
+            }
+        }).flatMap(new Func1<byte[], Observable<byte[]>>() {
+            @Override
+            public Observable<byte[]> call(byte[] bytes) {
+                if (bytes == null) {
+                    return Observable.error(new NullPointerException());
+                } else {
+                    return Observable.just(bytes);
+                }
+            }
+        });
+    }
 
-    private void update(String identityNumber,
-                        String email,
-                        Uri fimgPath,
-                        Uri bimgPath,
-                        Uri avatarPath) {
+    private void update(final String identityNumber,
+                        final String email,
+                        final Uri fimgPath,
+                        final Uri bimgPath,
+                        final Uri avatarPath) {
+        Observable<byte[]> obFimgBytes = resizeImage(fimgPath);
+        Observable<byte[]> obBimgBytes = resizeImage(bimgPath);
+        Observable<byte[]> obAvatarBytes = resizeImage(avatarPath);
 
-        byte[] _fimgBytes = resizeImageByteArray(fimgPath);
-        byte[] _bimgBytes = resizeImageByteArray(bimgPath);
-        byte[] _avatarBytes = resizeImageByteArray(avatarPath);
-
-        if (_fimgBytes != null && _bimgBytes != null && _avatarBytes != null) {
-            Timber.d(" _fimg %s _bimg %s avatar %s", _fimgBytes.length, _bimgBytes.length, _avatarBytes.length);
-            Subscription subscription = mAccountRepository.updateUserProfileLevel3(identityNumber, email,
-                    _fimgBytes,
-                    _bimgBytes,
-                    _avatarBytes)
-
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new UpdateSubscriber());
-            compositeSubscription.add(subscription);
-        } else {
-            Observable.just(Boolean.FALSE)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new UpdateSubscriber());
-        }
+        Observable.zip(obFimgBytes, obBimgBytes, obAvatarBytes, new Func3<byte[], byte[], byte[], List<byte[]>>() {
+            @Override
+            public List<byte[]> call(byte[] _fimgBytes, byte[] _bimgBytes, byte[] _avatarBytes) {
+                return Arrays.asList(_fimgBytes, _bimgBytes, _avatarBytes);
+            }
+        }).flatMap(new Func1<List<byte[]>, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(List<byte[]> bytes) {
+                return mAccountRepository.updateUserProfileLevel3(identityNumber, email,
+                        bytes.get(0),
+                        bytes.get(1),
+                        bytes.get(2));
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new UpdateSubscriber());
     }
 
     private void onUpdateSuccess() {
@@ -130,7 +146,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
     }
 
     private final class UpdateSubscriber extends DefaultSubscriber<Boolean> {
-        public UpdateSubscriber() {
+        UpdateSubscriber() {
         }
 
         @Override
@@ -152,110 +168,6 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
             UpdateProfile3Presenter.this.onUpdateError(e);
         }
     }
-
-/*
-
-    protected int byteSizeOf(Bitmap data) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
-            return data.getRowBytes() * data.getHeight();
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            return data.getByteCount();
-        } else {
-            return data.getAllocationByteCount();
-        }
-    }
-
-
-    protected byte[] bitmap2byteArray(Bitmap b) {
-        int bytes = byteSizeOf(b);
-        //or we can calculate bytes this way. Use a different value than 4 if you don't use 32bit images.
-        //int bytes = b.getWidth()*b.getHeight()*4;
-
-        ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
-        b.copyPixelsToBuffer(buffer); //Move the byte data to the buffer
-
-        //  Timber.d("bytes %s", bytes);
-
-        byte[] array = buffer.array();
-        return array;
-    }
-
-    private Bitmap resizeImage(Uri uri) throws Exception {
-
-        Bitmap bitmap = Glide.with(mApplicationContext).loadFromMediaStore(uri)
-                .asBitmap()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .fitCenter()
-                .override(480, 480)
-                .fitCenter()
-                .into(480, 480)
-                .get();
-
-        Timber.d("bitmap width %s height %s ", bitmap.getWidth(), bitmap.getHeight());
-        resizeImageByteArray(uri);
-        return bitmap;
-    }
-*/
-
-    private byte[] resizeImageByteArray(Uri uri) {
-        byte[] ret = null;
-        try {
-            ret = Glide.with(mApplicationContext).loadFromMediaStore(uri)
-                    .asBitmap()
-                    .toBytes(Bitmap.CompressFormat.JPEG, 100)
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .fitCenter()
-                    .override(480, 480)
-                    .fitCenter()
-                    .into(480, 480)
-                    .get();
-
-        } catch (Exception ex) {
-            Timber.w(ex, "exception resize");
-        }
-
-        return ret;
-    }
-
-/*    private static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
-        if (maxHeight > 0 && maxWidth > 0) {
-            int width = image.getWidth();
-            int height = image.getHeight();
-            float ratioBitmap = (float) width / (float) height;
-            float ratioMax = (float) maxWidth / (float) maxHeight;
-
-            int finalWidth = maxWidth;
-            int finalHeight = maxHeight;
-            if (ratioMax > 1) {
-                finalWidth = (int) ((float) maxHeight * ratioBitmap);
-            } else {
-                finalHeight = (int) ((float) maxWidth / ratioBitmap);
-            }
-            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
-            return image;
-        } else {
-            return image;
-        }
-    }
-
-    private byte[] getByteArrayFromUri(Uri uri) {
-        byte[] ret = null;
-        Bitmap bitmap = null;
-        try {
-            bitmap = resizeImage(uri);
-            ret = bitmap2byteArray(bitmap);
-        } catch (Exception ex) {
-            Timber.w(ex, "exception resize");
-        } finally {
-            if (bitmap != null) {
-                bitmap.recycle();
-                bitmap = null;
-            }
-        }
-        return ret;
-    }*/
 
     public void saveProfileInfo3(String email, String identity, Uri foregroundImg, Uri backgroundImg, Uri avatarImg) {
 
