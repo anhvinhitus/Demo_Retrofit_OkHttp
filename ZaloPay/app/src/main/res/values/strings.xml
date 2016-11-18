@@ -193,7 +193,7 @@
     <string name="invalid_otp_empty">Bạn chưa nhập OTP</string>
     <string name="invalid_otp">OTP không hợp lệ.</string>
 
-    <string name="pin_title">Tạo mật khẩu để thanh toán bằng số dư tài khoản và thẻ đã liên kết</string>
+    <string name="pin_title">Tạo mật khẩu để thanh toán bằng số dư hoặc thẻ đã liên kết</string>
     <string name="hint_pin">Mật khẩu thanh toán</string>
     <string name="invalid_pin">Nhập vào mật khẩu thanh toán 6 số</string>
     <string name="pin.mismatch">Mật khẩu thanh toán không khớp</string>
