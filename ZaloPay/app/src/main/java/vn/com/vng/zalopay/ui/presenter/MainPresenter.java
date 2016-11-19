@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
@@ -10,6 +12,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -28,7 +31,6 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.data.zfriend.FriendRepository;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -338,7 +340,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
 
-    public void pay(long appId, String zptranstoken) {
+    public void pay(final long appId, String zptranstoken,final boolean isAppToApp) {
         showLoadingView();
         if (paymentWrapper == null) {
             paymentWrapper = new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository, new PaymentWrapper.IViewListener() {
@@ -368,6 +370,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     }
 
                     hideLoadingView();
+
+                    if (isAppToApp && homeView != null) {
+                        responseToApp(homeView.getActivity(), appId, -1, param);
+                    }
                 }
 
                 @Override
@@ -386,6 +392,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                         homeView.showError(mApplicationContext.getString(R.string.exception_no_connection_try_again));
                     }
 
+                    if (isAppToApp && homeView != null) {
+                        responseToApp(homeView.getActivity(), appId, paymentError.value(), PaymentError.getErrorMessage(paymentError));
+                    }
+
                     hideLoadingView();
                 }
 
@@ -394,9 +404,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     Timber.d("onResponseSuccess");
                     hideLoadingView();
 
-                   /* if (homeView != null && homeView.getActivity() != null) {
-                        homeView.getActivity().finish();
-                    }*/
+                    if (isAppToApp && homeView != null) {
+                        responseToApp(homeView.getActivity(), appId, PaymentError.ERR_CODE_SUCCESS.value(),
+                                PaymentError.getErrorMessage(PaymentError.ERR_CODE_SUCCESS));
+                    }
                 }
 
                 @Override
@@ -451,4 +462,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             homeView.hideLoading();
         }
     }
+
+    private void responseToApp(Activity activity, long appId, int returnCode, String returnMessage) {
+        String responseFormat = "zp-redirect-%s://result?returncode=%s&returnmessage=%s";
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setData(Uri.parse(String.format(Locale.getDefault(), responseFormat, appId, returnCode, returnMessage)));
+        activity.startActivity(intent);
+    }
+
 }

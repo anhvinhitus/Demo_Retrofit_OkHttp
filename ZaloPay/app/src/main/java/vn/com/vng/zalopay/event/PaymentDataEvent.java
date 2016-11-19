@@ -6,9 +6,11 @@ package vn.com.vng.zalopay.event;
 public class PaymentDataEvent {
     public long appId;
     public String zptranstoken;
+    public boolean isAppToApp;
 
-    public PaymentDataEvent(long appId, String zptranstoken) {
+    public PaymentDataEvent(long appId, String zptranstoken, boolean isAppToApp) {
         this.appId = appId;
         this.zptranstoken = zptranstoken;
+        this.isAppToApp = isAppToApp;
     }
 }

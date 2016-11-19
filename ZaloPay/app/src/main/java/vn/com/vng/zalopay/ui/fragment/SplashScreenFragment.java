@@ -129,23 +129,30 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
             String host = data.getHost();
 
             if (scheme.equalsIgnoreCase("zalopay-1") && host.equalsIgnoreCase("post")) {
-                String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
-                String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
-
-                if (TextUtils.isEmpty(appid)) {
-                    return;
-                }
-                if (!TextUtils.isDigitsOnly(appid)) {
-                    return;
-                }
-
-                if (TextUtils.isEmpty(zptranstoken)) {
-                    return;
-                }
-
-                mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken));
-                Timber.d("post sticky payment");
+                pay(data, false);
+            } else if (scheme.equalsIgnoreCase("zalopay") && host.equalsIgnoreCase("pay")) {
+                pay(data, true);
             }
         }
+    }
+
+    private void pay(Uri data, boolean isApptoApp) {
+        String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
+        String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
+
+        if (TextUtils.isEmpty(appid)) {
+            return;
+        }
+
+        if (!TextUtils.isDigitsOnly(appid)) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(zptranstoken)) {
+            return;
+        }
+
+        mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken, isApptoApp));
+        Timber.d("post sticky payment");
     }
 }
