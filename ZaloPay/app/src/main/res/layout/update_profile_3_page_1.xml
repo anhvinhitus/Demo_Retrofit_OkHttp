@@ -51,6 +51,7 @@
                     android:ellipsize="end"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
+                    android:maxLength="@integer/max_length_email"
                     android:maxLines="1"
                     android:minHeight="44dp"
                     android:singleLine="true" />
@@ -81,6 +82,7 @@
                     android:ellipsize="end"
                     android:hint="@string/cmnd_passpost"
                     android:inputType="textCapCharacters"
+                    android:maxLength="@integer/max_length_identify"
                     android:maxLines="1"
                     android:minHeight="44dp"
                     android:singleLine="true"
