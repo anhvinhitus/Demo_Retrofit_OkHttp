@@ -281,7 +281,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onPayWithTransToken(final PaymentDataEvent event) {
-        pay(event.appId, event.zptranstoken);
+        pay(event.appId, event.zptranstoken, event.isAppToApp);
         mEventBus.removeStickyEvent(PaymentDataEvent.class);
     }
 
@@ -340,7 +340,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
 
-    public void pay(final long appId, String zptranstoken,final boolean isAppToApp) {
+    public void pay(final long appId, String zptranstoken, final boolean isAppToApp) {
         showLoadingView();
         if (paymentWrapper == null) {
             paymentWrapper = new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository, new PaymentWrapper.IViewListener() {
