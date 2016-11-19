@@ -118,6 +118,10 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
         }).flatMap(new Func1<List<byte[]>, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(List<byte[]> bytes) {
+                Timber.d("update fimg[%s] bimg[%s] aimg[%s]",
+                        bytes.get(0).length,
+                        bytes.get(1).length,
+                        bytes.get(2).length);
                 return mAccountRepository.updateUserProfileLevel3(identityNumber, email,
                         bytes.get(0),
                         bytes.get(1),

@@ -9,18 +9,11 @@ import android.net.Uri;
 import android.os.Build;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
 import timber.log.Timber;
-
-import static android.media.ExifInterface.ORIENTATION_TRANSPOSE;
 
 /**
  * Created by AnhHieu on 9/19/16.
@@ -32,7 +25,7 @@ public class PhotoUtil {
         return getThumbnail(context, uri, 256);
     }
 
-    public static Bitmap getThumbnail(Context context, Uri uri, int thumbnailSize) throws IOException {
+    private static Bitmap getThumbnail(Context context, Uri uri, int thumbnailSize) throws IOException {
         InputStream input = context.getContentResolver().openInputStream(uri);
         if (input == null) {
             return null;
@@ -47,7 +40,8 @@ public class PhotoUtil {
         if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1))
             return null;
 
-        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
+        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ?
+                onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
 
         double ratio = (originalSize > thumbnailSize) ? (originalSize / thumbnailSize) : 1.0;
 
@@ -155,7 +149,7 @@ public class PhotoUtil {
         Bitmap bitmap = null;
         try {
             bitmap = getThumbnail(context, uri, 384);
-            return bitmap2byteArray(bitmap);
+            return bitmap2BytesWithCompress(bitmap);
         } catch (Exception ex) {
             Timber.w(ex, "reduce image error");
         } finally {
@@ -167,6 +161,7 @@ public class PhotoUtil {
         return null;
     }
 
+    //Note: this function not compress bitmap
     private static byte[] bitmap2byteArray(Bitmap b) {
         int bytes = byteSizeOf(b);
         //or we can calculate bytes this way. Use a different value than 4 if you don't use 32bit images.
@@ -178,6 +173,19 @@ public class PhotoUtil {
         Timber.d("bytes %s", array.length);
         return array;
     }
+
+    private static byte[] bitmap2BytesWithCompress(Bitmap paramBitmap) {
+        if (paramBitmap == null)
+            return null;
+        ByteArrayOutputStream localByteArrayOutputStream = new ByteArrayOutputStream();
+        boolean result = paramBitmap.compress(Bitmap.CompressFormat.JPEG, 100, localByteArrayOutputStream);
+        if (result) {
+            return localByteArrayOutputStream.toByteArray();
+        } else {
+            return null;
+        }
+    }
+
 
     private static int byteSizeOf(Bitmap data) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
