@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -17,7 +16,6 @@ import android.widget.ViewFlipper;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.edittext.ZPEditText;
-import com.zalopay.ui.widget.edittext.ZPEditTextLengthChecker;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,7 +24,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -34,7 +31,6 @@ import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
-import vn.com.vng.zalopay.ui.widget.validate.MinCharactersValidate;
 import vn.com.vng.zalopay.ui.widget.validate.PassportValidate;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.PhotoUtil;

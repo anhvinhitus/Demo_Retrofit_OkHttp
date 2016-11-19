@@ -9,21 +9,21 @@
 
 package com.bottomsheetbehavior;
 
-import javax.annotation.Nullable;
-
-import java.util.Map;
-
 import android.graphics.Color;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
-import com.facebook.react.views.scroll.FpsListener;
-import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
-import com.facebook.react.views.scroll.ScrollEventType;
+import com.facebook.react.uimanager.annotations.ReactProp;
+import com.facebook.react.views.scroll.FpsListener;
 import com.facebook.react.views.scroll.ReactScrollViewCommandHelper;
+import com.facebook.react.views.scroll.ScrollEventType;
 import com.facebook.react.views.view.ReactClippingViewGroupHelper;
+
+import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * Forked from https://github.com/facebook/react-native/blob/v0.35.0/ReactAndroid/src/main/java/com/facebook/react/views/scroll/ReactScrollViewManager.java

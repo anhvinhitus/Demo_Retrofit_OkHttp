@@ -10,8 +10,6 @@ android {
     defaultConfig {
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 2
-        versionName "1.0"
     }
     buildTypes {
         release {

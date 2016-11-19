@@ -12,11 +12,10 @@ package com.bottomsheetbehavior;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.os.SystemClock;
-import com.facebook.react.views.scroll.ScrollEvent;
-import com.facebook.react.views.scroll.ScrollEventType;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
+import com.facebook.react.views.scroll.ScrollEvent;
+import com.facebook.react.views.scroll.ScrollEventType;
 
 /**
  * Helper class that deals with emitting Scroll Events.
