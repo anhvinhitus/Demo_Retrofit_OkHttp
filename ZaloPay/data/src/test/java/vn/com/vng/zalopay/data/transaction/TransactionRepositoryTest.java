@@ -33,7 +33,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         DaoSession daoSession = new DaoMaster(db).newSession();
         TransactionStore.LocalStorage mLocalStorage = new TransactionLocalStorage(daoSession);
 
-        mRepository = new TransactionRepository(mapper, mUser, mLocalStorage, null, EventBus.getDefault(), new RxBus());
+        mRepository = new TransactionRepository(mapper, mUser, mLocalStorage, null, EventBus.getDefault());
     }
 
 
