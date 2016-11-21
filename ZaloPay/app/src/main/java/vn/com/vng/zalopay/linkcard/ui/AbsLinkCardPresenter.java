@@ -135,60 +135,9 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
 //        } else if (!isOpenedIntroActivity()) {
 //            mCardView.startIntroActivityForResult();
         } else {
-            long value = 10000;
-            try {
-                value = CShareData.getInstance().getLinkCardValue();
-            } catch (Exception e) {
-                Timber.w(e, "getLinkCardValue exception [%s]", e.getMessage());
-            }
-            showLoadingView();
-            String description = getContext().getString(R.string.save_card_description);
-            Subscription subscription = zaloPayRepository.createwalletorder(BuildConfig.PAYAPPID, value, ETransactionType.LINK_CARD.toString(), user.zaloPayId, description)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new CreateWalletOrderSubscriber());
-            mCompositeSubscription.add(subscription);
+            paymentWrapper.linkCard();
+            hideLoadingView();
         }
-    }
-
-    private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
-        CreateWalletOrderSubscriber() {
-        }
-
-        @Override
-        public void onNext(Order order) {
-            Timber.d("CreateWalletOrderSubscriber onNext order: [%s]" + order);
-            AbsLinkCardPresenter.this.onCreateWalletOrderSuccess(order);
-        }
-
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-
-            Timber.w(e, "CreateWalletOrderSubscriber onError exception: [%s]" + e);
-            AbsLinkCardPresenter.this.onCreateWalletOrderError(e);
-        }
-    }
-
-    private void onCreateWalletOrderError(Throwable e) {
-        Timber.d("onCreateWalletOrderError exception: [%s]" + e);
-        hideLoadingView();
-        String message = ErrorMessageFactory.create(getContext(), e);
-        showErrorView(message);
-    }
-
-    private void onCreateWalletOrderSuccess(Order order) {
-        Timber.d("onCreateWalletOrderSuccess order: [%s]", order);
-        paymentWrapper.linkCard(order);
-        hideLoadingView();
     }
 
     void setOpenedIntroActivity() {

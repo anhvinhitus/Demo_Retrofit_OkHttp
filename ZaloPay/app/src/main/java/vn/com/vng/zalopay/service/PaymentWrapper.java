@@ -9,6 +9,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
@@ -250,15 +251,8 @@ public class PaymentWrapper {
                 });
     }
 
-    public void linkCard(Order order) {
-        Timber.d("payWithOrder: Start");
-        if (order == null) {
-            Timber.i("payWithOrder: order is invalid");
-            responseListener.onParameterError("order");
-//            showErrorView(mView.getContext().getString(R.string.order_invalid));
-            return;
-        }
-        Timber.d("payWithOrder: Order is valid");
+    public void linkCard() {
+        Timber.d("linkCard Start");
         User user = AndroidApplication.instance().getUserComponent().currentUser();
         if (TextUtils.isEmpty(user.zaloPayId)) {
             Timber.i("payWithOrder: zaloPayId is invalid");
@@ -267,7 +261,9 @@ public class PaymentWrapper {
             return;
         }
         try {
-            ZPWPaymentInfo paymentInfo = transform(order);
+            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+            paymentInfo.appID = BuildConfig.PAYAPPID;
+            paymentInfo.appTime = System.currentTimeMillis();
 
             Timber.d("payWithOrder: ZPWPaymentInfo is ready");
 
