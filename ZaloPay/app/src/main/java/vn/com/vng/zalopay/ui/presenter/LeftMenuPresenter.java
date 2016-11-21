@@ -91,7 +91,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void getTransaction() {
-        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistorySuccessLatest()
+        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistoryLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
@@ -100,11 +100,6 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
                     }
                 });
         compositeSubscription.add(subscriptionSuccess);
-
-        Subscription subscriptionFail = mTransactionRepository.fetchTransactionHistoryFailLatest()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
-        compositeSubscription.add(subscriptionFail);
     }
 
     @Override

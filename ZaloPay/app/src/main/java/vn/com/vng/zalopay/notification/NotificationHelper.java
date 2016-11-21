@@ -159,8 +159,6 @@ public class NotificationHelper {
             skipStorage = true;
         } else if (notificationType == NotificationType.UPDATE_PLATFORMINFO) {
             refreshGatewayInfo();
-        } else if (notificationType == NotificationType.RECOVERY_MONEY) {
-            showAlertNotification(notify, mContext.getString(R.string.recovery_money));
         } else if (notificationType == NotificationType.LINK_CARD_EXPIRED) {
             removeLinkCard(notify);
         } else if (notificationType == NotificationType.MERCHANT_BILL) {
@@ -378,15 +376,10 @@ public class NotificationHelper {
     }
 
     private void updateTransaction() {
-        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistorySuccessLatest()
+        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistoryLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
         compositeSubscription.add(subscriptionSuccess);
-
-        Subscription subscriptionFail = mTransactionRepository.fetchTransactionHistoryFailLatest()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
-        compositeSubscription.add(subscriptionFail);
     }
 
     private void updateBalance() {
