@@ -264,6 +264,7 @@ public class PaymentWrapper {
             ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
             paymentInfo.appID = BuildConfig.PAYAPPID;
             paymentInfo.appTime = System.currentTimeMillis();
+            paymentInfo.userInfo = getUserInfo();
 
             Timber.d("payWithOrder: ZPWPaymentInfo is ready");
 
@@ -293,7 +294,9 @@ public class PaymentWrapper {
         if (paymentInfo == null) {
             return;
         }
-        if (paymentInfo.userInfo == null) {
+        if (paymentInfo.userInfo == null
+                || paymentInfo.userInfo.level < 0
+                || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
             paymentInfo.userInfo = getUserInfo();
         }
         if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
