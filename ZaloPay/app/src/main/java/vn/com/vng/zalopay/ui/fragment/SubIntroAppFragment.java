@@ -1,22 +1,20 @@
-package vn.com.vng.zalopay.linkcard.ui;
+package vn.com.vng.zalopay.ui.fragment;
 
 import android.os.Bundle;
-
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * A simple {@link BaseFragment} subclass.
  * Activities that contain this fragment must implement the
  * to handle interaction events.
- * Use the {@link SubIntroSaveCardFragment#newInstance} factory method to
+ * Use the {@link SubIntroAppFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SubIntroSaveCardFragment extends BaseFragment {
+public class SubIntroAppFragment extends BaseFragment {
     private static final String ARG_INTRO_RESOURCE = "intro_resource";
 
     private int mIntroResource;
 
-    public SubIntroSaveCardFragment() {
+    public SubIntroAppFragment() {
         // Required empty public constructor
     }
 
@@ -25,11 +23,11 @@ public class SubIntroSaveCardFragment extends BaseFragment {
      * this fragment using the provided parameters.
      *
      * @param introStep mIntroResource.
-     * @return A new instance of fragment SubIntroSaveCardFragment.
+     * @return A new instance of fragment SubIntroAppFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SubIntroSaveCardFragment newInstance(int introStep) {
-        SubIntroSaveCardFragment fragment = new SubIntroSaveCardFragment();
+    public static SubIntroAppFragment newInstance(int introStep) {
+        SubIntroAppFragment fragment = new SubIntroAppFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_INTRO_RESOURCE, introStep);
         fragment.setArguments(args);

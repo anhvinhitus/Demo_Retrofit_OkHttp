@@ -10,9 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -122,21 +119,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         showOrHidekLinkCardEmpty();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_intro, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_intro) {
-            startIntroActivity();
-//            navigator.startCardSupportActivity(this);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void initBottomSheet() {
         if (mBottomSheetDialog == null) {
             mBottomSheetDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar);
@@ -223,17 +205,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         super.onDestroy();
     }
 
-    private void startIntroActivity() {
-        mPresenter.setOpenedIntroActivity();
-        navigator.startIntroLinkCardActivity(getContext());
-    }
-
-    @Override
-    public void startIntroActivityForResult() {
-        mPresenter.setOpenedIntroActivity();
-        navigator.startIntroLinkCardForResult(this);
-    }
-
     @Override
     public void setData(List<BankCard> bankCards) {
         mAdapter.setData(bankCards);
@@ -315,10 +286,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.REQUEST_CODE_INTRO) {
-            mPresenter.addLinkCard();
-            return;
-        } else if (requestCode == Constants.REQUEST_CODE_CARD_SUPPORT) {
+        if (requestCode == Constants.REQUEST_CODE_CARD_SUPPORT) {
             if (resultCode == Activity.RESULT_OK) {
                 if (mGoToWithdrawCondition) {
                     getActivity().finish();

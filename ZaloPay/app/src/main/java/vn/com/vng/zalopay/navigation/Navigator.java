@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
+import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
 import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardActivity;
 import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
@@ -49,12 +50,9 @@ import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
-import vn.com.vng.zalopay.linkcard.ui.IntroSaveCardActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
-import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
-import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
@@ -348,16 +346,6 @@ public class Navigator implements INavigator {
         }
         intent.putExtra("launchOptions", options);
         return intent;
-    }
-
-    public void startIntroLinkCardActivity(Context context) {
-        Intent intent = new Intent(context, IntroSaveCardActivity.class);
-        context.startActivity(intent);
-    }
-
-    public void startIntroLinkCardForResult(Fragment fragment) {
-        Intent intent = new Intent(fragment.getContext(), IntroSaveCardActivity.class);
-        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_INTRO);
     }
 
     public void startBalanceManagementActivity(Context context) {

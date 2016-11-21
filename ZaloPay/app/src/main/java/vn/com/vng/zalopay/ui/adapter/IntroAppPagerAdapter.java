@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.List;
 
-import vn.com.vng.zalopay.linkcard.ui.SubIntroSaveCardFragment;
+import vn.com.vng.zalopay.ui.fragment.SubIntroAppFragment;
 
 /**
  * Created by longlv on 9/11/2016.
@@ -23,7 +23,7 @@ public class IntroAppPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return SubIntroSaveCardFragment.newInstance(this.mResources.get(position));
+        return SubIntroAppFragment.newInstance(this.mResources.get(position));
     }
 
     @Override
