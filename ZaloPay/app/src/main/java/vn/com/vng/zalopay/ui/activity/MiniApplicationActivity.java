@@ -7,6 +7,10 @@ import android.text.TextUtils;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.zalopay.apploader.BundleReactConfig;
+import com.zalopay.apploader.MiniApplicationBaseActivity;
+import com.zalopay.apploader.ReactNativeHostable;
+import com.zalopay.apploader.internal.ModuleName;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -14,7 +18,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Arrays;
 import java.util.List;
-
+ 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
@@ -35,23 +39,14 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-
-import com.zalopay.apploader.ReactNativeHostable;
-
-import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
-
-import com.zalopay.apploader.BundleReactConfig;
-
 import vn.com.vng.zalopay.navigation.INavigator;
-
-import com.zalopay.apploader.MiniApplicationBaseActivity;
-import com.zalopay.apploader.internal.ModuleName;
-
 import vn.com.vng.zalopay.react.ReactInternalPackage;
+import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.utils.ToastUtil;
@@ -101,7 +96,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     ReactNativeHostable mReactNativeHostable;
 
     @Inject
-    UserConfig mUserConfig;
+    User mUser;
 
     Bundle mLaunchOptions = new Bundle();
 
@@ -185,6 +180,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         return mLaunchOptions;
     }
 
+
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.asList(
@@ -198,7 +194,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 notificationRepository, redPackageRepository,
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
-                mReactNativeHostable, mUserConfig, appRepository);
+                mReactNativeHostable, appRepository, mUser);
     }
 
     private void createUserComponent() {

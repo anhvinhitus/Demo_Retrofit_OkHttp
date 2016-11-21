@@ -28,7 +28,6 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
@@ -38,6 +37,7 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
@@ -56,7 +56,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 public class RedPacketNativeModule extends ReactContextBaseJavaModule
         implements ActivityEventListener, LifecycleEventListener {
 
-    private UserConfig mUserConfig;
+    private User mUser;
     private RedPacketStore.Repository mRedPackageRepository;
     private FriendStore.Repository mFriendRepository;
     private BalanceStore.Repository mBalanceRepository;
@@ -73,7 +73,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                                  FriendStore.Repository friendRepository,
                                  BalanceStore.Repository balanceRepository,
                                  IRedPacketPayService payService,
-                                 UserConfig userConfig,
+                                 User userConfig,
                                  AlertDialogProvider sweetAlertDialog) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
@@ -81,7 +81,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
         this.mBalanceRepository = balanceRepository;
         this.mPaymentService = payService;
         this.mDialogProvider = sweetAlertDialog;
-        this.mUserConfig = userConfig;
+        this.mUser = userConfig;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -487,8 +487,8 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getCurrentUserInfo(Promise promise) {
         WritableMap writableMap = Arguments.createMap();
-        writableMap.putString("displayname", mUserConfig.getDisPlayName());
-        writableMap.putString("avatar", mUserConfig.getAvatar());
+        writableMap.putString("displayname", mUser.displayName);
+        writableMap.putString("avatar", mUser.avatar);
         Helpers.promiseResolveSuccess(promise, writableMap);
     }
 

@@ -136,7 +136,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
         }
     }
 
-    private void pay(Uri data, boolean isApptoApp) {
+    private void pay(Uri data, boolean isAppToApp) {
         String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
         String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
 
@@ -152,7 +152,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
             return;
         }
 
-        mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken, isApptoApp));
+        mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken, isAppToApp));
         Timber.d("post sticky payment");
     }
 }
