@@ -52,6 +52,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
      */
     @Override
     public void clearUserSession() {
+        eventBus.removeAllStickyEvents();
         eventBus.post(new SignOutEvent());
         //cancel notification
         NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
