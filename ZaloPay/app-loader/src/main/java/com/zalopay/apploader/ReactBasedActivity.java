@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -34,7 +35,7 @@ import timber.log.Timber;
  * Created by huuhoa on 5/16/16.
  * Based activity for hosting react native components
  */
-public abstract class ReactBasedActivity extends Activity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity {
+public abstract class ReactBasedActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity {
     private boolean mReactInstanceError;
 
     public ReactBasedActivity() {
@@ -134,7 +135,7 @@ public abstract class ReactBasedActivity extends Activity implements DefaultHard
      * A subclass may override this method if it needs to use a custom {@link ReactRootView}.
      */
     protected ReactRootView createRootView() {
-        return new ReactRootView(getApplicationContext());
+        return new ReactRootView(this);
     }
 
     @Override
