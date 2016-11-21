@@ -56,12 +56,13 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     ZaloPayNativeModule(ReactApplicationContext reactContext,
                         User user,
                         IPaymentService paymentService,
-                        long appId, NetworkService networkService) {
+                        long appId, NetworkService networkService, Navigator navigator) {
         super(reactContext);
         this.mPaymentService = paymentService;
         this.mAppId = appId;
         this.mNetworkService = networkService;
         this.mUser = user;
+        this.mNavigator = navigator;
 
         getReactApplicationContext().addActivityEventListener(this);
         getReactApplicationContext().addLifecycleEventListener(this);

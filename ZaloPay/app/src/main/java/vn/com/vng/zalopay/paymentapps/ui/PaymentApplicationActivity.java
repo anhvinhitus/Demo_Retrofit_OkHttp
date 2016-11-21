@@ -55,6 +55,7 @@ import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
@@ -88,6 +89,9 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     NetworkService mNetworkService;
 
     private AppResource appResource;
+
+    @Inject
+    Navigator mNavigator;
 
     Bundle mLaunchOptions = new Bundle();
 
@@ -244,7 +248,8 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new GoogleAnalyticsBridgePackage(),
                 new LinearGradientPackage(),
                 new ReactIAPPackage(paymentService,
-                        mUser, appId, mNetworkService));
+                        mUser, appId, mNetworkService, mNavigator)
+        );
     }
 
     private void createUserComponent() {

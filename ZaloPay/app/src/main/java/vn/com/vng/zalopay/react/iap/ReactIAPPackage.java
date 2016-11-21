@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.widget.icon.ReactIconTextViewManager;
 
 /**
@@ -23,19 +24,23 @@ public class ReactIAPPackage implements ReactPackage {
     private final User mUser;
     private final long appId;
     private final NetworkService mNetworkService;
+    private final Navigator mNavigator;
 
     public ReactIAPPackage(IPaymentService paymentService,
-                           User user, long appId, NetworkService networkService) {
+                           User user, long appId,
+                           NetworkService networkService,
+                           Navigator navigator) {
         this.paymentService = paymentService;
         this.mUser = user;
         this.appId = appId;
         this.mNetworkService = networkService;
+        this.mNavigator = navigator;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZaloPayNativeModule(reactContext, mUser, paymentService, appId, mNetworkService));
+        modules.add(new ZaloPayNativeModule(reactContext, mUser, paymentService, appId, mNetworkService, mNavigator));
         return modules;
     }
 
