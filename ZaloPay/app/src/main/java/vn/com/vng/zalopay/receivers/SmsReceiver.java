@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 
+import org.greenrobot.eventbus.EventBus;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
@@ -39,7 +41,9 @@ public class SmsReceiver extends BroadcastReceiver {
                     str += "\n";
                 }
             }
-            AndroidApplication.instance().getAppComponent().eventBus().post(event);
+            EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
+            eventBus.removeStickyEvent(ReceiveSmsEvent.class);
+            eventBus.postSticky(event);
 
             //---display the new SMS message---
             Timber.d(str);

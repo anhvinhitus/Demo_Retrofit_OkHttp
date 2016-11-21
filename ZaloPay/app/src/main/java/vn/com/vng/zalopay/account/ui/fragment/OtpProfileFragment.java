@@ -12,6 +12,7 @@ import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -227,7 +228,7 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
         showToast(messageResource);
     }
 
-    @Subscribe
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onReceiveSmsMessages(ReceiveSmsEvent event) {
         String pattern = "(.*)(\\d{6})(.*)";
         // Create a Pattern object
@@ -241,6 +242,7 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
                 edtOTP.setText(m.group(2));
             }
         }
+        mEventBus.removeStickyEvent(ReceiveSmsEvent.class);
     }
 
     /**
