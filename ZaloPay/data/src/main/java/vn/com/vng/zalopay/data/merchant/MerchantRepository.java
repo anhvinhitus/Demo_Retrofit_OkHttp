@@ -1,12 +1,10 @@
 package vn.com.vng.zalopay.data.merchant;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.ListMUIResponse;
@@ -32,7 +30,6 @@ public class MerchantRepository implements MerchantStore.Repository {
     public MerchantRepository(MerchantStore.LocalStorage localStorage, MerchantStore.RequestService requestService, User user) {
         this.localStorage = localStorage;
         this.requestService = requestService;
-
         this.user = user;
     }
 
@@ -71,8 +68,7 @@ public class MerchantRepository implements MerchantStore.Repository {
     public Observable<Boolean> getListMerchantUserInfo(List<Long> appIds) {
         return makeObservable(() -> localStorage.notExistInDb(appIds))
                 .filter(longs -> !Lists.isEmptyOrNull(longs))
-                .flatMap(longs -> fetchListMerchantUserInfo(ListStringUtil.toString(longs)))
-                ;
+                .flatMap(longs -> fetchListMerchantUserInfo(ListStringUtil.toString(longs)));
     }
 
     private MerchantUserInfo transform(GetMerchantUserInfoResponse response) {
@@ -86,11 +82,11 @@ public class MerchantRepository implements MerchantStore.Repository {
     }
 
     private List<MerchantUser> transform(ListMUIResponse response) {
-        if (Lists.isEmptyOrNull(response.mUserSubInfoList)) {
+        if (Lists.isEmptyOrNull(response.listmerchantuserinfo)) {
             return Collections.emptyList();
         }
         List<MerchantUser> entities = new ArrayList<>();
-        for (ListMUIResponse.MerchantUserSubInfo info : response.mUserSubInfoList) {
+        for (ListMUIResponse.MerchantUserSubInfo info : response.listmerchantuserinfo) {
             MerchantUser merchantUser = new MerchantUser(info.appid);
             merchantUser.setMUid(info.muid);
             merchantUser.setMAccessToken(info.maccesstoken);

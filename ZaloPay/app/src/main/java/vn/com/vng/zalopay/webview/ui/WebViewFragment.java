@@ -240,6 +240,9 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
 
     @Override
     public void onDestroy() {
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.onDestroy();
+        }
         super.onDestroy();
     }
 
@@ -254,7 +257,12 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
         boolean canBack = mWebViewProcessor.canBack();
         Timber.d("Can WebApp navigate back: %s", canBack);
         if (canBack) {
-            mWebViewProcessor.goBack();
+            mWebViewProcessor.runScript("utils.back()", new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                    Timber.d("navigation back: %s", value);
+                }
+            });
         }
         return canBack;
     }

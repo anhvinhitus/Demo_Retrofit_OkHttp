@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.balance;
 import org.greenrobot.eventbus.EventBus;
 
 import rx.Observable;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.User;
@@ -26,6 +27,7 @@ public class BalanceRepository implements BalanceStore.Repository {
         mLocalStorage = localStorage;
         mRequestService = requestService;
         mEventBus = eventBus;
+        Timber.d("accessToken[%s]", mUser.accesstoken);
     }
 
     @Override

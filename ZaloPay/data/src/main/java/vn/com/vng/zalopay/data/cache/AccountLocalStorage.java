@@ -13,6 +13,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Person;
 
 /**
@@ -93,5 +94,33 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
 
         }
         return map;
+    }
+
+    @Override
+    public Map getProfileLevel2() {
+        Map<String, String> map = new HashMap<>();
+        String temp = getDataManifest(Constants.ProfileLevel2.PROFILE_LEVEL2);
+        if (!TextUtils.isEmpty(temp)) {
+
+            Type type = new TypeToken<Map<String, String>>() {
+            }.getType();
+
+            try {
+                map = mGson.fromJson(temp, type);
+            } catch (Exception e) {
+                Timber.d(e, "exception");
+            }
+
+        }
+        return map;
+    }
+
+    @Override
+    public void saveProfileInfo2(String phoneNumber, boolean receiveOtp) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(Constants.ProfileLevel2.PHONE_NUMBER, TextUtils.isEmpty(phoneNumber) ? "" : phoneNumber);
+        jsonObject.addProperty(Constants.ProfileLevel2.RECEIVE_OTP, receiveOtp);
+
+        insertDataManifest(Constants.ProfileLevel2.PROFILE_LEVEL2, jsonObject.toString());
     }
 }

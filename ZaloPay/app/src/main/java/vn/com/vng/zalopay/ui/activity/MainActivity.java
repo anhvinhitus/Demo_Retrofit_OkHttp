@@ -2,9 +2,11 @@ package vn.com.vng.zalopay.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -23,7 +25,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
-import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -113,8 +114,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        startZaloPayService();
     }
 
     @Override
@@ -288,11 +287,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             back_pressed = System.currentTimeMillis();
         }
 
-    }
-
-    private void startZaloPayService() {
-        Intent intent = new Intent(this, ZPNotificationService.class);
-        startService(intent);
     }
 
     @Override

@@ -108,7 +108,7 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
                 mTvPhone.setText(String.format(context.getString(R.string.phone_format), phone));
                 mImgTransferType.setImageResource(R.drawable.ic_transfer_fr_zalo_small);
             } else {
-                mTvPhone.setText(R.string.not_update);
+                mTvPhone.setText(R.string.not_update_zalopay_id);
                 mImgTransferType.setImageResource(R.drawable.ic_transfer_fr_zalo_small);
             }
         }

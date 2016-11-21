@@ -49,6 +49,15 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
+    public void put(AppResourceEntity appResourceEntity) {
+        AppResourceGD appResourceGD = platformDaoMapper.transform(appResourceEntity);
+        if (appResourceGD == null) {
+            return;
+        }
+        getAppInfoDao().insertOrReplaceInTx(appResourceGD);
+    }
+
+    @Override
     public void put(List<AppResourceEntity> resourceEntities) {
         List<AppResourceGD> list = platformDaoMapper.transformAppResourceEntity(resourceEntities);
         if (Lists.isEmptyOrNull(list)) {
@@ -75,14 +84,15 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     @Override
     public void increaseStateDownload(int appId) {
         Timber.d("increaseStateDownload appId %s", appId);
-        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
+        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder()
+                .where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
         if (Lists.isEmptyOrNull(appResourceGD)) {
             return;
         }
 
         for (AppResourceGD app : appResourceGD) {
 
-            int state = app.getStateDownload() + 1;
+            int state = app.getStateDownload() == null ? 0: app.getStateDownload() + 1;
             app.setStateDownload(state);
             if (state >= 2) {
                 app.setNumRetry(0);
@@ -94,14 +104,42 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
+    public void resetStateDownload(int appId) {
+        AppResourceEntity appResourceEntity = get(appId);
+        if (appResourceEntity == null) {
+            return;
+        }
+        appResourceEntity.stateDownload = 0;
+        put(appResourceEntity);
+    }
+
+    @Override
     public void increaseRetryDownload(long appId) {
-        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder().where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
+        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder()
+                .where(AppResourceGDDao.Properties.Appid.eq(appId))
+                .list();
+
         if (Lists.isEmptyOrNull(appResourceGD)) return;
 
         long currentTime = System.currentTimeMillis() / 1000;
         for (AppResourceGD app : appResourceGD) {
             app.setNumRetry(app.getNumRetry() + 1);
             app.setTimeDownload(currentTime);
+        }
+
+        getAppInfoDao().insertOrReplaceInTx(appResourceGD);
+    }
+
+    @Override
+    public void sortApplication(List<Integer> list) {
+        List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder()
+                .list();
+        if (Lists.isEmptyOrNull(appResourceGD)) {
+            return;
+        }
+
+        for (AppResourceGD resourceGD : appResourceGD) {
+            resourceGD.setSortOrder(list.indexOf(resourceGD.getAppid()));
         }
 
         getAppInfoDao().insertOrReplaceInTx(appResourceGD);

@@ -152,8 +152,10 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    ApplicationSession providesApplicationSession(Context context, Navigator navigator, @Named("daosession") DaoSession daoSession) {
-        return new ApplicationSessionImpl(context, daoSession, navigator);
+    ApplicationSession providesApplicationSession(Context context, Navigator navigator,
+                                                  @Named("daosession") DaoSession daoSession,
+                                                  EventBus eventBus) {
+        return new ApplicationSessionImpl(context, daoSession, navigator, eventBus);
     }
 
     @Provides

@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 
 /**
@@ -55,7 +56,7 @@ public class FileUtil {
             }
         } catch (Exception e) {
             Log.e("FileHelper", "Exception " + fileName);
-            e.printStackTrace();
+            Timber.e(e, "getFileName exception [%s]", e.getMessage());
         }
 
         return (file.getAbsolutePath() + "/" + fileName + "_day_" + myDate + ".wav");
@@ -218,7 +219,7 @@ public class FileUtil {
             }
         } catch (Exception e) {
             Log.e("FileHelper", "Exception");
-            e.printStackTrace();
+            Timber.e(e, "deleteFile exception [%s]", e.getMessage());
         }
     }
 

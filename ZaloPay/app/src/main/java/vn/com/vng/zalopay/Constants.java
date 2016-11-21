@@ -54,6 +54,8 @@ public interface Constants {
     String LAST4CARDNO = "last4cardno";
     String BANKCODE = "bankcode";
     String EXPIRETIME = "expiretime";
+    String IMAGE_FILE_PATH = "image_file_path";
+    String BANKNAME = "bankname";
 
     String PROFILE_TYPE = "profile_type";
     int PRE_PROFILE_TYPE = 1;
@@ -69,6 +71,8 @@ public interface Constants {
 
     int REQUEST_CODE_TRANSFER = 124;
     int REQUEST_CODE_INTRO = 125;
+    int REQUEST_CODE_CARD_SUPPORT = 126;
+    int REQUEST_CODE_TRANSFER_VIA_ZALOPAYID = 127;
     int ZALOPAY_APP_ID = BuildConfig.PAYAPPID;
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
 
@@ -78,6 +82,7 @@ public interface Constants {
         int REQUEST_CAMERA = 100;
         int REQUEST_READ_SMS = 101;
         int REQUEST_READ_CONTACT = ZContactsModule.REQUEST_READ_CONTACT;
+        int REQUEST_READ_STORAGE = 103;
     }
 
     interface MoneyTransfer {
@@ -94,5 +99,9 @@ public interface Constants {
 
     interface QRCode {
         int RECEIVE_MONEY = 1;
+    }
+
+    interface Withdraw {
+        String GO_TO_WITHDRAW_CONDITION = "go_to_withdraw_condition";
     }
 }

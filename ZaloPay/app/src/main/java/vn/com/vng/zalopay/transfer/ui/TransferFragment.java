@@ -254,7 +254,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     private void udpateZaloPayName(String zalopayName) {
         if (TextUtils.isEmpty(zalopayName)) {
-            mTextViewZaloPayName.setText(getString(R.string.not_update_zalopayname));
+            mTextViewZaloPayName.setText(getString(R.string.not_update_zalopay_id));
         } else if (!TextUtils.isEmpty(zalopayName)) {
             mTextViewZaloPayName.setText(zalopayName);
         }

@@ -75,8 +75,7 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setAmount(0);
-        setNote("");
+        renderQRCode(0, "");
     }
 
     @Override
@@ -88,15 +87,19 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
                         String message = data.getExtras().getString("message");
                         long amount = data.getExtras().getLong("amount");
                         Timber.d("onActivityResult: message %s amount %s", message, amount);
-                        setAmount(amount);
-                        setNote(message);
-                        mPresenter.updateQRWithAmount(amount, message);
+                        renderQRCode(amount, message);
                         getActivity().invalidateOptionsMenu();
                     }
 
                     break;
             }
         }
+    }
+
+    private void renderQRCode(long amount, String message) {
+        setAmount(amount);
+        setNote(message);
+        mPresenter.updateQRWithAmount(amount, message);
     }
 
     private void setAmount(long amount) {
@@ -135,9 +138,7 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
             startActivityForResult(new Intent(getContext(), SetAmountActivity.class), 100);
             return true;
         } else if (itemId == R.id.action_amount_clear) {
-
-            setAmount(0);
-            setNote("");
+            renderQRCode(0, "");
             getActivity().invalidateOptionsMenu();
             return true;
         }

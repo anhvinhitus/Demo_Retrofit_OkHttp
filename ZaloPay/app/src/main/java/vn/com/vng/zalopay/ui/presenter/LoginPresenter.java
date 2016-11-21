@@ -21,6 +21,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
+import vn.com.vng.zalopay.account.network.listener.ZaloErrorCode;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
@@ -51,9 +52,9 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     private PassportRepository mPassportRepository;
 
     @Inject
-    public LoginPresenter(Context applicationContext,
-                          UserConfig userConfig,
-                          PassportRepository passportRepository) {
+    LoginPresenter(Context applicationContext,
+                   UserConfig userConfig,
+                   PassportRepository passportRepository) {
         this.mApplicationContext = applicationContext;
         this.mUserConfig = userConfig;
         this.mPassportRepository = passportRepository;
@@ -103,7 +104,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             //   showLoadingView();
             ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, mLoginListener);
         } else {
-            showErrorView(mApplicationContext.getString(R.string.exception_no_connection_try_again));
+            showNetworkError();
         }
     }
 
@@ -117,12 +118,16 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
                 showErrorView(mApplicationContext.getString(R.string.exception_no_connection_try_again));
                 ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_NONETWORK);
-            } else if (errorCode == -1111) {
+            } else if (errorCode == ZaloErrorCode.RESULTCODE_USER_CANCEL ||
+                    errorCode == ZaloErrorCode.RESULTCODE_USER_BACK ||
+                    errorCode == ZaloErrorCode.RESULTCODE_USER_REJECT ||
+                    errorCode == ZaloErrorCode.RESULTCODE_USER_BACK_BUTTON) {
                 Timber.d("onAuthError User click backpress");
             } else {
-                if (TextUtils.isEmpty(message)) {
-                    message = mApplicationContext.getString(R.string.exception_login_zalo_error);
-                }
+//                if (TextUtils.isEmpty(message)) {
+//                    message = mApplicationContext.getString(R.string.exception_login_zalo_error);
+//                }
+                message = mApplicationContext.getString(R.string.exception_login_zalo_error);
                 showErrorView(message);
                 ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_USERDENIED);
             }
@@ -169,36 +174,43 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         mView.showError(message);
     }
 
+    private void showNetworkError() {
+        if (mView == null) {
+            return;
+        }
+        mView.showNetworkError();
+    }
+
     private void gotoHomeScreen() {
         mView.gotoMainActivity();
     }
 
     private void onLoginSuccess(User user) {
-        Timber.d("session %s zaloPayId %s need_invitation %s", user.accesstoken, user.zaloPayId, user.need_invitation);
+        Timber.d("session %s zaloPayId %s", user.accesstoken, user.zaloPayId);
         // Khởi tạo user component
-        hideLoadingView();
-        if (user.need_invitation == 1) {
-            ZPAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
-            ZPAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
-        } else {
-            AndroidApplication.instance().createUserComponent(user);
-            this.gotoHomeScreen();
-            ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
-        }
+        AndroidApplication.instance().createUserComponent(user);
+        clearMerchant();
+        this.gotoHomeScreen();
+        ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
     }
 
     private void onLoginError(Throwable e) {
         hideLoadingView();
         if (e instanceof InvitationCodeException) {
+            clearMerchant();
             mView.gotoInvitationCode();
+            ZPAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
+            ZPAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
         } else {
-
             Timber.w(e, "exception  ");
             String message = ErrorMessageFactory.create(mApplicationContext, e);
             showErrorView(message);
             ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
         }
+    }
 
+    private void clearMerchant() {
+        AndroidApplication.instance().getAppComponent().applicationSession().clearMerchant();
     }
 
     private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {

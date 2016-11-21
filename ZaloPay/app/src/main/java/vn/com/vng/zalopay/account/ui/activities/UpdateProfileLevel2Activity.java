@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ProfileSlidePagerAdapter;
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
@@ -42,7 +41,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
 
-    private int profileType = 0;
     private ProfileSlidePagerAdapter adapter;
     private String walletTransId = null;
     private PaymentWrapper paymentWrapper;
@@ -93,7 +91,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         super.onCreate(savedInstanceState);
         presenter.setView(this);
         initData();
-        initContent();
         initPaymentWrapper();
         headerView.setVisibility(View.GONE);
     }
@@ -118,14 +115,13 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         Timber.d("initData, walletTransId %s", walletTransId);
     }
 
-    private void initContent() {
+    @Override
+    public void initPagerContent(int pageIndex) {
         adapter = new ProfileSlidePagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
-        if (profileType == Constants.PRE_PROFILE_TYPE) {
-            viewPager.setCurrentItem(0);
-        } else if (profileType == Constants.PIN_PROFILE_TYPE) {
-            viewPager.setCurrentItem(1);
+        if (pageIndex >= 0 && pageIndex < viewPager.getAdapter().getCount()) {
+            viewPager.setCurrentItem(pageIndex);
         }
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -223,6 +219,11 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
     }
 
     @Override
+    public void updateCurrentPhone(String phone) {
+        mCurrentPhone = phone;
+    }
+
+    @Override
     public void onConfirmOTPSuccess() {
         Timber.d("onConfirmOTPSucess, walletTransId: %s", walletTransId);
         showToast("Cập nhật thông tin thành công.");
@@ -257,5 +258,18 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         } else if (getActivity() != null && !getActivity().isFinishing()) {
             getActivity().finish();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (viewPager != null && adapter != null) {
+            if (viewPager.getCurrentItem() == 0) {
+                adapter.getItem(0).onBackPressed();
+            } else {
+                viewPager.setCurrentItem(0);
+                return;
+            }
+        }
+        super.onBackPressed();
     }
 }

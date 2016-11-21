@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**
  * Created by longlv on 19/05/2016.
+ * *
  */
 public class ProfileInfoPresenter extends BaseUserPresenter implements IPresenter<IProfileInfoView> {
 

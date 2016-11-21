@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.transfer.ui;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -59,7 +61,7 @@ public class TransferHomeFragment extends BaseFragment implements
 
     @OnClick(R.id.layoutTransferViaAccount)
     public void onClickTransferViaAccountName() {
-        navigator.startTransferViaAccountName(getContext());
+        navigator.startTransferViaAccountName(this);
     }
 
     /**
@@ -196,5 +198,22 @@ public class TransferHomeFragment extends BaseFragment implements
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
         navigator.startTransferActivity(this, bundle);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_TRANSFER) {
+            if (resultCode == Activity.RESULT_OK) {
+                getActivity().finish();
+                return;
+            }
+        }
+        if (requestCode == Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID) {
+            if (resultCode == Activity.RESULT_OK) {
+                getActivity().finish();
+                return;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

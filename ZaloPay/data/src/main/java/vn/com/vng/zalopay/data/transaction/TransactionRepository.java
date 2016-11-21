@@ -59,7 +59,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private void subscribeFetchTransactionLatest() {
-        Subscription subscription = mRxBus.toObserverable().subscribe(new DefaultSubscriber<Object>() {
+        mRxBus.toObserverable().subscribe(new DefaultSubscriber<Object>() {
             @Override
             public void onNext(Object o) {
                 if (o instanceof RecursiveData) {

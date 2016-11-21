@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -65,7 +66,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         }
         if (getUserComponent().currentUser().profilelevel < 2) {
             navigator.startUpdateProfileLevel2Activity(this);
-        }else{
+        } else {
             navigator.startEditAccountActivity(this);
             ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMHEADER);
         }
@@ -76,7 +77,8 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
             return;
         }
         tvName.setText(user.displayName);
-        mImageLoader.loadImage(imgAvatar, user.avatar);
+        mImageLoader.loadImage(imgAvatar, user.avatar, R.drawable.ic_avatar_default,
+                R.drawable.ic_avatar_default, ImageLoader.ScaleType.CENTER);
         setZaloPayName(user.zalopayname);
     }
 
@@ -113,27 +115,26 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
     private void initView() {
         presenter.setView(this);
         presenter.getZaloProfileInfo(getApplicationContext(), userConfig);
-        setTitle("");
+        getToolbar().setTitleTextColor(Color.TRANSPARENT);
 
         mCollapsingToolbarLayout.setTitleEnabled(false);
 
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isVisible = true;
             int scrollRange = -1;
-
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                float alpha = 1 + ((float) verticalOffset / 160);
-                Timber.d("onOffsetChanged verticalOffset %s alpha %s", verticalOffset, alpha);
+                float alpha = 1 + ((float) verticalOffset / mAppBarLayout.getTotalScrollRange());
+                //Timber.d("onOffsetChanged verticalOffset %s alpha %s", verticalOffset, alpha);
                 layoutUser.setAlpha(alpha);
                 if (scrollRange == -1) {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    setTitle(R.string.personal);
+                    getToolbar().setTitleTextColor(Color.WHITE);
                     isVisible = true;
                 } else if (isVisible) {
-                    setTitle("");
+                    getToolbar().setTitleTextColor(Color.TRANSPARENT);
                     isVisible = false;
                 }
             }

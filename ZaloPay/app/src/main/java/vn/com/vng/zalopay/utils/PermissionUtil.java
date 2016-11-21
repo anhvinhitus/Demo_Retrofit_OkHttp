@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 
 /**
  * Created by hieuvm on 11/12/16.
+ * *
  */
 
 public class PermissionUtil {

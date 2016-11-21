@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.data.api.response.UserProfileLevelResponse;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
+import vn.com.vng.zalopay.domain.model.ProfileLevel2;
 
 /**
  * Created by AnhHieu on 7/3/16.
@@ -41,6 +42,10 @@ public interface AccountStore {
         void clearProfileInfo3();
 
         Map getProfileInfo3();
+
+        Map getProfileLevel2();
+
+        void saveProfileInfo2(String phoneNumber, boolean receiveOtp);
     }
 
     interface RequestService {
@@ -129,5 +134,11 @@ public interface AccountStore {
         Observable<ProfileInfo3> getProfileInfo3Cache();
 
         Observable<Boolean> saveProfileInfo3(String email, String identity, @Nullable String foregroundImg, @Nullable String backgroundImg, @Nullable String avatarImg);
+
+        Observable<ProfileLevel2> getProfileLevel2Cache();
+
+        Observable<Void> saveProfileInfo2(String phoneNumber, boolean receiveOtp);
+
+        Observable<Void> clearProfileInfo2();
     }
 }

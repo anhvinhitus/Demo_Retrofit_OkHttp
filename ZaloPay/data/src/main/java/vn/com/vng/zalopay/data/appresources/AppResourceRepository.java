@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.appresources;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,6 +14,8 @@ import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
+
 import vn.com.vng.zalopay.domain.model.AppResource;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
@@ -34,6 +37,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private final AppResourceStore.RequestService mRequestService;
     private final AppResourceStore.LocalStorage mLocalStorage;
     private String appVersion;
+    //Retry 3 times, each time to download 2 file (js & image)
+    private final int RETRY_DOWNLOAD_NUMBER = 6;
 
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
@@ -106,13 +111,26 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         }
     }
 
+    private void resetStateDownloadApp(AppResourceEntity app) {
+        if (app == null) {
+            return;
+        }
+        app.numRetry = 0;
+        app.timeDownload = 0L;
+        app.stateDownload = 0;
+
+        mLocalStorage.put(app);
+    }
+
     private boolean shouldDownloadApp(AppResourceEntity app) {
-        if (app.stateDownload < 2) {
-            if (app.numRetry < 3) {
+        Timber.d("shouldDownloadApp stateDownload [%s]", app.stateDownload);
+        if (app.stateDownload < DownloadState.STATE_SUCCESS) {
+            if (app.numRetry < RETRY_DOWNLOAD_NUMBER) {
                 return true;
             } else {
                 long currentTime = System.currentTimeMillis() / 1000;
-                if (currentTime - app.timeDownload >= 4 * 60 * 60) {
+                if (currentTime - app.timeDownload >= 60) {
+                    resetStateDownloadApp(app);
                     return true;
                 }
             }
@@ -173,11 +191,12 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             entity.sortOrder = orderedInsideApps.indexOf(entity.appid);
         }
 
-        mLocalStorage.put(appResourceEntities);
+        mLocalStorage.sortApplication(orderedInsideApps);
     }
 
 
     private void startDownloadService(List<AppResourceEntity> resource, String baseUrl) {
+        Timber.d("startDownloadService mDownloadAppResource [%s]", mDownloadAppResource);
         if (!mDownloadAppResource) {
             return;
         }
@@ -192,6 +211,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
             if (appResourceEntity.needdownloadrs == 1) {
                 createTask(appResourceEntity, needDownloadList);
+                mLocalStorage.resetStateDownload(appResourceEntity.appid);
             }
         }
 
@@ -218,5 +238,25 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                 mOkHttpClient, mLocalStorage, mRootBundle);
 
         listTask.add(taskImgUrl);
+    }
+
+    @Override
+    public Observable<Boolean> existResource(int appId) {
+        return makeObservable(() -> {
+            AppResourceEntity entity = mLocalStorage.get(appId);
+            Timber.d("existResource appId [%s] state [%s]", appId, entity.stateDownload);
+            boolean downloadSuccess = (entity.stateDownload >= DownloadState.STATE_SUCCESS);
+            if (!downloadSuccess) {
+                startDownloadService(Arrays.asList(entity), null);
+
+            }
+            return downloadSuccess;
+        });
+    }
+
+    interface DownloadState {
+        int STATE_FAIL = -1;
+        int STATE_DOWNLOADING = 1;
+        int STATE_SUCCESS = 2;
     }
 }

@@ -1,13 +1,9 @@
 package vn.com.vng.zalopay.service;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 
 import com.facebook.react.bridge.Promise;
-import com.zing.zalo.zalosdk.core.helper.FeedData;
-import com.zing.zalo.zalosdk.oauth.ZaloPluginCallback;
-import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -22,6 +18,7 @@ import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -43,15 +40,10 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    private Context mApplicationContext;
-
-    public PaymentServiceImpl(Context context,
-                              MerchantStore.Repository zaloPayIAPRepository,
+    public PaymentServiceImpl(MerchantStore.Repository zaloPayIAPRepository,
                               BalanceStore.Repository balanceRepository,
                               User user,
                               TransactionStore.Repository transactionRepository) {
-
-        this.mApplicationContext = context;
         this.mMerchantRepository = zaloPayIAPRepository;
         this.mBalanceRepository = balanceRepository;
         this.mUser = user;
@@ -116,7 +108,9 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private void logout() {
         Timber.d("logout");
-        AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+        applicationComponent.applicationSession().setMessageAtLogin(R.string.exception_token_expired_message);
+        applicationComponent.applicationSession().clearUserSession();
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {

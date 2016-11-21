@@ -30,6 +30,9 @@ public class PassportRepositoryImpl implements PassportRepository {
         this.passportFactory = passportFactory;
         this.userEntityDataMapper = userEntityDataMapper;
         this.userConfig = userConfig;
+        if (userConfig.hasCurrentUser()) {
+            Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
+        }
     }
 
     @Override

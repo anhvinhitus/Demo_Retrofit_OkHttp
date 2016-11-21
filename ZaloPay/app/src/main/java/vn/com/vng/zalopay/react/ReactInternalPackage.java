@@ -14,18 +14,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import com.zalopay.apploader.ReactNativeHostable;
+
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.RedPacketNativeModule;
 import vn.com.vng.zalopay.react.widget.icon.ReactIconTextViewManager;
 import vn.com.vng.zalopay.react.widget.input.ReactInputTextViewManager;
+
+import com.zalopay.apploader.zpmodal.ReactModalHostManager;
 
 /**
  * Created by huuhoa on 4/25/16.
@@ -39,6 +44,7 @@ public class ReactInternalPackage implements ReactPackage {
     private BalanceStore.Repository mBalanceRepository;
     private IRedPacketPayService paymentService;
     private AlertDialogProvider sweetAlertDialog;
+    private AppResourceStore.Repository resourceRepository;
 
     private NotificationStore.Repository mNotificationRepository;
     private INavigator navigator;
@@ -57,7 +63,8 @@ public class ReactInternalPackage implements ReactPackage {
                                 INavigator navigator,
                                 EventBus eventBus,
                                 ReactNativeHostable reactNativeHostable,
-                                UserConfig userConfig) {
+                                UserConfig userConfig,
+                                AppResourceStore.Repository resourceRepository) {
         this.mTransactionRepository = repository;
         this.mNotificationRepository = notificationRepository;
         this.mRedPackageRepository = redPackageRepository;
@@ -69,6 +76,7 @@ public class ReactInternalPackage implements ReactPackage {
         this.mEventBus = eventBus;
         this.mReactNativeHostable = reactNativeHostable;
         this.mUserConfig = userConfig;
+        this.resourceRepository = resourceRepository;
     }
 
     @Override
@@ -76,7 +84,7 @@ public class ReactInternalPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new ReactInternalNativeModule(reactContext, navigator));
+        modules.add(new ReactInternalNativeModule(reactContext, navigator, resourceRepository));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mTransactionRepository, mEventBus));
         modules.add(new RedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUserConfig, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository, mTransactionRepository, mEventBus));

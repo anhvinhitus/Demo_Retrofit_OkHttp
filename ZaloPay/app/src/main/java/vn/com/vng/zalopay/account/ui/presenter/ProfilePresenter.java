@@ -21,17 +21,20 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
-import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by longlv on 25/05/2016.
+ * *
  */
 public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IProfileView> {
 
-    IProfileView mView;
+    private IProfileView mView;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private EventBus mEventBus;
     private UserConfig mUserConfig;
@@ -39,7 +42,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     private Navigator mNavigator;
 
     @Inject
-    public ProfilePresenter(EventBus eventBus, UserConfig userConfig, AccountStore.Repository accountRepository, Navigator navigator) {
+    ProfilePresenter(EventBus eventBus, UserConfig userConfig, AccountStore.Repository accountRepository, Navigator navigator) {
         this.mEventBus = eventBus;
         this.mUserConfig = userConfig;
         this.mAccountRepository = accountRepository;
@@ -99,7 +102,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         }
     }
 
-    public int getProfileLevel() {
+    private int getProfileLevel() {
         User user = mUserConfig.getCurrentUser();
         if (user == null) {
             return 0;
@@ -143,26 +146,57 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     }
 
 
-    private void updateLevel3(boolean isIdentity) {
+    public void updateIdentity() {
         if (mView == null) {
             return;
         }
         if (getProfileLevel() < 2) {
-            mView.showDialogUpdateProfile2(mView.getContext().getString(R.string.alert_need_update_level_2));
+            requireUpdateProfileLevel2();
         } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
-            int message = isIdentity ? R.string.waiting_approve_identity : R.string.waiting_approve_email;
-            mView.showDialogInfo(mView.getContext().getString(message));
+            mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_identity));
         } else {
-            mNavigator.startUpdateProfile3Activity(mView.getContext(), isIdentity);
+            mNavigator.startUpdateProfile3Activity(mView.getContext());
         }
     }
 
-    public void updateIdentity() {
-        updateLevel3(true);
+    public void updateEmail() {
+        if (getProfileLevel() < 2) {
+            requireUpdateProfileLevel2();
+        } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
+            mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_email));
+        } else {
+            mNavigator.startUpdateProfile3Activity(mView.getContext());
+        }
     }
 
-    public void updateEmail() {
-        updateLevel3(false);
+    public void updateZaloPayID() {
+        if (!TextUtils.isEmpty(mUserConfig.getCurrentUser().zalopayname)) {
+            return;
+        }
+        if (mView == null) {
+            return;
+        }
+        if (getProfileLevel() < 2) {
+            requireUpdateProfileLevel2();
+        } else {
+            mNavigator.startEditAccountActivity(mView.getContext());
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);
+        }
+    }
+
+    private void requireUpdateProfileLevel2() {
+        mView.showConfirmDialog(mView.getContext().getString(R.string.alert_need_update_level_2),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
+                    }
+                });
     }
 
     private class ProfileSubscriber extends DefaultSubscriber<Boolean> {

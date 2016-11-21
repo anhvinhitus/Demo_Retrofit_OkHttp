@@ -200,7 +200,7 @@
             android:windowSoftInputMode="" />
 
         <activity
-            android:name=".ui.activity.LinkCardActivity"
+            android:name=".linkcard.ui.LinkCardActivity"
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -253,8 +253,8 @@
             android:label="@string/title.activity.my.qr"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-
-        <activity android:name=".account.ui.activities.ProfileActivity">
+        <activity android:name=".account.ui.activities.ProfileActivity"
+            android:label="@string/personal">
             <intent-filter>
                 <data
                     android:host="goToProfileInfo"
@@ -264,20 +264,15 @@
         </activity>
         <activity
             android:name=".transfer.ui.TransferHomeActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:label="@string/title.activity.transfer"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:label="@string/title.activity.transfer" />
         <activity
             android:name=".transfer.ui.ZaloContactActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:label="@string/title.activity.zalopay.contact"
-            android:windowSoftInputMode="stateHidden" />
+            android:label="@string/title.activity.zalopay.contact" />
         <activity
             android:name=".transfer.ui.TransferActivity"
             android:label="@string/title.activity.transfer.to" />
-
         <activity
-            android:name=".ui.activity.IntroSaveCardActivity"
+            android:name=".linkcard.ui.IntroSaveCardActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="zalopay.intro.intent.action.VIEW" />
@@ -309,6 +304,18 @@
         <activity
             android:name=".ui.activity.TutorialConnectInternetActivity"
             android:label="@string/title.activity.tutorial.network.connection" />
+
+        <activity android:name=".linkcard.ui.CardSupportActivity"
+            android:label="@string/title.activity.card.support"/>
+
+        <activity android:name=".linkcard.ui.TutorialLinkCardActivity"
+            android:label="@string/title.activity.tutorial.link.card"/>
+
+        <activity android:name=".ui.activity.TutorialConnectInternetActivity"
+            android:label="@string/title.activity.tutorial.network.connection" />
+
+        <activity android:name=".warningrooted.WarningRootedActivity"
+            android:label="@string/title.activity.warning.root"/>
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -339,11 +346,6 @@
             </intent-filter>
         </service>
         <!-- [END instanceId_listener] -->
-
-        <service
-            android:name=".notification.ZPNotificationService"
-            android:exported="false"
-            android:label="@string/app_name" />
 
         <service
             android:name=".service.DownloadService"

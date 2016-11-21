@@ -80,27 +80,33 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
         checkShowHideBtnContinue();
     }
 
-    @OnFocusChange(R.id.edtPhone)
-    public void onFocusChange(View view, boolean hasFocus) {
-        Timber.d("EdtPhone onFocusChange focus %s", hasFocus);
-        if (hasFocus) {
-            int[] location = new int[2];
-            edtPhone.getLocationInWindow(location);
-            if (mScrollView != null) {
-                Timber.d("edtPhone onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
-                mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
-            }
-            return;
-        }
-        if (!isValidPhone()) {
-            showPhoneError();
-        } else {
-            hidePhoneError();
-        }
-    }
-
     @BindView(R.id.btnContinue)
     View btnContinue;
+
+    @OnFocusChange(R.id.edtPhone)
+    public void onEdtPhoneFocusChange() {
+        edtPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Timber.d("EdtPhone onFocusChange focus %s", hasFocus);
+                if (hasFocus) {
+                    int[] location = new int[2];
+                    edtPhone.getLocationInWindow(location);
+                    if (mScrollView != null) {
+                        Timber.d("edtPhone onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
+                        mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
+                    }
+                    edtPhone.setBackgroundResource(R.drawable.txt_bottom_default_focused);
+                    return;
+                }
+                if (!isValidPhone()) {
+                    showPhoneError();
+                } else {
+                    hidePhoneError();
+                }
+            }
+        });
+    }
 
     private void showPhoneError() {
         if (textInputPhone == null) {
@@ -192,6 +198,14 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
         }
     };
 
+    @Override
+    public void setPhoneNumber(String phone) {
+        if (edtPhone == null) {
+            return;
+        }
+        edtPhone.setText(phone);
+    }
+
     public PinProfileFragment() {
         // Required empty public constructor
     }
@@ -207,6 +221,9 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
     }
 
     private void checkShowHideBtnContinue() {
+        if (btnContinue == null) {
+            return;
+        }
         if (isShowBtnContinue()) {
             btnContinue.setBackgroundResource(R.drawable.bg_btn_blue);
             btnContinue.setOnClickListener(mOnClickContinueListener);
@@ -365,6 +382,12 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        presenter.saveProfileInfo2Cache(edtPhone.getText().toString());
+        return super.onBackPressed();
     }
 
     @Override

@@ -29,7 +29,6 @@ public class CustomViewfinderView extends ViewfinderView {
     private int mTopOffset;
     private int mScanLineSize;
     private int mScanLineColor;
-
     private boolean isEnableScanLine = true;
 
     public CustomViewfinderView(Context context, AttributeSet attrs) {
@@ -97,7 +96,6 @@ public class CustomViewfinderView extends ViewfinderView {
         mFramingRect = new Rect(leftOffset, mTopOffset, leftOffset + mRectWidth, mTopOffset + mRectWidth);
         mScanLineTop = mTopOffset;
     }
-
 
     public void resumeScanLine() {
         isEnableScanLine = true;

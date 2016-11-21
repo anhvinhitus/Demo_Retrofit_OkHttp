@@ -84,11 +84,11 @@ public class MerchantRepositoryTest {
             public Observable<ListMUIResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist, @Query("userid") String userid, @Query("accesstoken") String accesstoken) {
                 String[] appids = appidlist.split(",");
                 ListMUIResponse response = new ListMUIResponse();
-                response.mUserSubInfoList = new ArrayList<>();
+                response.listmerchantuserinfo = new ArrayList<>();
                 for (String a : appids) {
                     ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse().new MerchantUserSubInfo();
                     u.muid = "1" + String.valueOf(a);
-                    response.mUserSubInfoList.add(u);
+                    response.listmerchantuserinfo.add(u);
                 }
                 return Observable.just(response);
             }
@@ -175,11 +175,11 @@ public class MerchantRepositoryTest {
             public Observable<ListMUIResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist, @Query("userid") String userid, @Query("accesstoken") String accesstoken) {
                 String[] appids = appidlist.split(",");
                 ListMUIResponse response = new ListMUIResponse();
-                response.mUserSubInfoList = new ArrayList<>();
+                response.listmerchantuserinfo = new ArrayList<>();
                 for (String a : appids) {
                     ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse().new MerchantUserSubInfo();
                     u.muid = "1" + String.valueOf(a);
-                    response.mUserSubInfoList.add(u);
+                    response.listmerchantuserinfo.add(u);
                 }
                 return Observable.just(response);
             }
@@ -280,11 +280,11 @@ public class MerchantRepositoryTest {
             public Observable<ListMUIResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist, @Query("userid") String userid, @Query("accesstoken") String accesstoken) {
                 String[] appids = appidlist.split(",");
                 ListMUIResponse response = new ListMUIResponse();
-                response.mUserSubInfoList = new ArrayList<>();
+                response.listmerchantuserinfo = new ArrayList<>();
                 for (String a : appids) {
                     ListMUIResponse.MerchantUserSubInfo u = new ListMUIResponse().new MerchantUserSubInfo();
                     u.muid = "1" + String.valueOf(a);
-                    response.mUserSubInfoList.add(u);
+                    response.listmerchantuserinfo.add(u);
                 }
                 return Observable.just(response);
             }

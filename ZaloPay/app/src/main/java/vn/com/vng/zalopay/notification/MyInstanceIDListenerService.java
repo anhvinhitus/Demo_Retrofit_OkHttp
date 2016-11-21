@@ -16,13 +16,17 @@
 
 package vn.com.vng.zalopay.notification;
 
-import android.content.Intent;
-
 import com.google.android.gms.iid.InstanceIDListenerService;
+
+import org.greenrobot.eventbus.EventBus;
+
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
 
 public class MyInstanceIDListenerService extends InstanceIDListenerService {
 
     private static final String TAG = "MyInstanceIDLS";
+    private EventBus mEventBus = AndroidApplication.instance().getAppComponent().eventBus();
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
@@ -33,8 +37,7 @@ public class MyInstanceIDListenerService extends InstanceIDListenerService {
     @Override
     public void onTokenRefresh() {
         // Fetch updated Instance ID token and notify our app's server of any changes (if applicable).
-        Intent intent = new Intent(this, ZPNotificationService.class);
-        startService(intent);
+        mEventBus.postSticky(new TokenGCMRefreshEvent());
     }
     // [END refresh_token]
 }

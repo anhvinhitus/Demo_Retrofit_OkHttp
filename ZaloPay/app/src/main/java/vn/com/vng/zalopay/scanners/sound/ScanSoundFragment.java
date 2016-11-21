@@ -82,7 +82,7 @@ public class ScanSoundFragment extends BaseFragment implements FragmentLifecycle
                 try {
                     mRecordName = FileUtil.getFilename("Record_" + String.valueOf(System.currentTimeMillis()));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Timber.e(e, "startTransCoder exception [%s]", e.getMessage());
                 }
 
                 recordService.start(mRecordName, decoderListener);

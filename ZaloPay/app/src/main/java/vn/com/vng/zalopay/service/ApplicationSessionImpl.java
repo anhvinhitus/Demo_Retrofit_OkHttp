@@ -1,12 +1,13 @@
 package vn.com.vng.zalopay.service;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
 import com.google.android.gms.iid.InstanceID;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -19,9 +20,9 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
+import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -33,20 +34,25 @@ public class ApplicationSessionImpl implements ApplicationSession {
     private final Navigator navigator;
     private final Context applicationContext;
     private final DaoSession daoSession;
+    private final EventBus eventBus;
 
     private String mLoginMessage;
 
 
-    public ApplicationSessionImpl(Context applicationContext, DaoSession daoSession, Navigator navigator) {
+    public ApplicationSessionImpl(Context applicationContext, DaoSession daoSession,
+                                  Navigator navigator, EventBus eventBus) {
         this.applicationContext = applicationContext;
         this.navigator = navigator;
         this.daoSession = daoSession;
+        this.eventBus = eventBus;
     }
 
     /**
      * Clear current user session and move to login state
      */
+    @Override
     public void clearUserSession() {
+        eventBus.post(new SignOutEvent());
         //cancel notification
         NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
         nm.cancelAll();
@@ -62,8 +68,6 @@ public class ApplicationSessionImpl implements ApplicationSession {
         clearMerchant();
 
         navigator.setLastTimeCheckPin(0);
-
-        applicationContext.stopService(new Intent(applicationContext, ZPNotificationService.class));
 
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
 
@@ -90,10 +94,12 @@ public class ApplicationSessionImpl implements ApplicationSession {
         }
     }
 
-    private void clearMerchant() {
+    @Override
+    public void clearMerchant() {
         daoSession.getMerchantUserDao().deleteAll();
     }
 
+    @Override
     public void clearAllUserDB() {
         Timber.d("clearAllUserDB");
         try {

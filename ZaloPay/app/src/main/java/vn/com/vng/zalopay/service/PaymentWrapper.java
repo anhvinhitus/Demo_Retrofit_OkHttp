@@ -50,7 +50,7 @@ public class PaymentWrapper {
     private final ZaloPayRepository zaloPayRepository;
     private final BalanceStore.Repository balanceRepository;
     private final TransactionStore.Repository transactionRepository;
-
+    private final Navigator mNavigator = AndroidApplication.instance().getAppComponent().navigator();
 
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
         @Override
@@ -66,6 +66,11 @@ public class PaymentWrapper {
                 int resultStatus = pPaymentResult.paymentStatus.getNum();
                 Timber.d("pay onComplete resultStatus [%s]", resultStatus);
                 if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                    /*DMapCardResult cardResult = new DMapCardResult();
+                    cardResult.setCardLogo("MASTER.png");
+                    cardResult.setLast4Number("8668");
+                    cardResult.setBankName("Master card");*/
+                    mNavigator.startTutorialLinkCardActivity(viewListener.getActivity(), pPaymentResult.mapCardResult);
                     responseListener.onResponseSuccess(pPaymentResult);
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
                     responseListener.onResponseTokenInvalid();
@@ -120,8 +125,8 @@ public class PaymentWrapper {
 
         @Override
         public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
-            Timber.d("onUpVersion latestVersion [%s]", latestVersion);
-            Timber.d("onUpVersion msg [%s]", msg);
+            Timber.d("onUpVersion forceUpdate[%s] latestVersion [%s] msg [%s]",
+                    forceUpdate, latestVersion, msg);
             AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
             AppVersionUtils.showDialogUpgradeAppIfNeed(viewListener.getActivity());
         }
@@ -140,8 +145,9 @@ public class PaymentWrapper {
         }
     };
 
-    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository, TransactionStore.Repository transactionRepository,
-                          IViewListener viewListener, IResponseListener responseListener) {
+    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
+                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
+                          IResponseListener responseListener) {
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.viewListener = viewListener;
@@ -389,7 +395,7 @@ public class PaymentWrapper {
     }
 
     private final class GetOrderSubscriber extends DefaultSubscriber<Order> {
-        public GetOrderSubscriber() {
+        GetOrderSubscriber() {
         }
 
         @Override

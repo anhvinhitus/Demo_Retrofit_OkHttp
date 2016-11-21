@@ -39,6 +39,7 @@ public class NotificationRepository implements NotificationStore.Repository {
         this.mRxBus = rxBus;
         mRequestService = requestService;
         mCurrentUser = currentUser;
+        Timber.d("accessToken[%s]", mCurrentUser.accesstoken);
     }
 
     @Override
@@ -142,7 +143,10 @@ public class NotificationRepository implements NotificationStore.Repository {
     public Observable<Void> recoveryNotify(List<NotificationData> notify) {
         return putNotify(notify)
                 .doOnNext(aVoid -> localStorage.insertDataManifest(Constants.MANIFEST_RECOVERY_NOTIFICATION,
-                        String.valueOf(System.currentTimeMillis() / 1000)))
-                ;
+                        String.valueOf(System.currentTimeMillis() / 1000)));
+    }
+
+    public Observable<Boolean> isNotificationExisted(long mtaid, long mtuid) {
+        return ObservableHelper.makeObservable(() -> localStorage.isNotificationExisted(mtaid, mtuid));
     }
 }

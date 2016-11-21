@@ -1,14 +1,21 @@
 package vn.com.vng.zalopay.webview.widget;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+
+import java.util.Vector;
 
 import timber.log.Timber;
 
@@ -73,4 +80,91 @@ public class ZPWebView extends WebView {
         }
     }
 
+    @SuppressWarnings("deprecation")
+    public void clearCookies(String url) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Timber.d("Using clearCookies code for API >= [%s]", String.valueOf(Build.VERSION_CODES.LOLLIPOP));
+            clearCookieByUrl(url);
+            clearSessionCookie();
+            CookieManager.getInstance().flush();
+        } else {
+            Timber.d("Using clearCookies code for API < [%s]", String.valueOf(Build.VERSION_CODES.LOLLIPOP));
+            CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(getContext());
+            cookieSyncMngr.startSync();
+            clearCookieByUrl(url);
+            clearSessionCookie();
+            cookieSyncMngr.stopSync();
+            cookieSyncMngr.sync();
+        }
+    }
+
+    private void clearCookieByUrl(String url) {
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
+        Uri uri = Uri.parse(url);
+        String host = uri.getHost();
+        Timber.d("clearCookieByUrl host [%s]", host);
+        clearCookieByUrlInternal(url);
+        clearCookieByUrlInternal("http://." + host);
+        clearCookieByUrlInternal("https://." + host);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void clearSessionCookie() {
+        CookieManager pCookieManager = CookieManager.getInstance();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            pCookieManager.removeSessionCookies(new ValueCallback<Boolean>() {
+                @Override
+                public void onReceiveValue(Boolean value) {
+                    Timber.d("clearCookieByUrlInternal removeSessionCookies [%s]", value);
+                }
+            });
+        } else {
+            pCookieManager.removeSessionCookie();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void clearCookieByUrlInternal(String url) {
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
+        CookieManager pCookieManager = CookieManager.getInstance();
+        String cookieString = pCookieManager.getCookie(url);
+        //Timber.d("clearCookieByUrlInternal cookieString [%s]", cookieString);
+        Vector<String> cookie = getCookieNamesByUrl(cookieString);
+        if (cookie == null || cookie.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < cookie.size(); i++) {
+            //Timber.d("clearCookieByUrlInternal cookie [%s]", cookie.get(i));
+            pCookieManager.setCookie(url, cookie.get(i) + "=");
+        }
+    }
+
+    private Vector<String> getCookieNamesByUrl(String cookie) {
+        //Timber.d("getCookieNamesByUrl cookie [%s]", cookie);
+        if (TextUtils.isEmpty(cookie)) {
+            return null;
+        }
+        String[] cookieField = cookie.split(";");
+        int len = cookieField.length;
+        for (int i = 0; i < len; i++) {
+            cookieField[i] = cookieField[i].trim();
+        }
+        Vector<String> allCookieField = new Vector<>();
+        for (String aCookieField : cookieField) {
+            //Timber.d("getCookieNamesByUrl cookie [%s]", aCookieField);
+            if (TextUtils.isEmpty(aCookieField)) {
+                continue;
+            }
+            if (!aCookieField.contains("=")) {
+                continue;
+            }
+            String[] singleCookieField = aCookieField.split("=");
+            allCookieField.add(singleCookieField[0]);
+        }
+        return allCookieField;
+    }
 }

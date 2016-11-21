@@ -1,4 +1,5 @@
 <resources>
+    <dimen name="textsize.card.number">18sp</dimen>
     <dimen name="textsize.text.main">15sp</dimen>
     <dimen name="textsize.text.sub">12sp</dimen>
     <dimen name="textsize.group.title">12sp</dimen>
@@ -52,7 +53,7 @@
     <dimen name="toolbar_elevation">8dp</dimen>
 
     <dimen name="leftmenu.avatar">72dp</dimen>
-    <dimen name="border_radius">8dp</dimen>
+    <dimen name="border_radius">4dp</dimen>
     <dimen name="leftmenu.avatar.radius">35dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 

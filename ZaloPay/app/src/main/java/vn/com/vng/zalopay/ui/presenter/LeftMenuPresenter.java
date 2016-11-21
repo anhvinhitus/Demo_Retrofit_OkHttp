@@ -55,17 +55,18 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     private boolean isInitiated;
 
     @Inject
-    LeftMenuPresenter(User user, EventBus eventBus,
-                      TransactionStore.Repository transactionRepository,
+    LeftMenuPresenter(User user, EventBus mEventBus,
+                      TransactionStore.Repository mTransactionRepository,
                       UserConfig userConfig,
                       BalanceStore.Repository balanceRepository,
                       Context context) {
-        this.mEventBus = eventBus;
-        this.mTransactionRepository = transactionRepository;
+        this.mEventBus = mEventBus;
+        this.mTransactionRepository = mTransactionRepository;
         this.mUserConfig = userConfig;
         this.mBalanceRepository = balanceRepository;
         this.context = context;
         this.user = user;
+        Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 
     @Override
@@ -173,6 +174,10 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void listMenuItem() {
+        if (menuView == null) {
+            return;
+        }
+
         List<MenuItem> listItem = MenuItemUtil.getMenuItems();
         try {
             boolean isEnableDeposit = CShareData.getInstance().isEnableDeposite();

@@ -30,7 +30,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start|center_vertical"
-            android:padding="@dimen/spacing.medium"
+            android:gravity="center"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
             android:text="@string/btn_cancel"
             android:textColor="@color/white" />
 
@@ -57,9 +59,11 @@
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
-            android:background="@color/transparent"
-            android:padding="@dimen/spacing.medium"
             android:adjustViewBounds="true"
+            android:background="@color/transparent"
+            android:gravity="center"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
             android:scaleType="centerInside"
             android:src="@drawable/ic_arrow_right"
             android:tint="@color/white" />
@@ -69,7 +73,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end|center_vertical"
-            android:padding="@dimen/spacing.medium"
+            android:gravity="center"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
             android:text="@string/btn_start"
             android:textColor="@color/white"
             android:visibility="gone" />

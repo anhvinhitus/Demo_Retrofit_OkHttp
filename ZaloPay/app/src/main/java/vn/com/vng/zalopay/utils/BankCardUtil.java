@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.R;
 
 /**
  * Created by longlv on 27/06/2016.
+ * *
  */
 public class BankCardUtil {
 
@@ -31,7 +32,7 @@ public class BankCardUtil {
         if (TextUtils.isEmpty(first6cardno) || TextUtils.isEmpty(last4cardno)) {
             return "";
         }
-        String bankCardNumber = String.format("%s******%s", first6cardno, last4cardno);
+        String bankCardNumber = String.format("%s••••••%s", first6cardno, last4cardno);
         bankCardNumber = bankCardNumber.replaceAll("(.{4})(?=.)", "$1 ");
         return bankCardNumber;
     }

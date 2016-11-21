@@ -26,3 +26,9 @@ function webapp_getNavigation() {
     };
 }
 
+function webapp_hideHeaderZalo() {
+	var domHeader = document.getElementById("zheader");
+	if(domHeader != null) {
+		domHeader.style.display = 'none';
+	}
+}

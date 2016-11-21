@@ -107,6 +107,7 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case Constants.REQUEST_CODE_TRANSFER:
+                    getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                     break;
             }

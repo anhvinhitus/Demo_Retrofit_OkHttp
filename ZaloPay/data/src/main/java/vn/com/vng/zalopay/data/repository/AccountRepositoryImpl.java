@@ -16,9 +16,11 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
+import vn.com.vng.zalopay.domain.model.ProfileLevel2;
 import vn.com.vng.zalopay.domain.model.User;
 
 import static vn.com.vng.zalopay.data.util.Utils.sha256Base;
@@ -45,6 +47,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         this.mUploadPhotoService = photoService;
         this.mUser = user;
         this.mUserConfig = userConfig;
+        Timber.d("accessToken[%s]", mUser.accesstoken);
     }
 
     @Override
@@ -120,15 +123,15 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     public Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin) {
         return mRequestService.getuserinfo(mUser.zaloPayId, mUser.accesstoken, zaloId, systemLogin)
                 .map(mappingZaloAndZaloPayResponse -> {
-                    Person person = new Person();
-                    if (!TextUtils.isEmpty(person.zaloPayId)) {
-                        person = localStorage.getById(person.zaloPayId);
+                    //If person exist in cache then update cache
+                    Person person = localStorage.getById(mappingZaloAndZaloPayResponse.userid);
+                    if (person!= null) {
+                        person.zaloId = zaloId;
+                        person.zaloPayId = mappingZaloAndZaloPayResponse.userid;
+                        person.phonenumber = mappingZaloAndZaloPayResponse.phonenumber;
+                        person.zalopayname = mappingZaloAndZaloPayResponse.zalopayname;
+                        localStorage.put(person);
                     }
-                    person.zaloId = zaloId;
-                    person.zaloPayId = mappingZaloAndZaloPayResponse.userid;
-                    person.phonenumber = mappingZaloAndZaloPayResponse.phonenumber;
-                    person.zalopayname = mappingZaloAndZaloPayResponse.zalopayname;
-                    localStorage.put(person);
 
                     MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
                     mappingZaloAndZaloPay.setZaloId(zaloId);
@@ -142,6 +145,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Person> getUserInfoByZaloPayId(String zaloPayId) {
         Person cachedItem = localStorage.getById(zaloPayId);
+        Timber.d("getUserInfoByZaloPayId, cachedItem [%s]", cachedItem);
         if (cachedItem != null) {
             return Observable.just(cachedItem);
         } else {
@@ -252,6 +256,41 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         return ObservableHelper.makeObservable(() -> {
             localStorage.saveProfileInfo3(email, identity, foregroundImg, backgroundImg, avatarImg);
             return Boolean.TRUE;
+        });
+    }
+
+    @Override
+    public Observable<ProfileLevel2> getProfileLevel2Cache() {
+        return ObservableHelper.makeObservable(() -> {
+            Map map = localStorage.getProfileLevel2();
+            Object phoneNumber = map.get(Constants.ProfileLevel2.PHONE_NUMBER);
+            Object isReceivedOtp = map.get(Constants.ProfileLevel2.RECEIVE_OTP);
+            ProfileLevel2 profileLevel2 = new ProfileLevel2();
+            if (phoneNumber != null) {
+                profileLevel2.phoneNumber = phoneNumber.toString();
+            }
+            if (isReceivedOtp != null) {
+                profileLevel2.isReceivedOtp = Boolean.valueOf(isReceivedOtp.toString());
+            }
+            return profileLevel2;
+        });
+    }
+
+    @Override
+    public Observable<Void> saveProfileInfo2(String phoneNumber, boolean receiveOtp) {
+        Timber.d("saveProfileInfo2 phone [%s] receiveOtp [%s]",
+                phoneNumber, receiveOtp);
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.saveProfileInfo2(phoneNumber, receiveOtp);
+            return null;
+        });
+    }
+
+    @Override
+    public Observable<Void> clearProfileInfo2() {
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.saveProfileInfo2("", false);
+            return null;
         });
     }
 

@@ -62,6 +62,8 @@ ext {
 
     wireRuntimeVersion = "2.2.0"
 
+    CircularRevealVersion = "1.0.5"
+
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
             dagger                 : "com.google.dagger:dagger:${daggerVersion}",
@@ -110,9 +112,10 @@ ext {
             debugViewer_noops      : "vn.com.vng:debugviewer-noops:${debugviewerVersion}",
 
             cbor                   : "co.nstant.in:cbor:${cborVersion}",
-            wire_runtime           : "com.squareup.wire:wire-runtime:${wireRuntimeVersion}"
 
+            wire_runtime           : "com.squareup.wire:wire-runtime:${wireRuntimeVersion}",
 
+            circularreveal         : "com.github.ozodrukh:CircularReveal:${CircularRevealVersion}"
     ]
 
     testingLibraries = [

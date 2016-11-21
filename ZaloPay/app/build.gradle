@@ -26,6 +26,7 @@ def cfg = rootProject.ext.configuration
 repositories {
     maven { url 'https://maven.fabric.io/public' }
     maven { url "http://dl.bintray.com/jjhesk/maven" }
+    maven { url "https://jitpack.io" }
 }
 
 android {
@@ -362,6 +363,8 @@ dependencies {
     compile(libs.crashlytics) {
         transitive = true;
     }
+
+    compile libs.circularreveal
 
     compile libs.parceler
     apt libs.parceler_apt

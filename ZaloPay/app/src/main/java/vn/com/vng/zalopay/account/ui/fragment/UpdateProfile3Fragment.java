@@ -19,16 +19,22 @@ import com.zalopay.ui.widget.edittext.ZPEditText;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 import vn.com.vng.zalopay.ui.widget.validate.PassportValidate;
@@ -171,6 +177,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         super.onActivityCreated(savedInstanceState);
 
         presenter.getProfileInfo();
+
+        //Request permission for read photo from storage by cache.
+        isPermissionReadStorageAndRequest();
     }
 
     @Override
@@ -427,13 +436,34 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     void loadForegroundImageCMND(Uri uri) {
-        boolean isLoaded = loadImage(mFgIdentityView, uri);
+        Timber.d("loadForegroundImageCMND uri[%s]", uri);
+        loadImage(uri, new DefaultSubscriber<Bitmap>() {
+            @Override
+            public void onNext(Bitmap bitmap) {
+                Timber.d("loadForegroundImageCMND bitmap[%s]", bitmap);
+                if (bitmap == null) {
+                    return;
+                }
+                mFgIdentityView.setImageBitmap(bitmap);
+                mFgIdentityView.setVisibility(View.VISIBLE);
 
-        if (isLoaded) {
-            mTvFgIdentityView.setVisibility(View.GONE);
-            btnRemoveFrontImage.setClickable(true);
-            btnRemoveFrontImage.setImageResource(R.drawable.ic_remove_circle);
-        }
+                mTvFgIdentityView.setVisibility(View.GONE);
+                btnRemoveFrontImage.setClickable(true);
+                btnRemoveFrontImage.setImageResource(R.drawable.ic_remove_circle);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.w("loadForegroundImageCMND onError[%s]", e.getMessage());
+                super.onError(e);
+            }
+
+            @Override
+            public void onCompleted() {
+                Timber.w("loadForegroundImageCMND onCompleted");
+                super.onCompleted();
+            }
+        });
     }
 
     void clearFrontImage() {
@@ -446,12 +476,22 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     void loadAvatar(Uri uri) {
-        boolean isLoaded = loadImage(mAvatarView, uri);
-        if (isLoaded) {
-            mTvAvatarView.setVisibility(View.GONE);
-            btnRemoveAvatar.setClickable(true);
-            btnRemoveAvatar.setImageResource(R.drawable.ic_remove_circle);
-        }
+        Timber.d("loadAvatar uri[%s]", uri);
+        loadImage(uri, new DefaultSubscriber<Bitmap>() {
+            @Override
+            public void onNext(Bitmap bitmap) {
+                Timber.d("loadAvatar bitmap[%s]", bitmap);
+                if (bitmap == null) {
+                    return;
+                }
+                mAvatarView.setImageBitmap(bitmap);
+                mAvatarView.setVisibility(View.VISIBLE);
+
+                mTvAvatarView.setVisibility(View.GONE);
+                btnRemoveAvatar.setClickable(true);
+                btnRemoveAvatar.setImageResource(R.drawable.ic_remove_circle);
+            }
+        });
     }
 
     void clearAvatar() {
@@ -465,12 +505,22 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     void loadBackgroundImageCMND(Uri uri) {
-        boolean isLoaded = loadImage(mBgIdentityView, uri);
-        if (isLoaded) {
-            mTvBgIdentityView.setVisibility(View.GONE);
-            btnRemoveBackImage.setClickable(true);
-            btnRemoveBackImage.setImageResource(R.drawable.ic_remove_circle);
-        }
+        Timber.d("loadBackgroundImageCMND uri[%s]", uri);
+        loadImage(uri, new DefaultSubscriber<Bitmap>() {
+            @Override
+            public void onNext(Bitmap bitmap) {
+                Timber.d("loadBackgroundImageCMND bitmap[%s]", bitmap);
+                if (bitmap == null) {
+                    return;
+                }
+                mBgIdentityView.setImageBitmap(bitmap);
+                mBgIdentityView.setVisibility(View.VISIBLE);
+
+                mTvBgIdentityView.setVisibility(View.GONE);
+                btnRemoveBackImage.setClickable(true);
+                btnRemoveBackImage.setImageResource(R.drawable.ic_remove_circle);
+            }
+        });
     }
 
     void clearBackgroundImage() {
@@ -482,34 +532,43 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mUriBgIdentity = null;
     }
 
-    private boolean loadImage(SimpleDraweeView image, Uri uri) {
+    private void loadImage(final Uri uri, DefaultSubscriber<Bitmap> subscriber) {
+        Timber.d("loadImage uri[%s] subscriber[%s]", uri, subscriber);
+        if (subscriber == null) {
+            return;
+        }
+
         if (uri == null) {
-            return false;
+            subscriber.onNext(null);
         }
 
-        try {
-            Bitmap bitmap = PhotoUtil.getThumbnail(getContext(), uri);
-            if (bitmap != null) {
-                image.setImageBitmap(bitmap);
-                image.setVisibility(View.VISIBLE);
-                return true;
+        ObservableHelper.makeObservable(new Callable<Bitmap>() {
+            @Override
+            public Bitmap call() throws Exception {
+                try {
+                    return PhotoUtil.getThumbnail(getContext(), uri);
+                } catch (FileNotFoundException e) {
+                    showToast(R.string.exception_file_not_found);
+                    Timber.w(e, "get thumbnail ");
+                } catch (IOException e) {
+                    Timber.w(e, "loadImage");
+                }
+                return null;
             }
-        } catch (FileNotFoundException e) {
-            showToast(R.string.exception_file_not_found);
-            Timber.d(e, "get thumbnail ");
-        } catch (IOException e) {
-            Timber.d(e, "loadImage");
-        }
-
-        return false;
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
     }
 
     @Override
     public void setProfileInfo(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg) {
         Timber.d("setProfileInfo: foregroundImg %s backgroundImg %s avatarImg ", foregroundImg, backgroundImg, avatarImg);
 
-        setEmail(email);
-        setIdentity(identity);
+        if (!TextUtils.isEmpty(email)) {
+            setEmail(email);
+        }
+        if (!TextUtils.isEmpty(identity)) {
+            setIdentity(identity);
+        }
 
         setSelection(mEdtEmailView);
         setSelection(mEdtIdentityView);
@@ -529,6 +588,19 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         if (!TextUtils.isEmpty(avatarImg)) {
             mUriAvatar = Uri.parse(avatarImg);
             loadAvatar(mUriAvatar);
+        }
+    }
+
+    @Override
+    protected void permissionGranted(int permissionRequestCode) {
+        if (permissionRequestCode == Constants.Permission.REQUEST_READ_STORAGE) {
+            if (mAvatarView == null || mFgIdentityView == null || mBgIdentityView == null) {
+                return;
+            }
+            if (mAvatarView.getDrawable() == null && mFgIdentityView.getDrawable() == null
+                    && mBgIdentityView.getDrawable() == null) {
+                presenter.getProfileInfo();
+            }
         }
     }
 }

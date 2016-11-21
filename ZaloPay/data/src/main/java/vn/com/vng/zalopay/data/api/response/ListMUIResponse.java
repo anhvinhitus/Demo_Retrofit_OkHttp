@@ -20,7 +20,7 @@ public class ListMUIResponse extends BaseResponse {
     public int usergender;
 
     @SerializedName("listmerchantuserinfo")
-    public List<MerchantUserSubInfo> mUserSubInfoList;
+    public List<MerchantUserSubInfo> listmerchantuserinfo;
 
     public class MerchantUserSubInfo {
         @SerializedName("appid")

@@ -18,6 +18,7 @@
         <item name="colorSwitchThumbNormal">@color/colorPrimary</item>
 
         <item name="alertDialogTheme">@style/AlertDialogStyle</item>
+        <item name="android:textColorHint">@color/hint</item>
     </style>
 
     <style name="EditTextStyle" parent="Widget.AppCompat.EditText">

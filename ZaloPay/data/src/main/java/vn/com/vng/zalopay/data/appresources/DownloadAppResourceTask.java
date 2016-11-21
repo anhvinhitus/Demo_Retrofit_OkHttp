@@ -12,7 +12,7 @@ import timber.log.Timber;
  * Created by AnhHieu on 5/21/16.
  *
  */
-public class DownloadAppResourceTask {
+final class DownloadAppResourceTask {
 
     public interface Callback {
         void onSuccess();
@@ -27,10 +27,10 @@ public class DownloadAppResourceTask {
     private final AppResourceStore.LocalStorage mLocalStorage;
     private final String mBundleRootFolder;
 
-    public DownloadAppResourceTask(DownloadInfo appResourceEntity,
-                                   OkHttpClient mOkHttpClient,
-                                   AppResourceStore.LocalStorage localStorage,
-                                   String rootBundle) {
+    DownloadAppResourceTask(DownloadInfo appResourceEntity,
+                            OkHttpClient mOkHttpClient,
+                            AppResourceStore.LocalStorage localStorage,
+                            String rootBundle) {
 
         this.downloadInfo = appResourceEntity;
         this.httpClient = mOkHttpClient;
@@ -95,7 +95,23 @@ public class DownloadAppResourceTask {
     }
 
 
-    public String getExternalBundleFolder(int appId) {
+    private String getExternalBundleFolder(int appId) {
         return String.format(Locale.getDefault(), "%s/modules/%d/app", mBundleRootFolder, appId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DownloadAppResourceTask that = (DownloadAppResourceTask) o;
+
+        return downloadInfo != null ? downloadInfo.equals(that.downloadInfo) : that.downloadInfo == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return downloadInfo != null ? downloadInfo.hashCode() : 0;
     }
 }

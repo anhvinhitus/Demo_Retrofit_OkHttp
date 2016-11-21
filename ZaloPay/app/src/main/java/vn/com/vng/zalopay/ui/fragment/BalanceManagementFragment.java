@@ -22,7 +22,9 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.ui.presenter.BalanceManagementPresenter;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -66,21 +68,10 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
         navigator.startMiniAppActivity(getActivity(), ModuleName.FAQ);
     }
 
-    private void onClickAccountName() {
-        if (!TextUtils.isEmpty(getUserComponent().currentUser().zalopayname)) {
-            return;
-        }
-        if (getUserComponent().currentUser().profilelevel < 2) {
-            navigator.startUpdateProfileLevel2Activity(getActivity());
-        }else{
-            navigator.startEditAccountActivity(getContext());
-        }
-    }
-
     private View.OnClickListener mOnClickAccountName = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            onClickAccountName();
+            mPresenter.updateZaloPayID();
         }
     };
 
@@ -201,6 +192,12 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
             tvAccountName.setCompoundDrawables(null, null, null, null);
             layoutAccountName.setOnClickListener(null);
         }
+    }
+
+    @Override
+    public void showConfirmDialog(String message, ZPWOnEventConfirmDialogListener listener) {
+        DialogManager.showSweetDialogOptionNotice(getActivity(), message, getString(R.string.txt_update),
+                getString(R.string.txt_close), listener);
     }
 
     @Override

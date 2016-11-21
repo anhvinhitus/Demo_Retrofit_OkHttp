@@ -29,4 +29,5 @@ public class DefaultZPGatewayInfoCallBack implements ZPWGatewayInfoCallback {
     public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
 
     }
+
 }

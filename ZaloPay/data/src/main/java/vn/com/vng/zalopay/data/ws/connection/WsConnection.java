@@ -8,7 +8,6 @@ import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.lang.ref.WeakReference;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -26,7 +25,13 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageConnectionInfo;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageLogin;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageStatus;
+import vn.com.vng.zalopay.data.ws.protobuf.MessageType;
 import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
+import vn.com.vng.zalopay.data.ws.protobuf.StatusMessageClient;
+import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -34,12 +39,14 @@ import vn.com.vng.zalopay.domain.model.User;
  * Network handlers for Socket connection
  */
 public class WsConnection extends Connection {
-    private static final int TIMER_HEARTBEAT = 60;
-    private static final int SERVER_TIMEOUT = 2 * 60;
+    private static final int TIMER_HEARTBEAT = 20;
+    private static final int SERVER_TIMEOUT = 40;
     private static final int TIMER_CONNECTION_CHECK = 10;
     private String gcmToken;
 
     private final Context context;
+
+    private boolean mIsAuthenSuccess = false;
 
     private int numRetry;
 
@@ -83,7 +90,7 @@ public class WsConnection extends Connection {
         this.parser = parser;
         this.userConfig = config;
 //        mSocketClient = new NettyClient(host, port, new ConnectionListener());
-        mSocketClient = new TCPClient(host, port, new ConnectionListener(this));
+        mSocketClient = new TCPClient(host, port, new ConnectionListener());
         HandlerThread thread = new HandlerThread("wsconnection");
         thread.start();
         mConnectionHandler = new Handler(thread.getLooper());
@@ -119,6 +126,7 @@ public class WsConnection extends Connection {
                         .subscribe((value) -> {
                             Timber.d("Begin send heart beat [%s]", value);
                             ping();
+                            ensureAuthenSuccess();
                         });
         compositeSubscription.add(subscription);
     }
@@ -197,8 +205,12 @@ public class WsConnection extends Connection {
             return;
         }
 
-        NotificationApiMessage pingMessage = NotificationApiHelper.createPingMessage(getCurrentUserId());
-        send(pingMessage.messageCode, pingMessage.messageContent);
+        MessageConnectionInfo pingMessage = new MessageConnectionInfo.Builder()
+                .userid(getCurrentUserId())
+                .embeddata(System.currentTimeMillis())
+                .build();
+
+        send(MessageType.PING_SERVER.getValue(), MessageConnectionInfo.ADAPTER.encode(pingMessage));
     }
 
     private void reconnect() {
@@ -246,6 +258,11 @@ public class WsConnection extends Connection {
         return false;
     }
 
+//    @Override
+//    public boolean send(int msgType, AbstractMessage msgData) {
+//        return send(msgType, msgData.toByteArray());
+//    }
+
     @Override
     public boolean send(int msgType, byte[] data) {
         ByteBuffer bufTemp = ByteBuffer.allocate(HEADER_LENGTH + data.length);
@@ -259,8 +276,19 @@ public class WsConnection extends Connection {
     }
 
     private boolean sendAuthentication(String token, long uid) {
-        NotificationApiMessage authenticationMessage = NotificationApiHelper.createAuthenticationMessage(token, uid, gcmToken);
-        return send(authenticationMessage.messageCode, authenticationMessage.messageContent);
+
+        Timber.d("send authentication token %s zaloPayId %s gcmToken %s", token, uid, gcmToken);
+
+        MessageLogin.Builder loginMsg = new MessageLogin.Builder()
+                .token(token)
+                .usrid(uid)
+                .ostype(Enums.Platform.ANDROID.getId());
+
+        if (!TextUtils.isEmpty(gcmToken)) {
+            loginMsg.devicetoken(gcmToken);
+        }
+
+        return send(MessageType.AUTHEN_LOGIN.getValue(), MessageLogin.ADAPTER.encode(loginMsg.build()));
     }
 
     private boolean sendAuthentication() {
@@ -294,13 +322,126 @@ public class WsConnection extends Connection {
             }
 
             Timber.d("Send feedback status with mtaid %s mtuid %s zaloPayId %s", mtaid, mtuid, uid);
-            NotificationApiMessage message = NotificationApiHelper.createFeedbackMessage(mtaid, mtuid, uid);
-            return send(message.messageCode, message.messageContent);
+
+            StatusMessageClient.Builder statusMsg = new StatusMessageClient.Builder()
+                    .status(MessageStatus.RECEIVED.getValue());
+
+            if (mtaid > 0) {
+                statusMsg.mtaid(mtaid);
+            }
+            if (mtuid > 0) {
+                statusMsg.mtuid(mtuid);
+            }
+            if (uid > 0) {
+                statusMsg.userid(uid);
+            }
+
+            return send(MessageType.FEEDBACK.getValue(), StatusMessageClient.ADAPTER.encode(statusMsg.build()));
         } catch (Throwable e) {
             Timber.w(e, "Exception while sending feedback message");
             return false;
         }
     }
+
+    private class ConnectionListener implements Listener {
+
+        @Override
+        public void onConnected() {
+            Timber.d("onConnected");
+            mState = State.Connected;
+            mNextConnectionState = NextState.RETRY_CONNECT;
+            //    numRetry = 0;
+            mIsAuthenSuccess = false;
+            sendAuthentication();
+
+            mServerPongBus.send(1L);
+
+            EventBus.getDefault().post(new WsConnectionEvent(true));
+        }
+
+        @Override
+        public void onMessage(byte[] data) {
+            Timber.v("onReceived: %s bytes", data.length);
+            Event message = parser.parserMessage(data);
+            if (message == null) {
+                return;
+            }
+
+            ServerMessageType messageType = ServerMessageType.fromValue(message.getMsgType());
+            Timber.v("message.msgType %s", messageType);
+            boolean needFeedback = true;
+
+            if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
+                numRetry = 0;
+                postResult(message);
+                mServerPongBus.send(0L);
+                mIsAuthenSuccess = true;
+            } else if (messageType == ServerMessageType.KICK_OUT_USER) {
+                needFeedback = false;
+                if (mNextConnectionState != NextState.RETRY_AFTER_KICKEDOUT) {
+                    mNextConnectionState = NextState.RETRY_AFTER_KICKEDOUT;
+                } else {
+                    // kicked out 1 time, this time should disconnect
+                    mNextConnectionState = NextState.DISCONNECT;
+                }
+                doDisconnect();
+            } else if (messageType == ServerMessageType.PONG_CLIENT) {
+                needFeedback = false;
+                long currentTime = System.currentTimeMillis();
+                Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData) message).clientData);
+                mServerPongBus.send(currentTime - ((ServerPongData) message).clientData);
+            } else {
+                postResult(message);
+                mServerPongBus.send(2L);
+            }
+
+            if (needFeedback) {
+                sendFeedbackStatus(message);
+            }
+        }
+
+    /**
+     * Handle socket disconnected event
+     */
+        @Override
+        public void onDisconnected(ConnectionErrorCode code, String reason) {
+            Timber.d("onDisconnected %s", code);
+            mState = Connection.State.Disconnected;
+            mIsAuthenSuccess = false;
+
+            if (mSocketClient != null) {
+                mSocketClient.disconnect();
+            }
+
+            Timber.d("Next expected network state: %s", mNextConnectionState);
+            if (mNextConnectionState == NextState.RETRY_CONNECT) {
+                scheduleReconnect();
+            }
+            EventBus.getDefault().post(new WsConnectionEvent(false));
+        }
+
+    /**
+     * Handle socket error event
+     */
+             @Override
+        public void onError(Throwable e) {
+            Timber.d("onError %s", e);
+            mState = Connection.State.Disconnected;
+            mIsAuthenSuccess = false;
+
+            if (e instanceof SocketTimeoutException) {
+//            } else if (e instanceof ConnectTimeoutException) {
+            } else if (e instanceof ConnectException) {
+            } else if (e instanceof UnknownHostException) {
+            }
+
+            if (mNextConnectionState == NextState.RETRY_CONNECT) {
+                scheduleReconnect();
+            }
+            EventBus.getDefault().post(new WsConnectionEvent(false));
+        }
+    }
+
 
     private void scheduleReconnect() {
         if (!userConfig.hasCurrentUser()) {
@@ -318,150 +459,14 @@ public class WsConnection extends Connection {
         Timber.d("Try to reconnect after %s (seconds) at [%s]-th time", mCheckCountDown * TIMER_CONNECTION_CHECK, numRetry);
     }
 
-    /**
-     * Handle socket connected event
-     */
-    private void handleOnConnected() {
-        Timber.d("onConnected");
-        mState = State.Connected;
-        mNextConnectionState = NextState.RETRY_CONNECT;
-        //    numRetry = 0;
-        sendAuthentication();
-        mServerPongBus.send(1L);
-
-        EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.CONNECTED));
-    }
-
-    /**
-     * Handle socket received message event
-     */
-    private void handleOnMessage(byte[] data) {
-        Timber.v("onReceived: %s bytes", data.length);
-
-        Event message = parser.parserMessage(data);
-        if (message == null) {
+    private void ensureAuthenSuccess() {
+        Timber.w("ensureAuthenSuccess start, state[%s] isAuthe[%s]", mState, mIsAuthenSuccess);
+        if (mState != State.Connected) {
             return;
         }
-
-        ServerMessageType messageType = ServerMessageType.fromValue(message.getMsgType());
-        Timber.v("message.msgType %s", messageType);
-        boolean needFeedback = true;
-
-        if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
-            numRetry = 0;
-            postResult(message);
-            mServerPongBus.send(0L);
-        } else if (messageType == ServerMessageType.KICK_OUT_USER) {
-            needFeedback = false;
-            if (mNextConnectionState != NextState.RETRY_AFTER_KICKEDOUT) {
-                mNextConnectionState = NextState.RETRY_AFTER_KICKEDOUT;
-            } else {
-                // kicked out 1 time, this time should disconnect
-                mNextConnectionState = NextState.DISCONNECT;
-            }
-            doDisconnect();
-        } else if (messageType == ServerMessageType.PONG_CLIENT) {
-            needFeedback = false;
-            long currentTime = System.currentTimeMillis();
-            Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData) message).clientData);
-            mServerPongBus.send(currentTime - ((ServerPongData) message).clientData);
-        } else {
-
-            if (messageType == ServerMessageType.RECOVERY_RESPONSE) {
-                needFeedback = false;
-            }
-
-            postResult(message);
-            mServerPongBus.send(2L);
-        }
-
-        if (needFeedback) {
-            sendFeedbackStatus(message);
-        }
-    }
-
-    /**
-     * Handle socket disconnected event
-     */
-    private void handleOnDisconnected(ConnectionErrorCode code, String reason) {
-        Timber.d("onDisconnected %s", code);
-        mState = Connection.State.Disconnected;
-
-        if (mSocketClient != null) {
-            mSocketClient.disconnect();
-        }
-
-        Timber.d("Next expected network state: %s", mNextConnectionState);
-        if (mNextConnectionState == NextState.RETRY_CONNECT) {
-            scheduleReconnect();
-        }
-        EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
-    }
-
-    /**
-     * Handle socket error event
-     */
-    private void handleOnError(Throwable e) {
-        Timber.d("onError %s", e);
-        mState = Connection.State.Disconnected;
-
-        if (e instanceof SocketTimeoutException) {
-//            } else if (e instanceof ConnectTimeoutException) {
-        } else if (e instanceof ConnectException) {
-        } else if (e instanceof UnknownHostException) {
-        }
-
-        if (mNextConnectionState == NextState.RETRY_CONNECT) {
-            scheduleReconnect();
-        }
-        EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
-    }
-
-    private static class ConnectionListener implements Listener {
-        private WeakReference<WsConnection> mConnection;
-
-        ConnectionListener(WsConnection connection) {
-            this.mConnection = new WeakReference<>(connection);
-        }
-
-        @Override
-        public void onConnected() {
-            if (mConnection.get() == null) {
-                Timber.i("WsConnection is NULL when receiving onConnected event");
-                return;
-            }
-
-            mConnection.get().handleOnConnected();
-        }
-
-        @Override
-        public void onMessage(byte[] data) {
-            if (mConnection.get() == null) {
-                Timber.i("WsConnection is NULL when receiving onMessage event");
-                return;
-            }
-
-            mConnection.get().handleOnMessage(data);
-        }
-
-        @Override
-        public void onDisconnected(ConnectionErrorCode code, String reason) {
-            if (mConnection.get() == null) {
-                Timber.i("WsConnection is NULL when receiving onDisconnected event");
-                return;
-            }
-
-            mConnection.get().handleOnDisconnected(code, reason);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (mConnection.get() == null) {
-                Timber.i("WsConnection is NULL when receiving onError event");
-                return;
-            }
-
-            mConnection.get().handleOnError(e);
+        Timber.w("ensureAuthenSuccess, state is connected but socket isn't authen");
+        if (!mIsAuthenSuccess) {
+            sendAuthentication();
         }
     }
 }

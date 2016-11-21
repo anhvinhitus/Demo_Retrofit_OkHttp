@@ -1,0 +1,106 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true"
+    tools:context="vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing.medium">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/loremipsum"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_tutorial_link_card" />
+
+            <ImageView
+                android:id="@+id/imgBankIcon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginLeft="28dp"
+                android:layout_marginTop="194dp"
+                android:contentDescription="@string/loremipsum"
+                tools:src="@drawable/ic_luuthe" />
+
+            <TextView
+                android:id="@+id/txtBankName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="55dp"
+                android:layout_marginTop="194dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:maxWidth="84dp"
+                android:textColor="@color/txt_item_main"
+                android:textSize="9sp"
+                tools:text="@string/link_card_to_use_easily" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="55dp"
+                android:layout_marginTop="206dp"
+                android:text="@string/free_fee"
+                android:textColor="@color/txt_item_sub"
+                android:textSize="6sp" />
+
+            <TextView
+                android:id="@+id/txtLastNumberOfCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="146dp"
+                android:layout_marginTop="148dp"
+                android:textColor="@color/txt_item_main"
+                android:textSize="30sp"
+                tools:text="****6789" />
+        </FrameLayout>
+
+        <TextView
+            style="@style/TextView.Default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/tutorial_link_card_note_1" />
+
+        <TextView
+            style="@style/TextView.Default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/tutorial_link_card_note_2" />
+
+        <TextView
+            style="@style/TextView.Default"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/tutorial_link_card_note_3" />
+
+        <TextView
+            android:id="@+id/btnManagerCard"
+            style="@style/Button.Default"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_btn_blue_border_selector"
+            android:gravity="center"
+            android:text="@string/manager_card"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
+</ScrollView>

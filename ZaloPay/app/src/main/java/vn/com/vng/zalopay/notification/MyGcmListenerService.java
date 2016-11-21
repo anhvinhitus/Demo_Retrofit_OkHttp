@@ -16,7 +16,6 @@
 
 package vn.com.vng.zalopay.notification;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -25,20 +24,13 @@ import com.google.gson.Gson;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
-    
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
-
         if (data == null) {
             return;
         }
@@ -47,27 +39,29 @@ public class MyGcmListenerService extends GcmListenerService {
         String badgeNumber = data.getString("badgenumber");
         String embeddata = data.getString("embeddata");
 
-        Timber.d("onMessageReceived: from %s message %s embeddata %s badgeNumber %s ", from, message, embeddata, badgeNumber);
+        Timber.d("onMessageReceived: from %s message %s embeddata %s badgeNumber %s ",
+                from, message, embeddata, badgeNumber);
 
         createUserComponent();
 
-        sendNotification(message);
+        EmbedDataGcm embedDataGcm = null;
+        if (!TextUtils.isEmpty(embeddata)) {
+            Gson gson = new Gson();
+            embedDataGcm = gson.fromJson(embeddata, EmbedDataGcm.class);
+        }
+
+        sendNotification(message, embedDataGcm);
     }
 
-    private void sendNotification(String message) {
+    private void sendNotification(String message, EmbedDataGcm embedDataGcm) {
         if (!TextUtils.isEmpty(message)) {
             UserComponent userComponent = getUserComponent();
             Timber.d("Create notification with userComponent %s", userComponent);
             if (userComponent != null) {
-
-                Intent intent = new Intent(getApplicationContext(), NotificationActivity.class);
-
                 NotificationHelper notificationHelper = userComponent.notificationHelper();
-                notificationHelper.create(getApplicationContext(), 1, intent,
-                        R.mipmap.ic_launcher, getString(R.string.app_name), message);
+                notificationHelper.handleNotificationFromGcm(message, embedDataGcm);
             }
         }
-
     }
 
     private void createUserComponent() {

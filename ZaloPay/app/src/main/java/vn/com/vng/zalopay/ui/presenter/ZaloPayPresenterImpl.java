@@ -1,31 +1,25 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.os.CountDownTimer;
-import android.os.Debug;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.zalopay.apploader.impl.BundleServiceImpl;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -35,15 +29,14 @@ import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.util.ListStringUtil;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
+import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
@@ -60,7 +53,7 @@ import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
  */
 public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPresenter<IZaloPayView> {
     private final int BANNER_COUNT_DOWN_INTERVAL = 3000;
-    private final int BANNER_MILLIS_IN_FUTURE = 60 * 60 * 1000; //Finish countDownTimer after 1h (60*60*1000)
+    private int BANNER_MILLIS_IN_FUTURE = 60 * 60 * 1000; //Finish countDownTimer after 1h (60*60*1000)
 
     private IZaloPayView mZaloPayView;
 
@@ -166,6 +159,27 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         compositeSubscription.add(subscription);
     }
 
+    @Override
+    public void startPaymentApp(final AppResource app) {
+        Subscription subscription = mAppResourceRepository.existResource(app.appid)
+                .observeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            if (mZaloPayView != null) {
+                                mNavigator.startPaymentApplicationActivity(mZaloPayView.getContext(), app);
+                            }
+                        } else {
+                            if (mZaloPayView != null && mZaloPayView.getContext() != null) {
+                                mZaloPayView.showError(mZaloPayView.getContext().getString(R.string.application_downloading));
+                            }
+                        }
+                    }
+                });
+        compositeSubscription.add(subscription);
+    }
+
     // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
     // when received notification
     private void getTotalNotification(long delay) {
@@ -222,8 +236,8 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
         @Override
         public void onNext(List<AppResource> appResources) {
-            Timber.d(" AppResource %s", appResources.size());
             ZaloPayPresenterImpl.this.onGetAppResourceSuccess(appResources);
+            Timber.d(" AppResource %s", appResources.size());
         }
     }
 
@@ -277,9 +291,13 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     public void onTouchBanner(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             stopBannerCountDownTimer();
-            mBannerHandle.removeCallbacks(mBannerRunnable);
+            if (mBannerHandle != null) {
+                mBannerHandle.removeCallbacks(mBannerRunnable);
+            }
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            mBannerHandle.postDelayed(mBannerRunnable, BANNER_COUNT_DOWN_INTERVAL);
+            if (mBannerHandle != null) {
+                mBannerHandle.postDelayed(mBannerRunnable, BANNER_COUNT_DOWN_INTERVAL);
+            }
         }
     }
 
@@ -312,7 +330,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         if (event.isConnect) {
             mZaloPayView.hideNetworkError();
         } else {
-            mZaloPayView.showNetworkError();
+            mZaloPayView.showWsConnectError();
         }
     }
 
@@ -347,6 +365,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         if (mZaloPayView != null) {
             mZaloPayView.setBalance(event.balance);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onSignOutEvent(SignOutEvent event) {
+        mEventBus.unregister(this);
     }
 
     private final class NotificationSubscriber extends DefaultSubscriber<Integer> {

@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.webview.ui.service;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 
 /**
  * Created by longlv on 10/3/16.
@@ -83,34 +85,35 @@ public class ServiceWebViewFragment extends WebViewFragment {
 
     @Override
     public void onDestroy() {
-        if (mWebViewProcessor != null) {
-            mWebViewProcessor.onDestroy();
-        }
         mPresenter.destroy();
         super.onDestroy();
     }
 
     @Override
-    public boolean onBackPressed() {
-        if (mWebViewProcessor == null) {
-            return false;
-        }
-
-        if (mWebViewProcessor.hasError()) {
-            return false;
-        }
-
-        boolean canBack = mWebViewProcessor.canBack();
-        Timber.d("Can WebApp navigate back: %s", canBack);
-        if (canBack) {
-            mWebViewProcessor.runScript("utils.back()", new ValueCallback<String>() {
-                @Override
-                public void onReceiveValue(String value) {
-                    Timber.d("navigation back: %s", value);
-                }
-            });
-        }
-
-        return canBack;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.servicewebapp_menu, menu);
+        //super.onCreateOptionsMenu(menu, inflater);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Timber.d("onOptionsItemSelected: %s", id);
+        if (id == R.id.webapp_action_history) {
+            loadUrl(mPresenter.getHistoryWebViewUrl());
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (mPresenter != null && !mPresenter.isServiceWeb(mCurrentUrl)) {
+            loadWebView();
+            return true;
+        }
+        return super.onBackPressed();
+    }
+
 }

@@ -38,6 +38,11 @@ import vn.com.vng.zalopay.internal.di.modules.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.modules.UserRedPacketModule;
 import vn.com.vng.zalopay.internal.di.modules.UserTransactionModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
+import vn.com.vng.zalopay.linkcard.ui.CardSupportFragment;
+import vn.com.vng.zalopay.linkcard.ui.IntroSaveCardFragment;
+import vn.com.vng.zalopay.linkcard.ui.LinkCardFragment;
+import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
@@ -56,10 +61,9 @@ import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.ui.dialog.TransferMoneyDialog;
 import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
-import vn.com.vng.zalopay.ui.fragment.IntroSaveCardFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
-import vn.com.vng.zalopay.ui.fragment.LinkCardFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
+import vn.com.vng.zalopay.warningrooted.WarningRootedFragment;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment;
@@ -100,6 +104,8 @@ public interface UserComponent {
     NotificationStore.Repository notificationRepository();
 
     NotificationHelper notificationHelper();
+
+    ZPNotificationService notiZpNotificationService();
 
     FriendStore.Repository friendRepository();
 
@@ -155,8 +161,6 @@ public interface UserComponent {
 
     void inject(QRCodeFragment f);
 
-    void inject(ZPNotificationService service);
-
     void inject(UpdateProfile3Fragment f);
 
     void inject(IntroSaveCardFragment f);
@@ -186,4 +190,12 @@ public interface UserComponent {
     void inject(EditAccountNameFragment f);
 
     void inject(ZaloFriendListFragment f);
+
+    void inject(CardSupportFragment f);
+
+    void inject(TutorialLinkCardFragment f);
+
+    void inject(WarningRootedFragment f);
+
+    void inject(CardSupportActivity a);
 }

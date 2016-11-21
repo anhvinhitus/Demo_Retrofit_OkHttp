@@ -129,5 +129,9 @@ public abstract class AbsQrScanFragment extends Fragment {
         super.onDestroyView();
         pause();
     }
+
+    public CompoundBarcodeView getBarcodeScannerView(){
+        return barcodeScannerView;
+    }
 }
 */

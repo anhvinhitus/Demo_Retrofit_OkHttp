@@ -38,7 +38,6 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         this.listener = listener;
     }
 
-
     public OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onListItemClick(View anchor, int position) {

@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
 
@@ -54,7 +55,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  */
 
 public class NotificationHelper {
-
+    private final int NOTIFICATION_ID = 1;
     private final NotificationStore.Repository mNotifyRepository;
     private final AccountStore.Repository mAccountRepository;
     private final Context mContext;
@@ -68,14 +69,13 @@ public class NotificationHelper {
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Inject
-    public NotificationHelper(Context applicationContext, User user,
-                              NotificationStore.Repository notifyRepository,
-                              AccountStore.Repository accountRepository,
-                              RedPacketStore.Repository redPacketRepository,
-                              TransactionStore.Repository transactionRepository,
-                              BalanceStore.Repository balanceRepository,
-                              EventBus eventBus, UserConfig userConfig
-    ) {
+    NotificationHelper(Context applicationContext, User user,
+                       NotificationStore.Repository notifyRepository,
+                       AccountStore.Repository accountRepository,
+                       RedPacketStore.Repository redPacketRepository,
+                       TransactionStore.Repository transactionRepository,
+                       BalanceStore.Repository balanceRepository,
+                       EventBus eventBus, UserConfig userConfig) {
         Timber.d("Create new instance of NotificationHelper");
         this.mNotifyRepository = notifyRepository;
         this.mContext = applicationContext;
@@ -94,7 +94,7 @@ public class NotificationHelper {
         Timber.d("Finalize NotificationHelper");
     }
 
-    public void create(Context context, int id, Intent intent, int smallIcon, String contentTitle, String contentText) {
+    private void throwNotification(Context context, int id, Intent intent, int smallIcon, String contentTitle, String contentText) {
         NotificationManager manager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -157,8 +157,10 @@ public class NotificationHelper {
             // post notification and skip write to db
             mEventBus.post(notify);
             skipStorage = true;
-        } else if (notificationType == NotificationType.UPDATE_PLATFORM_INFORMATION) {
+        } else if (notificationType == NotificationType.UPDATE_PLATFORMINFO) {
             refreshGatewayInfo();
+        } else if (notificationType == NotificationType.RECOVERY_MONEY) {
+            showAlertNotification(notify, mContext.getString(R.string.recovery_money));
         } else if (notificationType == NotificationType.LINK_CARD_EXPIRED) {
             removeLinkCard(notify);
         } else if (notificationType == NotificationType.MERCHANT_BILL) {
@@ -197,7 +199,9 @@ public class NotificationHelper {
     }
 
     private void shouldUpdateTransAndBalance(NotificationData notify) {
+        Timber.d("should Update Trans And Balance");
         if (NotificationType.isTransactionNotification(notify.notificationtype)) {
+            Timber.d("start update Trans And Balance");
             this.updateTransaction();
             this.updateBalance();
         }
@@ -290,6 +294,9 @@ public class NotificationHelper {
         }
     }
 
+    /**
+     * Get count notification unread from DB & show
+     */
     void showNotificationSystem() {
         Subscription subscription = mNotifyRepository.totalNotificationUnRead()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -297,23 +304,59 @@ public class NotificationHelper {
         compositeSubscription.add(subscription);
     }
 
+    /**
+     * Show notification numbers
+     */
     private void showNotificationSystem(int numberUnread) {
-
         Timber.d("showNotificationSystem numberUnread %s", numberUnread);
 
         if (numberUnread == 0) {
             return;
         }
 
-        String title = mContext.getString(R.string.app_name);
-        String message = String.format(mContext.getString(R.string.you_have_unread_messages), numberUnread);
-        int notificationId = 1;
-        Intent intent = new Intent(mContext, NotificationActivity.class);
-
-        this.create(mContext, notificationId,
-                intent,
+        throwNotification(mContext,
+                NOTIFICATION_ID,
+                new Intent(mContext, NotificationActivity.class),
                 R.mipmap.ic_launcher,
-                title, message);
+                mContext.getString(R.string.app_name),
+                String.format(mContext.getString(R.string.you_have_unread_messages), numberUnread));
+    }
+
+    /**
+     * Show notification from Gcm
+     */
+    void handleNotificationFromGcm(final String message, final EmbedDataGcm embedDataGcm) {
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+        if (embedDataGcm == null) {
+            throwNotification(mContext,
+                    NOTIFICATION_ID,
+                    new Intent(mContext, NotificationActivity.class),
+                    R.mipmap.ic_launcher,
+                    mContext.getString(R.string.app_name),
+                    message);
+        } else {
+            mNotifyRepository.isNotificationExisted(embedDataGcm.mtaid, embedDataGcm.mtuid)
+                    .subscribe(new DefaultSubscriber<Boolean>() {
+                        @Override
+                        public void onNext(Boolean isExisted) {
+                            if (isExisted) {
+                                return;
+                            }
+                            NotificationData notificationData = new NotificationData();
+                            notificationData.setMtaid(embedDataGcm.mtaid);
+                            notificationData.setMtuid(embedDataGcm.mtuid);
+                            putNotification(notificationData);
+                            throwNotification(mContext,
+                                    NOTIFICATION_ID,
+                                    new Intent(mContext, NotificationActivity.class),
+                                    R.mipmap.ic_launcher,
+                                    mContext.getString(R.string.app_name),
+                                    message);
+                        }
+                    });
+        }
     }
 
     private class NotificationSubscriber extends DefaultSubscriber<Integer> {
@@ -335,7 +378,6 @@ public class NotificationHelper {
     }
 
     private void updateTransaction() {
-
         Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistorySuccessLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());

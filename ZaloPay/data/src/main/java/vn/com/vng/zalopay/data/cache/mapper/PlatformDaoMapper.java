@@ -99,6 +99,9 @@ public class PlatformDaoMapper {
             appResourceGD.setWeburl(appResourceEntity.weburl);
             appResourceGD.setIconurl(appResourceEntity.iconurl);
             appResourceGD.setSortOrder(appResourceEntity.sortOrder);
+            appResourceGD.setStateDownload(appResourceEntity.stateDownload);
+            appResourceGD.setNumRetry(appResourceEntity.numRetry);
+            appResourceGD.setTimeDownload(appResourceEntity.timeDownload);
         }
         return appResourceGD;
     }
@@ -113,14 +116,22 @@ public class PlatformDaoMapper {
             appResourceEntity.imageurl = appResourceGD.getImageurl();
             appResourceEntity.needdownloadrs = appResourceGD.getNeeddownloadrs() == null ? 0 : 1;
             appResourceEntity.status = appResourceGD.getStatus() == null ? 0 : 1;
-            appResourceEntity.jsurl = appResourceGD.getJsurl();
-            appResourceEntity.apptype = appResourceGD.getApptype();
-            appResourceEntity.weburl = appResourceGD.getWeburl();
-            appResourceEntity.iconurl = appResourceGD.getIconurl();
-            appResourceEntity.sortOrder = appResourceGD.getSortOrder();
-            appResourceEntity.stateDownload = appResourceGD.getStateDownload();
-            appResourceEntity.numRetry = appResourceGD.getNumRetry();
-            appResourceEntity.timeDownload = appResourceGD.getTimeDownload();
+            appResourceEntity.jsurl = appResourceGD.getJsurl() == null
+                    ? "" : appResourceGD.getJsurl();
+            appResourceEntity.apptype = appResourceGD.getApptype() == null
+                    ? 0 : appResourceGD.getApptype();
+            appResourceEntity.weburl = appResourceGD.getWeburl() == null
+                    ? "" : appResourceGD.getWeburl();
+            appResourceEntity.iconurl = appResourceGD.getIconurl() == null
+                    ? "" : appResourceGD.getIconurl();
+            appResourceEntity.sortOrder = appResourceGD.getSortOrder() == null
+                    ? 0 : appResourceGD.getSortOrder();
+            appResourceEntity.stateDownload = appResourceGD.getStateDownload() == null
+                    ? 0 : appResourceGD.getStateDownload();
+            appResourceEntity.numRetry = appResourceGD.getNumRetry() == null
+                    ? 0 : appResourceGD.getNumRetry();
+            appResourceEntity.timeDownload = appResourceGD.getTimeDownload() == null
+                    ? 0 : appResourceGD.getTimeDownload();
 
         }
         return appResourceEntity;

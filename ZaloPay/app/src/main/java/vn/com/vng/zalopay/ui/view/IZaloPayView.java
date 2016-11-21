@@ -10,7 +10,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by AnhHieu on 5/9/16.
- *
+ * *
  */
 public interface IZaloPayView {
 
@@ -23,6 +23,8 @@ public interface IZaloPayView {
     void refreshInsideApps(List<AppResource> list);
 
     void setTotalNotify(int total);
+
+    void showWsConnectError();
 
     void showNetworkError();
 

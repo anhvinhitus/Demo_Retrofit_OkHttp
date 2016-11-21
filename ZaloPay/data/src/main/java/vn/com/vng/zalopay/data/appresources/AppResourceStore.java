@@ -13,7 +13,6 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 
 /**
  * Created by AnhHieu on 8/10/16.
- *
  */
 public interface AppResourceStore {
 
@@ -23,6 +22,8 @@ public interface AppResourceStore {
 
         AppResourceEntity get(int appId);
 
+        void put(AppResourceEntity appResourceEntity);
+
         void put(List<AppResourceEntity> resourceEntities);
 
         void updateAppList(List<Integer> listAppId);
@@ -30,6 +31,10 @@ public interface AppResourceStore {
         void increaseRetryDownload(long appId);
 
         void increaseStateDownload(int appId);
+
+        void resetStateDownload(int appId);
+
+        void sortApplication(List<Integer> list);
     }
 
     interface RequestService {
@@ -51,6 +56,8 @@ public interface AppResourceStore {
         Observable<Boolean> initialize();
 
         Observable<List<AppResource>> listInsideAppResource();
+
+        Observable<Boolean> existResource(int appId);
     }
 
 }

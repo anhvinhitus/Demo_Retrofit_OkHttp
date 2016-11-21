@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
@@ -54,7 +55,9 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
 
     @OnClick(R.id.tvSaveCard)
     public void onClickSaveCard() {
-        navigator.startLinkCardActivity(getActivity());
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(Constants.Withdraw.GO_TO_WITHDRAW_CONDITION, true);
+        navigator.startLinkCardActivity(getActivity(), bundle, null);
     }
 
     public WithdrawConditionFragment() {

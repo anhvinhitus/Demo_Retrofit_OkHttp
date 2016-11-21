@@ -43,7 +43,6 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.PhoneUtil;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
@@ -235,6 +234,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void getUserMapping(long zaloId) {
+        Timber.d("getUserMapping zaloId [%s]", zaloId);
         if (zaloId <= 0 || mView == null) {
             return;
         }
@@ -317,13 +317,17 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 return;
             }
 
+            if (TextUtils.isEmpty(mTransaction.displayName)
+                    && TextUtils.isEmpty(mTransaction.displayName)) {
+                return;
+            }
             mTransferRepository.append(mTransaction,
                     Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString()))
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<Boolean>());
 
         } catch (NumberFormatException e) {
-            Timber.d(e, "saveTransferRecentToDB");
+            Timber.w(e, "saveTransferRecentToDB, cast TransactionType exception [%s]", e.getMessage());
         }
     }
 
@@ -341,7 +345,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Override
     public void resume() {
-
+        checkShowBtnContinue();
     }
 
     @Override
@@ -407,6 +411,8 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             return;
         }
 
+        Timber.d("onViewCreated zaloPayId [%s] zaloPayName [%s]",
+                mTransaction.zaloPayId, mTransaction.zaloPayName);
         if (TextUtils.isEmpty(mTransaction.zaloPayId)
                 || TextUtils.isEmpty(mTransaction.zaloPayName)) {
             getUserMapping(mTransaction.zaloId);
@@ -418,17 +424,26 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 mTransaction.avatar,
                 mTransaction.zaloPayName);
 
-        if (TextUtils.isEmpty(mTransaction.displayName) || TextUtils.isEmpty(mTransaction.avatar)) {
-            Timber.d("begin get user info");
+        if (TextUtils.isEmpty(mTransaction.displayName)
+                || TextUtils.isEmpty(mTransaction.avatar)
+                || TextUtils.isEmpty(mTransaction.zaloPayName)) {
             showLoading();
-            Subscription subscription = accountRepository.getUserInfoByZaloPayId(mTransaction.zaloPayId)
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new UserInfoSubscriber());
-            compositeSubscription.add(subscription);
+            getUserInfoByZaloPayId(mTransaction.zaloPayId);
         }
 
         initCurrentState();
         checkShowBtnContinue();
+    }
+
+    private void getUserInfoByZaloPayId(String zaloPayId) {
+        if (TextUtils.isEmpty(zaloPayId)) {
+            return;
+        }
+        Timber.d("getUserInfoByZaloPayId zaloPayId [%s]", zaloPayId);
+        Subscription subscription = accountRepository.getUserInfoByZaloPayId(zaloPayId)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new UserInfoSubscriber());
+        compositeSubscription.add(subscription);
     }
 
     private void initLimitAmount() {
@@ -570,9 +585,15 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         @Override
         public void onNext(Person person) {
             Timber.d("onNext displayName %s avatar %s", person.displayName, person.avatar);
-            mTransaction.avatar = person.avatar;
-            mTransaction.displayName = person.displayName;
-            mTransaction.zaloPayName = person.zalopayname;
+            if (!TextUtils.isEmpty(person.avatar)) {
+                mTransaction.avatar = person.avatar;
+            }
+            if (!TextUtils.isEmpty(person.displayName)) {
+                mTransaction.displayName = person.displayName;
+            }
+            if (!TextUtils.isEmpty(person.zalopayname)) {
+                mTransaction.zaloPayName = person.zalopayname;
+            }
 
             mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
         }

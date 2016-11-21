@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Locale;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -30,6 +31,7 @@ import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
@@ -44,10 +46,12 @@ import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -82,13 +86,15 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     private BalanceStore.Repository mBalanceRepository;
     private ZaloPayRepository mZaloPayRepository;
     private TransactionStore.Repository mTransactionRepository;
-
     private User mUser;
     private ThreadExecutor mThreadExecutor;
     private FriendStore.Repository mFriendRepository;
 
     @Inject
-    public MainPresenter(User user, EventBus eventBus,
+    ZPNotificationService notificationService;
+
+    @Inject
+    MainPresenter(User user, EventBus eventBus,
                          AppResourceStore.Repository appResourceRepository,
                          UserConfig userConfig,
                          Context applicationContext,
@@ -99,7 +105,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                          TransactionStore.Repository transactionRepository,
                          FriendStore.Repository friendRepository,
                          ThreadExecutor threadExecutor) {
-
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
         this.mUserConfig = userConfig;
@@ -130,7 +135,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         }
     }
 
-
     private void sendCrashUserInformation(User user) {
         if (user == null) {
             return;
@@ -145,7 +149,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         if (!TextUtils.isEmpty(user.zalopayname)) {
             Crashlytics.setUserName(user.zalopayname);
         }
-
     }
 
 
@@ -155,11 +158,14 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         unsubscribeIfNotNull(mRefPlatformSubscription);
         unsubscribeIfNotNull(mCompositeSubscription);
         GlobalData.initApplication(null);
+        notificationService.destroy();
+        CShareData.dispose();
         this.homeView = null;
     }
 
     @Override
     public void resume() {
+        notificationService.startNotificationService();
     }
 
     @Override
@@ -168,7 +174,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Override
     public void destroy() {
-        CShareData.dispose();
+
     }
 
     public void initialize() {
@@ -186,7 +192,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void warningRoot() {
-       /* Subscription subscription = ObservableHelper.makeObservable(new Callable<Boolean>() {
+        Subscription subscription = ObservableHelper.makeObservable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return !RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted();
@@ -200,7 +206,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             }
         });
 
-        mCompositeSubscription.add(subscription);*/
+        mCompositeSubscription.add(subscription);
     }
 
     private void initializeAppConfig() {
@@ -211,6 +217,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void refreshBanners() {
+        isLoadedGateWayInfo = true;
         mEventBus.post(new RefreshPlatformInfoEvent());
     }
 
@@ -274,9 +281,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNetworkChange(NetworkChangeEvent event) {
-        if (event.isOnline && !isLoadedGateWayInfo) {
+        if (!event.isOnline) {
+            return;
+        }
+        if (!isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
+        initializeAppConfig();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -335,6 +346,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 .subscribe(new DefaultSubscriber<Boolean>());
         mCompositeSubscription.add(subscription);
 
+        if (mEventBus.isRegistered(this)) {
+            mEventBus.unregister(this);
+        }
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         applicationComponent.applicationSession().clearUserSession();
     }

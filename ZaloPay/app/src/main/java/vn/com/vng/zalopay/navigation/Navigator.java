@@ -35,6 +35,9 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
+import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardActivity;
+import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -46,19 +49,22 @@ import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
 import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
-import vn.com.vng.zalopay.ui.activity.IntroSaveCardActivity;
+import vn.com.vng.zalopay.linkcard.ui.IntroSaveCardActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
-import vn.com.vng.zalopay.ui.activity.LinkCardActivity;
+import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
+import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
+import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.vng.zalopay.webview.ui.WebViewActivity;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
+import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -179,7 +185,16 @@ public class Navigator implements INavigator {
         activity.startActivity(intent);
     }
 
+    public void startLinkCardActivity(Context context, TutorialLinkCardFragment.ILinkCardListener listener) {
+        startLinkCardActivity(context, null, listener);
+    }
+
     public void startLinkCardActivity(Context context) {
+        startLinkCardActivity(context, null, null);
+    }
+
+    public void startLinkCardActivity(Context context, Bundle bundle,
+                                      final TutorialLinkCardFragment.ILinkCardListener listener) {
         if (!userConfig.hasCurrentUser()) {
             return;
         }
@@ -193,15 +208,25 @@ public class Navigator implements INavigator {
                         .getMappedCardList(userConfig.getCurrentUser().zaloPayId);
                 numberCard = mapCardLis.size();
             } catch (Exception ex) {
-                Timber.d(ex, "startLinkCardActivity");
+                Timber.w(ex, "startLinkCardActivity getMappedCardList exception");
             }
 
+            Intent intent = intentLinkCard(context);
+            if (bundle != null) {
+                intent.putExtras(bundle);
+            }
             if (numberCard <= 0) {
                 context.startActivity(intentLinkCard(context));
+                if (listener != null) {
+                    listener.onStartedLinkCardActivity();
+                }
             } else if (shouldShowPinDialog()) {
-                showPinDialog(context, intentLinkCard(context));
+                showPinDialog(context, intentLinkCard(context), listener);
             } else {
                 context.startActivity(intentLinkCard(context));
+                if (listener != null) {
+                    listener.onStartedLinkCardActivity();
+                }
             }
         }
     }
@@ -210,7 +235,9 @@ public class Navigator implements INavigator {
         Map<String, String> options = new HashMap<>();
         options.put("view", "main");
         Intent intent = intentPaymentApp(context, appResource, options);
-        context.startActivity(intent);
+        if (intent != null) {
+            context.startActivity(intent);
+        }
     }
 
     public void startUpdateProfileLevel2Activity(Context context, String walletTransID) {
@@ -323,12 +350,12 @@ public class Navigator implements INavigator {
         return intent;
     }
 
-    public void startIntroActivity(Context context) {
+    public void startIntroLinkCardActivity(Context context) {
         Intent intent = new Intent(context, IntroSaveCardActivity.class);
         context.startActivity(intent);
     }
 
-    public void startIntroActivityForResult(Fragment fragment) {
+    public void startIntroLinkCardForResult(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), IntroSaveCardActivity.class);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_INTRO);
     }
@@ -432,7 +459,27 @@ public class Navigator implements INavigator {
     }
 
     private void showPinDialog(Context context, Intent pendingIntent) {
-        new PinProfileDialog(context, pendingIntent).show();
+        showPinDialog(context, pendingIntent, null);
+    }
+
+    private void showPinDialog(Context context, Intent pendingIntent,
+                               final TutorialLinkCardFragment.ILinkCardListener listener) {
+        PinProfileDialog pinProfileDialog = new PinProfileDialog(context, pendingIntent);
+        pinProfileDialog.setListener(new PinProfileDialog.PinProfileListener() {
+            @Override
+            public void onPinSuccess() {
+                Timber.d("onPinSuccess resolve true");
+                if (listener != null) {
+                    listener.onStartedLinkCardActivity();
+                }
+            }
+
+            @Override
+            public void onPinError() {
+            }
+        });
+
+        pinProfileDialog.show();
     }
 
     private void showPinDialog(Context context, final Promise promise) {
@@ -483,8 +530,9 @@ public class Navigator implements INavigator {
     }
 
 
-    public void startTransferViaAccountName(Context context) {
-        context.startActivity(new Intent(context, TransferViaZaloPayNameActivity.class));
+    public void startTransferViaAccountName(Fragment fragment) {
+        Intent intent = new Intent(fragment.getContext(), TransferViaZaloPayNameActivity.class);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID);
     }
 
     public void startEditAccountActivity(Context context) {
@@ -496,4 +544,29 @@ public class Navigator implements INavigator {
         Intent intent = new Intent(context, TutorialConnectInternetActivity.class);
         context.startActivity(intent);
     }
+
+    public void startCardSupportActivity(Fragment fragment) {
+        Intent intent = new Intent(fragment.getContext(), CardSupportActivity.class);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_CARD_SUPPORT);
+    }
+
+    public void startTutorialLinkCardActivity(Context context, DMapCardResult mapCardResult) {
+        Timber.d("startTutorialLinkCardActivity context [%s] card [%s]", context, mapCardResult);
+        if (context == null || mapCardResult == null) {
+            return;
+        }
+        Intent intent = new Intent(context, TutorialLinkCardActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.LAST4CARDNO, mapCardResult.getLast4Number());
+        bundle.putString(Constants.IMAGE_FILE_PATH, mapCardResult.getCardLogo());
+        bundle.putString(Constants.BANKNAME, mapCardResult.getBankName());
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public void startWarningRootedActivity(Context context) {
+        Intent intent = new Intent(context, WarningRootedActivity.class);
+        context.startActivity(intent);
+    }
+
 }

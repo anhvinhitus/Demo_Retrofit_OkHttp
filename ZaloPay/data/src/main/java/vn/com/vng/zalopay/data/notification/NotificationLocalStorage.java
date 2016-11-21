@@ -23,6 +23,7 @@ import static java.util.Collections.emptyList;
 
 /**
  * Created by AnhHieu on 6/20/16.
+ * *
  */
 public class NotificationLocalStorage extends SqlBaseScopeImpl implements NotificationStore.LocalStorage {
 
@@ -57,7 +58,12 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     public long putSync(NotificationData val) {
         NotificationGD item = transform(val);
         if (item != null) {
-            return getDaoSession().getNotificationGDDao().insert(item);
+            boolean isExisted = isNotificationExisted(val.getMtaid(), val.getMtuid());
+            if (isExisted) {
+                return getDaoSession().getNotificationGDDao().insertOrReplace(item);
+            } else {
+                return getDaoSession().getNotificationGDDao().insert(item);
+            }
         }
         return -1;
     }
@@ -200,6 +206,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
                         .limit(limit)
                         .offset(pageIndex * limit)
                         .orderDesc(NotificationGDDao.Properties.Timestamp)
+                        .where(NotificationGDDao.Properties.Message.isNotNull())
                         .list());
     }
 
@@ -255,6 +262,33 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     @Override
     public void deleteAll() {
         getDaoSession().getNotificationGDDao().deleteAll();
+    }
+
+    /**
+     * Check notification exist.
+     * If notification has same mtaid/mtuid (only mtaid or mtuid) then return true.
+     * else return false.
+     *
+     * @param mtaid if has mtaid then hasn't mtuid.
+     * @param mtuid if has mtuid then hasn't mtaid.
+     * @return notification exist or didn't exist.
+     */
+    @Override
+    public boolean isNotificationExisted(long mtaid, long mtuid) {
+        if (mtaid > 0) {
+            long count = getDaoSession().getNotificationGDDao()
+                    .queryBuilder()
+                    .where(NotificationGDDao.Properties.Mtaid.eq(mtaid))
+                    .count();
+            return (count > 0);
+        } else if (mtuid > 0) {
+            long count = getDaoSession().getNotificationGDDao()
+                    .queryBuilder()
+                    .where(NotificationGDDao.Properties.Mtuid.eq(mtuid))
+                    .count();
+            return (count > 0);
+        }
+        return false;
     }
 
     @Override

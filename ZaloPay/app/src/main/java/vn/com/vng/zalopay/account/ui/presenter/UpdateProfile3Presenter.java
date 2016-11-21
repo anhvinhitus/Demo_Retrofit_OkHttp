@@ -1,36 +1,28 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 
-import com.facebook.common.references.CloseableReference;
-import com.facebook.datasource.DataSource;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.common.ImageDecodeOptions;
-import com.facebook.imagepipeline.common.Priority;
-import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.facebook.imagepipeline.image.CloseableBitmap;
-import com.facebook.imagepipeline.image.CloseableImage;
-import com.facebook.imagepipeline.memory.PooledByteBuffer;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -51,7 +43,7 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
     private Context mApplicationContext;
 
     @Inject
-    public UpdateProfile3Presenter(AccountStore.Repository accountRepository, Context applicationContext) {
+    UpdateProfile3Presenter(AccountStore.Repository accountRepository, Context applicationContext) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
     }
@@ -86,41 +78,53 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
                                final Uri avatarPath) {
 
         mView.showLoading();
-        AndroidApplication.instance().getAppComponent().threadExecutor()
-                .execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        update(identityNumber, email, fimgPath, bimgPath, avatarPath);
-                    }
-                });
+
+        update(identityNumber, email, fimgPath, bimgPath, avatarPath);
     }
 
+    private Observable<byte[]> resizeImage(final Uri imgPath) {
+        Timber.d("resizeImage path[%s]", imgPath);
+        return ObservableHelper.makeObservable(new Callable<byte[]>() {
+            @Override
+            public byte[] call() throws Exception {
+                return resizeImageByteArray(mApplicationContext, imgPath);
+            }
+        }).flatMap(new Func1<byte[], Observable<byte[]>>() {
+            @Override
+            public Observable<byte[]> call(byte[] bytes) {
+                if (bytes == null) {
+                    return Observable.error(new NullPointerException());
+                } else {
+                    return Observable.just(bytes);
+                }
+            }
+        });
+    }
 
-    private void update(String identityNumber,
-                        String email,
-                        Uri fimgPath,
-                        Uri bimgPath,
-                        Uri avatarPath) {
+    private void update(final String identityNumber,
+                        final String email,
+                        final Uri fimgPath,
+                        final Uri bimgPath,
+                        final Uri avatarPath) {
+        Observable<byte[]> obFimgBytes = resizeImage(fimgPath);
+        Observable<byte[]> obBimgBytes = resizeImage(bimgPath);
+        Observable<byte[]> obAvatarBytes = resizeImage(avatarPath);
 
-        byte[] _fimgBytes = resizeImageByteArray(mApplicationContext, fimgPath);
-        byte[] _bimgBytes = resizeImageByteArray(mApplicationContext, bimgPath);
-        byte[] _avatarBytes = resizeImageByteArray(mApplicationContext, avatarPath);
-
-        if (_fimgBytes != null && _bimgBytes != null && _avatarBytes != null) {
-            Timber.d(" _fimg %s _bimg %s avatar %s", _fimgBytes.length, _bimgBytes.length, _avatarBytes.length);
-            Subscription subscription = mAccountRepository.updateUserProfileLevel3(identityNumber, email,
-                    _fimgBytes,
-                    _bimgBytes,
-                    _avatarBytes)
-
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new UpdateSubscriber());
-            compositeSubscription.add(subscription);
-        } else {
-            Observable.just(Boolean.FALSE)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new UpdateSubscriber());
-        }
+        Observable.zip(obFimgBytes, obBimgBytes, obAvatarBytes, new Func3<byte[], byte[], byte[], List<byte[]>>() {
+            @Override
+            public List<byte[]> call(byte[] _fimgBytes, byte[] _bimgBytes, byte[] _avatarBytes) {
+                return Arrays.asList(_fimgBytes, _bimgBytes, _avatarBytes);
+            }
+        }).flatMap(new Func1<List<byte[]>, Observable<Boolean>>() {
+            @Override
+            public Observable<Boolean> call(List<byte[]> bytes) {
+                return mAccountRepository.updateUserProfileLevel3(identityNumber, email,
+                        bytes.get(0),
+                        bytes.get(1),
+                        bytes.get(2));
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new UpdateSubscriber());
     }
 
     private void onUpdateSuccess() {

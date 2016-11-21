@@ -1,7 +1,10 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -70,8 +73,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     protected void onScreenVisible() {
     }
 
-
     private final static int SPAN_COUNT_APPLICATION = 3;
+    private boolean isEnableShowShow;
 
     @Inject
     ZaloPayPresenter presenter;
@@ -139,19 +142,24 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         listView.setAdapter(mAdapter);
         listView.setFocusable(false);
 
-        AndroidUtils.setSpannedMessageToView(mTvInternetConnection, R.string.exception_no_connection_tutorial, R.string.check_internet,
+        setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
+                getString(R.string.check_internet));
+
+        hideTextAds();
+    }
+
+    private void setInternetConnectionError(String message, String spannedMessage) {
+        AndroidUtils.setSpannedMessageToView(mTvInternetConnection,
+                message,
+                spannedMessage,
                 false, false, R.color.txt_check_internet,
-                new ClickableSpanNoUnderline() {
+                new ClickableSpanNoUnderline(ContextCompat.getColor(getContext(), R.color.txt_check_internet)) {
                     @Override
                     public void onClick(View widget) {
                         navigator.startTutorialConnectInternetActivity(ZaloPayFragment.this.getContext());
                     }
                 });
-
-        hideTextAds();
     }
-
-    private boolean isEnableShowShow;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -208,6 +216,12 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
+    public void onDestroy() {
+        presenter.destroy();
+        super.onDestroy();
+    }
+
+    @Override
     public void showBannerAds(List<DBanner> banners) {
         Timber.d("showBannerAds banners [%s]", banners);
         if (banners == null || banners.size() <= 0) {
@@ -256,7 +270,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 if (appResource == null) {
                     appResource = new AppResource(app.appid);
                 }
-                navigator.startPaymentApplicationActivity(getActivity(), appResource);
+                presenter.startPaymentApp(appResource);
             }
         } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
             presenter.startServiceWebViewActivity(app.appid, app.webUrl);
@@ -358,15 +372,15 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void changeBanner() {
-        if (mBannerViewpager == null) {
+        if (mBannerViewpager == null || mBannerViewpager.getAdapter() == null) {
             return;
         }
-        int count = mBannerViewpager.getChildCount();
+        int count = mBannerViewpager.getAdapter().getCount();
         if (count <= 0) {
             return;
         }
         int currentItem = mBannerViewpager.getCurrentItem();
-        if (currentItem >= count) {
+        if (currentItem >= count -1) {
             currentItem = 0;
             mBannerViewpager.setCurrentItem(currentItem, false);
         } else {
@@ -397,7 +411,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
                 //showToast(getString(R.string.update_to_use));
             }
         } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
-            navigator.startPaymentApplicationActivity(getActivity(), new AppResource(banner.appid));
+            presenter.startPaymentApp(new AppResource(banner.appid));
         } else if (banner.bannertype == BannerType.ServiceWebView.getValue()) {
             presenter.startServiceWebViewActivity(banner.appid, banner.webviewurl);
         } else if (banner.bannertype == BannerType.WebPromotion.getValue()) {
@@ -409,11 +423,23 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
-    public void showNetworkError() {
+    public void showWsConnectError() {
         if (mTvInternetConnection == null ||
                 mTvInternetConnection.getVisibility() == View.VISIBLE) {
             return;
         }
+        setInternetConnectionError(getString(R.string.exception_no_ws_connection),
+                getString(R.string.check_internet));
+        mTvInternetConnection.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showNetworkError() {
+        if (mTvInternetConnection == null) {
+            return;
+        }
+        setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
+                getString(R.string.check_internet));
         mTvInternetConnection.setVisibility(View.VISIBLE);
     }
 

@@ -26,6 +26,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
@@ -185,6 +186,9 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
+
+        updateTransactionFail();
+        updateTransactionSuccess();
     }
 
     @Override
@@ -255,5 +259,16 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         sendEvent("zalopayTransactionsUpdated", item);
     }
 
+    private void updateTransactionSuccess() {
+        Subscription subscription = mRepository.fetchTransactionHistorySuccessLatest()
+                .subscribe(new DefaultSubscriber<Boolean>());
+        compositeSubscription.add(subscription);
+    }
+
+    private void updateTransactionFail() {
+        Subscription subscription = mRepository.fetchTransactionHistoryFailLatest()
+                .subscribe(new DefaultSubscriber<Boolean>());
+        compositeSubscription.add(subscription);
+    }
 
 }

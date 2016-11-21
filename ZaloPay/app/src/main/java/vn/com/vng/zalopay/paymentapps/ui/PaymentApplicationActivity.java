@@ -244,8 +244,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new GoogleAnalyticsBridgePackage(),
                 new LinearGradientPackage(),
                 new ReactIAPPackage(paymentService,
-                        mUser, appId, mNetworkService)
-        );
+                        mUser, appId, mNetworkService));
     }
 
     private void createUserComponent() {
