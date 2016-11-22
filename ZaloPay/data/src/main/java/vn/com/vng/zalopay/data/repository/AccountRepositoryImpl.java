@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.data.repository;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import java.io.File;
 import java.util.Map;
@@ -125,7 +124,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 .map(mappingZaloAndZaloPayResponse -> {
                     //If person exist in cache then update cache
                     Person person = localStorage.getById(mappingZaloAndZaloPayResponse.userid);
-                    if (person!= null) {
+                    if (person != null) {
                         person.zaloId = zaloId;
                         person.zaloPayId = mappingZaloAndZaloPayResponse.userid;
                         person.phonenumber = mappingZaloAndZaloPayResponse.phonenumber;
@@ -134,10 +133,10 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                     }
 
                     MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
-                    mappingZaloAndZaloPay.setZaloId(zaloId);
-                    mappingZaloAndZaloPay.setZaloPayId(mappingZaloAndZaloPayResponse.userid);
-                    mappingZaloAndZaloPay.setPhonenumber(mappingZaloAndZaloPayResponse.phonenumber);
-                    mappingZaloAndZaloPay.setZaloPayName(mappingZaloAndZaloPayResponse.zalopayname);
+                    mappingZaloAndZaloPay.zaloId = zaloId;
+                    mappingZaloAndZaloPay.zaloPayId = mappingZaloAndZaloPayResponse.userid;
+                    mappingZaloAndZaloPay.phonenumber = mappingZaloAndZaloPayResponse.phonenumber;
+                    mappingZaloAndZaloPay.zaloPayName = mappingZaloAndZaloPayResponse.zalopayname;
                     return mappingZaloAndZaloPay;
                 });
     }

@@ -204,9 +204,9 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             return;
         }
 
-        mTransaction.zaloPayId = userMapZaloAndZaloPay.getZaloPayId();
-        mTransaction.zaloPayName = userMapZaloAndZaloPay.getZaloPayName();
-        mTransaction.phoneNumber = PhoneUtil.formatPhoneNumber(userMapZaloAndZaloPay.getPhonenumber());
+        mTransaction.zaloPayId = userMapZaloAndZaloPay.zaloPayId;
+        mTransaction.zaloPayName = userMapZaloAndZaloPay.zaloPayName;
+        mTransaction.phoneNumber = PhoneUtil.formatPhoneNumber(userMapZaloAndZaloPay.phonenumber);
         mView.updateReceiverInfo(mTransaction.displayName,
                 mTransaction.avatar,
                 mTransaction.zaloPayName);
@@ -512,10 +512,10 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         }
 
         if (zaloFriend != null) {
-            mTransaction.avatar = zaloFriend.getAvatar();
-            mTransaction.zaloId = zaloFriend.getUserId();
-            mTransaction.displayName = zaloFriend.getDisplayName();
-            mIsUserZaloPay = zaloFriend.isUsingApp();
+            mTransaction.avatar = zaloFriend.avatar;
+            mTransaction.zaloId = zaloFriend.userId;
+            mTransaction.displayName = zaloFriend.displayName;
+            mIsUserZaloPay = zaloFriend.usingApp;
         }
     }
 

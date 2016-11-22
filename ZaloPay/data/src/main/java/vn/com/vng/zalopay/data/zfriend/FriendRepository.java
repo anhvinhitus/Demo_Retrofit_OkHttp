@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -96,17 +94,13 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public ZaloFriend transform(Cursor cursor) {
-
-        //todo: remove hardcode
         ZaloFriend zaloFriend = new ZaloFriend();
-        zaloFriend.setUserId(cursor.getLong(ColumnIndex.Id));
-        zaloFriend.setUserName(cursor.getString(ColumnIndex.UserName));
-        zaloFriend.setDisplayName(cursor.getString(ColumnIndex.DisplayName));
-        zaloFriend.setAvatar(cursor.getString(ColumnIndex.Avatar));
-        //zaloFriend.setUserGender(cursor.getInt(4));
-        //5 birthday
-        zaloFriend.setUsingApp(cursor.getInt(ColumnIndex.UsingApp) == 1);
-        zaloFriend.setNormalizeDisplayName(cursor.getString(ColumnIndex.Fulltextsearch));
+        zaloFriend.userId = cursor.getLong(ColumnIndex.Id);
+        zaloFriend.userName = cursor.getString(ColumnIndex.UserName);
+        zaloFriend.displayName = cursor.getString(ColumnIndex.DisplayName);
+        zaloFriend.avatar = cursor.getString(ColumnIndex.Avatar);
+        zaloFriend.usingApp = cursor.getInt(ColumnIndex.UsingApp) == 1;
+        zaloFriend.normalizeDisplayName = cursor.getString(ColumnIndex.Fulltextsearch);
         return zaloFriend;
     }
 
@@ -161,12 +155,12 @@ public class FriendRepository implements FriendStore.Repository {
         ZaloFriend friend = null;
         if (entity != null) {
             friend = new ZaloFriend();
-            friend.setUserId(entity.userId);
-            friend.setAvatar(entity.avatar);
-            friend.setDisplayName(entity.displayName);
-            friend.setUserName(entity.userName);
-            friend.setUsingApp(entity.usingApp);
-            friend.setNormalizeDisplayName(entity.normalizeDisplayName);
+            friend.userId = entity.userId;
+            friend.avatar = entity.avatar;
+            friend.displayName = entity.displayName;
+            friend.userName = entity.userName;
+            friend.usingApp = entity.usingApp;
+            friend.normalizeDisplayName = entity.normalizeDisplayName;
         }
         return friend;
     }

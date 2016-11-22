@@ -75,7 +75,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     }
 
     private ZaloFriendGD transform(ZaloFriendEntity entity) {
-        ZaloFriendGD ret = new ZaloFriendGD(entity.getUserId());
+        ZaloFriendGD ret = new ZaloFriendGD(entity.userId);
         ret.setUserName(entity.userName);
         ret.setDisplayName(entity.displayName);
         ret.setAvatar(entity.avatar);

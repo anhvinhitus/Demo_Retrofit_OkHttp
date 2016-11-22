@@ -27,63 +27,6 @@ public class ZaloFriend extends AbstractData implements Parcelable {
         this.usingApp = false;
     }
 
-    public long getUserId() {
-        return userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public int getUserGender() {
-        return userGender;
-    }
-
-    public boolean isUsingApp() {
-        return usingApp;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public void setUserGender(int userGender) {
-        this.userGender = userGender;
-    }
-
-    public void setUsingApp(boolean usingApp) {
-        this.usingApp = usingApp;
-    }
-
-    public String getNormalizeDisplayName() {
-        return normalizeDisplayName;
-    }
-
-    public void setNormalizeDisplayName(String normalizeDisplayName) {
-        this.normalizeDisplayName = normalizeDisplayName;
-    }
-
-
     @Override
     public int describeContents() {
         return 0;

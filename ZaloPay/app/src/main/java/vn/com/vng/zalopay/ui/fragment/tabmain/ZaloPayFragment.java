@@ -163,7 +163,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        int menuRes = false ? R.menu.menu_main_2 : R.menu.menu_main;
+        int menuRes = isEnableShowShow ? R.menu.menu_main_2 : R.menu.menu_main;
         inflater.inflate(menuRes, menu);
 
         MenuItem menuItem = menu.findItem(R.id.action_notifications);

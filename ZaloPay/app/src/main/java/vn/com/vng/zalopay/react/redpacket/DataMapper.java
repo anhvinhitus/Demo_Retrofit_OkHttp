@@ -100,12 +100,12 @@ class DataMapper {
         }
 
         WritableMap friendItem = Arguments.createMap();
-        friendItem.putString("displayName", friend.getDisplayName());
-        friendItem.putString("ascciDisplayName", friend.getNormalizeDisplayName());
-        friendItem.putString("userId", String.valueOf(friend.getUserId()));
-        friendItem.putInt("userGender", friend.getUserGender());
-        friendItem.putBoolean("usingApp", friend.isUsingApp());
-        friendItem.putString("avatar", friend.getAvatar());
+        friendItem.putString("displayName", friend.displayName);
+        friendItem.putString("ascciDisplayName", friend.normalizeDisplayName);
+        friendItem.putString("userId", String.valueOf(friend.userId));
+        friendItem.putInt("userGender", friend.userGender);
+        friendItem.putBoolean("usingApp", friend.usingApp);
+        friendItem.putString("avatar", friend.avatar);
         return friendItem;
     }
 

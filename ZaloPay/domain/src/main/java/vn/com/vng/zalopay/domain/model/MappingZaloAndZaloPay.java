@@ -13,38 +13,4 @@ public class MappingZaloAndZaloPay {
         this.zaloPayName = "";
         this.phonenumber = 0;
     }
-
-/*
-    public long getZaloId() {
-        return zaloId;
-    }
-*/
-
-    public String getZaloPayId() {
-        return zaloPayId;
-    }
-
-    public String getZaloPayName() {
-        return zaloPayName;
-    }
-
-    public long getPhonenumber() {
-        return phonenumber;
-    }
-
-    public void setZaloId(long zaloId) {
-        this.zaloId = zaloId;
-    }
-
-    public void setZaloPayId(String zaloPayId) {
-        this.zaloPayId = zaloPayId;
-    }
-
-    public void setPhonenumber(long phonenumber) {
-        this.phonenumber = phonenumber;
-    }
-
-    public void setZaloPayName(String zaloPayName) {
-        this.zaloPayName = zaloPayName;
-    }
 }
