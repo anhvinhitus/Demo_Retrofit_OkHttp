@@ -21,80 +21,83 @@ import timber.log.Timber;
  */
 public class FileUtil {
 
-    private static final int WRITE_BUFFER_SIZE = 1024 * 8;
-
-    public static void copyFile(InputStream in, OutputStream out) throws IOException {
+    /*public static void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[4096];
         int read;
         while ((read = in.read(buffer)) != -1) {
             out.write(buffer, 0, read);
         }
-    }
+    }*/
 
-    public static void unzip(String zipFilePath, String destinationPath) throws Exception {
+   /* public static void unzip(String zipFilePath, String destinationPath) throws Exception {
 
-            File archive = new File(zipFilePath);
+        File archive = new File(zipFilePath);
 
-            ZipFile zipfile = new ZipFile(archive);
+        ZipFile zipfile = new ZipFile(archive);
 
-            for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
-                ZipEntry entry = (ZipEntry) e.nextElement();
+        for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
+            ZipEntry entry = (ZipEntry) e.nextElement();
 
-                Timber.d("Unzip file %s", entry.getName());
-                unzipEntry(zipfile, entry, destinationPath);
+            Timber.d("Unzip file %s", entry.getName());
+            unzipEntry(zipfile, entry, destinationPath);
 
-            }
+        }
 
-            zipfile.close();
+        zipfile.close();
 
-    }
+    }*/
 
-    public static void decompress(byte[] compressed, String location) throws IOException {
+    public static void decompress(byte[] compressed, String location) throws Exception {
+        InputStream is = null;
+        ZipInputStream zis = null;
         try {
             File destinationFolder = new File(location);
             destinationFolder.mkdirs();
-        } catch (Exception e) {
-            Timber.e(e, "Error while creating destination folder for holding decompressed contents");
-        }
 
-        InputStream is;
-        ZipInputStream zis;
+            String filename;
+            is = new ByteArrayInputStream(compressed);
+            zis = new ZipInputStream(new BufferedInputStream(is));
+            ZipEntry ze;
+            byte[] buffer = new byte[1024];
+            int count;
 
-        String filename;
-        is = new ByteArrayInputStream(compressed);
-        zis = new ZipInputStream(new BufferedInputStream(is));
-        ZipEntry ze;
-        byte[] buffer = new byte[1024];
-        int count;
+            while ((ze = zis.getNextEntry()) != null) {
+                filename = ze.getName();
 
-        while ((ze = zis.getNextEntry()) != null)
-        {
-            filename = ze.getName();
+                // Need to create directories if not exists, or
+                // it will generate an Exception...
+                if (ze.isDirectory()) {
+                    String path = location + File.separator + filename;
+                    File fmd = new File(path);
+                    fmd.mkdirs();
 
-            // Need to create directories if not exists, or
-            // it will generate an Exception...
-            if (ze.isDirectory()) {
-                String path = location + File.separator + filename;
-                File fmd = new File(path);
-                fmd.mkdirs();
+                    hideImageFromGallery(path + File.separator);
 
-                hideImageFromGallery(path + File.separator);
+                    continue;
+                }
 
-                continue;
+                FileOutputStream fout = new FileOutputStream(location + File.separator + filename);
+
+                while ((count = zis.read(buffer)) != -1) {
+                    fout.write(buffer, 0, count);
+                }
+
+                fout.close();
+                zis.closeEntry();
             }
 
-            FileOutputStream fout = new FileOutputStream(location + File.separator + filename);
-
-            while ((count = zis.read(buffer)) != -1) {
-                fout.write(buffer, 0, count);
+        } finally {
+            try {
+                if (zis != null) {
+                    zis.close();
+                }
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                //emtpty
             }
-
-            fout.close();
-            zis.closeEntry();
         }
-
-        zis.close();
-
     }
 
 
@@ -102,11 +105,8 @@ public class FileUtil {
      * Create .nomedia file in order to prevent gallery application shows this
      * folder into album
      *
-     * @param path
-     *            Local path
-     *
-     * @throws IOException
-     *             if it's not possible to create the file.
+     * @param path Local path
+     * @throws IOException if it's not possible to create the file.
      */
     public static void hideImageFromGallery(String path) throws IOException {
         String NOMEDIA = ".nomedia";
@@ -116,7 +116,7 @@ public class FileUtil {
         }
     }
 
-    public static void unzipEntry(ZipFile zipfile, ZipEntry entry, String outputDir) throws IOException {
+    /*public static void unzipEntry(ZipFile zipfile, ZipEntry entry, String outputDir) throws IOException {
 
         if (entry.isDirectory()) {
             File dir = new File(outputDir, entry.getName());
@@ -139,8 +139,13 @@ public class FileUtil {
         try {
             copyFile(inputStream, outputStream);
         } finally {
-            outputStream.close();
-            inputStream.close();
+            try {
+                outputStream.close();
+                inputStream.close();
+            } catch (IOException e) {
+                //empty
+            }
+
         }
     }
 
@@ -177,6 +182,7 @@ public class FileUtil {
         }
         fileOrDirectory.delete();
     }
+
     public static void unzipFile(File zipFile, String destination, boolean deleteExisting) throws IOException {
         FileInputStream fileStream = null;
         BufferedInputStream bufferedStream = null;
@@ -230,9 +236,9 @@ public class FileUtil {
                 throw new IOException("Error closing IO resources.", e);
             }
         }
-    }
+    }*/
 
-    public static void createDir(File dir) {
+   /* public static void createDir(File dir) {
 
         if (dir.exists()) {
             return;
@@ -244,7 +250,7 @@ public class FileUtil {
 
             throw new RuntimeException("Can not create dir " + dir);
         }
-    }
+    }*/
 
     static File ensureDirectory(String path) {
         File file = new File(path);
