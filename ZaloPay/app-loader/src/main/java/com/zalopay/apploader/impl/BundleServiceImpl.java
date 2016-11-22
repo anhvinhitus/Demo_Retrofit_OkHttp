@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 
 /**
@@ -53,7 +54,8 @@ public class BundleServiceImpl implements BundleService {
 
     @Override
     public String getExternalBundleFolder(int appId) {
-        return String.format(Locale.getDefault(), "%s/modules/%d/app", mBundleRootFolder, appId);
+        //return String.format(Locale.getDefault(), "%s/modules/%d/app", mBundleRootFolder, appId);
+        return ResourceHelper.getPath(appId);
     }
 
     @Override

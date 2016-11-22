@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.data.appresources;
 
-import java.util.Locale;
-
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -10,7 +8,7 @@ import timber.log.Timber;
 
 /**
  * Created by AnhHieu on 5/21/16.
- *
+ * *
  */
 final class DownloadAppResourceTask {
 
@@ -96,7 +94,8 @@ final class DownloadAppResourceTask {
 
 
     private String getExternalBundleFolder(int appId) {
-        return String.format(Locale.getDefault(), "%s/modules/%d/app", mBundleRootFolder, appId);
+        //return String.format(Locale.getDefault(), "%s/modules/%d/app", mBundleRootFolder, appId);
+        return ResourceHelper.getPath(appId);
     }
 
     @Override

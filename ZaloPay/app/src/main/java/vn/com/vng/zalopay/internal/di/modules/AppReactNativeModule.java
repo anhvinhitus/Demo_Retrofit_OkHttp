@@ -22,6 +22,7 @@ import retrofit2.Retrofit;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.DynamicUrlService;
+import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.LocalResourceRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.datasource.LocalResourceFactory;
@@ -55,9 +56,10 @@ public class AppReactNativeModule {
         builder.append(File.separator)
                 .append("bundles");
 
-        Timber.d("rootbundle %s", builder.toString());
+        ResourceHelper.setBundleRootFolder(builder.toString());
+        Timber.d("rootbundle %s", ResourceHelper.getBundleRootFolder());
 
-        return builder.toString();
+        return ResourceHelper.getBundleRootFolder();
     }
 
     @Singleton
