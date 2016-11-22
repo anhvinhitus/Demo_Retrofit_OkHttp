@@ -1,15 +1,12 @@
 package vn.com.vng.zalopay.domain.model.redpacket;
 
 
-import org.parceler.Parcel;
-
 import java.util.List;
 
 /**
  * Created by longlv on 21/07/2016.
  *
  */
-@Parcel
 public class GetSentBundle {
 
     public long totalofsentamount;

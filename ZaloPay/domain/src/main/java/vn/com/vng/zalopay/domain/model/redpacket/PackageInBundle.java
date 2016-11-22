@@ -1,12 +1,9 @@
 package vn.com.vng.zalopay.domain.model.redpacket;
 
-import org.parceler.Parcel;
-
 /**
  * Created by longlv on 15/07/2016.
  *
  */
-@Parcel
 public class PackageInBundle {
 
     public long packageID;

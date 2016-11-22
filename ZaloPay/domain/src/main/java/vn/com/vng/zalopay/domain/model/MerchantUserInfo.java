@@ -4,7 +4,6 @@ package vn.com.vng.zalopay.domain.model;
  * Created by AnhHieu on 5/24/16.
  */
 
-@org.parceler.Parcel
 public class MerchantUserInfo {
 
     public long appId;

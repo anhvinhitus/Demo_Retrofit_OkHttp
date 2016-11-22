@@ -11,7 +11,6 @@ import vn.com.vng.zalopay.domain.model.Person;
  * Created by longlv on 14/07/2016.
  * RedPacket save redPackage that user sent
  */
-@Parcel
 public class RedPacket {
     public long bundleId;
     public int quantity;

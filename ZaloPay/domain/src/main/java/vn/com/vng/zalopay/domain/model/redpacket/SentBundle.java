@@ -1,14 +1,11 @@
 package vn.com.vng.zalopay.domain.model.redpacket;
 
-import org.parceler.Parcel;
-
 import java.util.List;
 
 /**
  * Created by longlv on 15/07/2016.
  *
  */
-@Parcel
 public class SentBundle {
     public long bundleID;
     public String sendZaloPayID;

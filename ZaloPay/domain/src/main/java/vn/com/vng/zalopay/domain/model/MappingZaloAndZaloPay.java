@@ -1,9 +1,6 @@
 package vn.com.vng.zalopay.domain.model;
 
-import org.parceler.Parcel;
-
-@Parcel
-public final class MappingZaloAndZaloPay {
+public class MappingZaloAndZaloPay {
 
     public long zaloId;
     public String zaloPayId;

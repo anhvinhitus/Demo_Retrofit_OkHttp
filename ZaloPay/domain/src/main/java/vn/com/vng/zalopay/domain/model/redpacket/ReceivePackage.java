@@ -4,7 +4,6 @@ package vn.com.vng.zalopay.domain.model.redpacket;
  * Created by longlv on 15/07/2016.
  *
  */
-@org.parceler.Parcel
 public class ReceivePackage {
 
     public long packageID;
