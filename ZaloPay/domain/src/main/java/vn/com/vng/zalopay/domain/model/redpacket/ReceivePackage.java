@@ -19,10 +19,6 @@ public class ReceivePackage {
     public long createTime;
     public int status;
 
-    public ReceivePackage() {
-
-    }
-
     public ReceivePackage(long packageID, long bundleID,
                           String revZaloPayID,
                           String senderZaloPayID, String senderFullName,

@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.domain.model.redpacket;
 
-import org.parceler.Parcel;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -8,7 +8,6 @@ import android.util.Base64;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -300,7 +299,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
         Bundle bundle = new Bundle();
         bundle.putInt(vn.com.vng.zalopay.Constants.ARG_MONEY_TRANSFER_MODE, vn.com.vng.zalopay.Constants.MoneyTransfer.MODE_QR);
-        bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
+        bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, item);
         mNavigator.startTransferActivity(mView.getContext(), bundle);
     }
 

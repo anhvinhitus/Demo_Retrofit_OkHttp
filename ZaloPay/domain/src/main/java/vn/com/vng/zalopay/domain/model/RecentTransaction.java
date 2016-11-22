@@ -1,12 +1,12 @@
 package vn.com.vng.zalopay.domain.model;
 
-import org.parceler.Parcel;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by longlv on 11/06/2016.
  */
-@Parcel
-public class RecentTransaction {
+public class RecentTransaction implements Parcelable {
 
     public long zaloId;
     public String zaloPayId;
@@ -30,4 +30,45 @@ public class RecentTransaction {
         this.amount = amount;
         this.message = message;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.zaloId);
+        dest.writeString(this.zaloPayId);
+        dest.writeString(this.zaloPayName);
+        dest.writeString(this.displayName);
+        dest.writeString(this.avatar);
+        dest.writeString(this.phoneNumber);
+        dest.writeLong(this.amount);
+        dest.writeString(this.message);
+    }
+
+    protected RecentTransaction(Parcel in) {
+        this.zaloId = in.readLong();
+        this.zaloPayId = in.readString();
+        this.zaloPayName = in.readString();
+        this.displayName = in.readString();
+        this.avatar = in.readString();
+        this.phoneNumber = in.readString();
+        this.amount = in.readLong();
+        this.message = in.readString();
+    }
+
+    public static final Parcelable.Creator<RecentTransaction> CREATOR = new Parcelable.Creator<RecentTransaction>() {
+        @Override
+        public RecentTransaction createFromParcel(Parcel source) {
+            return new RecentTransaction(source);
+        }
+
+        @Override
+        public RecentTransaction[] newArray(int size) {
+            return new RecentTransaction[size];
+        }
+    };
 }

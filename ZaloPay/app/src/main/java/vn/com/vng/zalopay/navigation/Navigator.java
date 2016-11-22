@@ -12,7 +12,6 @@ import com.facebook.react.bridge.Promise;
 import com.zalopay.apploader.internal.ModuleName;
 
 import org.greenrobot.eventbus.EventBus;
-import org.parceler.Parcels;
 
 import java.util.HashMap;
 import java.util.List;
@@ -339,7 +338,7 @@ public class Navigator implements INavigator {
             return null;
         }
         Intent intent = new Intent(context, PaymentApplicationActivity.class);
-        intent.putExtra("appResource", Parcels.wrap(appResource));
+        intent.putExtra("appResource", appResource);
         Bundle options = new Bundle();
         for (Map.Entry<String, String> e : launchOptions.entrySet()) {
             options.putString(e.getKey(), e.getValue());
@@ -434,7 +433,7 @@ public class Navigator implements INavigator {
 
     public void startServiceWebViewActivity(Context context, WebViewPayInfo appGamePayInfo, String host) {
         Intent intent = new Intent(context, ServiceWebViewActivity.class);
-        intent.putExtra(WebViewConstants.APPGAMEPAYINFO, Parcels.wrap(appGamePayInfo));
+        intent.putExtra(WebViewConstants.APPGAMEPAYINFO, appGamePayInfo);
         intent.putExtra(WebViewConstants.WEBURL, host);
         context.startActivity(intent);
     }

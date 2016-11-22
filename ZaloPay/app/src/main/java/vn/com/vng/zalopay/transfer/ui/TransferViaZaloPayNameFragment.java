@@ -10,8 +10,6 @@ import android.view.View;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.edittext.ZPEditTextValidate;
 
-import org.parceler.Parcels;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -127,7 +125,7 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
         item.zaloPayName = zaloPayName;
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
+        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
         navigator.startTransferActivity(this, bundle);
     }
 

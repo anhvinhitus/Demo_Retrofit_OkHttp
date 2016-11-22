@@ -7,16 +7,12 @@ import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
  * Created by longlv on 21/07/2016.
  *
  */
-@org.parceler.Parcel
+
 public class GetReceivePacket {
     public long totalofrevamount;
     public int totalofrevpackage;
     public int numofluckiestdraw;
     public List<ReceivePackage> revpackageList;
-
-    public GetReceivePacket() {
-
-    }
 
     public GetReceivePacket(long totalofrevamount,
                             int totalofrevpackage,

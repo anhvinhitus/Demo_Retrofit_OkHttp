@@ -163,7 +163,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        int menuRes = isEnableShowShow ? R.menu.menu_main_2 : R.menu.menu_main;
+        int menuRes = false ? R.menu.menu_main_2 : R.menu.menu_main;
         inflater.inflate(menuRes, menu);
 
         MenuItem menuItem = menu.findItem(R.id.action_notifications);
@@ -380,7 +380,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             return;
         }
         int currentItem = mBannerViewpager.getCurrentItem();
-        if (currentItem >= count -1) {
+        if (currentItem >= count - 1) {
             currentItem = 0;
             mBannerViewpager.setCurrentItem(currentItem, false);
         } else {

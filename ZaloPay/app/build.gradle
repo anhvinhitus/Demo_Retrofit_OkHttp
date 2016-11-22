@@ -366,9 +366,6 @@ dependencies {
 
     compile libs.circularreveal
 
-    compile libs.parceler
-    apt libs.parceler_apt
-
     debugCompile libs.debugViewer
     releaseCompile libs.debugViewer_noops
     compile libs.zalopay_analytics

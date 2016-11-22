@@ -11,8 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import org.parceler.Parcels;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,7 +21,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
-import vn.com.vng.zalopay.ui.dialog.TransferMoneyDialog;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
@@ -196,7 +193,7 @@ public class TransferHomeFragment extends BaseFragment implements
     @Override
     public void onItemRecentClick(RecentTransaction item) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
+        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
         navigator.startTransferActivity(this, bundle);
     }
 

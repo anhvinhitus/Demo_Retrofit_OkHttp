@@ -9,8 +9,8 @@ import vn.com.vng.zalopay.domain.Constants;
 /**
  * Created by longlv on 09/05/2016.
  */
-@org.parceler.Parcel
 public class Order extends AbstractData {
+
     public long appid;
     public String zptranstoken;
     public String apptransid;

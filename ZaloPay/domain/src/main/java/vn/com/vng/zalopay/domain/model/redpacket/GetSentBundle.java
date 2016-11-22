@@ -13,10 +13,6 @@ public class GetSentBundle {
     public int totalofsentbundle;
     public List<SentBundle> sentbundlelist;
 
-    public GetSentBundle() {
-
-    }
-
     public GetSentBundle(long totalofsentamount, int totalofsentbundle, List<SentBundle> sentbundlelist) {
         this.totalofsentamount = totalofsentamount;
         this.totalofsentbundle = totalofsentbundle;

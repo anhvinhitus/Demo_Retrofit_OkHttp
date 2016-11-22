@@ -2,13 +2,10 @@ package vn.com.vng.zalopay.domain.model;
 
 import android.text.TextUtils;
 
-import org.parceler.Parcel;
-
 /**
  * Created by AnhHieu on 3/25/16.
  * Person model
  */
-@Parcel
 public class Person {
 
     public String zaloPayId;

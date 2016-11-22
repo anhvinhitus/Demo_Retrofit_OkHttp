@@ -1,12 +1,9 @@
 package vn.com.vng.zalopay.domain.model;
 
-import org.parceler.Parcel;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-/**
- * Created by AnhHieu on 5/23/16.
- */
-@Parcel
-public class AppResource {
+public class AppResource implements Parcelable {
 
     public int appid;
 
@@ -66,4 +63,45 @@ public class AppResource {
         result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
         return result;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.appid);
+        dest.writeString(this.appname);
+        dest.writeString(this.checksum);
+        dest.writeInt(this.status);
+        dest.writeString(this.urlImage);
+        dest.writeInt(this.appType);
+        dest.writeString(this.webUrl);
+        dest.writeString(this.iconUrl);
+    }
+
+    protected AppResource(Parcel in) {
+        this.appid = in.readInt();
+        this.appname = in.readString();
+        this.checksum = in.readString();
+        this.status = in.readInt();
+        this.urlImage = in.readString();
+        this.appType = in.readInt();
+        this.webUrl = in.readString();
+        this.iconUrl = in.readString();
+    }
+
+    public static final Parcelable.Creator<AppResource> CREATOR = new Parcelable.Creator<AppResource>() {
+        @Override
+        public AppResource createFromParcel(Parcel source) {
+            return new AppResource(source);
+        }
+
+        @Override
+        public AppResource[] newArray(int size) {
+            return new AppResource[size];
+        }
+    };
 }

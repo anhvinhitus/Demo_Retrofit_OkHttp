@@ -12,8 +12,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.parceler.Parcels;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -204,7 +202,7 @@ public class TransferMoneyDialog extends AlertDialog implements ITransferMoneyVi
         item.zaloPayName = zaloPayName;
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, Parcels.wrap(item));
+        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
         navigator.startTransferActivity(activity, bundle);
         dismiss();
     }

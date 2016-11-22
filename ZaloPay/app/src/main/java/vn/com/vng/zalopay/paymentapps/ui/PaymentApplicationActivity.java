@@ -32,7 +32,6 @@ import com.zalopay.zcontacts.ZContactsPackage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.parceler.Parcels;
 import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
@@ -113,10 +112,10 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         if (savedInstanceState == null) {
             Intent intent = getIntent();
 
-            appResource = Parcels.unwrap(intent.getParcelableExtra("appResource"));
+            appResource = intent.getParcelableExtra("appResource");
             mLaunchOptions = intent.getBundleExtra("launchOptions");
         } else {
-            appResource = Parcels.unwrap(savedInstanceState.getParcelable("appResource"));
+            appResource = savedInstanceState.getParcelable("appResource");
             mLaunchOptions = savedInstanceState.getBundle("launchOptions");
         }
 
@@ -149,7 +148,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         super.onSaveInstanceState(outState);
 
         if (appResource != null) {
-            outState.putParcelable("appResource", Parcels.wrap(appResource));
+            outState.putParcelable("appResource", appResource);
         }
 
         outState.putBundle("launchOptions", mLaunchOptions);

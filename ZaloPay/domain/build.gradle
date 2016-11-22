@@ -47,7 +47,4 @@ dependencies {
 
     provided libs.daggerCompiler
     provided libs.javaxAnnotation
-
-    compile libs.parceler
-    apt libs.parceler_apt
 }

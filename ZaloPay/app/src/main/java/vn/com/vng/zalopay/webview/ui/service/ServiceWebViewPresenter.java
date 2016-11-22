@@ -5,8 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import org.parceler.Parcels;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
@@ -63,7 +61,7 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         }
 
         mHost = arguments.getString(WebViewConstants.WEBURL);
-        mAppGamePayInfo = Parcels.unwrap(arguments.getParcelable(WebViewConstants.APPGAMEPAYINFO));
+        mAppGamePayInfo = arguments.getParcelable(WebViewConstants.APPGAMEPAYINFO);
     }
 
     boolean isServiceWeb(String url) {

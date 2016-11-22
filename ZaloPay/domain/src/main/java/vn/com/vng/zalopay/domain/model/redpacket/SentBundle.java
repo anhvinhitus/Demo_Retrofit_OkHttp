@@ -4,7 +4,6 @@ import java.util.List;
 
 /**
  * Created by longlv on 15/07/2016.
- *
  */
 public class SentBundle {
     public long bundleID;
@@ -18,10 +17,6 @@ public class SentBundle {
     public String sendMessage;
     public int status;
     public List<PackageInBundle> packages;
-
-    public SentBundle() {
-
-    }
 
     public SentBundle(long bundleID, String sendZaloPayID,
                       int type, long createTime, long lastOpenTime,

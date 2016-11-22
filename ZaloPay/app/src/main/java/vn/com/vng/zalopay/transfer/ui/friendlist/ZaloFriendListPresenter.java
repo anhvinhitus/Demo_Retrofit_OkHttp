@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import org.parceler.Parcels;
-
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -126,7 +124,7 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
         }
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.ARG_ZALO_FRIEND, Parcels.wrap(zaloFriend));
+        bundle.putParcelable(Constants.ARG_ZALO_FRIEND, zaloFriend);
         mNavigator.startTransferActivity(fragment, bundle);
     }
 

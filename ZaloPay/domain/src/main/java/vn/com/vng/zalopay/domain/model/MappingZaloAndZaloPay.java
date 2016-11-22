@@ -14,13 +14,6 @@ public class MappingZaloAndZaloPay {
         this.phonenumber = 0;
     }
 
-    public MappingZaloAndZaloPay(long zaloId, String zaloPayId, String zaloPayName, long phonenumber) {
-        this.zaloId = zaloId;
-        this.zaloPayId = zaloPayId;
-        this.zaloPayName = zaloPayName;
-        this.phonenumber = phonenumber;
-    }
-
 /*
     public long getZaloId() {
         return zaloId;

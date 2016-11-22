@@ -12,10 +12,6 @@ public class PackageStatus {
     public long balance;
     public String data;
 
-    public PackageStatus() {
-
-    }
-
     public PackageStatus(boolean isProcessing, String zpTransID, long reqdate, long amount, long balance, String data) {
         this.isProcessing = isProcessing;
         this.zpTransID = zpTransID;

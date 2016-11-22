@@ -9,10 +9,6 @@ public class SubmitOpenPackage {
     public long packageID;
     public long zpTransID;
 
-    public SubmitOpenPackage() {
-
-    }
-
     public SubmitOpenPackage(long bundleID, long packageID, long zpTransID) {
         this.bundleID = bundleID;
         this.packageID = packageID;

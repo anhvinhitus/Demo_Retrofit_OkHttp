@@ -17,10 +17,6 @@ public class PackageInBundle {
     public String sendMessage;
     public boolean isLuckiest;
 
-    public PackageInBundle() {
-
-    }
-
     public PackageInBundle(long packageID, long bundleID, String revZaloPayID, long revZaloID, String revFullName, String revAvatarURL, long openTime, long amount, String sendMessage, boolean isLuckiest) {
         this.packageID = packageID;
         this.bundleID = bundleID;

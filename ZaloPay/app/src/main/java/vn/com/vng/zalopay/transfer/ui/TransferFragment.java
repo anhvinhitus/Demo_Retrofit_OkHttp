@@ -14,8 +14,6 @@ import com.zalopay.ui.widget.KeyboardFrameLayout;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
-import org.parceler.Parcels;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -105,8 +103,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
         mPresenter.setView(this);
 
-        mPresenter.initView((ZaloFriend) Parcels.unwrap(argument.getParcelable(Constants.ARG_ZALO_FRIEND)),
-                (RecentTransaction) Parcels.unwrap(argument.getParcelable(Constants.ARG_TRANSFERRECENT)),
+        mPresenter.initView((ZaloFriend) argument.getParcelable(Constants.ARG_ZALO_FRIEND),
+                (RecentTransaction) argument.getParcelable(Constants.ARG_TRANSFERRECENT),
                 argument.getLong(Constants.ARG_AMOUNT),
                 argument.getString(Constants.ARG_MESSAGE));
 
