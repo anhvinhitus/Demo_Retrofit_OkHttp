@@ -17,14 +17,14 @@ import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
  */
 public interface ZaloPayService {
 
-    @GET("v001/tpe/getorderinfo")
+    @GET(Constants.API.GETORDERINFO)
     Observable<GetOrderResponse> getorder(@Query("userid") String userid,
                                           @Query("accesstoken") String accesstoken,
                                           @Query(Constants.APPID) long appId,
                                           @Query(Constants.ZPTRANSTOKEN) String apptransid);
 
     @FormUrlEncoded
-    @POST("v001/tpe/createwalletorder")
+    @POST(Constants.API.CREATEWALLETORDER)
     Observable<GetOrderResponse> createwalletorder(@Field("userid") String userid,
                                                    @Field("accesstoken") String accesstoken,
                                                    @Field(Constants.APPID) long appId,

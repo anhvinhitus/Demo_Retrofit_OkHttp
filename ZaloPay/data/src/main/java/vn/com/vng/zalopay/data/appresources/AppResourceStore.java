@@ -7,6 +7,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -39,13 +40,13 @@ public interface AppResourceStore {
 
     interface RequestService {
 
-        @GET("v001/tpe/insideappresource")
+        @GET(Constants.API.INSIDEAPPRESOURCE)
         Observable<AppResourceResponse> insideappresource(@Query(encoded = false, value = "appidlist") List<Long> appidlist,
                                                           @Query("checksumlist") List<String> checksumlist,
                                                           @QueryMap HashMap<String, String> params,
                                                           @Query("appversion") String appVersion);
 
-        @GET("v001/tpe/getinsideappresource")
+        @GET(Constants.API.GETINSIDEAPPRESOURCE)
         Observable<AppResourceResponse> insideappresource(@Query(value = "appidlist", encoded = false) String appidlist,
                                                           @Query(value = "checksumlist", encoded = true) String checksumlist,
                                                           @QueryMap HashMap<String, String> params,

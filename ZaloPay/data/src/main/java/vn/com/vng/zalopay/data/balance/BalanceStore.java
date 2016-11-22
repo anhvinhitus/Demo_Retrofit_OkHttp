@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.balance;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BalanceResponse;
 
 /**
@@ -16,7 +17,7 @@ public interface BalanceStore {
     }
 
     interface RequestService {
-        @GET("v001/tpe/getbalance")
+        @GET(Constants.API.GETBALANCE)
         Observable<BalanceResponse> balance(@Query("userid") String uid, @Query("accesstoken") String accesstoken);
     }
 

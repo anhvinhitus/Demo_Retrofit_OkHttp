@@ -6,6 +6,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 import rx.Observable;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
 import vn.com.vng.zalopay.domain.model.TransHistory;
@@ -41,7 +42,7 @@ public interface TransactionStore {
     }
 
     interface RequestService {
-        @GET("v001/tpe/transhistory")
+        @GET(Constants.API.TRANSHISTORY)
         Observable<TransactionHistoryResponse> getTransactionHistories(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("statustype") int statustype);
     }
 
