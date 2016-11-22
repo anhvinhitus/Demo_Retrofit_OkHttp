@@ -19,17 +19,18 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**
  * Created by longlv on 25/05/2016.
+ * *
  */
 public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter<IOTPProfileView> {
 
-    IOTPProfileView mView;
+    private IOTPProfileView mView;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private AccountStore.Repository accountRepository;
     private Context applicationContext;
 
     @Inject
-    public OTPProfilePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
+    OTPProfilePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
         this.accountRepository = accountRepository;
         this.applicationContext = applicationContext;
     }
@@ -72,7 +73,9 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
     private void onVerifyOTPSuccess() {
         hideLoading();
         mView.confirmOTPSuccess();
-        accountRepository.clearProfileInfo2();
+        Subscription subscription = accountRepository.clearProfileInfo2()
+                .subscribe(new DefaultSubscriber<Void>());
+        compositeSubscription.add(subscription);
     }
 
     public void verifyOtp(String otp) {
@@ -86,8 +89,6 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
     }
 
     private final class VerifyOTPProfileSubscriber extends DefaultSubscriber<Boolean> {
-        public VerifyOTPProfileSubscriber() {
-        }
 
         @Override
         public void onNext(Boolean permissions) {
