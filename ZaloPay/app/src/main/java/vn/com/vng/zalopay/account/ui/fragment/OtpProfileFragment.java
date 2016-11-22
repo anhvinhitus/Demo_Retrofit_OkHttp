@@ -2,11 +2,9 @@ package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -29,7 +27,6 @@ import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -207,10 +204,12 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
     }
 
     @Override
-    public void showRetry() {}
+    public void showRetry() {
+    }
 
     @Override
-    public void hideRetry() {}
+    public void hideRetry() {
+    }
 
     @Override
     public void showError(String message) {
