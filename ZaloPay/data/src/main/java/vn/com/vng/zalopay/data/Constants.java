@@ -26,7 +26,7 @@ public class Constants {
     public static final String MANIFEST_LOADED_TRANSACTION_FAIL = "manifest_loaded_transaction_fail";
     public static final String MANIFEST_RECOVERY_NOTIFICATION = "manifest_recovery_notification";
 
-    public interface API {
+    public interface TPE_API {
         String CREATEWALLETORDER = "v001/tpe/createwalletorder";
         String GETBALANCE = "v001/tpe/getbalance";
         String GETINSIDEAPPRESOURCE = "v001/tpe/getinsideappresource";
