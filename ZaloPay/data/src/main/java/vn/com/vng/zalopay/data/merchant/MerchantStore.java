@@ -6,6 +6,7 @@ import java.util.List;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.ListMUIResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
@@ -31,12 +32,12 @@ public interface MerchantStore {
     }
 
     interface RequestService {
-        @GET("ummerchant/getmerchantuserinfo")
+        @GET(Constants.UM_API.GETMERCHANTUSERINFO)
         Observable<GetMerchantUserInfoResponse> getmerchantuserinfo(@Query("appid") long appid,
                                                                     @Query("userid") String userid,
                                                                     @Query("accesstoken") String accesstoken);
 
-        @GET("ummerchant/getlistmerchantuserinfo")
+        @GET(Constants.UM_API.GETLISTMERCHANTUSERINFO)
         Observable<ListMUIResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist,
                                                             @Query("userid") String userid,
                                                             @Query("accesstoken") String accesstoken);

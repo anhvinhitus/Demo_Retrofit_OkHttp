@@ -35,4 +35,37 @@ public class Constants {
         String INSIDEAPPRESOURCE = "v001/tpe/insideappresource";
         String TRANSHISTORY = "v001/tpe/transhistory";
     }
+
+    public interface UM_API {
+        String CREATEACCESSTOKEN = "um/createaccesstoken";
+        String REMOVEACCESSTOKEN = "um/removeaccesstoken";
+        String VERIFYCODETEST = "/um/verifycodetest";
+        String UPDATEPROFILE = "um/updateprofile";
+        String VERIFYOTPPROFILE = "um/verifyotpprofile";
+        String RECOVERYPIN = "um/recoverypin";
+        String GETUSERINFO = "um/getuserinfo";
+        String GETUSERPROFILELEVEL = "um/getuserprofilelevel";
+        String GETUSERINFOBYZALOPAYNAME = "um/getuserinfobyzalopayname";
+        String GETUSERINFOBYZALOPAYID = "um/getuserinfobyzalopayid";
+        String CHECKZALOPAYNAMEEXIST = "um/checkzalopaynameexist";
+        String UPDATEZALOPAYNAME = "um/updatezalopayname";
+        String VALIDATEPIN = "um/validatepin";
+        String SENDNOTIFICATION = "um/sendnotification";
+        String GETMERCHANTUSERINFO = "ummerchant/getmerchantuserinfo";
+        String GETLISTMERCHANTUSERINFO = "ummerchant/getlistmerchantuserinfo";
+    }
+
+    public interface UMUPLOAD_API {
+        String PREUPDATEPROFILELEVEL3 = "umupload/preupdateprofilelevel3";
+    }
+
+    public interface REDPACKET_API {
+        String CREATEBUNDLEORDER = "redpackage/createbundleorder";
+        String SUBMITTOSENDBUNDLE = "redpackage/submittosendbundle";
+        String SUBMITOPENPACKAGE = "redpackage/submitopenpackage";
+        String GETSENTBUNDLELIST = "redpackage/getsentbundlelist";
+        String GETREVPACKAGELIST = "redpackage/getrevpackagelist";
+        String GETPACKAGESINBUNDLE = "redpackage/getpackagesinbundle";
+        String GETAPPINFO = "redpackage/getappinfo";
+    }
 }

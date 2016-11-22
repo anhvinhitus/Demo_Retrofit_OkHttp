@@ -81,27 +81,27 @@ public interface RedPacketStore {
 
     interface RequestService {
         @FormUrlEncoded
-        @POST("redpackage/createbundleorder")
+        @POST(Constants.REDPACKET_API.CREATEBUNDLEORDER)
         Observable<BundleOrderResponse> createBundleOrder(@Field("quantity") int quantity, @Field("totalluck") long totalLuck, @Field("amounteach") long amountEach, @Field("type") int type, @Field("sendzalopayid") String sendZaloPayID, @Field("accesstoken") String accessToken, @Field("sendmessage") String sendMessage);
 
         @FormUrlEncoded
-        @POST("redpackage/submittosendbundle")
+        @POST(Constants.REDPACKET_API.SUBMITTOSENDBUNDLE)
         Observable<BaseResponse> sendBundle(@Field("bundleid") long bundleID, @Field("friendlist") String friendList, @Field("sendzalopayid") String sendZaloPayID, @Field("accesstoken") String accessToken);
 
         @FormUrlEncoded
-        @POST("redpackage/submitopenpackage")
+        @POST(Constants.REDPACKET_API.SUBMITOPENPACKAGE)
         Observable<SubmitOpenPackageResponse> submitOpenPackage(@Field("packageid") long packageID, @Field("bundleid") long bundleID, @Field("revzalopayid") String revZaloPayID, @Field("accesstoken") String accessToken);
 
-        @GET("redpackage/getsentbundlelist")
+        @GET(Constants.REDPACKET_API.GETSENTBUNDLELIST)
         Observable<SentBundleListResponse> getSentBundleList(@Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
 
-        @GET("redpackage/getrevpackagelist")
+        @GET(Constants.REDPACKET_API.GETREVPACKAGELIST)
         Observable<GetReceivePackageResponse> getReceivedPackageList(@Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
 
-        @GET("redpackage/getpackagesinbundle")
+        @GET(Constants.REDPACKET_API.GETPACKAGESINBUNDLE)
         Observable<SentPackageInBundleResponse> getPackageInBundleList(@Query("bundleid") long bundleid, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
 
-        @GET("redpackage/getappinfo")
+        @GET(Constants.REDPACKET_API.GETAPPINFO)
         Observable<RedPacketAppInfoResponse> getAppInfo(@Query("checksum") String checksum, @Query("userid") String zalopayid, @Query("accesstoken") String accesstoken);
     }
 

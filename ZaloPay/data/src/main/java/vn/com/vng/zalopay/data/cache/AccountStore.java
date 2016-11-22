@@ -13,6 +13,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 import rx.Observable;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.GetUserInfoByZPIDResponse;
 import vn.com.vng.zalopay.data.api.response.GetUserInfoByZPNameResponse;
@@ -51,45 +52,45 @@ public interface AccountStore {
     interface RequestService {
 
         @FormUrlEncoded
-        @POST("um/updateprofile")
+        @POST(Constants.UM_API.UPDATEPROFILE)
         Observable<BaseResponse> updateProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
 
         @FormUrlEncoded
-        @POST("um/verifyotpprofile")
+        @POST(Constants.UM_API.VERIFYOTPPROFILE)
         Observable<UpdateProfileResponse> verifyOTPProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("otp") String otp);
 
         @FormUrlEncoded
-        @POST("um/recoverypin")
+        @POST(Constants.UM_API.RECOVERYPIN)
         Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("oldpin") String oldPin, @Field("pin") String newPin, @Field("otp") String otp);
 
-        @GET("um/getuserinfo")
+        @GET(Constants.UM_API.GETUSERINFO)
         Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("loginuid") long zaloId, @Query("systemlogin") int systemlogin);
 
-        @GET("um/getuserprofilelevel")
+        @GET(Constants.UM_API.GETUSERPROFILELEVEL)
         Observable<UserProfileLevelResponse> getUserProfileLevel(@Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @GET("um/getuserinfobyzalopayname")
+        @GET(Constants.UM_API.GETUSERINFOBYZALOPAYNAME)
         Observable<GetUserInfoByZPNameResponse> getUserInfoByZaloPayName(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @GET("um/getuserinfobyzalopayid")
+        @GET(Constants.UM_API.GETUSERINFOBYZALOPAYID)
         Observable<GetUserInfoByZPIDResponse> getUserInfoByZaloPayId(@Query("requestid") String zalopayid, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @GET("um/checkzalopaynameexist")
+        @GET(Constants.UM_API.CHECKZALOPAYNAMEEXIST)
         Observable<BaseResponse> checkZaloPayNameExist(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
         @FormUrlEncoded
-        @POST("um/updatezalopayname")
+        @POST(Constants.UM_API.UPDATEZALOPAYNAME)
         Observable<BaseResponse> updateZaloPayName(@Field("zalopayname") String zalopayname, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
 
         @FormUrlEncoded
-        @POST("um/validatepin")
+        @POST(Constants.UM_API.VALIDATEPIN)
         Observable<BaseResponse> validatePin(@Field("pin") String pin, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
 
     }
 
     interface UploadPhotoService {
         @Multipart
-        @POST("umupload/preupdateprofilelevel3")
+        @POST(Constants.UMUPLOAD_API.PREUPDATEPROFILELEVEL3)
         Observable<BaseResponse> updateProfile3(@Part("userid") RequestBody userid,
                                                 @Part("accesstoken") RequestBody accesstoken,
                                                 @Part("identitynumber") RequestBody identitynumber,
