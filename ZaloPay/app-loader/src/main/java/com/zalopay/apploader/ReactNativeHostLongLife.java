@@ -89,7 +89,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
             return;
         }
 
-        instance.onHostDestroy();
+        //  instance.onHostDestroy(activity);
         markMappingAvailable(mapping);
 
         if (forceRemove) {
@@ -187,6 +187,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
     }
 
     private ReactBasedActivity mActivity;
+
     @Override
     public Context getActivityContext() {
         return mActivity;

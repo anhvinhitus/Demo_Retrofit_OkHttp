@@ -1,6 +1,5 @@
 package com.zalopay.apploader;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -176,7 +175,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
         mLifecycleState = LifecycleState.BEFORE_RESUME;
 
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onHostPause();
+            mReactInstanceManager.onHostPause(this);
         }
     }
 

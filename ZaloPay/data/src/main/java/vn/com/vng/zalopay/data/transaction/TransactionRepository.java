@@ -26,6 +26,7 @@ import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
  * Implementation for transaction repository
  */
 public class TransactionRepository implements TransactionStore.Repository {
+
     private ZaloPayEntityDataMapper zaloPayEntityDataMapper;
     private TransactionStore.LocalStorage mTransactionLocalStorage;
     private TransactionStore.RequestService mTransactionRequestService;

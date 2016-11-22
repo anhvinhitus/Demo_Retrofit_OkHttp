@@ -19,21 +19,16 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -46,7 +41,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
     private TransactionStore.Repository mRepository;
     private final EventBus mEventBus;
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, TransactionStore.Repository repository, EventBus eventBus) {
         super(reactContext);
@@ -82,7 +77,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                     }
                 })
                 .subscribe(new TransactionLogSubscriber(promise));
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @ReactMethod
@@ -107,7 +102,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                 })
                 .subscribe(new TransactionLogSubscriber(promise));
 
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @ReactMethod
@@ -134,7 +129,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                 })
                 .subscribe(new TransactionLogSubscriber(promise));
 
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     private class TransactionLogSubscriber extends DefaultSubscriber<Pair<Integer, WritableArray>> {
@@ -187,8 +182,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
             mEventBus.register(this);
         }
 
-        updateTransactionFail();
-        updateTransactionSuccess();
+        updateTransactionLatest();
     }
 
     @Override
@@ -200,7 +194,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     @Override
     public void onHostDestroy() {
 
-        unsubscribeIfNotNull(compositeSubscription);
+        unsubscribeIfNotNull(mCompositeSubscription);
 
         getReactApplicationContext().removeActivityEventListener(this);
         getReactApplicationContext().removeLifecycleEventListener(this);
@@ -259,16 +253,10 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         sendEvent("zalopayTransactionsUpdated", item);
     }
 
-    private void updateTransactionSuccess() {
-        Subscription subscription = mRepository.fetchTransactionHistorySuccessLatest()
+    private void updateTransactionLatest() {
+        Subscription subscription = mRepository.fetchTransactionHistoryLatest()
                 .subscribe(new DefaultSubscriber<Boolean>());
-        compositeSubscription.add(subscription);
-    }
-
-    private void updateTransactionFail() {
-        Subscription subscription = mRepository.fetchTransactionHistoryFailLatest()
-                .subscribe(new DefaultSubscriber<Boolean>());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
 }

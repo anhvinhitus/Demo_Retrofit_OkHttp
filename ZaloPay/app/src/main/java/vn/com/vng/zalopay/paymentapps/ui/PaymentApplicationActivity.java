@@ -14,7 +14,6 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.bottomsheetbehavior.BottomSheetBehaviorPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
