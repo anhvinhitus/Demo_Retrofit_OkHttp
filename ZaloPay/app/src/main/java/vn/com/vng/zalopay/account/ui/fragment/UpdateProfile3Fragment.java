@@ -186,6 +186,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mEmailView.setError(s);
     }
 
+    private void setIdentityError(String identity) {
+        mIdentityNumberView.setErrorEnabled(!TextUtils.isEmpty(identity));
+        mIdentityNumberView.setError(identity);
+    }
+
     @OnFocusChange(R.id.edtEmail)
     public void onFocusChange(boolean focus) {
         if (!focus) {
@@ -201,7 +206,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @OnTextChanged(R.id.edtIdentity)
     public void onTextChangeIdentity(CharSequence s) {
-        mIdentityNumberView.setError(null);
+        if (TextUtils.isEmpty(getIdentity())) {
+            setIdentityError(getString(R.string.invalid_cmnd));
+        } else if (!ValidateUtil.isValidCMNDOrPassport(getIdentity())) {
+            setIdentityError(getString(R.string.cmnd_passport_invalid));
+        } else {
+            setIdentityError(null);
+        }
         mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
     }
 
@@ -578,9 +589,15 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         if (!TextUtils.isEmpty(email)) {
             setEmail(email);
+            if (!ValidateUtil.isEmailAddress(getEmail())) {
+                setEmailError(getString(R.string.email_invalid));
+            }
         }
         if (!TextUtils.isEmpty(identity)) {
             setIdentity(identity);
+            if (!ValidateUtil.isValidCMNDOrPassport(getIdentity())) {
+                mIdentityNumberView.setError(getString(R.string.cmnd_passport_invalid));
+            }
         }
 
         mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
