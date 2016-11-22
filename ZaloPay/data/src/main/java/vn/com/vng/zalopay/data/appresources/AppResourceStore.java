@@ -39,13 +39,13 @@ public interface AppResourceStore {
 
     interface RequestService {
 
-        @GET("tpe/insideappresource")
+        @GET("v001/tpe/insideappresource")
         Observable<AppResourceResponse> insideappresource(@Query(encoded = false, value = "appidlist") List<Long> appidlist,
                                                           @Query("checksumlist") List<String> checksumlist,
                                                           @QueryMap HashMap<String, String> params,
                                                           @Query("appversion") String appVersion);
 
-        @GET("tpe/getinsideappresource")
+        @GET("v001/tpe/getinsideappresource")
         Observable<AppResourceResponse> insideappresource(@Query(value = "appidlist", encoded = false) String appidlist,
                                                           @Query(value = "checksumlist", encoded = true) String checksumlist,
                                                           @QueryMap HashMap<String, String> params,

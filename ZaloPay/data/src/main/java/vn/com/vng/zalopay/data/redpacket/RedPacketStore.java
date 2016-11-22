@@ -74,7 +74,7 @@ public interface RedPacketStore {
     }
 
     interface RequestTPEService {
-        @GET("tpe/gettransstatus")
+        @GET("v001/tpe/gettransstatus")
         Observable<PackageStatusResponse> getPackageStatus(@Query("appid") int appId, @Query("packageid") long packageID, @Query("zptransid") long zpTransID, @Query("userid") String userid, @Query("accesstoken") String accessToken, @Query("deviceid") String deviceid);
     }
 

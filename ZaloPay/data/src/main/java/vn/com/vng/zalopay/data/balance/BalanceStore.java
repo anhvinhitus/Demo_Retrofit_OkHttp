@@ -16,7 +16,7 @@ public interface BalanceStore {
     }
 
     interface RequestService {
-        @GET("tpe/getbalance")
+        @GET("v001/tpe/getbalance")
         Observable<BalanceResponse> balance(@Query("userid") String uid, @Query("accesstoken") String accesstoken);
     }
 

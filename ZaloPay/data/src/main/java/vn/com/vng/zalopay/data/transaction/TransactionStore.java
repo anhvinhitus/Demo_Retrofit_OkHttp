@@ -41,7 +41,7 @@ public interface TransactionStore {
     }
 
     interface RequestService {
-        @GET("tpe/transhistory")
+        @GET("v001/tpe/transhistory")
         Observable<TransactionHistoryResponse> getTransactionHistories(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("statustype") int statustype);
     }
 
