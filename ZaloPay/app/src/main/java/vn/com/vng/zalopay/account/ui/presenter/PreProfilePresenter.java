@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -22,7 +23,7 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
  */
 public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<IPreProfileView> {
 
-    IPreProfileView mView;
+    private IPreProfileView mView;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private AccountStore.Repository mAccountRepository;
@@ -42,7 +43,7 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
     }
 
     private void initPagerContent() {
-        mAccountRepository.getProfileLevel2Cache()
+        Subscription subscription = mAccountRepository.getProfileLevel2Cache()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<ProfileLevel2>() {
@@ -56,24 +57,24 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
                         Timber.d("initPagerContent isReceivedOtp [%s]", profileLevel2.isReceivedOtp);
                         mView.updateCurrentPhone(profileLevel2.phoneNumber);
                         if (!TextUtils.isEmpty(profileLevel2.phoneNumber)
-                            && profileLevel2.isReceivedOtp) {
+                                && profileLevel2.isReceivedOtp) {
                             mView.initPagerContent(1);
                         } else {
                             mView.initPagerContent(0);
                         }
                     }
                 });
-
+        mCompositeSubscription.add(subscription);
     }
 
     @Override
     public void destroyView() {
+        unsubscribeIfNotNull(mCompositeSubscription);
         mView = null;
     }
 
     @Override
     public void resume() {
-        mView.updateUserInfo(mUserConfig.getCurrentUser());
     }
 
     @Override
@@ -87,10 +88,6 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
 
     public void saveUserPhone(String phone) {
         mUserConfig.updateUserPhone(phone);
-    }
-
-    public void saveZaloPayName(String zaloPayName) {
-        mUserConfig.updateZaloPayName(zaloPayName);
     }
 
     public void showLoading() {

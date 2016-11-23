@@ -11,7 +11,6 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  */
 public interface IPreProfileView extends ILoadDataView {
     Activity getActivity();
-    void updateUserInfo(User user);
     void initPagerContent(int pageIndex);
     void updateCurrentPhone(String phone);
 }

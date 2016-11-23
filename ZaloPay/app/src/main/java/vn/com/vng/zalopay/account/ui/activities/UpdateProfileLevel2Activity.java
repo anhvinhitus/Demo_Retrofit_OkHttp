@@ -5,18 +5,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -28,16 +22,15 @@ import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
-public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements IPreProfileView,
+public class UpdateProfileLevel2Activity extends BaseToolBarActivity
+        implements IPreProfileView,
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
 
@@ -49,24 +42,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
 
     @Inject
     PreProfilePresenter presenter;
-
-    @Inject
-    ImageLoader mImageLoader;
-
-    @BindView(R.id.headerView)
-    View headerView;
-
-    @BindView(R.id.imgAvatar)
-    SimpleDraweeView imgAvatar;
-
-    @BindView(R.id.tvSex)
-    TextView tvSex;
-
-    @BindView(R.id.tvBirthday)
-    TextView tvBirthday;
-
-    @BindView(R.id.tv_name)
-    TextView tvName;
 
     @BindView(R.id.viewPager)
     NonSwipeableViewPager viewPager;
@@ -92,7 +67,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         presenter.setView(this);
         initData();
         initPaymentWrapper();
-        headerView.setVisibility(View.GONE);
     }
 
     private void initPaymentWrapper() {
@@ -162,18 +136,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity implements 
         super.onDestroy();
         hideLoading();
         mProgressDialog = null;
-    }
-
-    public void updateUserInfo(User user) {
-        if (user == null) {
-            return;
-        }
-        Timber.d("updateUserInfo, birthday: %s", user.birthDate);
-        Date date = new Date(user.birthDate * 1000);
-        tvBirthday.setText(new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date));
-        tvName.setText(user.displayName);
-        tvSex.setText(user.getGender());
-        mImageLoader.loadImage(imgAvatar, user.avatar);
     }
 
     @Override

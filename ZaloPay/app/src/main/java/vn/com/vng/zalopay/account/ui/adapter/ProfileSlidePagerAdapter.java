@@ -1,10 +1,5 @@
 package vn.com.vng.zalopay.account.ui.adapter;
 
-/**
- * Created by longlv on 03/06/2016.
- */
-
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
