@@ -20,8 +20,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnItemClick;
 import butterknife.internal.DebouncingOnClickListener;
-import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.model.MenuItem;
