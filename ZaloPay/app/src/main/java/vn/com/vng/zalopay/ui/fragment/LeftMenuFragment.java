@@ -201,7 +201,7 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
         if (TextUtils.isEmpty(zaloPayName)) {
             mZaloPayNameView.setText(getString(R.string.zalopay_name_not_update));
         } else {
-            mZaloPayNameView.setText(zaloPayName);
+            mZaloPayNameView.setText(String.format(getString(R.string.leftmenu_zalopayid), zaloPayName));
         }
     }
 
