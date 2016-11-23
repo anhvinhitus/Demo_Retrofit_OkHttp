@@ -1,13 +1,26 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tv_section"
-    style="@style/TextView.Default"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/bg_gray"
-    android:gravity="center_vertical"
-    android:paddingBottom="@dimen/default_padding"
-    android:paddingLeft="@dimen/default_padding_normal"
-    android:paddingTop="@dimen/default_padding"
-    android:text="A"
-    android:textAllCaps="true"
-    android:textColor="@color/c_text_grey" />
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:layout_gravity="bottom"
+        android:background="@color/separate" />
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/tv_section"
+        style="@style/TextView.Default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/default_padding_small"
+        android:paddingLeft="@dimen/default_padding_normal"
+        android:paddingTop="@dimen/default_padding_small"
+        android:text="A"
+        android:textAllCaps="true"
+        android:textColor="@color/c_text_grey" />
+
+</LinearLayout>

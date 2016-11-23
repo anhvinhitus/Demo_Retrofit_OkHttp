@@ -168,12 +168,10 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
 
     @Override
     public void showRetry() {
-
     }
 
     @Override
     public void hideRetry() {
-
     }
 
     @Override

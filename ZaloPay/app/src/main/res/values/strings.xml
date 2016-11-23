@@ -94,7 +94,7 @@
     <string name="title.activity.add.card">Thêm thẻ</string>
     <string name="title.activity.transfer">Chuyển tiền</string>
     <string name="title.activity.transfer.to">Chuyển tiền đến</string>
-    <string name="title.activity.zalopay.contact">Danh bạ Zalo</string>
+    <string name="title.activity.zalopay.contact">Danh bạ</string>
     <string name="title.activity.change.pin">Tạo lại mật khẩu thanh toán</string>
     <string name="title.activity.invitation.code">Invitation Code</string>
     <string name="title.activity.withdraw.home">Số dư</string>
@@ -390,4 +390,6 @@
     <string name="warning.rooted.recommend">Khuyến cáo không nên sử dụng Zalo Pay trên thiết bị này. Nhấn nút \"Tiếp Tục\" để sử dụng Zalo Pay.</string>
     <string name="not.repeat">Không hỏi lại cho những lần sau</string>
     <string name="application.downloading">Ứng dụng đang được tải</string>
+    <string name="friend.use.zalopay">Bạn bè sử dụng zalo pay</string>
+    <string name="friend.not.use.zalopay">Bạn bè chưa sử dụng zalo pay</string>
 </resources>

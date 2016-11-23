@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.transfer.ui.friendlist;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +10,15 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.HashMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.zfriend.ColumnIndex;
-import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
  * Created by AnhHieu on 10/7/16.
@@ -34,35 +34,79 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
     }
 
     @Override
-    protected void bindSeparatorView(View v, Context context2, Object item) {
-        SectionHolder holder = (SectionHolder) v.getTag();
-        holder.bindView(String.valueOf(item));
+    protected void bindSeparatorView(View v, Context context, Object item) {
+        SectionObject sectionObject = (SectionObject) item;
+        Object object = v.getTag();
+
+        if (object instanceof SectionHolder) {
+            Timber.d("SectionHolder: %s", sectionObject.firstChar);
+            ((SectionHolder) object).bindView(sectionObject);
+        } else if (object instanceof TitleHolder) {
+            Timber.d("TitleHolder: %s", sectionObject.firstChar);
+            ((TitleHolder) object).bindView(sectionObject);
+        }
     }
 
     @Override
     protected View newSeparatorView(Context context2, Object item, ViewGroup parent) {
-        View view = mInflater.inflate(R.layout.row_section_layout, parent, false);
-        SectionHolder holder = new SectionHolder(view);
-        view.setTag(holder);
+        SectionObject sectionObject = (SectionObject) item;
+        Timber.d("newSeparatorView: item %s", ((SectionObject) item).firstChar);
+        View view;
+        if (!TextUtils.isEmpty(sectionObject.firstChar) && sectionObject.firstChar.length() > 1) {
+            view = mInflater.inflate(R.layout.row_section_friend_layout, parent, false);
+            Timber.d("create new title section");
+            TitleHolder holder = new TitleHolder(view);
+            view.setTag(holder);
+        } else {
+            Timber.d("create new section");
+            view = mInflater.inflate(R.layout.row_section_layout, parent, false);
+            SectionHolder holder = new SectionHolder(view);
+            view.setTag(holder);
+        }
         return view;
+    }
+
+    @Override
+    protected int getRealItemPosition(int position) {
+        return super.getRealItemPosition(position);
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 3;
     }
 
     @Override
     protected SortedMap<Integer, Object> initializeSections(Cursor c) {
         TreeMap<Integer, Object> sections = new TreeMap<>();
         int offset = 0, i = 0;
+        HashMap<String, Boolean> titleSectionUsingApp = new HashMap<>();
         while (c.moveToNext()) {
 
             boolean isUseApp = c.getInt(ColumnIndex.UsingApp) == 1;
-            //   Timber.d("initializeSections: isUseApp %s", isUseApp);
-            if (isUseApp) {
-                i++;
-                continue;
+
+            if (isUseApp && !titleSectionUsingApp.containsKey("use")) {
+                SectionObject section = new SectionObject(mContext.getString(R.string.friend_use_zalopay), isUseApp);
+                if (!sections.containsValue(section)) {
+                    sections.put(offset + i, section);
+                    offset++;
+                }
+
+                titleSectionUsingApp.put("use", true);
+            } else if (!isUseApp && !titleSectionUsingApp.containsKey("notuse")) {
+                SectionObject section = new SectionObject(mContext.getString(R.string.friend_not_use_zalopay), isUseApp);
+                if (!sections.containsValue(section)) {
+                    sections.put(offset + i, section);
+                    offset++;
+                }
+                titleSectionUsingApp.put("notuse", true);
             }
 
             String firstLetter = c.getString(ColumnIndex.Fulltextsearch).substring(0, 1);
-            if (!sections.containsValue(firstLetter)) {
-                sections.put(offset + i, firstLetter);
+
+            SectionObject section = new SectionObject(firstLetter, isUseApp);
+            if (!sections.containsValue(section)) {
+                sections.put(offset + i, section);
                 offset++;
             }
 
@@ -81,44 +125,50 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, Context context, Cursor cursor, int position) {
         ViewHolder holder = (ViewHolder) view.getTag();
-        holder.bindView(cursor);
+        holder.bindView(cursor, !isSection(position + 1));
     }
-
 
     @Override
     protected boolean isSection(int position) {
-        return getItemViewType(position) == 0;
+        int viewType = getItemViewType(position);
+        return viewType == 0 || viewType == 2;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (getSections().containsKey(position))
-            return 0;
-        else
+        if (getSections().containsKey(position)) {
+            SectionObject sectionObject = (SectionObject) getSections().get(position);
+            if (!TextUtils.isEmpty(sectionObject.firstChar) && sectionObject.firstChar.length() > 1) {
+                return 2;
+            } else {
+                return 0;
+            }
+        } else {
             return 1;
+        }
     }
 
     static class ViewHolder {
 
         @BindView(R.id.tvDisplayName)
-        public TextView mTvDisplayName;
+        TextView mTvDisplayName;
 
         @BindView(R.id.imgAvatar)
-        public SimpleDraweeView mImgAvatar;
+        SimpleDraweeView mImgAvatar;
 
         @BindView(R.id.imgZaloPay)
-        public View mImgZaloPay;
+        View mImgZaloPay;
 
         @BindView(R.id.viewSeparate)
-        public View mViewSeparate;
+        View mViewSeparate;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
 
-        void bindView(Cursor cursor) {
+        void bindView(Cursor cursor, boolean isShowSeparate) {
 
             String displayName = cursor.getString(ColumnIndex.DisplayName);
             String avatar = cursor.getString(ColumnIndex.Avatar);
@@ -127,20 +177,35 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
             mTvDisplayName.setText(displayName);
             mImgAvatar.setImageURI(avatar);
             mImgZaloPay.setVisibility(isUsingApp == 1 ? View.VISIBLE : View.INVISIBLE);
+            mViewSeparate.setVisibility(isShowSeparate ? View.VISIBLE : View.INVISIBLE);
         }
     }
 
     static class SectionHolder {
 
         @BindView(R.id.tv_section)
-        public TextView mSectionView;
+        TextView mSectionView;
 
-        public SectionHolder(View view) {
+        SectionHolder(View view) {
             ButterKnife.bind(this, view);
         }
 
-        void bindView(String section) {
-            mSectionView.setText(section);
+        void bindView(SectionObject section) {
+            mSectionView.setText(section.firstChar);
+        }
+    }
+
+    static class TitleHolder {
+
+        @BindView(R.id.tv_section)
+        TextView mSectionView;
+
+        TitleHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
+
+        void bindView(SectionObject section) {
+            mSectionView.setText(section.firstChar);
         }
     }
 }

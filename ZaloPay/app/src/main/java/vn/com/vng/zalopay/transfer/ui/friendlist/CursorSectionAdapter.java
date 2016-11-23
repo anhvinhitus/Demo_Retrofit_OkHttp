@@ -16,9 +16,11 @@ import java.util.TreeMap;
  */
 public abstract class CursorSectionAdapter extends CursorAdapter {
 
-    protected abstract void bindSeparatorView(View v, Context context2, Object item);
+    protected abstract void bindSeparatorView(View v, Context context, Object item);
 
     protected abstract View newSeparatorView(Context context2, Object item, ViewGroup parent);
+
+    public abstract void bindView(View view, Context context, Cursor cursor, int position);
 
     protected abstract SortedMap<Integer, Object> initializeSections(Cursor c);
 
@@ -46,7 +48,6 @@ public abstract class CursorSectionAdapter extends CursorAdapter {
         };
     }
 
-
     public SortedMap<Integer, Object> getSections() {
         return sections;
     }
@@ -54,35 +55,39 @@ public abstract class CursorSectionAdapter extends CursorAdapter {
     protected int getRealItemPosition(int position) {
         int offset = 0;
         for (Integer k : sections.keySet()) {
-            if (position >= k)
+            if (position >= k) {
                 offset++;
-            else
+            } else {
                 break;
+            }
         }
-
         return (position - offset);
     }
 
     @Override
     public Object getItem(int position) {
-        if (isSection(position))
+        if (isSection(position)) {
             return this.sections.get(position);
-        else
+        } else {
             return super.getItem(getRealItemPosition(position));
+        }
     }
 
     @Override
     public long getItemId(int position) {
-        if (isSection(position))
+        if (isSection(position)) {
             return position;
-        else
+        } else {
             return super.getItemId(getRealItemPosition(position));
+        }
     }
 
     @Override
     public int getCount() {
-        if (getCursor() == null)
+        if (getCursor() == null) {
             return 0;
+        }
+
         return super.getCount() + sections.size();
     }
 
@@ -112,9 +117,15 @@ public abstract class CursorSectionAdapter extends CursorAdapter {
             } else {
                 v = convertView;
             }
-            bindView(v, context, getCursor());
+            //bindView(v, context, getCursor());
+            bindView(v, context, getCursor(), position);
             return v;
         }
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        //empty
     }
 
     @Override
