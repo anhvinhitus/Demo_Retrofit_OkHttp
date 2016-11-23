@@ -122,6 +122,18 @@ public class UserConfigImpl implements UserConfig {
         }
     }
 
+    @Override
+    public void setAccessToken(String accessToken) {
+
+        if (currentUser != null) {
+            currentUser.accesstoken = accessToken;
+        }
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.PREF_USER_SESSION, accessToken);
+        editor.apply();
+    }
+
     public void loadConfig() {
         if (preferences.contains(Constants.PREF_USER_SESSION)) {
             String session = preferences.getString(Constants.PREF_USER_SESSION, "");
@@ -276,7 +288,7 @@ public class UserConfigImpl implements UserConfig {
     public void setWaitingApproveProfileLevel3(boolean waitingApproveProfile) {
         SharedPreferences.Editor editor = preferences.edit();
         if (waitingApproveProfile) {
-            editor.putLong(Constants.PREF_WAITING_APPROVE_PROFILE_LEVEL3, System.currentTimeMillis()/1000);
+            editor.putLong(Constants.PREF_WAITING_APPROVE_PROFILE_LEVEL3, System.currentTimeMillis() / 1000);
         } else {
             editor.putLong(Constants.PREF_WAITING_APPROVE_PROFILE_LEVEL3, 0);
         }
@@ -286,6 +298,7 @@ public class UserConfigImpl implements UserConfig {
     /**
      * If user have updated ProfileLevel3 then cache this and disable UpdateProfileLevel3 UI.
      * Server'll check UpdateProfile request in 24h.
+     *
      * @return is Waiting Approve ProfileLevel3
      */
     @Override
@@ -297,8 +310,8 @@ public class UserConfigImpl implements UserConfig {
             return false;
         }
         long lastTime = preferences.getLong(Constants.PREF_WAITING_APPROVE_PROFILE_LEVEL3, 0);
-        long currentTime = System.currentTimeMillis()/1000;
-        return !(currentTime - lastTime >= 24*60*60);
+        long currentTime = System.currentTimeMillis() / 1000;
+        return !(currentTime - lastTime >= 24 * 60 * 60);
     }
 
     @Override

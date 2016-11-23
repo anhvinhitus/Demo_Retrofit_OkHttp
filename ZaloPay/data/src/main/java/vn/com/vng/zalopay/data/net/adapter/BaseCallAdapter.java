@@ -2,6 +2,9 @@ package vn.com.vng.zalopay.data.net.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -14,6 +17,7 @@ import rx.Observable;
 import rx.Scheduler;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
 import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
 
 /**
@@ -90,6 +94,11 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
         }
 
         BaseResponse baseResponse = (BaseResponse) body;
+
+        if (!TextUtils.isEmpty(baseResponse.accesstoken)) {
+            EventBus.getDefault().post(new NewSessionEvent(baseResponse.accesstoken));
+        }
+
         if (!baseResponse.isSuccessfulResponse()) {
             return handleServerResponseError((BaseResponse) body, baseResponse);
         }

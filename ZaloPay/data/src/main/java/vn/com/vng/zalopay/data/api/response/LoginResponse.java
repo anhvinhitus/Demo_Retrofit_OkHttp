@@ -9,9 +9,6 @@ import com.google.gson.annotations.SerializedName;
  */
 public class LoginResponse extends BaseResponse {
 
-    @SerializedName("accesstoken")
-    public String accesstoken;
-
     @SerializedName("expirein")
     public long expirein;
 

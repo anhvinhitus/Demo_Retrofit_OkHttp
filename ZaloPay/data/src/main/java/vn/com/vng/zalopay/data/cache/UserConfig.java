@@ -9,7 +9,6 @@ import vn.com.vng.zalopay.domain.model.User;
 
 /**
  * Created by AnhHieu on 4/26/16.
- *
  */
 public interface UserConfig {
 
@@ -34,6 +33,8 @@ public interface UserConfig {
     void clearConfig();
 
     String getSession();
+
+    void setAccessToken(String accessToken);
 
     String getUserId();
 

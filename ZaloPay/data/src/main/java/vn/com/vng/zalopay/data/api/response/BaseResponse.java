@@ -15,6 +15,9 @@ public class BaseResponse {
     @SerializedName("returnmessage")
     public String message;
 
+    @SerializedName("accesstoken")
+    public String accesstoken;
+
     public boolean isSuccessfulResponse() {
         return err == NetworkError.SUCCESSFUL;
     }

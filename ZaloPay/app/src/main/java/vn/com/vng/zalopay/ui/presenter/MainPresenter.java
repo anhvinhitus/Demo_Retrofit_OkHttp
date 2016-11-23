@@ -49,6 +49,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.RootUtils;
@@ -94,17 +95,20 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     ZPNotificationService notificationService;
 
     @Inject
+    UserSession mUserSession;
+
+    @Inject
     MainPresenter(User user, EventBus eventBus,
-                         AppResourceStore.Repository appResourceRepository,
-                         UserConfig userConfig,
-                         Context applicationContext,
-                         Navigator navigator,
-                         PassportRepository passportRepository,
-                         BalanceStore.Repository balanceRepository,
-                         ZaloPayRepository zaloPayRepository,
-                         TransactionStore.Repository transactionRepository,
-                         FriendStore.Repository friendRepository,
-                         ThreadExecutor threadExecutor) {
+                  AppResourceStore.Repository appResourceRepository,
+                  UserConfig userConfig,
+                  Context applicationContext,
+                  Navigator navigator,
+                  PassportRepository passportRepository,
+                  BalanceStore.Repository balanceRepository,
+                  ZaloPayRepository zaloPayRepository,
+                  TransactionStore.Repository transactionRepository,
+                  FriendStore.Repository friendRepository,
+                  ThreadExecutor threadExecutor) {
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
         this.mUserConfig = userConfig;
@@ -133,6 +137,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
+        mUserSession.beginSession();
     }
 
     private void sendCrashUserInformation(User user) {
@@ -174,7 +179,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Override
     public void destroy() {
-
+        mUserSession.endSession();
     }
 
     public void initialize() {
