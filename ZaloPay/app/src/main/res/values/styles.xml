@@ -90,7 +90,7 @@
         <item name="android:textSize">@dimen/button.text.size</item>
     </style>
 
-    <style name="Button.Default.new">
+    <style name="Button.Default.New">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/button.height</item>
         <item name="android:background">@drawable/bg_btn_blue_border_selector</item>
@@ -98,6 +98,19 @@
         <item name="android:layout_marginLeft">@dimen/button.margin.left</item>
         <item name="android:layout_marginRight">@dimen/button.margin.right</item>
         <item name="android:layout_marginTop">@dimen/button.margin.top.max</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">@dimen/button.text.size</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Button.Default.Wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/button.height</item>
+        <item name="android:background">@drawable/bg_btn_blue_border_selector</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:minWidth">@dimen/button.width.min</item>
+        <item name="android:paddingLeft">@dimen/button.text.padding.left</item>
+        <item name="android:paddingRight">@dimen/button.text.padding.right</item>
         <item name="android:singleLine">true</item>
         <item name="android:textSize">@dimen/button.text.size</item>
         <item name="android:gravity">center</item>

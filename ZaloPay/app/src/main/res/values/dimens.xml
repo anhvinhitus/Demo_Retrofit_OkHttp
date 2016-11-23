@@ -81,4 +81,7 @@
     <dimen name="button.margin.top.max">45dp</dimen>
     <dimen name="button.margin.top.min">10dp</dimen>
     <dimen name="button.text.size">16sp</dimen>
+    <dimen name="button.width.min">180dp</dimen>
+    <dimen name="button.text.padding.left">24sp</dimen>
+    <dimen name="button.text.padding.right">24sp</dimen>
 </resources>

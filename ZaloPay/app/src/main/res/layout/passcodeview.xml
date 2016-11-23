@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
     <TextView
         android:id="@+id/tvHint"
         style="@style/TextView.SubTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/textsize.tiny" />
+        android:textSize="@dimen/textsize.tiny"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             android:maxLength="@integer/pin_length"
             android:maxLines="1"
             android:singleLine="true"
-            android:textSize="1sp" />
+            android:textSize="1sp"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -50,11 +50,10 @@
                 android:layout_marginRight="48dp"
                 android:orientation="horizontal"
                 android:paddingBottom="2dp"
-                android:paddingTop="2dp" />
+                android:paddingTop="2dp"/>
 
             <Button
                 android:id="@+id/btnShowHide"
-                style="@style/Button.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
@@ -66,7 +65,7 @@
                 android:paddingTop="4dp"
                 android:text="@string/show"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/textsize.normal.s" />
+                android:textSize="@dimen/textsize.normal.s"/>
         </FrameLayout>
     </FrameLayout>
 </LinearLayout>

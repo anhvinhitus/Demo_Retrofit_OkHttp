@@ -109,6 +109,6 @@
 
     <Button
         android:id="@+id/btnCheck"
-        style="@style/Button.Default.new"
+        style="@style/Button.Default.New"
         android:text="@string/check"/>
 </LinearLayout>

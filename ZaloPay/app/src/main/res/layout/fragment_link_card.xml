@@ -23,7 +23,7 @@
 
         <LinearLayout
             android:id="@+id/btn_add_more"
-            style="@style/Button.Default.new"
+            style="@style/Button.Default.New"
             android:layout_marginBottom="@dimen/spacing.medium.s"
             android:layout_marginTop="@dimen/spacing.medium.l"
             android:layout_weight="0.0"

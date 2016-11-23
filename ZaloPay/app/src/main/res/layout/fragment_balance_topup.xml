@@ -92,7 +92,7 @@
 
             <Button
                 android:id="@+id/btnDeposit"
-                style="@style/Button.Default.new"
+                style="@style/Button.Default.New"
                 android:text="@string/btn_deposit"/>
         </LinearLayout>
     </ScrollView>

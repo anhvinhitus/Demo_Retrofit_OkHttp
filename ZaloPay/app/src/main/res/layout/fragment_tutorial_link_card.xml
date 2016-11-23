@@ -101,7 +101,7 @@
 
         <Button
             android:id="@+id/btnManagerCard"
-            style="@style/Button.Default.new"
+            style="@style/Button.Default.New"
             android:text="@string/manager_card"/>
     </LinearLayout>
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.zalopay.ui.widget.KeyboardFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+                                           android:id="@+id/rootView"
+                                           android:layout_width="match_parent"
+                                           android:layout_height="match_parent"
+                                           android:background="@color/white"
+                                           android:orientation="vertical">
 
 
     <ScrollView
@@ -27,7 +27,7 @@
                 android:layout_height="209dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_invitation_code" />
+                android:src="@drawable/ic_invitation_code"/>
 
             <TextView
                 android:id="@+id/lb_invite"
@@ -41,7 +41,7 @@
                 android:maxLines="2"
                 android:text="@string/label_invitation_code"
                 android:textColor="@color/txt_item_sub"
-                android:textSize="15dp" />
+                android:textSize="15dp"/>
 
             <EditText
                 android:id="@+id/passCodeInput"
@@ -55,18 +55,19 @@
                 android:inputType="numberDecimal"
                 android:maxLength="@integer/invitation_code_length"
                 android:scrollbars="none"
-                android:textSize="18dp" />
+                android:textSize="18dp"/>
         </LinearLayout>
     </ScrollView>
 
     <Button
         android:id="@+id/btnContinue"
-        style="@style/Button.Default"
         android:layout_width="match_parent"
         android:layout_height="@dimen/button.height"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:background="@drawable/bg_btn_blue"
-        android:text="@string/confirm" />
+        android:background="@drawable/bg_btn_blue_border_selector"
+        android:text="@string/confirm"
+        android:textColor="@color/white"
+        android:textSize="@dimen/button.text.size"/>
 
 </com.zalopay.ui.widget.KeyboardFrameLayout>

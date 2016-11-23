@@ -16,6 +16,6 @@
 
     <Button
         android:id="@+id/btnContinue"
-        style="@style/Button.Default.new"
+        style="@style/Button.Default.New"
         android:text="@string/btn_continue"/>
 </LinearLayout>

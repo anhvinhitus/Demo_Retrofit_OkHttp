@@ -41,7 +41,7 @@
 
             <LinearLayout
                 android:id="@+id/btn_add_card"
-                style="@style/Button.Default.new"
+                style="@style/Button.Default.New"
                 android:layout_gravity="bottom|center_horizontal"
                 android:layout_marginTop="0dp"
                 android:gravity="center"

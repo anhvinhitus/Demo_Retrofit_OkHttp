@@ -115,7 +115,7 @@
 
             <Button
                 android:id="@+id/btnContinue"
-                style="@style/Button.Default.new"
+                style="@style/Button.Default.New"
                 android:layout_gravity="bottom"
                 android:layout_marginTop="0dp"
                 android:background="@color/bg_btn_gray"
