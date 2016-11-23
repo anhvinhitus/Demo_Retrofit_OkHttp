@@ -86,7 +86,7 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
             boolean isUseApp = c.getInt(ColumnIndex.UsingApp) == 1;
 
             if (isUseApp && !titleSectionUsingApp.containsKey("use")) {
-                SectionObject section = new SectionObject(mContext.getString(R.string.friend_use_zalopay), isUseApp);
+                SectionObject section = new SectionObject(mContext.getString(R.string.friends_use_zalopay), isUseApp);
                 if (!sections.containsValue(section)) {
                     sections.put(offset + i, section);
                     offset++;
@@ -94,7 +94,7 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
 
                 titleSectionUsingApp.put("use", true);
             } else if (!isUseApp && !titleSectionUsingApp.containsKey("notuse")) {
-                SectionObject section = new SectionObject(mContext.getString(R.string.friend_not_use_zalopay), isUseApp);
+                SectionObject section = new SectionObject(mContext.getString(R.string.friends_not_use_zalopay), isUseApp);
                 if (!sections.containsValue(section)) {
                     sections.put(offset + i, section);
                     offset++;

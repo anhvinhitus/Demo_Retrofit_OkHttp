@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.zfriend;
 
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,8 +93,12 @@ public class FriendRepository implements FriendStore.Repository {
                 ;
     }
 
+    @Nullable
     @Override
     public ZaloFriend transform(Cursor cursor) {
+        if (cursor == null || cursor.isClosed()) {
+            return null;
+        }
         ZaloFriend zaloFriend = new ZaloFriend();
         zaloFriend.userId = cursor.getLong(ColumnIndex.Id);
         zaloFriend.userName = cursor.getString(ColumnIndex.UserName);

@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.zfriend;
 
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 
 import org.json.JSONObject;
 
@@ -62,6 +63,7 @@ public interface FriendStore {
 
         Observable<Cursor> searchZaloFriend(String s);
 
+        @Nullable
         ZaloFriend transform(Cursor cursor);
 
         Observable<List<ZaloFriend>> getZaloFriendList();
