@@ -1,4 +1,5 @@
-<com.zalopay.ui.widget.KeyboardFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.zalopay.ui.widget.KeyboardFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootView"
@@ -18,7 +19,6 @@
             android:layout_height="wrap_content"
             android:background="@color/background"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/button.height"
             android:paddingTop="@dimen/spacing.medium.t">
 
             <LinearLayout
@@ -31,7 +31,7 @@
                     android:id="@+id/imgAvatar"
                     style="@style/AvatarDraweeView"
                     android:layout_width="@dimen/transfer.avatar"
-                    android:layout_height="@dimen/transfer.avatar" />
+                    android:layout_height="@dimen/transfer.avatar"/>
 
 
                 <TextView
@@ -40,21 +40,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing.medium.t"
-                    tools:text="ThanhPTN" />
+                    tools:text="ThanhPTN"/>
 
                 <TextView
                     android:id="@+id/tvZaloPayName"
                     style="@style/TextView.Item.Sub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="0987654321" />
+                    tools:text="0987654321"/>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate_stroke"
                 android:layout_marginTop="@dimen/spacing.medium.t"
-                android:background="@color/separate" />
+                android:background="@color/separate"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,7 +65,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/separate"
-                    android:background="@color/separate" />
+                    android:background="@color/separate"/>
 
                 <vn.com.vng.zalopay.ui.widget.MoneyEditText
                     android:id="@+id/edtAmount"
@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_amount"
                     android:maxLength="@integer/max_length_edittext_money"
-                    app:zlp_paddingLeftLine="16dp" />
+                    app:zlp_paddingLeftLine="16dp"/>
 
                 <com.zalopay.ui.widget.edittext.ZPEditText
                     android:id="@+id/edtTransferMsg"
@@ -83,21 +83,14 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_message"
                     android:inputType="text|textCapWords"
-                    android:maxLength="@integer/max_length_message" />
-
+                    android:maxLength="@integer/max_length_message"/>
             </LinearLayout>
 
+            <Button
+                android:id="@+id/btnContinue"
+                style="@style/Button.Default.new"
+                android:enabled="false"
+                android:text="@string/btn_continue"/>
         </LinearLayout>
-
-
     </ScrollView>
-
-    <Button
-        android:id="@+id/btnContinue"
-        style="@style/Button.Default"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button.height"
-        android:layout_gravity="bottom"
-        android:background="@drawable/bg_btn_blue"
-        android:text="@string/btn_continue" />
 </com.zalopay.ui.widget.KeyboardFrameLayout>

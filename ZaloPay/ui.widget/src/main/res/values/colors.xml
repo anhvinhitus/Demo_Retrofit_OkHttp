@@ -133,9 +133,9 @@
 
     <color name="hint">#acb3ba</color>
 
-    <color name="bg_btn_gray">#c8c7cd</color>
-    <color name="bg_btn_blue">#018fe5</color>
-    <color name="bg_btn_blue_selected">#005b92</color>
+    <color name="bg_btn_gray">#c7c7c7</color>
+    <color name="bg_btn_blue">#008fe5</color>
+    <color name="bg_btn_blue_selected">#004c7a</color>
     <color name="bg_btn_green">#06be04</color>
     <color name="bg_btn_green_selected">#9906be04</color>
 </resources>

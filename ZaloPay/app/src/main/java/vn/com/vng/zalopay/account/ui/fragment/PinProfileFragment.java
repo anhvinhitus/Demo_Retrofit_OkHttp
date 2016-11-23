@@ -225,7 +225,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView 
             return;
         }
         if (isShowBtnContinue()) {
-            btnContinue.setBackgroundResource(R.drawable.bg_btn_blue);
+            btnContinue.setBackgroundResource(R.drawable.bg_btn_blue_border_selector);
             btnContinue.setOnClickListener(mOnClickContinueListener);
         } else {
             btnContinue.setBackgroundResource(R.color.bg_btn_gray);

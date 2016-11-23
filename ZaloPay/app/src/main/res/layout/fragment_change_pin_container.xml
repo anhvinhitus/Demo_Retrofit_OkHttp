@@ -1,14 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background"
+                android:orientation="vertical">
 
     <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/button.height" />
+        android:layout_marginBottom="@dimen/button.height"/>
 
-    <include layout="@layout/btn_continue_bottom_layout" />
+    <Button
+        android:id="@+id/btnContinue"
+        style="@style/Button.Default.Bottom"
+        android:text="@string/btn_continue"/>
 </RelativeLayout>

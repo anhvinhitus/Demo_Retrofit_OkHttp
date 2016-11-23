@@ -56,7 +56,6 @@
                 android:maxLength="@integer/invitation_code_length"
                 android:scrollbars="none"
                 android:textSize="18dp" />
-
         </LinearLayout>
     </ScrollView>
 

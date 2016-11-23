@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scroll1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+            android:id="@+id/scroll1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/container1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="vertical">
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+                  android:id="@+id/container1"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:baselineAligned="false"
+                  android:orientation="vertical">
 
         <TextView
             style="@style/TextView.SubTitle"
@@ -20,7 +19,7 @@
             android:layout_margin="16dp"
             android:singleLine="false"
             android:text="@string/lbl.update.profile.3.page.1"
-            android:textSize="@dimen/font_size_medium" />
+            android:textSize="@dimen/font_size_medium"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,7 +32,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate"
-                android:background="@color/separate" />
+                android:background="@color/separate"/>
 
             <com.zalopay.ui.widget.edittext.ZPEditText
                 android:id="@+id/edtEmail"
@@ -42,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
-                app:zlp_paddingLeftLine="16dp" />
+                app:zlp_paddingLeftLine="16dp"/>
 
             <com.zalopay.ui.widget.edittext.ZPEditText
                 android:id="@+id/edtIdentity"
@@ -50,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/cmnd_passpost"
-                android:inputType="textCapCharacters" />
+                android:inputType="textCapCharacters"/>
 
         </LinearLayout>
 
@@ -59,8 +58,10 @@
             style="@style/TextView.SubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
             android:singleLine="false"
-            android:textSize="@dimen/font_size_medium" />
+            android:textSize="@dimen/font_size_medium"/>
     </LinearLayout>
 </ScrollView>

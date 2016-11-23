@@ -1,127 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/lbl_edit_account"
+        style="@style/TextView.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/lbl.edit.account.name"
+        android:textSize="@dimen/font_size_medium"/>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/separate"
+        android:layout_marginTop="16dp"
+        android:background="@color/separate"/>
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp">
+        android:background="@color/white">
 
-        <TextView
-            android:id="@+id/lbl_edit_account"
-            style="@style/TextView.SubTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:text="@string/lbl.edit.account.name"
-            android:textSize="@dimen/font_size_medium"/>
+        <requestFocus/>
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/separate"
-            android:layout_marginTop="16dp"
-            android:background="@color/separate" />
-
-
-        <FrameLayout
+        <vn.com.vng.zalopay.ui.widget.ZPTextInputLayout
+            android:id="@+id/textInputZaloPayName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="@dimen/spacing.small"
+            app:errorEnabled="false"
+            app:hintTextAppearance="@style/TextLabelHintDefault">
 
-            <requestFocus />
-
-            <vn.com.vng.zalopay.ui.widget.ZPTextInputLayout
-                android:id="@+id/textInputZaloPayName"
+            <EditText
+                android:id="@+id/edtZaloPayName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="8dp"
-                android:paddingBottom="@dimen/spacing.small"
-                app:errorEnabled="false"
-                app:hintTextAppearance="@style/TextLabelHintDefault">
+                android:layout_height="36dp"
+                android:background="@color/transparent"
+                android:ellipsize="end"
+                android:hint="@string/hint_zalopay_name"
+                android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
+                android:maxLength="24"
+                android:maxLines="1"
+                android:paddingTop="@dimen/spacing.small"
+                android:singleLine="true"
+                android:textColorHint="@color/hint"/>
 
-                <EditText
-                    android:id="@+id/edtZaloPayName"
-                    android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:background="@color/transparent"
-                    android:ellipsize="end"
-                    android:hint="@string/hint_zalopay_name"
-                    android:inputType="textNoSuggestions|textVisiblePassword|textEmailAddress"
-                    android:maxLength="24"
-                    android:maxLines="1"
-                    android:paddingTop="@dimen/spacing.small"
-                    android:singleLine="true"
-                    android:textColorHint="@color/hint" />
-
-            </vn.com.vng.zalopay.ui.widget.ZPTextInputLayout>
-        </FrameLayout>
+        </vn.com.vng.zalopay.ui.widget.ZPTextInputLayout>
+    </FrameLayout>
 
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/separate"
-            android:background="@color/colorPrimary" />
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/separate"
+        android:background="@color/colorPrimary"/>
 
-        <TextView
-            style="@style/TextView.SubTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="@dimen/spacing.small"
-            android:text="@string/hint.edit.account" />
+    <TextView
+        style="@style/TextView.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="@dimen/spacing.small"
+        android:text="@string/hint.edit.account"/>
 
-        <TextView
-            style="@style/TextView.SubTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="@dimen/spacing.small"
-            android:drawableLeft="@drawable/ic_checkmark"
-            android:drawablePadding="@dimen/spacing.small"
-            android:text="@string/hint.edit.account1" />
+    <TextView
+        style="@style/TextView.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="@dimen/spacing.small"
+        android:drawableLeft="@drawable/ic_checkmark"
+        android:drawablePadding="@dimen/spacing.small"
+        android:text="@string/hint.edit.account1"/>
 
-        <TextView
-            style="@style/TextView.SubTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="4dp"
-            android:drawableLeft="@drawable/ic_checkmark"
-            android:drawablePadding="@dimen/spacing.small"
-            android:text="@string/hint.edit.account2" />
+    <TextView
+        style="@style/TextView.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="4dp"
+        android:drawableLeft="@drawable/ic_checkmark"
+        android:drawablePadding="@dimen/spacing.small"
+        android:text="@string/hint.edit.account2"/>
 
-        <TextView
-            style="@style/TextView.SubTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="4dp"
-            android:drawableLeft="@drawable/ic_checkmark"
-            android:drawablePadding="@dimen/spacing.small"
-            android:text="@string/hint.edit.account3" />
-    </LinearLayout>
-
+    <TextView
+        style="@style/TextView.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="4dp"
+        android:drawableLeft="@drawable/ic_checkmark"
+        android:drawablePadding="@dimen/spacing.small"
+        android:text="@string/hint.edit.account3"/>
 
     <Button
         android:id="@+id/btnCheck"
-        style="@style/Button.Default"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_gravity="bottom"
-        android:background="@drawable/bg_btn_blue"
-        android:gravity="center"
-        android:text="@string/check" />
-
-
-</FrameLayout>
+        style="@style/Button.Default.new"
+        android:text="@string/check"/>
+</LinearLayout>

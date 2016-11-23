@@ -1,21 +1,20 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical"
-    tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/background"
+             android:orientation="vertical"
+             tools:context="vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment">
 
     <ScrollView
         android:id="@+id/ScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/background"
             android:orientation="vertical">
 
@@ -35,7 +34,7 @@
                     android:gravity="right"
                     android:text="@string/min_money"
                     android:textColor="@color/deposit.title"
-                    android:textSize="@dimen/textsize.small" />
+                    android:textSize="@dimen/textsize.small"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -44,13 +43,13 @@
                     android:gravity="right"
                     android:text="@string/vnd"
                     android:textColor="@color/deposit.title"
-                    android:textSize="@dimen/textsize.tiny.s" />
+                    android:textSize="@dimen/textsize.tiny.s"/>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate_stroke"
-                android:background="@color/separate" />
+                android:background="@color/separate"/>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -82,24 +81,19 @@
                         android:maxLines="1"
                         android:paddingBottom="@dimen/spacing.tiny"
                         android:paddingTop="@dimen/spacing.tiny"
-                        android:singleLine="true" />
+                        android:singleLine="true"/>
                 </android.support.design.widget.TextInputLayout>
             </FrameLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate"
-                android:background="@color/separate" />
+                android:background="@color/separate"/>
+
+            <Button
+                android:id="@+id/btnDeposit"
+                style="@style/Button.Default.new"
+                android:text="@string/btn_deposit"/>
         </LinearLayout>
     </ScrollView>
-
-
-    <Button
-        android:id="@+id/btnDeposit"
-        style="@style/Button.Default"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/bg_btn_blue"
-        android:text="@string/btn_deposit" />
-</RelativeLayout>
+</FrameLayout>

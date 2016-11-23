@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/button.height">
+        android:layout_height="wrap_content">
 
-        <include layout="@layout/update_profile_3_page_1" />
+        <include layout="@layout/update_profile_3_page_1"/>
 
-        <include layout="@layout/update_profile_3_page_2" />
+        <include layout="@layout/update_profile_3_page_2"/>
     </ViewFlipper>
 
-    <include layout="@layout/btn_continue_bottom_layout" />
-</FrameLayout>
+
+    <Button
+        android:id="@+id/btnContinue"
+        style="@style/Button.Default.new"
+        android:enabled="false"
+        android:text="@string/btn_continue"/>
+</LinearLayout>

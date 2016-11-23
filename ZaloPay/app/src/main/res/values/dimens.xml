@@ -73,4 +73,12 @@
     <dimen name="rect_scan_size">230dp</dimen>
     <dimen name="margin_top_title_qr_code">-200dp</dimen>
     <dimen name="margin_top_label_qr_code">-180dp</dimen>
+
+    <dimen name="button.margin.left">10dp</dimen>
+    <dimen name="button.margin.right">10dp</dimen>
+    <dimen name="button.padding.left">16dp</dimen>
+    <dimen name="button.padding.right">16dp</dimen>
+    <dimen name="button.margin.top.max">45dp</dimen>
+    <dimen name="button.margin.top.min">10dp</dimen>
+    <dimen name="button.text.size">16sp</dimen>
 </resources>

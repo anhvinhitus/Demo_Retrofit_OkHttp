@@ -31,8 +31,8 @@ public class IntroAppFragment extends BaseFragment {
     @BindView(R.id.tvStart)
     View tvStart;
 
-    @BindView(R.id.tvContinue)
-    View tvContinue;
+    @BindView(R.id.imgContinue)
+    View imgContinue;
 
     @BindView(R.id.tvClose)
     View tvClose;
@@ -49,7 +49,7 @@ public class IntroAppFragment extends BaseFragment {
         getActivity().finish();
     }
 
-    @OnClick(R.id.tvContinue)
+    @OnClick(R.id.imgContinue)
     public void onClickContinue() {
         if (mViewPager.getCurrentItem() >= mPagerAdapter.getCount()) {
             getActivity().finish();
@@ -124,11 +124,11 @@ public class IntroAppFragment extends BaseFragment {
             public void onPageSelected(int position) {
                 if (position == (mPagerAdapter.getCount() - 1)) {
                     tvStart.setVisibility(View.GONE);
-                    tvContinue.setVisibility(View.GONE);
+                    imgContinue.setVisibility(View.GONE);
                     tvClose.setVisibility(View.VISIBLE);
                 } else {
                     tvStart.setVisibility(View.VISIBLE);
-                    tvContinue.setVisibility(View.VISIBLE);
+                    imgContinue.setVisibility(View.VISIBLE);
                     tvClose.setVisibility(View.GONE);
                 }
             }

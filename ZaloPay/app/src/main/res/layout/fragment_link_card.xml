@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
     <include
         layout="@layout/layout_link_card_empty"
-        android:visibility="visible" />
+        android:visibility="visible"/>
 
     <LinearLayout
         android:id="@+id/layoutContent"
@@ -19,38 +19,29 @@
             style="@style/RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.0" />
+            android:layout_weight="1.0"/>
 
         <LinearLayout
             android:id="@+id/btn_add_more"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom"
+            style="@style/Button.Default.new"
             android:layout_marginBottom="@dimen/spacing.medium.s"
-            android:layout_marginLeft="@dimen/spacing.medium.s"
-            android:layout_marginRight="@dimen/spacing.medium.s"
             android:layout_marginTop="@dimen/spacing.medium.l"
             android:layout_weight="0.0"
-            android:background="@drawable/bg_btn_blue_border_selector"
-            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
                 android:contentDescription="@string/loremipsum"
-                android:src="@drawable/ic_lc_card_add" />
+                android:src="@drawable/ic_lc_card_add"/>
 
             <TextView
-                style="@style/Button.Default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/spacing.small"
-                android:gravity="center_vertical"
                 android:text="@string/link_card_other"
-                android:textAllCaps="false" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/button.text.size"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

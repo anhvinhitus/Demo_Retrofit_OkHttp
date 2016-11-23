@@ -1,104 +1,94 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/background"
-                android:orientation="vertical"
-                tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment">
-
-    <ScrollView
-        android:id="@+id/ScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
-
-        <LinearLayout
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/ScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/background"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment">
 
-            <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/spacing.small"
+            android:paddingRight="@dimen/spacing.medium.t"
+            android:paddingTop="@dimen/spacing.medium">
+
+            <TextView
+                android:id="@+id/tvResourceMoney"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/spacing.small"
-                android:paddingRight="@dimen/spacing.medium.t"
-                android:paddingTop="@dimen/spacing.medium">
+                android:gravity="right"
+                android:text="@string/min_money"
+                android:textColor="@color/deposit.title"
+                android:textSize="@dimen/textsize.small"/>
 
-                <TextView
-                    android:id="@+id/tvResourceMoney"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="@string/min_money"
-                    android:textColor="@color/deposit.title"
-                    android:textSize="@dimen/textsize.small"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing.tiny"
+                android:gravity="right"
+                android:text="@string/vnd"
+                android:textColor="@color/deposit.title"
+                android:textSize="@dimen/textsize.tiny.s"/>
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing.tiny"
-                    android:gravity="right"
-                    android:text="@string/vnd"
-                    android:textColor="@color/deposit.title"
-                    android:textSize="@dimen/textsize.tiny.s"/>
-            </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate_stroke"
+            android:background="@color/separate"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate_stroke"
-                android:background="@color/separate"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/spacing.medium.t">
 
-            <FrameLayout
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/textInputAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingLeft="@dimen/spacing.medium.t">
+                android:layout_marginBottom="@dimen/spacing.tiny"
+                android:layout_marginRight="@dimen/spacing.medium.t"
+                android:layout_marginTop="@dimen/spacing.medium.s"
+                android:orientation="vertical"
+                app:errorEnabled="false">
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/textInputAmount"
+                <vn.com.vng.zalopay.ui.widget.ClearableEditText
+                    android:id="@+id/edtAmount"
+                    style="@style/TextView.Item.Main"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing.tiny"
-                    android:layout_marginRight="@dimen/spacing.medium.t"
-                    android:layout_marginTop="@dimen/spacing.medium.s"
-                    android:orientation="vertical"
-                    app:errorEnabled="false">
+                    android:background="@color/transparent"
+                    android:ellipsize="end"
+                    android:gravity="bottom"
+                    android:hint="@string/hint_amount"
+                    android:inputType="number"
+                    android:maxLength="17"
+                    android:maxLines="1"
+                    android:paddingBottom="@dimen/spacing.tiny"
+                    android:paddingTop="@dimen/spacing.tiny"
+                    android:singleLine="true"/>
+            </android.support.design.widget.TextInputLayout>
+        </FrameLayout>
 
-                    <vn.com.vng.zalopay.ui.widget.ClearableEditText
-                        android:id="@+id/edtAmount"
-                        style="@style/TextView.Item.Main"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/transparent"
-                        android:ellipsize="end"
-                        android:gravity="bottom"
-                        android:hint="@string/hint_amount"
-                        android:inputType="number"
-                        android:maxLength="17"
-                        android:maxLines="1"
-                        android:paddingBottom="@dimen/spacing.tiny"
-                        android:paddingTop="@dimen/spacing.tiny"
-                        android:singleLine="true"/>
-                </android.support.design.widget.TextInputLayout>
-            </FrameLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate"
-                android:background="@color/separate"/>
-        </LinearLayout>
-    </ScrollView>
-
-    <Button
-        android:id="@+id/btnContinue"
-        style="@style/Button.Default"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/bg_btn_blue"
-        android:text="@string/btn_continue"/>
-</RelativeLayout>
+        <Button
+            android:id="@+id/btnContinue"
+            style="@style/Button.Default.new"
+            android:text="@string/btn_continue"/>
+    </LinearLayout>
+</ScrollView>

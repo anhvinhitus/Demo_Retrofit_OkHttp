@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -108,11 +109,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.btnRemoveAvatar)
     ImageView btnRemoveAvatar;
 
-    @BindView(R.id.tvContinue)
-    TextView mTvContinue;
-
     @BindView(R.id.btnContinue)
-    View mBtnContinue;
+    Button mBtnContinue;
 
     boolean focusIdentity;
 
@@ -153,9 +151,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
 
-       // mEdtEmailView.addValidator(new MinCharactersValidate(getString(R.string.invalid_email_empty), 1));
+        // mEdtEmailView.addValidator(new MinCharactersValidate(getString(R.string.invalid_email_empty), 1));
         mEdtEmailView.addValidator(new EmailValidate(getString(R.string.email_invalid)));
-      //  mEdtIdentityView.addValidator(new MinCharactersValidate(getString(R.string.exception_identity_empty), 1));
+        //  mEdtIdentityView.addValidator(new MinCharactersValidate(getString(R.string.exception_identity_empty), 1));
         mEdtIdentityView.addValidator(new PassportValidate(getString(R.string.cmnd_passport_invalid)));
     }
 
@@ -226,12 +224,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
         if (getCurrentPage() == 0) {
-
-            if (isValidatePageOne()) {
-                nextPage();
-                mTvContinue.setText(R.string.confirm);
-            }
-
+            nextPage();
+            mBtnContinue.setText(R.string.confirm);
             hideKeyboard();
         } else {
             updateProfile();
@@ -298,10 +292,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         if (isValidatePageTwo()) {
             presenter.updateProfile3(identity, email, mUriFgIdentity, mUriBgIdentity, mUriAvatar);
         }
-    }
-
-    private boolean isValidatePageOne() {
-        return true;
     }
 
     private boolean isValidatePageTwo() {

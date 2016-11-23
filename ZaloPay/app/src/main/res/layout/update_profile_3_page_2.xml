@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fillViewport="true">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
@@ -20,12 +18,12 @@
             android:layout_marginTop="16dp"
             android:singleLine="false"
             android:text="@string/lbl.update.profile.3.page.2"
-            android:textSize="14dp" />
+            android:textSize="14dp"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:background="@color/separate" />
+            android:background="@color/separate"/>
 
         <FrameLayout
             android:id="@+id/layoutFgCmnd"
@@ -43,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/lbl.identify.front"
-                android:textSize="14dp" />
+                android:textSize="14dp"/>
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/ivFgCmnd"
@@ -53,7 +51,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/btnRemoveFrontCmnd"
@@ -62,7 +60,7 @@
                 android:layout_gravity="center_vertical|right"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_camera" />
+                android:src="@drawable/ic_camera"/>
 
         </FrameLayout>
 
@@ -70,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
             android:layout_marginLeft="16dp"
-            android:background="@color/separate" />
+            android:background="@color/separate"/>
 
         <FrameLayout
             android:id="@+id/layoutBgCmnd"
@@ -89,7 +87,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tvBgCmnd"
@@ -98,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/lbl.identify.back"
-                android:textSize="14dp" />
+                android:textSize="14dp"/>
 
             <ImageView
                 android:id="@+id/btnRemoveBackCmnd"
@@ -107,14 +105,14 @@
                 android:layout_gravity="center_vertical|right"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_camera" />
+                android:src="@drawable/ic_camera"/>
 
         </FrameLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:background="@color/separate" />
+            android:background="@color/separate"/>
 
         <TextView
             style="@style/TextView.SubTitle"
@@ -124,13 +122,13 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:singleLine="false"
-			android:text="@string/lbl.recommend.upload.avatar"
-            android:textSize="14dp" />
+            android:text="@string/lbl.recommend.upload.avatar"
+            android:textSize="14dp"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:background="@color/separate" />
+            android:background="@color/separate"/>
 
         <FrameLayout
             android:id="@+id/layoutAvatar"
@@ -149,7 +147,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tvAvatar"
@@ -158,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="Ảnh của bạn"
-                android:textSize="14dp" />
+                android:textSize="14dp"/>
 
             <ImageView
                 android:id="@+id/btnRemoveAvatar"
@@ -167,15 +165,13 @@
                 android:layout_gravity="center_vertical|right"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_camera" />
+                android:src="@drawable/ic_camera"/>
 
         </FrameLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:background="@color/separate" />
-
+            android:background="@color/separate"/>
     </LinearLayout>
-
 </ScrollView>
