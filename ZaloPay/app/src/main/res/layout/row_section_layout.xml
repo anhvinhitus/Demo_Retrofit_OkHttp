@@ -21,6 +21,6 @@
         android:paddingTop="@dimen/default_padding_small"
         android:text="A"
         android:textAllCaps="true"
-        android:textColor="@color/c_text_grey" />
+        android:textColor="@color/txt_item_sub" />
 
 </LinearLayout>
