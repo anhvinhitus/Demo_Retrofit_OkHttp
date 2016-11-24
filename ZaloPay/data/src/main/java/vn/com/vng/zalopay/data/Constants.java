@@ -4,6 +4,8 @@ package vn.com.vng.zalopay.data;
  * Created by AnhHieu on 5/5/16.
  */
 public class Constants {
+    public static final int NUMBER_RETRY_REST = 3;
+
     public static final String MANIF_BALANCE = "manif_balance";
 
     public static final String MANIF_PLATFORM_INFO_CHECKSUM = "manif_pfinfochecksum";

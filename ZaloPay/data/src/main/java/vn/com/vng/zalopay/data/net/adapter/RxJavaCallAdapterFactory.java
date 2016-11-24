@@ -25,12 +25,14 @@ import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
+import vn.com.vng.zalopay.data.Constants;
 
 public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
     public enum AdapterType {
         ZaloPay,
         RedPacket,
-        PaymentApp
+        PaymentAppWithRetry,
+        PaymentAppWithoutRetry
     }
 
     /**
@@ -71,8 +73,10 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
                 return new ZaloPayCallAdapter(mApplicationContext, observableType, scheduler);
             case RedPacket:
                 return new RedPacketCallAdapter(mApplicationContext, observableType, scheduler);
-            case PaymentApp:
-                return new RNCallAdapter(mApplicationContext, observableType, scheduler);
+            case PaymentAppWithRetry:
+                return new RNCallAdapter(mApplicationContext, observableType, scheduler, Constants.NUMBER_RETRY_REST);
+            case PaymentAppWithoutRetry:
+                return new RNCallAdapter(mApplicationContext, observableType, scheduler, 0);
             default:
                 return new ZaloPayCallAdapter(mApplicationContext, observableType, scheduler);
         }

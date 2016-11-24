@@ -38,6 +38,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import cl.json.RNSharePackage;
 import timber.log.Timber;
@@ -84,7 +85,12 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     ReactNativeHostable mReactNativeHostable;
 
     @Inject
-    NetworkService mNetworkService;
+    @Named("NetworkServiceWithRetry")
+    NetworkService mNetworkServiceWithRetry;
+
+    @Inject
+    @Named("NetworkServiceWithoutRetry")
+    NetworkService mNetworkServiceWithoutRetry;
 
     private AppResource appResource;
 
@@ -245,8 +251,8 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new BottomSheetBehaviorPackage(),
                 new GoogleAnalyticsBridgePackage(),
                 new LinearGradientPackage(),
-                new ReactIAPPackage(paymentService,
-                        mUser, appId, mNetworkService, mNavigator)
+                new ReactIAPPackage(paymentService, mUser, appId,
+                        mNetworkServiceWithRetry, mNetworkServiceWithoutRetry, mNavigator)
         );
     }
 

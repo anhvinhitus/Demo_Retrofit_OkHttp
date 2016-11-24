@@ -47,7 +47,8 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
     private final IPaymentService mPaymentService;
     private final long mAppId; // AppId này là appid js cắm vào
-    private final NetworkService mNetworkService;
+    private final NetworkService mNetworkServiceWithRetry;
+    private final NetworkService mNetworkServiceWithoutRetry;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private final User mUser;
@@ -56,11 +57,13 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     ZaloPayNativeModule(ReactApplicationContext reactContext,
                         User user,
                         IPaymentService paymentService,
-                        long appId, NetworkService networkService, Navigator navigator) {
+                        long appId, NetworkService networkServiceWithRetry,
+                        NetworkService networkServiceWithoutRetry, Navigator navigator) {
         super(reactContext);
         this.mPaymentService = paymentService;
         this.mAppId = appId;
-        this.mNetworkService = networkService;
+        this.mNetworkServiceWithRetry = networkServiceWithRetry;
+        this.mNetworkServiceWithoutRetry = networkServiceWithoutRetry;
         this.mUser = user;
         this.mNavigator = navigator;
 
@@ -253,7 +256,20 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
         ReadableMap readableMap = shouldPostAuthKey(content);
 
-        Subscription subscription = mNetworkService.request(baseUrl, readableMap)
+        Subscription subscription = mNetworkServiceWithoutRetry.request(baseUrl, readableMap)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new RequestSubscriber(promise));
+        compositeSubscription.add(subscription);
+    }
+
+    @ReactMethod
+    public void requestWithRetry(String baseUrl, ReadableMap content, Promise promise) {
+        Timber.d("request: baseUrl [%s] String content [%s]", baseUrl, content);
+
+
+        ReadableMap readableMap = shouldPostAuthKey(content);
+
+        Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, readableMap)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         compositeSubscription.add(subscription);

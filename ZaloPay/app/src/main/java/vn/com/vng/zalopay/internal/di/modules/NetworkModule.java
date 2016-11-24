@@ -34,7 +34,6 @@ import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 
 /**
  * Created by AnhHieu on 3/25/16.
- *
  */
 @Module
 public class NetworkModule {
@@ -166,15 +165,29 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    @Named("retrofitPaymentApp")
-    Retrofit providePaymentApp(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
+    @Named("retrofitPaymentAppWithRetry")
+    Retrofit providePaymentAppWithRetry(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
         return new Retrofit.Builder()
                 .addConverterFactory(new ToStringConverterFactory())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.PaymentApp))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory
+                        .create(context, RxJavaCallAdapterFactory.AdapterType.PaymentAppWithRetry))
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)
                 .build();
     }
 
+    @Provides
+    @Singleton
+    @Named("retrofitPaymentAppWithoutRetry")
+    Retrofit providePaymentAppWithoutRetry(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
+        return new Retrofit.Builder()
+                .addConverterFactory(new ToStringConverterFactory())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory
+                        .create(context, RxJavaCallAdapterFactory.AdapterType.PaymentAppWithoutRetry))
+                .baseUrl(baseUrl)
+                .validateEagerly(BuildConfig.DEBUG)
+                .client(okHttpClient)
+                .build();
+    }
 }

@@ -16,6 +16,7 @@ import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Scheduler;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
 import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
@@ -25,7 +26,7 @@ import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
  * BaseCallAdapter for retry API request when has request error
  */
 public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
-    final int REST_RETRY_COUNT = 3;
+    private final int NUMBER_RETRY_REST;
     protected final Context mContext;
     protected final Type mResponseType;
     protected final Scheduler mScheduler;
@@ -35,6 +36,14 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
         this.mContext = context;
         this.mResponseType = responseType;
         this.mScheduler = scheduler;
+        this.NUMBER_RETRY_REST = Constants.NUMBER_RETRY_REST;
+    }
+
+    public BaseCallAdapter(Context context, Type responseType, Scheduler scheduler, int retryNumber) {
+        this.mContext = context;
+        this.mResponseType = responseType;
+        this.mScheduler = scheduler;
+        this.NUMBER_RETRY_REST = retryNumber > 0 ? retryNumber : 0;
     }
 
     @Override
@@ -44,7 +53,7 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
 
     @Override
     public <R> Observable<R> adapt(Call<R> call) {
-        mRestRetryCount = REST_RETRY_COUNT;
+        mRestRetryCount = NUMBER_RETRY_REST;
         Observable<R> observable = Observable.create(new CallOnSubscribe<>(mContext, call))
                 .retryWhen(errors -> errors.flatMap(error -> {
                     Timber.d("adapt mRestRetryCount [%s] error [%s]", mRestRetryCount, error);

@@ -23,24 +23,28 @@ public class ReactIAPPackage implements ReactPackage {
     private final IPaymentService paymentService;
     private final User mUser;
     private final long appId;
-    private final NetworkService mNetworkService;
+    private final NetworkService mNetworkServiceWithRetry;
+    private final NetworkService mNetworkServiceWithoutRetry;
     private final Navigator mNavigator;
 
     public ReactIAPPackage(IPaymentService paymentService,
                            User user, long appId,
-                           NetworkService networkService,
+                           NetworkService networkServiceWithRetry,
+                           NetworkService networkServiceWithoutRetry,
                            Navigator navigator) {
         this.paymentService = paymentService;
         this.mUser = user;
         this.appId = appId;
-        this.mNetworkService = networkService;
+        this.mNetworkServiceWithRetry = networkServiceWithRetry;
+        this.mNetworkServiceWithoutRetry = networkServiceWithoutRetry;
         this.mNavigator = navigator;
     }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZaloPayNativeModule(reactContext, mUser, paymentService, appId, mNetworkService, mNavigator));
+        modules.add(new ZaloPayNativeModule(reactContext, mUser, paymentService, appId,
+                mNetworkServiceWithRetry, mNetworkServiceWithoutRetry, mNavigator));
         return modules;
     }
 
