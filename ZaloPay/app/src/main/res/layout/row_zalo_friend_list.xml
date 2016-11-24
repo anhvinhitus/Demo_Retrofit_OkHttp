@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:layout_marginRight="12dp"
-            android:src="@drawable/ic_logo_zalopay_small" />
+            android:src="@drawable/ic_logo_zalopay_small_selector" />
     </LinearLayout>
 
     <View

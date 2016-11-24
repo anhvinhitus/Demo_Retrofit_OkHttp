@@ -176,7 +176,7 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
 
             mTvDisplayName.setText(displayName);
             mImgAvatar.setImageURI(avatar);
-            mImgZaloPay.setVisibility(isUsingApp == 1 ? View.VISIBLE : View.INVISIBLE);
+            mImgZaloPay.setSelected(isUsingApp == 1);
             mViewSeparate.setVisibility(isShowSeparate ? View.VISIBLE : View.INVISIBLE);
         }
     }
