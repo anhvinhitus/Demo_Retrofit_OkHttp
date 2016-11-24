@@ -1,15 +1,15 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:zalopay="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="8dp">
+                  xmlns:zalopay="http://schemas.android.com/apk/res-auto"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:paddingBottom="8dp">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 zalopay:hint="@string/input.pin.old"
                 zalopay:length="@integer/pin_length"
                 zalopay:paddingLeft="16dp"
-                zalopay:paddingRight="16dp" />
+                zalopay:paddingRight="16dp"/>
         </FrameLayout>
 
         <FrameLayout
@@ -40,7 +40,7 @@
                 zalopay:hint="@string/input.pin.new"
                 zalopay:length="@integer/pin_length"
                 zalopay:paddingLeft="16dp"
-                zalopay:paddingRight="16dp" />
+                zalopay:paddingRight="16dp"/>
 
         </FrameLayout>
 
@@ -51,7 +51,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="10dp"
-            tools:text="Lưu ý:" />
+            tools:text="Lưu ý:"/>
 
+        <Button
+            android:id="@+id/btnContinue"
+            style="@style/Button.Default.New"
+            android:layout_marginTop="@dimen/button.margin.top.min"
+            android:text="@string/btn_continue"/>
     </LinearLayout>
 </ScrollView>

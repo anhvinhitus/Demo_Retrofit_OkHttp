@@ -8,6 +8,7 @@ import vn.com.vng.zalopay.account.ui.fragment.ChangePinVerifyFragment;
 
 /**
  * Created by AnhHieu on 8/25/16.
+ * *
  */
 public class ChangePinPagerAdapter extends FragmentPagerAdapter {
 

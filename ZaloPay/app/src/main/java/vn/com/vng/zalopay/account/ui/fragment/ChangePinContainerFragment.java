@@ -1,9 +1,6 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -13,17 +10,15 @@ import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ChangePinPagerAdapter;
-import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * Created by AnhHieu on 8/25/16.
+ * *
  */
 public class ChangePinContainerFragment extends BaseFragment implements IChangePinContainer {
 
@@ -48,9 +43,6 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
 
     @BindView(R.id.viewPager)
     NonSwipeableViewPager viewPager;
-
-    @BindView(R.id.btnContinue)
-    View mBtnContinueView;
 
     @Inject
     IChangePinPresenter presenter;
@@ -101,20 +93,6 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     public void onVerifySuccess() {
         showToast(R.string.reset_pin_success);
         nextPage();
-    }
-
-    @OnClick(R.id.btnContinue)
-    public void onClickContinue() {
-        if (viewPager.getCurrentItem() == 0) {
-            presenter.checkPinValidAndSubmit();
-        } else {
-            presenter.checkOtpValidAndSubmit();
-        }
-    }
-
-    @Override
-    public void onPinValid(boolean isValid) {
-        mBtnContinueView.setEnabled(isValid);
     }
 
     @Override

@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
@@ -26,6 +27,7 @@ import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 
 /**
  * Created by AnhHieu on 8/25/16.
+ * *
  */
 public class ChangePinVerifyFragment extends BaseFragment implements IChangePinVerifyView {
 
@@ -59,6 +61,12 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
 
     @BindView(R.id.edtOTP)
     ClearableEditText edtOTP;
+
+
+    @OnClick(R.id.btnConfirm)
+    public void onClickContinue() {
+        presenter.checkOtpValidAndSubmit();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

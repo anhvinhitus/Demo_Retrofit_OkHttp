@@ -13,9 +13,9 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 8/25/16.
+ * *
  */
 public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
@@ -60,8 +61,16 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     @BindView(R.id.scrollView)
     ScrollView mScrollView;
 
+    @BindView(R.id.btnContinue)
+    View mBtnContinueView;
+
     @Inject
     IChangePinPresenter presenter;
+
+    @OnClick(R.id.btnContinue)
+    public void onClickContinue() {
+        presenter.checkPinValidAndSubmit();
+    }
 
     TextWatcher passCodeChanged = new TextWatcher() {
         @Override
@@ -156,6 +165,11 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
         if (mOldPassCodeView != null) {
             mOldPassCodeView.requestFocusView();
         }
+    }
+
+    @Override
+    public void onPinValid(boolean isValid) {
+        mBtnContinueView.setEnabled(isValid);
     }
 
     @Override

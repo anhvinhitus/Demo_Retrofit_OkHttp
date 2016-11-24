@@ -94,8 +94,8 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
 
     @Override
     public void pinValid(boolean valid) {
-        if (mChangePinContainer != null) {
-            mChangePinContainer.onPinValid(valid);
+        if (mChangePinView != null) {
+            mChangePinView.onPinValid(valid);
         }
     }
 

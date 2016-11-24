@@ -6,6 +6,15 @@
     android:background="@color/background"
     android:orientation="vertical">
 
+    <TextView
+        style="@style/TextView.Group.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing.small"
+        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingTop="@dimen/spacing.small"
+        android:text="@string/otp_note"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
@@ -40,12 +49,4 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:background="@color/separate" />
-
-    <TextView
-        style="@style/TextView.Group.Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingTop="@dimen/spacing.small"
-        android:text="@string/otp_note" />
 </LinearLayout>

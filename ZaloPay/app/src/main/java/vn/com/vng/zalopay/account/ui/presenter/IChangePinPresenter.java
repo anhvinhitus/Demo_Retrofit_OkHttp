@@ -4,6 +4,7 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**
  * Created by AnhHieu on 8/25/16.
+ * *
  */
 public interface IChangePinPresenter<ContainerView, ChangePassView, VerifyView> extends IPresenter<ContainerView> {
 
