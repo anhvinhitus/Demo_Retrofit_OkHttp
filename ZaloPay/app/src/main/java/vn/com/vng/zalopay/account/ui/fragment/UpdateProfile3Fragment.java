@@ -128,6 +128,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         focusIdentity = getArguments().getBoolean("focusIdentity", false);
+
     }
 
     @Override
@@ -151,9 +152,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
 
-        // mEdtEmailView.addValidator(new MinCharactersValidate(getString(R.string.invalid_email_empty), 1));
         mEdtEmailView.addValidator(new EmailValidate(getString(R.string.email_invalid)));
-        //  mEdtIdentityView.addValidator(new MinCharactersValidate(getString(R.string.exception_identity_empty), 1));
         mEdtIdentityView.addValidator(new PassportValidate(getString(R.string.cmnd_passport_invalid)));
     }
 
@@ -196,12 +195,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         return super.onBackPressed();
     }
 
-    @OnTextChanged(R.id.edtEmail)
+    @OnTextChanged(value = R.id.edtEmail, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void onTextChangedEmail(CharSequence s) {
         mBtnContinue.setEnabled(mEdtEmailView.isValid() && mEdtIdentityView.isValid());
     }
 
-    @OnTextChanged(R.id.edtIdentity)
+    @OnTextChanged(value = R.id.edtIdentity, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void onTextChangeIdentity(CharSequence s) {
         mBtnContinue.setEnabled(mEdtEmailView.isValid() && mEdtIdentityView.isValid());
     }
@@ -266,7 +265,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     private String getIdentity() {
         if (mEdtIdentityView != null) {
-            return mEdtIdentityView.getText().toString().toLowerCase();
+            return mEdtIdentityView.getText().toString().toUpperCase();
         }
 
         return "";

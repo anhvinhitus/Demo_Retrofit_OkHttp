@@ -145,27 +145,26 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         }
     }
 
-
     public void updateIdentity() {
-        if (mView == null) {
-            return;
-        }
-        if (getProfileLevel() < 2) {
-            requireUpdateProfileLevel2();
-        } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
-            mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_identity));
-        } else {
-            mNavigator.startUpdateProfile3Activity(mView.getContext());
-        }
+        updateLevel3(true);
     }
 
     public void updateEmail() {
+        updateLevel3(false);
+    }
+
+    private void updateLevel3(boolean isIdentity) {
+        if (mView == null) {
+            return;
+        }
+
         if (getProfileLevel() < 2) {
             requireUpdateProfileLevel2();
         } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
-            mView.showDialogInfo(mView.getContext().getString(R.string.waiting_approve_email));
+            int message = isIdentity ? R.string.waiting_approve_identity : R.string.waiting_approve_email;
+            mView.showDialogInfo(mView.getContext().getString(message));
         } else {
-            mNavigator.startUpdateProfile3Activity(mView.getContext());
+            mNavigator.startUpdateProfile3Activity(mView.getContext(), isIdentity);
         }
     }
 
@@ -194,7 +193,9 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
                     @Override
                     public void onOKevent() {
-                        mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
+                        if (mView != null) {
+                            mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
+                        }
                     }
                 });
     }

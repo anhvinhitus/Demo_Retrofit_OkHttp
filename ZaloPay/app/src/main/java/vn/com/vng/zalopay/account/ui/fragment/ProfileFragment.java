@@ -63,9 +63,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.tvZaloPayId)
     TextView tvZaloPayId;
 
-//    @BindView(R.id.tvZaloId)
-//    TextView tvZaloId;
-
     @BindView(R.id.tvAccountName)
     TextView mAccountNameView;
 
@@ -161,27 +158,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
             mAccountNameView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_right, 0);
         }
         mAccountNameView.setText(zaloPayName);
-    }
-
-    @Override
-    public void showDialogUpdateProfile2(String content) {
-        DialogManager.showSweetDialogOptionNotice(getActivity(),
-                content,
-                getString(R.string.btn_update),
-                getString(R.string.txt_close),
-                new ZPWOnEventConfirmDialogListener() {
-                    @Override
-                    public void onCancelEvent() {
-
-                    }
-
-                    @Override
-                    public void onOKevent() {
-                        if (navigator != null) {
-                            navigator.startUpdateProfileLevel2Activity(getContext());
-                        }
-                    }
-                });
     }
 
     public void showDialogInfo(String message) {
@@ -296,5 +272,4 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
             layoutChangePin.setVisibility(View.GONE);
         }
     }
-
 }

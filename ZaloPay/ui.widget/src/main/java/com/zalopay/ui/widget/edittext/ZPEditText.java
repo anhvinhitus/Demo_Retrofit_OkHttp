@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -42,6 +43,8 @@ import static com.zalopay.ui.widget.edittext.Utils.generateIconBitmaps;
  */
 
 public class ZPEditText extends AppCompatEditText {
+
+    private static final String TAG = "ZPEditText";
 
     @IntDef({FLOATING_LABEL_NONE, FLOATING_LABEL_NORMAL, FLOATING_LABEL_HIGHLIGHT})
     public @interface FloatingLabelType {
@@ -157,7 +160,7 @@ public class ZPEditText extends AppCompatEditText {
 
     private boolean adjustBottomLines;
 
-    private boolean beginCheckValidate = false;
+    private boolean beginCheckValidate = true;
 
     public ZPEditText(Context context) {
         super(context);
@@ -320,11 +323,12 @@ public class ZPEditText extends AppCompatEditText {
 
             @Override
             public void afterTextChanged(Editable s) {
+                //Log.d(TAG, "afterTextChanged: " + s.toString() + " autoValidate " + autoValidate);
                 checkCharactersCount();
                 if (autoValidate) {
                     validate();
                 } else {
-                    //Log.d(TAG, "afterTextChanged: setError null");
+                    ////Log.d(TAG, "afterTextChanged: setError null");
                     setError(null);
                 }
                 postInvalidate();
@@ -509,7 +513,6 @@ public class ZPEditText extends AppCompatEditText {
         }
     }
 
-
     private boolean adjustBottomLines() {
         if (!adjustBottomLines) {
             return false;
@@ -565,14 +568,18 @@ public class ZPEditText extends AppCompatEditText {
             public void afterTextChanged(Editable s) {
                 if (floatingLabelEnabled) {
                     if (s.length() == 0) {
+                        //Log.d(TAG, "afterTextChanged: reverse tempErrorText" + tempErrorText + " validateOnFocusLost " + validateOnFocusLost);
+                        //Log.d(TAG, "floatingLabelShown " + floatingLabelShown);
+
                         if (floatingLabelShown) {
-                            if (!validateOnFocusLost || tempErrorText == null) {
+                            if (isInternalValid()) {
                                 floatingLabelShown = false;
                                 //Log.d(TAG, "afterTextChanged: reverse tempErrorText" + tempErrorText + " validateOnFocusLost " + validateOnFocusLost);
                                 getLabelAnimator().reverse();
                             }
                         }
                     } else if (!floatingLabelShown) {
+                        //Log.d(TAG, "floatingLabelShown " + floatingLabelShown);
                         floatingLabelShown = true;
                         getLabelAnimator().start();
                     }
@@ -587,7 +594,7 @@ public class ZPEditText extends AppCompatEditText {
                     if (hasFocus) {
                         getLabelFocusAnimator().start();
                     } else {
-                        //Log.d(TAG, "onFocusChange:onFocusChange ");
+                        ////Log.d(TAG, "onFocusChange:onFocusChange ");
                         getLabelFocusAnimator().reverse();
                     }
                 }
@@ -756,7 +763,7 @@ public class ZPEditText extends AppCompatEditText {
 
     @Override
     public void setError(CharSequence errorText) {
-        //Log.d(TAG, "setError: " + errorText);
+        ////Log.d(TAG, "setError: " + errorText);
         tempErrorText = errorText == null ? null : errorText.toString();
         if (adjustBottomLines()) {
             postInvalidate();
@@ -769,12 +776,12 @@ public class ZPEditText extends AppCompatEditText {
     }
 
     public boolean isValid() {
-        return tempErrorText == null && isCharactersCountValid();
+        return tempErrorText == null && isCharactersCountValid() && !TextUtils.isEmpty(getText().toString());
     }
 
     private boolean isInternalValid() {
-        //Log.d(TAG, "isInternalValid: " + beginCheckValidate);
-        return !beginCheckValidate || tempErrorText == null && isCharactersCountValid();
+        ////Log.d(TAG, "isInternalValid: " + beginCheckValidate);
+        return !beginCheckValidate || tempErrorText == null && isCharactersCountValid() || TextUtils.isEmpty(getText().toString());
     }
 
     public boolean validateWith(@NonNull ZPEditTextValidate validator) {
@@ -805,12 +812,14 @@ public class ZPEditText extends AppCompatEditText {
                 break;
             }
         }
+
+        //Log.d(TAG, "validate: " + isValid);
         if (isValid) {
             setError(null);
         }
 
         postInvalidate();
-        //Log.d(TAG, "validate: " + isValid);
+        ////Log.d(TAG, "validate: " + isValid);
         return isValid;
     }
 
@@ -951,14 +960,13 @@ public class ZPEditText extends AppCompatEditText {
             int distance = floatingLabelPadding;
             int floatingLabelStartY = (int) (innerPaddingTop + floatingLabelTextSize + floatingLabelPadding - distance * (floatingLabelAlwaysShown ? 1 : floatingLabelFraction) + getScrollY());
 
-//            // calculate the alpha
-            int alpha = ((int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (0.74f * focusFraction * (isEnabled() ? 1 : 0) + 0.26f) * (floatingLabelTextColor != -1 ? 1 : Color.alpha(floatingLabelTextColor) / 256f)));
-            textPaint.setAlpha(alpha);
-
             // draw the floating label
             if (!isInternalValid() && tempErrorText != null) {
+                textPaint.setAlpha(255);
                 canvas.drawText(tempErrorText, floatingLabelStartX, floatingLabelStartY, textPaint);
             } else {
+                int alpha = ((int) ((floatingLabelAlwaysShown ? 1 : floatingLabelFraction) * 0xff * (0.74f * focusFraction * (isEnabled() ? 1 : 0) + 0.26f) * (floatingLabelTextColor != -1 ? 1 : Color.alpha(floatingLabelTextColor) / 256f)));
+                textPaint.setAlpha(alpha);
                 canvas.drawText(floatingLabelText.toString(), floatingLabelStartX, floatingLabelStartY, textPaint);
             }
         }
@@ -1061,8 +1069,8 @@ public class ZPEditText extends AppCompatEditText {
         float x = event.getX();
         float y = event.getY();
 
-        int startX = getScrollX() + getPaddingLeft();
-        int endX = getScrollX() + getWidth() - getPaddingRight();
+        int startX = getPaddingLeft();
+        int endX = getWidth() - getPaddingRight();
 
         int buttonLeft = endX;
         int buttonTop = getScrollY() + getHeight() - getPaddingBottom() + bottomSpacing - iconOuterHeight;
