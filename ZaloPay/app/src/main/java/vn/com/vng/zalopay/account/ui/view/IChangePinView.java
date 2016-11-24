@@ -11,8 +11,6 @@ public interface IChangePinView {
 
     void showError(String message);
 
-    void checkPinValidAndSubmit();
-
     void requestFocusOldPin();
 
     void onPinValid(boolean isValid);

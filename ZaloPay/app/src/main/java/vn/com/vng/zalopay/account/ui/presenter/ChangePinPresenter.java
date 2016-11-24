@@ -22,28 +22,26 @@ import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 
 /**
  * Created by AnhHieu on 8/25/16.
- *
  */
 public class ChangePinPresenter extends BaseUserPresenter implements IChangePinPresenter<IChangePinContainer, IChangePinView, IChangePinVerifyView> {
 
-    IChangePinContainer mChangePinContainer;
-    IChangePinView mChangePinView;
-    IChangePinVerifyView mChangePinVerifyView;
+    private IChangePinContainer mChangePinContainer;
+    private IChangePinView mChangePinView;
+    private IChangePinVerifyView mChangePinVerifyView;
 
-    final int LIMIT_CHANGE_PASSWORD_ERROR = 3;
+    private final int LIMIT_CHANGE_PASSWORD_ERROR = 3;
 
     private int numberError;
 
     private AccountStore.Repository mAccountRepository;
     private final Context mApplicationContext;
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     @Inject
     public ChangePinPresenter(Context context, AccountStore.Repository accountRepository) {
         mApplicationContext = context;
         mAccountRepository = accountRepository;
     }
-
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
     public void setChangePassView(IChangePinView iChangePinView) {
@@ -73,8 +71,8 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
 
     @Override
     public void destroyView() {
+        unsubscribeIfNotNull(mCompositeSubscription);
         mChangePinContainer = null;
-        unsubscribeIfNotNull(compositeSubscription);
     }
 
     @Override
@@ -110,7 +108,7 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ChangePinSubscriber());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @Override
@@ -122,29 +120,14 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new VerifySubscriber());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
 
-    }
-
-    @Override
-    public void checkPinValidAndSubmit() {
-        if (mChangePinView != null) {
-            mChangePinView.checkPinValidAndSubmit();
-        }
-    }
-
-    @Override
-    public void checkOtpValidAndSubmit() {
-        if (mChangePinVerifyView != null) {
-            mChangePinVerifyView.checkOtpValidAndSubmit();
-        }
     }
 
     private void onChangePinSuccess() {
         mChangePinView.hideLoading();
         mChangePinContainer.nextPage();
     }
-
 
 
     private void onChangePinError(Throwable e) {
@@ -178,9 +161,6 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
     }
 
     private class ChangePinSubscriber extends DefaultSubscriber<BaseResponse> {
-        public ChangePinSubscriber() {
-        }
-
         @Override
         public void onNext(BaseResponse baseResponse) {
             ChangePinPresenter.this.onChangePinSuccess();
@@ -200,9 +180,6 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
     }
 
     private final class VerifySubscriber extends DefaultSubscriber<BaseResponse> {
-        public VerifySubscriber() {
-        }
-
         @Override
         public void onNext(BaseResponse baseResponse) {
             ChangePinPresenter.this.onVerifyOTPSuccess();

@@ -21,8 +21,4 @@ public interface IChangePinPresenter<ContainerView, ChangePassView, VerifyView> 
     void changePin(String oldPin, String newPin);
 
     void verify(String otp);
-
-    void checkPinValidAndSubmit();
-
-    void checkOtpValidAndSubmit();
 }

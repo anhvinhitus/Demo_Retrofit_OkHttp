@@ -9,6 +9,4 @@ public interface IChangePinVerifyView {
     void hideLoading();
 
     void showError(String message);
-
-    void checkOtpValidAndSubmit();
 }

@@ -2,9 +2,9 @@ package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.text.TextUtils;
 import android.view.View;
+
+import com.zalopay.ui.widget.edittext.ZPEditText;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -16,14 +16,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.account.ui.presenter.ChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.widget.ClearableEditText;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -56,27 +55,22 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
     @Inject
     EventBus mEventBus;
 
-    @BindView(R.id.textInputOTP)
-    TextInputLayout textInputOTP;
-
     @BindView(R.id.edtOTP)
-    ClearableEditText edtOTP;
+    ZPEditText mEdtOTPView;
 
+    @BindView(R.id.btnConfirm)
+    View mBtnConfirmView;
 
     @OnClick(R.id.btnConfirm)
     public void onClickContinue() {
-        presenter.checkOtpValidAndSubmit();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        presenter.verify(mEdtOTPView.getText().toString());
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setVerifyView(this);
+        mBtnConfirmView.setEnabled(false);
     }
 
     @Override
@@ -99,6 +93,11 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
         super.onDestroyView();
     }
 
+    @OnTextChanged(value = R.id.edtOTP, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    public void onEdtOTPChanged() {
+        mBtnConfirmView.setEnabled(mEdtOTPView.isValid());
+    }
+
     @Subscribe
     public void onReceiveSmsMessages(ReceiveSmsEvent event) {
         String pattern = "(.*)(\\d{6})(.*)";
@@ -110,39 +109,9 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
             Matcher m = r.matcher(message.body);
             if (m.find()) {
                 Timber.d("Found OTP: %s", m.group(2));
-                edtOTP.setText(m.group(2));
+                mEdtOTPView.setText(m.group(2));
             }
         }
-    }
-
-    private void showOTPError() {
-        textInputOTP.setErrorEnabled(true);
-        if (TextUtils.isEmpty(ClearableEditText.optText(edtOTP))) {
-            textInputOTP.setError(getString(R.string.invalid_otp_empty));
-        } else {
-            textInputOTP.setError(getString(R.string.invalid_otp));
-        }
-    }
-
-    private void hideOTPError() {
-        textInputOTP.setErrorEnabled(false);
-        textInputOTP.setError(null);
-    }
-
-    public boolean isValidOTP() {
-        String otp = ClearableEditText.optText(edtOTP);
-        return !TextUtils.isEmpty(otp);
-    }
-
-    @Override
-    public void checkOtpValidAndSubmit() {
-        if (!isValidOTP()) {
-            showOTPError();
-            return;
-        } else {
-            hideOTPError();
-        }
-        presenter.verify(ClearableEditText.optText(edtOTP));
     }
 
     @Override
