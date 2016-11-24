@@ -1,68 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true">
+        android:background="@color/white"
+        android:baselineAligned="false"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:baselineAligned="false"
             android:orientation="vertical">
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate"
-                android:background="@color/separate" />
+                android:background="@color/separate"/>
 
-            <LinearLayout
+            <vn.com.vng.zalopay.ui.widget.MoneyEditText
+                android:id="@+id/edtAmount"
+                style="@style/ZaloPayEditText.Money"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
+                android:hint="@string/hint_amount"
+                android:maxLength="@integer/max_length_edittext_money"
+                app:zlp_paddingLeftLine="16dp"/>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/separate"
-                    android:background="@color/separate" />
+            <com.zalopay.ui.widget.edittext.ZPEditText
+                android:id="@+id/edtNote"
+                style="@style/ZaloPayEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_message"
+                android:inputType="text|textCapWords"
+                android:maxLength="@integer/max_length_message"/>
 
-                <vn.com.vng.zalopay.ui.widget.MoneyEditText
-                    android:id="@+id/edtAmount"
-                    style="@style/ZaloPayEditText.Money"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_amount"
-                    android:maxLength="@integer/max_length_edittext_money"
-                    app:zlp_paddingLeftLine="16dp" />
-
-                <com.zalopay.ui.widget.edittext.ZPEditText
-                    android:id="@+id/edtNote"
-                    style="@style/ZaloPayEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_message"
-                    android:inputType="text|textCapWords"
-                    android:maxLength="@integer/max_length_message" />
-
-            </LinearLayout>
         </LinearLayout>
 
-    </ScrollView>
-
-    <Button
-        android:id="@+id/btnUpdate"
-        style="@style/Button.Default.Bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="24dp"
-        android:text="@string/confirm" />
-
-</FrameLayout>
+        <Button
+            android:id="@+id/btnUpdate"
+            style="@style/Button.Default.New"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button.height"
+            android:enabled="false"
+            android:text="@string/confirm"/>
+    </LinearLayout>
+</ScrollView>

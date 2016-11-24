@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * Created by AnhHieu on 8/25/16.
+ * *
  */
 public class ReceiveMoneyActivity extends BaseToolBarActivity {
 
