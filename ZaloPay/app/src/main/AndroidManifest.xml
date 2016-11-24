@@ -216,7 +216,7 @@
             android:name=".account.ui.activities.EditAccountNameActivity"
             android:label="@string/title.activity.update.account.name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize" />
 
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel3Activity"
@@ -255,7 +255,8 @@
             android:label="@string/title.activity.my.qr"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <activity android:name=".account.ui.activities.ProfileActivity"
+        <activity
+            android:name=".account.ui.activities.ProfileActivity"
             android:label="@string/personal">
             <intent-filter>
                 <data
@@ -273,7 +274,7 @@
         <activity
             android:name=".transfer.ui.TransferActivity"
             android:label="@string/title.activity.transfer.to" />
-       <activity
+        <activity
             android:name=".ui.activity.BalanceManagementActivity"
             android:label="@string/title.activity.withdraw.home" />
         <activity
@@ -299,14 +300,17 @@
             android:name=".ui.activity.TutorialConnectInternetActivity"
             android:label="@string/title.activity.tutorial.network.connection" />
 
-        <activity android:name=".linkcard.ui.CardSupportActivity"
-            android:label="@string/title.activity.card.support"/>
+        <activity
+            android:name=".linkcard.ui.CardSupportActivity"
+            android:label="@string/title.activity.card.support" />
 
-        <activity android:name=".linkcard.ui.TutorialLinkCardActivity"
-            android:label="@string/title.activity.tutorial.link.card"/>
+        <activity
+            android:name=".linkcard.ui.TutorialLinkCardActivity"
+            android:label="@string/title.activity.tutorial.link.card" />
 
-        <activity android:name=".warningrooted.WarningRootedActivity"
-            android:label="@string/title.activity.warning.root"/>
+        <activity
+            android:name=".warningrooted.WarningRootedActivity"
+            android:label="@string/title.activity.warning.root" />
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

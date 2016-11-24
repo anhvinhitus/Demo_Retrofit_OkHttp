@@ -1,10 +1,14 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+
+import com.zalopay.ui.widget.edittext.ZPEditText;
+import com.zalopay.ui.widget.edittext.ZPEditTextValidate;
 
 import javax.inject.Inject;
 
@@ -16,6 +20,8 @@ import vn.com.vng.zalopay.account.ui.presenter.EditAccountNamePresenter;
 import vn.com.vng.zalopay.account.ui.view.IEditAccountNameView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ZPTextInputLayout;
+import vn.com.vng.zalopay.ui.widget.validate.MinCharactersValidate;
+import vn.com.vng.zalopay.ui.widget.validate.SpecialCharactersValidate;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -45,53 +51,35 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
         return R.layout.fragment_edit_account_name_layout;
     }
 
-
     @BindView(R.id.btnCheck)
     Button mBtnCheckView;
 
-    @BindView(R.id.textInputZaloPayName)
-    ZPTextInputLayout mInputAccountNameView;
+    @BindView(R.id.edtAccountName)
+    ZPEditText mAccountNameView;
+
+    @BindView(R.id.ivCheck)
+    View mCheckView;
 
     @Inject
     EditAccountNamePresenter presenter;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
         mBtnCheckView.setEnabled(false);
+        mCheckView.setVisibility(View.INVISIBLE);
+        mBtnCheckView.setText(R.string.check);
+
+        mAccountNameView.addValidator(new MinCharactersValidate(getString(R.string.exception_account_name_length), 4));
+        mAccountNameView.addValidator(new SpecialCharactersValidate(getString(R.string.exception_account_name_special_char)));
     }
 
-    @OnTextChanged(R.id.edtZaloPayName)
+    @OnTextChanged(value = R.id.edtAccountName, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void onTextChangeAccountName(CharSequence s) {
-
-        if (!mInputAccountNameView.isUnknown()) {
-            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_EDIT_AFTERCHECK);
-        }
-
-        boolean isValid = false;
-        if (!ValidateUtil.isValidLengthZPName(s.toString())) {
-            mInputAccountNameView.setError(getString(R.string.exception_account_name_length));
-        } else if (s.toString().indexOf(" ") > 0) {
-            mInputAccountNameView.setError(getString(R.string.exception_account_name_with_space));
-        } else if (!ValidateUtil.isValidZaloPayName(s.toString())) {
-            mInputAccountNameView.setError(getString(R.string.exception_account_name_special_char));
-        } else {
-            mInputAccountNameView.setError("");
-            mInputAccountNameView.setStateWithoutIcon(ZPTextInputLayout.ViewState.UNKNOWN);
-
-            if (!TextUtils.isEmpty(s)) {
-                isValid = true;
-            }
-        }
-
+        mCheckView.setVisibility(View.INVISIBLE);
+        boolean isValid = mAccountNameView.isValid();
         mBtnCheckView.setEnabled(isValid);
-        mInputAccountNameView.setStateWithoutIcon(ZPTextInputLayout.ViewState.UNKNOWN);
         mBtnCheckView.setText(R.string.check);
     }
 
@@ -115,34 +103,36 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
 
 
     @OnClick(R.id.btnCheck)
-    public void onClickCheck(View v) {
-
-        ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_PRESSCHECK);
-
-        final String accountName = mInputAccountNameView.getText();
-        if (TextUtils.isEmpty(accountName)) {
+    public void onClickCheck(Button v) {
+        if (!mAccountNameView.isValid()) {
             return;
         }
+        String btnText = v.getText().toString();
+        final String accountName = mAccountNameView.getText().toString();
+        if (btnText.equals(getString(R.string.check))) {
+            ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_PRESSCHECK);
+            presenter.existAccountName(accountName);
+        } else {
+            confirmUpdateAccount(accountName);
+        }
+    }
 
-        if (mInputAccountNameView.isValid()) {
-            super.showConfirmDialog(getString(R.string.confirm_update_account_name),
-                    getString(R.string.accept),
-                    getString(R.string.cancel),
-                    new ZPWOnEventConfirmDialogListener() {
-                        @Override
-                        public void onOKevent() {
+    private void confirmUpdateAccount(final String accountName) {
+        super.showConfirmDialog(getString(R.string.confirm_update_account_name),
+                getString(R.string.accept),
+                getString(R.string.cancel),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onOKevent() {
+                        if (presenter != null) {
                             presenter.updateAccountName(accountName);
                         }
+                    }
 
-                        @Override
-                        public void onCancelEvent() {
-
-                        }
-                    });
-
-        } else if (mInputAccountNameView.isUnknown()) {
-            presenter.existAccountName(accountName);
-        }
+                    @Override
+                    public void onCancelEvent() {
+                    }
+                });
     }
 
     @Override
@@ -152,13 +142,13 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
 
     @Override
     public void accountNameValid(boolean isValid) {
+        mCheckView.setSelected(isValid);
+        mCheckView.setVisibility(View.VISIBLE);
         if (isValid) {
-            mInputAccountNameView.setStateWithIconDefault(ZPTextInputLayout.ViewState.VALID);
             mBtnCheckView.setText(R.string.register);
             ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_VALID);
         } else {
-            mInputAccountNameView.setStateWithIconDefault(ZPTextInputLayout.ViewState.INVALID);
-            mInputAccountNameView.setError(getContext().getString(R.string.account_existed));
+            mAccountNameView.setError(getContext().getString(R.string.account_existed));
             mBtnCheckView.setText(R.string.check);
             ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_EDIT_INVALID);
         }
@@ -168,5 +158,15 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     public void editAccountNameSuccess() {
         showToast(R.string.update_account_name_success);
         getActivity().finish();
+    }
+
+    @Override
+    public void showLoading() {
+        showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideProgressDialog();
     }
 }

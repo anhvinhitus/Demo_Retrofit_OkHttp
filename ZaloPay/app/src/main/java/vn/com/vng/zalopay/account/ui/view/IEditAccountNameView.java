@@ -9,4 +9,8 @@ public interface IEditAccountNameView {
     void accountNameValid(boolean exist);
 
     void editAccountNameSuccess();
+
+    void showLoading();
+
+    void hideLoading();
 }

@@ -26,7 +26,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  */
 public class EditAccountNamePresenter extends BaseUserPresenter implements IPresenter<IEditAccountNameView> {
 
-    IEditAccountNameView mView;
+    private IEditAccountNameView mView;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private AccountStore.Repository accountRepository;
     private Context applicationContext;
@@ -84,47 +84,81 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
     private class CheckAccountNameSubscriber extends DefaultSubscriber<Boolean> {
 
         @Override
+        public void onStart() {
+            if (mView != null) {
+                mView.showLoading();
+            }
+        }
+
+        @Override
         public void onError(Throwable e) {
+            Timber.d(e, "check account error");
+            if (mView == null) {
+                return;
+            }
+            mView.hideLoading();
+
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
 
-            if (e instanceof BodyException && ((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
+            if (e instanceof BodyException &&
+                    ((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
                 ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_INUSED);
                 mView.accountNameValid(false);
             } else {
                 mView.showError(ErrorMessageFactory.create(applicationContext, e));
             }
+
         }
 
         @Override
         public void onNext(Boolean resp) {
-            mView.accountNameValid(resp);
+            if (mView != null) {
+                mView.hideLoading();
+                mView.accountNameValid(resp);
+            }
         }
     }
 
 
     private class UpdateAccountNameSubscriber extends DefaultSubscriber<Boolean> {
+        @Override
+        public void onStart() {
+            if (mView != null) {
+                mView.showLoading();
+            }
+        }
 
         @Override
         public void onError(Throwable e) {
+            Timber.d(e, "update account error");
+            if (mView == null) {
+                return;
+            }
+
+            mView.hideLoading();
+
+
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
 
-            if (e instanceof BodyException && ((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
+            if (e instanceof BodyException &&
+                    ((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
                 ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_INUSED2);
                 mView.accountNameValid(false);
             } else {
                 mView.showError(ErrorMessageFactory.create(applicationContext, e));
             }
-
-
         }
 
         @Override
         public void onNext(Boolean resp) {
-            mView.editAccountNameSuccess();
+            if (mView != null) {
+                mView.hideLoading();
+                mView.editAccountNameSuccess();
+            }
         }
     }
 }
