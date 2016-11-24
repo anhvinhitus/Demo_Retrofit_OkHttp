@@ -10,6 +10,7 @@ import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnPageChange;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ChangePinPagerAdapter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
@@ -57,24 +58,13 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
         viewPager.setAdapter(new ChangePinPagerAdapter(getFragmentManager()));
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 1) {
-                    checkAndRequestReadSMSPermission();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+    @OnPageChange(value = R.id.viewPager, callback = OnPageChange.Callback.PAGE_SELECTED)
+    public void onPageSelected(int position) {
+        if (position == 1) {
+            checkAndRequestReadSMSPermission();
+        }
     }
 
     @Override
