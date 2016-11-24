@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClearableEditText;
+import vn.com.vng.zalopay.ui.widget.validate.DigitsOnlyValidate;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -92,7 +93,9 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+        mEdtOTPView.addValidator(new DigitsOnlyValidate(getString(R.string.exception_otp_invaild)));
         mEdtOTPView.requestFocus();
+        btnContinue.setEnabled(mEdtOTPView.isValid());
     }
 
     @Override
@@ -141,11 +144,6 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
         if (mListener != null) {
             mListener.onConfirmOTPSuccess();
         }
-    }
-
-    @Override
-    public void onConfirmOTPError() {
-
     }
 
     @Override

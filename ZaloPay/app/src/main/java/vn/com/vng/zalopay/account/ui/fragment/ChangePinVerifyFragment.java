@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.widget.validate.DigitsOnlyValidate;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -70,7 +71,8 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setVerifyView(this);
-        mBtnConfirmView.setEnabled(false);
+        mEdtOTPView.addValidator(new DigitsOnlyValidate(getString(R.string.exception_otp_invaild)));
+        mBtnConfirmView.setEnabled(mEdtOTPView.isValid());
     }
 
     @Override
