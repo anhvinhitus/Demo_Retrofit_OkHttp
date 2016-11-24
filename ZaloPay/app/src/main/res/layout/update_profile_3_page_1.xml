@@ -5,7 +5,8 @@
             android:layout_height="match_parent"
             android:fillViewport="true">
 
-    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
                   android:id="@+id/container1"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -63,5 +64,14 @@
             android:layout_marginTop="16dp"
             android:singleLine="false"
             android:textSize="@dimen/font_size_medium"/>
+
+        <Button
+            android:id="@+id/btnContinue"
+            style="@style/Button.Default.New"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button.height"
+            android:layout_marginTop="@dimen/button.margin.top.min"
+            android:enabled="false"
+            android:text="@string/btn_continue"/>
     </LinearLayout>
 </ScrollView>

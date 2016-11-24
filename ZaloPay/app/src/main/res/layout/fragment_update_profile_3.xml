@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:orientation="vertical">
 
     <ViewFlipper
@@ -14,10 +14,4 @@
         <include layout="@layout/update_profile_3_page_2"/>
     </ViewFlipper>
 
-
-    <Button
-        android:id="@+id/btnContinue"
-        style="@style/Button.Default.New"
-        android:enabled="false"
-        android:text="@string/btn_continue"/>
 </LinearLayout>

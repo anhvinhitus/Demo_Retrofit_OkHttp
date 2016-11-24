@@ -223,13 +223,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
-        if (getCurrentPage() == 0) {
-            nextPage();
-            mBtnContinue.setText(R.string.confirm);
-            hideKeyboard();
-        } else {
-            updateProfile();
-        }
+        nextPage();
+        hideKeyboard();
+    }
+
+    @OnClick(R.id.btnConfirm)
+    public void onClickConfirm() {
+        updateProfile();
     }
 
     @OnClick(R.id.layoutFgCmnd)
