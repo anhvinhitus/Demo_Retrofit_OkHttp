@@ -60,6 +60,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     public Observable<Boolean> verifyOTPProfile(String otp) {
         return mRequestService.verifyOTPProfile(mUser.zaloPayId, mUser.accesstoken, otp)
                 .doOnNext(response -> savePermission(response.profilelevel, response.permisstion.toString()))
+                .flatMap(response -> clearProfileInfo2())
                 .map(response -> Boolean.TRUE)
                 ;
     }
