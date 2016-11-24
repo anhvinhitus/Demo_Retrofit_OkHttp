@@ -209,8 +209,8 @@ public class IntroProfileView extends RelativeLayout {
                     int padding = eraser.getPadding();
                     Rect rect = eraser.getTarget().getRect();
 
-                    ViewCompat.setTranslationX(view, rect.right - view.getWidth() + AndroidUtils.dp(8));
-                    ViewCompat.setTranslationY(view, rect.bottom + AndroidUtils.dp(10));
+                    ViewCompat.setTranslationX(view, rect.right - view.getWidth() - AndroidUtils.dp(6));
+                    ViewCompat.setTranslationY(view, rect.bottom + AndroidUtils.dp(2));
 
                 } catch (Exception e) {
                     Timber.e(e, "exception");

@@ -8,4 +8,5 @@
     <integer name="max_length_email">128</integer>
     <integer name="max_length_identify">64</integer>
     <integer name="max_length_otp">6</integer>
+    <integer name="max_length_phone">20</integer>
 </resources>

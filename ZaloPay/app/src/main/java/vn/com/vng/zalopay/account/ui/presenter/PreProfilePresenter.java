@@ -49,7 +49,8 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
                 .subscribe(new DefaultSubscriber<ProfileLevel2>() {
                     @Override
                     public void onNext(ProfileLevel2 profileLevel2) {
-                        if (profileLevel2 == null) {
+                        mView.initPagerContent(0);
+                       /* if (profileLevel2 == null) {
                             mView.initPagerContent(0);
                             return;
                         }
@@ -61,7 +62,7 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
                             mView.initPagerContent(1);
                         } else {
                             mView.initPagerContent(0);
-                        }
+                        }*/
                     }
                 });
         mCompositeSubscription.add(subscription);

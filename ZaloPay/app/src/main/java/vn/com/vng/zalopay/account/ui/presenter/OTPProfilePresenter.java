@@ -22,15 +22,15 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
  */
 public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter<IOTPProfileView> {
 
-    IOTPProfileView mView;
+    private IOTPProfileView mView;
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    private AccountStore.Repository accountRepository;
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private AccountStore.Repository mAccountRepository;
     private Context applicationContext;
 
     @Inject
     public OTPProfilePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
-        this.accountRepository = accountRepository;
+        this.mAccountRepository = accountRepository;
         this.applicationContext = applicationContext;
     }
 
@@ -42,12 +42,8 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
     @Override
     public void destroyView() {
         hideLoading();
-        unsubscribe();
+        unsubscribeIfNotNull(mCompositeSubscription);
         this.mView = null;
-    }
-
-    private void unsubscribe() {
-        unsubscribeIfNotNull(compositeSubscription);
     }
 
     @Override
@@ -60,34 +56,31 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
 
     @Override
     public void destroy() {
-        this.unsubscribe();
     }
 
     private void onConfirmOTPError(Throwable e) {
         hideLoading();
-        String message = ErrorMessageFactory.create(applicationContext, e);
-        mView.showError(message);
+        if (mView != null) {
+            mView.showError(ErrorMessageFactory.create(applicationContext, e));
+        }
     }
 
     private void onVerifyOTPSuccess() {
         hideLoading();
         mView.confirmOTPSuccess();
-        accountRepository.clearProfileInfo2();
     }
 
     public void verifyOtp(String otp) {
         showLoading();
-        Subscription subscription = accountRepository.verifyOTPProfile(otp)
+        Subscription subscription = mAccountRepository.verifyOTPProfile(otp)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new VerifyOTPProfileSubscriber());
 
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     private final class VerifyOTPProfileSubscriber extends DefaultSubscriber<Boolean> {
-        public VerifyOTPProfileSubscriber() {
-        }
 
         @Override
         public void onNext(Boolean permissions) {
@@ -104,24 +97,32 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
                 return;
             }
 
-            Timber.e(e, "onError " + e);
+            Timber.d(e, "onError " + e);
             OTPProfilePresenter.this.onConfirmOTPError(e);
         }
     }
 
     public void showLoading() {
-        mView.showLoading();
+        if (mView != null) {
+            mView.showLoading();
+        }
     }
 
     public void hideLoading() {
-        mView.hideLoading();
+        if (mView != null) {
+            mView.hideLoading();
+        }
     }
 
     public void showRetry() {
-        mView.showRetry();
+        if (mView != null) {
+            mView.showRetry();
+        }
     }
 
     public void hideRetry() {
-        mView.hideRetry();
+        if (mView != null) {
+            mView.hideRetry();
+        }
     }
 }

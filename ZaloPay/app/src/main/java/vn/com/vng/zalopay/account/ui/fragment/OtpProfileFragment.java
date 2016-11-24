@@ -10,6 +10,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.zalopay.ui.widget.edittext.ZPEditText;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -20,6 +22,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -41,6 +44,11 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class OtpProfileFragment extends BaseFragment implements IOTPProfileView {
 
+
+    public static OtpProfileFragment newInstance() {
+        return new OtpProfileFragment();
+    }
+
     private OnOTPFragmentListener mListener;
 
     @Inject
@@ -49,78 +57,20 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
     @Inject
     EventBus mEventBus;
 
-    @BindView(R.id.textInputOTP)
-    TextInputLayout textInputOTP;
-
     @BindView(R.id.edtOTP)
-    ClearableEditText edtOTP;
+    ZPEditText mEdtOTPView;
 
     @BindView(R.id.btnContinue)
     View btnContinue;
 
-    @OnTextChanged(R.id.edtOTP)
+    @OnTextChanged(value = R.id.edtOTP, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void onEdtOTPChanged() {
-        if (edtOTP == null || TextUtils.isEmpty(edtOTP.getText().toString())) {
-            showHideBtnContinue(false);
-        } else {
-            showHideBtnContinue(true);
-        }
+        btnContinue.setEnabled(mEdtOTPView.isValid());
     }
 
-    private void showHideBtnContinue(boolean show) {
-        if (show) {
-            btnContinue.setBackgroundResource(R.drawable.bg_btn_blue);
-            btnContinue.setOnClickListener(mOnClickContinueListener);
-        } else {
-            btnContinue.setBackgroundResource(R.color.bg_btn_gray);
-            btnContinue.setOnClickListener(null);
-        }
-    }
-
-    private void showOTPError() {
-        textInputOTP.setErrorEnabled(true);
-        if (TextUtils.isEmpty(ClearableEditText.optText(edtOTP))) {
-            textInputOTP.setError(getString(R.string.invalid_otp_empty));
-        } else {
-            textInputOTP.setError(getString(R.string.invalid_otp));
-        }
-    }
-
-    private void hideOTPError() {
-        textInputOTP.setErrorEnabled(false);
-        textInputOTP.setError(null);
-    }
-
-    public boolean isValidOTP() {
-        String otp = ClearableEditText.optText(edtOTP);
-        return !TextUtils.isEmpty(otp);
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment OtpProfileFragment.
-     */
-    public static OtpProfileFragment newInstance() {
-        return new OtpProfileFragment();
-    }
-
-    private View.OnClickListener mOnClickContinueListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            onClickContinue();
-        }
-    };
-
+    @OnClick(R.id.btnContinue)
     public void onClickContinue() {
-        if (!isValidOTP()) {
-            showOTPError();
-            return;
-        } else {
-            hideOTPError();
-        }
-        presenter.verifyOtp(ClearableEditText.optText(edtOTP));
+        presenter.verifyOtp(mEdtOTPView.getText().toString());
     }
 
     @Override
@@ -142,7 +92,7 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        edtOTP.requestFocus();
+        mEdtOTPView.requestFocus();
     }
 
     @Override
@@ -221,8 +171,8 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
         super.showErrorDialog(message, getContext().getString(R.string.txt_close), new ZPWOnEventDialogListener() {
             @Override
             public void onOKevent() {
-                if (edtOTP != null && !edtOTP.isFocused()) {
-                    edtOTP.requestFocus();
+                if (mEdtOTPView != null && !mEdtOTPView.isFocused()) {
+                    mEdtOTPView.requestFocus();
                 }
             }
         });
@@ -243,22 +193,12 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
             Matcher m = r.matcher(message.body);
             if (m.find()) {
                 Timber.d("Found OTP: %s", m.group(2));
-                edtOTP.setText(m.group(2));
+                mEdtOTPView.setText(m.group(2));
             }
         }
         mEventBus.removeStickyEvent(ReceiveSmsEvent.class);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnOTPFragmentListener {
         void onConfirmOTPSuccess();
     }

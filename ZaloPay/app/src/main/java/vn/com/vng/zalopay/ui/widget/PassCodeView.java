@@ -91,9 +91,8 @@ public class PassCodeView extends FrameLayout {
         if (!TextUtils.isEmpty(mHint)) {
             mTvHint.setText(mHint);
         }
-        mTvHint.setPadding((int) paddingLeft, 0, (int) paddingRight, 0);
-        mRootView.setPadding((int) paddingLeft, 0, (int) paddingRight, 0);
-        mTvShowHide.setPadding(0, 0, (int) paddingRight, 0);
+        mTvHint.setPadding((int) paddingLeft, 0, 0, 0);
+        mRootView.setPadding((int) paddingLeft, 0, 0, 0);
         mEditText.setCustomSelectionActionModeCallback(new NonSelectionActionModeCallback());
         initTextView(context);
         addView(view);
@@ -180,6 +179,11 @@ public class PassCodeView extends FrameLayout {
             hideError();
             return;
         }
+
+        if (error.equals(mTvHint.getText().toString())) {
+            return;
+        }
+
         mTvHint.setText(error);
         mTvHint.setTextColor(Color.RED);
     }
@@ -245,7 +249,7 @@ public class PassCodeView extends FrameLayout {
         return mRootView;
     }
 
-    public View getButtonShow(){
+    public View getButtonShow() {
         return mTvShowHide;
     }
 }
