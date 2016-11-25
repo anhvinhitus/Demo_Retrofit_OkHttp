@@ -8,7 +8,7 @@ import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
  */
 
 public interface ColumnIndex {
-    int Id = ZaloFriendGDDao.Properties.Id.ordinal;
+    int Id = ZaloFriendGDDao.Properties.ZaloId.ordinal;
     int UserName = ZaloFriendGDDao.Properties.UserName.ordinal;
     int DisplayName = ZaloFriendGDDao.Properties.DisplayName.ordinal;
     int Avatar = ZaloFriendGDDao.Properties.Avatar.ordinal;

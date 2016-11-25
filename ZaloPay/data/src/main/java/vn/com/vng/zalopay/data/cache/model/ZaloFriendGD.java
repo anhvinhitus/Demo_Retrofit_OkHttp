@@ -4,9 +4,9 @@ package vn.com.vng.zalopay.data.cache.model;
 /**
  * Entity mapped to table "ZALO_FRIEND_GD".
  */
-public class ZaloFriendGD implements vn.com.vng.zalopay.domain.model.IPersistentObject {
+public class ZaloFriendGD {
 
-    private Long id;
+    private long zaloId;
     private String userName;
     private String displayName;
     private String avatar;
@@ -14,16 +14,20 @@ public class ZaloFriendGD implements vn.com.vng.zalopay.domain.model.IPersistent
     private String birthday;
     private Boolean usingApp;
     private String fulltextsearch;
+    private String zaloPayId;
+    private Integer status;
+    private Long phoneNumber;
+    private String zaloPayName;
 
     public ZaloFriendGD() {
     }
 
-    public ZaloFriendGD(Long id) {
-        this.id = id;
+    public ZaloFriendGD(long zaloId) {
+        this.zaloId = zaloId;
     }
 
-    public ZaloFriendGD(Long id, String userName, String displayName, String avatar, Integer userGender, String birthday, Boolean usingApp, String fulltextsearch) {
-        this.id = id;
+    public ZaloFriendGD(long zaloId, String userName, String displayName, String avatar, Integer userGender, String birthday, Boolean usingApp, String fulltextsearch, String zaloPayId, Integer status, Long phoneNumber, String zaloPayName) {
+        this.zaloId = zaloId;
         this.userName = userName;
         this.displayName = displayName;
         this.avatar = avatar;
@@ -31,14 +35,18 @@ public class ZaloFriendGD implements vn.com.vng.zalopay.domain.model.IPersistent
         this.birthday = birthday;
         this.usingApp = usingApp;
         this.fulltextsearch = fulltextsearch;
+        this.zaloPayId = zaloPayId;
+        this.status = status;
+        this.phoneNumber = phoneNumber;
+        this.zaloPayName = zaloPayName;
     }
 
-    public Long getId() {
-        return id;
+    public long getZaloId() {
+        return zaloId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setZaloId(long zaloId) {
+        this.zaloId = zaloId;
     }
 
     public String getUserName() {
@@ -95,6 +103,38 @@ public class ZaloFriendGD implements vn.com.vng.zalopay.domain.model.IPersistent
 
     public void setFulltextsearch(String fulltextsearch) {
         this.fulltextsearch = fulltextsearch;
+    }
+
+    public String getZaloPayId() {
+        return zaloPayId;
+    }
+
+    public void setZaloPayId(String zaloPayId) {
+        this.zaloPayId = zaloPayId;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Long getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(Long phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getZaloPayName() {
+        return zaloPayName;
+    }
+
+    public void setZaloPayName(String zaloPayName) {
+        this.zaloPayName = zaloPayName;
     }
 
 }

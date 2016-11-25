@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -14,6 +13,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
+import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -133,11 +134,51 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void getZaloFriend() {
-        Subscription subscription = mFriendRepository.retrieveZaloFriendsAsNeeded()
-                .delaySubscription(5, TimeUnit.SECONDS)
+
+        Observable<Boolean> observableZFriendList = retrieveZaloFriendsAsNeeded();
+
+        Observable<Boolean> observableMergeWithZp = checkListZaloIdForClient();
+
+        Subscription subscription = observableZFriendList.concatWith(observableMergeWithZp)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    int count = 0;
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Timber.d("debug merge friend %s", count++);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d(e, "Error merge friend");
+                    }
+                });
+
         mCompositeSubscription.add(subscription);
+    }
+
+    private Observable<Boolean> retrieveZaloFriendsAsNeeded() {
+        return mFriendRepository.retrieveZaloFriendsAsNeeded()
+                .delaySubscription(5, TimeUnit.SECONDS)
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Boolean>>() {
+                    @Override
+                    public Observable<? extends Boolean> call(Throwable throwable) {
+                        return Observable.empty();
+                    }
+                }).subscribeOn(Schedulers.io());
+    }
+
+    private Observable<Boolean> checkListZaloIdForClient() {
+        return mFriendRepository.checkListZaloIdForClient()
+                .map(new Func1<List<UserExistEntity>, Boolean>() {
+                    @Override
+                    public Boolean call(List<UserExistEntity> entities) {
+                        return Boolean.TRUE;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                ;
     }
 
     @Override
@@ -386,7 +427,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         applicationComponent.applicationSession().clearUserSession();
     }
-
 
     public void pay(final long appId, String zptranstoken, final boolean isAppToApp) {
         showLoadingView();

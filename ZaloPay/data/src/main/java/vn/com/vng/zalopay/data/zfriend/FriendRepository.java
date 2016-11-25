@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.data.zfriend;
 
 import android.database.Cursor;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,14 +11,19 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
+import vn.com.vng.zalopay.data.api.entity.UserRedPackageEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
 /**
@@ -30,17 +36,23 @@ public class FriendRepository implements FriendStore.Repository {
     private final int TIMEOUT_REQUEST_FRIEND = 10;
 
     private FriendStore.RequestService mRequestService;
+    private FriendStore.ZaloRequestService mZaloRequestService;
     private FriendStore.LocalStorage mLocalStorage;
+    private User mUser;
 
-    public FriendRepository(FriendStore.RequestService requestService, FriendStore.LocalStorage localStorage) {
+    public FriendRepository(User user, FriendStore.ZaloRequestService zaloRequestService,
+                            FriendStore.RequestService requestService,
+                            FriendStore.LocalStorage localStorage) {
         mRequestService = requestService;
         mLocalStorage = localStorage;
+        mZaloRequestService = zaloRequestService;
+        mUser = user;
     }
 
     @Override
     public Observable<Boolean> fetchZaloFriends() {
         Timber.d("fetchZaloFriends");
-        return mRequestService.fetchFriendList()
+        return mZaloRequestService.fetchFriendList()
                 .doOnNext(new Action1<List<ZaloFriendEntity>>() {
                     @Override
                     public void call(List<ZaloFriendEntity> entities) {
@@ -76,12 +88,12 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Boolean> retrieveZaloFriendsAsNeeded() {
-        Timber.d("retrieveZaloFriendsAsNeeded");
+        Timber.d("Retrieve Zalo Friends AsNeeded");
         return shouldUpdateFriendList()
                 .filter(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean aBoolean) {
-                        return Boolean.TRUE;
+                        return aBoolean;
                     }
                 })
                 .flatMap(new Func1<Boolean, Observable<Boolean>>() {
@@ -185,4 +197,108 @@ public class FriendRepository implements FriendStore.Repository {
         return result;
     }
 
+    public Observable<List<UserExistEntity>> checkListZaloIdForClient() {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.getZaloFriendWithoutZpId())
+                .map(this::transformZpId)
+                .filter(s -> !TextUtils.isEmpty(s))
+                .flatMap(s -> Observable.create(subscriber -> checklistzaloidforclient(s, subscriber, 0)));
+    }
+
+    private String mPreviousZaloId = null;
+
+    private void checklistzaloidforclient(String zaloidlist, Subscriber<? super List<UserExistEntity>> subscriber, int deep) {
+        Timber.d("check list zaloid for client %s deep %s", zaloidlist, deep);
+        Subscription subscription = fetchZaloPayId(zaloidlist)
+                .doOnNext(entities -> {
+
+                    if (subscriber.isUnsubscribed()) {
+                        return;
+                    }
+
+                    List<ZaloFriendEntity> mList = mLocalStorage.getZaloFriendWithoutZpId();
+                    Timber.d("list zalo need merge %s ", Lists.isEmptyOrNull(mList) ? 0 : mList.size());
+                    String mNextZaloIdList = transformZpId(mList);
+                    if (TextUtils.isEmpty(mNextZaloIdList)) {
+                        Timber.d("Check list zaloid or client on Complete");
+                        subscriber.onCompleted();
+                    } else {
+
+                        if (mNextZaloIdList.equals(mPreviousZaloId)) { // trường hợp k lấy đc user info từ server
+                            subscriber.onCompleted();
+                            return;
+                        }
+
+                        mPreviousZaloId = mNextZaloIdList;
+                        checklistzaloidforclient(mNextZaloIdList, subscriber, deep + 1);
+                    }
+                })
+                .doOnTerminate(() -> mPreviousZaloId = null)
+                .subscribe(subscriber::onNext);
+    }
+
+    private String transformZpId(List<ZaloFriendEntity> list) {
+        if (Lists.isEmptyOrNull(list)) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (ZaloFriendEntity entity : list) {
+            if (builder.length() == 0) {
+                builder.append(entity.userId);
+            } else {
+                builder.append(",");
+                builder.append(entity.userId);
+            }
+        }
+        return builder.toString();
+    }
+
+    private Observable<List<UserExistEntity>> fetchZaloPayId(String zaloidlist) {
+        return mRequestService.checklistzaloidforclient(mUser.zaloPayId, mUser.accesstoken, zaloidlist)
+                .map(response -> response.userList)
+                .doOnNext(entities -> mLocalStorage.mergeZaloPayId(entities))
+                ;
+    }
+
+    @Override
+    public Observable<List<UserRedPackageEntity>> listZaloPayUser(List<Long> listZaloId) {
+        return ObservableHelper.makeObservable(() -> listZaloFriend(listZaloId));
+    }
+
+    private List<UserRedPackageEntity> listZaloFriend(List<Long> listZaloId) {
+        if (Lists.isEmptyOrNull(listZaloId)) {
+            return Collections.emptyList();
+        }
+        List<ZaloFriendEntity> list = mLocalStorage.listZaloFriend(listZaloId);
+        if (Lists.isEmptyOrNull(list)) {
+            return Collections.emptyList();
+        }
+        List<UserRedPackageEntity> ret = new ArrayList<>();
+
+        for (ZaloFriendEntity entity : list) {
+            UserRedPackageEntity item = transformUserRedPackage(entity);
+            if (item != null) {
+                ret.add(item);
+            }
+        }
+
+        return ret;
+    }
+
+    private UserRedPackageEntity transformUserRedPackage(ZaloFriendEntity entity) {
+        UserRedPackageEntity ret = null;
+        if (entity != null) {
+            ret = new UserRedPackageEntity();
+            ret.avatar = entity.avatar;
+            ret.zaloName = entity.displayName;
+            ret.zaloID = String.valueOf(entity.userId);
+            ret.zaloPayID = entity.zaloPayId;
+        }
+
+        return ret;
+    }
+
+    public Observable<Boolean> syncContact() {
+        return Observable.empty();
+    }
 }

@@ -11,6 +11,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.observers.Subscribers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
@@ -20,7 +22,7 @@ import vn.com.vng.zalopay.data.exception.GetZaloFriendException;
  * Created by huuhoa on 7/4/16.
  * Implementation for FriendStore.RequestService
  */
-public class FriendRequestService implements FriendStore.RequestService {
+public class FriendRequestService implements FriendStore.ZaloRequestService {
     private final int OFFSET_FRIEND_LIST = 50;
 
     FriendStore.SDKApi mSDKApi;
@@ -50,8 +52,6 @@ public class FriendRequestService implements FriendStore.RequestService {
 
     @Override
     public Observable<List<ZaloFriendEntity>> fetchFriendList() {
-        Timber.d("fetchFriendList pageIndex:%s", 0);
-
         return Observable.create(new Observable.OnSubscribe<List<ZaloFriendEntity>>() {
             @Override
             public void call(final Subscriber<? super List<ZaloFriendEntity>> subscriber) {
@@ -61,6 +61,7 @@ public class FriendRequestService implements FriendStore.RequestService {
     }
 
     private void zaloRequestFriendList(final int pageIndex, final Subscriber<? super List<ZaloFriendEntity>> subscriber) {
+        Timber.d("zalo Request FriendList pageIndex %s ", pageIndex);
         mSDKApi.getFriendList(pageIndex, OFFSET_FRIEND_LIST, arg0 -> handleApiCallback(pageIndex, subscriber, arg0));
     }
 

@@ -23,8 +23,14 @@ public class ZaloFriendEntity {
     public String displayName;
     public String avatar;
     public boolean usingApp;
-
     public String normalizeDisplayName;
+
+
+    //merge from zalo pay
+    public String zaloPayId;
+    public long numberPhone;
+    public String zaloPayName;
+    public int status;
 
     public ZaloFriendEntity() {
     }

@@ -8,7 +8,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 45;
+    private static final int APP_DB_VERSION = 48;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -107,17 +107,25 @@ public class GreenDaoGenerator {
     }
 
     private static void addZaloContact(Schema appSchema) {
-        Entity appInfoEntity = appSchema.addEntity("ZaloFriendGD");
-        appInfoEntity.implementsInterface("vn.com.vng.zalopay.domain.model.IPersistentObject");
-        appInfoEntity.addIdProperty();//zaloId
-//        appInfoEntity.addLongProperty("userId").notNull().unique();
-        appInfoEntity.addStringProperty("userName");
-        appInfoEntity.addStringProperty("displayName");
-        appInfoEntity.addStringProperty("avatar");
-        appInfoEntity.addIntProperty("userGender");
-        appInfoEntity.addStringProperty("birthday");
-        appInfoEntity.addBooleanProperty("usingApp");
-        appInfoEntity.addStringProperty("fulltextsearch");
+
+        Entity entity = appSchema.addEntity("ZaloFriendGD");
+
+        entity.addLongProperty("zaloId").notNull()
+                .columnName("_id").primaryKey();
+        
+        entity.addStringProperty("userName");
+        entity.addStringProperty("displayName");
+        entity.addStringProperty("avatar");
+        entity.addIntProperty("userGender");
+        entity.addStringProperty("birthday");
+        entity.addBooleanProperty("usingApp");
+        entity.addStringProperty("fulltextsearch");
+
+        //merge from zalopay system
+        entity.addStringProperty("zaloPayId");
+        entity.addIntProperty("status");
+        entity.addLongProperty("phoneNumber");
+        entity.addStringProperty("zaloPayName");
     }
 
     private static void addTransferRecent(Schema appSchema) {
