@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.ZaloIntegrationEvent;
@@ -25,11 +26,13 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
     private final UserConfig mUserConfig;
     private ISplashScreenView mView;
     private final EventBus mEventBus;
+    private final ApplicationState mApplicationState;
 
     @Inject
-    SplashScreenPresenter(EventBus eventBus, UserConfig userConfig) {
+    SplashScreenPresenter(EventBus eventBus, UserConfig userConfig, ApplicationState applicationState) {
         mEventBus = eventBus;
         mUserConfig = userConfig;
+        mApplicationState = applicationState;
     }
 
     @Override
@@ -59,6 +62,11 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
 
     public void verifyUser() {
         if (mUserConfig.hasCurrentUser()) {
+            if (mApplicationState.currentState() == ApplicationState.State.MAIN_SCREEN_CREATED) {
+                Timber.d("MainActivity is already created. Skip navigation");
+                return;
+            }
+
             Timber.i("go to Home Screen");
             getZaloProfileInfo(mView.getContext(), mUserConfig);
             mView.gotoHomeScreen();

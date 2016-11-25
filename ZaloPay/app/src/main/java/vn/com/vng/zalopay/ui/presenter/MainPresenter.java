@@ -30,6 +30,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -103,6 +104,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     UserSession mUserSession;
 
     @Inject
+    ApplicationState mApplicationState;
+
+    @Inject
     MainPresenter(User user, EventBus eventBus,
                   AppResourceStore.Repository appResourceRepository,
                   UserConfig userConfig,
@@ -143,6 +147,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             mEventBus.register(this);
         }
         mUserSession.beginSession();
+        mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_CREATED);
     }
 
     private void sendCrashUserInformation(User user) {
@@ -171,6 +176,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         notificationService.destroy();
         CShareData.dispose();
         this.homeView = null;
+        mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
     }
 
     @Override
