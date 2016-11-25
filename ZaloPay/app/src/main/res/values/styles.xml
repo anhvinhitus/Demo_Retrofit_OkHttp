@@ -205,6 +205,7 @@
     <style name="BannerDraweeView" parent="NormalDraweeView">
         <item name="failureImage">@drawable/banner_default</item>
         <item name="placeholderImage">@drawable/banner_default</item>
+        <item name="actualImageScaleType">centerInside</item>
     </style>
 
     <style name="IconDraweeView" parent="BannerDraweeView">

@@ -2,9 +2,6 @@ package vn.com.vng.zalopay.notification;
 
 import android.content.Context;
 
-import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,8 +43,6 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 
 public class ZPNotificationService implements OnReceiverMessageListener {
-
-    private static final String[] TOPICS = {"global"};
 
     /*Server API Key: AIzaSyCweupE81mBm3_m8VOoFTUbuhBF82r_GwI
     Sender ID: 386726389536*/
@@ -125,13 +120,8 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
     private void connectToServer() {
         String token = null;
-
         try {
-            InstanceID instanceID = InstanceID.getInstance(mContext);
-//            Timber.d("onHandleIntent: senderId %s", getString(R.string.gcm_defaultSenderId));
-            token = instanceID.getToken(mContext.getString(R.string.gcm_defaultSenderId),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-
+            token = GcmHelper.getTokenGcm(mContext);
             subscribeTopics(token);
             // sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, true).apply();
         } catch (Exception ex) {
@@ -249,10 +239,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         if (mIsSubscribeGcm) {
             return;
         }
-        GcmPubSub pubSub = GcmPubSub.getInstance(mContext);
-        for (String topic : TOPICS) {
-            pubSub.subscribe(token, "/topics/" + topic, null);
-        }
+        GcmHelper.subscribeTopics(mContext, token);
         mIsSubscribeGcm = true;
     }
 
