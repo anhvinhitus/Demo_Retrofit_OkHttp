@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Looper;
 import android.util.Pair;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -22,8 +23,10 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
@@ -39,13 +42,13 @@ import vn.com.vng.zalopay.react.error.PaymentError;
  */
 class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
-    private TransactionStore.Repository mRepository;
+    private TransactionStore.Repository mTransactionRepository;
     private final EventBus mEventBus;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, TransactionStore.Repository repository, EventBus eventBus) {
         super(reactContext);
-        this.mRepository = repository;
+        this.mTransactionRepository = repository;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
         this.mEventBus = eventBus;
@@ -61,14 +64,14 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
         Timber.d("get transaction success index %s count %s", pageIndex, count);
 
-        Subscription subscription = mRepository.getTransactions(pageIndex, count)
+        Subscription subscription = mTransactionRepository.getTransactions(pageIndex, count)
 
                 .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
                     @Override
                     public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {
                         int code = PaymentError.ERR_CODE_SUCCESS.value();
                         if (Lists.isEmptyOrNull(transactions) && pageIndex == 0) {
-                            boolean isLoad = mRepository.isLoadedTransactionSuccess();
+                            boolean isLoad = mTransactionRepository.isLoadedTransactionSuccess();
                             if (!isLoad) {
                                 code = PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value();
                             }
@@ -85,13 +88,13 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
         Timber.d("get transaction fail index %s count %s", pageIndex, count);
 
-        Subscription subscription = mRepository.getTransactionsFail(pageIndex, count)
+        Subscription subscription = mTransactionRepository.getTransactionsFail(pageIndex, count)
                 .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
                     @Override
                     public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {
                         int code = PaymentError.ERR_CODE_SUCCESS.value();
                         if (Lists.isEmptyOrNull(transactions) && pageIndex == 0) {
-                            boolean isLoad = mRepository.isLoadedTransactionFail();
+                            boolean isLoad = mTransactionRepository.isLoadedTransactionFail();
                             if (!isLoad) {
                                 code = PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value();
                             }
@@ -119,7 +122,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
             return;
         }
 
-        Subscription subscription = mRepository.getTransaction(value)
+        Subscription subscription = mTransactionRepository.getTransaction(value)
                 .map(new Func1<TransHistory, Pair<Integer, WritableArray>>() {
                     @Override
                     public Pair<Integer, WritableArray> call(TransHistory transactions) {
@@ -177,7 +180,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
     @Override
     public void onHostResume() {
-        Timber.d("onResume");
+        //run on Main Thread
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
@@ -188,12 +191,13 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     @Override
     public void onHostPause() {
         Timber.d("onPause");
+        //run on Main Thread
         mEventBus.unregister(this);
     }
 
     @Override
     public void onHostDestroy() {
-
+        //run on Main Thread
         unsubscribeIfNotNull(mCompositeSubscription);
 
         getReactApplicationContext().removeActivityEventListener(this);
@@ -254,8 +258,8 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
     private void updateTransactionLatest() {
-        Subscription subscription = mRepository.fetchTransactionHistoryLatest()
-                .subscribe(new DefaultSubscriber<Boolean>());
+        Subscription subscription = mTransactionRepository.fetchTransactionHistoryLatest()
+                .subscribeOn(Schedulers.io()).subscribe(new DefaultSubscriber<Boolean>());
         mCompositeSubscription.add(subscription);
     }
 
