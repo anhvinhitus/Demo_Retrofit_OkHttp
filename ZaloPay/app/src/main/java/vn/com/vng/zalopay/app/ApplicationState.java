@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.app;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import timber.log.Timber;
 
@@ -9,6 +10,7 @@ import timber.log.Timber;
  * Hold global application state
  */
 
+@Singleton
 public class ApplicationState {
     public enum State {
         LAUNCHING,
