@@ -2,12 +2,16 @@ package vn.com.vng.zalopay.data.redpacket;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
+import vn.com.vng.zalopay.data.api.entity.UserRedPackageEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.model.BundleGD;
@@ -19,6 +23,7 @@ import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Strings;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
@@ -45,18 +50,20 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     private final RedPacketDataMapper mDataMapper;
     private final User user;
     private final int mAppId;
+    private final Gson mGson;
 
     public RedPacketRepository(RedPacketStore.RequestService requestService,
                                RedPacketStore.RequestTPEService requestTPEService,
                                RedPacketStore.LocalStorage localStorage,
                                RedPacketDataMapper dataMapper,
-                               User user, int appId) {
+                               User user, int appId, Gson gson) {
         this.mRequestService = requestService;
         this.mRequestTPEService = requestTPEService;
         this.mLocalStorage = localStorage;
         this.mDataMapper = dataMapper;
         this.user = user;
         this.mAppId = appId;
+        this.mGson = gson;
         Timber.d("accessToken[%s]", this.user.accesstoken);
     }
 
@@ -83,10 +90,25 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> sendBundle(long bundleID, List<Long> friendList) {
-        String friendListStr = Strings.joinWithDelimiter("|", friendList);
-        return mRequestService.sendBundle(bundleID, friendListStr, user.zaloPayId, user.accesstoken)
-                .map(BaseResponse::isSuccessfulResponse);
+    public Observable<Boolean> sendBundle(final long bundleID, final String friendList) {
+        Timber.d("sendBundle: bundleId %s friend %s", bundleID, friendList);
+        return ObservableHelper.makeObservable(() -> {
+            UserRedPackageEntity entity = new UserRedPackageEntity();
+            entity.zaloPayID = TextUtils.isEmpty(user.zaloPayId) ? "" : user.zaloPayId;
+            entity.zaloID = String.valueOf(user.zaloId);
+            entity.zaloName = TextUtils.isEmpty(user.displayName) ? "" : user.displayName;
+            entity.avatar = TextUtils.isDigitsOnly(user.avatar) ? "" : user.avatar;
+            return mGson.toJson(entity);
+        }).flatMap(s ->
+                mRequestService.submittosendbundlebyzalopayinfo(bundleID, friendList, s, user.accesstoken)
+        ).map(BaseResponse::isSuccessfulResponse);
+    }
+
+    @Override
+    public Observable<Boolean> sendBundle(long bundleID, List<UserRedPackageEntity> entities) {
+        //call from JN
+        String friendList = mGson.toJson(entities);
+        return sendBundle(bundleID, friendList);
     }
 
     @Override
@@ -248,6 +270,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
      * Note: Package can't open after 24 hours from the time user creates red package.
      * If (LastTimeGetPackageFromServer - createTime) > 24h then shouldn't
      * else should get package from server
+     *
      * @param bundleId bundleId
      * @return should or shouldn't get data from server.
      */

@@ -21,16 +21,17 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.Arrays;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.entity.UserRedPackageEntity;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
@@ -48,6 +49,7 @@ import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by longlv on 17/07/2016.
@@ -154,7 +156,16 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                 Timber.d("pay onResponseSuccess bundle [%s]", bundle);
                 WritableMap data = Arguments.createMap();
                 data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
-                mBalanceRepository.updateBalance();
+
+
+                if (AndroidUtils.isMainThead()) {
+                    Timber.d("Kiểm tra lại phần này thôi. main thread rùi.");
+                }
+
+                Subscription subscription = updateBalance()
+                        .subscribe(new DefaultSubscriber<Boolean>());
+                compositeSubscription.add(subscription);
+
                 Helpers.promiseResolveSuccess(promise, data);
             }
 
@@ -216,29 +227,42 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
         }
 
         List<Long> friendList = DataMapper.transform(friends);
-        Subscription subscription = mRedPackageRepository.sendBundle(bundleID, friendList)
-                .map(new Func1<Boolean, Boolean>() {
+        Subscription subscription = mFriendRepository.listZaloPayUser(friendList)
+                .flatMap(new Func1<List<UserRedPackageEntity>, Observable<Boolean>>() {
                     @Override
-                    public Boolean call(Boolean aBoolean) {
-                        return aBoolean;
+                    public Observable<Boolean> call(List<UserRedPackageEntity> entities) {
+                        Timber.d("user red package %s", entities.size());
+                        return mRedPackageRepository.sendBundle(bundleID, entities);
+                    }
+                }).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Boolean aBoolean) {
+                        return updateBalance();
                     }
                 })
                 .subscribe(new RedPacketSubscriber<Boolean>(promise) {
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.w(e, "error on getting SubmitToSendSubscriber");
-                        super.onError(e);
-                    }
-
                     @Override
                     public void onNext(Boolean result) {
                         Timber.d("SubmitToSendSubscriber onNext result [%s]", result);
-                        mBalanceRepository.updateBalance();
                         onGetBundleStatusFinish(promise, bundleID, true, 1);
                     }
                 });
         compositeSubscription.add(subscription);
+    }
+
+    private Observable<Boolean> updateBalance() {
+        return mBalanceRepository.updateBalance().map(new Func1<Long, Boolean>() {
+            @Override
+            public Boolean call(Long aLong) {
+                return Boolean.TRUE;
+            }
+        })
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Boolean>>() {
+                    @Override
+                    public Observable<? extends Boolean> call(Throwable throwable) {
+                        return Observable.empty();
+                    }
+                });
     }
 
     private void startTaskGetTransactionStatus(final long packageId, final long zpTransId, final Promise promise) {
@@ -294,11 +318,8 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
             return;
         }
         isRunningGetStatus = true;
-        mRedPackageRepository.getpackagestatus(packageId, zpTransId, "")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        Subscription subscription = mRedPackageRepository.getpackagestatus(packageId, zpTransId, "")
                 .subscribe(new DefaultSubscriber<PackageStatus>() {
-
                     @Override
                     public void onError(Throwable e) {
                         Timber.d("getpackagestatus onError");
@@ -311,11 +332,21 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                         stopTaskGetStatus();
                         Helpers.promiseResolveSuccess(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
-                        mRedPackageRepository.setPacketStatus(packageId, packageStatus.amount,
-                                RedPacketStatus.Opened.getValue(), null).subscribe(new DefaultSubscriber<Void>());
-                        mBalanceRepository.updateBalance();
+                        onGetPackageStatus(packageId, packageStatus);
                     }
                 });
+        compositeSubscription.add(subscription);
+    }
+
+    private void onGetPackageStatus(long packageId, PackageStatus packageStatus) {
+        Subscription subscription = mRedPackageRepository.setPacketStatus(packageId, packageStatus.amount, RedPacketStatus.Opened.getValue(), null)
+                .subscribe(new DefaultSubscriber<Void>());
+        compositeSubscription.add(subscription);
+
+        Subscription balanceSub = updateBalance()
+                .subscribe(new DefaultSubscriber<Boolean>());
+
+        compositeSubscription.add(balanceSub);
     }
 
     @ReactMethod
@@ -412,7 +443,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
         }
         try {
             long bundleId = Long.parseLong(strBundleID);
-            mRedPackageRepository.getPacketsInBundle(bundleId)
+            Subscription subscription = mRedPackageRepository.getPacketsInBundle(bundleId)
                     .subscribeOn(Schedulers.io())
                     .subscribe(new RedPacketSubscriber<List<PackageInBundle>>(promise) {
 
@@ -429,6 +460,7 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
                         }
 
                     });
+            compositeSubscription.add(subscription);
         } catch (Exception e) {
             Timber.w(e, "Exception while fetching packets");
             promise.reject("EXCEPTION", e.getMessage());

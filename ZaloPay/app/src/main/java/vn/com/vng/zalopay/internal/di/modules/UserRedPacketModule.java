@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
+import com.google.gson.Gson;
+
 import javax.inject.Named;
 
 import dagger.Module;
@@ -22,7 +24,6 @@ import vn.com.vng.zalopay.service.RedPacketPayServiceImpl;
 
 /**
  * Created by longlv on 13/07/2016.
- *
  */
 @Module
 public class UserRedPacketModule {
@@ -51,8 +52,8 @@ public class UserRedPacketModule {
                                                          RedPacketStore.RequestTPEService requestTPEService,
                                                          RedPacketStore.LocalStorage localStorage,
                                                          RedPacketDataMapper dataMapper,
-                                                         User user) {
-        return new RedPacketRepository(requestService, requestTPEService, localStorage, dataMapper, user, BuildConfig.PAYAPPID);
+                                                         User user, Gson gson) {
+        return new RedPacketRepository(requestService, requestTPEService, localStorage, dataMapper, user, BuildConfig.PAYAPPID, gson);
     }
 
     @UserScope

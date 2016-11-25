@@ -9,6 +9,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.api.entity.UserRedPackageEntity;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
@@ -41,32 +42,44 @@ public interface RedPacketStore {
 
     interface LocalStorage {
         void putBundle(List<BundleGD> bundleGDs);
+
         //update time that get PackageInBundle from server
         void updateLastTimeGetPackage(long bundleId);
+
         BundleGD getBundle(long bundleId);
 
         void putSentBundleSummary(SentBundleSummaryDB sentBundleSummaryDB);
+
         Observable<GetSentBundle> getSentBundleSummary();
 
         void putReceivePacketSummary(ReceivePacketSummaryDB receivePacketSummaryDB);
+
         Observable<GetReceivePacket> getReceivePacketSummary();
 
         void putSentBundle(List<SentBundleGD> sentBundle);
+
         Observable<List<SentBundle>> getSentBundle(long timeCreate, int limit);
+
         Boolean isHaveSentBundleInDb(long createTime, int count);
+
         Void setBundleStatus(long bundleId, int status);
 
         void putReceivePackages(List<ReceivePackageGD> receiveBundleGDs);
+
         Observable<List<ReceivePackage>> getReceiveBundle(long timeCreate, int limit);
+
         Boolean isHaveReceivePacketInDb(long createTime, int count);
 
         void putPackageInBundle(List<PackageInBundleGD> packageInBundleGDs);
+
         Observable<List<PackageInBundle>> getPackageInBundle(long bundleID);
 
         void putRedPacketAppInfo(RedPacketAppInfo redPacketAppInfo);
+
         RedPacketAppInfo getRedPacketAppInfo();
 
         ReceivePackageGD getPacketStatus(long packetId);
+
         Void setPacketStatus(long packetId, long amount, int status, String messageStatus);
 
         Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
@@ -103,6 +116,11 @@ public interface RedPacketStore {
 
         @GET(Constants.REDPACKET_API.GETAPPINFO)
         Observable<RedPacketAppInfoResponse> getAppInfo(@Query("checksum") String checksum, @Query("userid") String zalopayid, @Query("accesstoken") String accesstoken);
+
+        @FormUrlEncoded
+        @POST(Constants.REDPACKET_API.SUBMITTOSENDBUNDLEBYZALOPAYINFO)
+        Observable<BaseResponse> submittosendbundlebyzalopayinfo(@Field("bundleid") long bundleID, @Field("zaloPayOfFriendList") String friends, @Field("zaloPayOfSender") String sender, @Field("accesstoken") String accessToken);
+
     }
 
     /**
@@ -111,7 +129,9 @@ public interface RedPacketStore {
     interface Repository {
         Observable<BundleOrder> createBundleOrder(int quantity, long totalLuck, long amountEach, int type, String sendMessage);
 
-        Observable<Boolean> sendBundle(long bundleID, List<Long> friendList);
+        Observable<Boolean> sendBundle(long bundleID, String friends);
+
+        Observable<Boolean> sendBundle(long bundleID, List<UserRedPackageEntity> entities);
 
         Observable<SubmitOpenPackage> submitOpenPackage(long packageID, long bundleID);
 
