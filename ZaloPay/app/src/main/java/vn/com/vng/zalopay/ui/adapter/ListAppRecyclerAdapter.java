@@ -123,7 +123,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         }
 
         private void setImage(SimpleDraweeView image, AppResource appResource) {
-            Timber.d("set image appType [%s] url: [%s]", appResource.appType, appResource.iconUrl);
+            //  Timber.d("set image appType [%s] url: [%s]", appResource.appType, appResource.iconUrl);
             if (TextUtils.isEmpty(appResource.iconUrl) &&
                     appResource.appType == PaymentAppTypeEnum.NATIVE.getValue() &&
                     PaymentAppConfig.getAppResource(appResource.appid) != null) {
@@ -136,7 +136,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
                     loadImage(image, appResource.iconUrl);
                 }
             } else {
-                loadImage(image,R.drawable.ic_imagedefault);
+                loadImage(image, R.drawable.ic_imagedefault);
             }
         }
 
