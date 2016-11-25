@@ -532,9 +532,9 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startCardSupportActivity(Fragment fragment) {
-        Intent intent = new Intent(fragment.getContext(), CardSupportActivity.class);
-        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_CARD_SUPPORT);
+    public void startCardSupportActivity(Context context) {
+        Intent intent = new Intent(context, CardSupportActivity.class);
+        context.startActivity(intent);
     }
 
     public void startTutorialLinkCardActivity(Context context, DMapCardResult mapCardResult) {

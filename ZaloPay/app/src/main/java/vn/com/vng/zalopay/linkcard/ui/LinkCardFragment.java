@@ -43,7 +43,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     private Dialog mBottomSheetDialog;
     private BankCard mCurrentBankCard;
     private LinkCardAdapter mAdapter;
-    private boolean mGoToWithdrawCondition = false;
 
     @BindView(R.id.layoutLinkCardEmpty)
     View mLayoutLinkCardEmpty;
@@ -64,7 +63,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @OnClick(R.id.btn_add_more)
     public void onClickAddMoreBankCard() {
-        navigator.startCardSupportActivity(this);
+        navigator.startCardSupportActivity(getContext());
     }
 
     @Inject
@@ -93,9 +92,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if (getArguments() != null) {
-            mGoToWithdrawCondition = getArguments().getBoolean(Constants.Withdraw.GO_TO_WITHDRAW_CONDITION);
-        }
         mAdapter = new LinkCardAdapter(getContext(), this);
     }
 
@@ -240,10 +236,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
             Timber.w(e, "onAddCardSuccess detectCardType exception [%s]", e.getMessage());
         }
         updateData(bankCard);
-        Timber.d("onAddCardSuccess mGoToWithdrawCondition: %s", mGoToWithdrawCondition);
-        if (mGoToWithdrawCondition) {
-            getActivity().finish();
-        }
     }
 
     @Override
@@ -288,9 +280,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_CARD_SUPPORT) {
             if (resultCode == Activity.RESULT_OK) {
-                if (mGoToWithdrawCondition) {
-                    getActivity().finish();
-                }
                 return;
             }
         }

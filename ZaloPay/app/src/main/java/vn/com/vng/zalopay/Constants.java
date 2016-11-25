@@ -101,8 +101,4 @@ public interface Constants {
     interface QRCode {
         int RECEIVE_MONEY = 1;
     }
-
-    interface Withdraw {
-        String GO_TO_WITHDRAW_CONDITION = "go_to_withdraw_condition";
-    }
 }
