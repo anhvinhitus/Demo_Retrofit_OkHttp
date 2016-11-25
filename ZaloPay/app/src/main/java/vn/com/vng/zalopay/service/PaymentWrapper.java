@@ -133,6 +133,11 @@ public class PaymentWrapper {
         }
 
         @Override
+        public void onUpdateAccessToken(String s) {
+            
+        }
+
+        @Override
         public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
 
             responseListener.onPreComplete(isSuccessful, pTransId, pAppTransId);
