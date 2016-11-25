@@ -43,9 +43,6 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     @Inject
     SplashScreenPresenter presenter;
 
-    @Inject
-    EventBus mEventBus;
-
     @Override
     protected void setupFragmentComponent() {
         AndroidApplication.instance().getAppComponent().inject(this);
@@ -62,7 +59,6 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
         super.onCreate(savedInstanceState);
     }
 
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -73,7 +69,8 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        handleDeepLinks();
+        Intent intent = getActivity().getIntent();
+        presenter.handleDeepLinks(intent);
         presenter.verifyUser();
     }
 
@@ -100,12 +97,13 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
 
     @Override
     public void gotoLoginScreen() {
-        if (!IntroAppUtils.isShowedIntro()) {
-            navigator.startIntroAppActivity(getContext());
-        } else {
-            navigator.startLoginActivity(getContext());
-        }
+        navigator.startLoginActivity(getContext());
+        getActivity().finish();
+    }
 
+    @Override
+    public void gotoOnBoardingScreen() {
+        navigator.startIntroAppActivity(getContext());
         getActivity().finish();
     }
 
@@ -115,44 +113,5 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
 
     @Override
     public void hideLoading() {
-    }
-
-    private void handleDeepLinks() {
-        // Test : adb shell 'am start -d "zalopay-1://post?appid={}&zptranstoken={}"'
-        Intent intent = getActivity().getIntent();
-        if (intent != null && intent.getData() != null) {
-            Uri data = intent.getData();
-            String link = String.valueOf(data);
-            Timber.d("handle deep links [%s]", link);
-
-            String scheme = data.getScheme();
-            String host = data.getHost();
-
-            if (scheme.equalsIgnoreCase("zalopay-1") && host.equalsIgnoreCase("post")) {
-                pay(data, false);
-            } else if (scheme.equalsIgnoreCase("zalopay") && host.equalsIgnoreCase("pay")) {
-                pay(data, true);
-            }
-        }
-    }
-
-    private void pay(Uri data, boolean isAppToApp) {
-        String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
-        String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
-
-        if (TextUtils.isEmpty(appid)) {
-            return;
-        }
-
-        if (!TextUtils.isDigitsOnly(appid)) {
-            return;
-        }
-
-        if (TextUtils.isEmpty(zptranstoken)) {
-            return;
-        }
-
-        mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken, isAppToApp));
-        Timber.d("post sticky payment");
     }
 }
