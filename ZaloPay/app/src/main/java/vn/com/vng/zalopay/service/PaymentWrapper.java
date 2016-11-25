@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -12,6 +14,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
@@ -133,8 +136,11 @@ public class PaymentWrapper {
         }
 
         @Override
-        public void onUpdateAccessToken(String s) {
-            
+        public void onUpdateAccessToken(String token) {
+            if (!TextUtils.isEmpty(token)) {
+                return;
+            }
+            EventBus.getDefault().post(new NewSessionEvent(token));
         }
 
         @Override
