@@ -88,6 +88,7 @@ public interface Constants {
     interface MoneyTransfer {
         int MODE_DEFAULT = 0;
         int MODE_QR = 1;
+        int MODE_ZALO = 2;
         int STAGE_PRETRANSFER = 1;
         int STAGE_TRANSFER_SUCCEEDED = 2;
         int STAGE_TRANSFER_FAILED = 3;
