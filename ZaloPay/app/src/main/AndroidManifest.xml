@@ -84,6 +84,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity-alias android:exported="true"
+                        android:label="ZaloAppAlias"
+                        android:name="vn.zalopay.apps.ZaloAppActivityAlias"
+                        android:targetActivity=".ui.activity.SplashScreenActivity">
+            <intent-filter>
+                <action android:name="vn.zalopay.intent.action.SEND_MONEY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias android:exported="true"
+                        android:label="ThirdPartyAppAlias"
+                        android:name="vn.zalopay.apps.ThirdPartyAppActivityAlias"
+                        android:targetActivity=".ui.activity.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -91,18 +106,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="zalopay-1" />
-
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="zalopay" />
             </intent-filter>
-        </activity>
+        </activity-alias>
 
         <activity
             android:name=".account.ui.activities.LoginZaloActivity"
