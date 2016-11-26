@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.data;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import com.google.gson.Gson;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,7 +98,7 @@ public class RedPackageRepositoryTest {
         RedPacketDataMapper dataMapper = new RedPacketDataMapper();
         mLocalStorage = new RedPacketLocalStorage(daoSession, dataMapper);
 
-        mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1);
+        mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1, new Gson());
     }
 
     public class RequestTPEServiceImpl implements RedPacketStore.RequestTPEService {
@@ -141,6 +143,11 @@ public class RedPackageRepositoryTest {
 
         @Override
         public Observable<RedPacketAppInfoResponse> getAppInfo(@Query("checksum") String checksum, @Query("userid") String zalopayid, @Query("accesstoken") String accesstoken) {
+            return null;
+        }
+
+        @Override
+        public Observable<BaseResponse> submittosendbundlebyzalopayinfo(@Field("bundleid") long bundleID, @Field("zalopayoffriendlist") String friends, @Field("zalopayofsender") String sender, @Field("accesstoken") String accessToken) {
             return null;
         }
 
