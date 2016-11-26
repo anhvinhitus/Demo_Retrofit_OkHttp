@@ -18,7 +18,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
@@ -51,7 +50,7 @@ public class WsConnection extends Connection {
     private int numRetry;
 
     private final Parser parser;
-    private final UserConfig userConfig;
+    private final User mUser;
 
     private SocketClient mSocketClient;
     private RxBus mServerPongBus;
@@ -84,11 +83,11 @@ public class WsConnection extends Connection {
         }
     }
 
-    public WsConnection(String host, int port, Context context, Parser parser, UserConfig config) {
+    public WsConnection(String host, int port, Context context, Parser parser, User user) {
         super(host, port);
         this.context = context;
         this.parser = parser;
-        this.userConfig = config;
+        this.mUser = user;
 //        mSocketClient = new NettyClient(host, port, new ConnectionListener());
         mSocketClient = new TCPClient(host, port, new ConnectionListener());
         HandlerThread thread = new HandlerThread("wsconnection");
@@ -126,7 +125,6 @@ public class WsConnection extends Connection {
                         .subscribe((value) -> {
                             Timber.d("Begin send heart beat [%s]", value);
                             ping();
-                            ensureAuthenSuccess();
                         });
         compositeSubscription.add(subscription);
     }
@@ -147,15 +145,8 @@ public class WsConnection extends Connection {
     }
 
     private boolean isUserLoggedIn() {
-        if (userConfig == null) {
-            return false;
-        }
+        return mUser != null && !TextUtils.isEmpty(mUser.zaloPayId);
 
-        if (!userConfig.hasCurrentUser()) {
-            return false;
-        }
-
-        return !TextUtils.isEmpty(userConfig.getCurrentUser().zaloPayId);
     }
 
     public void setGCMToken(String token) {
@@ -276,7 +267,6 @@ public class WsConnection extends Connection {
     }
 
     private boolean sendAuthentication(String token, long uid) {
-
         Timber.d("send authentication token %s zaloPayId %s gcmToken %s", token, uid, gcmToken);
 
         MessageLogin.Builder loginMsg = new MessageLogin.Builder()
@@ -292,18 +282,19 @@ public class WsConnection extends Connection {
     }
 
     private boolean sendAuthentication() {
-        if (userConfig.hasCurrentUser()) {
-            User user = userConfig.getCurrentUser();
-            return sendAuthentication(user.accesstoken, Long.parseLong(user.zaloPayId));
-        }
-        return false;
+        return !(mUser == null || TextUtils.isEmpty(mUser.zaloPayId)
+                || TextUtils.isEmpty(mUser.accesstoken))
+                && sendAuthentication(mUser.accesstoken, Long.parseLong(mUser.zaloPayId));
     }
 
     private long getCurrentUserId() {
         long uid = -1;
 
+        if (mUser == null || TextUtils.isEmpty(mUser.zaloPayId)) {
+            return uid;
+        }
         try {
-            uid = Long.parseLong(userConfig.getCurrentUser().zaloPayId);
+            uid = Long.parseLong(mUser.zaloPayId);
         } catch (Exception ex) {
             Timber.d(ex, "parse zaloPayId exception");
         }
@@ -390,6 +381,7 @@ public class WsConnection extends Connection {
                 long currentTime = System.currentTimeMillis();
                 Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData) message).clientData);
                 mServerPongBus.send(currentTime - ((ServerPongData) message).clientData);
+                ensureAuthenSuccess();
             } else {
                 postResult(message);
                 mServerPongBus.send(2L);
@@ -400,9 +392,9 @@ public class WsConnection extends Connection {
             }
         }
 
-    /**
-     * Handle socket disconnected event
-     */
+        /**
+         * Handle socket disconnected event
+         */
         @Override
         public void onDisconnected(ConnectionErrorCode code, String reason) {
             Timber.d("onDisconnected %s", code);
@@ -420,10 +412,10 @@ public class WsConnection extends Connection {
             EventBus.getDefault().post(new WsConnectionEvent(false));
         }
 
-    /**
-     * Handle socket error event
-     */
-             @Override
+        /**
+         * Handle socket error event
+         */
+        @Override
         public void onError(Throwable e) {
             Timber.d("onError %s", e);
             mState = Connection.State.Disconnected;
@@ -444,7 +436,7 @@ public class WsConnection extends Connection {
 
 
     private void scheduleReconnect() {
-        if (!userConfig.hasCurrentUser()) {
+        if (mUser == null || TextUtils.isEmpty(mUser.zaloPayId)) {
             Timber.d("Don't have signed in user. Skip reconnect.");
             return;
         }

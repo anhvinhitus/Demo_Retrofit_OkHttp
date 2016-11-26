@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
 import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -57,7 +58,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     EventBus mEventBus;
 
     @Inject
-    UserConfig mUserConfig;
+    User mUser;
 
     @Inject
     Gson mGson;
@@ -291,7 +292,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     private void ensureInitializeNetworkConnection() {
         if (mWsConnection == null) {
             mWsConnection = new WsConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, mContext,
-                    new MessageParser(mGson), mUserConfig);
+                    new MessageParser(mGson), mUser);
             mWsConnection.addReceiverListener(this);
         }
     }
