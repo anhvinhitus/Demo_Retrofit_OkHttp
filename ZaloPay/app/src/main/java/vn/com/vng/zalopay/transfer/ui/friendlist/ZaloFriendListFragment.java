@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.transfer.ui.friendlist;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,13 +23,14 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 
 /**
  * Created by AnhHieu on 10/10/16.
  * *
  */
 
-public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendListView, SwipeRefreshLayout.OnRefreshListener {
+public class ZaloFriendListFragment extends RuntimePermissionFragment implements IZaloFriendListView, SwipeRefreshLayout.OnRefreshListener {
 
 
     public static ZaloFriendListFragment newInstance() {
@@ -88,6 +90,7 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mPresenter.getFriendList();
+        isPermissionGrantedAndRequest(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_CODE.READ_CONTACTS);
     }
 
     @Override
@@ -187,5 +190,12 @@ public class ZaloFriendListFragment extends BaseFragment implements IZaloFriendL
     @Override
     public void setRefreshing(boolean var) {
         mSwipeRefreshView.setRefreshing(var);
+    }
+
+    @Override
+    protected void permissionGranted(int permissionRequestCode) {
+        if (permissionRequestCode == PERMISSION_CODE.READ_CONTACTS) {
+            mPresenter.syncContact();
+        }
     }
 }
