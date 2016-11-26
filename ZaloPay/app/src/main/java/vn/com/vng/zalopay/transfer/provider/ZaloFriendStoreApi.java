@@ -33,7 +33,6 @@ public class ZaloFriendStoreApi implements FriendStore.SDKApi {
             ZaloSDK.Instance.getFriendList(mContext, pageIndex, totalCount, new ZaloOpenAPICallback() {
                 @Override
                 public void onResult(JSONObject data) {
-                    Timber.d("Current thread: %s", Thread.currentThread().getName());
                     handleResult(callback, data);
                 }
             });

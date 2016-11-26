@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.greenrobot.dao.query.WhereCondition;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
@@ -17,6 +18,8 @@ import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.User;
+
+import static vn.com.vng.zalopay.data.Constants.MANIFEST_LASTTIME_SYNC_CONTACT;
 
 /**
  * Created by huuhoa on 7/4/16.
@@ -183,28 +186,37 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
 
     @Override
     public List<ZaloFriendEntity> getZaloFriendWithoutZpId() {
-        List<ZaloFriendGD> list = listFriendUsingAppWithoutZpId();
-        return transformEntity(list);
+        return listZFriend(ZaloFriendGDDao.Properties.ZaloPayId.isNull());
     }
 
     @Override
     public List<ZaloFriendEntity> listZaloFriend(List<Long> list) {
-        List<ZaloFriendGD> ret = listFriendUsingApp(list);
+        return listZFriend(ZaloFriendGDDao.Properties.ZaloId.in(list));
+    }
+
+    @Override
+    public List<ZaloFriendEntity> listZaloFriendWithPhoneNumber() {
+        return listZFriend(ZaloFriendGDDao.Properties.PhoneNumber.isNotNull(), ZaloFriendGDDao.Properties.PhoneNumber.gt(0));
+    }
+
+    @Override
+    public long lastTimeSyncContact() {
+        return getDataManifest(MANIFEST_LASTTIME_SYNC_CONTACT, 0);
+    }
+
+    @Override
+    public void setLastTimeSyncContact(long time) {
+        insertDataManifest(MANIFEST_LASTTIME_SYNC_CONTACT, String.valueOf(time));
+    }
+
+    private List<ZaloFriendEntity> listZFriend(WhereCondition... condMore) {
+        List<ZaloFriendGD> ret = listZFriendCondition(condMore);
         return transformEntity(ret);
     }
 
-    private List<ZaloFriendGD> listFriendUsingAppWithoutZpId() {
-        return mDao.queryBuilder().where(ZaloFriendGDDao.Properties.UsingApp.eq(true),
-                ZaloFriendGDDao.Properties.ZaloPayId.isNull())
+    private List<ZaloFriendGD> listZFriendCondition(WhereCondition... condMore) {
+        return mDao.queryBuilder().where(ZaloFriendGDDao.Properties.UsingApp.eq(true), condMore)
                 .build()
                 .list();
     }
-
-    private List<ZaloFriendGD> listFriendUsingApp(List<Long> zaloIds) {
-        return mDao.queryBuilder().where(ZaloFriendGDDao.Properties.UsingApp.eq(true),
-                ZaloFriendGDDao.Properties.ZaloId.in(zaloIds))
-                .build()
-                .list();
-    }
-
 }

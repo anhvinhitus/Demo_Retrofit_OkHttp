@@ -23,8 +23,13 @@ import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
+import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
+
+import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
 /**
  * Created by huuhoa on 7/4/16.
@@ -40,13 +45,16 @@ public class FriendRepository implements FriendStore.Repository {
     private FriendStore.LocalStorage mLocalStorage;
     private User mUser;
 
+    private ContactFetcher mContactFetcher;
+
     public FriendRepository(User user, FriendStore.ZaloRequestService zaloRequestService,
                             FriendStore.RequestService requestService,
-                            FriendStore.LocalStorage localStorage) {
+                            FriendStore.LocalStorage localStorage, ContactFetcher contactFetcher) {
         mRequestService = requestService;
         mLocalStorage = localStorage;
         mZaloRequestService = zaloRequestService;
         mUser = user;
+        mContactFetcher = contactFetcher;
     }
 
     @Override
@@ -198,7 +206,6 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     public Observable<List<UserExistEntity>> checkListZaloIdForClient() {
-        Timber.d("check list zalo id");
         return ObservableHelper.makeObservable(() -> mLocalStorage.getZaloFriendWithoutZpId())
                 .map(this::transformZpId)
                 .filter(s -> !TextUtils.isEmpty(s))
@@ -299,7 +306,61 @@ public class FriendRepository implements FriendStore.Repository {
         return ret;
     }
 
+    @Override
     public Observable<Boolean> syncContact() {
-        return Observable.empty();
+        return makeObservable(() -> mLocalStorage.lastTimeSyncContact())
+                .filter(lastTime -> Math.abs(System.currentTimeMillis() / 1000 - lastTime) >= 60)
+                .flatMap(aLong -> beginSync());
     }
+
+    private Observable<Boolean> beginSync() {
+        Timber.d("begin Sync contact");
+        return makeObservable(() -> {
+            Timber.d("begin sync current thread %s", Thread.currentThread().getName());
+            ArrayList<Contact> listContact = mContactFetcher.fetchAll();
+            List<ZaloFriendEntity> zEntities = mLocalStorage.listZaloFriendWithPhoneNumber();
+
+            Timber.d(" list contact size [%s], list zalo friend have phone [%s],", listContact.size(), zEntities.size());
+
+            if (Lists.isEmptyOrNull(listContact) || Lists.isEmptyOrNull(zEntities)) {
+                return Boolean.TRUE;
+            }
+            int numberPhoneChange = 0;
+            for (ZaloFriendEntity zEntity : zEntities) {
+
+                int index = indexOfContact(listContact, zEntity);
+                if (index > 0) {
+                    Contact contact = listContact.get(index);
+                    if (contact != null && !TextUtils.isEmpty(contact.name)) {
+                        zEntity.displayName = contact.name;
+                        numberPhoneChange++;
+                    }
+                }
+            }
+            Timber.d("beginSync: sync number %s", numberPhoneChange);
+            if (numberPhoneChange > 0) {
+                mLocalStorage.put(zEntities);
+            }
+
+            listContact.clear();
+            zEntities.clear();
+
+            return Boolean.TRUE;
+        }).doOnCompleted(() -> mLocalStorage.setLastTimeSyncContact(System.currentTimeMillis() / 1000));
+    }
+
+    private int indexOfContact(ArrayList<Contact> listContact, ZaloFriendEntity zEntity) {
+        int size = listContact.size();
+        String numberPhone = PhoneUtil.formatPhoneNumber(zEntity.numberPhone);
+        Timber.d("phone of user zalo %s", numberPhone);
+        for (int i = 0; i < size; i++) {
+            Contact contact = listContact.get(i);
+            if (contact.inside(numberPhone)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
 }

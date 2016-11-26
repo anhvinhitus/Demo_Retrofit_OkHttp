@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.data.zfriend.FriendLocalStorage;
 import vn.com.vng.zalopay.data.zfriend.FriendRepository;
 import vn.com.vng.zalopay.data.zfriend.FriendRequestService;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -52,8 +53,10 @@ public class UserFriendModule {
     @Provides
     FriendStore.Repository provideFriendRepository(User user, FriendStore.ZaloRequestService zaloRequestService,
                                                    FriendStore.LocalStorage localStorage,
-                                                   FriendStore.RequestService requestService
+                                                   FriendStore.RequestService requestService, ContactFetcher contactFetcher
     ) {
-        return new FriendRepository(user, zaloRequestService, requestService, localStorage);
+        return new FriendRepository(user, zaloRequestService, requestService, localStorage, contactFetcher);
     }
+
+
 }

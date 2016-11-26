@@ -41,6 +41,12 @@ public interface FriendStore {
         List<ZaloFriendEntity> getZaloFriendWithoutZpId();
 
         List<ZaloFriendEntity> listZaloFriend(List<Long> list);
+
+        List<ZaloFriendEntity> listZaloFriendWithPhoneNumber(); // list zalo friend co so dien thoai
+
+        long lastTimeSyncContact();
+
+        void setLastTimeSyncContact(long time);
     }
 
     interface ZaloRequestService {

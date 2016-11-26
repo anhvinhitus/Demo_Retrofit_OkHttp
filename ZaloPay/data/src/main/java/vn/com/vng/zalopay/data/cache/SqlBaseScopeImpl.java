@@ -42,6 +42,7 @@ public class SqlBaseScopeImpl {
         try {
             def = Long.valueOf(getDataManifest(key));
         } catch (Exception e) {
+            //emtpy
         }
 
         return def;
@@ -51,6 +52,7 @@ public class SqlBaseScopeImpl {
         try {
             def = Integer.valueOf(getDataManifest(key));
         } catch (Exception e) {
+            //emtpy
         }
         return def;
     }

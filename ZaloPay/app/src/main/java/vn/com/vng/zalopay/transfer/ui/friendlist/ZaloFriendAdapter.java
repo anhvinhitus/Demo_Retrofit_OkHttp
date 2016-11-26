@@ -39,10 +39,10 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
         Object object = v.getTag();
 
         if (object instanceof SectionHolder) {
-            Timber.d("SectionHolder: %s", sectionObject.firstChar);
+            //Timber.d("SectionHolder: %s", sectionObject.firstChar);
             ((SectionHolder) object).bindView(sectionObject);
         } else if (object instanceof TitleHolder) {
-            Timber.d("TitleHolder: %s", sectionObject.firstChar);
+            //Timber.d("TitleHolder: %s", sectionObject.firstChar);
             ((TitleHolder) object).bindView(sectionObject);
         }
     }
@@ -50,15 +50,15 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
     @Override
     protected View newSeparatorView(Context context2, Object item, ViewGroup parent) {
         SectionObject sectionObject = (SectionObject) item;
-        Timber.d("newSeparatorView: item %s", ((SectionObject) item).firstChar);
+        //Timber.d("newSeparatorView: item %s", ((SectionObject) item).firstChar);
         View view;
         if (!TextUtils.isEmpty(sectionObject.firstChar) && sectionObject.firstChar.length() > 1) {
             view = mInflater.inflate(R.layout.row_section_friend_layout, parent, false);
-            Timber.d("create new title section");
+            //Timber.d("create new title section");
             TitleHolder holder = new TitleHolder(view);
             view.setTag(holder);
         } else {
-            Timber.d("create new section");
+            //Timber.d("create new section");
             view = mInflater.inflate(R.layout.row_section_layout, parent, false);
             SectionHolder holder = new SectionHolder(view);
             view.setTag(holder);

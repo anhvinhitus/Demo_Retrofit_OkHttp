@@ -16,9 +16,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.utils.ImageLoader;
-import vn.com.vng.zalopay.utils.PhoneUtil;
 
 /**
  * Created by AnhHieu on 8/17/16.
