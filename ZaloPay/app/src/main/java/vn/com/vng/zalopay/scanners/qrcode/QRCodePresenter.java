@@ -300,7 +300,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         Bundle bundle = new Bundle();
         bundle.putInt(vn.com.vng.zalopay.Constants.ARG_MONEY_TRANSFER_MODE, vn.com.vng.zalopay.Constants.MoneyTransfer.MODE_QR);
         bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, item);
-        mNavigator.startTransferActivity(mView.getContext(), bundle);
+        mNavigator.startTransferActivity(mView.getContext(), bundle, false);
     }
 
     private boolean zpTransaction(JSONObject jsonObject) throws IllegalArgumentException {

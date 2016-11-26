@@ -293,9 +293,12 @@ public class Navigator implements INavigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
     }
 
-    public void startTransferActivity(Context context, Bundle bundle) {
+    public void startTransferActivity(Context context, Bundle bundle, boolean forwardResult) {
         Intent intent = new Intent(context, TransferActivity.class);
         intent.putExtras(bundle);
+        if (forwardResult) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        }
         context.startActivity(intent);
     }
 

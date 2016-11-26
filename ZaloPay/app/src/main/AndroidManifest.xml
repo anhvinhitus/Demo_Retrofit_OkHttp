@@ -87,10 +87,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.activity.ExternalCallSplashScreenActivity"
+                  android:exported="true"
+                  android:screenOrientation="portrait"
+                  android:enabled="true"
+                  android:configChanges="keyboardHidden|orientation" />
         <activity-alias android:exported="true"
                         android:label="ZaloAppAlias"
                         android:name="vn.zalopay.apps.ZaloAppActivityAlias"
-                        android:targetActivity=".ui.activity.SplashScreenActivity">
+                        android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
             <intent-filter>
                 <action android:name="vn.zalopay.intent.action.SEND_MONEY"/>
                 <category android:name="android.intent.category.DEFAULT"/>

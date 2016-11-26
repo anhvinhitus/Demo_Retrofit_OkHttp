@@ -78,7 +78,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                              BalanceStore.Repository balanceRepository,
                              ZaloPayRepository zaloPayRepository,
                              TransactionStore.Repository transactionRepository,
-                             AccountStore.Repository accountRepository,
+                             final AccountStore.Repository accountRepository,
                              Navigator navigator,
                              TransferStore.Repository transferRepository,
                              Context applicationContext) {
@@ -118,6 +118,10 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                     return;
                 }
                 hideLoading();
+
+                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
+                    handleFailedTransferZalo(mView.getActivity());
+                }
             }
 
             @Override
@@ -127,14 +131,39 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 }
 
                 if (mView.getActivity() != null) {
-                    mView.getActivity().setResult(Activity.RESULT_OK);
-                    mView.getActivity().finish();
+                    if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
+                        handleCompletedTransferZalo(mView.getActivity(), zpPaymentResult);
+                    } else {
+                        mView.getActivity().setResult(Activity.RESULT_OK);
+                        mView.getActivity().finish();
+                    }
                 }
                 if (zpPaymentResult == null || zpPaymentResult.paymentInfo == null) {
                     return;
                 }
 
                 saveTransferRecentToDB();
+            }
+
+            private void handleFailedTransferZalo(Activity activity) {
+                Intent data = new Intent();
+                data.putExtra("code", 2);
+                activity.setResult(Activity.RESULT_OK, data);
+                activity.finish();
+            }
+
+            private void handleCompletedTransferZalo(Activity activity, ZPPaymentResult zpPaymentResult) {
+                Intent data = new Intent();
+                data.putExtra("code", 1);
+                data.putExtra("amount", mTransaction.amount);
+                data.putExtra("message", mTransaction.message);
+
+                if (zpPaymentResult != null && zpPaymentResult.paymentInfo != null) {
+                    data.putExtra("transactionId", zpPaymentResult.paymentInfo.walletTransID);
+                }
+
+                activity.setResult(Activity.RESULT_OK, data);
+                activity.finish();
             }
 
             @Override
@@ -521,6 +550,14 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
 
     public void navigateBack() {
         if (mView == null) {
+            return;
+        }
+
+        if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
+            // return to Zalo
+            Intent data = new Intent();
+            data.putExtra("code", 0);  // user cancel
+            mView.getActivity().setResult(Activity.RESULT_OK, data);
             return;
         }
 
