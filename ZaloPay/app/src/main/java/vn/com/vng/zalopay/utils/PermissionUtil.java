@@ -40,4 +40,13 @@ public class PermissionUtil {
         return selfPermission;
     }
 
+
+    public static boolean verifyPermission(Context context, String[] permission) {
+        int[] selfPermission = new int[permission.length];
+        for (int i = 0; i < permission.length; i++) {
+            selfPermission[i] = ContextCompat.checkSelfPermission(context, permission[i]);
+        }
+
+        return verifyPermission(selfPermission);
+    }
 }

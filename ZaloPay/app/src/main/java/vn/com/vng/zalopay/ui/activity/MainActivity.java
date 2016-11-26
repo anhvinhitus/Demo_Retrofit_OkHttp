@@ -2,11 +2,9 @@ package vn.com.vng.zalopay.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -22,7 +20,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -32,6 +29,7 @@ import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -65,9 +63,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @Inject
     MainPresenter presenter;
-
-    @Inject
-    GlobalEventHandlingService globalEventHandlingService;
 
     private int mCurrentMenuId;
     private long back_pressed;
@@ -167,7 +162,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     public void replaceFragmentDelay(final int id) {
         this.drawer.closeDrawer(GravityCompat.START);
-        new Handler().postDelayed(new OpenMenuRunnable(this, id), 300);
+        AndroidUtils.runOnUIThread(new OpenMenuRunnable(this, id), 300);
     }
 
     public void replaceFragmentImmediate(final int id) {
@@ -301,15 +296,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         Timber.i("MainActivity is resuming");
         super.onResume();
         presenter.resume();
-        GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
-        if (message == null) {
-            return;
-        }
-
-        SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), message.messageType, R.style.alert_dialog);
-        alertDialog.setConfirmText(message.title);
-        alertDialog.setContentText(message.content);
-        alertDialog.show();
     }
 
     @Override

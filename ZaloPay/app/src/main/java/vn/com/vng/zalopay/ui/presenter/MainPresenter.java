@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -36,7 +38,6 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
-import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
@@ -52,10 +53,12 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -74,7 +77,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class MainPresenter extends BaseUserPresenter implements IPresenter<IHomeView> {
 
-    private IHomeView homeView;
+    private IHomeView mHomeView;
 
     private boolean isLoadedGateWayInfo;
 
@@ -103,6 +106,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     ApplicationState mApplicationState;
 
     @Inject
+    GlobalEventHandlingService globalEventHandlingService;
+
+    @Inject
     MainPresenter(User user, EventBus eventBus,
                   AppResourceStore.Repository appResourceRepository,
                   Context applicationContext,
@@ -111,8 +117,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                   BalanceStore.Repository balanceRepository,
                   ZaloPayRepository zaloPayRepository,
                   TransactionStore.Repository transactionRepository,
-                  FriendStore.Repository friendRepository,
-                  ThreadExecutor threadExecutor) {
+                  FriendStore.Repository friendRepository) {
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
         this.mApplicationContext = applicationContext;
@@ -126,14 +131,23 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void getZaloFriend() {
-
         Observable<Boolean> observableZFriendList = retrieveZaloFriendsAsNeeded();
-
         Observable<Boolean> observableMergeWithZp = checkListZaloIdForClient();
 
         Subscription subscription = observableZFriendList.concatWith(observableMergeWithZp)
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        syncContact();
+                    }
+                })
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d(e, "Get zalo friend error");
+                    }
+                });
 
         mCompositeSubscription.add(subscription);
     }
@@ -144,9 +158,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends Boolean>>() {
                     @Override
                     public Observable<? extends Boolean> call(Throwable throwable) {
+                        Timber.d(throwable, "retrieve zalo friends exception");
                         return Observable.empty();
                     }
-                }).subscribeOn(Schedulers.io());
+                });
     }
 
     private Observable<Boolean> checkListZaloIdForClient() {
@@ -157,13 +172,27 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                         return Boolean.TRUE;
                     }
                 })
-                .subscribeOn(Schedulers.io())
                 ;
+    }
+
+    private void syncContact() {
+        boolean granted = PermissionUtil.verifyPermission(mApplicationContext, new String[]{Manifest.permission.READ_CONTACTS});
+        if (granted) {
+            Subscription subscription = mFriendRepository.syncContact()
+                    // .subscribeOn(Schedulers.io())
+                    .subscribe(new DefaultSubscriber<Boolean>() {
+                        @Override
+                        public void onError(Throwable e) {
+                            Timber.d(e, "Sync contact exception");
+                        }
+                    });
+            mCompositeSubscription.add(subscription);
+        }
     }
 
     @Override
     public void setView(IHomeView iHomeView) {
-        this.homeView = iHomeView;
+        this.mHomeView = iHomeView;
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
@@ -179,13 +208,22 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         GlobalData.initApplication(null);
         notificationService.destroy();
         CShareData.dispose();
-        this.homeView = null;
+        this.mHomeView = null;
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
     }
 
     @Override
     public void resume() {
         notificationService.startNotificationService();
+
+        GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
+        if (message != null && mHomeView != null) {
+            SweetAlertDialog alertDialog = new SweetAlertDialog(mHomeView.getContext(), message.messageType, R.style.alert_dialog);
+            alertDialog.setConfirmText(message.title);
+            alertDialog.setContentText(message.content);
+            alertDialog.show();
+        }
+
     }
 
     @Override
@@ -214,8 +252,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         }).subscribe(new Action1<Boolean>() {
             @Override
             public void call(Boolean aBoolean) {
-                if (!aBoolean && homeView != null) {
-                    mNavigator.startWarningRootedActivity(homeView.getContext());
+                if (!aBoolean && mHomeView != null) {
+                    mNavigator.startWarningRootedActivity(mHomeView.getContext());
                 }
             }
         });
@@ -263,7 +301,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
                 refreshBanners();
                 AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
-                AppVersionUtils.showDialogUpgradeAppIfNeed(homeView.getActivity());
+                AppVersionUtils.showDialogUpgradeAppIfNeed(mHomeView.getActivity());
             }
         });
     }
@@ -313,7 +351,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     public void onZaloIntegrationEvent(final ZaloIntegrationEvent event) {
         Timber.d("Receive Zalo Integration Event");
         mEventBus.removeStickyEvent(event);
-        if (homeView == null) {
+        if (mHomeView == null) {
             Timber.d("HomeView is not set");
             return;
         }
@@ -325,12 +363,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         Bundle bundle = new Bundle();
         bundle.putInt(vn.com.vng.zalopay.Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);
         bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, item);
-        mNavigator.startTransferActivity(homeView.getContext(), bundle);
+        mNavigator.startTransferActivity(mHomeView.getContext(), bundle);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onRefreshPaymentSdk(RefreshPaymentSdkEvent event) {
-        if (homeView == null) {
+        if (mHomeView == null) {
             return;
         }
 
@@ -343,13 +381,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiverAlertNotification(AlertNotificationEvent event) {
 
-        if (homeView == null) {
+        if (mHomeView == null) {
             return;
         }
 
         final NotificationData notify = event.notify;
         if (notify.transid > 0) {
-            SweetAlertDialog dialog = new SweetAlertDialog(homeView.getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
+            SweetAlertDialog dialog = new SweetAlertDialog(mHomeView.getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
 
             dialog.setTitleText(TextUtils.isEmpty(event.mTitle) ? mApplicationContext.getString(R.string.notification) : event.mTitle);
             dialog.setCancelText(mApplicationContext.getString(R.string.txt_close));
@@ -358,8 +396,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog dialog) {
-                    if (homeView != null) {
-                        mNavigator.startTransactionDetail(homeView.getContext(), String.valueOf(notify.transid));
+                    if (mHomeView != null) {
+                        mNavigator.startTransactionDetail(mHomeView.getContext(), String.valueOf(notify.transid));
                     }
                     dialog.dismiss();
                 }
@@ -387,8 +425,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             paymentWrapper = new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository, new PaymentWrapper.IViewListener() {
                 @Override
                 public Activity getActivity() {
-                    if (homeView != null) {
-                        return homeView.getActivity();
+                    if (mHomeView != null) {
+                        return mHomeView.getActivity();
                     }
                     return null;
                 }
@@ -398,22 +436,22 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
                     Timber.d("onParameterError");
 
-                    if (homeView == null) {
+                    if (mHomeView == null) {
                         return;
                     }
 
                     if ("order".equalsIgnoreCase(param)) {
-                        homeView.showError(mApplicationContext.getString(R.string.order_invalid));
+                        mHomeView.showError(mApplicationContext.getString(R.string.order_invalid));
                     } else if ("uid".equalsIgnoreCase(param)) {
-                        homeView.showError(mApplicationContext.getString(R.string.user_invalid));
+                        mHomeView.showError(mApplicationContext.getString(R.string.user_invalid));
                     } else if ("token".equalsIgnoreCase(param)) {
-                        homeView.showError(mApplicationContext.getString(R.string.order_invalid));
+                        mHomeView.showError(mApplicationContext.getString(R.string.order_invalid));
                     }
 
                     hideLoadingView();
 
-                    if (isAppToApp && homeView != null) {
-                        responseToApp(homeView.getActivity(), appId, -1, param);
+                    if (isAppToApp && mHomeView != null) {
+                        responseToApp(mHomeView.getActivity(), appId, -1, param);
                     }
                 }
 
@@ -425,16 +463,16 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 @Override
                 public void onResponseError(PaymentError paymentError) {
                     Timber.d("onResponseError");
-                    if (homeView == null) {
+                    if (mHomeView == null) {
                         return;
                     }
 
                     if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                        homeView.showError(mApplicationContext.getString(R.string.exception_no_connection_try_again));
+                        mHomeView.showError(mApplicationContext.getString(R.string.exception_no_connection_try_again));
                     }
 
-                    if (isAppToApp && homeView != null) {
-                        responseToApp(homeView.getActivity(), appId, paymentError.value(), PaymentError.getErrorMessage(paymentError));
+                    if (isAppToApp && mHomeView != null) {
+                        responseToApp(mHomeView.getActivity(), appId, paymentError.value(), PaymentError.getErrorMessage(paymentError));
                     }
 
                     hideLoadingView();
@@ -445,8 +483,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     Timber.d("onResponseSuccess");
                     hideLoadingView();
 
-                    if (isAppToApp && homeView != null) {
-                        responseToApp(homeView.getActivity(), appId, PaymentError.ERR_CODE_SUCCESS.value(),
+                    if (isAppToApp && mHomeView != null) {
+                        responseToApp(mHomeView.getActivity(), appId, PaymentError.ERR_CODE_SUCCESS.value(),
                                 PaymentError.getErrorMessage(PaymentError.ERR_CODE_SUCCESS));
                     }
                 }
@@ -454,23 +492,23 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 @Override
                 public void onResponseTokenInvalid() {
                     Timber.d("onResponseTokenInvalid");
-                    if (homeView == null) {
+                    if (mHomeView == null) {
                         return;
                     }
 
                     hideLoadingView();
 
-                  /*  homeView.onTokenInvalid();
+                  /*  mHomeView.onTokenInvalid();
                     clearAndLogout();*/
                 }
 
                 @Override
                 public void onAppError(String msg) {
                     Timber.d("onAppError msg [%s]", msg);
-                    if (homeView == null) {
+                    if (mHomeView == null) {
                         return;
                     }
-                    homeView.showError(mApplicationContext.getString(R.string.exception_generic));
+                    mHomeView.showError(mApplicationContext.getString(R.string.exception_generic));
                     hideLoadingView();
                 }
 
@@ -479,7 +517,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
                     Timber.d("onNotEnoughMoney");
 
-                    if (homeView == null) {
+                    if (mHomeView == null) {
                         return;
                     }
                     hideLoadingView();
@@ -493,14 +531,14 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void showLoadingView() {
-        if (homeView != null) {
-            homeView.showLoading();
+        if (mHomeView != null) {
+            mHomeView.showLoading();
         }
     }
 
     private void hideLoadingView() {
-        if (homeView != null) {
-            homeView.hideLoading();
+        if (mHomeView != null) {
+            mHomeView.hideLoading();
         }
     }
 
