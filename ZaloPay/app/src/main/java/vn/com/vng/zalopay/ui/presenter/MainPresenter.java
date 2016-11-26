@@ -7,8 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.crashlytics.android.Crashlytics;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -34,7 +32,6 @@ import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -87,7 +84,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     private EventBus mEventBus;
     private AppResourceStore.Repository mAppResourceRepository;
-    private UserConfig mUserConfig;
     private Context mApplicationContext;
     private Navigator mNavigator;
     private PassportRepository passportRepository;
@@ -95,7 +91,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     private ZaloPayRepository mZaloPayRepository;
     private TransactionStore.Repository mTransactionRepository;
     private User mUser;
-    private ThreadExecutor mThreadExecutor;
     private FriendStore.Repository mFriendRepository;
 
     @Inject
@@ -110,7 +105,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     @Inject
     MainPresenter(User user, EventBus eventBus,
                   AppResourceStore.Repository appResourceRepository,
-                  UserConfig userConfig,
                   Context applicationContext,
                   Navigator navigator,
                   PassportRepository passportRepository,
@@ -121,7 +115,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                   ThreadExecutor threadExecutor) {
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
-        this.mUserConfig = userConfig;
         this.mApplicationContext = applicationContext;
         this.mNavigator = navigator;
         this.passportRepository = passportRepository;
@@ -129,7 +122,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
         this.mFriendRepository = friendRepository;
-        this.mThreadExecutor = threadExecutor;
         this.mUser = user;
     }
 
@@ -141,19 +133,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
         Subscription subscription = observableZFriendList.concatWith(observableMergeWithZp)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>() {
-                    int count = 0;
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        Timber.d("debug merge friend %s", count++);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e, "Error merge friend");
-                    }
-                });
+                .subscribe(new DefaultSubscriber<Boolean>());
 
         mCompositeSubscription.add(subscription);
     }
@@ -191,23 +171,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_CREATED);
     }
 
-    private void sendCrashUserInformation(User user) {
-        if (user == null) {
-            return;
-        }
-
-        // TODO: Use the current user's information
-        // You can call any combination of these three methods
-        Crashlytics.setUserIdentifier(user.zaloPayId);
-        if (!TextUtils.isEmpty(user.email)) {
-            Crashlytics.setUserEmail(user.email);
-        }
-        if (!TextUtils.isEmpty(user.zalopayname)) {
-            Crashlytics.setUserName(user.zalopayname);
-        }
-    }
-
-
     @Override
     public void destroyView() {
         mEventBus.unregister(this);
@@ -237,15 +200,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     public void initialize() {
         this.loadGatewayInfoPaymentSDK();
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
-        mThreadExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                sendCrashUserInformation(mUser);
-                initializeAppConfig();
-                getZaloFriend();
-                warningRoot();
-            }
-        });
+        initializeAppConfig();
+        getZaloFriend();
+        warningRoot();
     }
 
     private void warningRoot() {
@@ -279,12 +236,11 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void loadGatewayInfoPaymentSDK() {
-        User user = mUserConfig.getCurrentUser();
         final ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
         UserInfo userInfo = new UserInfo();
-        userInfo.zaloUserId = String.valueOf(user.zaloId);
-        userInfo.zaloPayUserId = user.zaloPayId;
-        userInfo.accessToken = user.accesstoken;
+        userInfo.zaloUserId = String.valueOf(mUser.zaloId);
+        userInfo.zaloPayUserId = mUser.zaloPayId;
+        userInfo.accessToken = mUser.accesstoken;
         paymentInfo.userInfo = userInfo;
         WalletSDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack() {
             @Override
@@ -378,13 +334,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             return;
         }
 
-        if (mUserConfig.hasCurrentUser()) {
-            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-            paymentInfo.userInfo.zaloPayUserId = mUserConfig.getCurrentUser().zaloPayId;
-            paymentInfo.userInfo.accessToken = mUserConfig.getCurrentUser().accesstoken;
-
-            WalletSDKApplication.refreshGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
-        }
+        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+        paymentInfo.userInfo.zaloPayUserId = mUser.zaloPayId;
+        paymentInfo.userInfo.accessToken = mUser.accesstoken;
+        WalletSDKApplication.refreshGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

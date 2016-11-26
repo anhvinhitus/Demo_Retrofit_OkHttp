@@ -1,6 +1,9 @@
 package vn.com.vng.zalopay.service;
 
 import android.content.Context;
+import android.text.TextUtils;
+
+import com.crashlytics.android.Crashlytics;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -24,7 +27,7 @@ public class UserSession {
     private UserConfig mUserConfig;
 
     @Inject
-    public UserSession(Context context, User user, UserConfig mUserConfig, EventBus eventBus) {
+    UserSession(Context context, User user, UserConfig mUserConfig, EventBus eventBus) {
         this.mContext = context;
         this.mUser = user;
         this.mEventBus = eventBus;
@@ -35,6 +38,7 @@ public class UserSession {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
+        sendCrashUserInformation(mUser);
     }
 
     public void endSession() {
@@ -50,6 +54,19 @@ public class UserSession {
             mUserConfig.setAccessToken(event.newSession);
         } else {
             Timber.d("Accesstoken equal accesstoken in client");
+        }
+    }
+
+    private void sendCrashUserInformation(User user) {
+        if (user == null) {
+            return;
+        }
+        Crashlytics.setUserIdentifier(user.zaloPayId);
+        if (!TextUtils.isEmpty(user.email)) {
+            Crashlytics.setUserEmail(user.email);
+        }
+        if (!TextUtils.isEmpty(user.zalopayname)) {
+            Crashlytics.setUserName(user.zalopayname);
         }
     }
 

@@ -198,6 +198,7 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     public Observable<List<UserExistEntity>> checkListZaloIdForClient() {
+        Timber.d("check list zalo id");
         return ObservableHelper.makeObservable(() -> mLocalStorage.getZaloFriendWithoutZpId())
                 .map(this::transformZpId)
                 .filter(s -> !TextUtils.isEmpty(s))
