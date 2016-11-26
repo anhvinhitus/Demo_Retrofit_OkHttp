@@ -189,7 +189,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Timber.d("activity created");
-        isPermissionGrantedAndRequest(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_CODE.READ_CONTACTS);
         presenter.initialize();
     }
 
