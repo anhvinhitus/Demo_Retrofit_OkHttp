@@ -42,5 +42,5 @@ public interface IZaloPayView {
 
     void changeBanner();
 
-    void enableShowShow();
+    void enableShowShow(boolean isEnable);
 }

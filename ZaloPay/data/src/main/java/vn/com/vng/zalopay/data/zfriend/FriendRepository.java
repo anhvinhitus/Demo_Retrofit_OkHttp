@@ -61,24 +61,9 @@ public class FriendRepository implements FriendStore.Repository {
     public Observable<Boolean> fetchZaloFriends() {
         Timber.d("fetchZaloFriends");
         return mZaloRequestService.fetchFriendList()
-                .doOnNext(new Action1<List<ZaloFriendEntity>>() {
-                    @Override
-                    public void call(List<ZaloFriendEntity> entities) {
-                        mLocalStorage.put(entities);
-                    }
-                })
-                .doOnCompleted(new Action0() {
-                    @Override
-                    public void call() {
-                        updateTimeStamp();
-                    }
-                })
-                .map(new Func1<List<ZaloFriendEntity>, Boolean>() {
-                    @Override
-                    public Boolean call(List<ZaloFriendEntity> entities) {
-                        return Boolean.TRUE;
-                    }
-                });
+                .doOnNext(entities -> mLocalStorage.put(entities))
+                .doOnCompleted(() -> updateTimeStamp())
+                .map(entities -> Boolean.TRUE);
     }
 
     @Override
@@ -98,19 +83,8 @@ public class FriendRepository implements FriendStore.Repository {
     public Observable<Boolean> retrieveZaloFriendsAsNeeded() {
         Timber.d("Retrieve Zalo Friends AsNeeded");
         return shouldUpdateFriendList()
-                .filter(new Func1<Boolean, Boolean>() {
-                    @Override
-                    public Boolean call(Boolean aBoolean) {
-                        return aBoolean;
-                    }
-                })
-                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Boolean aBoolean) {
-                        return fetchZaloFriends();
-                    }
-                })
-                ;
+                .filter(Boolean::booleanValue)
+                .flatMap(aBoolean -> fetchZaloFriends());
     }
 
     @Nullable
@@ -162,18 +136,8 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<List<ZaloFriend>> getZaloFriendList() {
-        return ObservableHelper.makeObservable(new Callable<List<ZaloFriendEntity>>() {
-            @Override
-            public List<ZaloFriendEntity> call() throws Exception {
-                return mLocalStorage.get();
-            }
-        })
-                .map(new Func1<List<ZaloFriendEntity>, List<ZaloFriend>>() {
-                    @Override
-                    public List<ZaloFriend> call(List<ZaloFriendEntity> entities) {
-                        return transform(entities);
-                    }
-                });
+        return ObservableHelper.makeObservable(() -> mLocalStorage.get())
+                .map(entities -> transform(entities));
     }
 
     private ZaloFriend transform(ZaloFriendEntity entity) {

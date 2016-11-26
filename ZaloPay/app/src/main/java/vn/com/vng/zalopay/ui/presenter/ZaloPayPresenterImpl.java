@@ -216,10 +216,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private void onGetAppResourceSuccess(List<AppResource> resources) {
-
-        if (resources.contains(PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW))) {
-            mZaloPayView.enableShowShow();
-        }
+        mZaloPayView.enableShowShow(resources.contains(PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW)));
 
         resources.removeAll(PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST);
 

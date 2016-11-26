@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -33,7 +31,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
 import vn.com.vng.zalopay.banner.model.BannerType;
@@ -331,8 +328,8 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     }
 
     @Override
-    public void enableShowShow() {
-        isEnableShowShow = true;
+    public void enableShowShow(boolean isEnableShowShow) {
+        this.isEnableShowShow = isEnableShowShow;
         getActivity().invalidateOptionsMenu();
     }
 
