@@ -132,7 +132,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
 
                 if (mView.getActivity() != null) {
                     if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
-                        handleCompletedTransferZalo(mView.getActivity(), zpPaymentResult);
+                        handleCompletedTransferZalo(mView.getActivity());
                     } else {
                         mView.getActivity().setResult(Activity.RESULT_OK);
                         mView.getActivity().finish();
@@ -152,15 +152,12 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 activity.finish();
             }
 
-            private void handleCompletedTransferZalo(Activity activity, ZPPaymentResult zpPaymentResult) {
+            private void handleCompletedTransferZalo(Activity activity) {
                 Intent data = new Intent();
                 data.putExtra("code", 1);
                 data.putExtra("amount", mTransaction.amount);
                 data.putExtra("message", mTransaction.message);
-
-                if (zpPaymentResult != null && zpPaymentResult.paymentInfo != null) {
-                    data.putExtra("transactionId", zpPaymentResult.paymentInfo.walletTransID);
-                }
+                data.putExtra("transactionId", mTransaction.transactionId);
 
                 activity.setResult(Activity.RESULT_OK, data);
                 activity.finish();
@@ -169,6 +166,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             @Override
             public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
                 Timber.d("Transaction is completed: [%s, %s]", isSuccessful, transId);
+                mTransaction.transactionId = transId;
                 if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
                     if (isSuccessful) {
                         sendNotificationSuccess(transId);

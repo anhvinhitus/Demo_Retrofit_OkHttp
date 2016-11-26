@@ -17,6 +17,9 @@ public class RecentTransaction implements Parcelable {
     public long amount;
     public String message;
 
+    // Temporary data, don't need to store
+    public String transactionId;
+
     public RecentTransaction() {
     }
 
@@ -30,7 +33,6 @@ public class RecentTransaction implements Parcelable {
         this.amount = amount;
         this.message = message;
     }
-
 
     @Override
     public int describeContents() {
@@ -47,6 +49,7 @@ public class RecentTransaction implements Parcelable {
         dest.writeString(this.phoneNumber);
         dest.writeLong(this.amount);
         dest.writeString(this.message);
+        dest.writeString(this.transactionId);
     }
 
     protected RecentTransaction(Parcel in) {
@@ -58,6 +61,7 @@ public class RecentTransaction implements Parcelable {
         this.phoneNumber = in.readString();
         this.amount = in.readLong();
         this.message = in.readString();
+        this.transactionId = in.readString();
     }
 
     public static final Parcelable.Creator<RecentTransaction> CREATOR = new Parcelable.Creator<RecentTransaction>() {
