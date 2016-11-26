@@ -346,10 +346,10 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 return;
             }
 
-            if (TextUtils.isEmpty(mTransaction.displayName)
-                    && TextUtils.isEmpty(mTransaction.displayName)) {
+            if (TextUtils.isEmpty(mTransaction.displayName)) {
                 return;
             }
+
             mTransferRepository.append(mTransaction,
                     Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString()))
                     .subscribeOn(Schedulers.io())
