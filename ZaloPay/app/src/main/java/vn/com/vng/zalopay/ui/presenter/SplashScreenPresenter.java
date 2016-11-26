@@ -13,7 +13,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
-import vn.com.vng.zalopay.event.ZaloIntegrationEvent;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 import vn.com.vng.zalopay.utils.IntroAppUtils;
 
@@ -114,41 +113,6 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
             return false;
         }
 
-        if (!action.equalsIgnoreCase("vn.zalopay.intent.action.SEND_MONEY")) {
-            return false;
-        }
-
-        String appId = intent.getStringExtra("android.intent.extra.APPID");
-        String receiverId = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_ID");
-        String receiverName = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_NAME");
-        String receiverAvatar = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_AVATAR");
-        String type = intent.getStringExtra("vn.zalopay.intent.extra.TYPE");
-
-        if (TextUtils.isEmpty(appId) ||
-                TextUtils.isEmpty(receiverId) ||
-                TextUtils.isEmpty(receiverName) ||
-                TextUtils.isEmpty(receiverAvatar) ||
-                TextUtils.isEmpty(type)) {
-            Timber.d("Missing required parameters for handling SEND_MONEY");
-            return false;
-        }
-
-        if (appId.equalsIgnoreCase("Zalo") && type.equalsIgnoreCase("SEND_MONEY")) {
-            Timber.d("All required parameters are valid. Launching SEND MONEY");
-
-            try {
-                long value = Long.parseLong(receiverId);
-                mEventBus.postSticky(new ZaloIntegrationEvent(
-                        ZaloIntegrationEvent.EventType.SEND_MONEY,
-                        value,
-                        receiverName,
-                        receiverAvatar));
-                return true;
-            } catch (NumberFormatException e) {
-                Timber.d("Invalid number for receiverId: %s", receiverId);
-                return false;
-            }
-        }
         return false;
     }
 

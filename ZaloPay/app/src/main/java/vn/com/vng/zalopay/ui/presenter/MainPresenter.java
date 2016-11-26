@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -28,7 +27,6 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
@@ -39,7 +37,6 @@ import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -48,7 +45,6 @@ import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
-import vn.com.vng.zalopay.event.ZaloIntegrationEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
@@ -345,27 +341,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     public void onPayWithTransToken(final PaymentDataEvent event) {
         pay(event.appId, event.zptranstoken, event.isAppToApp);
         mEventBus.removeStickyEvent(PaymentDataEvent.class);
-    }
-
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onZaloIntegrationEvent(final ZaloIntegrationEvent event) {
-        Timber.d("Receive Zalo Integration Event");
-        mEventBus.removeStickyEvent(event);
-        if (mHomeView == null) {
-            Timber.d("HomeView is not set");
-            return;
-        }
-
-        Timber.d("Processing send money on behalf of Zalo request");
-        RecentTransaction item = new RecentTransaction();
-        item.zaloId = event.receiverId;
-        item.displayName = event.receiverName;
-        item.avatar = event.receiverAvatar;
-
-        Bundle bundle = new Bundle();
-        bundle.putInt(vn.com.vng.zalopay.Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);
-        bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, item);
-        mNavigator.startTransferActivity(mHomeView.getContext(), bundle);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
