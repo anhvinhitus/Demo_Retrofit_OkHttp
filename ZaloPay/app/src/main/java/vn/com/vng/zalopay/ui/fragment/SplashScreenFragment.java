@@ -34,10 +34,6 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
         return fragment;
     }
 
-
-    public SplashScreenFragment() {
-    }
-
     private boolean interstitialCanceled = false;
 
     @Inject
@@ -45,7 +41,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
 
     @Override
     protected void setupFragmentComponent() {
-        AndroidApplication.instance().getAppComponent().inject(this);
+        getAppComponent().inject(this);
     }
 
     @Override

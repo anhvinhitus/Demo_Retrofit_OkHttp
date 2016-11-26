@@ -14,8 +14,6 @@ public class PhoneUtil {
     private static final List<String> INTERNATIONAL_CODE = new ArrayList<>();
 
     static {
-        PHONE_VN_CODE.add("84");
-        PHONE_VN_CODE.add("+84");
         PHONE_VN_CODE.add("9");
         PHONE_VN_CODE.add("1");
         PHONE_VN_CODE.add("86");
