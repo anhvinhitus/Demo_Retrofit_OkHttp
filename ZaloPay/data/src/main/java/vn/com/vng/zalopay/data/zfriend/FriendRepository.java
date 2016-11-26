@@ -309,7 +309,7 @@ public class FriendRepository implements FriendStore.Repository {
     @Override
     public Observable<Boolean> syncContact() {
         return makeObservable(() -> mLocalStorage.lastTimeSyncContact())
-                .filter(lastTime -> Math.abs(System.currentTimeMillis() / 1000 - lastTime) >= 60)
+                .filter(lastTime -> Math.abs(System.currentTimeMillis() / 1000 - lastTime) >= 259200) //3 Ngày.
                 .flatMap(aLong -> beginSync());
     }
 
