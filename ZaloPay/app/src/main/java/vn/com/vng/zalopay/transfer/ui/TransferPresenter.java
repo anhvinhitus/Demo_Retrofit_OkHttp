@@ -72,9 +72,10 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     private final Navigator mNavigator;
     private final TransferStore.Repository mTransferRepository;
     private Context applicationContext;
+    private final TransferNotificationHelper mTransferNotificationHelper;
 
     @Inject
-    public TransferPresenter(User user, NotificationStore.Repository notificationRepository,
+    public TransferPresenter(final User user, NotificationStore.Repository notificationRepository,
                              BalanceStore.Repository balanceRepository,
                              ZaloPayRepository zaloPayRepository,
                              TransactionStore.Repository transactionRepository,
@@ -89,6 +90,9 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         mNavigator = navigator;
         this.mTransferRepository = transferRepository;
         this.applicationContext = applicationContext;
+
+        mTransferNotificationHelper = new TransferNotificationHelper(mNotificationRepository, user);
+
         paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
@@ -169,9 +173,15 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 mTransaction.transactionId = transId;
                 if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
                     if (isSuccessful) {
-                        sendNotificationSuccess(transId);
+                        compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+                                mTransaction.zaloPayId,
+                                Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount, transId
+                        ));
                     } else {
-                        sendNotificationFailed();
+                        compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+                                mTransaction.zaloPayId,
+                                Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0, null
+                        ));
                     }
                 }
             }
@@ -565,7 +575,11 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         mView.getActivity().setResult(Activity.RESULT_CANCELED, intent);
 
         if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
-            sendNotificationCancel();
+
+            compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+                    mTransaction.zaloPayId,
+                    Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL, 0, null
+            ));
         }
     }
 
@@ -573,47 +587,11 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         mMoneyTransferMode = mode;
         if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
             // Send notification to receiver
-            sendNotificationPreTransfer();
+            compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+                    mTransaction.zaloPayId,
+                    Constants.MoneyTransfer.STAGE_PRETRANSFER, 0, null
+            ));
         }
-    }
-
-    private void sendNotificationPreTransfer() {
-        sendNotificationMessage(Constants.MoneyTransfer.STAGE_PRETRANSFER, 0, null);
-    }
-
-    private void sendNotificationSuccess(String transId) {
-        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount, transId);
-    }
-
-    private void sendNotificationFailed() {
-        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0, null);
-    }
-
-    private void sendNotificationCancel() {
-        sendNotificationMessage(Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL, 0, null);
-    }
-
-    private void sendNotificationMessage(int stage, long amount, String transId) {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);
-        jsonObject.addProperty("displayname", user.displayName);
-        jsonObject.addProperty("avatar", user.avatar);
-        jsonObject.addProperty("mt_progress", stage);
-        if (!TextUtils.isEmpty(transId)) {
-            jsonObject.addProperty("transid", transId);
-        }
-
-        if (amount > 0) {
-            jsonObject.addProperty("amount", mTransaction.amount);
-        }
-
-        String embeddata = jsonObject.toString();
-        Timber.d("Send notification: %s", embeddata);
-        embeddata = Base64.encodeToString(embeddata.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
-        Subscription subscription = mNotificationRepository.sendNotification(mTransaction.zaloPayId, embeddata)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<BaseResponse>());
-        compositeSubscription.add(subscription);
     }
 
     private class UserInfoSubscriber extends DefaultSubscriber<Person> {
