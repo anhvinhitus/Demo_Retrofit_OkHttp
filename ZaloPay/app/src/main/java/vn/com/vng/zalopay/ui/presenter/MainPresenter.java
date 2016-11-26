@@ -359,6 +359,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         Timber.d("Processing send money on behalf of Zalo request");
         RecentTransaction item = new RecentTransaction();
         item.zaloId = event.receiverId;
+        item.displayName = event.receiverName;
+        item.avatar = event.receiverAvatar;
 
         Bundle bundle = new Bundle();
         bundle.putInt(vn.com.vng.zalopay.Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);

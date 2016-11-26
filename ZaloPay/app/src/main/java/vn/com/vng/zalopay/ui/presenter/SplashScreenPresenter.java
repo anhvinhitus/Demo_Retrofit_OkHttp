@@ -119,10 +119,16 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
         }
 
         String appId = intent.getStringExtra("android.intent.extra.APPID");
-        String receiverId = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVERID");
+        String receiverId = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_ID");
+        String receiverName = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_NAME");
+        String receiverAvatar = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_AVATAR");
         String type = intent.getStringExtra("vn.zalopay.intent.extra.TYPE");
 
-        if (TextUtils.isEmpty(appId) || TextUtils.isEmpty(receiverId) || TextUtils.isEmpty(type)) {
+        if (TextUtils.isEmpty(appId) ||
+                TextUtils.isEmpty(receiverId) ||
+                TextUtils.isEmpty(receiverName) ||
+                TextUtils.isEmpty(receiverAvatar) ||
+                TextUtils.isEmpty(type)) {
             Timber.d("Missing required parameters for handling SEND_MONEY");
             return false;
         }
@@ -134,7 +140,9 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
                 long value = Long.parseLong(receiverId);
                 mEventBus.postSticky(new ZaloIntegrationEvent(
                         ZaloIntegrationEvent.EventType.SEND_MONEY,
-                        value));
+                        value,
+                        receiverName,
+                        receiverAvatar));
                 return true;
             } catch (NumberFormatException e) {
                 Timber.d("Invalid number for receiverId: %s", receiverId);
