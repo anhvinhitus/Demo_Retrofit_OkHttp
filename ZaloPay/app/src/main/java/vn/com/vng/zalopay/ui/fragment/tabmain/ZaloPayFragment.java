@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -40,6 +41,7 @@ import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
+import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
@@ -56,7 +58,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
  * Created by AnhHieu on 4/11/16.
  * Display PaymentApps in Grid layout
  */
-public class ZaloPayFragment extends BaseMainFragment implements ListAppRecyclerAdapter.OnClickAppListener,
+public class ZaloPayFragment extends RuntimePermissionFragment implements ListAppRecyclerAdapter.OnClickAppListener,
         IZaloPayView, BannerPagerAdapter.IBannerClick {
 
     public static ZaloPayFragment newInstance() {
@@ -64,10 +66,6 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
         ZaloPayFragment fragment = new ZaloPayFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    protected void onScreenVisible() {
     }
 
     private final static int SPAN_COUNT_APPLICATION = 3;
@@ -191,6 +189,7 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Timber.d("activity created");
+        isPermissionGrantedAndRequest(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_CODE.READ_CONTACTS);
         presenter.initialize();
     }
 
@@ -384,6 +383,11 @@ public class ZaloPayFragment extends BaseMainFragment implements ListAppRecycler
             currentItem++;
             mBannerViewpager.setCurrentItem(currentItem, true);
         }
+    }
+
+    @Override
+    protected void permissionGranted(int permissionRequestCode) {
+
     }
 
     @Override

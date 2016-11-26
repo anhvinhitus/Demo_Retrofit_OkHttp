@@ -57,7 +57,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     private IZaloPayView mZaloPayView;
 
-    protected CompositeSubscription compositeSubscription = new CompositeSubscription();
+    protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     private final MerchantStore.Repository mMerchantRepository;
     private EventBus mEventBus;
@@ -101,7 +101,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void destroyView() {
-        unsubscribeIfNotNull(compositeSubscription);
+        unsubscribeIfNotNull(mCompositeSubscription);
         mEventBus.unregister(this);
         this.mZaloPayView = null;
     }
@@ -143,7 +143,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BalanceSubscriber());
 
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     private void getListAppResource() {
@@ -156,7 +156,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 })
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @Override
@@ -177,7 +177,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                         }
                     }
                 });
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
@@ -187,7 +187,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 .delaySubscription(delay, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     private void getListMerchantUser(List<AppResource> listAppResource) {
@@ -201,7 +201,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         Subscription subscription = mMerchantRepository.getListMerchantUserInfo(listId)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     private List<Long> toStringListAppId(List<AppResource> listAppResource) {
@@ -215,7 +215,12 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         return listId;
     }
 
+    private int numberCallAppResouce;
+
     private void onGetAppResourceSuccess(List<AppResource> resources) {
+        numberCallAppResouce++;
+        Timber.d("get app resource call : " + numberCallAppResouce);
+
         mZaloPayView.enableShowShow(resources.contains(PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW)));
 
         resources.removeAll(PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST);
@@ -319,7 +324,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new MerchantUserInfoSubscribe(appId, webViewUrl));
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
