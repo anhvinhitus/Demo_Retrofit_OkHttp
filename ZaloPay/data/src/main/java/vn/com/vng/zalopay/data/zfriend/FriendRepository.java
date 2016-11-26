@@ -19,7 +19,7 @@ import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
-import vn.com.vng.zalopay.data.api.entity.UserRedPackageEntity;
+import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -261,11 +261,11 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Override
-    public Observable<List<UserRedPackageEntity>> listZaloPayUser(List<Long> listZaloId) {
+    public Observable<List<UserRPEntity>> listZaloPayUser(List<Long> listZaloId) {
         return ObservableHelper.makeObservable(() -> listZaloFriend(listZaloId));
     }
 
-    private List<UserRedPackageEntity> listZaloFriend(List<Long> listZaloId) {
+    private List<UserRPEntity> listZaloFriend(List<Long> listZaloId) {
         if (Lists.isEmptyOrNull(listZaloId)) {
             return Collections.emptyList();
         }
@@ -273,10 +273,10 @@ public class FriendRepository implements FriendStore.Repository {
         if (Lists.isEmptyOrNull(list)) {
             return Collections.emptyList();
         }
-        List<UserRedPackageEntity> ret = new ArrayList<>();
+        List<UserRPEntity> ret = new ArrayList<>();
 
         for (ZaloFriendEntity entity : list) {
-            UserRedPackageEntity item = transformUserRedPackage(entity);
+            UserRPEntity item = transformUserRedPackage(entity);
             if (item != null) {
                 ret.add(item);
             }
@@ -285,10 +285,10 @@ public class FriendRepository implements FriendStore.Repository {
         return ret;
     }
 
-    private UserRedPackageEntity transformUserRedPackage(ZaloFriendEntity entity) {
-        UserRedPackageEntity ret = null;
+    private UserRPEntity transformUserRedPackage(ZaloFriendEntity entity) {
+        UserRPEntity ret = null;
         if (entity != null) {
-            ret = new UserRedPackageEntity();
+            ret = new UserRPEntity();
             ret.avatar = entity.avatar;
             ret.zaloName = entity.displayName;
             ret.zaloID = String.valueOf(entity.userId);

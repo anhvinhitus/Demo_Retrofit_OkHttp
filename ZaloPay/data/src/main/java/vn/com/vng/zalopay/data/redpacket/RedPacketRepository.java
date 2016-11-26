@@ -10,8 +10,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
-import vn.com.vng.zalopay.data.api.entity.UserRedPackageEntity;
+import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.model.BundleGD;
@@ -22,8 +21,6 @@ import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
@@ -33,6 +30,8 @@ import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
+
+import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
 /**
  * Created by longlv on 13/07/2016.
@@ -90,25 +89,20 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> sendBundle(final long bundleID, final String friendList) {
-        Timber.d("sendBundle: bundleId %s friend %s", bundleID, friendList);
-        return ObservableHelper.makeObservable(() -> {
-            UserRedPackageEntity entity = new UserRedPackageEntity();
-            entity.zaloPayID = TextUtils.isEmpty(user.zaloPayId) ? "" : user.zaloPayId;
-            entity.zaloID = String.valueOf(user.zaloId);
-            entity.zaloName = TextUtils.isEmpty(user.displayName) ? "" : user.displayName;
-            entity.avatar = TextUtils.isDigitsOnly(user.avatar) ? "" : user.avatar;
-            return mGson.toJson(entity);
-        }).flatMap(s ->
-                mRequestService.submittosendbundlebyzalopayinfo(bundleID, friendList, s, user.accesstoken)
-        ).map(BaseResponse::isSuccessfulResponse);
+    public Observable<Boolean> sendBundle(long bundleID, List<UserRPEntity> entities) {
+        Timber.d("sendBundle: bundleId %s friend %s", bundleID, entities);
+        return makeObservable(this::getSenderInfo)
+                .flatMap(s -> mRequestService.submittosendbundlebyzalopayinfo(bundleID, mGson.toJson(entities), mGson.toJson(s), user.accesstoken))
+                .map(BaseResponse::isSuccessfulResponse);
     }
 
-    @Override
-    public Observable<Boolean> sendBundle(long bundleID, List<UserRedPackageEntity> entities) {
-        //call from JN
-        String friendList = mGson.toJson(entities);
-        return sendBundle(bundleID, friendList);
+    private UserRPEntity getSenderInfo() {
+        UserRPEntity entity = new UserRPEntity();
+        entity.zaloPayID = TextUtils.isEmpty(user.zaloPayId) ? "" : user.zaloPayId;
+        entity.zaloID = String.valueOf(user.zaloId);
+        entity.zaloName = TextUtils.isEmpty(user.displayName) ? "" : user.displayName;
+        entity.avatar = TextUtils.isDigitsOnly(user.avatar) ? "" : user.avatar;
+        return entity;
     }
 
     @Override
@@ -427,4 +421,6 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     private void insertPackageInBundle(List<PackageInBundle> packageInBundles) {
         mLocalStorage.putPackageInBundle(mDataMapper.transformToPackageInBundleGD(packageInBundles));
     }
+
+
 }

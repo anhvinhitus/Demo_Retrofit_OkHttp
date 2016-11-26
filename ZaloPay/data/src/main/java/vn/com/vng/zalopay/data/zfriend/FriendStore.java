@@ -7,20 +7,15 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import de.greenrobot.dao.query.LazyList;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
-import vn.com.vng.zalopay.data.api.entity.UserRedPackageEntity;
+import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
-import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.ListUserExistResponse;
 import vn.com.vng.zalopay.data.cache.SqlBaseScope;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
-import vn.com.vng.zalopay.domain.model.redpacket.RedPacket;
 
 /**
  * Created by huuhoa on 7/4/16.
@@ -89,7 +84,7 @@ public interface FriendStore {
 
         Observable<List<UserExistEntity>> checkListZaloIdForClient();
 
-        Observable<List<UserRedPackageEntity>> listZaloPayUser(List<Long> listZaloId);
+        Observable<List<UserRPEntity>> listZaloPayUser(List<Long> listZaloId);
 
         Observable<Boolean> syncContact();
     }

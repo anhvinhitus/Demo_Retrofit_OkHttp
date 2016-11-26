@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  * Không sử dụng cho view
  */
 
-public class UserRedPackageEntity {
+public class UserRPEntity {
 
     @SerializedName("zaloPayID")
     public String zaloPayID;

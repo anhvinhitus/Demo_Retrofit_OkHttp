@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.api.entity.UserRedPackageEntity;
+import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
@@ -119,7 +119,7 @@ public interface RedPacketStore {
 
         @FormUrlEncoded
         @POST(Constants.REDPACKET_API.SUBMITTOSENDBUNDLEBYZALOPAYINFO)
-        Observable<BaseResponse> submittosendbundlebyzalopayinfo(@Field("bundleid") long bundleID, @Field("zaloPayOfFriendList") String friends, @Field("zaloPayOfSender") String sender, @Field("accesstoken") String accessToken);
+        Observable<BaseResponse> submittosendbundlebyzalopayinfo(@Field("bundleid") long bundleID, @Field("zalopayoffriendlist") String friends, @Field("zalopayofsender") String sender, @Field("accesstoken") String accessToken);
 
     }
 
@@ -129,9 +129,7 @@ public interface RedPacketStore {
     interface Repository {
         Observable<BundleOrder> createBundleOrder(int quantity, long totalLuck, long amountEach, int type, String sendMessage);
 
-        Observable<Boolean> sendBundle(long bundleID, String friends);
-
-        Observable<Boolean> sendBundle(long bundleID, List<UserRedPackageEntity> entities);
+        Observable<Boolean> sendBundle(long bundleID, List<UserRPEntity> entities);
 
         Observable<SubmitOpenPackage> submitOpenPackage(long packageID, long bundleID);
 
