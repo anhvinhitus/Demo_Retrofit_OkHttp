@@ -8,6 +8,8 @@ import android.util.Base64;
 
 import com.google.gson.JsonObject;
 
+import java.lang.ref.WeakReference;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -263,11 +265,11 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         String message = ErrorMessageFactory.create(applicationContext, e);
         if (e instanceof NetworkConnectionException) {
             if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
-                showDialogThenClose(message, mView.getContext().getString(R.string.txt_close), SweetAlertDialog.WARNING_TYPE);
+                showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.WARNING_TYPE);
                 return;
             }
         }
-        showDialogThenClose(message, mView.getContext().getString(R.string.txt_close), SweetAlertDialog.ERROR_TYPE);
+        showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
     }
 
     private void getUserMapping(long zaloId) {
@@ -315,10 +317,6 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         public void onNext(Order order) {
             Timber.d("CreateWalletOrderSubscriber success " + order);
             TransferPresenter.this.onCreateWalletOrderSuccess(order);
-        }
-
-        @Override
-        public void onCompleted() {
         }
 
         @Override
@@ -479,7 +477,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         Timber.d("getUserInfoByZaloPayId zaloPayId [%s]", zaloPayId);
         Subscription subscription = accountRepository.getUserInfoByZaloPayId(zaloPayId)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new UserInfoSubscriber());
+                .subscribe(new UserInfoSubscriber(mTransaction, mView, this));
         compositeSubscription.add(subscription);
     }
 
@@ -594,7 +592,18 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         }
     }
 
-    private class UserInfoSubscriber extends DefaultSubscriber<Person> {
+    private static class UserInfoSubscriber extends DefaultSubscriber<Person> {
+        private final RecentTransaction mTransaction;
+        private ITransferView mTransferView;
+        private WeakReference<TransferPresenter> mPresenterWeakReference;
+        UserInfoSubscriber(RecentTransaction transaction,
+                           ITransferView view,
+                           TransferPresenter presenter) {
+            mTransaction = transaction;
+            mTransferView = view;
+            mPresenterWeakReference = new WeakReference<>(presenter);
+        }
+
         @Override
         public void onNext(Person person) {
             Timber.d("onNext displayName %s avatar %s", person.displayName, person.avatar);
@@ -608,7 +617,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 mTransaction.zaloPayName = person.zalopayname;
             }
 
-            mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
+            mTransferView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
         }
 
         @Override
@@ -616,31 +625,39 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-            if (mView == null) {
+            if (mTransferView == null) {
                 return;
             }
-            String message = ErrorMessageFactory.create(applicationContext, e);
+            if (mPresenterWeakReference.get() == null) {
+                return;
+            }
+
+            String message = ErrorMessageFactory.create(mPresenterWeakReference.get().applicationContext, e);
             //If USER_NOT_EXIST then finish
             if (e instanceof BodyException) {
                 int errorCode = ((BodyException) e).errorCode;
                 if (errorCode == NetworkError.USER_NOT_EXIST ||
                         errorCode == NetworkError.RECEIVER_IS_LOCKED) {
-                    showDialogThenClose(message, mView.getContext().getString(R.string.txt_close), SweetAlertDialog.ERROR_TYPE);
+                    mPresenterWeakReference.get().showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
                     return;
                 }
             }
             if (e instanceof NetworkConnectionException) {
-                if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
-                    showDialogThenClose(message, mView.getContext().getString(R.string.txt_close), SweetAlertDialog.WARNING_TYPE);
+                if (!NetworkHelper.isNetworkAvailable(mTransferView.getContext())) {
+                    mPresenterWeakReference.get().showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.WARNING_TYPE);
                     return;
                 }
             }
-            showError(message);
+            mPresenterWeakReference.get().showError(message);
         }
 
         @Override
         public void onCompleted() {
-            hideLoading();
+            if (mPresenterWeakReference.get() == null) {
+                return;
+            }
+
+            mPresenterWeakReference.get().hideLoading();
         }
     }
 
@@ -665,10 +682,10 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         mView.showError(message);
     }
 
-    private void showDialogThenClose(String error, String cancelText, int dialogType) {
+    private void showDialogThenClose(String error, int cancelText, int dialogType) {
         if (mView == null) {
             return;
         }
-        mView.showDialogThenClose(error, cancelText, dialogType);
+        mView.showDialogThenClose(error, mView.getContext().getString(cancelText), dialogType);
     }
 }
