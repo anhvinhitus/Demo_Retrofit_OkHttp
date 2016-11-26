@@ -246,6 +246,8 @@
 
     <style name="ZaloPayEditText.Money">
         <item name="android:inputType">numberDecimal</item>
+        <item name="android:maxLength">@integer/max_length_edittext_money</item>
+        <item name="android:hint">@string/hint_amount</item>
     </style>
 
     <!--  fresco:roundedCornerRadius="5dp"

@@ -7,16 +7,17 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -32,23 +33,24 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
 
     private final ZaloPayRepository mZaloPayRepository;
     private final Navigator mNavigator;
-    private final UserConfig mUserConfig;
     private IBalanceTopupView mView;
 
-    private Subscription subscriptionGetOrder;
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     private final PaymentWrapper paymentWrapper;
 
+    private User mUser;
+
     @Inject
-    public BalanceTopupPresenter(BalanceStore.Repository balanceRepository,
-                                 ZaloPayRepository zaloPayRepository,
-                                 TransactionStore.Repository transactionRepository,
-                                 Navigator navigator,
-                                 UserConfig userConfig) {
+    BalanceTopupPresenter(BalanceStore.Repository balanceRepository,
+                          ZaloPayRepository zaloPayRepository,
+                          TransactionStore.Repository transactionRepository,
+                          Navigator navigator,
+                          User user) {
         mZaloPayRepository = zaloPayRepository;
         mNavigator = navigator;
-        mUserConfig = userConfig;
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository,transactionRepository, new PaymentWrapper.IViewListener() {
+        mUser = user;
+        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return mView.getActivity();
@@ -97,11 +99,10 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
                     return;
                 }
                 clearAndLogout();
-                mView.onTokenInvalid();
             }
 
             @Override
-            public void onPreComplete(boolean isSuccessful,String transId, String pAppTransId) {
+            public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
 
             }
 
@@ -130,6 +131,7 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
 
     @Override
     public void destroyView() {
+        unsubscribeIfNotNull(mCompositeSubscription);
         this.mView = null;
     }
 
@@ -145,12 +147,6 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
 
     @Override
     public void destroy() {
-        this.destroyView();
-        this.unsubscribe();
-    }
-
-    private void unsubscribe() {
-        unsubscribeIfNotNull(subscriptionGetOrder);
     }
 
     private void showLoadingView() {
@@ -178,26 +174,19 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     }
 
     private void createWalletOrder(long amount) {
-        if (mUserConfig == null || mUserConfig.getCurrentUser() == null) {
-            return;
-        }
-
         String description = mView.getContext().getString(R.string.deposit);
-        subscriptionGetOrder = mZaloPayRepository.createwalletorder(
-            BuildConfig.PAYAPPID,
-            amount,
-            ETransactionType.TOPUP.toString(),
-            mUserConfig.getCurrentUser().zaloPayId,
-            description)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        Subscription subscription = mZaloPayRepository.createwalletorder(
+                BuildConfig.PAYAPPID,
+                amount,
+                ETransactionType.TOPUP.toString(),
+                mUser.zaloPayId,
+                description)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
+        mCompositeSubscription.add(subscription);
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
-        public CreateWalletOrderSubscriber() {
-        }
-
         @Override
         public void onNext(Order order) {
             Timber.d("Create order for WalletTopup success: " + order);
@@ -228,16 +217,11 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
-//        pay(order);
         paymentWrapper.payWithOrder(order);
         hideLoadingView();
     }
 
     public void deposit(long amount) {
-        if (amount <= 0) {
-            showErrorView("Số tiền phải là bội của 10.000 VND");
-            return;
-        }
         createWalletOrder(amount);
     }
 
