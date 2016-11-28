@@ -20,7 +20,7 @@ public class NetworkHelper {
             return false;
         }
 
-        Timber.d("Network type [%s] state [%s]", networkInfo.getTypeName(), networkInfo.getState());
+        Timber.d("Current network type [%s] and state [%s]", networkInfo.getTypeName(), networkInfo.getState());
         return networkInfo.isConnected();
     }
 }
