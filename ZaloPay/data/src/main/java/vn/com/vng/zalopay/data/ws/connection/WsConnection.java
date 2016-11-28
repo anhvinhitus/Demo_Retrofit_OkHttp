@@ -24,13 +24,7 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageConnectionInfo;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageLogin;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageStatus;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageType;
 import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
-import vn.com.vng.zalopay.data.ws.protobuf.StatusMessageClient;
-import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -146,7 +140,6 @@ public class WsConnection extends Connection {
 
     private boolean isUserLoggedIn() {
         return mUser != null && !TextUtils.isEmpty(mUser.zaloPayId);
-
     }
 
     public void setGCMToken(String token) {
@@ -172,11 +165,8 @@ public class WsConnection extends Connection {
     @Override
     public void connect() {
         if (mConnectionHandler.getLooper() != Looper.myLooper()) {
-            mConnectionHandler.post(() -> {
-                Timber.d("Trigger new connection");
-                mNextConnectionState = NextState.RETRY_CONNECT;
-                mSocketClient.connect();
-            });
+            Timber.d("Queue new connection to make sure connect function is only running inside looper");
+            mConnectionHandler.post(this::connect);
         } else {
             Timber.d("Trigger new connection inside looper");
             if (mSocketClient.isConnected() || mSocketClient.isConnecting()) {
@@ -196,12 +186,8 @@ public class WsConnection extends Connection {
             return;
         }
 
-        MessageConnectionInfo pingMessage = new MessageConnectionInfo.Builder()
-                .userid(getCurrentUserId())
-                .embeddata(System.currentTimeMillis())
-                .build();
-
-        send(MessageType.PING_SERVER.getValue(), MessageConnectionInfo.ADAPTER.encode(pingMessage));
+        NotificationApiMessage message = NotificationApiHelper.createPingMessage(getCurrentUserId());
+        send(message.messageCode, message.messageContent);
     }
 
     private void reconnect() {
@@ -269,22 +255,24 @@ public class WsConnection extends Connection {
     private boolean sendAuthentication(String token, long uid) {
         Timber.d("send authentication token %s zaloPayId %s gcmToken %s", token, uid, gcmToken);
 
-        MessageLogin.Builder loginMsg = new MessageLogin.Builder()
-                .token(token)
-                .usrid(uid)
-                .ostype(Enums.Platform.ANDROID.getId());
+        NotificationApiMessage message = NotificationApiHelper.createAuthenticationMessage(
+                token, uid, gcmToken
+        );
 
-        if (!TextUtils.isEmpty(gcmToken)) {
-            loginMsg.devicetoken(gcmToken);
-        }
-
-        return send(MessageType.AUTHEN_LOGIN.getValue(), MessageLogin.ADAPTER.encode(loginMsg.build()));
+        return send(message.messageCode, message.messageContent);
     }
 
     private boolean sendAuthentication() {
-        return !(mUser == null || TextUtils.isEmpty(mUser.zaloPayId)
-                || TextUtils.isEmpty(mUser.accesstoken))
-                && sendAuthentication(mUser.accesstoken, Long.parseLong(mUser.zaloPayId));
+        if (mUser == null ||
+                TextUtils.isEmpty(mUser.zaloPayId) ||
+                TextUtils.isEmpty(mUser.accesstoken)) {
+            // User or accesstoken is NULL
+            // remove current user
+            Timber.w("Trying to send authentication data to server without logged in user");
+            return false;
+        }
+
+        return sendAuthentication(mUser.accesstoken, Long.parseLong(mUser.zaloPayId));
     }
 
     private long getCurrentUserId() {
@@ -313,21 +301,8 @@ public class WsConnection extends Connection {
             }
 
             Timber.d("Send feedback status with mtaid %s mtuid %s zaloPayId %s", mtaid, mtuid, uid);
-
-            StatusMessageClient.Builder statusMsg = new StatusMessageClient.Builder()
-                    .status(MessageStatus.RECEIVED.getValue());
-
-            if (mtaid > 0) {
-                statusMsg.mtaid(mtaid);
-            }
-            if (mtuid > 0) {
-                statusMsg.mtuid(mtuid);
-            }
-            if (uid > 0) {
-                statusMsg.userid(uid);
-            }
-
-            return send(MessageType.FEEDBACK.getValue(), StatusMessageClient.ADAPTER.encode(statusMsg.build()));
+            NotificationApiMessage message = NotificationApiHelper.createFeedbackMessage(mtaid, mtuid, uid);
+            return send(message.messageCode, message.messageContent);
         } catch (Throwable e) {
             Timber.w(e, "Exception while sending feedback message");
             return false;
@@ -347,7 +322,7 @@ public class WsConnection extends Connection {
 
             mServerPongBus.send(1L);
 
-            EventBus.getDefault().post(new WsConnectionEvent(true));
+            EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.CONNECTED));
         }
 
         @Override
@@ -381,7 +356,7 @@ public class WsConnection extends Connection {
                 long currentTime = System.currentTimeMillis();
                 Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData) message).clientData);
                 mServerPongBus.send(currentTime - ((ServerPongData) message).clientData);
-                ensureAuthenSuccess();
+                ensureAuthenticationSuccess();
             } else {
                 postResult(message);
                 mServerPongBus.send(2L);
@@ -409,7 +384,7 @@ public class WsConnection extends Connection {
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
             }
-            EventBus.getDefault().post(new WsConnectionEvent(false));
+            EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
         }
 
         /**
@@ -430,7 +405,7 @@ public class WsConnection extends Connection {
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();
             }
-            EventBus.getDefault().post(new WsConnectionEvent(false));
+            EventBus.getDefault().post(new WsConnectionEvent(WsConnectionEvent.DISCONNECTED));
         }
     }
 
@@ -451,16 +426,16 @@ public class WsConnection extends Connection {
         Timber.d("Try to reconnect after %s (seconds) at [%s]-th time", mCheckCountDown * TIMER_CONNECTION_CHECK, numRetry);
     }
 
-    private void ensureAuthenSuccess() {
-        Timber.d("ensureAuthenSuccess start, state[%s] isAuthe[%s]", mState, mIsAuthenSuccess);
+    private void ensureAuthenticationSuccess() {
+        Timber.d("ensureAuthenticationSuccess start, state[%s] isAuthe[%s]", mState, mIsAuthenSuccess);
         if (mState != State.Connected) {
             return;
         }
         if (!mIsAuthenSuccess) {
-            Timber.w("ensureAuthenSuccess, state is connected but socket isn't authen");
+            Timber.w("ensureAuthenticationSuccess, state is connected but socket isn't authen");
             sendAuthentication();
         } else {
-            Timber.d("ensureAuthenSuccess, state is connected");
+            Timber.d("ensureAuthenticationSuccess, state is connected");
         }
     }
 }

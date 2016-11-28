@@ -5,9 +5,12 @@ package vn.com.vng.zalopay.data.eventbus;
  * *
  */
 public class WsConnectionEvent {
+    public static final int CONNECTED = 1;
+    public static final int DISCONNECTED = 2;
+
     public final boolean isConnect;
 
-    public WsConnectionEvent(boolean isConnect) {
-        this.isConnect = isConnect;
+    public WsConnectionEvent(int connectionState) {
+        this.isConnect = connectionState == CONNECTED;
     }
 }
