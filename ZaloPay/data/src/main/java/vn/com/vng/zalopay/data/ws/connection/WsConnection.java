@@ -93,17 +93,26 @@ public class WsConnection extends Connection {
         subscribeRetryConnectionEvent(context);
     }
 
+    /**
+     * automatically connect notification socket when:
+     * + socket is not connected
+     * + socket is not connecting
+     * + next connection state is RETRY_CONNECT or RETRY_AFTER_KICKEDOUT
+     * + network connection is still available
+     * + timer is ticked
+     * @param context Application context
+     */
     private void subscribeRetryConnectionEvent(Context context) {
         Subscription subscription =
                 Observable.interval(TIMER_CONNECTION_CHECK, TimeUnit.SECONDS)
                         .map((value) -> mCheckCountDown--)
                         .filter((value) ->
                                 !mSocketClient.isConnected() &&
-                                        !mSocketClient.isConnecting() &&
-                                        (mNextConnectionState == NextState.RETRY_CONNECT ||
-                                                mNextConnectionState == NextState.RETRY_AFTER_KICKEDOUT) &&
-                                        NetworkHelper.isNetworkAvailable(context) &&
-                                        mCheckCountDown <= 0
+                                !mSocketClient.isConnecting() &&
+                                (mNextConnectionState == NextState.RETRY_CONNECT ||
+                                        mNextConnectionState == NextState.RETRY_AFTER_KICKEDOUT) &&
+                                NetworkHelper.isNetworkAvailable(context) &&
+                                mCheckCountDown <= 0
                         )
                         .subscribe((value) -> {
                             Timber.d("Check for reconnect");
@@ -112,6 +121,10 @@ public class WsConnection extends Connection {
         compositeSubscription.add(subscription);
     }
 
+    /**
+     * Automatically send PING to server after timeout:
+     * + socket is connected
+     */
     private void subscribeKeepClientHeartBeatEvent() {
         Subscription subscription =
                 Observable.interval(TIMER_HEARTBEAT, TimeUnit.SECONDS)
@@ -123,6 +136,14 @@ public class WsConnection extends Connection {
         compositeSubscription.add(subscription);
     }
 
+    /**
+     * Handle server does not response PONG message on time:
+     * + Only when socket is connected and user is logged in
+     *
+     * Trigger reconnect if:
+     * + timeout: client does not receive PONG from server after SERVER_TIMEOUT seconds
+     * + next connection state is RETRY_CONNECT
+     */
     private void subscribeServerPongEvent() {
         mServerPongBus = new RxBus();
         Subscription subscription =
