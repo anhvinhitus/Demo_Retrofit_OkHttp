@@ -47,25 +47,6 @@ public class CurrencyUtil {
         }
     }
 
-    public static String formatCurrency(String strCurrency, boolean showCurrencySymbol) {
-        double money = 0;
-        try {
-            money = Double.valueOf(strCurrency);
-        } catch (NumberFormatException e) {
-            Timber.e(e, "formatCurrency exception [%s]", e.getMessage());
-            return strCurrency;
-        }
-        return formatCurrency(money, showCurrencySymbol);
-    }
-
-    public static String formatCurrency(String strCurrency) {
-        return formatCurrency(strCurrency, true);
-    }
-
-    public static SpannableString spanFormatCurrency(double money) {
-        return spanFormatCurrency(money, true);
-    }
-
     public static SpannableString spanFormatCurrency(double money, boolean isBold) {
         String _temp = CurrencyUtil.formatCurrency(money, true);
         SpannableString span = new SpannableString(_temp);

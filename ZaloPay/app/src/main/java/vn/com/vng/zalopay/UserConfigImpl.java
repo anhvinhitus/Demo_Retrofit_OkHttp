@@ -6,16 +6,11 @@ import android.text.TextUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
-import java.util.List;
-
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.domain.model.Permission;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
-import vn.com.vng.zalopay.utils.JsonUtil;
 
 /**
  * Created by AnhHieu on 4/26/16.

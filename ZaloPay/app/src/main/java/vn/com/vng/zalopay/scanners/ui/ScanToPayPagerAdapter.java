@@ -8,7 +8,7 @@ import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
-import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
+//import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
 
 /**
  * Created by AnhHieu on 9/27/16.
@@ -19,7 +19,7 @@ final class ScanToPayPagerAdapter extends AbsFragmentPagerAdapter {
 
     static final int TAB_NFC = 1;
     static final int TAB_BEACON = 2;
-    static final int TAB_SOUND = 3;
+//    static final int TAB_SOUND = 3;
     static final int TAB_QR = 0;
 
     static final int TAB_TOTAL = 3;
@@ -37,8 +37,8 @@ final class ScanToPayPagerAdapter extends AbsFragmentPagerAdapter {
                 return ScanNFCFragment.newInstance();
             case TAB_BEACON:
                 return CounterBeaconFragment.newInstance();
-            case TAB_SOUND:
-                return ScanSoundFragment.newInstance();
+//            case TAB_SOUND:
+//                return ScanSoundFragment.newInstance();
             default:
                 return null;
         }

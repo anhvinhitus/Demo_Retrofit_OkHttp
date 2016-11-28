@@ -48,7 +48,7 @@ import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
-import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
+//import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
@@ -156,7 +156,7 @@ public interface UserComponent {
 
     void inject(ChangePinActivity a);
 
-    void inject(ScanSoundFragment fragment);
+//    void inject(ScanSoundFragment fragment);
 
     void inject(QRCodeFragment f);
 

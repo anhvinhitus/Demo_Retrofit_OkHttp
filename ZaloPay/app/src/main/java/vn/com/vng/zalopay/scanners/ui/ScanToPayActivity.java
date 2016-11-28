@@ -103,12 +103,12 @@ public class ScanToPayActivity extends BaseToolBarActivity {
             blTab.setCustomView(genTabBeacon("Bluetooth"));
         }
 
-        if (ScanToPayPagerAdapter.TAB_TOTAL > ScanToPayPagerAdapter.TAB_SOUND) {
-            TabLayout.Tab soundTab = mTabLayout.getTabAt(ScanToPayPagerAdapter.TAB_SOUND);
-            if (soundTab != null) {
-                soundTab.setCustomView(genTabView("Âm thanh", R.drawable.ic_pay_tab_sound));
-            }
-        }
+//        if (ScanToPayPagerAdapter.TAB_TOTAL > ScanToPayPagerAdapter.TAB_SOUND) {
+//            TabLayout.Tab soundTab = mTabLayout.getTabAt(ScanToPayPagerAdapter.TAB_SOUND);
+//            if (soundTab != null) {
+//                soundTab.setCustomView(genTabView("Âm thanh", R.drawable.ic_pay_tab_sound));
+//            }
+//        }
 
         if (qrTab != null && qrTab.getCustomView() != null) {
             qrTab.getCustomView().setSelected(true);
@@ -138,7 +138,7 @@ public class ScanToPayActivity extends BaseToolBarActivity {
         super.onDestroy();
         getAppComponent().monitorTiming().cancelEvent(MonitorEvents.NFC_SCANNING);
         getAppComponent().monitorTiming().cancelEvent(MonitorEvents.BLE_SCANNING);
-        getAppComponent().monitorTiming().cancelEvent(MonitorEvents.SOUND_SCANNING);
+//        getAppComponent().monitorTiming().cancelEvent(MonitorEvents.SOUND_SCANNING);
         getAppComponent().monitorTiming().cancelEvent(MonitorEvents.QR_SCANNING);
     }
 
