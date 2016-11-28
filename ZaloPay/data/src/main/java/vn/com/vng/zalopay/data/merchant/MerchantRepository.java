@@ -9,8 +9,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.ListMUIResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
-import vn.com.vng.zalopay.data.util.ListStringUtil;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -68,7 +68,7 @@ public class MerchantRepository implements MerchantStore.Repository {
     public Observable<Boolean> getListMerchantUserInfo(List<Long> appIds) {
         return makeObservable(() -> localStorage.notExistInDb(appIds))
                 .filter(longs -> !Lists.isEmptyOrNull(longs))
-                .flatMap(longs -> fetchListMerchantUserInfo(ListStringUtil.toString(longs)));
+                .flatMap(longs -> fetchListMerchantUserInfo(Strings.joinWithDelimiter(",", longs)));
     }
 
     private MerchantUserInfo transform(GetMerchantUserInfoResponse response) {

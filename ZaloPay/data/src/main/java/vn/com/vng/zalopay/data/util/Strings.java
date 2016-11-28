@@ -28,26 +28,6 @@ public final class Strings {
         return sb.toString();
     }
 
-    public static boolean isNullOrEmpty(String string) {
-        return string == null || string.length() == 0;
-    }
-
-    public static String nullToEmpty(String string) {
-        return nullOrEmptyToDefault(string, "");
-    }
-
-    public static String emptyToNull(String string) {
-        if (isNullOrEmpty(string)) {
-            return null;
-        } else {
-            return string;
-        }
-    }
-
-    public static String nullOrEmptyToDefault(String string, String defaultString) {
-        return isNullOrEmpty(string) ? defaultString : string;
-    }
-
     public static boolean hasAnyPrefix(String number, String... prefixes) {
         if (number == null) {
             return false;
@@ -66,10 +46,6 @@ public final class Strings {
         } else {
             return first.equalsIgnoreCase(second);
         }
-    }
-
-    public static String truncateAt(String string, int length) {
-        return string.length() > length ? string.substring(0, length) : string;
     }
 
     public static String stripAccents(String s) {
