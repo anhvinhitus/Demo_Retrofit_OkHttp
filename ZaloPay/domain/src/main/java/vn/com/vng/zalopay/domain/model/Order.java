@@ -11,20 +11,17 @@ import vn.com.vng.zalopay.domain.Constants;
  */
 public class Order extends AbstractData {
 
-    public long appid;
-    public String zptranstoken;
-    public String apptransid;
-    public String appuser;
+    public final long appid;
+    public final String zptranstoken;
+    public final String apptransid;
+    public final String appuser;
     public long apptime;
-    public String embeddata;
-    public String item;
+    public final String embeddata;
+    public final String item;
     public long amount;
-    public String description;
-    public String payoption;
-    public String mac;
-
-    public Order() {
-    }
+    public final String description;
+    public final String payoption;
+    public final String mac;
 
     public Order(long appid, String zptranstoken, String apptransid, String appuser, long apptime,
                  String embeddata, String item, long amount, String description, String payoption, String mac) {
@@ -49,6 +46,8 @@ public class Order extends AbstractData {
         appid = (long)jsonObject.getDouble(Constants.APPID);
         if (jsonObject.has(Constants.ZPTRANSTOKEN)) {
             zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);
+        } else {
+            zptranstoken = "";
         }
         apptransid = jsonObject.getString(Constants.APPTRANSID);
         appuser = jsonObject.getString(Constants.APPUSER);
@@ -60,6 +59,8 @@ public class Order extends AbstractData {
         mac = jsonObject.getString(Constants.MAC);
         if (jsonObject.has(Constants.ZPTRANSTOKEN)) {
             payoption = jsonObject.getString(Constants.CHARGEINFO);
+        } else {
+            payoption = "";
         }
     }
 
@@ -143,94 +144,5 @@ public class Order extends AbstractData {
         stringBuilder.append(mac);
         stringBuilder.append("}");
         return stringBuilder.toString();
-    }
-
-
-    public long getAppid() {
-        return appid;
-    }
-
-    public void setAppid(long appid) {
-        this.appid = appid;
-    }
-
-    public String getZptranstoken() {
-        return zptranstoken;
-    }
-
-    public void setZptranstoken(String zptranstoken) {
-        this.zptranstoken = zptranstoken;
-    }
-
-    public String getApptransid() {
-        return apptransid;
-    }
-
-    public void setApptransid(String apptransid) {
-        this.apptransid = apptransid;
-    }
-
-    public String getAppuser() {
-        return appuser;
-    }
-
-    public void setAppuser(String appuser) {
-        this.appuser = appuser;
-    }
-
-    public long getApptime() {
-        return apptime;
-    }
-
-    public void setApptime(long apptime) {
-        this.apptime = apptime;
-    }
-
-    public String getEmbeddata() {
-        return embeddata;
-    }
-
-    public void setEmbeddata(String embeddata) {
-        this.embeddata = embeddata;
-    }
-
-    public String getItem() {
-        return item;
-    }
-
-    public void setItem(String item) {
-        this.item = item;
-    }
-
-    public long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(long amount) {
-        this.amount = amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPayoption() {
-        return payoption;
-    }
-
-    public void setPayoption(String payoption) {
-        this.payoption = payoption;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
     }
 }

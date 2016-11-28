@@ -340,7 +340,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
-        Timber.d("money transfer order: " + order.getItem());
+        Timber.d("money transfer order: " + order.item);
         paymentWrapper.transfer(order, mTransaction.displayName, mTransaction.avatar, mTransaction.phoneNumber, mTransaction.zaloPayName);
         hideLoading();
         mView.setEnableBtnContinue(true);

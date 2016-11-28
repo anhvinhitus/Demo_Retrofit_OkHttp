@@ -88,34 +88,49 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
         // verify params parameters
         try {
-            Order order = new Order();
-            order.setAppid((long) params.getDouble(Constants.APPID));
-            order.setApptransid(params.getString(Constants.APPTRANSID));
-            order.setAppuser(params.getString(Constants.APPUSER));
-            order.setApptime((long) params.getDouble(Constants.APPTIME));
-            order.setAmount((long) params.getDouble(Constants.AMOUNT));
-            order.setItem(params.getString(Constants.ITEM));
-            order.setDescription(params.getString(Constants.DESCRIPTION));
-            order.setEmbeddata(params.getString(Constants.EMBEDDATA));
-            order.setMac(params.getString(Constants.MAC));
+            Order order = new Order(
+//            long appid, String zptranstoken, String apptransid, String appuser, long apptime,
+//            String embeddata, String item, long amount, String description, String payoption, String mac
 
-            if (order.getAppid() < 0) {
+                (long) params.getDouble(Constants.APPID), // appid
+                "", // zptranstoken
+                params.getString(Constants.APPTRANSID), // apptransid
+                params.getString(Constants.APPUSER), // appuser
+                (long) params.getDouble(Constants.APPTIME), // apptime
+                params.getString(Constants.EMBEDDATA), // embeddata
+                params.getString(Constants.ITEM), // item
+                (long) params.getDouble(Constants.AMOUNT), // amount
+                params.getString(Constants.DESCRIPTION), // description
+                "",
+                params.getString(Constants.MAC)
+            );
+//            order.setAppid((long) params.getDouble(Constants.APPID));
+//            order.setApptransid(params.getString(Constants.APPTRANSID));
+//            order.setAppuser(params.getString(Constants.APPUSER));
+//            order.setApptime((long) params.getDouble(Constants.APPTIME));
+//            order.setAmount((long) params.getDouble(Constants.AMOUNT));
+//            order.setItem(params.getString(Constants.ITEM));
+//            order.setDescription(params.getString(Constants.DESCRIPTION));
+//            order.setEmbeddata(params.getString(Constants.EMBEDDATA));
+//            order.setMac(params.getString(Constants.MAC));
+
+            if (order.appid < 0) {
                 reportInvalidParameter(promise, Constants.APPID);
                 return;
             }
-            if (TextUtils.isEmpty(order.getApptransid())) {
+            if (TextUtils.isEmpty(order.apptransid)) {
                 reportInvalidParameter(promise, Constants.APPTRANSID);
                 return;
             }
-            if (TextUtils.isEmpty(order.getAppuser())) {
+            if (TextUtils.isEmpty(order.appuser)) {
                 reportInvalidParameter(promise, Constants.APPUSER);
                 return;
             }
-            if (order.getApptime() <= 0) {
+            if (order.apptime <= 0) {
                 reportInvalidParameter(promise, Constants.APPTIME);
                 return;
             }
-            if (order.getAmount() <= 0) {
+            if (order.amount <= 0) {
                 reportInvalidParameter(promise, Constants.AMOUNT);
                 return;
             }
@@ -123,11 +138,11 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 //                reportInvalidParameter(promise, Constants.ITEM);
 //                return;
 //            }
-            if (TextUtils.isEmpty(order.getDescription())) {
+            if (TextUtils.isEmpty(order.description)) {
                 reportInvalidParameter(promise, Constants.DESCRIPTION);
                 return;
             }
-            if (TextUtils.isEmpty(order.getMac())) {
+            if (TextUtils.isEmpty(order.mac)) {
                 reportInvalidParameter(promise, Constants.MAC);
                 return;
             }

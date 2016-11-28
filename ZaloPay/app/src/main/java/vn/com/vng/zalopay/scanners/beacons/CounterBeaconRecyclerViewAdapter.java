@@ -79,8 +79,8 @@ public class CounterBeaconRecyclerViewAdapter extends AbsRecyclerAdapter<BeaconD
         public void bindView(BeaconDevice mItem) {
             String amount = "";
             if (mItem.order != null) {
-                amount = CurrencyUtil.formatCurrency(mItem.order.getAmount());
-                String description = mItem.order.getDescription();
+                amount = CurrencyUtil.formatCurrency(mItem.order.amount);
+                String description = mItem.order.description;
                 if (TextUtils.isEmpty(description)) {
                     description = "Thanh toán cho hoá đơn";
                 }

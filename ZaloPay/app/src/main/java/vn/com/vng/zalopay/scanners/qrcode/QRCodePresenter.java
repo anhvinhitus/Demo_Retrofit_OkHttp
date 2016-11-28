@@ -315,28 +315,28 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
     private boolean orderTransaction(JSONObject jsonOrder) throws JSONException, IllegalArgumentException {
         Order order = new Order(jsonOrder);
-        if (order.getAppid() < 0) {
+        if (order.appid < 0) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getApptransid())) {
+        if (TextUtils.isEmpty(order.apptransid)) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getAppuser())) {
+        if (TextUtils.isEmpty(order.appuser)) {
             return false;
         }
-        if (order.getApptime() <= 0) {
+        if (order.apptime <= 0) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getItem())) {
+        if (TextUtils.isEmpty(order.item)) {
             return false;
         }
-        if (order.getAmount() < 0) {
+        if (order.amount < 0) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getDescription())) {
+        if (TextUtils.isEmpty(order.description)) {
             return false;
         }
-        if (TextUtils.isEmpty(order.getMac())) {
+        if (TextUtils.isEmpty(order.mac)) {
             return false;
         }
         paymentWrapper.payWithOrder(order);

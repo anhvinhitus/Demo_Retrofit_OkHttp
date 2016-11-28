@@ -361,17 +361,17 @@ public class PaymentWrapper {
     private ZPWPaymentInfo transform(Order order) {
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
 
-        paymentInfo.appID = order.getAppid();
+        paymentInfo.appID = order.appid;
         paymentInfo.userInfo = getUserInfo();
-        paymentInfo.appTime = order.getApptime();
-        paymentInfo.appTransID = order.getApptransid();
-        paymentInfo.itemName = order.getItem();
-        paymentInfo.amount = order.getAmount();
-        paymentInfo.description = order.getDescription();
-        paymentInfo.embedData = order.getEmbeddata();
+        paymentInfo.appTime = order.apptime;
+        paymentInfo.appTransID = order.apptransid;
+        paymentInfo.itemName = order.item;
+        paymentInfo.amount = order.amount;
+        paymentInfo.description = order.description;
+        paymentInfo.embedData = order.embeddata;
         //lap vao ví appId = appUser = 1
-        paymentInfo.appUser = order.getAppuser();
-        paymentInfo.mac = order.getMac();
+        paymentInfo.appUser = order.appuser;
+        paymentInfo.mac = order.mac;
         return paymentInfo;
     }
 
@@ -410,7 +410,7 @@ public class PaymentWrapper {
 
         @Override
         public void onNext(Order order) {
-            Timber.d("getOrder response: %s", order.getItem());
+            Timber.d("getOrder response: %s", order.item);
             payWithOrder(order);
         }
 
