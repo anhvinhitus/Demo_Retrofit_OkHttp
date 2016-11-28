@@ -82,7 +82,7 @@ dependencies {
     compile libs.timber
     compile libs.eventbus
     compile libs.gson
-    compile libs.cbor
+//    compile libs.cbor
     compile libs.wire_runtime
 
     compile project(':domain')
