@@ -67,22 +67,22 @@ public class PaymentWrapper {
                     responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
                 }
             } else {
-                int resultStatus = pPaymentResult.paymentStatus.getNum();
-                Timber.d("pay onComplete resultStatus [%s]", resultStatus);
-                if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS.getNum()) {
+                EPaymentStatus resultStatus = pPaymentResult.paymentStatus;
+                Timber.d("pay onComplete resultStatus [%s]", pPaymentResult.paymentStatus);
+                if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS) {
                     /*DMapCardResult cardResult = new DMapCardResult();
                     cardResult.setCardLogo("MASTER.png");
                     cardResult.setLast4Number("8668");
                     cardResult.setBankName("Master card");*/
                     mNavigator.startTutorialLinkCardActivity(viewListener.getActivity(), pPaymentResult.mapCardResult);
                     responseListener.onResponseSuccess(pPaymentResult);
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID.getNum()) {
+                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID) {
                     responseListener.onResponseTokenInvalid();
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE.getNum()) {
+                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE) {
                     //Hien update profile level 2
                     startUpdateProfileLevel(null);
                     responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD.getNum()) {
+                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD) {
                     String walletTransId = null;
                     if (pPaymentResult.paymentInfo != null) {
                         walletTransId = pPaymentResult.paymentInfo.walletTransID;
@@ -90,23 +90,23 @@ public class PaymentWrapper {
                     //Hien update profile level 2
                     startUpdateProfileLevel(walletTransId);
                     responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH.getNum()) {
+                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
                     responseListener.onResponseError(PaymentError.ERR_CODE_MONEY_NOT_ENOUGH);
                     responseListener.onNotEnoughMoney();
                 } else {
-                    if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_CLOSE.getNum()) {
+                    if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_CLOSE) {
                         responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID.getNum()) {
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID) {
                         responseListener.onResponseError(PaymentError.ERR_CODE_INPUT);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL.getNum()) {
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL) {
                         responseListener.onResponseError(PaymentError.ERR_CODE_FAIL);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING.getNum()) {
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING) {
                         responseListener.onResponseError(PaymentError.ERR_CODE_PROCESSING);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE.getNum()) {
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE) {
                         responseListener.onResponseError(PaymentError.ERR_CODE_SERVICE_MAINTENANCE);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET.getNum()) {
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET) {
                         responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD.getNum()) {
+                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD) {
                         responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINKCARD);
                     } else {
                         responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);

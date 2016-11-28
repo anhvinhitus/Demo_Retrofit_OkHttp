@@ -54,6 +54,7 @@ import vn.com.vng.zalopay.transfer.ui.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameFragment;
 import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloFriendListFragment;
+import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
@@ -192,4 +193,6 @@ public interface UserComponent {
     void inject(WarningRootedFragment f);
 
     void inject(CardSupportActivity a);
+
+    void inject(ExternalCallSplashScreenActivity.HandleInAppPayment obj);
 }

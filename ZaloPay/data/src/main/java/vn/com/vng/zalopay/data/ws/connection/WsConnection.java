@@ -452,13 +452,15 @@ public class WsConnection extends Connection {
     }
 
     private void ensureAuthenSuccess() {
-        Timber.w("ensureAuthenSuccess start, state[%s] isAuthe[%s]", mState, mIsAuthenSuccess);
+        Timber.d("ensureAuthenSuccess start, state[%s] isAuthe[%s]", mState, mIsAuthenSuccess);
         if (mState != State.Connected) {
             return;
         }
-        Timber.w("ensureAuthenSuccess, state is connected but socket isn't authen");
         if (!mIsAuthenSuccess) {
+            Timber.w("ensureAuthenSuccess, state is connected but socket isn't authen");
             sendAuthentication();
+        } else {
+            Timber.d("ensureAuthenSuccess, state is connected");
         }
     }
 }

@@ -104,7 +104,7 @@
         <activity-alias android:exported="true"
                         android:label="ThirdPartyAppAlias"
                         android:name="vn.zalopay.apps.ThirdPartyAppActivityAlias"
-                        android:targetActivity=".ui.activity.SplashScreenActivity">
+                        android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -112,7 +112,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="zalopay-1" />
-                <data android:scheme="zalopay" />
+                <data android:scheme="zalopay" android:host="zalopay.vn" />
             </intent-filter>
         </activity-alias>
 
