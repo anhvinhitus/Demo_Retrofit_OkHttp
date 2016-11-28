@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data;
+package vn.com.vng.zalopay.data.appresource;
 
 
 import android.database.sqlite.SQLiteDatabase;
@@ -14,11 +14,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import vn.com.vng.zalopay.data.AndroidApplicationTest;
+import vn.com.vng.zalopay.data.ApplicationTestCase;
+import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.appresources.AppResourceLocalStorage;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.domain.model.AppResource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,9 +31,7 @@ import static org.junit.Assert.assertTrue;
  * Created by huuhoa on 6/18/16.
  * Unit tests for AppResourceLocalStorage
  */
-@RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 16)
-public class AppResourceLocalStorageTest {
+public class AppResourceLocalStorageTest extends ApplicationTestCase{
     private AppResourceLocalStorage mLocalStorage;
 
     @Before
@@ -152,4 +154,48 @@ public class AppResourceLocalStorageTest {
         List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
         assertTrue(resourceEntityList.equals(result));
     }
+
+    private AppResourceEntity createAppResource(int index) {
+        AppResourceEntity appResourceEntity = new AppResourceEntity();
+        appResourceEntity.appid = index;
+        appResourceEntity.appname = "app name " + index;
+        appResourceEntity.sortOrder = index;
+        appResourceEntity.imageurl = "imageurl"+ index;
+        appResourceEntity.jsurl = "jsurl" + index;
+        appResourceEntity.stateDownload = 0;
+        appResourceEntity.numRetry = 0;
+        appResourceEntity.timeDownload = 0;
+        return appResourceEntity;
+    }
+
+    @Test
+    public void testSortApplication() {
+        //B1: Delete all database & init new database
+        mLocalStorage.getDaoSession().getAppResourceGDDao().detachAll();
+        List<AppResourceEntity> appResourceEntities = new ArrayList<>();
+        for (int i =0; i< 4; i++) {
+            appResourceEntities.add(createAppResource(i));
+        }
+        mLocalStorage.put(appResourceEntities);
+
+        //B2: Compare before sort
+        List<Integer> sortAppSource = Arrays.asList(0,1,2,3,4);
+        List<AppResourceEntity> appResourceList = mLocalStorage.getAllAppResource();
+        for (int i = 0; i< appResourceList.size(); i++) {
+            AppResourceEntity entity = appResourceList.get(i);
+            assertEquals(entity.sortOrder, sortAppSource.indexOf(entity.appid));
+        }
+
+        //B3: Sort
+        List<Integer> sortApps = Arrays.asList(1,4,3,2,0);
+        mLocalStorage.sortApplication(sortApps);
+
+        //B4: Compare after sort
+        List<AppResourceEntity> appResourceList2 = mLocalStorage.getAllAppResource();
+        for (int i = 0; i< appResourceList2.size(); i++) {
+            AppResourceEntity entity = appResourceList2.get(i);
+            assertEquals(entity.sortOrder, sortApps.indexOf(entity.appid));
+        }
+    }
+
 }
