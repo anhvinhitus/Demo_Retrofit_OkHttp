@@ -7,9 +7,6 @@ import dagger.Provides;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
-import vn.com.vng.zalopay.data.cache.SqlZaloPayScopeImpl;
-import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.repository.ZaloPayRepositoryImpl;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -25,13 +22,6 @@ import vn.com.vng.zalopay.service.PaymentServiceImpl;
  */
 @Module
 public class UserControllerModule {
-
-    @UserScope
-    @Provides
-    SqlZaloPayScope provideSqlZaloPayScope(User user, @Named("daosession") DaoSession session) {
-        return new SqlZaloPayScopeImpl(user, session);
-    }
-
     @UserScope
     @Provides
     ZaloPayRepository provideZaloPayRepository(ZaloPayService service, User user, ZaloPayEntityDataMapper mapper) {

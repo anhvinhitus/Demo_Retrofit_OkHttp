@@ -8,7 +8,5 @@ public interface SqlBaseScope {
 
     void insertDataManifest(String key, String values);
 
-    String getDataManifest(String key);
-
     long getDataManifest(String key, long defValue);
 }

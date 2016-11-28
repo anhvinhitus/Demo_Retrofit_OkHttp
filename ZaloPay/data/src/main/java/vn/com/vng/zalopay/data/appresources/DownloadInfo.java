@@ -19,14 +19,21 @@ final class DownloadInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DownloadInfo that = (DownloadInfo) o;
 
-        if (appid != that.appid) return false;
-        return url != null ? url.equals(that.url) : that.url == null;
+        if (appid != that.appid) {
+            return false;
+        }
 
+        return url != null ? url.equals(that.url) : that.url == null;
     }
 
     @Override

@@ -28,7 +28,7 @@ public class SqlBaseScopeImpl {
         daoSession.getDataManifestDao().insertOrReplace(new DataManifest(key, values));
     }
 
-    public String getDataManifest(String key) {
+    protected String getDataManifest(String key) {
         DataManifest dataManifest = daoSession.getDataManifestDao().queryBuilder()
                 .where(DataManifestDao.Properties.Key.eq(key)).unique();
         if (dataManifest != null) {
@@ -57,15 +57,15 @@ public class SqlBaseScopeImpl {
         return def;
     }
 
-    public void deleteByKey(String key) {
+    void deleteByKey(String key) {
         daoSession.getDataManifestDao().deleteByKey(key);
     }
 
-    public AppResourceGDDao getAppInfoDao() {
+    protected AppResourceGDDao getAppInfoDao() {
         return daoSession.getAppResourceGDDao();
     }
 
-    public TransactionLogDao getTransactionLogDao() {
+    protected TransactionLogDao getTransactionLogDao() {
         return daoSession.getTransactionLogDao();
     }
 

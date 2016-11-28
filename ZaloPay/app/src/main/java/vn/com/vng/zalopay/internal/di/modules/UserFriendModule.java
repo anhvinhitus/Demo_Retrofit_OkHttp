@@ -7,7 +7,6 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
-import vn.com.vng.zalopay.data.cache.SqlZaloPayScope;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.zfriend.FriendLocalStorage;
 import vn.com.vng.zalopay.data.zfriend.FriendRepository;
