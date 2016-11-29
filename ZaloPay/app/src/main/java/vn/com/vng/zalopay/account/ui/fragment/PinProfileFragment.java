@@ -189,6 +189,8 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
                 });
 
         mRootView.setOnKeyboardStateListener(this);
+        
+        mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
 
         AndroidUtils.runOnUIThread(mIntroRunnable, 300);
     }
