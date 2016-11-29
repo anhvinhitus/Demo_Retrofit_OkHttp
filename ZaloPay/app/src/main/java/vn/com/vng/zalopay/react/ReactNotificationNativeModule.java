@@ -78,35 +78,6 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     @ReactMethod
     public void reloadTransactionWithId(String transactionId, String notificationId, Promise promise) {
         Timber.d("Reload transaction transId [%s] notificationId [%s] ", transactionId, notificationId);
-/*
-        long _notificationId = 0;
-        try {
-            _notificationId = Long.valueOf(notificationId);
-        } catch (NumberFormatException e) {
-            //empty
-        }
-
-        if (_notificationId >= 0) {
-            Subscription subscription = mNotificationRepository.getNotify(_notificationId)
-                    .flatMap(new Func1<NotificationData, Observable<TransHistory>>() {
-                        @Override
-                        public Observable<TransHistory> call(NotificationData notificationData) {
-                            return null;
-                        }
-                    })
-                    .map(new Func1<TransHistory, Pair<Integer, WritableArray>>() {
-                        @Override
-                        public Pair<Integer, WritableArray> call(TransHistory transHistory) {
-                            int code = PaymentError.ERR_CODE_SUCCESS.value();
-                            return new Pair<>(code, transformHistory(Collections.singletonList(transHistory)));
-                        }
-                    })
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ReloadTransactionHistorySubscriber(promise));
-            compositeSubscription.add(subscription);
-        } else {
-            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), " Input NotificationId Invalid " + notificationId);
-        }*/
     }
 
     @ReactMethod

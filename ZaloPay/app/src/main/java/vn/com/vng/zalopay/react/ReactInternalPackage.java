@@ -9,7 +9,7 @@ import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.zpmodal.ReactModalHostManager;
 
 import org.greenrobot.eventbus.EventBus;
-  
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.INavigator;
-import vn.com.vng.zalopay.react.qrcode.QrCodeReceiveMoneyModule;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.RedPacketNativeModule;
@@ -87,7 +86,6 @@ public class ReactInternalPackage implements ReactPackage {
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mTransactionRepository, mEventBus));
         modules.add(new RedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUser, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository, mTransactionRepository, mEventBus));
-        modules.add(new QrCodeReceiveMoneyModule(reactContext, mUser));
         return modules;
     }
 
