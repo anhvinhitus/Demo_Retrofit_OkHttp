@@ -55,7 +55,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
  * Created by longlv on 17/07/2016.
  * define methods that had been called by React Native
  */
-public class RedPacketNativeModule extends ReactContextBaseJavaModule
+public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         implements ActivityEventListener, LifecycleEventListener {
 
     private User mUser;
@@ -70,13 +70,13 @@ public class RedPacketNativeModule extends ReactContextBaseJavaModule
     private CountDownTimer mTimerGetStatus;
     private boolean isRunningGetStatus;
 
-    public RedPacketNativeModule(ReactApplicationContext reactContext,
-                                 RedPacketStore.Repository redPackageRepository,
-                                 FriendStore.Repository friendRepository,
-                                 BalanceStore.Repository balanceRepository,
-                                 IRedPacketPayService payService,
-                                 User userConfig,
-                                 AlertDialogProvider sweetAlertDialog) {
+    public ReactRedPacketNativeModule(ReactApplicationContext reactContext,
+                                      RedPacketStore.Repository redPackageRepository,
+                                      FriendStore.Repository friendRepository,
+                                      BalanceStore.Repository balanceRepository,
+                                      IRedPacketPayService payService,
+                                      User userConfig,
+                                      AlertDialogProvider sweetAlertDialog) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
         this.mFriendRepository = friendRepository;

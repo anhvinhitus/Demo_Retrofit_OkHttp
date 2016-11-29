@@ -24,7 +24,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
-import vn.com.vng.zalopay.react.redpacket.RedPacketNativeModule;
+import vn.com.vng.zalopay.react.redpacket.ReactRedPacketNativeModule;
 import vn.com.vng.zalopay.react.widget.icon.ReactIconTextViewManager;
 import vn.com.vng.zalopay.react.widget.input.ReactInputTextViewManager;
 
@@ -84,7 +84,7 @@ public class ReactInternalPackage implements ReactPackage {
 
         modules.add(new ReactInternalNativeModule(reactContext, navigator, resourceRepository));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mTransactionRepository, mEventBus));
-        modules.add(new RedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUser, sweetAlertDialog));
+        modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUser, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository, mTransactionRepository, mEventBus));
         return modules;
     }
