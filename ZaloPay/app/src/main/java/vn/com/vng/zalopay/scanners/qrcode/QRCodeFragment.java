@@ -1,8 +1,12 @@
 package vn.com.vng.zalopay.scanners.qrcode;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -11,6 +15,7 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -25,6 +30,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * *
  */
 public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, FragmentLifecycle {
+    private static final int FOREGROUND_IMAGE_REQUEST_CODE = 101;
 
     public static QRCodeFragment newInstance() {
         Bundle args = new Bundle();
@@ -43,6 +49,25 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @BindView(R.id.tvErrorMessage)
     TextView mErrorMessageCamera;
+
+    @OnClick(R.id.btnScanQRFormPhoto)
+    public void onClickScanQRFromPhoto() {
+        startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
+    }
+
+    protected void startPickImage(int requestCode) {
+        if (!checkAndRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, Constants.Permission.REQUEST_READ_STORAGE)) {
+            return;
+        }
+        try {
+            Intent i = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+            i.setType("image/*");
+            startActivityForResult(i, requestCode);
+        } catch (Exception ex) {
+            Timber.w(ex, "startPickImage");
+        }
+    }
 
     private boolean isExecutedOnce = false;
 
@@ -191,6 +216,27 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         super.previewSized();
         if (mErrorMessageCamera != null) {
             mErrorMessageCamera.setText(null);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.d("onActivityResult: requestCode %s resultCode %s", requestCode, resultCode);
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == FOREGROUND_IMAGE_REQUEST_CODE) {
+            if (data == null || data.getData() == null) {
+                return;
+            }
+            Uri uri = data.getData();
+            if (uri == null) {
+                return;
+            }
+            Timber.d("onActivityResult: uri %s", uri.toString());
+            if (qrCodePresenter != null) {
+                qrCodePresenter.pay(uri);
+            }
         }
     }
 }

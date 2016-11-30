@@ -22,7 +22,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:singleLine="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"/>
 
     <TextView
         style="@style/TextView.Title"
@@ -31,7 +31,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/margin_top_label_qr_code"
         android:text="@string/label_qr_to_pay"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"/>
 
     <TextView
         style="@style/TextView.Title"
@@ -41,7 +41,16 @@
         android:layout_marginTop="@dimen/margin_top_title_qr_code"
         android:text="@string/scan.qr.code"
         android:textColor="@color/white"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/btnScanQRFormPhoto"
+        style="@style/Button.Default.Wrap"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_height="@dimen/button.height"
+        android:layout_marginBottom="96dp"
+        android:text="Quét ảnh có sẵn"/>
 
 </FrameLayout>
 
