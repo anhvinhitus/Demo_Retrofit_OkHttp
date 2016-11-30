@@ -175,7 +175,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
         mLifecycleState = LifecycleState.BEFORE_RESUME;
 
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onHostPause(this);
+            mReactInstanceManager.onHostPause();
         }
     }
 
@@ -215,7 +215,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onActivityResult(this, requestCode, resultCode, data);
+            mReactInstanceManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 

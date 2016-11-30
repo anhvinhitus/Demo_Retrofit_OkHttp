@@ -45,7 +45,7 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
     }
 
     @Override
-    public void onActivityResult(Activity activity, final int requestCode, final int resultCode, final Intent intent) {
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
         //contactSuccessCallback.invoke("In onActivityResult");
         if (contactSuccessCallback != null) {
             if (requestCode == PICK_CONTACT_REQUEST) {

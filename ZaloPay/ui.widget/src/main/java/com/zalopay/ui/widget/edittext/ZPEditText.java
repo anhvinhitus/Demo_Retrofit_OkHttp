@@ -25,7 +25,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -35,8 +34,6 @@ import com.zalopay.ui.widget.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.zalopay.ui.widget.edittext.Utils.generateIconBitmaps;
 
 /**
  * Created by hieuvm on 11/3/16.

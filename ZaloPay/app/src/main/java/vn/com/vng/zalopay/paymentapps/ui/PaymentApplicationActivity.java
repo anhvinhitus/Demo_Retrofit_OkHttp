@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
-import com.bottomsheetbehavior.BottomSheetBehaviorPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -248,7 +247,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new VectorIconsPackage(),
                 new SQLitePluginPackage(),
                 new RNSharePackage(),
-                new BottomSheetBehaviorPackage(),
                 new GoogleAnalyticsBridgePackage(),
                 new LinearGradientPackage(),
                 new ReactIAPPackage(paymentService, mUser, appId,
