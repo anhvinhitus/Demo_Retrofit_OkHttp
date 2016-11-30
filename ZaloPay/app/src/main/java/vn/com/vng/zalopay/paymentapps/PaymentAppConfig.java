@@ -53,7 +53,6 @@ public class PaymentAppConfig {
         APP_RESOURCE_LIST = new ArrayList<>();
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.TRANSFER_MONEY));
         APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RECEIVE_MONEY));
-        APP_RESOURCE_LIST.add(APP_RESOURCE_MAP.get(Constants.RED_PACKET));
 
         EXCLUDE_APP_RESOURCE_LIST = new ArrayList<>();
         EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(BundleServiceImpl.ZALOPAY_INTERNAL_APPLICATION_ID));

@@ -221,7 +221,9 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         numberCallAppResouce++;
         Timber.d("get app resource call : " + numberCallAppResouce);
 
-        mZaloPayView.enableShowShow(resources.contains(PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW)));
+        boolean isEnableShowShow = resources.contains(
+                PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW));
+        mZaloPayView.enableShowShow(isEnableShowShow);
 
         resources.removeAll(PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST);
 
