@@ -54,6 +54,10 @@ android {
         disable 'InvalidPackage'
         disable 'OldTargetApi'
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
