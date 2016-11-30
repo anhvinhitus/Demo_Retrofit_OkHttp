@@ -111,7 +111,7 @@ public class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implemen
     }
 
     @Override
-    public void onActivityResult(Activity activity, int i, int i1, Intent intent) {
+    public void onActivityResult(int i, int i1, Intent intent) {
 
     }
 
