@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.merchant.MerchantRepository;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 
 /**
  * Created by huuhoa on 6/17/16.
@@ -51,6 +52,9 @@ public class AppResourceModule {
                                                              @Named("rootbundle") String rootBundle) {
         return new AppResourceRepository(mapper, requestService, localStorage,
                 paramsReq, taskQueue, mOkHttpClient,
-                BuildConfig.DOWNLOAD_APP_RESOURCE, rootBundle, BuildConfig.VERSION_NAME);
+                BuildConfig.DOWNLOAD_APP_RESOURCE,
+                rootBundle,
+                BuildConfig.VERSION_NAME,
+                PaymentAppConfig.Constants.RECEIVE_MONEY);
     }
 }

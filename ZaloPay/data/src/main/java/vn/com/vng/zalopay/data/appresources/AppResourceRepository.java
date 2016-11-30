@@ -14,7 +14,6 @@ import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
 
@@ -39,6 +38,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private String appVersion;
     //Retry 3 times, each time to download 2 file (js & image)
     private final int RETRY_DOWNLOAD_NUMBER = 6;
+    private final int REDPACKET_APP_ID;
 
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
@@ -48,9 +48,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                                  OkHttpClient okHttpClient,
                                  boolean download,
                                  String rootBundle,
-                                 String appVersion
-
-    ) {
+                                 String appVersion,
+                                 int redpacketId) {
         this.mAppConfigEntityDataMapper = mapper;
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
@@ -60,6 +59,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         this.mOkHttpClient = okHttpClient;
         this.mDownloadAppResource = download;
         this.appVersion = appVersion;
+        this.REDPACKET_APP_ID = redpacketId;
     }
 
     @Override
@@ -124,6 +124,9 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     private boolean shouldDownloadApp(AppResourceEntity app) {
         Timber.d("shouldDownloadApp stateDownload [%s]", app.stateDownload);
+        if (app.appid == REDPACKET_APP_ID) {
+            return false;
+        }
         if (app.stateDownload < DownloadState.STATE_SUCCESS) {
             if (app.numRetry < RETRY_DOWNLOAD_NUMBER) {
                 return true;
