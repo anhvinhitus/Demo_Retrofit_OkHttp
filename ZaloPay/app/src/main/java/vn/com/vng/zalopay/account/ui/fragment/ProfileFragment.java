@@ -141,7 +141,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     }
 
     private void setPhone(long phone) {
-        String strPhoneNumber = PhoneUtil.toString(phone);
+        String strPhoneNumber = PhoneUtil.formatPhoneNumber(phone);
         if (!TextUtils.isEmpty(strPhoneNumber)) {
             tvPhone.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         } else {

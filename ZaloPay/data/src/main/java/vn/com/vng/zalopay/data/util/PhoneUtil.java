@@ -26,10 +26,6 @@ public class PhoneUtil {
         INTERNATIONAL_CODE.add("+84");
     }
 
-    public static String toString(long phoneNumber) {
-        return formatPhoneNumber(String.valueOf(phoneNumber));
-    }
-
     public static String formatPhoneNumber(long phoneNumber) {
         if (phoneNumber <= 0) {
             return "";
