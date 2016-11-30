@@ -94,6 +94,8 @@
     <Button
         android:id="@+id/btnCheck"
         style="@style/Button.Default.New"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button.height"
         android:enabled="false"
         android:text="@string/check" />
 </LinearLayout>
