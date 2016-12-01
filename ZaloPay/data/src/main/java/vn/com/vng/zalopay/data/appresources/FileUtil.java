@@ -36,17 +36,21 @@ class FileUtil {
 
                 // Need to create directories if not exists, or
                 // it will generate an Exception...
+                String path = location + File.separator + filename;
                 if (ze.isDirectory()) {
-                    String path = location + File.separator + filename;
                     File fmd = new File(path);
                     fmd.mkdirs();
 
                     hideImageFromGallery(path + File.separator);
 
                     continue;
+                } else {
+                    File file = new File(path);
+                    File parent = file.getParentFile();
+                    parent.mkdirs();
                 }
 
-                FileOutputStream fout = new FileOutputStream(location + File.separator + filename);
+                FileOutputStream fout = new FileOutputStream(path);
 
                 while ((count = zis.read(buffer)) != -1) {
                     fout.write(buffer, 0, count);
@@ -69,7 +73,6 @@ class FileUtil {
             }
         }
     }
-
 
     /**
      * Create .nomedia file in order to prevent gallery application shows this
