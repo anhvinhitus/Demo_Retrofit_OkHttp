@@ -75,7 +75,7 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
                 true,
                 "rootBundle",
                 "2.4.0",
-                6);
+                Arrays.asList(6));
     }
 
     private AppResourceEntity createAppResource(int index) {

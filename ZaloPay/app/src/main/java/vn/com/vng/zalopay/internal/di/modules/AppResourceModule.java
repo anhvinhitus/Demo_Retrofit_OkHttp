@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Named;
 
@@ -18,6 +20,7 @@ import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.merchant.MerchantRepository;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 
@@ -55,6 +58,6 @@ public class AppResourceModule {
                 BuildConfig.DOWNLOAD_APP_RESOURCE,
                 rootBundle,
                 BuildConfig.VERSION_NAME,
-                PaymentAppConfig.Constants.RECEIVE_MONEY);
+                Arrays.asList(PaymentAppConfig.Constants.RED_PACKET));
     }
 }
