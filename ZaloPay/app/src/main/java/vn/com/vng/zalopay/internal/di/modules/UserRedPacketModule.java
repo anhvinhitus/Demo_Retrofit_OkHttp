@@ -53,7 +53,7 @@ public class UserRedPacketModule {
                                                          RedPacketStore.LocalStorage localStorage,
                                                          RedPacketDataMapper dataMapper,
                                                          User user, Gson gson) {
-        return new RedPacketRepository(requestService, requestTPEService, localStorage, dataMapper, user, BuildConfig.PAYAPPID, gson);
+        return new RedPacketRepository(requestService, requestTPEService, localStorage, dataMapper, user, BuildConfig.ZALOPAY_APP_ID, gson);
     }
 
     @UserScope

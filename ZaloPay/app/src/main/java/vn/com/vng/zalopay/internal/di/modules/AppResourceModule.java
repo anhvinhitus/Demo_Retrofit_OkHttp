@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.internal.di.modules;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.inject.Named;
 
@@ -18,9 +17,6 @@ import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.appresources.DownloadAppResourceTaskQueue;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.merchant.MerchantRepository;
-import vn.com.vng.zalopay.data.merchant.MerchantStore;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 
@@ -41,7 +37,7 @@ public class AppResourceModule {
     @UserScope
     AppResourceStore.LocalStorage provideAppResourceLocalStorage(@Named("daosession") DaoSession session,
                                                                  PlatformDaoMapper mapper) {
-        return new AppResourceLocalStorage(session, mapper, BuildConfig.PAYAPPID);
+        return new AppResourceLocalStorage(session, mapper, BuildConfig.ZALOPAY_APP_ID);
     }
 
     @Provides

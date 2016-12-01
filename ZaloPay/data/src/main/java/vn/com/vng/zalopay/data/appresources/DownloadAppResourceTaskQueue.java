@@ -10,6 +10,7 @@ import timber.log.Timber;
 
 /**
  * Created by AnhHieu on 5/21/16.
+ *
  */
 public class DownloadAppResourceTaskQueue {
 
@@ -23,10 +24,6 @@ public class DownloadAppResourceTaskQueue {
         this.mServiceClass = serviceClass;
     }
 
-    private void startService() {
-        mContext.startService(new Intent(mContext, mServiceClass));
-    }
-
     public boolean isEmpty() {
         return (mTasklist.size() == 0);
     }
@@ -34,12 +31,16 @@ public class DownloadAppResourceTaskQueue {
     void enqueue(Collection<DownloadAppResourceTask> tasks) {
         Timber.d("enqueue tasks size %s", mTasklist.size());
         for (DownloadAppResourceTask task : tasks) {
-            if (!mTasklist.contains(task)) {
-                mTasklist.add(task);
+            if (mTasklist.contains(task)) {
+                continue;
             }
+
+            mTasklist.add(task);
         }
         Timber.d("start tasks size %s", mTasklist.size());
-        startService();
+
+        // start service
+        mContext.startService(new Intent(mContext, mServiceClass));
     }
 
     void dequeue() {

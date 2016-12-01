@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.transfer.ui;
 
-import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -295,7 +294,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
 
             showLoading();
 
-            Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.PAYAPPID,
+            Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
                     mTransaction.amount,
                     ETransactionType.WALLET_TRANSFER.toString(),
                     "1;" + mTransaction.zaloPayId,

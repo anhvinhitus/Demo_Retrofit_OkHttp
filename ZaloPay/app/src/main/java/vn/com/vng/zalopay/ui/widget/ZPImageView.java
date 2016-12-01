@@ -61,12 +61,12 @@ public class ZPImageView extends ImageView {
         }
 
         /*String filePath = "file://" +
-                ResourceHelper.getResource(getContext(), BuildConfig.PAYAPPID, fileName + ".png");
+                ResourceHelper.getResource(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName + ".png");
         Timber.d("setDrawable filePath [%s]", filePath);
         Uri imageUri = Uri.parse(filePath);
         setImageURI(imageUri);*/
 
-        String pathName = ResourceHelper.getResource(getContext(), BuildConfig.PAYAPPID, fileName) + ".png";
+        String pathName = ResourceHelper.getResource(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName) + ".png";
         File file = new File(pathName);
         if (file.exists()) {
             Timber.d("resource ngon roi nha hahaha");

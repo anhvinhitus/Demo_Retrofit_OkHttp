@@ -15,8 +15,8 @@ public class ResourceHelper {
         return mBundleRootFolder;
     }
 
-    public static void setBundleRootFolder(String mBundleRootFolder) {
-        ResourceHelper.mBundleRootFolder = mBundleRootFolder;
+    public static void setBundleRootFolder(String bundleRootFolder) {
+        ResourceHelper.mBundleRootFolder = bundleRootFolder;
     }
 
     /**

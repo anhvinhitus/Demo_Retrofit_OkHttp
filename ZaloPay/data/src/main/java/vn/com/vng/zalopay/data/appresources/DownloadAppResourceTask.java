@@ -94,13 +94,17 @@ final class DownloadAppResourceTask {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DownloadAppResourceTask that = (DownloadAppResourceTask) o;
 
         return downloadInfo != null ? downloadInfo.equals(that.downloadInfo) : that.downloadInfo == null;
-
     }
 
     @Override

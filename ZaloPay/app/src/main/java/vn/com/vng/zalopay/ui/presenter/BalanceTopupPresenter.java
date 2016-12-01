@@ -176,7 +176,7 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     private void createWalletOrder(long amount) {
         String description = mView.getContext().getString(R.string.deposit);
         Subscription subscription = mZaloPayRepository.createwalletorder(
-                BuildConfig.PAYAPPID,
+                BuildConfig.ZALOPAY_APP_ID,
                 amount,
                 ETransactionType.TOPUP.toString(),
                 mUser.zaloPayId,

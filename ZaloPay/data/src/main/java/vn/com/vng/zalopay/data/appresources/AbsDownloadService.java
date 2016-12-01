@@ -18,7 +18,7 @@ public abstract class AbsDownloadService extends IntentService {
     @Inject
     public DownloadAppResourceTaskQueue mTaskQueue;
 
-    private final static String TAG = "AbsDownloadService";
+    private final static String TAG = "DownloadService";
 
     private boolean mRunning;
 
@@ -60,22 +60,25 @@ public abstract class AbsDownloadService extends IntentService {
         Timber.d(" executeNext isEmpty %s", mTaskQueue.isEmpty());
         while (!mTaskQueue.isEmpty()) {
             DownloadAppResourceTask task = mTaskQueue.peek();
-            if (task != null) {
-                mRunning = true;
-                boolean result = task.execute();
 
-                if (result) {
-                    Timber.d("download success");
-                } else {
-                    Timber.d("download failed");
-                }
-
-                mRunning = false;
-                mTaskQueue.dequeue();
+            if (task == null) {
+                break;
             }
+
+            mRunning = true;
+            boolean result = task.execute();
+
+            if (result) {
+                Timber.d("download success");
+            } else {
+                Timber.d("download failed");
+            }
+
+            mRunning = false;
+            mTaskQueue.dequeue();
         }
 
-        Timber.i("Service stopping!");
+        Timber.d("Service stopping!");
         stopSelf(); // No more tasks are present. Stop.
     }
 }

@@ -41,7 +41,7 @@ android {
         versionName "2.4.0"
 
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
-        buildConfigField 'int', 'PAYAPPID', '1'
+        buildConfigField 'int', 'ZALOPAY_APP_ID', '1'
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

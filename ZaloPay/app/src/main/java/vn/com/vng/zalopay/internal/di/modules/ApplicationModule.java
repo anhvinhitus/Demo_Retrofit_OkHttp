@@ -107,7 +107,7 @@ public class ApplicationModule {
     @Singleton
     @Named("payAppId")
     int providesPayAppId() {
-        return BuildConfig.PAYAPPID;
+        return BuildConfig.ZALOPAY_APP_ID;
     }
 
     @Provides

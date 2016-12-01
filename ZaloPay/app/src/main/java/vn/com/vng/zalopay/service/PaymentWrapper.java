@@ -273,7 +273,7 @@ public class PaymentWrapper {
         }
         try {
             ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-            paymentInfo.appID = BuildConfig.PAYAPPID;
+            paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
             paymentInfo.userInfo = getUserInfo();
 
