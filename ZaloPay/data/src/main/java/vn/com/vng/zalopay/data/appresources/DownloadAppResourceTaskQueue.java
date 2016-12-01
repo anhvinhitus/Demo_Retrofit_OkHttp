@@ -13,58 +13,50 @@ import timber.log.Timber;
  */
 public class DownloadAppResourceTaskQueue {
 
-    private final LinkedList<DownloadAppResourceTask> tasklist;
-    private final Context context;
-    private final Class<?> cls;
+    private final LinkedList<DownloadAppResourceTask> mTasklist;
+    private final Context mContext;
+    private final Class<?> mServiceClass;
 
-    public DownloadAppResourceTaskQueue(Context context, Class<?> cls) {
-        this.tasklist = new LinkedList<>();
-        this.context = context;
-        this.cls = cls;
+    public DownloadAppResourceTaskQueue(Context context, Class<?> serviceClass) {
+        this.mTasklist = new LinkedList<>();
+        this.mContext = context;
+        this.mServiceClass = serviceClass;
     }
 
     private void startService() {
-        context.startService(new Intent(context, cls));
+        mContext.startService(new Intent(mContext, mServiceClass));
     }
 
     public boolean isEmpty() {
-        return (tasklist.size() == 0);
+        return (mTasklist.size() == 0);
     }
 
-    public void enqueue(DownloadAppResourceTask item) {
-        tasklist.add(item);
-        startService();
-    }
-
-    public void enqueue(Collection<DownloadAppResourceTask> tasks) {
-        Timber.d("enqueue tasks size %s", tasklist.size());
+    void enqueue(Collection<DownloadAppResourceTask> tasks) {
+        Timber.d("enqueue tasks size %s", mTasklist.size());
         for (DownloadAppResourceTask task : tasks) {
-            if (!tasklist.contains(task)) {
-                tasklist.add(task);
+            if (!mTasklist.contains(task)) {
+                mTasklist.add(task);
             }
         }
-        Timber.d("start tasks size %s", tasklist.size());
+        Timber.d("start tasks size %s", mTasklist.size());
         startService();
     }
 
-    public void dequeue() {
-        //   Object item = tasklist.getFirst();
-//
+    void dequeue() {
         if (!isEmpty()) {
-            tasklist.removeFirst();
+            mTasklist.removeFirst();
         }
-        //  return item;
     }
 
-    public DownloadAppResourceTask peek() {
+    DownloadAppResourceTask peek() {
         if (!isEmpty()) {
-            return tasklist.getFirst();
+            return mTasklist.getFirst();
         }
 
         return null;
     }
 
-    public static DownloadAppResourceTaskQueue create(Context context, Class<?> cls) {
-        return new DownloadAppResourceTaskQueue(context, cls);
+    public static DownloadAppResourceTaskQueue create(Context context, Class<?> serviceClass) {
+        return new DownloadAppResourceTaskQueue(context, serviceClass);
     }
 }

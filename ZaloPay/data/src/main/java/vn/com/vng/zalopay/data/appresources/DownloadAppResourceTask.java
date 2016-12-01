@@ -12,14 +12,6 @@ import timber.log.Timber;
  */
 final class DownloadAppResourceTask {
 
-    public interface Callback {
-        void onSuccess();
-
-        void onFailure();
-
-        void onProgress(int progress);
-    }
-
     private final OkHttpClient httpClient;
     private final DownloadInfo downloadInfo;
     private final AppResourceStore.LocalStorage mLocalStorage;
@@ -36,29 +28,31 @@ final class DownloadAppResourceTask {
         this.mBundleRootFolder = rootBundle;
     }
 
-    public void execute(Callback callback) {
-        //download(downloadInfo.)
+    boolean execute() {
+        boolean isDownloadSuccess;
+        try {
+            isDownloadSuccess = download(downloadInfo);
 
-        boolean isDownloadSuccess = download(downloadInfo, callback);
+            Timber.d("isDownload %s", isDownloadSuccess);
 
-        Timber.d("isDownload %s", isDownloadSuccess);
-
-        if (!isDownloadSuccess) {
-            mLocalStorage.increaseRetryDownload(downloadInfo.appid);
-
-            if (callback != null) {
-                callback.onFailure();
+            if (isDownloadSuccess) {
+                mLocalStorage.increaseStateDownload(downloadInfo.appid);
+            } else {
+                mLocalStorage.increaseRetryDownload(downloadInfo.appid);
             }
-        } else {
-            mLocalStorage.increaseStateDownload(downloadInfo.appid);
-
-            if (callback != null) {
-                callback.onSuccess();
-            }
+        } catch (Throwable t) {
+            Timber.w(t, "Error while executing download task");
+            isDownloadSuccess = false;
         }
+
+        return isDownloadSuccess;
     }
 
-    private boolean download(DownloadInfo downloadInfo, Callback callback) {
+    /**
+     * Synchronous call to download resources from server
+     * @return true if download success
+     */
+    private boolean download(DownloadInfo downloadInfo) {
 
         Timber.d("url download %s", downloadInfo.url);
         String destinationPath = getExternalBundleFolder(downloadInfo.appid);
