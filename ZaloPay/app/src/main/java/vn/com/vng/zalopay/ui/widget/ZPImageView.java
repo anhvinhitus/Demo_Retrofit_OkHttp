@@ -67,10 +67,16 @@ public class ZPImageView extends ImageView {
         setImageURI(imageUri);*/
 
         String pathName = ResourceHelper.getResource(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName) + ".png";
-        File file = new File(pathName);
-        if (file.exists()) {
-            Timber.d("resource ngon roi nha hahaha");
+        try {
+            File file = new File(pathName);
+            if (file.exists()) {
+                Timber.d("Found image in path success, start set image from bitmap");
+                setImageBitmap(BitmapFactory.decodeFile(pathName));
+            } else {
+                Timber.w("Not found image in path.");
+            }
+        } catch (RuntimeException e) {
+            Timber.w(e, "setDrawable from image in path exception.");
         }
-        setImageBitmap(BitmapFactory.decodeFile(pathName));
     }
 }
