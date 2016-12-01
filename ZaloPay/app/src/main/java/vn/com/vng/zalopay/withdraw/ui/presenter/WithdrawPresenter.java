@@ -82,7 +82,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
                     return;
                 }
                 mView.hideLoading();
-                if (paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINKCARD) {
+                if (paymentError == PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD) {
                     mNavigator.startLinkCardActivity(mView.getActivity());
                 } else if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                     mView.showWarning(mView.getContext().getString(R.string.exception_no_connection_try_again));

@@ -105,9 +105,9 @@ public class PaymentWrapper {
                     } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE) {
                         responseListener.onResponseError(PaymentError.ERR_CODE_SERVICE_MAINTENANCE);
                     } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET) {
-                        responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
+                        responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NO_INTERNET);
                     } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD) {
-                        responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINKCARD);
+                        responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD);
                     } else {
                         responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
                     }
