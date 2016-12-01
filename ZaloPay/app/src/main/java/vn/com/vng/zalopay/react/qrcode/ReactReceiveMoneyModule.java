@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.react.qrcode;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -39,7 +38,7 @@ import vn.com.vng.zalopay.notification.NotificationType;
  * Created by hieuvm on 11/21/16.
  */
 
-public class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
+final class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
     private User mUser;
     private EventBus mEventBus;
 
@@ -190,12 +189,12 @@ public class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implemen
             case Constants.MoneyTransfer.STAGE_PRETRANSFER:
                 Timber.d("Stage: Pre transfer");
                 eventName = "RM_UserScanQR";
-                data = transform(embedData);
+                data = transform(embedData, transId, zaloPayId);
                 break;
             case Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED:
                 Timber.d("Stage: Transfer succeeded with amount %s", amount);
                 eventName = "RM_UserSentMoney";
-                data = transform(embedData);
+                data = transform(embedData, transId, zaloPayId);
                 break;
             case Constants.MoneyTransfer.STAGE_TRANSFER_FAILED:
                 Timber.d("Stage: Transfer failed");
@@ -205,7 +204,7 @@ public class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implemen
             case Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL:
                 Timber.d("Stage: Transfer canceled");
                 eventName = "RM_UserCancel";
-                data = transform(embedData);
+                data = transform(embedData, transId, zaloPayId);
                 break;
         }
 
@@ -227,7 +226,6 @@ public class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implemen
     }
 
     private WritableMap transform(JsonObject embedData) {
-        WritableMap data = Arguments.createMap();
         WritableMap content = Arguments.createMap();
 
         for (Map.Entry<String, JsonElement> entry : embedData.entrySet()) {
@@ -238,9 +236,16 @@ public class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implemen
                 content.putString(key, value.getAsString());
             }
         }
+        return content;
+    }
 
+    private WritableMap transform(JsonObject embedData, String transId, String zaloPayId) {
+        WritableMap content = transform(embedData);
+        content.putString("transId", transId);
+        content.putString("zaloPayId", zaloPayId);
+
+        WritableMap data = Arguments.createMap();
         data.putMap("data", content);
-
         return data;
     }
 }
