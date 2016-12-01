@@ -74,7 +74,8 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
                 new OkHttpClient(),
                 true,
                 "rootBundle",
-                "2.4.0");
+                "2.4.0",
+                6);
     }
 
     private AppResourceEntity createAppResource(int index) {
