@@ -1,16 +1,12 @@
 package vn.com.vng.zalopay.account.ui.view;
 
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
+
 /**
  * Created by AnhHieu on 8/25/16.
  * *
  */
-public interface IChangePinView {
-    void showLoading();
-
-    void hideLoading();
-
-    void showError(String message);
-
+public interface IChangePinView extends ILoadDataView{
     void requestFocusOldPin();
 
     void onPinValid(boolean isValid);

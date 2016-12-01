@@ -17,7 +17,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
@@ -99,7 +98,8 @@ public abstract class BaseFragment extends Fragment {
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
+            mProgressDialog = new SweetAlertDialog(getContext(),
+                    SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
             mProgressDialog.setCancelable(false);
         }
         mProgressDialog.show();
@@ -116,20 +116,53 @@ public abstract class BaseFragment extends Fragment {
         showWarningDialog(message, getString(R.string.txt_close), null);
     }
 
-    public void showErrorDialog(String message, String cancelText, final ZPWOnEventDialogListener cancelListener) {
-        DialogManager.showSweetDialogCustom(getActivity(), message, cancelText, SweetAlertDialog.ERROR_TYPE, cancelListener);
+    public void showErrorDialog(String message) {
+        DialogManager.showSweetDialogCustom(getActivity(),
+                message,
+                getString(R.string.txt_close),
+                SweetAlertDialog.ERROR_TYPE,
+                null);
     }
 
-    public void showWarningDialog(String message, String cancelBtnText, final ZPWOnEventDialogListener cancelListener) {
-        DialogManager.showSweetDialogCustom(getActivity(), message, cancelBtnText, SweetAlertDialog.WARNING_TYPE, cancelListener);
+    public void showErrorDialog(String message,
+                                String cancelText,
+                                final ZPWOnEventDialogListener cancelListener) {
+        DialogManager.showSweetDialogCustom(getActivity(),
+                message,
+                cancelText,
+                SweetAlertDialog.ERROR_TYPE,
+                cancelListener);
     }
 
-    public void showRetryDialog(String retryMessage, final ZPWOnEventConfirmDialogListener retryListener) {
+    public void showWarningDialog(String message,
+                                  String cancelBtnText,
+                                  final ZPWOnEventDialogListener cancelListener) {
+        DialogManager.showSweetDialogCustom(getActivity(),
+                message,
+                cancelBtnText,
+                SweetAlertDialog.WARNING_TYPE,
+                cancelListener);
+    }
+
+    public void showRetryDialog(String retryMessage,
+                                final ZPWOnEventConfirmDialogListener retryListener) {
         DialogManager.showSweetDialogRetry(getActivity(), retryMessage, retryListener);
     }
 
-    public void showConfirmDialog(String pMessage, String pOKButton, String pCancelButton, final ZPWOnEventConfirmDialogListener callback) {
-        DialogManager.showSweetDialogConfirm(getActivity(), pMessage, pOKButton, pCancelButton, callback);
+    public void showConfirmDialog(String pMessage,
+                                  String pOKButton,
+                                  String pCancelButton,
+                                  final ZPWOnEventConfirmDialogListener callback) {
+        DialogManager.showSweetDialogConfirm(getActivity(),
+                pMessage,
+                pOKButton,
+                pCancelButton,
+                callback);
+    }
+
+    public void showSuccessDialog(String message, ZPWOnEventDialogListener listener) {
+        DialogManager.showSweetDialogCustom(getActivity(), message, getString(R.string.txt_close),
+                DialogManager.NORMAL_TYPE, listener);
     }
 
     public UserComponent getUserComponent() {

@@ -331,6 +331,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        showErrorDialog(message);
     }
 }

@@ -13,6 +13,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -134,7 +135,6 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void continueWithdraw(long amount) {
-        //mView.showError("Chức năng sẽ sớm được ra mắt.");
         withdraw(amount);
     }
 
@@ -183,13 +183,17 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void onCreateWalletOrderError(Throwable e) {
-        if (mView == null) {
+        if (mView == null || mView.getContext() == null) {
             return;
         }
 
         mView.hideLoading();
-        String message = ErrorMessageFactory.create(mView.getContext(), e);
-        mView.showError(message);
+        if (e instanceof NetworkConnectionException) {
+            mView.showWarning(mView.getContext().getString(R.string.exception_no_connection_try_again));
+        } else {
+            String message = ErrorMessageFactory.create(mView.getContext(), e);
+            mView.showError(message);
+        }
     }
 
     private void onCreateWalletOrderSuccess(Order order) {

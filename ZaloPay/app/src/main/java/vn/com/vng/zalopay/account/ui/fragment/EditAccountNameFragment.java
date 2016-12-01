@@ -156,8 +156,18 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
 
     @Override
     public void editAccountNameSuccess() {
-        showToast(R.string.update_account_name_success);
-        getActivity().finish();
+        showSuccessDialog(getString(R.string.update_account_name_success),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        getActivity().finish();
+                    }
+                });
     }
 
     @Override

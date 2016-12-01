@@ -212,7 +212,7 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
     }
 
     public void showError(String message) {
-        showErrorDialog(message, getString(R.string.txt_close), null);
+        showToast(message);
     }
 
     protected void hideError() {
@@ -307,7 +307,7 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
     public void onReceivedError(int errorCode, CharSequence description) {
         Timber.d("onReceivedError errorCode [%s] description [%s]", errorCode, description);
         hideWebView();
-        showError(errorCode);
+        showError(description.toString());
     }
 
     @Override

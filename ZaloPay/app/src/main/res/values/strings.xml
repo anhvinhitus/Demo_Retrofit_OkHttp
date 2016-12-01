@@ -389,9 +389,11 @@
     <string name="warning.rooted.not.secure">Sử dụng Zalo Pay trên thiết bị này sẽ không đảm bảo an toàn và rất có thể dẫn đến việc lộ thông tin tài khoản.</string>
     <string name="warning.rooted.recommend">Khuyến cáo không nên sử dụng Zalo Pay trên thiết bị này. Nhấn nút \"Tiếp Tục\" để sử dụng Zalo Pay.</string>
     <string name="not.repeat">Không hỏi lại cho những lần sau</string>
-    <string name="application.downloading">Ứng dụng đang được tải</string>
+    <string name="application.downloading">Ứng dụng đang được tải. Vui lòng thử lại sau.</string>
     <string name="friends.use.zalopay">Bạn bè sử dụng zalo pay</string>
     <string name="friends.not.use.zalopay">Bạn bè chưa sử dụng zalo pay</string>
     <string name="account.not.use.zalopay">%1$s chưa sử dụng Zalo Pay\n \nBạn hãy mời %2$s sử dụng Zalo Pay để chuyển tiền nhanh chóng và dễ dàng.</string>
     <string name="you.pay.success">Bạn vừa thanh toán thành công một món hàng</string>
+    <string name="Generate_qrcode_error">Sinh mã QR thất bại.</string>
+    <string name="data_invalid">Dữ liệu không hợp lệ.</string>
 </resources>

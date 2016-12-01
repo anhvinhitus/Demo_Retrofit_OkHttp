@@ -226,7 +226,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        showErrorDialog(message);
     }
 
     @Override

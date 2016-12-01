@@ -155,7 +155,7 @@ public class TransferHomeFragment extends BaseFragment implements
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        showErrorDialog(message);
     }
 
     @Override

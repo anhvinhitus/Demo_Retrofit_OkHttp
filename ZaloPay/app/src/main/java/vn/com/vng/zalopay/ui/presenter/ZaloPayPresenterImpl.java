@@ -172,7 +172,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                             }
                         } else {
                             if (mZaloPayView != null && mZaloPayView.getContext() != null) {
-                                mZaloPayView.showError(mZaloPayView.getContext().getString(R.string.application_downloading));
+                                mZaloPayView.showErrorDialog(mZaloPayView.getContext().getString(R.string.application_downloading));
                             }
                         }
                     }

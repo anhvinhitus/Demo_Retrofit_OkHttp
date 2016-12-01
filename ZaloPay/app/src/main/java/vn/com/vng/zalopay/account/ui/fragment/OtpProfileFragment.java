@@ -171,7 +171,7 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
     }
 
     public void showError(int messageResource) {
-        showToast(messageResource);
+        showErrorDialog(getString(messageResource));
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)

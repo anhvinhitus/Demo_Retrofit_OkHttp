@@ -128,6 +128,6 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        showErrorDialog(message);
     }
 }

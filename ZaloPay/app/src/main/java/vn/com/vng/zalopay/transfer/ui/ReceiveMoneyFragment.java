@@ -7,12 +7,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -218,7 +216,7 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
 
     @Override
     public void showError(String message) {
-        Toast.makeText(getContext(), "Sinh mã QR thất bại!", Toast.LENGTH_SHORT).show();
+        showErrorDialog(message);
     }
 
     public PersonTransferAdapter.HeaderViewHolder getHeaderView() {

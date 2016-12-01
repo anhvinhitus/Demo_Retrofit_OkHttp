@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -269,8 +268,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
             }
         } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
             presenter.startServiceWebViewActivity(app.appid, app.webUrl);
-        } else {
-            showToast(getString(R.string.need_update_to_use));
         }
 
         this.logActionApp(position);
@@ -352,7 +349,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         if (TextUtils.isEmpty(error)) {
             return;
         }
-        showErrorDialog(error, getString(R.string.txt_close), null);
+        showErrorDialog(error);
     }
 
     @Override
@@ -407,8 +404,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
                 navigator.startTransferMoneyActivity(getActivity());
             } else if (banner.function == BannerInternalFunction.RedPacket.getValue()) {
                 navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
-            } else {
-                //showToast(getString(R.string.update_to_use));
             }
         } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
             presenter.startPaymentApp(new AppResource(banner.appid));
@@ -416,8 +411,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
             presenter.startServiceWebViewActivity(banner.appid, banner.webviewurl);
         } else if (banner.bannertype == BannerType.WebPromotion.getValue()) {
             navigator.startWebViewActivity(getContext(), banner.webviewurl);
-        } else {
-            //showToast(getString(R.string.update_to_use));
         }
         trackBannerEvent(position);
     }

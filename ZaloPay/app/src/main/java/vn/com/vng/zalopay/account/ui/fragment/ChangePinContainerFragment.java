@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.account.ui.adapter.ChangePinPagerAdapter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -81,8 +82,17 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
 
     @Override
     public void onVerifySuccess() {
-        showToast(R.string.reset_pin_success);
-        nextPage();
+        showSuccessDialog(getString(R.string.reset_pin_success), new ZPWOnEventConfirmDialogListener() {
+            @Override
+            public void onCancelEvent() {
+
+            }
+
+            @Override
+            public void onOKevent() {
+                nextPage();
+            }
+        });
     }
 
     @Override

@@ -1,12 +1,10 @@
 package vn.com.vng.zalopay.transfer.ui;
 
+import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Base64;
-
-import com.google.gson.JsonObject;
 
 import java.lang.ref.WeakReference;
 
@@ -22,7 +20,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
-import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -199,13 +196,16 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
 
             @Override
             public void onAppError(String msg) {
-                if (mView == null) {
-                    return;
-                }
-                if (mView.getContext() != null) {
+                if (!TextUtils.isEmpty(msg)) {
+                    showError(msg);
+                    hideLoading();
+                } else {
+                    if (mView == null || mView.getContext() == null) {
+                        return;
+                    }
                     showError(mView.getContext().getString(R.string.exception_generic));
+                    hideLoading();
                 }
-                hideLoading();
             }
 
             @Override
@@ -333,9 +333,16 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void onCreateWalletOrderError(Throwable e) {
+        if (mView == null || mView.getContext() == null) {
+            return;
+        }
+        if (e instanceof NetworkConnectionException) {
+            showWarning(mView.getContext().getString(R.string.exception_no_connection_try_again));
+        } else {
+            String message = ErrorMessageFactory.create(mView.getContext(), e);
+            showError(message);
+        }
         hideLoading();
-        String message = ErrorMessageFactory.create(mView.getContext(), e);
-        showError(message);
         mView.setEnableBtnContinue(true);
     }
 
@@ -596,6 +603,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         private final RecentTransaction mTransaction;
         private ITransferView mTransferView;
         private WeakReference<TransferPresenter> mPresenterWeakReference;
+
         UserInfoSubscriber(RecentTransaction transaction,
                            ITransferView view,
                            TransferPresenter presenter) {
@@ -680,6 +688,13 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             return;
         }
         mView.showError(message);
+    }
+
+    private void showWarning(String message) {
+        if (mView == null) {
+            return;
+        }
+        mView.showWarning(message);
     }
 
     private void showDialogThenClose(String error, int cancelText, int dialogType) {

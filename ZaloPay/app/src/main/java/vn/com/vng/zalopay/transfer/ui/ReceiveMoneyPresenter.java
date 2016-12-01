@@ -29,6 +29,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
@@ -332,11 +333,11 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void onImageGeneratedError() {
-        if (mView == null) {
+        if (mView == null || mView.getContext() == null) {
             return;
         }
 
-        mView.showError("Sinh mã QR thất bại!");
+        mView.showError(mView.getContext().getString(R.string.Generate_qrcode_error));
     }
 
     private void addPersonTransfer(String uid, String displayName, String avatar, int state, long amount, String transId) {

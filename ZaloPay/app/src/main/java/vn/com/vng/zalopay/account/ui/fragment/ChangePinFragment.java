@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -7,6 +8,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -152,6 +154,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
     @Override
     public void requestFocusOldPin() {
+        Timber.d("requestFocusOldPin");
         if (mOldPassCodeView != null) {
             mOldPassCodeView.requestFocusView();
         }
@@ -170,6 +173,16 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     @Override
     public void hideLoading() {
         hideProgressDialog();
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
     }
 
     @Override

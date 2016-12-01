@@ -8,6 +8,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
@@ -16,6 +17,7 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -23,7 +25,8 @@ import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 /**
  * Created by AnhHieu on 8/25/16.
  */
-public class ChangePinPresenter extends BaseUserPresenter implements IChangePinPresenter<IChangePinContainer, IChangePinView, IChangePinVerifyView> {
+public class ChangePinPresenter extends BaseUserPresenter
+        implements IChangePinPresenter<IChangePinContainer, IChangePinView, IChangePinVerifyView> {
 
     private IChangePinContainer mChangePinContainer;
     private IChangePinView mChangePinView;
@@ -133,11 +136,12 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
     private void onChangePinError(Throwable e) {
         mChangePinView.hideLoading();
         String message = ErrorMessageFactory.create(mApplicationContext, e);
-        mChangePinView.showError(message);
-        if (e instanceof BodyException) {
+        if (e instanceof NetworkConnectionException) {
+            mChangePinView.showWarning(mChangePinView.getContext().getString(R.string.exception_no_connection_try_again));
+        } else if (e instanceof BodyException) {
+            mChangePinView.showError(message);
             int code = ((BodyException) e).errorCode;
             if (code == NetworkError.OLD_PIN_NOT_MATCH) {
-
                 if (numberError == LIMIT_CHANGE_PASSWORD_ERROR) {
                     mChangePinContainer.onChangePinOverLimit();
                 } else {
@@ -146,13 +150,19 @@ public class ChangePinPresenter extends BaseUserPresenter implements IChangePinP
 
                 numberError++;
             }
+        } else {
+            mChangePinView.showError(message);
         }
     }
 
     private void onVerifyOTPError(Throwable e) {
         mChangePinVerifyView.hideLoading();
-        String message = ErrorMessageFactory.create(mApplicationContext, e);
-        mChangePinVerifyView.showError(message);
+        if (e instanceof NetworkConnectionException) {
+            mChangePinView.showWarning(mChangePinView.getContext().getString(R.string.exception_no_connection_try_again));
+        } else {
+            String message = ErrorMessageFactory.create(mApplicationContext, e);
+            mChangePinVerifyView.showError(message);
+        }
     }
 
     private void onVerifyOTPSuccess() {
