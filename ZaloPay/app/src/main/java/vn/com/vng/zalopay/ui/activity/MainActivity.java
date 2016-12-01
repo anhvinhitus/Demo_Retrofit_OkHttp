@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -22,7 +21,6 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
-import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
@@ -311,6 +309,16 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     @Override
     public void hideLoading() {
         hideProgressDialog();
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
     }
 
     private void showProgressDialog() {

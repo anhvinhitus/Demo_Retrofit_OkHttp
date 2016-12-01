@@ -66,10 +66,7 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
 
     boolean isServiceWeb(String url) {
         Timber.d("isServiceWeb url [%s] mHost [%s]", url, mHost);
-        if (TextUtils.isEmpty(url)) {
-            return false;
-        }
-        return url.startsWith(mHost);
+        return !TextUtils.isEmpty(url) && url.startsWith(mHost);
     }
 
     String getHistoryWebViewUrl() {
@@ -154,11 +151,11 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
             public void onParameterError(String param) {
                 Timber.d("onParameterError param [%s]", param);
                 if ("order".equalsIgnoreCase(param)) {
-                    showError(mView.getActivity().getString(R.string.order_invalid));
+                    showError(R.string.order_invalid);
                 } else if ("uid".equalsIgnoreCase(param)) {
-                    showError(mView.getActivity().getString(R.string.user_invalid));
+                    showError(R.string.user_invalid);
                 } else if ("token".equalsIgnoreCase(param)) {
-                    showError(mView.getActivity().getString(R.string.order_invalid));
+                    showError(R.string.order_invalid);
                 }
             }
 
@@ -172,7 +169,7 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
             public void onResponseError(PaymentError paymentError) {
                 Timber.d("onResponseError paymentError [%s]", paymentError.value());
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    showError(R.string.exception_no_connection_try_again);
+                    showWarning(R.string.exception_no_connection_try_again);
                 }
             }
 
@@ -218,18 +215,26 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
                 mNavigator.startDepositActivity(mView.getActivity());
             }
 
-            private void showError(String text) {
+            private void showWarning(int stringResourceId) {
+                if (mView == null || mView.getActivity() == null) {
+                    return;
+                }
+                String text = mView.getActivity().getString(stringResourceId);
                 if (TextUtils.isEmpty(text) || mView == null) {
                     return;
                 }
-                mView.showError(text);
+                mView.showWarning(text);
             }
 
             private void showError(int stringResourceId) {
                 if (mView == null || mView.getActivity() == null) {
                     return;
                 }
-                showError(mView.getActivity().getString(stringResourceId));
+                String text = mView.getActivity().getString(stringResourceId);
+                if (TextUtils.isEmpty(text) || mView == null) {
+                    return;
+                }
+                mView.showError(text);
             }
 
             private void onSessionExpired() {

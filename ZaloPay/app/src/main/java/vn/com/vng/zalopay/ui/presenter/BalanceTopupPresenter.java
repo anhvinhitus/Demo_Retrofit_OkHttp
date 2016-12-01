@@ -78,7 +78,7 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
                     return;
                 }
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    mView.showError("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                    mView.showWarning(mView.getContext().getString(R.string.exception_no_connection_try_again));
                 }
                 /*else {
                     mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");

@@ -308,6 +308,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void showWarning(String message) {
+        showWarningDialog(message, getString(R.string.txt_close), null);
+    }
+
     public void showCustomDialog(String message, int dialogType, String cancelBtnText, final ZPWOnEventDialogListener listener) {
         DialogManager.showSweetDialogCustom(getActivity(), message, cancelBtnText, dialogType, listener);
     }

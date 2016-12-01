@@ -112,6 +112,10 @@ public abstract class BaseFragment extends Fragment {
         mProgressDialog.dismiss();
     }
 
+    public void showWarning(String message) {
+        showWarningDialog(message, getString(R.string.txt_close), null);
+    }
+
     public void showErrorDialog(String message, String cancelText, final ZPWOnEventDialogListener cancelListener) {
         DialogManager.showSweetDialogCustom(getActivity(), message, cancelText, SweetAlertDialog.ERROR_TYPE, cancelListener);
     }

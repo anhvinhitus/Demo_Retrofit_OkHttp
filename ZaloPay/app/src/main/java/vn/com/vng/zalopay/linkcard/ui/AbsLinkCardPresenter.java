@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
@@ -74,7 +75,7 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
             @Override
             public void onResponseError(PaymentError paymentError) {
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    showWarningView("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                    showWarningView(getContext().getString(R.string.exception_no_connection_try_again));
                 }
             }
 

@@ -16,6 +16,8 @@ public interface ILoadDataView {
 
     void showError(String message);
 
+    void showWarning(String message);
+
     Context getContext();
 
 }
