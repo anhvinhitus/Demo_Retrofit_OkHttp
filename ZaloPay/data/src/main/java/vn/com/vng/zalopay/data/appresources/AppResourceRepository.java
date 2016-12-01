@@ -27,7 +27,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     private AppConfigEntityDataMapper mAppConfigEntityDataMapper;
     private HashMap<String, String> mRequestParameters;
-    private DownloadAppResourceTaskQueue taskQueue;
+    private DownloadAppResourceTaskQueue mTaskQueue;
 
     private OkHttpClient mOkHttpClient;
 
@@ -35,11 +35,11 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private final String mRootBundle;
     private final AppResourceStore.RequestService mRequestService;
     private final AppResourceStore.LocalStorage mLocalStorage;
-    private String appVersion;
+    private String mAppVersion;
     //Retry 3 times, each time to download 2 file (js & image)
     private final int RETRY_DOWNLOAD_NUMBER = 6;
     //List AppID that exclude download
-    private final List<Integer> LIST_APPID_EXCLUDE_DOWNLOAD;
+    private final List<Integer> mListAppIdExcludeDownload;
 
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
@@ -56,11 +56,11 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         this.mLocalStorage = localStorage;
         this.mRootBundle = rootBundle;
         this.mRequestParameters = requestParameters;
-        this.taskQueue = taskQueue;
+        this.mTaskQueue = taskQueue;
         this.mOkHttpClient = okHttpClient;
         this.mDownloadAppResource = download;
-        this.appVersion = appVersion;
-        this.LIST_APPID_EXCLUDE_DOWNLOAD = excludeDownloadApps;
+        this.mAppVersion = appVersion;
+        this.mListAppIdExcludeDownload = excludeDownloadApps;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
         Timber.d("appIds react-native %s checkSum %s", appIds, checkSum);
 
-        return mRequestService.insideappresource(appIds, checkSum, mRequestParameters, appVersion)
+        return mRequestService.insideappresource(appIds, checkSum, mRequestParameters, mAppVersion)
                 .doOnNext(this::processAppResourceResponse)
                 ;
     }
@@ -125,7 +125,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     private boolean shouldDownloadApp(AppResourceEntity app) {
         Timber.d("shouldDownloadApp appId[%s] stateDownload[%s]", app.appid, app.stateDownload);
-        if (LIST_APPID_EXCLUDE_DOWNLOAD!= null && LIST_APPID_EXCLUDE_DOWNLOAD.contains(app.appid)) {
+        if (mListAppIdExcludeDownload != null && mListAppIdExcludeDownload.contains(app.appid)) {
             Timber.d("Exclude download app[%s]", app.appid);
             return false;
         }
@@ -170,8 +170,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                 int index = resourceResponse.orderedInsideApps.indexOf(appResourceEntity.appid);
                 Timber.d("processAppResourceResponse appId [%s] index [%s]", appResourceEntity.appid, index);
                 appResourceEntity.sortOrder = index;
-                if (LIST_APPID_EXCLUDE_DOWNLOAD != null
-                        && LIST_APPID_EXCLUDE_DOWNLOAD.contains(appResourceEntity.appid)) {
+                if (mListAppIdExcludeDownload != null
+                        && mListAppIdExcludeDownload.contains(appResourceEntity.appid)) {
                     appResourceEntity.needdownloadrs = 0;
                 }
                 resourcelist.add(appResourceEntity);
@@ -229,7 +229,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         }
 
         Timber.d("Start download %s", needDownloadList.size());
-        taskQueue.enqueue(needDownloadList);
+        mTaskQueue.enqueue(needDownloadList);
     }
 
     private void createTask(AppResourceEntity appResourceEntity, List<DownloadAppResourceTask> listTask) {
