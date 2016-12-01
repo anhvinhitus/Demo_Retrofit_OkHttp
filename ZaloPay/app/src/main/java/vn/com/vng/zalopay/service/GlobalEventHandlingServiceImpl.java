@@ -7,6 +7,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
+import com.facebook.react.bridge.JSApplicationCausedNativeException;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -106,10 +107,21 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         Timber.i("Exception with type: %s", ex.getClass());
         if (ex instanceof RuntimeException) {
             RuntimeException runtimeException = (RuntimeException) ex;
+
             Throwable cause = runtimeException.getCause();
             Timber.i("Exception cause: %s", cause == null ? "NULL" : cause.getClass());
+            boolean shouldHandleException = false;
             if (cause instanceof ExecutionException || cause instanceof InterruptedException || cause == null) {
                 Timber.i("Should handle uncaught exception");
+                shouldHandleException = true;
+            }
+
+            if (ex instanceof JSApplicationCausedNativeException) {
+                Timber.i("Should handle JSApplicationCausedNativeException exception");
+                shouldHandleException = true;
+            }
+
+            if (shouldHandleException) {
                 mEventBus.post(new UncaughtRuntimeExceptionEvent(ex));
             }
         }
