@@ -52,4 +52,26 @@ public class StringsTest {
         String output = Strings.joinWithDelimiter("|", input);
         Assert.assertTrue(expected.equals(output));
     }
+
+    @Test
+    public void testStripLeadingPath() {
+        String input = "../../fonts/zalopay.ttf";
+        String expected = "fonts/zalopay.ttf";
+
+        String output = Strings.stripLeadingPath(input);
+
+        Assert.assertEquals(expected, output);
+        Assert.assertEquals("", Strings.stripLeadingPath(null));
+        Assert.assertEquals("", Strings.stripLeadingPath(""));
+        Assert.assertEquals("", Strings.stripLeadingPath(".."));
+        Assert.assertEquals("", Strings.stripLeadingPath("../"));
+        Assert.assertEquals("", Strings.stripLeadingPath("/.."));
+        Assert.assertEquals("", Strings.stripLeadingPath("../.."));
+        Assert.assertEquals("", Strings.stripLeadingPath("../../.."));
+        Assert.assertEquals("", Strings.stripLeadingPath("/"));
+        Assert.assertEquals("", Strings.stripLeadingPath("/////.."));
+        Assert.assertEquals("fonts", Strings.stripLeadingPath("fonts"));
+        Assert.assertEquals("main.jsbundle", Strings.stripLeadingPath("main.jsbundle"));
+        Assert.assertEquals("drawable/abc/../abc.png", Strings.stripLeadingPath("drawable/abc/../abc.png"));
+    }
 }

@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.util;
 
+import android.text.TextUtils;
+
 import java.text.Normalizer;
 import java.util.List;
 
@@ -68,5 +70,20 @@ public final class Strings {
             src = src.substring(0, src.length() - 1);
         }
         return src;
+    }
+
+    public static String stripLeadingPath(String input) {
+        if (input == null) {
+            return "";
+        }
+
+        String pattern = "(^\\.\\.)|(^/+)";
+        String prevOutput = input;
+        String output = input.replaceAll(pattern, "");
+        while (!output.equals(prevOutput)) {
+            prevOutput = output;
+            output = output.replaceAll(pattern, "");
+        }
+        return output;
     }
 }
