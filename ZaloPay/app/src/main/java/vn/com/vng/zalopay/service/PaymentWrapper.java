@@ -122,6 +122,8 @@ public class PaymentWrapper {
                 responseListener.onParameterError(cError.messError);
             } else if (cError.payError == EPayError.COMPONENT_NULL) {
                 responseListener.onAppError(cError.messError);
+            } else if (cError.payError == EPayError.NETWORKING_ERROR) {
+                responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
             } else {
                 responseListener.onAppError(cError.messError);
             }
