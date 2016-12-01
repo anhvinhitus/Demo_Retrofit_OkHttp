@@ -119,7 +119,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
 
         WeakReference<Promise> promiseWeakReference;
 
-        public NotificationSubscriber(Promise promise) {
+        NotificationSubscriber(Promise promise) {
             promiseWeakReference = new WeakReference<>(promise);
         }
 

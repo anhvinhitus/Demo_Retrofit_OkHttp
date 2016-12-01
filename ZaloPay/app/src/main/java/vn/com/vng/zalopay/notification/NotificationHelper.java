@@ -42,6 +42,7 @@ import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
+import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
@@ -265,6 +266,22 @@ public class NotificationHelper {
     private void paymentOrderFromNotify(NotificationData notify) {
         Timber.d("paymentOrderFromNotify %s", notify);
 
+        JsonObject embeddata = notify.getEmbeddata();
+        Timber.d("payment Order notificationId [%s] embeddata %s", notify.notificationId, embeddata);
+        if (embeddata == null) {
+            return;
+        }
+
+        if (!embeddata.has("zptranstoken") || !embeddata.has("appid")) {
+            return;
+        }
+
+        String zptranstoken = embeddata.get("zptranstoken").getAsString();
+        long appId = embeddata.get("appid").getAsLong();
+
+        if (!TextUtils.isEmpty(zptranstoken) && appId > 0) {
+            mEventBus.postSticky(new PaymentDataEvent(appId, zptranstoken, false, true));
+        }
     }
 
     private void updateTransactionStatus(NotificationData notify) {

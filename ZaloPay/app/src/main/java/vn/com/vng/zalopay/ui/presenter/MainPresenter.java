@@ -65,7 +65,9 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -340,7 +342,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onPayWithTransToken(final PaymentDataEvent event) {
-        pay(event.appId, event.zptranstoken, event.isAppToApp);
+        if (event.isConfirm) {
+            showPayDialogConfirm(event.appId, event.zptranstoken, event.isAppToApp);
+        } else {
+            pay(event.appId, event.zptranstoken, event.isAppToApp);
+        }
+
         mEventBus.removeStickyEvent(PaymentDataEvent.class);
     }
 
@@ -468,6 +475,26 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 }
             }
         });
+    }
+
+    private void showPayDialogConfirm(final long appId, final String zptranstoken, final boolean isAppToApp) {
+        if (mHomeView == null) {
+            return;
+        }
+        
+        DialogManager.showSweetDialogConfirm(mHomeView.getActivity(), "Bạn có 1 đơn hàng cần thanh toán.",
+                mApplicationContext.getString(R.string.accept), mApplicationContext.getString(R.string.cancel),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        pay(appId, zptranstoken, isAppToApp);
+                    }
+                });
     }
 
 }

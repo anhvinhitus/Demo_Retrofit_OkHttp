@@ -127,6 +127,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
         drawer.removeDrawerListener(toggle);
         presenter.destroyView();
+        presenter.destroy();
         super.onDestroy();
     }
 
