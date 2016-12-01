@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.react;
 
-import android.app.Activity;
 import android.content.Intent;
 
 import com.facebook.react.bridge.ActivityEventListener;

@@ -168,7 +168,7 @@ public class PaymentWrapper {
     }
 
     public void payWithToken(long appId, String transactionToken) {
-        zaloPayRepository.getOrder(appId, transactionToken)
+        Subscription subscription = zaloPayRepository.getOrder(appId, transactionToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetOrderSubscriber());
@@ -405,8 +405,6 @@ public class PaymentWrapper {
     }
 
     private final class GetOrderSubscriber extends DefaultSubscriber<Order> {
-        GetOrderSubscriber() {
-        }
 
         @Override
         public void onNext(Order order) {
@@ -415,18 +413,14 @@ public class PaymentWrapper {
         }
 
         @Override
-        public void onCompleted() {
-        }
-
-        @Override
         public void onError(Throwable e) {
+            Timber.w(e, "onError " + e);
             if (ResponseHelper.shouldIgnoreError(e)) {
                 // simply ignore the error
                 // because it is handled from event subscribers
                 return;
             }
 
-            Timber.w(e, "onError " + e);
             if (e instanceof NetworkConnectionException) {
                 responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
             } else {

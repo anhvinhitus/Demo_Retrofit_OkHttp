@@ -25,7 +25,7 @@ ext {
     retrofitAdapterVersion = '2.1.0'
 
     androidAnnotationsVersion = '21.0.3'
-    timberVersion = '4.1.2'
+    timberVersion = '4.3.1'
     glideVersion = "3.7.0"
     glideOkhttp3IntegrationVersion = "1.4.0@aar"
     eventBusVersion = "3.0.0"

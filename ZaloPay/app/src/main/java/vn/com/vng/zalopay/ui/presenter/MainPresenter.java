@@ -45,10 +45,12 @@ import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
+import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.UserSession;
@@ -60,7 +62,6 @@ import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
@@ -175,7 +176,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         boolean granted = PermissionUtil.verifyPermission(mApplicationContext, new String[]{Manifest.permission.READ_CONTACTS});
         if (granted) {
             Subscription subscription = mFriendRepository.syncContact()
-                    // .subscribeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<Boolean>() {
                         @Override
                         public void onError(Throwable e) {
@@ -399,111 +400,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     public void pay(final long appId, String zptranstoken, final boolean isAppToApp) {
         showLoadingView();
         if (paymentWrapper == null) {
-            paymentWrapper = new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository, new PaymentWrapper.IViewListener() {
-                @Override
-                public Activity getActivity() {
-                    if (mHomeView != null) {
-                        return mHomeView.getActivity();
-                    }
-                    return null;
-                }
-            }, new PaymentWrapper.IResponseListener() {
-                @Override
-                public void onParameterError(String param) {
-
-                    Timber.d("onParameterError");
-
-                    if (mHomeView == null) {
-                        return;
-                    }
-
-                    if ("order".equalsIgnoreCase(param)) {
-                        mHomeView.showError(mApplicationContext.getString(R.string.order_invalid));
-                    } else if ("uid".equalsIgnoreCase(param)) {
-                        mHomeView.showError(mApplicationContext.getString(R.string.user_invalid));
-                    } else if ("token".equalsIgnoreCase(param)) {
-                        mHomeView.showError(mApplicationContext.getString(R.string.order_invalid));
-                    }
-
-                    hideLoadingView();
-
-                    if (isAppToApp && mHomeView != null) {
-                        responseToApp(mHomeView.getActivity(), appId, -1, param);
-                    }
-                }
-
-                @Override
-                public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-
-                }
-
-                @Override
-                public void onResponseError(PaymentError paymentError) {
-                    Timber.d("onResponseError");
-                    if (mHomeView == null) {
-                        return;
-                    }
-
-                    if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                        mHomeView.showWarning(mApplicationContext.getString(R.string.exception_no_connection_try_again));
-                    }
-
-                    if (isAppToApp && mHomeView != null) {
-                        responseToApp(mHomeView.getActivity(), appId, paymentError.value(), PaymentError.getErrorMessage(paymentError));
-                    }
-
-                    hideLoadingView();
-                }
-
-                @Override
-                public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                    Timber.d("onResponseSuccess");
-                    hideLoadingView();
-
-                    if (isAppToApp && mHomeView != null) {
-                        responseToApp(mHomeView.getActivity(), appId, PaymentError.ERR_CODE_SUCCESS.value(),
-                                PaymentError.getErrorMessage(PaymentError.ERR_CODE_SUCCESS));
-                    }
-                }
-
-                @Override
-                public void onResponseTokenInvalid() {
-                    Timber.d("onResponseTokenInvalid");
-                    if (mHomeView == null) {
-                        return;
-                    }
-
-                    hideLoadingView();
-
-                  /*  mHomeView.onTokenInvalid();
-                    clearAndLogout();*/
-                }
-
-                @Override
-                public void onAppError(String msg) {
-                    Timber.d("onAppError msg [%s]", msg);
-                    if (mHomeView == null) {
-                        return;
-                    }
-                    mHomeView.showError(mApplicationContext.getString(R.string.exception_generic));
-                    hideLoadingView();
-                }
-
-                @Override
-                public void onNotEnoughMoney() {
-
-                    Timber.d("onNotEnoughMoney");
-
-                    if (mHomeView == null) {
-                        return;
-                    }
-                    hideLoadingView();
-                    mNavigator.startDepositActivity(mApplicationContext);
-
-                }
-            });
+            paymentWrapper = getPaymentWrapper(appId, isAppToApp);
         }
-
         paymentWrapper.payWithToken(appId, zptranstoken);
     }
 
@@ -519,12 +417,57 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         }
     }
 
+    private void showErrorView(String mess) {
+        if (mHomeView != null) {
+            mHomeView.showError(mess);
+        }
+    }
+
     private void responseToApp(Activity activity, long appId, int returnCode, String returnMessage) {
+        // TODO: 12/1/16 kiem tra truong hop user khong du tien thanh toan
         String responseFormat = "zp-redirect-%s://result?returncode=%s&returnmessage=%s";
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setData(Uri.parse(String.format(Locale.getDefault(), responseFormat, appId, returnCode, returnMessage)));
         activity.startActivity(intent);
+    }
+
+    private PaymentWrapper getPaymentWrapper(final long appId, final boolean isAppToApp) {
+        return new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository, new PaymentWrapper.IViewListener() {
+            @Override
+            public Activity getActivity() {
+                if (mHomeView != null) {
+                    return mHomeView.getActivity();
+                }
+                return null;
+            }
+        }, new AbsPWResponseListener(mHomeView.getActivity()) {
+            @Override
+            public void onError(PaymentWrapperException exception) {
+                if (mHomeView == null) {
+                    return;
+                }
+
+                hideLoadingView();
+                showErrorView(exception.getMessage());
+
+                if (isAppToApp) {
+                    responseToApp(mHomeView.getActivity(), appId, exception.getErrorCode(), exception.getMessage());
+                }
+            }
+
+            @Override
+            public void onCompleted() {
+                if (mHomeView == null) {
+                    return;
+                }
+
+                hideLoadingView();
+                if (isAppToApp) {
+                    responseToApp(mHomeView.getActivity(), appId, PaymentError.ERR_CODE_SUCCESS.value(), "");
+                }
+            }
+        });
     }
 
 }

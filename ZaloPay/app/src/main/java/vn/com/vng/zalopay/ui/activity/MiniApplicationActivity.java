@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Arrays;
 import java.util.List;
- 
+
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -102,6 +103,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
 
     CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+
+    @Inject
+    ZaloPayRepository mZaloPayRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +190,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         return Arrays.asList(
                 new MainReactPackage(),
                 reactInternalPackage(),
+                // new ReactReceiveMoneyPackage(mUser, eventBus),
                 new RNDeviceInfo());
     }
 
@@ -194,7 +199,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 notificationRepository, redPackageRepository,
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
-                mReactNativeHostable, appRepository, mUser);
+                mReactNativeHostable, appRepository, mUser, mZaloPayRepository);
     }
 
     private void createUserComponent() {

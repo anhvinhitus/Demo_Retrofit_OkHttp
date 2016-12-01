@@ -98,5 +98,7 @@ public interface NotificationStore {
         Observable<Long> getOldestTimeNotification();
 
         Observable<Boolean> isNotificationExisted(long mtaid, long mtuid);
+
+        Observable<Boolean> removeNotify(long notificationId);
     }
 }

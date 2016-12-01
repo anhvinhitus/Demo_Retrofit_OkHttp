@@ -149,4 +149,13 @@ public class NotificationRepository implements NotificationStore.Repository {
     public Observable<Boolean> isNotificationExisted(long mtaid, long mtuid) {
         return ObservableHelper.makeObservable(() -> localStorage.isNotificationExisted(mtaid, mtuid));
     }
+
+    @Override
+    public Observable<Boolean> removeNotify(long notificationId) {
+        return ObservableHelper.makeObservable(() -> {
+                    localStorage.delete(notificationId);
+                    return Boolean.TRUE;
+                }
+        );
+    }
 }

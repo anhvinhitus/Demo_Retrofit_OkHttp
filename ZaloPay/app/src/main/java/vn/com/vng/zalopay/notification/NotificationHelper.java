@@ -264,6 +264,7 @@ public class NotificationHelper {
 
     private void paymentOrderFromNotify(NotificationData notify) {
         Timber.d("paymentOrderFromNotify %s", notify);
+
     }
 
     private void updateTransactionStatus(NotificationData notify) {

@@ -1,8 +1,6 @@
 package vn.com.vng.zalopay.react;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Looper;
 import android.util.Pair;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -23,7 +21,6 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;

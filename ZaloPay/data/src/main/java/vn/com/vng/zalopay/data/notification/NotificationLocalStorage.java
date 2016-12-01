@@ -150,7 +150,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         NotificationData _notification = new NotificationData();
 
-        _notification.setNotificationId(notificationGD.getId()); // FIXME: 6/22/16 Change Id
+        _notification.setNotificationId(notificationGD.getId());
 
         _notification.setAppid(notificationGD.getAppid());
         _notification.setDestuserid(notificationGD.getDestuserid());
@@ -160,7 +160,6 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         String embeddata = notificationGD.getEmbeddata();
 
-        //    Timber.d("embeddata [%s]", embeddata);
         if (TextUtils.isEmpty(embeddata)) {
             _notification.setEmbeddata(new JsonObject());
         } else {

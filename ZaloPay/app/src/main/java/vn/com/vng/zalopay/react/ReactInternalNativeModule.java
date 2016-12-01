@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
@@ -13,38 +14,67 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
+import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
+import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.data.ws.model.NotificationEmbedData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.AbsPWResponseListener;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 4/25/16.
  * Internal API
  */
-public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
+final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     private INavigator navigator;
     private AppResourceStore.Repository mResourceRepository;
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private BalanceStore.Repository mBalanceRepository;
+    private ZaloPayRepository mZaloPayRepository;
+    private TransactionStore.Repository mTransactionRepository;
 
-    public ReactInternalNativeModule(ReactApplicationContext reactContext,
-                                     INavigator navigator, AppResourceStore.Repository resourceRepository) {
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private NotificationStore.Repository mNotificationRepository;
+
+
+    ReactInternalNativeModule(ReactApplicationContext reactContext,
+                              INavigator navigator, AppResourceStore.Repository resourceRepository,
+                              NotificationStore.Repository mNotificationRepository,
+                              ZaloPayRepository zaloPayRepository,
+                              TransactionStore.Repository transactionRepository,
+                              BalanceStore.Repository balanceRepository
+    ) {
         super(reactContext);
         this.navigator = navigator;
         this.mResourceRepository = resourceRepository;
+        this.mNotificationRepository = mNotificationRepository;
+        this.mZaloPayRepository = zaloPayRepository;
+        this.mTransactionRepository = transactionRepository;
+        this.mBalanceRepository = balanceRepository;
     }
 
     @Override
@@ -199,4 +229,112 @@ public class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         btnArray.pushString(lblCancel);
         showDialog(SweetAlertDialog.ERROR_TYPE, null, message, btnArray, promise);
     }
+
+    @ReactMethod
+    public void paymentOrder(String notificationId, Promise promise) {
+        Timber.d("paymentOrder: %s", notificationId);
+        final long notifyId;
+        try {
+            notifyId = Long.valueOf(notificationId);
+        } catch (NumberFormatException e) {
+            return;
+        }
+
+        Subscription subscription = mNotificationRepository.getNotify(notifyId)
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        removeNotify(notifyId);
+                    }
+                })
+                .subscribe(new DefaultSubscriber<NotificationData>() {
+                    @Override
+                    public void onNext(NotificationData notificationData) {
+                        paymentOrder(notificationData);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d(e, "error get notify");
+                    }
+                });
+        mCompositeSubscription.add(subscription);
+    }
+
+    private void removeNotify(long notifyId) {
+        Timber.d("removeNotify: %s", notifyId);
+        Subscription subscription = mNotificationRepository.removeNotify(notifyId)
+                .subscribe(new DefaultSubscriber<Boolean>());
+        mCompositeSubscription.add(subscription);
+    }
+
+    private void paymentOrder(NotificationData notify) {
+        JsonObject embeddata = notify.getEmbeddata();
+        Timber.d("payment Order notificationId [%s] embeddata %s", notify.notificationId, embeddata);
+        if (embeddata == null) {
+            return;
+        }
+
+        if (embeddata.has("zptranstoken") && embeddata.has("appid")) {
+
+            String zptranstoken = embeddata.get("zptranstoken").getAsString();
+            long appId = embeddata.get("appid").getAsLong();
+            pay(appId, zptranstoken);
+        }
+    }
+
+
+    private PaymentWrapper paymentWrapper;
+
+    private void pay(final long appId, final String zptranstoken) {
+        if (paymentWrapper == null) {
+            paymentWrapper = getPaymentWrapper();
+        }
+
+        showLoading();
+        Timber.d("Pay with token call");
+        paymentWrapper.payWithToken(appId, zptranstoken);
+    }
+
+    private void showToast(final int message) {
+        if (getCurrentActivity() != null) {
+            showToast(getCurrentActivity().getString(message));
+        }
+    }
+
+    private void showToast(final String message) {
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null) {
+                    Toast.makeText(getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private PaymentWrapper getPaymentWrapper() {
+        return new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository,
+                new PaymentWrapper.IViewListener() {
+                    @Override
+                    public Activity getActivity() {
+                        return getCurrentActivity();
+                    }
+                }, new AbsPWResponseListener(getCurrentActivity()) {
+            @Override
+            public void onError(PaymentWrapperException exception) {
+                hideLoading();
+                showToast(exception.getMessage());
+            }
+
+            @Override
+            public void onCompleted() {
+                hideLoading();
+                if (getCurrentActivity() != null) {
+                    showToast(R.string.you_pay_success);
+                }
+            }
+        });
+    }
+
 }

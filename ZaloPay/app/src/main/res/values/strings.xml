@@ -393,4 +393,5 @@
     <string name="friends.use.zalopay">Bạn bè sử dụng zalo pay</string>
     <string name="friends.not.use.zalopay">Bạn bè chưa sử dụng zalo pay</string>
     <string name="account.not.use.zalopay">%1$s chưa sử dụng Zalo Pay\n \nBạn hãy mời %2$s sử dụng Zalo Pay để chuyển tiền nhanh chóng và dễ dàng.</string>
+    <string name="you.pay.success">Bạn vừa thanh toán thành công một món hàng</string>
 </resources>

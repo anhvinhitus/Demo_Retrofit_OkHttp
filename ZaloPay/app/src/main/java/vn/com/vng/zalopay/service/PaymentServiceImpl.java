@@ -146,22 +146,6 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     public void shareMessageToOtherApp(Activity activity, String message) {
-       /* FeedData feed = new FeedData();
-        feed.setMsg(message);
-        feed.setAppName(activity.getString(R.string.app_name));
-        feed.setLink("http://news.zing.vn");
-        feed.setLinkTitle("Zing News");
-        feed.setLinkSource("http://news.zing.vn");
-        feed.setLinkThumb(new String[]{"http://img.v3.news.zdn.vn/w660/Uploaded/xpcwvovb/2015_12_15/cua_kinh_2.jpg"});
-
-        ZaloSDK.Instance.shareMessage(activity, feed, new ZaloPluginCallback() {
-            @Override
-            public void onResult(boolean b, int i, String s, String s1) {
-                Timber.d("onResult: b [%s] i [% ] s [%s] s1 [%s]");
-
-            }
-        });*/
-
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
