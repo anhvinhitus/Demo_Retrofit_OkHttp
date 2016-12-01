@@ -56,6 +56,11 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
     }
 
     @Override
+    public void showWarningView(String error) {
+        showWarningDialog(error, getString(R.string.txt_close), null);
+    }
+
+    @Override
     public void showLoading() {
         DialogManager.showProcessDialog(this, null);
     }

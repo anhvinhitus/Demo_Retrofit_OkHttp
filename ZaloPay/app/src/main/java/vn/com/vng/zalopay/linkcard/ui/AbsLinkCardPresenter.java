@@ -53,6 +53,8 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
 
     abstract void showErrorView(String message);
 
+    abstract void showWarningView(String message);
+
     AbsLinkCardPresenter(ZaloPayRepository zaloPayRepository,
                          Navigator navigator,
                          BalanceStore.Repository balanceRepository,
@@ -72,7 +74,7 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
             @Override
             public void onResponseError(PaymentError paymentError) {
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    showErrorView("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                    showWarningView("Vui lòng kiểm tra kết nối mạng và thử lại.");
                 }
             }
 

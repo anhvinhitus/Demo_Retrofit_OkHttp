@@ -25,4 +25,6 @@ interface ILinkCardView extends ILoadDataView {
     void onAddCardSuccess(DMappedCard card);
 
     void onTokenInvalid();
+
+    void showWarningView(String error);
 }

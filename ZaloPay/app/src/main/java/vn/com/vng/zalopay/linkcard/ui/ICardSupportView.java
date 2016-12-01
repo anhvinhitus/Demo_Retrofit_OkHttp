@@ -19,4 +19,6 @@ interface ICardSupportView extends ILoadDataView {
     void onTokenInvalid();
 
     void onPreComplete();
+
+    void showWarningView(String error);
 }

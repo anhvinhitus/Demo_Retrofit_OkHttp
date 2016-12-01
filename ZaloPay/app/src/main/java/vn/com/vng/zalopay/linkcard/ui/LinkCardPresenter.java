@@ -279,6 +279,15 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
         mLinkCardView.showError(message);
     }
 
+    @Override
+    void showWarningView(String message) {
+        if (mLinkCardView == null) {
+            return;
+        }
+        mLinkCardView.hideLoading();
+        mLinkCardView.showWarningView(message);
+    }
+
     String detectCardType(String bankcode, String first6cardno) {
         if (TextUtils.isEmpty(bankcode)) {
             return ECardType.UNDEFINE.toString();
