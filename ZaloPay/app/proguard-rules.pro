@@ -27,6 +27,12 @@
     <init>(java.lang.Throwable);
 }
 
+# Update greendao rule for 3.2.0
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+
 
 # Disabling obfuscation is useful if you collect stack traces from production crashes
 # (unless you are using a system that supports de-obfuscate the stack traces).

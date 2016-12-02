@@ -1,13 +1,12 @@
 package vn.com.vng.zalopay.data.cache.model;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import java.util.Map;
 
-import de.greenrobot.dao.AbstractDao;
-import de.greenrobot.dao.AbstractDaoSession;
-import de.greenrobot.dao.identityscope.IdentityScopeType;
-import de.greenrobot.dao.internal.DaoConfig;
+import org.greenrobot.greendao.AbstractDao;
+import org.greenrobot.greendao.AbstractDaoSession;
+import org.greenrobot.greendao.database.Database;
+import org.greenrobot.greendao.identityscope.IdentityScopeType;
+import org.greenrobot.greendao.internal.DaoConfig;
 
 import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGD;
@@ -48,7 +47,7 @@ import vn.com.vng.zalopay.data.cache.model.MerchantUserDao;
 /**
  * {@inheritDoc}
  * 
- * @see de.greenrobot.dao.AbstractDaoSession
+ * @see org.greenrobot.greendao.AbstractDaoSession
  */
 public class DaoSession extends AbstractDaoSession {
 
@@ -86,7 +85,7 @@ public class DaoSession extends AbstractDaoSession {
     private final RedPacketAppInfoGDDao redPacketAppInfoGDDao;
     private final MerchantUserDao merchantUserDao;
 
-    public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
+    public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
         super(db);
 
@@ -174,22 +173,22 @@ public class DaoSession extends AbstractDaoSession {
     }
     
     public void clear() {
-        appResourceGDDaoConfig.getIdentityScope().clear();
-        paymentTransTypeGDDaoConfig.getIdentityScope().clear();
-        transactionLogDaoConfig.getIdentityScope().clear();
-        dataManifestDaoConfig.getIdentityScope().clear();
-        bankCardGDDaoConfig.getIdentityScope().clear();
-        zaloFriendGDDaoConfig.getIdentityScope().clear();
-        transferRecentDaoConfig.getIdentityScope().clear();
-        notificationGDDaoConfig.getIdentityScope().clear();
-        sentBundleSummaryDBDaoConfig.getIdentityScope().clear();
-        receivePacketSummaryDBDaoConfig.getIdentityScope().clear();
-        bundleGDDaoConfig.getIdentityScope().clear();
-        packageInBundleGDDaoConfig.getIdentityScope().clear();
-        sentBundleGDDaoConfig.getIdentityScope().clear();
-        receivePackageGDDaoConfig.getIdentityScope().clear();
-        redPacketAppInfoGDDaoConfig.getIdentityScope().clear();
-        merchantUserDaoConfig.getIdentityScope().clear();
+        appResourceGDDaoConfig.clearIdentityScope();
+        paymentTransTypeGDDaoConfig.clearIdentityScope();
+        transactionLogDaoConfig.clearIdentityScope();
+        dataManifestDaoConfig.clearIdentityScope();
+        bankCardGDDaoConfig.clearIdentityScope();
+        zaloFriendGDDaoConfig.clearIdentityScope();
+        transferRecentDaoConfig.clearIdentityScope();
+        notificationGDDaoConfig.clearIdentityScope();
+        sentBundleSummaryDBDaoConfig.clearIdentityScope();
+        receivePacketSummaryDBDaoConfig.clearIdentityScope();
+        bundleGDDaoConfig.clearIdentityScope();
+        packageInBundleGDDaoConfig.clearIdentityScope();
+        sentBundleGDDaoConfig.clearIdentityScope();
+        receivePackageGDDaoConfig.clearIdentityScope();
+        redPacketAppInfoGDDaoConfig.clearIdentityScope();
+        merchantUserDaoConfig.clearIdentityScope();
     }
 
     public AppResourceGDDao getAppResourceGDDao() {

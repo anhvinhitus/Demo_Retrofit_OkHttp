@@ -1,7 +1,8 @@
 package vn.com.vng.zalopay.data.util;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+
+import org.greenrobot.greendao.database.Database;
 
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 
@@ -15,7 +16,7 @@ public class DBOpenHelper extends DaoMaster.OpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(Database db, int oldVersion, int newVersion) {
 
         //Todo: apply db upgrade code here
         // Debug

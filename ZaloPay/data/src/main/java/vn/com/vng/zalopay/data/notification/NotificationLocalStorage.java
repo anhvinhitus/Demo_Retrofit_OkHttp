@@ -5,11 +5,12 @@ import android.text.TextUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.greenrobot.greendao.async.AsyncSession;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import de.greenrobot.dao.async.AsyncSession;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;

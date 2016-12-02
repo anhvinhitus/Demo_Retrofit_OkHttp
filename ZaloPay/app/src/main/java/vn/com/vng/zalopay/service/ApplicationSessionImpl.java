@@ -8,11 +8,11 @@ import com.google.android.gms.iid.InstanceID;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.greendao.AbstractDao;
 
 import java.io.IOException;
 import java.util.Collection;
 
-import de.greenrobot.dao.AbstractDao;
 import okhttp3.OkHttpClient;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;

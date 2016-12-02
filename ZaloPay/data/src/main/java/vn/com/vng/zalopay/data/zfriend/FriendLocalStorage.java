@@ -3,11 +3,12 @@ package vn.com.vng.zalopay.data.zfriend;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
+import org.greenrobot.greendao.query.WhereCondition;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.greenrobot.dao.query.WhereCondition;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
