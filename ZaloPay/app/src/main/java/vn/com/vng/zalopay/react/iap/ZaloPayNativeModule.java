@@ -55,8 +55,10 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     ZaloPayNativeModule(ReactApplicationContext reactContext,
                         User user,
                         IPaymentService paymentService,
-                        long appId, NetworkService networkServiceWithRetry,
-                        NetworkService networkServiceWithoutRetry, Navigator navigator) {
+                        long appId,
+                        NetworkService networkServiceWithRetry,
+                        NetworkService networkServiceWithoutRetry,
+                        Navigator navigator) {
         super(reactContext);
         this.mPaymentService = paymentService;
         this.mAppId = appId;
@@ -102,15 +104,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
                 "",
                 params.getString(Constants.MAC)
             );
-//            order.setAppid((long) params.getDouble(Constants.APPID));
-//            order.setApptransid(params.getString(Constants.APPTRANSID));
-//            order.setAppuser(params.getString(Constants.APPUSER));
-//            order.setApptime((long) params.getDouble(Constants.APPTIME));
-//            order.setAmount((long) params.getDouble(Constants.AMOUNT));
-//            order.setItem(params.getString(Constants.ITEM));
-//            order.setDescription(params.getString(Constants.DESCRIPTION));
-//            order.setEmbeddata(params.getString(Constants.EMBEDDATA));
-//            order.setMac(params.getString(Constants.MAC));
 
             if (order.appid < 0) {
                 reportInvalidParameter(promise, Constants.APPID);
