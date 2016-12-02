@@ -360,8 +360,8 @@ public class NotificationHelper {
                                 return;
                             }
                             NotificationData notificationData = new NotificationData();
-                            notificationData.setMtaid(embedDataGcm.mtaid);
-                            notificationData.setMtuid(embedDataGcm.mtuid);
+                            notificationData.mtaid = embedDataGcm.mtaid;
+                            notificationData.mtuid = embedDataGcm.mtuid;
                             putNotification(notificationData);
                             throwNotification(mContext,
                                     NOTIFICATION_ID,

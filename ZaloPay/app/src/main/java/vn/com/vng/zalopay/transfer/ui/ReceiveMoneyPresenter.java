@@ -181,14 +181,14 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
         if (notify.appid == 1 &&
                 notify.notificationtype == NotificationType.APP_P2P_NOTIFICATION &&
                 isEqualCurrentUser(notify.destuserid) &&
-                !mMessageToUserId.contains(notify.getMtuid())) {
+                !mMessageToUserId.contains(notify.mtuid)) {
 
             JsonObject embedData = notify.getEmbeddata();
             if (embedData == null) {
                 return;
             }
 
-            mMessageToUserId.add(notify.getMtuid());
+            mMessageToUserId.add(notify.mtuid);
 
             Timber.d("Embed data: %s", embedData);
 //            jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);

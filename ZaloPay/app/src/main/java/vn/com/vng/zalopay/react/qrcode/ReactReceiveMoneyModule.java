@@ -144,7 +144,7 @@ final class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implement
         if (notify.appid == 1 &&
                 notify.notificationtype == NotificationType.APP_P2P_NOTIFICATION &&
                 isEqualCurrentUser(notify.destuserid) &&
-                !mMessageToUserId.contains(notify.getMtuid())) {
+                !mMessageToUserId.contains(notify.mtuid)) {
 
             JsonObject embedData = notify.getEmbeddata();
 
@@ -152,7 +152,7 @@ final class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implement
                 return;
             }
 
-            mMessageToUserId.add(notify.getMtuid());
+            mMessageToUserId.add(notify.mtuid);
 
             int type = embedData.has("type") ? embedData.get("type").getAsInt() : 0;
 
