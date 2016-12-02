@@ -196,4 +196,18 @@ public class RxUnitTest {
                 .subscribe(subscriber::onNext);
     }
 
+    private Observable<Integer> getIntegers(final int pageStart, final int pageSize, final int maxPageNum) {
+//        Thread.dumpStack();
+        return Observable.just(pageStart)
+                .filter(page -> page < maxPageNum)
+                .flatMap(page -> Observable.range(page, pageSize)
+                        .concatWith(getIntegers(pageStart + pageSize, pageSize, maxPageNum)));
+    }
+
+    @Test
+    public void observable_withRecursion_returnsAllObjects() {
+        final int maxPageNum = 1000;
+        getIntegers(1, 5, maxPageNum)
+                .subscribe(System.out::println);
+    }
 }
