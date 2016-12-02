@@ -86,25 +86,29 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.ExternalCallSplashScreenActivity"
-                  android:exported="true"
-                  android:screenOrientation="portrait"
-                  android:enabled="true"
-                  android:configChanges="keyboardHidden|orientation" />
-        <activity-alias android:exported="true"
-                        android:label="ZaloAppAlias"
-                        android:name="vn.zalopay.apps.ZaloAppActivityAlias"
-                        android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
+        <activity
+            android:name=".ui.activity.ExternalCallSplashScreenActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:enabled="true"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
+        <activity-alias
+            android:name="vn.zalopay.apps.ZaloAppActivityAlias"
+            android:exported="true"
+            android:label="ZaloAppAlias"
+            android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
             <intent-filter>
-                <action android:name="vn.zalopay.intent.action.SEND_MONEY"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="vn.zalopay.intent.action.SEND_MONEY" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity-alias>
 
-        <activity-alias android:exported="true"
-                        android:label="ThirdPartyAppAlias"
-                        android:name="vn.zalopay.apps.ThirdPartyAppActivityAlias"
-                        android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
+        <activity-alias
+            android:name="vn.zalopay.apps.ThirdPartyAppActivityAlias"
+            android:exported="true"
+            android:label="ThirdPartyAppAlias"
+            android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -112,7 +116,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="zalopay-1" />
-                <data android:scheme="zalopay" android:host="zalopay.vn" />
+                <data
+                    android:host="zalopay.vn"
+                    android:scheme="zalopay" />
             </intent-filter>
         </activity-alias>
 
@@ -151,14 +157,15 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
+        
         <activity
             android:name=".ui.activity.MiniApplicationActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".paymentapps.ui.PaymentApplicationActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
@@ -326,7 +333,7 @@
 
         <receiver
             android:name=".receivers.BootCompletedReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
