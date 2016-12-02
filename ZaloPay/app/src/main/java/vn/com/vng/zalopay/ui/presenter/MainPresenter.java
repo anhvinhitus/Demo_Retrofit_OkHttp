@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -94,6 +95,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     private TransactionStore.Repository mTransactionRepository;
     private User mUser;
     private FriendStore.Repository mFriendRepository;
+
+    @Inject
+    NotificationStore.Repository mNotifyRepository;
 
     @Inject
     ZPNotificationService notificationService;
@@ -345,7 +349,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onPayWithTransToken(final PaymentDataEvent event) {
         if (event.isConfirm) {
-            showPayDialogConfirm(event.appId, event.zptranstoken, event.isAppToApp);
+            showPayDialogConfirm(event);
         } else {
             pay(event.appId, event.zptranstoken, event.isAppToApp);
         }
@@ -479,7 +483,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         });
     }
 
-    private void showPayDialogConfirm(final long appId, final String zptranstoken, final boolean isAppToApp) {
+    private void showPayDialogConfirm(final PaymentDataEvent dataEvent) {
         if (mHomeView == null) {
             return;
         }
@@ -493,9 +497,24 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
                     @Override
                     public void onOKevent() {
-                        pay(appId, zptranstoken, isAppToApp);
+                        pay(dataEvent.appId, dataEvent.zptranstoken, dataEvent.isAppToApp);
+                        if (dataEvent.notification != null) {
+                            removeNotification(dataEvent.notification);
+                        }
                     }
                 });
+    }
+
+    private void removeNotification(NotificationData notify) {
+        Subscription subscription = mNotifyRepository.removeNotifyByType(notify.notificationtype, notify.appid, notify.transid)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d(e, "onError");
+                    }
+                });
+        mCompositeSubscription.add(subscription);
     }
 
 }

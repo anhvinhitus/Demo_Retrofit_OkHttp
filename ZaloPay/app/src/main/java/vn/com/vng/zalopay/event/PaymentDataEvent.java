@@ -1,13 +1,18 @@
 package vn.com.vng.zalopay.event;
 
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
+
 /**
  * Created by AnhHieu on 7/23/16.
  */
 public class PaymentDataEvent {
+
     public long appId;
     public String zptranstoken;
     public boolean isAppToApp;
     public boolean isConfirm;
+
+    public NotificationData notification;
 
     public PaymentDataEvent(long appId, String zptranstoken, boolean isAppToApp) {
         this(appId, zptranstoken, isAppToApp, false);

@@ -279,7 +279,10 @@ public class NotificationHelper {
         long appId = embeddata.get("appid").getAsLong();
 
         if (!TextUtils.isEmpty(zptranstoken) && appId > 0) {
-            mEventBus.postSticky(new PaymentDataEvent(appId, zptranstoken, false, true));
+            PaymentDataEvent event = new PaymentDataEvent(appId, zptranstoken, false, true);
+            event.notification = notify;
+
+            mEventBus.postSticky(event);
         }
     }
 
@@ -352,7 +355,7 @@ public class NotificationHelper {
                     mContext.getString(R.string.app_name),
                     message);
         } else {
-            mNotifyRepository.isNotificationExisted(embedDataGcm.mtaid, embedDataGcm.mtuid)
+            Subscription subscription = mNotifyRepository.isNotificationExisted(embedDataGcm.mtaid, embedDataGcm.mtuid)
                     .subscribe(new DefaultSubscriber<Boolean>() {
                         @Override
                         public void onNext(Boolean isExisted) {
@@ -371,6 +374,7 @@ public class NotificationHelper {
                                     message);
                         }
                     });
+            compositeSubscription.add(subscription);
         }
     }
 

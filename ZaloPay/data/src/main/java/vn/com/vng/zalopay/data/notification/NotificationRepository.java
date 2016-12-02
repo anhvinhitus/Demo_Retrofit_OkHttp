@@ -53,8 +53,11 @@ public class NotificationRepository implements NotificationStore.Repository {
     }
 
     @Override
-    public void markAsRead(long nId) {
-        localStorage.markAsRead(nId);
+    public Observable<Boolean> markAsRead(long nId) {
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.markAsRead(nId);
+            return Boolean.TRUE;
+        });
     }
 
 
@@ -157,5 +160,21 @@ public class NotificationRepository implements NotificationStore.Repository {
                     return Boolean.TRUE;
                 }
         );
+    }
+
+    @Override
+    public Observable<Boolean> removeNotifyByType(int notifyType, int appId, long transid) {
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.delete(notifyType, appId, transid);
+            return Boolean.TRUE;
+        });
+    }
+
+    @Override
+    public Observable<Boolean> removeNotifyByMsgId(int mtuid, int mtaid) {
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.delete(mtuid, mtaid);
+            return Boolean.TRUE;
+        });
     }
 }

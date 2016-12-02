@@ -53,6 +53,11 @@ public interface NotificationStore {
          * @return notification exist or didn't exist.
          */
         boolean isNotificationExisted(long mtaid, long mtuid);
+
+
+        void delete(int notifyType, int appId, long transid);
+
+        void delete(int mtuid, int mtaid);
     }
 
     interface RequestService {
@@ -77,7 +82,7 @@ public interface NotificationStore {
 
         Observable<Integer> totalNotificationUnRead();
 
-        void markAsRead(long nId);
+        Observable<Boolean> markAsRead(long nId);
 
         Observable<Long> putNotify(NotificationData notify);
 
@@ -100,5 +105,9 @@ public interface NotificationStore {
         Observable<Boolean> isNotificationExisted(long mtaid, long mtuid);
 
         Observable<Boolean> removeNotify(long notificationId);
+
+        Observable<Boolean> removeNotifyByType(int notifyType, int appId, long transid);
+
+        Observable<Boolean> removeNotifyByMsgId(int mtuid, int mtaid);
     }
 }

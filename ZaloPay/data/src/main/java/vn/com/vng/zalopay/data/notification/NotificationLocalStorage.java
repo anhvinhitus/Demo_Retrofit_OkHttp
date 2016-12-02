@@ -324,4 +324,35 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         Timber.d("getOldestTimeNotification time stamp %s", timeUpdate);
         return timeUpdate;
     }
+
+    @Override
+    public void delete(int notifyType, int appId, long transid) {
+        NotificationGDDao mDao = getDaoSession().getNotificationGDDao();
+        List<NotificationGD> notifications = mDao.queryBuilder()
+                .where(NotificationGDDao.Properties.Appid.eq(appId),
+                        NotificationGDDao.Properties.Notificationtype.eq(notifyType),
+                        NotificationGDDao.Properties.Transid.eq(transid))
+                .limit(1)
+                .list();
+
+        if (Lists.isEmptyOrNull(notifications)) {
+            return;
+        }
+        mDao.delete(notifications.get(0));
+    }
+
+    @Override
+    public void delete(int mtuid, int mtaid) {
+        NotificationGDDao mDao = getDaoSession().getNotificationGDDao();
+        List<NotificationGD> notifications = mDao.queryBuilder()
+                .where(NotificationGDDao.Properties.Mtuid.eq(mtuid),
+                        NotificationGDDao.Properties.Mtaid.eq(mtaid))
+                .limit(1)
+                .list();
+
+        if (Lists.isEmptyOrNull(notifications)) {
+            return;
+        }
+        mDao.delete(notifications.get(0));
+    }
 }
