@@ -32,7 +32,7 @@ public class SqlBaseScopeImpl {
         DataManifest dataManifest = daoSession.getDataManifestDao().queryBuilder()
                 .where(DataManifestDao.Properties.Key.eq(key)).unique();
         if (dataManifest != null) {
-            return dataManifest.getValue();
+            return dataManifest.value;
         }
         return null;
     }

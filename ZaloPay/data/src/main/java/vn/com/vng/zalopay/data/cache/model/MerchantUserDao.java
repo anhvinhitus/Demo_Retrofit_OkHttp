@@ -62,34 +62,34 @@ public class MerchantUserDao extends AbstractDao<MerchantUser, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, MerchantUser entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getAppid());
+        stmt.bindLong(1, entity.appid);
  
-        String mUid = entity.getMUid();
+        String mUid = entity.mUid;
         if (mUid != null) {
             stmt.bindString(2, mUid);
         }
  
-        String mAccessToken = entity.getMAccessToken();
+        String mAccessToken = entity.mAccessToken;
         if (mAccessToken != null) {
             stmt.bindString(3, mAccessToken);
         }
  
-        String displayName = entity.getDisplayName();
+        String displayName = entity.displayName;
         if (displayName != null) {
             stmt.bindString(4, displayName);
         }
  
-        String avatar = entity.getAvatar();
+        String avatar = entity.avatar;
         if (avatar != null) {
             stmt.bindString(5, avatar);
         }
  
-        String birthday = entity.getBirthday();
+        String birthday = entity.birthday;
         if (birthday != null) {
             stmt.bindString(6, birthday);
         }
  
-        Integer gender = entity.getGender();
+        Integer gender = entity.gender;
         if (gender != null) {
             stmt.bindLong(7, gender);
         }
@@ -98,34 +98,34 @@ public class MerchantUserDao extends AbstractDao<MerchantUser, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, MerchantUser entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getAppid());
+        stmt.bindLong(1, entity.appid);
  
-        String mUid = entity.getMUid();
+        String mUid = entity.mUid;
         if (mUid != null) {
             stmt.bindString(2, mUid);
         }
  
-        String mAccessToken = entity.getMAccessToken();
+        String mAccessToken = entity.mAccessToken;
         if (mAccessToken != null) {
             stmt.bindString(3, mAccessToken);
         }
  
-        String displayName = entity.getDisplayName();
+        String displayName = entity.displayName;
         if (displayName != null) {
             stmt.bindString(4, displayName);
         }
  
-        String avatar = entity.getAvatar();
+        String avatar = entity.avatar;
         if (avatar != null) {
             stmt.bindString(5, avatar);
         }
  
-        String birthday = entity.getBirthday();
+        String birthday = entity.birthday;
         if (birthday != null) {
             stmt.bindString(6, birthday);
         }
  
-        Integer gender = entity.getGender();
+        Integer gender = entity.gender;
         if (gender != null) {
             stmt.bindLong(7, gender);
         }
@@ -152,25 +152,25 @@ public class MerchantUserDao extends AbstractDao<MerchantUser, Long> {
      
     @Override
     public void readEntity(Cursor cursor, MerchantUser entity, int offset) {
-        entity.setAppid(cursor.getLong(offset + 0));
-        entity.setMUid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setMAccessToken(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setDisplayName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setAvatar(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setBirthday(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setGender(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.appid = cursor.getLong(offset + 0);
+        entity.mUid = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
+        entity.mAccessToken = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
+        entity.displayName = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
+        entity.avatar = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
+        entity.birthday = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
+        entity.gender = cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(MerchantUser entity, long rowId) {
-        entity.setAppid(rowId);
+        entity.appid = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(MerchantUser entity) {
         if(entity != null) {
-            return entity.getAppid();
+            return entity.appid;
         } else {
             return null;
         }

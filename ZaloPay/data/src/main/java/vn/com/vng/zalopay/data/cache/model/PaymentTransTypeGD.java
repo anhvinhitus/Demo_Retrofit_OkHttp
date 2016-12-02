@@ -13,15 +13,15 @@ import org.greenrobot.greendao.annotation.*;
 public class PaymentTransTypeGD {
 
     @Id
-    private long transtype;
-    private long pmcid;
-    private String pmcname;
-    private Integer status;
-    private Long minvalue;
-    private Long maxvalue;
-    private Float feerate;
-    private Long minfee;
-    private String feecaltype;
+    public long transtype;
+    public long pmcid;
+    public String pmcname;
+    public Integer status;
+    public Long minvalue;
+    public Long maxvalue;
+    public Float feerate;
+    public Long minfee;
+    public String feecaltype;
 
     @Generated
     public PaymentTransTypeGD() {
@@ -41,78 +41,6 @@ public class PaymentTransTypeGD {
         this.maxvalue = maxvalue;
         this.feerate = feerate;
         this.minfee = minfee;
-        this.feecaltype = feecaltype;
-    }
-
-    public long getTranstype() {
-        return transtype;
-    }
-
-    public void setTranstype(long transtype) {
-        this.transtype = transtype;
-    }
-
-    public long getPmcid() {
-        return pmcid;
-    }
-
-    public void setPmcid(long pmcid) {
-        this.pmcid = pmcid;
-    }
-
-    public String getPmcname() {
-        return pmcname;
-    }
-
-    public void setPmcname(String pmcname) {
-        this.pmcname = pmcname;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Long getMinvalue() {
-        return minvalue;
-    }
-
-    public void setMinvalue(Long minvalue) {
-        this.minvalue = minvalue;
-    }
-
-    public Long getMaxvalue() {
-        return maxvalue;
-    }
-
-    public void setMaxvalue(Long maxvalue) {
-        this.maxvalue = maxvalue;
-    }
-
-    public Float getFeerate() {
-        return feerate;
-    }
-
-    public void setFeerate(Float feerate) {
-        this.feerate = feerate;
-    }
-
-    public Long getMinfee() {
-        return minfee;
-    }
-
-    public void setMinfee(Long minfee) {
-        this.minfee = minfee;
-    }
-
-    public String getFeecaltype() {
-        return feecaltype;
-    }
-
-    public void setFeecaltype(String feecaltype) {
         this.feecaltype = feecaltype;
     }
 

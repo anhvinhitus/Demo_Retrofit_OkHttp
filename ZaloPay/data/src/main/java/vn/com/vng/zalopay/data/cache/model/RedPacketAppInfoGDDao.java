@@ -69,52 +69,52 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
     protected final void bindValues(DatabaseStatement stmt, RedPacketAppInfoGD entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        Long id = entity.id;
         if (id != null) {
             stmt.bindLong(1, id);
         }
  
-        String checksum = entity.getChecksum();
+        String checksum = entity.checksum;
         if (checksum != null) {
             stmt.bindString(2, checksum);
         }
  
-        Long expiredTime = entity.getExpiredTime();
+        Long expiredTime = entity.expiredTime;
         if (expiredTime != null) {
             stmt.bindLong(3, expiredTime);
         }
  
-        Long minAmounTeach = entity.getMinAmounTeach();
+        Long minAmounTeach = entity.minAmounTeach;
         if (minAmounTeach != null) {
             stmt.bindLong(4, minAmounTeach);
         }
  
-        Long maxTotalAmountPerBundle = entity.getMaxTotalAmountPerBundle();
+        Long maxTotalAmountPerBundle = entity.maxTotalAmountPerBundle;
         if (maxTotalAmountPerBundle != null) {
             stmt.bindLong(5, maxTotalAmountPerBundle);
         }
  
-        Integer maxPackageQuantity = entity.getMaxPackageQuantity();
+        Integer maxPackageQuantity = entity.maxPackageQuantity;
         if (maxPackageQuantity != null) {
             stmt.bindLong(6, maxPackageQuantity);
         }
  
-        Integer maxCountHist = entity.getMaxCountHist();
+        Integer maxCountHist = entity.maxCountHist;
         if (maxCountHist != null) {
             stmt.bindLong(7, maxCountHist);
         }
  
-        Integer maxMessageLength = entity.getMaxMessageLength();
+        Integer maxMessageLength = entity.maxMessageLength;
         if (maxMessageLength != null) {
             stmt.bindLong(8, maxMessageLength);
         }
  
-        Long bundleExpiredTime = entity.getBundleExpiredTime();
+        Long bundleExpiredTime = entity.bundleExpiredTime;
         if (bundleExpiredTime != null) {
             stmt.bindLong(9, bundleExpiredTime);
         }
  
-        Long minDivideAmount = entity.getMinDivideAmount();
+        Long minDivideAmount = entity.minDivideAmount;
         if (minDivideAmount != null) {
             stmt.bindLong(10, minDivideAmount);
         }
@@ -124,52 +124,52 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
     protected final void bindValues(SQLiteStatement stmt, RedPacketAppInfoGD entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        Long id = entity.id;
         if (id != null) {
             stmt.bindLong(1, id);
         }
  
-        String checksum = entity.getChecksum();
+        String checksum = entity.checksum;
         if (checksum != null) {
             stmt.bindString(2, checksum);
         }
  
-        Long expiredTime = entity.getExpiredTime();
+        Long expiredTime = entity.expiredTime;
         if (expiredTime != null) {
             stmt.bindLong(3, expiredTime);
         }
  
-        Long minAmounTeach = entity.getMinAmounTeach();
+        Long minAmounTeach = entity.minAmounTeach;
         if (minAmounTeach != null) {
             stmt.bindLong(4, minAmounTeach);
         }
  
-        Long maxTotalAmountPerBundle = entity.getMaxTotalAmountPerBundle();
+        Long maxTotalAmountPerBundle = entity.maxTotalAmountPerBundle;
         if (maxTotalAmountPerBundle != null) {
             stmt.bindLong(5, maxTotalAmountPerBundle);
         }
  
-        Integer maxPackageQuantity = entity.getMaxPackageQuantity();
+        Integer maxPackageQuantity = entity.maxPackageQuantity;
         if (maxPackageQuantity != null) {
             stmt.bindLong(6, maxPackageQuantity);
         }
  
-        Integer maxCountHist = entity.getMaxCountHist();
+        Integer maxCountHist = entity.maxCountHist;
         if (maxCountHist != null) {
             stmt.bindLong(7, maxCountHist);
         }
  
-        Integer maxMessageLength = entity.getMaxMessageLength();
+        Integer maxMessageLength = entity.maxMessageLength;
         if (maxMessageLength != null) {
             stmt.bindLong(8, maxMessageLength);
         }
  
-        Long bundleExpiredTime = entity.getBundleExpiredTime();
+        Long bundleExpiredTime = entity.bundleExpiredTime;
         if (bundleExpiredTime != null) {
             stmt.bindLong(9, bundleExpiredTime);
         }
  
-        Long minDivideAmount = entity.getMinDivideAmount();
+        Long minDivideAmount = entity.minDivideAmount;
         if (minDivideAmount != null) {
             stmt.bindLong(10, minDivideAmount);
         }
@@ -199,28 +199,28 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
      
     @Override
     public void readEntity(Cursor cursor, RedPacketAppInfoGD entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setChecksum(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setExpiredTime(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
-        entity.setMinAmounTeach(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setMaxTotalAmountPerBundle(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
-        entity.setMaxPackageQuantity(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setMaxCountHist(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
-        entity.setMaxMessageLength(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-        entity.setBundleExpiredTime(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
-        entity.setMinDivideAmount(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
+        entity.id = cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+        entity.checksum = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
+        entity.expiredTime = cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2);
+        entity.minAmounTeach = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
+        entity.maxTotalAmountPerBundle = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
+        entity.maxPackageQuantity = cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5);
+        entity.maxCountHist = cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6);
+        entity.maxMessageLength = cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7);
+        entity.bundleExpiredTime = cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8);
+        entity.minDivideAmount = cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(RedPacketAppInfoGD entity, long rowId) {
-        entity.setId(rowId);
+        entity.id = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(RedPacketAppInfoGD entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.id;
         } else {
             return null;
         }
@@ -228,7 +228,7 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
 
     @Override
     public boolean hasKey(RedPacketAppInfoGD entity) {
-        return entity.getId() != null;
+        return entity.id != null;
     }
 
     @Override

@@ -67,47 +67,47 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
     protected final void bindValues(DatabaseStatement stmt, TransferRecent entity) {
         stmt.clearBindings();
  
-        String zaloPayId = entity.getZaloPayId();
+        String zaloPayId = entity.zaloPayId;
         if (zaloPayId != null) {
             stmt.bindString(1, zaloPayId);
         }
  
-        String zaloPayName = entity.getZaloPayName();
+        String zaloPayName = entity.zaloPayName;
         if (zaloPayName != null) {
             stmt.bindString(2, zaloPayName);
         }
  
-        String displayName = entity.getDisplayName();
+        String displayName = entity.displayName;
         if (displayName != null) {
             stmt.bindString(3, displayName);
         }
  
-        String avatar = entity.getAvatar();
+        String avatar = entity.avatar;
         if (avatar != null) {
             stmt.bindString(4, avatar);
         }
  
-        String phoneNumber = entity.getPhoneNumber();
+        String phoneNumber = entity.phoneNumber;
         if (phoneNumber != null) {
             stmt.bindString(5, phoneNumber);
         }
  
-        Integer transferType = entity.getTransferType();
+        Integer transferType = entity.transferType;
         if (transferType != null) {
             stmt.bindLong(6, transferType);
         }
  
-        Long amount = entity.getAmount();
+        Long amount = entity.amount;
         if (amount != null) {
             stmt.bindLong(7, amount);
         }
  
-        String message = entity.getMessage();
+        String message = entity.message;
         if (message != null) {
             stmt.bindString(8, message);
         }
  
-        Long timeCreate = entity.getTimeCreate();
+        Long timeCreate = entity.timeCreate;
         if (timeCreate != null) {
             stmt.bindLong(9, timeCreate);
         }
@@ -117,47 +117,47 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
     protected final void bindValues(SQLiteStatement stmt, TransferRecent entity) {
         stmt.clearBindings();
  
-        String zaloPayId = entity.getZaloPayId();
+        String zaloPayId = entity.zaloPayId;
         if (zaloPayId != null) {
             stmt.bindString(1, zaloPayId);
         }
  
-        String zaloPayName = entity.getZaloPayName();
+        String zaloPayName = entity.zaloPayName;
         if (zaloPayName != null) {
             stmt.bindString(2, zaloPayName);
         }
  
-        String displayName = entity.getDisplayName();
+        String displayName = entity.displayName;
         if (displayName != null) {
             stmt.bindString(3, displayName);
         }
  
-        String avatar = entity.getAvatar();
+        String avatar = entity.avatar;
         if (avatar != null) {
             stmt.bindString(4, avatar);
         }
  
-        String phoneNumber = entity.getPhoneNumber();
+        String phoneNumber = entity.phoneNumber;
         if (phoneNumber != null) {
             stmt.bindString(5, phoneNumber);
         }
  
-        Integer transferType = entity.getTransferType();
+        Integer transferType = entity.transferType;
         if (transferType != null) {
             stmt.bindLong(6, transferType);
         }
  
-        Long amount = entity.getAmount();
+        Long amount = entity.amount;
         if (amount != null) {
             stmt.bindLong(7, amount);
         }
  
-        String message = entity.getMessage();
+        String message = entity.message;
         if (message != null) {
             stmt.bindString(8, message);
         }
  
-        Long timeCreate = entity.getTimeCreate();
+        Long timeCreate = entity.timeCreate;
         if (timeCreate != null) {
             stmt.bindLong(9, timeCreate);
         }
@@ -186,26 +186,26 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
      
     @Override
     public void readEntity(Cursor cursor, TransferRecent entity, int offset) {
-        entity.setZaloPayId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setZaloPayName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setDisplayName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setAvatar(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setPhoneNumber(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setTransferType(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setAmount(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
-        entity.setMessage(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setTimeCreate(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.zaloPayId = cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
+        entity.zaloPayName = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
+        entity.displayName = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
+        entity.avatar = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
+        entity.phoneNumber = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
+        entity.transferType = cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5);
+        entity.amount = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
+        entity.message = cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7);
+        entity.timeCreate = cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8);
      }
     
     @Override
     protected final String updateKeyAfterInsert(TransferRecent entity, long rowId) {
-        return entity.getZaloPayId();
+        return entity.zaloPayId;
     }
     
     @Override
     public String getKey(TransferRecent entity) {
         if(entity != null) {
-            return entity.getZaloPayId();
+            return entity.zaloPayId;
         } else {
             return null;
         }
@@ -213,7 +213,7 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
 
     @Override
     public boolean hasKey(TransferRecent entity) {
-        return entity.getZaloPayId() != null;
+        return entity.zaloPayId != null;
     }
 
     @Override

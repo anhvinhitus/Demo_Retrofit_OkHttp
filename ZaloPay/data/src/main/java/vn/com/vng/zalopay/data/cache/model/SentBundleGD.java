@@ -16,18 +16,18 @@ public class SentBundleGD {
 
     @Id
     @Unique
-    private long id;
+    public long id;
 
     @NotNull
-    private String senderZaloPayID;
-    private Integer type;
-    private Long createTime;
-    private Long lastOpenTime;
-    private Integer totalLuck;
-    private Integer numOfOpenedPakages;
-    private Integer numOfPackages;
-    private String sendMessage;
-    private Integer status;
+    public String senderZaloPayID;
+    public Integer type;
+    public Long createTime;
+    public Long lastOpenTime;
+    public Integer totalLuck;
+    public Integer numOfOpenedPakages;
+    public Integer numOfPackages;
+    public String sendMessage;
+    public Integer status;
 
     /** Used to resolve relations */
     @Generated
@@ -70,88 +70,6 @@ public class SentBundleGD {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getSentBundleGDDao() : null;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    @NotNull
-    public String getSenderZaloPayID() {
-        return senderZaloPayID;
-    }
-
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setSenderZaloPayID(@NotNull String senderZaloPayID) {
-        this.senderZaloPayID = senderZaloPayID;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getLastOpenTime() {
-        return lastOpenTime;
-    }
-
-    public void setLastOpenTime(Long lastOpenTime) {
-        this.lastOpenTime = lastOpenTime;
-    }
-
-    public Integer getTotalLuck() {
-        return totalLuck;
-    }
-
-    public void setTotalLuck(Integer totalLuck) {
-        this.totalLuck = totalLuck;
-    }
-
-    public Integer getNumOfOpenedPakages() {
-        return numOfOpenedPakages;
-    }
-
-    public void setNumOfOpenedPakages(Integer numOfOpenedPakages) {
-        this.numOfOpenedPakages = numOfOpenedPakages;
-    }
-
-    public Integer getNumOfPackages() {
-        return numOfPackages;
-    }
-
-    public void setNumOfPackages(Integer numOfPackages) {
-        this.numOfPackages = numOfPackages;
-    }
-
-    public String getSendMessage() {
-        return sendMessage;
-    }
-
-    public void setSendMessage(String sendMessage) {
-        this.sendMessage = sendMessage;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

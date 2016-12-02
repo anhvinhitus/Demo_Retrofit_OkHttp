@@ -58,21 +58,21 @@ public class BankCardGDDao extends AbstractDao<BankCardGD, String> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, BankCardGD entity) {
         stmt.clearBindings();
-        stmt.bindString(1, entity.getCardhash());
-        stmt.bindString(2, entity.getCardname());
-        stmt.bindString(3, entity.getFirst6cardno());
-        stmt.bindString(4, entity.getLast4cardno());
-        stmt.bindString(5, entity.getBankcode());
+        stmt.bindString(1, entity.cardhash);
+        stmt.bindString(2, entity.cardname);
+        stmt.bindString(3, entity.first6cardno);
+        stmt.bindString(4, entity.last4cardno);
+        stmt.bindString(5, entity.bankcode);
     }
 
     @Override
     protected final void bindValues(SQLiteStatement stmt, BankCardGD entity) {
         stmt.clearBindings();
-        stmt.bindString(1, entity.getCardhash());
-        stmt.bindString(2, entity.getCardname());
-        stmt.bindString(3, entity.getFirst6cardno());
-        stmt.bindString(4, entity.getLast4cardno());
-        stmt.bindString(5, entity.getBankcode());
+        stmt.bindString(1, entity.cardhash);
+        stmt.bindString(2, entity.cardname);
+        stmt.bindString(3, entity.first6cardno);
+        stmt.bindString(4, entity.last4cardno);
+        stmt.bindString(5, entity.bankcode);
     }
 
     @Override
@@ -94,22 +94,22 @@ public class BankCardGDDao extends AbstractDao<BankCardGD, String> {
      
     @Override
     public void readEntity(Cursor cursor, BankCardGD entity, int offset) {
-        entity.setCardhash(cursor.getString(offset + 0));
-        entity.setCardname(cursor.getString(offset + 1));
-        entity.setFirst6cardno(cursor.getString(offset + 2));
-        entity.setLast4cardno(cursor.getString(offset + 3));
-        entity.setBankcode(cursor.getString(offset + 4));
+        entity.cardhash = cursor.getString(offset + 0);
+        entity.cardname = cursor.getString(offset + 1);
+        entity.first6cardno = cursor.getString(offset + 2);
+        entity.last4cardno = cursor.getString(offset + 3);
+        entity.bankcode = cursor.getString(offset + 4);
      }
     
     @Override
     protected final String updateKeyAfterInsert(BankCardGD entity, long rowId) {
-        return entity.getCardhash();
+        return entity.cardhash;
     }
     
     @Override
     public String getKey(BankCardGD entity) {
         if(entity != null) {
-            return entity.getCardhash();
+            return entity.cardhash;
         } else {
             return null;
         }

@@ -72,59 +72,59 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, ZaloFriendGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getZaloId());
+        stmt.bindLong(1, entity.zaloId);
  
-        String userName = entity.getUserName();
+        String userName = entity.userName;
         if (userName != null) {
             stmt.bindString(2, userName);
         }
  
-        String displayName = entity.getDisplayName();
+        String displayName = entity.displayName;
         if (displayName != null) {
             stmt.bindString(3, displayName);
         }
  
-        String avatar = entity.getAvatar();
+        String avatar = entity.avatar;
         if (avatar != null) {
             stmt.bindString(4, avatar);
         }
  
-        Integer userGender = entity.getUserGender();
+        Integer userGender = entity.userGender;
         if (userGender != null) {
             stmt.bindLong(5, userGender);
         }
  
-        String birthday = entity.getBirthday();
+        String birthday = entity.birthday;
         if (birthday != null) {
             stmt.bindString(6, birthday);
         }
  
-        Boolean usingApp = entity.getUsingApp();
+        Boolean usingApp = entity.usingApp;
         if (usingApp != null) {
             stmt.bindLong(7, usingApp ? 1L: 0L);
         }
  
-        String fulltextsearch = entity.getFulltextsearch();
+        String fulltextsearch = entity.fulltextsearch;
         if (fulltextsearch != null) {
             stmt.bindString(8, fulltextsearch);
         }
  
-        String zaloPayId = entity.getZaloPayId();
+        String zaloPayId = entity.zaloPayId;
         if (zaloPayId != null) {
             stmt.bindString(9, zaloPayId);
         }
  
-        Integer status = entity.getStatus();
+        Integer status = entity.status;
         if (status != null) {
             stmt.bindLong(10, status);
         }
  
-        Long phoneNumber = entity.getPhoneNumber();
+        Long phoneNumber = entity.phoneNumber;
         if (phoneNumber != null) {
             stmt.bindLong(11, phoneNumber);
         }
  
-        String zaloPayName = entity.getZaloPayName();
+        String zaloPayName = entity.zaloPayName;
         if (zaloPayName != null) {
             stmt.bindString(12, zaloPayName);
         }
@@ -133,59 +133,59 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, ZaloFriendGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getZaloId());
+        stmt.bindLong(1, entity.zaloId);
  
-        String userName = entity.getUserName();
+        String userName = entity.userName;
         if (userName != null) {
             stmt.bindString(2, userName);
         }
  
-        String displayName = entity.getDisplayName();
+        String displayName = entity.displayName;
         if (displayName != null) {
             stmt.bindString(3, displayName);
         }
  
-        String avatar = entity.getAvatar();
+        String avatar = entity.avatar;
         if (avatar != null) {
             stmt.bindString(4, avatar);
         }
  
-        Integer userGender = entity.getUserGender();
+        Integer userGender = entity.userGender;
         if (userGender != null) {
             stmt.bindLong(5, userGender);
         }
  
-        String birthday = entity.getBirthday();
+        String birthday = entity.birthday;
         if (birthday != null) {
             stmt.bindString(6, birthday);
         }
  
-        Boolean usingApp = entity.getUsingApp();
+        Boolean usingApp = entity.usingApp;
         if (usingApp != null) {
             stmt.bindLong(7, usingApp ? 1L: 0L);
         }
  
-        String fulltextsearch = entity.getFulltextsearch();
+        String fulltextsearch = entity.fulltextsearch;
         if (fulltextsearch != null) {
             stmt.bindString(8, fulltextsearch);
         }
  
-        String zaloPayId = entity.getZaloPayId();
+        String zaloPayId = entity.zaloPayId;
         if (zaloPayId != null) {
             stmt.bindString(9, zaloPayId);
         }
  
-        Integer status = entity.getStatus();
+        Integer status = entity.status;
         if (status != null) {
             stmt.bindLong(10, status);
         }
  
-        Long phoneNumber = entity.getPhoneNumber();
+        Long phoneNumber = entity.phoneNumber;
         if (phoneNumber != null) {
             stmt.bindLong(11, phoneNumber);
         }
  
-        String zaloPayName = entity.getZaloPayName();
+        String zaloPayName = entity.zaloPayName;
         if (zaloPayName != null) {
             stmt.bindString(12, zaloPayName);
         }
@@ -217,30 +217,30 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
      
     @Override
     public void readEntity(Cursor cursor, ZaloFriendGD entity, int offset) {
-        entity.setZaloId(cursor.getLong(offset + 0));
-        entity.setUserName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setDisplayName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setAvatar(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setUserGender(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
-        entity.setBirthday(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setUsingApp(cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0);
-        entity.setFulltextsearch(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setZaloPayId(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setStatus(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
-        entity.setPhoneNumber(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
-        entity.setZaloPayName(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.zaloId = cursor.getLong(offset + 0);
+        entity.userName = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
+        entity.displayName = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
+        entity.avatar = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
+        entity.userGender = cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4);
+        entity.birthday = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
+        entity.usingApp = cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0;
+        entity.fulltextsearch = cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7);
+        entity.zaloPayId = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
+        entity.status = cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9);
+        entity.phoneNumber = cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10);
+        entity.zaloPayName = cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(ZaloFriendGD entity, long rowId) {
-        entity.setZaloId(rowId);
+        entity.zaloId = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(ZaloFriendGD entity) {
         if(entity != null) {
-            return entity.getZaloId();
+            return entity.zaloId;
         } else {
             return null;
         }

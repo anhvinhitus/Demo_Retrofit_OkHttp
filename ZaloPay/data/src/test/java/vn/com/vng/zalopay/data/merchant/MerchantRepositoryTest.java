@@ -39,13 +39,13 @@ public class MerchantRepositoryTest {
             LongSparseArray<MerchantUser> db = new LongSparseArray<>();
             @Override
             public void put(MerchantUser entity) {
-                db.put(entity.getAppid(), entity);
+                db.put(entity.appid, entity);
             }
 
             @Override
             public void put(List<MerchantUser> entities) {
                 for (MerchantUser e : entities) {
-                    db.put(e.getAppid(), e);
+                    db.put(e.appid, e);
                 }
             }
 
@@ -128,13 +128,13 @@ public class MerchantRepositoryTest {
             LongSparseArray<MerchantUser> db = new LongSparseArray<>();
             @Override
             public void put(MerchantUser entity) {
-                db.put(entity.getAppid(), entity);
+                db.put(entity.appid, entity);
             }
 
             @Override
             public void put(List<MerchantUser> entities) {
                 for (MerchantUser e : entities) {
-                    db.put(e.getAppid(), e);
+                    db.put(e.appid, e);
                 }
             }
 
@@ -188,12 +188,12 @@ public class MerchantRepositoryTest {
         User user = new User();
         user.zaloPayId = "1";
         MerchantUser merchantUser = new MerchantUser();
-        merchantUser.setAppid(10);
-        merchantUser.setMUid("110");
-        merchantUser.setMAccessToken("accesstoken");
-        merchantUser.setAvatar("avatar");
-        merchantUser.setDisplayName("display");
-        merchantUser.setGender(1);
+        merchantUser.appid = (10);
+        merchantUser.mUid = ("110");
+        merchantUser.mAccessToken = ("accesstoken");
+        merchantUser.avatar = ("avatar");
+        merchantUser.displayName = ("display");
+        merchantUser.gender = (1);
 
         localStorage.put(merchantUser);
 
@@ -231,14 +231,14 @@ public class MerchantRepositoryTest {
             @Override
             public void put(MerchantUser entity) {
                 countDownLatch.countDown();
-                System.out.println("Put app in local: " + String.valueOf(entity.getAppid()));
-                db.put(entity.getAppid(), entity);
+                System.out.println("Put app in local: " + String.valueOf(entity.appid));
+                db.put(entity.appid, entity);
             }
 
             @Override
             public void put(List<MerchantUser> entities) {
                 for (MerchantUser e : entities) {
-                    db.put(e.getAppid(), e);
+                    db.put(e.appid, e);
                 }
             }
 

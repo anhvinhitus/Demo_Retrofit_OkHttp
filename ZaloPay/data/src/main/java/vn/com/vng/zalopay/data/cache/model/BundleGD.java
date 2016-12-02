@@ -12,9 +12,9 @@ public class BundleGD {
 
     @Id
     @Unique
-    private long id;
-    private Long createTime;
-    private Long lastTimeGetPackage;
+    public long id;
+    public Long createTime;
+    public Long lastTimeGetPackage;
 
     @Generated
     public BundleGD() {
@@ -28,30 +28,6 @@ public class BundleGD {
     public BundleGD(long id, Long createTime, Long lastTimeGetPackage) {
         this.id = id;
         this.createTime = createTime;
-        this.lastTimeGetPackage = lastTimeGetPackage;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getLastTimeGetPackage() {
-        return lastTimeGetPackage;
-    }
-
-    public void setLastTimeGetPackage(Long lastTimeGetPackage) {
         this.lastTimeGetPackage = lastTimeGetPackage;
     }
 

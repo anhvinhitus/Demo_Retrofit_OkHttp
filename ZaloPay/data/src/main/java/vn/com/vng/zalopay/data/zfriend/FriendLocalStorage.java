@@ -94,35 +94,35 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         ZaloFriendGD item = mDao.load(entity.userId);
         if (item == null) {
             item = new ZaloFriendGD();
-            item.setZaloId(entity.userId);
-            item.setZaloPayId(entity.zaloPayId);
-            item.setPhoneNumber(entity.numberPhone);
-            item.setStatus(entity.status);
-            item.setZaloPayName(entity.zaloPayName);
+            item.zaloId = (entity.userId);
+            item.zaloPayId = (entity.zaloPayId);
+            item.phoneNumber = (entity.numberPhone);
+            item.status = (entity.status);
+            item.zaloPayName = (entity.zaloPayName);
         }
 
-        item.setUserName(entity.userName);
-        item.setDisplayName(entity.displayName);
-        item.setAvatar(entity.avatar);
-        item.setFulltextsearch(entity.normalizeDisplayName);
-        item.setUsingApp(entity.usingApp);
+        item.userName = (entity.userName);
+        item.displayName = (entity.displayName);
+        item.avatar = (entity.avatar);
+        item.fulltextsearch = (entity.normalizeDisplayName);
+        item.usingApp = (entity.usingApp);
 
         return item;
     }
 
     private ZaloFriendEntity transform(ZaloFriendGD entity) {
         ZaloFriendEntity ret = new ZaloFriendEntity();
-        ret.userId = entity.getZaloId();
-        ret.userName = entity.getUserName();
-        ret.displayName = entity.getDisplayName();
-        ret.avatar = entity.getAvatar();
-        ret.normalizeDisplayName = entity.getFulltextsearch();
-        ret.usingApp = entity.getUsingApp();
+        ret.userId = entity.zaloId;
+        ret.userName = entity.userName;
+        ret.displayName = entity.displayName;
+        ret.avatar = entity.avatar;
+        ret.normalizeDisplayName = entity.fulltextsearch;
+        ret.usingApp = entity.usingApp;
 
-        ret.zaloPayId = entity.getZaloPayId();
-        ret.numberPhone = entity.getPhoneNumber() == null ? 0 : entity.getPhoneNumber();
-        ret.zaloPayName = entity.getZaloPayName();
-        ret.status = entity.getStatus() == null ? 0 : entity.getStatus();
+        ret.zaloPayId = entity.zaloPayId;
+        ret.numberPhone = entity.phoneNumber == null ? 0 : entity.phoneNumber;
+        ret.zaloPayName = entity.zaloPayName;
+        ret.status = entity.status == null ? 0 : entity.status;
         return ret;
     }
 
@@ -164,10 +164,10 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         for (UserExistEntity entity : list) {
             ZaloFriendGD zaloFriendGD = getZFriendDb(entity.zaloid);
             if (zaloFriendGD != null) {
-                zaloFriendGD.setStatus(entity.status);
-                zaloFriendGD.setPhoneNumber(entity.phonenumber);
-                zaloFriendGD.setZaloPayId(entity.userid);
-                zaloFriendGD.setZaloPayName(entity.zalopayname);
+                zaloFriendGD.status = (entity.status);
+                zaloFriendGD.phoneNumber = (entity.phonenumber);
+                zaloFriendGD.zaloPayId = (entity.userid);
+                zaloFriendGD.zaloPayName = (entity.zalopayname);
                 listUserDb.add(zaloFriendGD);
             }
         }

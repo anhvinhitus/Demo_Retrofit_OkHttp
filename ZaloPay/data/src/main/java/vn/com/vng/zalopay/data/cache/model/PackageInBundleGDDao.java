@@ -74,52 +74,52 @@ public class PackageInBundleGDDao extends AbstractDao<PackageInBundleGD, Long> {
     protected final void bindValues(DatabaseStatement stmt, PackageInBundleGD entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        Long id = entity.id;
         if (id != null) {
             stmt.bindLong(1, id);
         }
  
-        Long bundleID = entity.getBundleID();
+        Long bundleID = entity.bundleID;
         if (bundleID != null) {
             stmt.bindLong(2, bundleID);
         }
  
-        String revZaloPayID = entity.getRevZaloPayID();
+        String revZaloPayID = entity.revZaloPayID;
         if (revZaloPayID != null) {
             stmt.bindString(3, revZaloPayID);
         }
  
-        Long revZaloID = entity.getRevZaloID();
+        Long revZaloID = entity.revZaloID;
         if (revZaloID != null) {
             stmt.bindLong(4, revZaloID);
         }
  
-        String revFullName = entity.getRevFullName();
+        String revFullName = entity.revFullName;
         if (revFullName != null) {
             stmt.bindString(5, revFullName);
         }
  
-        String revAvatarURL = entity.getRevAvatarURL();
+        String revAvatarURL = entity.revAvatarURL;
         if (revAvatarURL != null) {
             stmt.bindString(6, revAvatarURL);
         }
  
-        Long openTime = entity.getOpenTime();
+        Long openTime = entity.openTime;
         if (openTime != null) {
             stmt.bindLong(7, openTime);
         }
  
-        Long amount = entity.getAmount();
+        Long amount = entity.amount;
         if (amount != null) {
             stmt.bindLong(8, amount);
         }
  
-        String sendMessage = entity.getSendMessage();
+        String sendMessage = entity.sendMessage;
         if (sendMessage != null) {
             stmt.bindString(9, sendMessage);
         }
  
-        Integer isLuckiest = entity.getIsLuckiest();
+        Integer isLuckiest = entity.isLuckiest;
         if (isLuckiest != null) {
             stmt.bindLong(10, isLuckiest);
         }
@@ -129,52 +129,52 @@ public class PackageInBundleGDDao extends AbstractDao<PackageInBundleGD, Long> {
     protected final void bindValues(SQLiteStatement stmt, PackageInBundleGD entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        Long id = entity.id;
         if (id != null) {
             stmt.bindLong(1, id);
         }
  
-        Long bundleID = entity.getBundleID();
+        Long bundleID = entity.bundleID;
         if (bundleID != null) {
             stmt.bindLong(2, bundleID);
         }
  
-        String revZaloPayID = entity.getRevZaloPayID();
+        String revZaloPayID = entity.revZaloPayID;
         if (revZaloPayID != null) {
             stmt.bindString(3, revZaloPayID);
         }
  
-        Long revZaloID = entity.getRevZaloID();
+        Long revZaloID = entity.revZaloID;
         if (revZaloID != null) {
             stmt.bindLong(4, revZaloID);
         }
  
-        String revFullName = entity.getRevFullName();
+        String revFullName = entity.revFullName;
         if (revFullName != null) {
             stmt.bindString(5, revFullName);
         }
  
-        String revAvatarURL = entity.getRevAvatarURL();
+        String revAvatarURL = entity.revAvatarURL;
         if (revAvatarURL != null) {
             stmt.bindString(6, revAvatarURL);
         }
  
-        Long openTime = entity.getOpenTime();
+        Long openTime = entity.openTime;
         if (openTime != null) {
             stmt.bindLong(7, openTime);
         }
  
-        Long amount = entity.getAmount();
+        Long amount = entity.amount;
         if (amount != null) {
             stmt.bindLong(8, amount);
         }
  
-        String sendMessage = entity.getSendMessage();
+        String sendMessage = entity.sendMessage;
         if (sendMessage != null) {
             stmt.bindString(9, sendMessage);
         }
  
-        Integer isLuckiest = entity.getIsLuckiest();
+        Integer isLuckiest = entity.isLuckiest;
         if (isLuckiest != null) {
             stmt.bindLong(10, isLuckiest);
         }
@@ -204,28 +204,28 @@ public class PackageInBundleGDDao extends AbstractDao<PackageInBundleGD, Long> {
      
     @Override
     public void readEntity(Cursor cursor, PackageInBundleGD entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setBundleID(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setRevZaloPayID(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setRevZaloID(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setRevFullName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setRevAvatarURL(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setOpenTime(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
-        entity.setAmount(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setSendMessage(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setIsLuckiest(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
+        entity.id = cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+        entity.bundleID = cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
+        entity.revZaloPayID = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
+        entity.revZaloID = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
+        entity.revFullName = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
+        entity.revAvatarURL = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
+        entity.openTime = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
+        entity.amount = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
+        entity.sendMessage = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
+        entity.isLuckiest = cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(PackageInBundleGD entity, long rowId) {
-        entity.setId(rowId);
+        entity.id = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(PackageInBundleGD entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.id;
         } else {
             return null;
         }
@@ -233,7 +233,7 @@ public class PackageInBundleGDDao extends AbstractDao<PackageInBundleGD, Long> {
 
     @Override
     public boolean hasKey(PackageInBundleGD entity) {
-        return entity.getId() != null;
+        return entity.id != null;
     }
 
     @Override

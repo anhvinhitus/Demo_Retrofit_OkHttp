@@ -54,14 +54,14 @@ public class BundleGDDao extends AbstractDao<BundleGD, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, BundleGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+        stmt.bindLong(1, entity.id);
  
-        Long createTime = entity.getCreateTime();
+        Long createTime = entity.createTime;
         if (createTime != null) {
             stmt.bindLong(2, createTime);
         }
  
-        Long lastTimeGetPackage = entity.getLastTimeGetPackage();
+        Long lastTimeGetPackage = entity.lastTimeGetPackage;
         if (lastTimeGetPackage != null) {
             stmt.bindLong(3, lastTimeGetPackage);
         }
@@ -70,14 +70,14 @@ public class BundleGDDao extends AbstractDao<BundleGD, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, BundleGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+        stmt.bindLong(1, entity.id);
  
-        Long createTime = entity.getCreateTime();
+        Long createTime = entity.createTime;
         if (createTime != null) {
             stmt.bindLong(2, createTime);
         }
  
-        Long lastTimeGetPackage = entity.getLastTimeGetPackage();
+        Long lastTimeGetPackage = entity.lastTimeGetPackage;
         if (lastTimeGetPackage != null) {
             stmt.bindLong(3, lastTimeGetPackage);
         }
@@ -100,21 +100,21 @@ public class BundleGDDao extends AbstractDao<BundleGD, Long> {
      
     @Override
     public void readEntity(Cursor cursor, BundleGD entity, int offset) {
-        entity.setId(cursor.getLong(offset + 0));
-        entity.setCreateTime(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setLastTimeGetPackage(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.id = cursor.getLong(offset + 0);
+        entity.createTime = cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
+        entity.lastTimeGetPackage = cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(BundleGD entity, long rowId) {
-        entity.setId(rowId);
+        entity.id = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(BundleGD entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.id;
         } else {
             return null;
         }

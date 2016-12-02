@@ -57,22 +57,22 @@ public class SentBundleSummaryDBDao extends AbstractDao<SentBundleSummaryDB, Lon
     protected final void bindValues(DatabaseStatement stmt, SentBundleSummaryDB entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        Long id = entity.id;
         if (id != null) {
             stmt.bindLong(1, id);
         }
  
-        Long totalOfSentAmount = entity.getTotalOfSentAmount();
+        Long totalOfSentAmount = entity.totalOfSentAmount;
         if (totalOfSentAmount != null) {
             stmt.bindLong(2, totalOfSentAmount);
         }
  
-        Integer totalOfSentBundle = entity.getTotalOfSentBundle();
+        Integer totalOfSentBundle = entity.totalOfSentBundle;
         if (totalOfSentBundle != null) {
             stmt.bindLong(3, totalOfSentBundle);
         }
  
-        Long timeCreate = entity.getTimeCreate();
+        Long timeCreate = entity.timeCreate;
         if (timeCreate != null) {
             stmt.bindLong(4, timeCreate);
         }
@@ -82,22 +82,22 @@ public class SentBundleSummaryDBDao extends AbstractDao<SentBundleSummaryDB, Lon
     protected final void bindValues(SQLiteStatement stmt, SentBundleSummaryDB entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        Long id = entity.id;
         if (id != null) {
             stmt.bindLong(1, id);
         }
  
-        Long totalOfSentAmount = entity.getTotalOfSentAmount();
+        Long totalOfSentAmount = entity.totalOfSentAmount;
         if (totalOfSentAmount != null) {
             stmt.bindLong(2, totalOfSentAmount);
         }
  
-        Integer totalOfSentBundle = entity.getTotalOfSentBundle();
+        Integer totalOfSentBundle = entity.totalOfSentBundle;
         if (totalOfSentBundle != null) {
             stmt.bindLong(3, totalOfSentBundle);
         }
  
-        Long timeCreate = entity.getTimeCreate();
+        Long timeCreate = entity.timeCreate;
         if (timeCreate != null) {
             stmt.bindLong(4, timeCreate);
         }
@@ -121,22 +121,22 @@ public class SentBundleSummaryDBDao extends AbstractDao<SentBundleSummaryDB, Lon
      
     @Override
     public void readEntity(Cursor cursor, SentBundleSummaryDB entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setTotalOfSentAmount(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setTotalOfSentBundle(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
-        entity.setTimeCreate(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
+        entity.id = cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+        entity.totalOfSentAmount = cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
+        entity.totalOfSentBundle = cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2);
+        entity.timeCreate = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(SentBundleSummaryDB entity, long rowId) {
-        entity.setId(rowId);
+        entity.id = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(SentBundleSummaryDB entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.id;
         } else {
             return null;
         }
@@ -144,7 +144,7 @@ public class SentBundleSummaryDBDao extends AbstractDao<SentBundleSummaryDB, Lon
 
     @Override
     public boolean hasKey(SentBundleSummaryDB entity) {
-        return entity.getId() != null;
+        return entity.id != null;
     }
 
     @Override

@@ -71,45 +71,45 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, SentBundleGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
-        stmt.bindString(2, entity.getSenderZaloPayID());
+        stmt.bindLong(1, entity.id);
+        stmt.bindString(2, entity.senderZaloPayID);
  
-        Integer type = entity.getType();
+        Integer type = entity.type;
         if (type != null) {
             stmt.bindLong(3, type);
         }
  
-        Long createTime = entity.getCreateTime();
+        Long createTime = entity.createTime;
         if (createTime != null) {
             stmt.bindLong(4, createTime);
         }
  
-        Long lastOpenTime = entity.getLastOpenTime();
+        Long lastOpenTime = entity.lastOpenTime;
         if (lastOpenTime != null) {
             stmt.bindLong(5, lastOpenTime);
         }
  
-        Integer totalLuck = entity.getTotalLuck();
+        Integer totalLuck = entity.totalLuck;
         if (totalLuck != null) {
             stmt.bindLong(6, totalLuck);
         }
  
-        Integer numOfOpenedPakages = entity.getNumOfOpenedPakages();
+        Integer numOfOpenedPakages = entity.numOfOpenedPakages;
         if (numOfOpenedPakages != null) {
             stmt.bindLong(7, numOfOpenedPakages);
         }
  
-        Integer numOfPackages = entity.getNumOfPackages();
+        Integer numOfPackages = entity.numOfPackages;
         if (numOfPackages != null) {
             stmt.bindLong(8, numOfPackages);
         }
  
-        String sendMessage = entity.getSendMessage();
+        String sendMessage = entity.sendMessage;
         if (sendMessage != null) {
             stmt.bindString(9, sendMessage);
         }
  
-        Integer status = entity.getStatus();
+        Integer status = entity.status;
         if (status != null) {
             stmt.bindLong(10, status);
         }
@@ -118,45 +118,45 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, SentBundleGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
-        stmt.bindString(2, entity.getSenderZaloPayID());
+        stmt.bindLong(1, entity.id);
+        stmt.bindString(2, entity.senderZaloPayID);
  
-        Integer type = entity.getType();
+        Integer type = entity.type;
         if (type != null) {
             stmt.bindLong(3, type);
         }
  
-        Long createTime = entity.getCreateTime();
+        Long createTime = entity.createTime;
         if (createTime != null) {
             stmt.bindLong(4, createTime);
         }
  
-        Long lastOpenTime = entity.getLastOpenTime();
+        Long lastOpenTime = entity.lastOpenTime;
         if (lastOpenTime != null) {
             stmt.bindLong(5, lastOpenTime);
         }
  
-        Integer totalLuck = entity.getTotalLuck();
+        Integer totalLuck = entity.totalLuck;
         if (totalLuck != null) {
             stmt.bindLong(6, totalLuck);
         }
  
-        Integer numOfOpenedPakages = entity.getNumOfOpenedPakages();
+        Integer numOfOpenedPakages = entity.numOfOpenedPakages;
         if (numOfOpenedPakages != null) {
             stmt.bindLong(7, numOfOpenedPakages);
         }
  
-        Integer numOfPackages = entity.getNumOfPackages();
+        Integer numOfPackages = entity.numOfPackages;
         if (numOfPackages != null) {
             stmt.bindLong(8, numOfPackages);
         }
  
-        String sendMessage = entity.getSendMessage();
+        String sendMessage = entity.sendMessage;
         if (sendMessage != null) {
             stmt.bindString(9, sendMessage);
         }
  
-        Integer status = entity.getStatus();
+        Integer status = entity.status;
         if (status != null) {
             stmt.bindLong(10, status);
         }
@@ -192,28 +192,28 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
      
     @Override
     public void readEntity(Cursor cursor, SentBundleGD entity, int offset) {
-        entity.setId(cursor.getLong(offset + 0));
-        entity.setSenderZaloPayID(cursor.getString(offset + 1));
-        entity.setType(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
-        entity.setCreateTime(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setLastOpenTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
-        entity.setTotalLuck(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setNumOfOpenedPakages(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
-        entity.setNumOfPackages(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-        entity.setSendMessage(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setStatus(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
+        entity.id = cursor.getLong(offset + 0);
+        entity.senderZaloPayID = cursor.getString(offset + 1);
+        entity.type = cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2);
+        entity.createTime = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
+        entity.lastOpenTime = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
+        entity.totalLuck = cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5);
+        entity.numOfOpenedPakages = cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6);
+        entity.numOfPackages = cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7);
+        entity.sendMessage = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
+        entity.status = cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(SentBundleGD entity, long rowId) {
-        entity.setId(rowId);
+        entity.id = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(SentBundleGD entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.id;
         } else {
             return null;
         }

@@ -33,10 +33,10 @@ public class PlatformDaoMapper {
         BankCardGD bankCardGD = null;
         if (cardEntity != null) {
             bankCardGD = new BankCardGD(cardEntity.cardhash);
-            bankCardGD.setBankcode(cardEntity.bankcode);
-            bankCardGD.setCardname(cardEntity.cardname);
-            bankCardGD.setFirst6cardno(cardEntity.first6cardno);
-            bankCardGD.setLast4cardno(cardEntity.last4cardno);
+            bankCardGD.bankcode = (cardEntity.bankcode);
+            bankCardGD.cardname = (cardEntity.cardname);
+            bankCardGD.first6cardno = (cardEntity.first6cardno);
+            bankCardGD.last4cardno = (cardEntity.last4cardno);
         }
         return bankCardGD;
     }
@@ -45,11 +45,11 @@ public class PlatformDaoMapper {
         CardEntity cardEntity = null;
         if (cardGD != null) {
             cardEntity = new CardEntity();
-            cardEntity.bankcode = cardGD.getBankcode();
-            cardEntity.cardhash = cardGD.getCardhash();
-            cardEntity.cardname = cardGD.getCardname();
-            cardEntity.first6cardno = cardGD.getFirst6cardno();
-            cardEntity.last4cardno = cardGD.getLast4cardno();
+            cardEntity.bankcode = cardGD.bankcode;
+            cardEntity.cardhash = cardGD.cardhash;
+            cardEntity.cardname = cardGD.cardname;
+            cardEntity.first6cardno = cardGD.first6cardno;
+            cardEntity.last4cardno = cardGD.last4cardno;
 
         }
         return cardEntity;
@@ -88,20 +88,20 @@ public class PlatformDaoMapper {
         AppResourceGD appResourceGD = null;
         if (appResourceEntity != null) {
             appResourceGD = new AppResourceGD();
-            appResourceGD.setAppid(appResourceEntity.appid);
-            appResourceGD.setAppname(appResourceEntity.appname);
-            appResourceGD.setChecksum(appResourceEntity.checksum);
-            appResourceGD.setImageurl(appResourceEntity.imageurl);
-            appResourceGD.setJsurl(appResourceEntity.jsurl);
-            appResourceGD.setNeeddownloadrs(appResourceEntity.needdownloadrs);
-            appResourceGD.setStatus(appResourceEntity.status);
-            appResourceGD.setApptype(appResourceEntity.apptype);
-            appResourceGD.setWeburl(appResourceEntity.weburl);
-            appResourceGD.setIconurl(appResourceEntity.iconurl);
-            appResourceGD.setSortOrder(appResourceEntity.sortOrder);
-            appResourceGD.setStateDownload(appResourceEntity.stateDownload);
-            appResourceGD.setNumRetry(appResourceEntity.numRetry);
-            appResourceGD.setTimeDownload(appResourceEntity.timeDownload);
+            appResourceGD.appid = (appResourceEntity.appid);
+            appResourceGD.appname = (appResourceEntity.appname);
+            appResourceGD.checksum = (appResourceEntity.checksum);
+            appResourceGD.imageurl = (appResourceEntity.imageurl);
+            appResourceGD.jsurl = (appResourceEntity.jsurl);
+            appResourceGD.needdownloadrs = (appResourceEntity.needdownloadrs);
+            appResourceGD.status = (appResourceEntity.status);
+            appResourceGD.apptype = (appResourceEntity.apptype);
+            appResourceGD.weburl = (appResourceEntity.weburl);
+            appResourceGD.iconurl = (appResourceEntity.iconurl);
+            appResourceGD.sortOrder = (appResourceEntity.sortOrder);
+            appResourceGD.stateDownload = (appResourceEntity.stateDownload);
+            appResourceGD.numRetry = (appResourceEntity.numRetry);
+            appResourceGD.timeDownload = (appResourceEntity.timeDownload);
         }
         return appResourceGD;
     }
@@ -110,28 +110,28 @@ public class PlatformDaoMapper {
         AppResourceEntity appResourceEntity = null;
         if (appResourceGD != null) {
             appResourceEntity = new AppResourceEntity();
-            appResourceEntity.appid = appResourceGD.getAppid();
-            appResourceEntity.appname = appResourceGD.getAppname();
-            appResourceEntity.checksum = appResourceGD.getChecksum();
-            appResourceEntity.imageurl = appResourceGD.getImageurl();
-            appResourceEntity.needdownloadrs = appResourceGD.getNeeddownloadrs() == null ? 0 : 1;
-            appResourceEntity.status = appResourceGD.getStatus() == null ? 0 : 1;
-            appResourceEntity.jsurl = appResourceGD.getJsurl() == null
-                    ? "" : appResourceGD.getJsurl();
-            appResourceEntity.apptype = appResourceGD.getApptype() == null
-                    ? 0 : appResourceGD.getApptype();
-            appResourceEntity.weburl = appResourceGD.getWeburl() == null
-                    ? "" : appResourceGD.getWeburl();
-            appResourceEntity.iconurl = appResourceGD.getIconurl() == null
-                    ? "" : appResourceGD.getIconurl();
-            appResourceEntity.sortOrder = appResourceGD.getSortOrder() == null
-                    ? 0 : appResourceGD.getSortOrder();
-            appResourceEntity.stateDownload = appResourceGD.getStateDownload() == null
-                    ? 0 : appResourceGD.getStateDownload();
-            appResourceEntity.numRetry = appResourceGD.getNumRetry() == null
-                    ? 0 : appResourceGD.getNumRetry();
-            appResourceEntity.timeDownload = appResourceGD.getTimeDownload() == null
-                    ? 0 : appResourceGD.getTimeDownload();
+            appResourceEntity.appid = appResourceGD.appid;
+            appResourceEntity.appname = appResourceGD.appname;
+            appResourceEntity.checksum = appResourceGD.checksum;
+            appResourceEntity.imageurl = appResourceGD.imageurl;
+            appResourceEntity.needdownloadrs = appResourceGD.needdownloadrs == null ? 0 : 1;
+            appResourceEntity.status = appResourceGD.status == null ? 0 : 1;
+            appResourceEntity.jsurl = appResourceGD.jsurl == null
+                    ? "" : appResourceGD.jsurl;
+            appResourceEntity.apptype = appResourceGD.apptype == null
+                    ? 0 : appResourceGD.apptype;
+            appResourceEntity.weburl = appResourceGD.weburl == null
+                    ? "" : appResourceGD.weburl;
+            appResourceEntity.iconurl = appResourceGD.iconurl == null
+                    ? "" : appResourceGD.iconurl;
+            appResourceEntity.sortOrder = appResourceGD.sortOrder == null
+                    ? 0 : appResourceGD.sortOrder;
+            appResourceEntity.stateDownload = appResourceGD.stateDownload == null
+                    ? 0 : appResourceGD.stateDownload;
+            appResourceEntity.numRetry = appResourceGD.numRetry == null
+                    ? 0 : appResourceGD.numRetry;
+            appResourceEntity.timeDownload = appResourceGD.timeDownload == null
+                    ? 0 : appResourceGD.timeDownload;
 
         }
         return appResourceEntity;
@@ -173,14 +173,14 @@ public class PlatformDaoMapper {
 
             for (PCMEntity pcmEntity : appResourceEntity.pmclist) {
                 PaymentTransTypeGD paymentTransTypeGD = new PaymentTransTypeGD(appResourceEntity.transtype);
-                paymentTransTypeGD.setPmcid(pcmEntity.pmcid);
-                paymentTransTypeGD.setStatus(pcmEntity.status);
-                paymentTransTypeGD.setFeecaltype(pcmEntity.feecaltype);
-                paymentTransTypeGD.setFeerate(pcmEntity.feerate);
-                paymentTransTypeGD.setMinvalue(pcmEntity.minvalue);
-                paymentTransTypeGD.setMaxvalue(pcmEntity.maxvalue);
-                paymentTransTypeGD.setPmcname(pcmEntity.pmcname);
-                paymentTransTypeGD.setMinfee(pcmEntity.minxfee);
+                paymentTransTypeGD.pmcid = (pcmEntity.pmcid);
+                paymentTransTypeGD.status = (pcmEntity.status);
+                paymentTransTypeGD.feecaltype = (pcmEntity.feecaltype);
+                paymentTransTypeGD.feerate = (pcmEntity.feerate);
+                paymentTransTypeGD.minvalue = (pcmEntity.minvalue);
+                paymentTransTypeGD.maxvalue = (pcmEntity.maxvalue);
+                paymentTransTypeGD.pmcname = (pcmEntity.pmcname);
+                paymentTransTypeGD.minfee = (pcmEntity.minxfee);
 
                 listPaymentTransDao.add(paymentTransTypeGD);
             }

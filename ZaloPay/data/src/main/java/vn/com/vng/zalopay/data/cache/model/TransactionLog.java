@@ -12,22 +12,22 @@ public class TransactionLog {
 
     @Id
     @Unique
-    private long transid;
-    private long appid;
-    private String userid;
-    private String appuser;
-    private String platform;
-    private String description;
-    private Integer pmcid;
-    private Long reqdate;
-    private Integer userchargeamt;
-    private Integer userfeeamt;
-    private Integer amount;
-    private Integer type;
-    private Integer sign;
-    private String username;
-    private String appusername;
-    private Integer statustype;
+    public long transid;
+    public long appid;
+    public String userid;
+    public String appuser;
+    public String platform;
+    public String description;
+    public Integer pmcid;
+    public Long reqdate;
+    public Integer userchargeamt;
+    public Integer userfeeamt;
+    public Integer amount;
+    public Integer type;
+    public Integer sign;
+    public String username;
+    public String appusername;
+    public Integer statustype;
 
     @Generated
     public TransactionLog() {
@@ -54,134 +54,6 @@ public class TransactionLog {
         this.sign = sign;
         this.username = username;
         this.appusername = appusername;
-        this.statustype = statustype;
-    }
-
-    public long getTransid() {
-        return transid;
-    }
-
-    public void setTransid(long transid) {
-        this.transid = transid;
-    }
-
-    public long getAppid() {
-        return appid;
-    }
-
-    public void setAppid(long appid) {
-        this.appid = appid;
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
-    }
-
-    public String getAppuser() {
-        return appuser;
-    }
-
-    public void setAppuser(String appuser) {
-        this.appuser = appuser;
-    }
-
-    public String getPlatform() {
-        return platform;
-    }
-
-    public void setPlatform(String platform) {
-        this.platform = platform;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getPmcid() {
-        return pmcid;
-    }
-
-    public void setPmcid(Integer pmcid) {
-        this.pmcid = pmcid;
-    }
-
-    public Long getReqdate() {
-        return reqdate;
-    }
-
-    public void setReqdate(Long reqdate) {
-        this.reqdate = reqdate;
-    }
-
-    public Integer getUserchargeamt() {
-        return userchargeamt;
-    }
-
-    public void setUserchargeamt(Integer userchargeamt) {
-        this.userchargeamt = userchargeamt;
-    }
-
-    public Integer getUserfeeamt() {
-        return userfeeamt;
-    }
-
-    public void setUserfeeamt(Integer userfeeamt) {
-        this.userfeeamt = userfeeamt;
-    }
-
-    public Integer getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public Integer getSign() {
-        return sign;
-    }
-
-    public void setSign(Integer sign) {
-        this.sign = sign;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getAppusername() {
-        return appusername;
-    }
-
-    public void setAppusername(String appusername) {
-        this.appusername = appusername;
-    }
-
-    public Integer getStatustype() {
-        return statustype;
-    }
-
-    public void setStatustype(Integer statustype) {
         this.statustype = statustype;
     }
 

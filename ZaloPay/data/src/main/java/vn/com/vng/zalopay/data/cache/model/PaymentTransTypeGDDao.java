@@ -69,40 +69,40 @@ public class PaymentTransTypeGDDao extends AbstractDao<PaymentTransTypeGD, Long>
     @Override
     protected final void bindValues(DatabaseStatement stmt, PaymentTransTypeGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTranstype());
-        stmt.bindLong(2, entity.getPmcid());
+        stmt.bindLong(1, entity.transtype);
+        stmt.bindLong(2, entity.pmcid);
  
-        String pmcname = entity.getPmcname();
+        String pmcname = entity.pmcname;
         if (pmcname != null) {
             stmt.bindString(3, pmcname);
         }
  
-        Integer status = entity.getStatus();
+        Integer status = entity.status;
         if (status != null) {
             stmt.bindLong(4, status);
         }
  
-        Long minvalue = entity.getMinvalue();
+        Long minvalue = entity.minvalue;
         if (minvalue != null) {
             stmt.bindLong(5, minvalue);
         }
  
-        Long maxvalue = entity.getMaxvalue();
+        Long maxvalue = entity.maxvalue;
         if (maxvalue != null) {
             stmt.bindLong(6, maxvalue);
         }
  
-        Float feerate = entity.getFeerate();
+        Float feerate = entity.feerate;
         if (feerate != null) {
             stmt.bindDouble(7, feerate);
         }
  
-        Long minfee = entity.getMinfee();
+        Long minfee = entity.minfee;
         if (minfee != null) {
             stmt.bindLong(8, minfee);
         }
  
-        String feecaltype = entity.getFeecaltype();
+        String feecaltype = entity.feecaltype;
         if (feecaltype != null) {
             stmt.bindString(9, feecaltype);
         }
@@ -111,40 +111,40 @@ public class PaymentTransTypeGDDao extends AbstractDao<PaymentTransTypeGD, Long>
     @Override
     protected final void bindValues(SQLiteStatement stmt, PaymentTransTypeGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTranstype());
-        stmt.bindLong(2, entity.getPmcid());
+        stmt.bindLong(1, entity.transtype);
+        stmt.bindLong(2, entity.pmcid);
  
-        String pmcname = entity.getPmcname();
+        String pmcname = entity.pmcname;
         if (pmcname != null) {
             stmt.bindString(3, pmcname);
         }
  
-        Integer status = entity.getStatus();
+        Integer status = entity.status;
         if (status != null) {
             stmt.bindLong(4, status);
         }
  
-        Long minvalue = entity.getMinvalue();
+        Long minvalue = entity.minvalue;
         if (minvalue != null) {
             stmt.bindLong(5, minvalue);
         }
  
-        Long maxvalue = entity.getMaxvalue();
+        Long maxvalue = entity.maxvalue;
         if (maxvalue != null) {
             stmt.bindLong(6, maxvalue);
         }
  
-        Float feerate = entity.getFeerate();
+        Float feerate = entity.feerate;
         if (feerate != null) {
             stmt.bindDouble(7, feerate);
         }
  
-        Long minfee = entity.getMinfee();
+        Long minfee = entity.minfee;
         if (minfee != null) {
             stmt.bindLong(8, minfee);
         }
  
-        String feecaltype = entity.getFeecaltype();
+        String feecaltype = entity.feecaltype;
         if (feecaltype != null) {
             stmt.bindString(9, feecaltype);
         }
@@ -173,27 +173,27 @@ public class PaymentTransTypeGDDao extends AbstractDao<PaymentTransTypeGD, Long>
      
     @Override
     public void readEntity(Cursor cursor, PaymentTransTypeGD entity, int offset) {
-        entity.setTranstype(cursor.getLong(offset + 0));
-        entity.setPmcid(cursor.getLong(offset + 1));
-        entity.setPmcname(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setStatus(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
-        entity.setMinvalue(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
-        entity.setMaxvalue(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
-        entity.setFeerate(cursor.isNull(offset + 6) ? null : cursor.getFloat(offset + 6));
-        entity.setMinfee(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setFeecaltype(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.transtype = cursor.getLong(offset + 0);
+        entity.pmcid = cursor.getLong(offset + 1);
+        entity.pmcname = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
+        entity.status = cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3);
+        entity.minvalue = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
+        entity.maxvalue = cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5);
+        entity.feerate = cursor.isNull(offset + 6) ? null : cursor.getFloat(offset + 6);
+        entity.minfee = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
+        entity.feecaltype = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(PaymentTransTypeGD entity, long rowId) {
-        entity.setTranstype(rowId);
+        entity.transtype = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(PaymentTransTypeGD entity) {
         if(entity != null) {
-            return entity.getTranstype();
+            return entity.transtype;
         } else {
             return null;
         }

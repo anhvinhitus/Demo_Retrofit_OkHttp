@@ -50,7 +50,7 @@ public class DaoGenerator {
     private Template templateDaoUnitTest;
     private Template templateContentProvider;
 
-    public DaoGenerator() throws IOException {
+    public DaoGenerator(String templatePath) throws IOException {
         System.out.println("greenDAO Generator");
         System.out.println("Copyright 2011-2016 Markus Junginger, greenrobot.de. Licensed under GPL V3.");
         System.out.println("This program comes with ABSOLUTELY NO WARRANTY");
@@ -59,7 +59,7 @@ public class DaoGenerator {
         patternKeepFields = compilePattern("FIELDS");
         patternKeepMethods = compilePattern("METHODS");
 
-        Configuration config = getConfiguration("dao.ftl");
+        Configuration config = getConfiguration(templatePath, "dao.ftl");
         templateDao = config.getTemplate("dao.ftl");
         templateDaoMaster = config.getTemplate("dao-master.ftl");
         templateDaoSession = config.getTemplate("dao-session.ftl");
@@ -68,21 +68,37 @@ public class DaoGenerator {
         templateContentProvider = config.getTemplate("content-provider.ftl");
     }
 
-    private Configuration getConfiguration(String probingTemplate) throws IOException {
+    private Configuration getConfiguration(String templatePath, String probingTemplate) throws IOException {
         Configuration config = new Configuration(Configuration.VERSION_2_3_23);
         config.setClassForTemplateLoading(getClass(), "/");
 
         try {
+            if (templatePath != null && !templatePath.equals("")) {
+                File dir = new File(templatePath);
+                if (dir.exists() && new File(dir, probingTemplate).exists()) {
+                    config.setDirectoryForTemplateLoading(dir);
+                    config.getTemplate(probingTemplate);
+                    return config;
+                }
+            }
             config.getTemplate(probingTemplate);
         } catch (TemplateNotFoundException e) {
             // When running from an IDE like IntelliJ, class loading resources may fail for some reason (Gradle is OK)
 
-            // Working dir is module dir
-            File dir = new File("src/main/resources/");
-            if (!dir.exists()) {
-                // Working dir is base module dir
-                dir = new File("DaoGenerator/src/main/resources/");
+            File dir = null;
+            if (templatePath != null && !templatePath.equals("")) {
+                dir = new File(templatePath);
             }
+
+            if (!dir.exists() || !(new File(dir, probingTemplate).exists())) {
+                // Working dir is module dir
+                dir = new File("src/main/resources/");
+                if (!dir.exists()) {
+                    // Working dir is base module dir
+                    dir = new File("daogenerator/src/main/resources/");
+                }
+            }
+
             if (dir.exists() && new File(dir, probingTemplate).exists()) {
                 config.setDirectoryForTemplateLoading(dir);
                 config.getTemplate(probingTemplate);

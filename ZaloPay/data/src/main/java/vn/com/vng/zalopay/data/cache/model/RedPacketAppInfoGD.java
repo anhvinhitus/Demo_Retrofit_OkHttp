@@ -11,16 +11,16 @@ import org.greenrobot.greendao.annotation.*;
 public class RedPacketAppInfoGD {
 
     @Id(autoincrement = true)
-    private Long id;
-    private String checksum;
-    private Long expiredTime;
-    private Long minAmounTeach;
-    private Long maxTotalAmountPerBundle;
-    private Integer maxPackageQuantity;
-    private Integer maxCountHist;
-    private Integer maxMessageLength;
-    private Long bundleExpiredTime;
-    private Long minDivideAmount;
+    public Long id;
+    public String checksum;
+    public Long expiredTime;
+    public Long minAmounTeach;
+    public Long maxTotalAmountPerBundle;
+    public Integer maxPackageQuantity;
+    public Integer maxCountHist;
+    public Integer maxMessageLength;
+    public Long bundleExpiredTime;
+    public Long minDivideAmount;
 
     @Generated
     public RedPacketAppInfoGD() {
@@ -41,86 +41,6 @@ public class RedPacketAppInfoGD {
         this.maxCountHist = maxCountHist;
         this.maxMessageLength = maxMessageLength;
         this.bundleExpiredTime = bundleExpiredTime;
-        this.minDivideAmount = minDivideAmount;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getChecksum() {
-        return checksum;
-    }
-
-    public void setChecksum(String checksum) {
-        this.checksum = checksum;
-    }
-
-    public Long getExpiredTime() {
-        return expiredTime;
-    }
-
-    public void setExpiredTime(Long expiredTime) {
-        this.expiredTime = expiredTime;
-    }
-
-    public Long getMinAmounTeach() {
-        return minAmounTeach;
-    }
-
-    public void setMinAmounTeach(Long minAmounTeach) {
-        this.minAmounTeach = minAmounTeach;
-    }
-
-    public Long getMaxTotalAmountPerBundle() {
-        return maxTotalAmountPerBundle;
-    }
-
-    public void setMaxTotalAmountPerBundle(Long maxTotalAmountPerBundle) {
-        this.maxTotalAmountPerBundle = maxTotalAmountPerBundle;
-    }
-
-    public Integer getMaxPackageQuantity() {
-        return maxPackageQuantity;
-    }
-
-    public void setMaxPackageQuantity(Integer maxPackageQuantity) {
-        this.maxPackageQuantity = maxPackageQuantity;
-    }
-
-    public Integer getMaxCountHist() {
-        return maxCountHist;
-    }
-
-    public void setMaxCountHist(Integer maxCountHist) {
-        this.maxCountHist = maxCountHist;
-    }
-
-    public Integer getMaxMessageLength() {
-        return maxMessageLength;
-    }
-
-    public void setMaxMessageLength(Integer maxMessageLength) {
-        this.maxMessageLength = maxMessageLength;
-    }
-
-    public Long getBundleExpiredTime() {
-        return bundleExpiredTime;
-    }
-
-    public void setBundleExpiredTime(Long bundleExpiredTime) {
-        this.bundleExpiredTime = bundleExpiredTime;
-    }
-
-    public Long getMinDivideAmount() {
-        return minDivideAmount;
-    }
-
-    public void setMinDivideAmount(Long minDivideAmount) {
         this.minDivideAmount = minDivideAmount;
     }
 

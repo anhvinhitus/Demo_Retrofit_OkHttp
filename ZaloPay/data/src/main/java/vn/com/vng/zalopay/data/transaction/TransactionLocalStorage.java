@@ -99,21 +99,21 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         }
 
         TransactionLog transDao = new TransactionLog(transEntity.transid);
-        transDao.setAppuser(transEntity.appuser);
-        transDao.setAppid(transEntity.appid);
-        transDao.setDescription(transEntity.description);
-        transDao.setUserchargeamt(transEntity.userchargeamt);
-        transDao.setUserfeeamt(transEntity.userfeeamt);
-        transDao.setAmount(transEntity.amount);
-        transDao.setPlatform(transEntity.platform);
-        transDao.setPmcid(transEntity.pmcid);
-        transDao.setType(transEntity.type);
-        transDao.setReqdate(transEntity.reqdate);
-        transDao.setUserid(transEntity.userid);
-        transDao.setSign(transEntity.sign);
-        transDao.setUsername(transEntity.username);
-        transDao.setAppusername(transEntity.appusername);
-        transDao.setStatustype(transEntity.statustype);
+        transDao.appuser = (transEntity.appuser);
+        transDao.appid = (transEntity.appid);
+        transDao.description = (transEntity.description);
+        transDao.userchargeamt = (transEntity.userchargeamt);
+        transDao.userfeeamt = (transEntity.userfeeamt);
+        transDao.amount = (transEntity.amount);
+        transDao.platform = (transEntity.platform);
+        transDao.pmcid = (transEntity.pmcid);
+        transDao.type = (transEntity.type);
+        transDao.reqdate = (transEntity.reqdate);
+        transDao.userid = (transEntity.userid);
+        transDao.sign = (transEntity.sign);
+        transDao.username = (transEntity.username);
+        transDao.appusername = (transEntity.appusername);
+        transDao.statustype = (transEntity.statustype);
         return transDao;
     }
 
@@ -123,22 +123,22 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         }
 
         TransHistoryEntity transHistoryEntity = new TransHistoryEntity();
-        transHistoryEntity.appid = transDao.getAppid();
-        transHistoryEntity.appuser = transDao.getAppuser();
-        transHistoryEntity.description = transDao.getDescription();
-        transHistoryEntity.userchargeamt = transDao.getUserchargeamt();
-        transHistoryEntity.userfeeamt = transDao.getUserfeeamt();
-        transHistoryEntity.amount = transDao.getAmount();
-        transHistoryEntity.platform = transDao.getPlatform();
-        transHistoryEntity.pmcid = transDao.getPmcid();
-        transHistoryEntity.reqdate = transDao.getReqdate();
-        transHistoryEntity.transid = transDao.getTransid();
-        transHistoryEntity.type = transDao.getType();
-        transHistoryEntity.userid = transDao.getUserid();
-        transHistoryEntity.sign = transDao.getSign();
-        transHistoryEntity.username = transDao.getUsername();
-        transHistoryEntity.appusername = transDao.getAppusername();
-        transHistoryEntity.statustype = transDao.getStatustype();
+        transHistoryEntity.appid = transDao.appid;
+        transHistoryEntity.appuser = transDao.appuser;
+        transHistoryEntity.description = transDao.description;
+        transHistoryEntity.userchargeamt = transDao.userchargeamt;
+        transHistoryEntity.userfeeamt = transDao.userfeeamt;
+        transHistoryEntity.amount = transDao.amount;
+        transHistoryEntity.platform = transDao.platform;
+        transHistoryEntity.pmcid = transDao.pmcid;
+        transHistoryEntity.reqdate = transDao.reqdate;
+        transHistoryEntity.transid = transDao.transid;
+        transHistoryEntity.type = transDao.type;
+        transHistoryEntity.userid = transDao.userid;
+        transHistoryEntity.sign = transDao.sign;
+        transHistoryEntity.username = transDao.username;
+        transHistoryEntity.appusername = transDao.appusername;
+        transHistoryEntity.statustype = transDao.statustype;
         return transHistoryEntity;
     }
 
@@ -178,7 +178,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     @Override
     public void updateStatusType(long transId, int status) {
         TransactionLog transactionLog = queryTransactionById(transId);
-        transactionLog.setStatustype(status);
+        transactionLog.statustype = (status);
         getDaoSession().getTransactionLogDao().insertOrReplaceInTx(transactionLog);
     }
 
@@ -210,7 +210,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
                 .orderDesc(TransactionLogDao.Properties.Reqdate)
                 .limit(1).list();
         if (!Lists.isEmptyOrNull(log)) {
-            timeUpdate = log.get(0).getReqdate();
+            timeUpdate = log.get(0).reqdate;
         }
         Timber.d("getLatestTimeTransaction timeUpdate %s", timeUpdate);
         return timeUpdate;
@@ -224,7 +224,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
                 .orderAsc(TransactionLogDao.Properties.Reqdate)
                 .limit(1).list();
         if (!Lists.isEmptyOrNull(log)) {
-            timeUpdate = log.get(0).getReqdate();
+            timeUpdate = log.get(0).reqdate;
         }
         Timber.d("getOldestTimeTransaction timeUpdate %s", timeUpdate);
         return timeUpdate;

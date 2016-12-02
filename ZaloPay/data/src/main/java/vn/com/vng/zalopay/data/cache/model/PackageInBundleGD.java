@@ -11,16 +11,16 @@ import org.greenrobot.greendao.annotation.*;
 public class PackageInBundleGD {
 
     @Id
-    private Long id;
-    private Long bundleID;
-    private String revZaloPayID;
-    private Long revZaloID;
-    private String revFullName;
-    private String revAvatarURL;
-    private Long openTime;
-    private Long amount;
-    private String sendMessage;
-    private Integer isLuckiest;
+    public Long id;
+    public Long bundleID;
+    public String revZaloPayID;
+    public Long revZaloID;
+    public String revFullName;
+    public String revAvatarURL;
+    public Long openTime;
+    public Long amount;
+    public String sendMessage;
+    public Integer isLuckiest;
 
     @Generated
     public PackageInBundleGD() {
@@ -41,86 +41,6 @@ public class PackageInBundleGD {
         this.openTime = openTime;
         this.amount = amount;
         this.sendMessage = sendMessage;
-        this.isLuckiest = isLuckiest;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getBundleID() {
-        return bundleID;
-    }
-
-    public void setBundleID(Long bundleID) {
-        this.bundleID = bundleID;
-    }
-
-    public String getRevZaloPayID() {
-        return revZaloPayID;
-    }
-
-    public void setRevZaloPayID(String revZaloPayID) {
-        this.revZaloPayID = revZaloPayID;
-    }
-
-    public Long getRevZaloID() {
-        return revZaloID;
-    }
-
-    public void setRevZaloID(Long revZaloID) {
-        this.revZaloID = revZaloID;
-    }
-
-    public String getRevFullName() {
-        return revFullName;
-    }
-
-    public void setRevFullName(String revFullName) {
-        this.revFullName = revFullName;
-    }
-
-    public String getRevAvatarURL() {
-        return revAvatarURL;
-    }
-
-    public void setRevAvatarURL(String revAvatarURL) {
-        this.revAvatarURL = revAvatarURL;
-    }
-
-    public Long getOpenTime() {
-        return openTime;
-    }
-
-    public void setOpenTime(Long openTime) {
-        this.openTime = openTime;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
-
-    public String getSendMessage() {
-        return sendMessage;
-    }
-
-    public void setSendMessage(String sendMessage) {
-        this.sendMessage = sendMessage;
-    }
-
-    public Integer getIsLuckiest() {
-        return isLuckiest;
-    }
-
-    public void setIsLuckiest(Integer isLuckiest) {
         this.isLuckiest = isLuckiest;
     }
 

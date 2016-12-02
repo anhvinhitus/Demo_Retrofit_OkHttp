@@ -11,20 +11,20 @@ import org.greenrobot.greendao.annotation.*;
 public class AppResourceGD {
 
     @Unique
-    private int appid;
-    private String appname;
-    private Integer needdownloadrs;
-    private String imageurl;
-    private String jsurl;
-    private Integer status;
-    private String checksum;
-    private Integer apptype;
-    private String weburl;
-    private String iconurl;
-    private Integer sortOrder;
-    private Integer stateDownload;
-    private Long timeDownload;
-    private Integer numRetry;
+    public int appid;
+    public String appname;
+    public Integer needdownloadrs;
+    public String imageurl;
+    public String jsurl;
+    public Integer status;
+    public String checksum;
+    public Integer apptype;
+    public String weburl;
+    public String iconurl;
+    public Integer sortOrder;
+    public Integer stateDownload;
+    public Long timeDownload;
+    public Integer numRetry;
 
     @Generated
     public AppResourceGD() {
@@ -45,118 +45,6 @@ public class AppResourceGD {
         this.sortOrder = sortOrder;
         this.stateDownload = stateDownload;
         this.timeDownload = timeDownload;
-        this.numRetry = numRetry;
-    }
-
-    public int getAppid() {
-        return appid;
-    }
-
-    public void setAppid(int appid) {
-        this.appid = appid;
-    }
-
-    public String getAppname() {
-        return appname;
-    }
-
-    public void setAppname(String appname) {
-        this.appname = appname;
-    }
-
-    public Integer getNeeddownloadrs() {
-        return needdownloadrs;
-    }
-
-    public void setNeeddownloadrs(Integer needdownloadrs) {
-        this.needdownloadrs = needdownloadrs;
-    }
-
-    public String getImageurl() {
-        return imageurl;
-    }
-
-    public void setImageurl(String imageurl) {
-        this.imageurl = imageurl;
-    }
-
-    public String getJsurl() {
-        return jsurl;
-    }
-
-    public void setJsurl(String jsurl) {
-        this.jsurl = jsurl;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getChecksum() {
-        return checksum;
-    }
-
-    public void setChecksum(String checksum) {
-        this.checksum = checksum;
-    }
-
-    public Integer getApptype() {
-        return apptype;
-    }
-
-    public void setApptype(Integer apptype) {
-        this.apptype = apptype;
-    }
-
-    public String getWeburl() {
-        return weburl;
-    }
-
-    public void setWeburl(String weburl) {
-        this.weburl = weburl;
-    }
-
-    public String getIconurl() {
-        return iconurl;
-    }
-
-    public void setIconurl(String iconurl) {
-        this.iconurl = iconurl;
-    }
-
-    public Integer getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(Integer sortOrder) {
-        this.sortOrder = sortOrder;
-    }
-
-    public Integer getStateDownload() {
-        return stateDownload;
-    }
-
-    public void setStateDownload(Integer stateDownload) {
-        this.stateDownload = stateDownload;
-    }
-
-    public Long getTimeDownload() {
-        return timeDownload;
-    }
-
-    public void setTimeDownload(Long timeDownload) {
-        this.timeDownload = timeDownload;
-    }
-
-    public Integer getNumRetry() {
-        return numRetry;
-    }
-
-    public void setNumRetry(Integer numRetry) {
         this.numRetry = numRetry;
     }
 

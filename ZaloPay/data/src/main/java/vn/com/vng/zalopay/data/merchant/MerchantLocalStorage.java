@@ -66,7 +66,7 @@ public class MerchantLocalStorage extends SqlBaseScopeImpl implements MerchantSt
 
             List<Long> listMCIds = new ArrayList<>();
             for (MerchantUser merchantUser : listMerchant) {
-                listMCIds.add(merchantUser.getAppid());
+                listMCIds.add(merchantUser.appid);
             }
 
             boolean ret = appIds.removeAll(listMCIds);

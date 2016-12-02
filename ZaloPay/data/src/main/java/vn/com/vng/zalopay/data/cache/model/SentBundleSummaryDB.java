@@ -11,10 +11,10 @@ import org.greenrobot.greendao.annotation.*;
 public class SentBundleSummaryDB {
 
     @Id
-    private Long id;
-    private Long totalOfSentAmount;
-    private Integer totalOfSentBundle;
-    private Long timeCreate;
+    public Long id;
+    public Long totalOfSentAmount;
+    public Integer totalOfSentBundle;
+    public Long timeCreate;
 
     @Generated
     public SentBundleSummaryDB() {
@@ -29,38 +29,6 @@ public class SentBundleSummaryDB {
         this.id = id;
         this.totalOfSentAmount = totalOfSentAmount;
         this.totalOfSentBundle = totalOfSentBundle;
-        this.timeCreate = timeCreate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getTotalOfSentAmount() {
-        return totalOfSentAmount;
-    }
-
-    public void setTotalOfSentAmount(Long totalOfSentAmount) {
-        this.totalOfSentAmount = totalOfSentAmount;
-    }
-
-    public Integer getTotalOfSentBundle() {
-        return totalOfSentBundle;
-    }
-
-    public void setTotalOfSentBundle(Integer totalOfSentBundle) {
-        this.totalOfSentBundle = totalOfSentBundle;
-    }
-
-    public Long getTimeCreate() {
-        return timeCreate;
-    }
-
-    public void setTimeCreate(Long timeCreate) {
         this.timeCreate = timeCreate;
     }
 

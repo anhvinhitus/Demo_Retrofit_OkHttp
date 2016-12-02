@@ -50,7 +50,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     public void put(NotificationData val) {
         NotificationGD item = transform(val);
         if (item != null) {
-            Timber.d("Put item %s", item.getMessage());
+            Timber.d("Put item %s", item.message);
             getAsyncSession().insertInTx(NotificationGD.class, item);
         }
     }
@@ -111,11 +111,11 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         }
 
         NotificationGD _notification = new NotificationGD();
-        _notification.setAppid(notificationEntity.getAppid());
-        _notification.setDestuserid(notificationEntity.getDestuserid());
-        _notification.setMessage(notificationEntity.getMessage());
-        _notification.setTimestamp(notificationEntity.getTimestamp());
-        _notification.setNotificationtype(notificationEntity.getNotificationType());
+        _notification.appid = (notificationEntity.getAppid());
+        _notification.destuserid = (notificationEntity.getDestuserid());
+        _notification.message = (notificationEntity.getMessage());
+        _notification.timestamp = (notificationEntity.getTimestamp());
+        _notification.notificationtype = (notificationEntity.getNotificationType());
         JsonObject embeddataJson = notificationEntity.getEmbeddata();
 
 
@@ -126,20 +126,20 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         Timber.d("put embeddata [%s] notification state [%s]  ", embeddata, notificationEntity.notificationstate);
 
-        _notification.setEmbeddata(embeddata);
-        _notification.setArea(notificationEntity.area);
-        _notification.setUserid(notificationEntity.getUserid());
-        _notification.setTransid(notificationEntity.getTransid());
-        _notification.setNotificationstate(notificationEntity.notificationstate);
+        _notification.embeddata = (embeddata);
+        _notification.area = (notificationEntity.area);
+        _notification.userid = (notificationEntity.getUserid());
+        _notification.transid = (notificationEntity.getTransid());
+        _notification.notificationstate = (notificationEntity.notificationstate);
 
         if (notificationEntity.notificationId > 0) {
-            _notification.setId(notificationEntity.notificationId);
+            _notification.id = (notificationEntity.notificationId);
         } else {
-            _notification.setId(null);
+            _notification.id = (null);
         }
 
-        _notification.setMtaid(notificationEntity.mtaid);
-        _notification.setMtuid(notificationEntity.mtuid);
+        _notification.mtaid = (notificationEntity.mtaid);
+        _notification.mtuid = (notificationEntity.mtuid);
 
         return _notification;
     }
@@ -151,15 +151,15 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         NotificationData _notification = new NotificationData();
 
-        _notification.setNotificationId(notificationGD.getId());
+        _notification.setNotificationId(notificationGD.id);
 
-        _notification.setAppid(notificationGD.getAppid());
-        _notification.setDestuserid(notificationGD.getDestuserid());
-        _notification.setMessage(notificationGD.getMessage());
-        _notification.setTimestamp(notificationGD.getTimestamp());
-        _notification.setNotificationtype(notificationGD.getNotificationtype());
+        _notification.setAppid(notificationGD.appid);
+        _notification.setDestuserid(notificationGD.destuserid);
+        _notification.setMessage(notificationGD.message);
+        _notification.setTimestamp(notificationGD.timestamp);
+        _notification.setNotificationtype(notificationGD.notificationtype);
 
-        String embeddata = notificationGD.getEmbeddata();
+        String embeddata = notificationGD.embeddata;
 
         if (TextUtils.isEmpty(embeddata)) {
             _notification.setEmbeddata(new JsonObject());
@@ -172,10 +172,10 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             }
         }
 
-        _notification.setUserid(notificationGD.getUserid());
-        _notification.setTransid(notificationGD.getTransid());
-        _notification.area = notificationGD.getArea() == null ? 0 : notificationGD.getArea();
-        _notification.setNotificationState(notificationGD.getNotificationstate());
+        _notification.setUserid(notificationGD.userid);
+        _notification.setTransid(notificationGD.transid);
+        _notification.area = notificationGD.area == null ? 0 : notificationGD.area;
+        _notification.setNotificationState(notificationGD.notificationstate);
 
         return _notification;
     }
@@ -222,7 +222,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     public void markAsRead(long nId) {
         NotificationGD notify = getDaoSession().load(NotificationGD.class, nId);
         if (notify != null) {
-            notify.setNotificationstate(Enums.NotificationState.READ.getId());
+            notify.notificationstate = (Enums.NotificationState.READ.getId());
             Timber.d("markAsRead: nId %s", nId);
             getAsyncSession().insertOrReplaceInTx(NotificationGD.class, notify);
         }
@@ -232,7 +232,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     public void markAsReadAll() {
         List<NotificationGD> list = queryListUnRead();
         for (NotificationGD notify : list) {
-            notify.setNotificationstate(Enums.NotificationState.READ.getId());
+            notify.notificationstate = (Enums.NotificationState.READ.getId());
         }
 
         if (!Lists.isEmptyOrNull(list)) {
@@ -304,7 +304,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         }
 
         for (NotificationGD notify : list) {
-            notify.setNotificationstate(Enums.NotificationState.VIEW.getId());
+            notify.notificationstate = (Enums.NotificationState.VIEW.getId());
         }
         getDaoSession().getNotificationGDDao().updateInTx(list);
     }
@@ -318,7 +318,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
                 .limit(1).list();
 
         if (!Lists.isEmptyOrNull(list)) {
-            timeUpdate = list.get(0).getTimestamp();
+            timeUpdate = list.get(0).timestamp;
         }
 
         Timber.d("getOldestTimeNotification time stamp %s", timeUpdate);

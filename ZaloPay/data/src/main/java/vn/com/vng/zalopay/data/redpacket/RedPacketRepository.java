@@ -273,8 +273,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         if (bundleGD == null) {
             return true;
         }
-        Long lastTimeGetData = bundleGD.getLastTimeGetPackage();
-        Long createTime = bundleGD.getCreateTime();
+        Long lastTimeGetData = bundleGD.lastTimeGetPackage;
+        Long createTime = bundleGD.createTime;
 
         if (lastTimeGetData == null || createTime == null || createTime <= 0) {
             Timber.d("LastTime get data or createTime is NULL");

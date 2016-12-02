@@ -65,9 +65,9 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
         }
 
         for (AppResourceGD appResource : list) {
-            appResource.setStateDownload(0);
-            appResource.setNumRetry(0);
-            appResource.setTimeDownload(0L);
+            appResource.stateDownload = 0;
+            appResource.numRetry = 0;
+            appResource.timeDownload = 0L;
         }
 
         getAppInfoDao().insertOrReplaceInTx(list);
@@ -92,11 +92,11 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
         for (AppResourceGD app : appResourceGD) {
 
-            int state = app.getStateDownload() == null ? 0: app.getStateDownload() + 1;
-            app.setStateDownload(state);
+            int state = app.stateDownload == null ? 0: app.stateDownload + 1;
+            app.stateDownload = state;
             if (state >= 2) {
-                app.setNumRetry(0);
-                app.setTimeDownload(0L);
+                app.numRetry= (0);
+                app.timeDownload = (0L);
             }
         }
 
@@ -123,8 +123,8 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
         long currentTime = System.currentTimeMillis() / 1000;
         for (AppResourceGD app : appResourceGD) {
-            app.setNumRetry(app.getNumRetry() + 1);
-            app.setTimeDownload(currentTime);
+            app.numRetry = (app.numRetry + 1);
+            app.timeDownload = (currentTime);
         }
 
         getAppInfoDao().insertOrReplaceInTx(appResourceGD);
@@ -139,7 +139,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
         }
 
         for (AppResourceGD resourceGD : appResourceGD) {
-            resourceGD.setSortOrder(list.indexOf(resourceGD.getAppid()));
+            resourceGD.sortOrder = (list.indexOf(resourceGD.appid));
         }
 
         getAppInfoDao().insertOrReplaceInTx(appResourceGD);

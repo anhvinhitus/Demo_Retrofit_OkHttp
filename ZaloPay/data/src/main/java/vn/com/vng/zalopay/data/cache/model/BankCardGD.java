@@ -12,19 +12,19 @@ public class BankCardGD {
 
     @Id
     @NotNull
-    private String cardhash;
+    public String cardhash;
 
     @NotNull
-    private String cardname;
+    public String cardname;
 
     @NotNull
-    private String first6cardno;
+    public String first6cardno;
 
     @NotNull
-    private String last4cardno;
+    public String last4cardno;
 
     @NotNull
-    private String bankcode;
+    public String bankcode;
 
     @Generated
     public BankCardGD() {
@@ -40,56 +40,6 @@ public class BankCardGD {
         this.cardname = cardname;
         this.first6cardno = first6cardno;
         this.last4cardno = last4cardno;
-        this.bankcode = bankcode;
-    }
-
-    @NotNull
-    public String getCardhash() {
-        return cardhash;
-    }
-
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setCardhash(@NotNull String cardhash) {
-        this.cardhash = cardhash;
-    }
-
-    @NotNull
-    public String getCardname() {
-        return cardname;
-    }
-
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setCardname(@NotNull String cardname) {
-        this.cardname = cardname;
-    }
-
-    @NotNull
-    public String getFirst6cardno() {
-        return first6cardno;
-    }
-
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setFirst6cardno(@NotNull String first6cardno) {
-        this.first6cardno = first6cardno;
-    }
-
-    @NotNull
-    public String getLast4cardno() {
-        return last4cardno;
-    }
-
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setLast4cardno(@NotNull String last4cardno) {
-        this.last4cardno = last4cardno;
-    }
-
-    @NotNull
-    public String getBankcode() {
-        return bankcode;
-    }
-
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setBankcode(@NotNull String bankcode) {
         this.bankcode = bankcode;
     }
 

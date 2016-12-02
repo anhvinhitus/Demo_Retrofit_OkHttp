@@ -50,13 +50,13 @@ public class TransferRepository implements TransferStore.Repository {
         if (item != null) {
             return new RecentTransaction(
                     0,
-                    item.getZaloPayId(),
-                    item.getZaloPayName(),
-                    item.getDisplayName(),
-                    item.getAvatar(),
-                    item.getPhoneNumber(),
-                    item.getAmount(),
-                    item.getMessage());
+                    item.zaloPayId,
+                    item.zaloPayName,
+                    item.displayName,
+                    item.avatar,
+                    item.phoneNumber,
+                    item.amount,
+                    item.message);
         }
         return null;
     }

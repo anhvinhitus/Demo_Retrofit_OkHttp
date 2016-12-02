@@ -80,75 +80,75 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, TransactionLog entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTransid());
-        stmt.bindLong(2, entity.getAppid());
+        stmt.bindLong(1, entity.transid);
+        stmt.bindLong(2, entity.appid);
  
-        String userid = entity.getUserid();
+        String userid = entity.userid;
         if (userid != null) {
             stmt.bindString(3, userid);
         }
  
-        String appuser = entity.getAppuser();
+        String appuser = entity.appuser;
         if (appuser != null) {
             stmt.bindString(4, appuser);
         }
  
-        String platform = entity.getPlatform();
+        String platform = entity.platform;
         if (platform != null) {
             stmt.bindString(5, platform);
         }
  
-        String description = entity.getDescription();
+        String description = entity.description;
         if (description != null) {
             stmt.bindString(6, description);
         }
  
-        Integer pmcid = entity.getPmcid();
+        Integer pmcid = entity.pmcid;
         if (pmcid != null) {
             stmt.bindLong(7, pmcid);
         }
  
-        Long reqdate = entity.getReqdate();
+        Long reqdate = entity.reqdate;
         if (reqdate != null) {
             stmt.bindLong(8, reqdate);
         }
  
-        Integer userchargeamt = entity.getUserchargeamt();
+        Integer userchargeamt = entity.userchargeamt;
         if (userchargeamt != null) {
             stmt.bindLong(9, userchargeamt);
         }
  
-        Integer userfeeamt = entity.getUserfeeamt();
+        Integer userfeeamt = entity.userfeeamt;
         if (userfeeamt != null) {
             stmt.bindLong(10, userfeeamt);
         }
  
-        Integer amount = entity.getAmount();
+        Integer amount = entity.amount;
         if (amount != null) {
             stmt.bindLong(11, amount);
         }
  
-        Integer type = entity.getType();
+        Integer type = entity.type;
         if (type != null) {
             stmt.bindLong(12, type);
         }
  
-        Integer sign = entity.getSign();
+        Integer sign = entity.sign;
         if (sign != null) {
             stmt.bindLong(13, sign);
         }
  
-        String username = entity.getUsername();
+        String username = entity.username;
         if (username != null) {
             stmt.bindString(14, username);
         }
  
-        String appusername = entity.getAppusername();
+        String appusername = entity.appusername;
         if (appusername != null) {
             stmt.bindString(15, appusername);
         }
  
-        Integer statustype = entity.getStatustype();
+        Integer statustype = entity.statustype;
         if (statustype != null) {
             stmt.bindLong(16, statustype);
         }
@@ -157,75 +157,75 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, TransactionLog entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getTransid());
-        stmt.bindLong(2, entity.getAppid());
+        stmt.bindLong(1, entity.transid);
+        stmt.bindLong(2, entity.appid);
  
-        String userid = entity.getUserid();
+        String userid = entity.userid;
         if (userid != null) {
             stmt.bindString(3, userid);
         }
  
-        String appuser = entity.getAppuser();
+        String appuser = entity.appuser;
         if (appuser != null) {
             stmt.bindString(4, appuser);
         }
  
-        String platform = entity.getPlatform();
+        String platform = entity.platform;
         if (platform != null) {
             stmt.bindString(5, platform);
         }
  
-        String description = entity.getDescription();
+        String description = entity.description;
         if (description != null) {
             stmt.bindString(6, description);
         }
  
-        Integer pmcid = entity.getPmcid();
+        Integer pmcid = entity.pmcid;
         if (pmcid != null) {
             stmt.bindLong(7, pmcid);
         }
  
-        Long reqdate = entity.getReqdate();
+        Long reqdate = entity.reqdate;
         if (reqdate != null) {
             stmt.bindLong(8, reqdate);
         }
  
-        Integer userchargeamt = entity.getUserchargeamt();
+        Integer userchargeamt = entity.userchargeamt;
         if (userchargeamt != null) {
             stmt.bindLong(9, userchargeamt);
         }
  
-        Integer userfeeamt = entity.getUserfeeamt();
+        Integer userfeeamt = entity.userfeeamt;
         if (userfeeamt != null) {
             stmt.bindLong(10, userfeeamt);
         }
  
-        Integer amount = entity.getAmount();
+        Integer amount = entity.amount;
         if (amount != null) {
             stmt.bindLong(11, amount);
         }
  
-        Integer type = entity.getType();
+        Integer type = entity.type;
         if (type != null) {
             stmt.bindLong(12, type);
         }
  
-        Integer sign = entity.getSign();
+        Integer sign = entity.sign;
         if (sign != null) {
             stmt.bindLong(13, sign);
         }
  
-        String username = entity.getUsername();
+        String username = entity.username;
         if (username != null) {
             stmt.bindString(14, username);
         }
  
-        String appusername = entity.getAppusername();
+        String appusername = entity.appusername;
         if (appusername != null) {
             stmt.bindString(15, appusername);
         }
  
-        Integer statustype = entity.getStatustype();
+        Integer statustype = entity.statustype;
         if (statustype != null) {
             stmt.bindLong(16, statustype);
         }
@@ -261,34 +261,34 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
      
     @Override
     public void readEntity(Cursor cursor, TransactionLog entity, int offset) {
-        entity.setTransid(cursor.getLong(offset + 0));
-        entity.setAppid(cursor.getLong(offset + 1));
-        entity.setUserid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setAppuser(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setPlatform(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setDescription(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setPmcid(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
-        entity.setReqdate(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setUserchargeamt(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setUserfeeamt(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
-        entity.setAmount(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
-        entity.setType(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
-        entity.setSign(cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12));
-        entity.setUsername(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setAppusername(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setStatustype(cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15));
+        entity.transid = cursor.getLong(offset + 0);
+        entity.appid = cursor.getLong(offset + 1);
+        entity.userid = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
+        entity.appuser = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
+        entity.platform = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
+        entity.description = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
+        entity.pmcid = cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6);
+        entity.reqdate = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
+        entity.userchargeamt = cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8);
+        entity.userfeeamt = cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9);
+        entity.amount = cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10);
+        entity.type = cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11);
+        entity.sign = cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12);
+        entity.username = cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13);
+        entity.appusername = cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14);
+        entity.statustype = cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(TransactionLog entity, long rowId) {
-        entity.setTransid(rowId);
+        entity.transid = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(TransactionLog entity) {
         if(entity != null) {
-            return entity.getTransid();
+            return entity.transid;
         } else {
             return null;
         }

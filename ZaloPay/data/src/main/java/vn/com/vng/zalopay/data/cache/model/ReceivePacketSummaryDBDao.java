@@ -59,27 +59,27 @@ public class ReceivePacketSummaryDBDao extends AbstractDao<ReceivePacketSummaryD
     protected final void bindValues(DatabaseStatement stmt, ReceivePacketSummaryDB entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        Long id = entity.id;
         if (id != null) {
             stmt.bindLong(1, id);
         }
  
-        Long totalOfRevamount = entity.getTotalOfRevamount();
+        Long totalOfRevamount = entity.totalOfRevamount;
         if (totalOfRevamount != null) {
             stmt.bindLong(2, totalOfRevamount);
         }
  
-        Integer totalOfRevPackage = entity.getTotalOfRevPackage();
+        Integer totalOfRevPackage = entity.totalOfRevPackage;
         if (totalOfRevPackage != null) {
             stmt.bindLong(3, totalOfRevPackage);
         }
  
-        Integer totalOfLuckiestDraw = entity.getTotalOfLuckiestDraw();
+        Integer totalOfLuckiestDraw = entity.totalOfLuckiestDraw;
         if (totalOfLuckiestDraw != null) {
             stmt.bindLong(4, totalOfLuckiestDraw);
         }
  
-        Long timeCreate = entity.getTimeCreate();
+        Long timeCreate = entity.timeCreate;
         if (timeCreate != null) {
             stmt.bindLong(5, timeCreate);
         }
@@ -89,27 +89,27 @@ public class ReceivePacketSummaryDBDao extends AbstractDao<ReceivePacketSummaryD
     protected final void bindValues(SQLiteStatement stmt, ReceivePacketSummaryDB entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        Long id = entity.id;
         if (id != null) {
             stmt.bindLong(1, id);
         }
  
-        Long totalOfRevamount = entity.getTotalOfRevamount();
+        Long totalOfRevamount = entity.totalOfRevamount;
         if (totalOfRevamount != null) {
             stmt.bindLong(2, totalOfRevamount);
         }
  
-        Integer totalOfRevPackage = entity.getTotalOfRevPackage();
+        Integer totalOfRevPackage = entity.totalOfRevPackage;
         if (totalOfRevPackage != null) {
             stmt.bindLong(3, totalOfRevPackage);
         }
  
-        Integer totalOfLuckiestDraw = entity.getTotalOfLuckiestDraw();
+        Integer totalOfLuckiestDraw = entity.totalOfLuckiestDraw;
         if (totalOfLuckiestDraw != null) {
             stmt.bindLong(4, totalOfLuckiestDraw);
         }
  
-        Long timeCreate = entity.getTimeCreate();
+        Long timeCreate = entity.timeCreate;
         if (timeCreate != null) {
             stmt.bindLong(5, timeCreate);
         }
@@ -134,23 +134,23 @@ public class ReceivePacketSummaryDBDao extends AbstractDao<ReceivePacketSummaryD
      
     @Override
     public void readEntity(Cursor cursor, ReceivePacketSummaryDB entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setTotalOfRevamount(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setTotalOfRevPackage(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
-        entity.setTotalOfLuckiestDraw(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
-        entity.setTimeCreate(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.id = cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+        entity.totalOfRevamount = cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
+        entity.totalOfRevPackage = cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2);
+        entity.totalOfLuckiestDraw = cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3);
+        entity.timeCreate = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(ReceivePacketSummaryDB entity, long rowId) {
-        entity.setId(rowId);
+        entity.id = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(ReceivePacketSummaryDB entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.id;
         } else {
             return null;
         }
@@ -158,7 +158,7 @@ public class ReceivePacketSummaryDBDao extends AbstractDao<ReceivePacketSummaryD
 
     @Override
     public boolean hasKey(ReceivePacketSummaryDB entity) {
-        return entity.getId() != null;
+        return entity.id != null;
     }
 
     @Override

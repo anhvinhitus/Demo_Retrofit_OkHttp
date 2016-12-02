@@ -22,17 +22,6 @@
     public void onEvent*(***);
 }
 
-# Only required if you use AsyncExecutor
--keepclassmembers class * extends de.greenrobot.event.util.ThrowableFailureEvent {
-    <init>(java.lang.Throwable);
-}
-
-# Update greendao rule for 3.2.0
--keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
-public static java.lang.String TABLENAME;
-}
--keep class **$Properties
-
 
 # Disabling obfuscation is useful if you collect stack traces from production crashes
 # (unless you are using a system that supports de-obfuscate the stack traces).
@@ -114,10 +103,17 @@ public static java.lang.String TABLENAME;
 
 #Green Dao
 
--keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
-    public static java.lang.String TABLENAME;
+# Update greendao rule for 3.2.0
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
 
 # okhttp
 
@@ -159,8 +155,6 @@ public static java.lang.String TABLENAME;
 -keep class retrofit2.** { *; }
 -keepattributes Exceptions
 
-# Parcel library
--keep class **$$Parcelable { *; }
 
 # Gson specific classes
 -keep class sun.misc.Unsafe { *; }
@@ -175,12 +169,6 @@ public static java.lang.String TABLENAME;
 -keepattributes *Annotation*
 -keepclassmembers class ** {
     @org.greenrobot.eventbus.Subscribe <methods>;
-}
--keep enum org.greenrobot.eventbus.ThreadMode { *; }
-
-# Only required if you use AsyncExecutor
--keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
-    <init>(java.lang.Throwable);
 }
 
 #glide

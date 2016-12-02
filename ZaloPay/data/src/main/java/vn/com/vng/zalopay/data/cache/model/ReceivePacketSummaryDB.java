@@ -11,11 +11,11 @@ import org.greenrobot.greendao.annotation.*;
 public class ReceivePacketSummaryDB {
 
     @Id
-    private Long id;
-    private Long totalOfRevamount;
-    private Integer totalOfRevPackage;
-    private Integer totalOfLuckiestDraw;
-    private Long timeCreate;
+    public Long id;
+    public Long totalOfRevamount;
+    public Integer totalOfRevPackage;
+    public Integer totalOfLuckiestDraw;
+    public Long timeCreate;
 
     @Generated
     public ReceivePacketSummaryDB() {
@@ -31,46 +31,6 @@ public class ReceivePacketSummaryDB {
         this.totalOfRevamount = totalOfRevamount;
         this.totalOfRevPackage = totalOfRevPackage;
         this.totalOfLuckiestDraw = totalOfLuckiestDraw;
-        this.timeCreate = timeCreate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getTotalOfRevamount() {
-        return totalOfRevamount;
-    }
-
-    public void setTotalOfRevamount(Long totalOfRevamount) {
-        this.totalOfRevamount = totalOfRevamount;
-    }
-
-    public Integer getTotalOfRevPackage() {
-        return totalOfRevPackage;
-    }
-
-    public void setTotalOfRevPackage(Integer totalOfRevPackage) {
-        this.totalOfRevPackage = totalOfRevPackage;
-    }
-
-    public Integer getTotalOfLuckiestDraw() {
-        return totalOfLuckiestDraw;
-    }
-
-    public void setTotalOfLuckiestDraw(Integer totalOfLuckiestDraw) {
-        this.totalOfLuckiestDraw = totalOfLuckiestDraw;
-    }
-
-    public Long getTimeCreate() {
-        return timeCreate;
-    }
-
-    public void setTimeCreate(Long timeCreate) {
         this.timeCreate = timeCreate;
     }
 

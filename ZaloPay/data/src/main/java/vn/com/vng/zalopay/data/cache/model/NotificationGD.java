@@ -13,19 +13,19 @@ import org.greenrobot.greendao.annotation.*;
 public class NotificationGD {
 
     @Id(autoincrement = true)
-    private Long id;
-    private Long transid;
-    private Integer appid;
-    private Long timestamp;
-    private String message;
-    private String userid;
-    private String destuserid;
-    private Integer area;
-    private Integer notificationstate;
-    private Integer notificationtype;
-    private Long mtaid;
-    private Long mtuid;
-    private String embeddata;
+    public Long id;
+    public Long transid;
+    public Integer appid;
+    public Long timestamp;
+    public String message;
+    public String userid;
+    public String destuserid;
+    public Integer area;
+    public Integer notificationstate;
+    public Integer notificationtype;
+    public Long mtaid;
+    public Long mtuid;
+    public String embeddata;
 
     @Generated
     public NotificationGD() {
@@ -49,110 +49,6 @@ public class NotificationGD {
         this.notificationtype = notificationtype;
         this.mtaid = mtaid;
         this.mtuid = mtuid;
-        this.embeddata = embeddata;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getTransid() {
-        return transid;
-    }
-
-    public void setTransid(Long transid) {
-        this.transid = transid;
-    }
-
-    public Integer getAppid() {
-        return appid;
-    }
-
-    public void setAppid(Integer appid) {
-        this.appid = appid;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
-    }
-
-    public String getDestuserid() {
-        return destuserid;
-    }
-
-    public void setDestuserid(String destuserid) {
-        this.destuserid = destuserid;
-    }
-
-    public Integer getArea() {
-        return area;
-    }
-
-    public void setArea(Integer area) {
-        this.area = area;
-    }
-
-    public Integer getNotificationstate() {
-        return notificationstate;
-    }
-
-    public void setNotificationstate(Integer notificationstate) {
-        this.notificationstate = notificationstate;
-    }
-
-    public Integer getNotificationtype() {
-        return notificationtype;
-    }
-
-    public void setNotificationtype(Integer notificationtype) {
-        this.notificationtype = notificationtype;
-    }
-
-    public Long getMtaid() {
-        return mtaid;
-    }
-
-    public void setMtaid(Long mtaid) {
-        this.mtaid = mtaid;
-    }
-
-    public Long getMtuid() {
-        return mtuid;
-    }
-
-    public void setMtuid(Long mtuid) {
-        this.mtuid = mtuid;
-    }
-
-    public String getEmbeddata() {
-        return embeddata;
-    }
-
-    public void setEmbeddata(String embeddata) {
         this.embeddata = embeddata;
     }
 

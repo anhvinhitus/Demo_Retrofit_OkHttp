@@ -78,67 +78,67 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
     protected final void bindValues(DatabaseStatement stmt, NotificationGD entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        Long id = entity.id;
         if (id != null) {
             stmt.bindLong(1, id);
         }
  
-        Long transid = entity.getTransid();
+        Long transid = entity.transid;
         if (transid != null) {
             stmt.bindLong(2, transid);
         }
  
-        Integer appid = entity.getAppid();
+        Integer appid = entity.appid;
         if (appid != null) {
             stmt.bindLong(3, appid);
         }
  
-        Long timestamp = entity.getTimestamp();
+        Long timestamp = entity.timestamp;
         if (timestamp != null) {
             stmt.bindLong(4, timestamp);
         }
  
-        String message = entity.getMessage();
+        String message = entity.message;
         if (message != null) {
             stmt.bindString(5, message);
         }
  
-        String userid = entity.getUserid();
+        String userid = entity.userid;
         if (userid != null) {
             stmt.bindString(6, userid);
         }
  
-        String destuserid = entity.getDestuserid();
+        String destuserid = entity.destuserid;
         if (destuserid != null) {
             stmt.bindString(7, destuserid);
         }
  
-        Integer area = entity.getArea();
+        Integer area = entity.area;
         if (area != null) {
             stmt.bindLong(8, area);
         }
  
-        Integer notificationstate = entity.getNotificationstate();
+        Integer notificationstate = entity.notificationstate;
         if (notificationstate != null) {
             stmt.bindLong(9, notificationstate);
         }
  
-        Integer notificationtype = entity.getNotificationtype();
+        Integer notificationtype = entity.notificationtype;
         if (notificationtype != null) {
             stmt.bindLong(10, notificationtype);
         }
  
-        Long mtaid = entity.getMtaid();
+        Long mtaid = entity.mtaid;
         if (mtaid != null) {
             stmt.bindLong(11, mtaid);
         }
  
-        Long mtuid = entity.getMtuid();
+        Long mtuid = entity.mtuid;
         if (mtuid != null) {
             stmt.bindLong(12, mtuid);
         }
  
-        String embeddata = entity.getEmbeddata();
+        String embeddata = entity.embeddata;
         if (embeddata != null) {
             stmt.bindString(13, embeddata);
         }
@@ -148,67 +148,67 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
     protected final void bindValues(SQLiteStatement stmt, NotificationGD entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        Long id = entity.id;
         if (id != null) {
             stmt.bindLong(1, id);
         }
  
-        Long transid = entity.getTransid();
+        Long transid = entity.transid;
         if (transid != null) {
             stmt.bindLong(2, transid);
         }
  
-        Integer appid = entity.getAppid();
+        Integer appid = entity.appid;
         if (appid != null) {
             stmt.bindLong(3, appid);
         }
  
-        Long timestamp = entity.getTimestamp();
+        Long timestamp = entity.timestamp;
         if (timestamp != null) {
             stmt.bindLong(4, timestamp);
         }
  
-        String message = entity.getMessage();
+        String message = entity.message;
         if (message != null) {
             stmt.bindString(5, message);
         }
  
-        String userid = entity.getUserid();
+        String userid = entity.userid;
         if (userid != null) {
             stmt.bindString(6, userid);
         }
  
-        String destuserid = entity.getDestuserid();
+        String destuserid = entity.destuserid;
         if (destuserid != null) {
             stmt.bindString(7, destuserid);
         }
  
-        Integer area = entity.getArea();
+        Integer area = entity.area;
         if (area != null) {
             stmt.bindLong(8, area);
         }
  
-        Integer notificationstate = entity.getNotificationstate();
+        Integer notificationstate = entity.notificationstate;
         if (notificationstate != null) {
             stmt.bindLong(9, notificationstate);
         }
  
-        Integer notificationtype = entity.getNotificationtype();
+        Integer notificationtype = entity.notificationtype;
         if (notificationtype != null) {
             stmt.bindLong(10, notificationtype);
         }
  
-        Long mtaid = entity.getMtaid();
+        Long mtaid = entity.mtaid;
         if (mtaid != null) {
             stmt.bindLong(11, mtaid);
         }
  
-        Long mtuid = entity.getMtuid();
+        Long mtuid = entity.mtuid;
         if (mtuid != null) {
             stmt.bindLong(12, mtuid);
         }
  
-        String embeddata = entity.getEmbeddata();
+        String embeddata = entity.embeddata;
         if (embeddata != null) {
             stmt.bindString(13, embeddata);
         }
@@ -241,31 +241,31 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
      
     @Override
     public void readEntity(Cursor cursor, NotificationGD entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setTransid(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setAppid(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
-        entity.setTimestamp(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setMessage(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setUserid(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setDestuserid(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setArea(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-        entity.setNotificationstate(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setNotificationtype(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
-        entity.setMtaid(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
-        entity.setMtuid(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
-        entity.setEmbeddata(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.id = cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+        entity.transid = cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
+        entity.appid = cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2);
+        entity.timestamp = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
+        entity.message = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
+        entity.userid = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
+        entity.destuserid = cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6);
+        entity.area = cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7);
+        entity.notificationstate = cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8);
+        entity.notificationtype = cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9);
+        entity.mtaid = cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10);
+        entity.mtuid = cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11);
+        entity.embeddata = cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(NotificationGD entity, long rowId) {
-        entity.setId(rowId);
+        entity.id = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(NotificationGD entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.id;
         } else {
             return null;
         }
@@ -273,7 +273,7 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
 
     @Override
     public boolean hasKey(NotificationGD entity) {
-        return entity.getId() != null;
+        return entity.id != null;
     }
 
     @Override

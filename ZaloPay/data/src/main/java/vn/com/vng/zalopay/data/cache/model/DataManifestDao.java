@@ -52,9 +52,9 @@ public class DataManifestDao extends AbstractDao<DataManifest, String> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, DataManifest entity) {
         stmt.clearBindings();
-        stmt.bindString(1, entity.getKey());
+        stmt.bindString(1, entity.key);
  
-        String value = entity.getValue();
+        String value = entity.value;
         if (value != null) {
             stmt.bindString(2, value);
         }
@@ -63,9 +63,9 @@ public class DataManifestDao extends AbstractDao<DataManifest, String> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, DataManifest entity) {
         stmt.clearBindings();
-        stmt.bindString(1, entity.getKey());
+        stmt.bindString(1, entity.key);
  
-        String value = entity.getValue();
+        String value = entity.value;
         if (value != null) {
             stmt.bindString(2, value);
         }
@@ -87,19 +87,19 @@ public class DataManifestDao extends AbstractDao<DataManifest, String> {
      
     @Override
     public void readEntity(Cursor cursor, DataManifest entity, int offset) {
-        entity.setKey(cursor.getString(offset + 0));
-        entity.setValue(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.key = cursor.getString(offset + 0);
+        entity.value = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
      }
     
     @Override
     protected final String updateKeyAfterInsert(DataManifest entity, long rowId) {
-        return entity.getKey();
+        return entity.key;
     }
     
     @Override
     public String getKey(DataManifest entity) {
         if(entity != null) {
-            return entity.getKey();
+            return entity.key;
         } else {
             return null;
         }

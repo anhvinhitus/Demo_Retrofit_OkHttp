@@ -363,7 +363,7 @@ public class Property {
     }
 
     public String getDatabaseValueExpressionNotNull() {
-        return getDatabaseValueExpression("entity.get" + DaoUtil.capFirst(propertyName) + "()");
+        return getDatabaseValueExpression("entity." + propertyName + "");
     }
 
     // Got too messy in template:

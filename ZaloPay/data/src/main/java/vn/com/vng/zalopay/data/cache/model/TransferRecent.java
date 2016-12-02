@@ -11,15 +11,15 @@ import org.greenrobot.greendao.annotation.*;
 public class TransferRecent {
 
     @Id
-    private String zaloPayId;
-    private String zaloPayName;
-    private String displayName;
-    private String avatar;
-    private String phoneNumber;
-    private Integer transferType;
-    private Long amount;
-    private String message;
-    private Long timeCreate;
+    public String zaloPayId;
+    public String zaloPayName;
+    public String displayName;
+    public String avatar;
+    public String phoneNumber;
+    public Integer transferType;
+    public Long amount;
+    public String message;
+    public Long timeCreate;
 
     @Generated
     public TransferRecent() {
@@ -39,78 +39,6 @@ public class TransferRecent {
         this.transferType = transferType;
         this.amount = amount;
         this.message = message;
-        this.timeCreate = timeCreate;
-    }
-
-    public String getZaloPayId() {
-        return zaloPayId;
-    }
-
-    public void setZaloPayId(String zaloPayId) {
-        this.zaloPayId = zaloPayId;
-    }
-
-    public String getZaloPayName() {
-        return zaloPayName;
-    }
-
-    public void setZaloPayName(String zaloPayName) {
-        this.zaloPayName = zaloPayName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Integer getTransferType() {
-        return transferType;
-    }
-
-    public void setTransferType(Integer transferType) {
-        this.transferType = transferType;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Long getTimeCreate() {
-        return timeCreate;
-    }
-
-    public void setTimeCreate(Long timeCreate) {
         this.timeCreate = timeCreate;
     }
 

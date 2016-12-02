@@ -88,12 +88,11 @@ public class MerchantRepository implements MerchantStore.Repository {
         List<MerchantUser> entities = new ArrayList<>();
         for (ListMUIResponse.MerchantUserSubInfo info : response.listmerchantuserinfo) {
             MerchantUser merchantUser = new MerchantUser(info.appid);
-            merchantUser.setMUid(info.muid);
-            merchantUser.setMAccessToken(info.maccesstoken);
-
-            merchantUser.setDisplayName(response.displayname);
-            merchantUser.setBirthday(response.birthdate);
-            merchantUser.setGender(response.usergender);
+            merchantUser.mUid = (info.muid);
+            merchantUser.mAccessToken = (info.maccesstoken);
+            merchantUser.displayName = (response.displayname);
+            merchantUser.birthday = (response.birthdate);
+            merchantUser.gender = (response.usergender);
             entities.add(merchantUser);
         }
         return entities;
@@ -101,11 +100,11 @@ public class MerchantRepository implements MerchantStore.Repository {
 
     private MerchantUser transform(GetMerchantUserInfoResponse response, long appId) {
         MerchantUser ret = new MerchantUser(appId);
-        ret.setBirthday(response.birthdate);
-        ret.setMUid(response.muid);
-        ret.setMAccessToken(response.maccesstoken);
-        ret.setDisplayName(response.displayname);
-        ret.setGender(response.usergender);
+        ret.birthday = (response.birthdate);
+        ret.mUid = (response.muid);
+        ret.mAccessToken = (response.maccesstoken);
+        ret.displayName = (response.displayname);
+        ret.gender = (response.usergender);
         return ret;
     }
 
@@ -114,12 +113,12 @@ public class MerchantRepository implements MerchantStore.Repository {
             return null;
         }
 
-        MerchantUserInfo ret = new MerchantUserInfo(entity.getAppid());
-        ret.birthdate = entity.getBirthday();
-        ret.displayname = entity.getDisplayName();
-        ret.muid = entity.getMUid();
-        ret.usergender = entity.getGender();
-        ret.maccesstoken = entity.getMAccessToken();
+        MerchantUserInfo ret = new MerchantUserInfo(entity.appid);
+        ret.birthdate = entity.birthday;
+        ret.displayname = entity.displayName;
+        ret.muid = entity.mUid;
+        ret.usergender = entity.gender;
+        ret.maccesstoken = entity.mAccessToken;
         return ret;
     }
 

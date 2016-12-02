@@ -77,64 +77,64 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, ReceivePackageGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+        stmt.bindLong(1, entity.id);
  
-        Long bundleID = entity.getBundleID();
+        Long bundleID = entity.bundleID;
         if (bundleID != null) {
             stmt.bindLong(2, bundleID);
         }
  
-        String receiverZaloPayID = entity.getReceiverZaloPayID();
+        String receiverZaloPayID = entity.receiverZaloPayID;
         if (receiverZaloPayID != null) {
             stmt.bindString(3, receiverZaloPayID);
         }
  
-        String senderZaloPayID = entity.getSenderZaloPayID();
+        String senderZaloPayID = entity.senderZaloPayID;
         if (senderZaloPayID != null) {
             stmt.bindString(4, senderZaloPayID);
         }
  
-        String senderFullName = entity.getSenderFullName();
+        String senderFullName = entity.senderFullName;
         if (senderFullName != null) {
             stmt.bindString(5, senderFullName);
         }
  
-        String senderAvatar = entity.getSenderAvatar();
+        String senderAvatar = entity.senderAvatar;
         if (senderAvatar != null) {
             stmt.bindString(6, senderAvatar);
         }
  
-        Long amount = entity.getAmount();
+        Long amount = entity.amount;
         if (amount != null) {
             stmt.bindLong(7, amount);
         }
  
-        Long openedTime = entity.getOpenedTime();
+        Long openedTime = entity.openedTime;
         if (openedTime != null) {
             stmt.bindLong(8, openedTime);
         }
  
-        Integer status = entity.getStatus();
+        Integer status = entity.status;
         if (status != null) {
             stmt.bindLong(9, status);
         }
  
-        String messageStatus = entity.getMessageStatus();
+        String messageStatus = entity.messageStatus;
         if (messageStatus != null) {
             stmt.bindString(10, messageStatus);
         }
  
-        String message = entity.getMessage();
+        String message = entity.message;
         if (message != null) {
             stmt.bindString(11, message);
         }
  
-        Integer isLuckiest = entity.getIsLuckiest();
+        Integer isLuckiest = entity.isLuckiest;
         if (isLuckiest != null) {
             stmt.bindLong(12, isLuckiest);
         }
  
-        Long createTime = entity.getCreateTime();
+        Long createTime = entity.createTime;
         if (createTime != null) {
             stmt.bindLong(13, createTime);
         }
@@ -143,64 +143,64 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, ReceivePackageGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+        stmt.bindLong(1, entity.id);
  
-        Long bundleID = entity.getBundleID();
+        Long bundleID = entity.bundleID;
         if (bundleID != null) {
             stmt.bindLong(2, bundleID);
         }
  
-        String receiverZaloPayID = entity.getReceiverZaloPayID();
+        String receiverZaloPayID = entity.receiverZaloPayID;
         if (receiverZaloPayID != null) {
             stmt.bindString(3, receiverZaloPayID);
         }
  
-        String senderZaloPayID = entity.getSenderZaloPayID();
+        String senderZaloPayID = entity.senderZaloPayID;
         if (senderZaloPayID != null) {
             stmt.bindString(4, senderZaloPayID);
         }
  
-        String senderFullName = entity.getSenderFullName();
+        String senderFullName = entity.senderFullName;
         if (senderFullName != null) {
             stmt.bindString(5, senderFullName);
         }
  
-        String senderAvatar = entity.getSenderAvatar();
+        String senderAvatar = entity.senderAvatar;
         if (senderAvatar != null) {
             stmt.bindString(6, senderAvatar);
         }
  
-        Long amount = entity.getAmount();
+        Long amount = entity.amount;
         if (amount != null) {
             stmt.bindLong(7, amount);
         }
  
-        Long openedTime = entity.getOpenedTime();
+        Long openedTime = entity.openedTime;
         if (openedTime != null) {
             stmt.bindLong(8, openedTime);
         }
  
-        Integer status = entity.getStatus();
+        Integer status = entity.status;
         if (status != null) {
             stmt.bindLong(9, status);
         }
  
-        String messageStatus = entity.getMessageStatus();
+        String messageStatus = entity.messageStatus;
         if (messageStatus != null) {
             stmt.bindString(10, messageStatus);
         }
  
-        String message = entity.getMessage();
+        String message = entity.message;
         if (message != null) {
             stmt.bindString(11, message);
         }
  
-        Integer isLuckiest = entity.getIsLuckiest();
+        Integer isLuckiest = entity.isLuckiest;
         if (isLuckiest != null) {
             stmt.bindLong(12, isLuckiest);
         }
  
-        Long createTime = entity.getCreateTime();
+        Long createTime = entity.createTime;
         if (createTime != null) {
             stmt.bindLong(13, createTime);
         }
@@ -239,31 +239,31 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
      
     @Override
     public void readEntity(Cursor cursor, ReceivePackageGD entity, int offset) {
-        entity.setId(cursor.getLong(offset + 0));
-        entity.setBundleID(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setReceiverZaloPayID(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setSenderZaloPayID(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setSenderFullName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setSenderAvatar(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setAmount(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
-        entity.setOpenedTime(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setStatus(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setMessageStatus(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setMessage(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setIsLuckiest(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
-        entity.setCreateTime(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
+        entity.id = cursor.getLong(offset + 0);
+        entity.bundleID = cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
+        entity.receiverZaloPayID = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
+        entity.senderZaloPayID = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
+        entity.senderFullName = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
+        entity.senderAvatar = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
+        entity.amount = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
+        entity.openedTime = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
+        entity.status = cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8);
+        entity.messageStatus = cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9);
+        entity.message = cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10);
+        entity.isLuckiest = cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11);
+        entity.createTime = cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12);
      }
     
     @Override
     protected final Long updateKeyAfterInsert(ReceivePackageGD entity, long rowId) {
-        entity.setId(rowId);
+        entity.id = rowId;
         return rowId;
     }
     
     @Override
     public Long getKey(ReceivePackageGD entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.id;
         } else {
             return null;
         }

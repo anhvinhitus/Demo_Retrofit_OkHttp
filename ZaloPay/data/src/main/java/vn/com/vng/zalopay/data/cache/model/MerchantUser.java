@@ -11,13 +11,13 @@ import org.greenrobot.greendao.annotation.*;
 public class MerchantUser {
 
     @Id
-    private long appid;
-    private String mUid;
-    private String mAccessToken;
-    private String displayName;
-    private String avatar;
-    private String birthday;
-    private Integer gender;
+    public long appid;
+    public String mUid;
+    public String mAccessToken;
+    public String displayName;
+    public String avatar;
+    public String birthday;
+    public Integer gender;
 
     @Generated
     public MerchantUser() {
@@ -35,62 +35,6 @@ public class MerchantUser {
         this.displayName = displayName;
         this.avatar = avatar;
         this.birthday = birthday;
-        this.gender = gender;
-    }
-
-    public long getAppid() {
-        return appid;
-    }
-
-    public void setAppid(long appid) {
-        this.appid = appid;
-    }
-
-    public String getMUid() {
-        return mUid;
-    }
-
-    public void setMUid(String mUid) {
-        this.mUid = mUid;
-    }
-
-    public String getMAccessToken() {
-        return mAccessToken;
-    }
-
-    public void setMAccessToken(String mAccessToken) {
-        this.mAccessToken = mAccessToken;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public Integer getGender() {
-        return gender;
-    }
-
-    public void setGender(Integer gender) {
         this.gender = gender;
     }
 

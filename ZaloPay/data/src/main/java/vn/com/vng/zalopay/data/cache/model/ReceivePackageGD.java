@@ -16,19 +16,19 @@ public class ReceivePackageGD {
 
     @Id
     @Unique
-    private long id;
-    private Long bundleID;
-    private String receiverZaloPayID;
-    private String senderZaloPayID;
-    private String senderFullName;
-    private String senderAvatar;
-    private Long amount;
-    private Long openedTime;
-    private Integer status;
-    private String messageStatus;
-    private String message;
-    private Integer isLuckiest;
-    private Long createTime;
+    public long id;
+    public Long bundleID;
+    public String receiverZaloPayID;
+    public String senderZaloPayID;
+    public String senderFullName;
+    public String senderAvatar;
+    public Long amount;
+    public Long openedTime;
+    public Integer status;
+    public String messageStatus;
+    public String message;
+    public Integer isLuckiest;
+    public Long createTime;
 
     /** Used to resolve relations */
     @Generated
@@ -74,110 +74,6 @@ public class ReceivePackageGD {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getReceivePackageGDDao() : null;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Long getBundleID() {
-        return bundleID;
-    }
-
-    public void setBundleID(Long bundleID) {
-        this.bundleID = bundleID;
-    }
-
-    public String getReceiverZaloPayID() {
-        return receiverZaloPayID;
-    }
-
-    public void setReceiverZaloPayID(String receiverZaloPayID) {
-        this.receiverZaloPayID = receiverZaloPayID;
-    }
-
-    public String getSenderZaloPayID() {
-        return senderZaloPayID;
-    }
-
-    public void setSenderZaloPayID(String senderZaloPayID) {
-        this.senderZaloPayID = senderZaloPayID;
-    }
-
-    public String getSenderFullName() {
-        return senderFullName;
-    }
-
-    public void setSenderFullName(String senderFullName) {
-        this.senderFullName = senderFullName;
-    }
-
-    public String getSenderAvatar() {
-        return senderAvatar;
-    }
-
-    public void setSenderAvatar(String senderAvatar) {
-        this.senderAvatar = senderAvatar;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
-
-    public Long getOpenedTime() {
-        return openedTime;
-    }
-
-    public void setOpenedTime(Long openedTime) {
-        this.openedTime = openedTime;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getMessageStatus() {
-        return messageStatus;
-    }
-
-    public void setMessageStatus(String messageStatus) {
-        this.messageStatus = messageStatus;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Integer getIsLuckiest() {
-        return isLuckiest;
-    }
-
-    public void setIsLuckiest(Integer isLuckiest) {
-        this.isLuckiest = isLuckiest;
-    }
-
-    public Long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

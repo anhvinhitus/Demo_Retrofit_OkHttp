@@ -11,18 +11,18 @@ import org.greenrobot.greendao.annotation.*;
 public class ZaloFriendGD {
 
     @Id
-    private long zaloId;
-    private String userName;
-    private String displayName;
-    private String avatar;
-    private Integer userGender;
-    private String birthday;
-    private Boolean usingApp;
-    private String fulltextsearch;
-    private String zaloPayId;
-    private Integer status;
-    private Long phoneNumber;
-    private String zaloPayName;
+    public long zaloId;
+    public String userName;
+    public String displayName;
+    public String avatar;
+    public Integer userGender;
+    public String birthday;
+    public Boolean usingApp;
+    public String fulltextsearch;
+    public String zaloPayId;
+    public Integer status;
+    public Long phoneNumber;
+    public String zaloPayName;
 
     @Generated
     public ZaloFriendGD() {
@@ -45,102 +45,6 @@ public class ZaloFriendGD {
         this.zaloPayId = zaloPayId;
         this.status = status;
         this.phoneNumber = phoneNumber;
-        this.zaloPayName = zaloPayName;
-    }
-
-    public long getZaloId() {
-        return zaloId;
-    }
-
-    public void setZaloId(long zaloId) {
-        this.zaloId = zaloId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public Integer getUserGender() {
-        return userGender;
-    }
-
-    public void setUserGender(Integer userGender) {
-        this.userGender = userGender;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public Boolean getUsingApp() {
-        return usingApp;
-    }
-
-    public void setUsingApp(Boolean usingApp) {
-        this.usingApp = usingApp;
-    }
-
-    public String getFulltextsearch() {
-        return fulltextsearch;
-    }
-
-    public void setFulltextsearch(String fulltextsearch) {
-        this.fulltextsearch = fulltextsearch;
-    }
-
-    public String getZaloPayId() {
-        return zaloPayId;
-    }
-
-    public void setZaloPayId(String zaloPayId) {
-        this.zaloPayId = zaloPayId;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Long getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(Long phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getZaloPayName() {
-        return zaloPayName;
-    }
-
-    public void setZaloPayName(String zaloPayName) {
         this.zaloPayName = zaloPayName;
     }
 

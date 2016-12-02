@@ -76,69 +76,69 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, AppResourceGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getAppid());
+        stmt.bindLong(1, entity.appid);
  
-        String appname = entity.getAppname();
+        String appname = entity.appname;
         if (appname != null) {
             stmt.bindString(2, appname);
         }
  
-        Integer needdownloadrs = entity.getNeeddownloadrs();
+        Integer needdownloadrs = entity.needdownloadrs;
         if (needdownloadrs != null) {
             stmt.bindLong(3, needdownloadrs);
         }
  
-        String imageurl = entity.getImageurl();
+        String imageurl = entity.imageurl;
         if (imageurl != null) {
             stmt.bindString(4, imageurl);
         }
  
-        String jsurl = entity.getJsurl();
+        String jsurl = entity.jsurl;
         if (jsurl != null) {
             stmt.bindString(5, jsurl);
         }
  
-        Integer status = entity.getStatus();
+        Integer status = entity.status;
         if (status != null) {
             stmt.bindLong(6, status);
         }
  
-        String checksum = entity.getChecksum();
+        String checksum = entity.checksum;
         if (checksum != null) {
             stmt.bindString(7, checksum);
         }
  
-        Integer apptype = entity.getApptype();
+        Integer apptype = entity.apptype;
         if (apptype != null) {
             stmt.bindLong(8, apptype);
         }
  
-        String weburl = entity.getWeburl();
+        String weburl = entity.weburl;
         if (weburl != null) {
             stmt.bindString(9, weburl);
         }
  
-        String iconurl = entity.getIconurl();
+        String iconurl = entity.iconurl;
         if (iconurl != null) {
             stmt.bindString(10, iconurl);
         }
  
-        Integer sortOrder = entity.getSortOrder();
+        Integer sortOrder = entity.sortOrder;
         if (sortOrder != null) {
             stmt.bindLong(11, sortOrder);
         }
  
-        Integer stateDownload = entity.getStateDownload();
+        Integer stateDownload = entity.stateDownload;
         if (stateDownload != null) {
             stmt.bindLong(12, stateDownload);
         }
  
-        Long timeDownload = entity.getTimeDownload();
+        Long timeDownload = entity.timeDownload;
         if (timeDownload != null) {
             stmt.bindLong(13, timeDownload);
         }
  
-        Integer numRetry = entity.getNumRetry();
+        Integer numRetry = entity.numRetry;
         if (numRetry != null) {
             stmt.bindLong(14, numRetry);
         }
@@ -147,69 +147,69 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, AppResourceGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getAppid());
+        stmt.bindLong(1, entity.appid);
  
-        String appname = entity.getAppname();
+        String appname = entity.appname;
         if (appname != null) {
             stmt.bindString(2, appname);
         }
  
-        Integer needdownloadrs = entity.getNeeddownloadrs();
+        Integer needdownloadrs = entity.needdownloadrs;
         if (needdownloadrs != null) {
             stmt.bindLong(3, needdownloadrs);
         }
  
-        String imageurl = entity.getImageurl();
+        String imageurl = entity.imageurl;
         if (imageurl != null) {
             stmt.bindString(4, imageurl);
         }
  
-        String jsurl = entity.getJsurl();
+        String jsurl = entity.jsurl;
         if (jsurl != null) {
             stmt.bindString(5, jsurl);
         }
  
-        Integer status = entity.getStatus();
+        Integer status = entity.status;
         if (status != null) {
             stmt.bindLong(6, status);
         }
  
-        String checksum = entity.getChecksum();
+        String checksum = entity.checksum;
         if (checksum != null) {
             stmt.bindString(7, checksum);
         }
  
-        Integer apptype = entity.getApptype();
+        Integer apptype = entity.apptype;
         if (apptype != null) {
             stmt.bindLong(8, apptype);
         }
  
-        String weburl = entity.getWeburl();
+        String weburl = entity.weburl;
         if (weburl != null) {
             stmt.bindString(9, weburl);
         }
  
-        String iconurl = entity.getIconurl();
+        String iconurl = entity.iconurl;
         if (iconurl != null) {
             stmt.bindString(10, iconurl);
         }
  
-        Integer sortOrder = entity.getSortOrder();
+        Integer sortOrder = entity.sortOrder;
         if (sortOrder != null) {
             stmt.bindLong(11, sortOrder);
         }
  
-        Integer stateDownload = entity.getStateDownload();
+        Integer stateDownload = entity.stateDownload;
         if (stateDownload != null) {
             stmt.bindLong(12, stateDownload);
         }
  
-        Long timeDownload = entity.getTimeDownload();
+        Long timeDownload = entity.timeDownload;
         if (timeDownload != null) {
             stmt.bindLong(13, timeDownload);
         }
  
-        Integer numRetry = entity.getNumRetry();
+        Integer numRetry = entity.numRetry;
         if (numRetry != null) {
             stmt.bindLong(14, numRetry);
         }
@@ -243,20 +243,20 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
      
     @Override
     public void readEntity(Cursor cursor, AppResourceGD entity, int offset) {
-        entity.setAppid(cursor.getInt(offset + 0));
-        entity.setAppname(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setNeeddownloadrs(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
-        entity.setImageurl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setJsurl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setStatus(cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5));
-        entity.setChecksum(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setApptype(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-        entity.setWeburl(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setIconurl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setSortOrder(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
-        entity.setStateDownload(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
-        entity.setTimeDownload(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
-        entity.setNumRetry(cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13));
+        entity.appid = cursor.getInt(offset + 0);
+        entity.appname = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
+        entity.needdownloadrs = cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2);
+        entity.imageurl = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
+        entity.jsurl = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
+        entity.status = cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5);
+        entity.checksum = cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6);
+        entity.apptype = cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7);
+        entity.weburl = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
+        entity.iconurl = cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9);
+        entity.sortOrder = cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10);
+        entity.stateDownload = cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11);
+        entity.timeDownload = cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12);
+        entity.numRetry = cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13);
      }
     
     @Override
