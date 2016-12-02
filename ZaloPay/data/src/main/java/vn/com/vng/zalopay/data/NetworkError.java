@@ -113,211 +113,316 @@ public class NetworkError {
     public static final int INCORRECT_PIN = -117;
     public static final int INCORRECT_PIN_LIMIT = -161;
 
-    public static String create(Context context, int errorCode) {
+    public static String getMessage(Context context, int errorCode) {
+        int stringResourceId;
         switch (errorCode) {
             case SUCCESSFUL:
-                return context.getString(R.string.exception_successful);
+                stringResourceId = R.string.exception_successful;
+                break;
             case EXCEPTION:
-                return context.getString(R.string.exception_exception);
+                stringResourceId = R.string.exception_exception;
+                break;
             case ZK_NODE_EXIST_EXCEPTION:
-                return context.getString(R.string.exception_zk_node_exist_exception);
+                stringResourceId = R.string.exception_zk_node_exist_exception;
+                break;
             case APPID_INVALID:
-                return context.getString(R.string.exception_appid_invalid);
+                stringResourceId = R.string.exception_appid_invalid;
+                break;
             case APP_NOT_AVAILABLE:
-                return context.getString(R.string.exception_app_not_available);
+                stringResourceId = R.string.exception_app_not_available;
+                break;
             case APP_TIME_INVALID:
-                return context.getString(R.string.exception_app_time_invalid);
+                stringResourceId = R.string.exception_app_time_invalid;
+                break;
             case AMOUNT_INVALID:
-                return context.getString(R.string.exception_amount_invalid);
+                stringResourceId = R.string.exception_amount_invalid;
+                break;
             case PLATFORM_INVALID:
-                return context.getString(R.string.exception_platform_invalid);
+                stringResourceId = R.string.exception_platform_invalid;
+                break;
             case PLATFORM_NOT_AVAILABLE:
-                return context.getString(R.string.exception_platform_not_available);
+                stringResourceId = R.string.exception_platform_not_available;
+                break;
             case DSCREEN_TYPE_INVALID:
-                return context.getString(R.string.exception_dscreen_type_invalid);
+                stringResourceId = R.string.exception_dscreen_type_invalid;
+                break;
             case PMCID_INVALID:
-                return context.getString(R.string.exception_pmcid_invalid);
+                stringResourceId = R.string.exception_pmcid_invalid;
+                break;
             case PMC_INACTIVE:
-                return context.getString(R.string.exception_pmc_inactive);
+                stringResourceId = R.string.exception_pmc_inactive;
+                break;
             case APPTRANSID_EXIST:
-                return context.getString(R.string.exception_apptransid_exist);
+                stringResourceId = R.string.exception_apptransid_exist;
+                break;
             case DUPLICATE_ZPTRANSID:
-                return context.getString(R.string.exception_duplicate_zptransid);
+                stringResourceId = R.string.exception_duplicate_zptransid;
+                break;
             case GET_TRANSID_FAIL:
-                return context.getString(R.string.exception_get_transid_fail);
+                stringResourceId = R.string.exception_get_transid_fail;
+                break;
             case SET_CACHE_FAIL:
-                return context.getString(R.string.exception_set_cache_fail);
+                stringResourceId = R.string.exception_set_cache_fail;
+                break;
             case GET_CACHE_FAIL:
-                return context.getString(R.string.exception_get_cache_fail);
+                stringResourceId = R.string.exception_get_cache_fail;
+                break;
             case UPDATE_RESULT_FAIL:
-                return context.getString(R.string.exception_update_result_fail);
+                stringResourceId = R.string.exception_update_result_fail;
+                break;
             case EXCEED_MAX_NOTIFY:
-                return context.getString(R.string.exception_exceed_max_notify);
+                stringResourceId = R.string.exception_exceed_max_notify;
+                break;
             case DEVICEID_NOT_MATCH:
-                return context.getString(R.string.exception_deviceid_not_match);
+                stringResourceId = R.string.exception_deviceid_not_match;
+                break;
             case APPID_NOT_MATCH:
-                return context.getString(R.string.exception_appid_not_match);
+                stringResourceId = R.string.exception_appid_not_match;
+                break;
             case PLATFORM_NOT_MATCH:
-                return context.getString(R.string.exception_platform_not_match);
+                stringResourceId = R.string.exception_platform_not_match;
+                break;
             case PMC_FACTORY_NOT_FOUND:
-                return context.getString(R.string.exception_pmc_factory_not_found);
+                stringResourceId = R.string.exception_pmc_factory_not_found;
+                break;
             case ZALO_LOGIN_FAIL:
-                return context.getString(R.string.exception_zalo_login_fail);
+                stringResourceId = R.string.exception_zalo_login_fail;
+                break;
             case ZALO_LOGIN_EXPIRE:
-                return context.getString(R.string.exception_zalo_login_expire);
+                stringResourceId = R.string.exception_zalo_login_expire;
+                break;
             case TOKEN_INVALID:
-                return context.getString(R.string.exception_token_invalid);
+                stringResourceId = R.string.exception_token_invalid;
+                break;
             case CARDINFO_INVALID:
-                return context.getString(R.string.exception_cardinfo_invalid);
+                stringResourceId = R.string.exception_cardinfo_invalid;
+                break;
             case CARDINFO_EXIST:
-                return context.getString(R.string.exception_cardinfo_exist);
+                stringResourceId = R.string.exception_cardinfo_exist;
+                break;
             case SDK_INVALID:
-                return context.getString(R.string.exception_sdk_invalid);
+                stringResourceId = R.string.exception_sdk_invalid;
+                break;
             case CARDINFO_NOT_FOUND:
-                return context.getString(R.string.exception_cardinfo_not_found);
+                stringResourceId = R.string.exception_cardinfo_not_found;
+                break;
             case UM_TOKEN_NOT_FOUND:
-                return context.getString(R.string.exception_um_token_not_found);
+                stringResourceId = R.string.exception_um_token_not_found;
+                break;
             case ATM_CREATE_ORDER_DBG_FAIL:
-                return context.getString(R.string.exception_atm_create_order_dbg_fail);
+                stringResourceId = R.string.exception_atm_create_order_dbg_fail;
+                break;
             case UM_TOKEN_EXPIRE:
-                return context.getString(R.string.exception_um_token_expire);
+                stringResourceId = R.string.exception_um_token_expire;
+                break;
             case REQUEST_FORMAT_INVALID:
-                return context.getString(R.string.exception_request_format_invalid);
+                stringResourceId = R.string.exception_request_format_invalid;
+                break;
             case CARD_INVALID:
-                return context.getString(R.string.exception_card_invalid);
+                stringResourceId = R.string.exception_card_invalid;
+                break;
             case APP_INACTIVE:
-                return context.getString(R.string.exception_app_inactive);
+                stringResourceId = R.string.exception_app_inactive;
+                break;
             case APP_MAINTENANCE:
-                return context.getString(R.string.exception_app_maintenance);
+                stringResourceId = R.string.exception_app_maintenance;
+                break;
             case PMC_MAINTENANCE:
-                return context.getString(R.string.exception_pmc_maintenance);
+                stringResourceId = R.string.exception_pmc_maintenance;
+                break;
             case PMC_NOT_AVAILABLE:
-                return context.getString(R.string.exception_pmc_not_available);
+                stringResourceId = R.string.exception_pmc_not_available;
+                break;
             case OVER_LIMIT:
-                return context.getString(R.string.exception_over_limit);
+                stringResourceId = R.string.exception_over_limit;
+                break;
             case DUPLICATE:
-                return context.getString(R.string.exception_duplicate);
+                stringResourceId = R.string.exception_duplicate;
+                break;
             case CREATE_ORDER_SUCCESSFUL:
-                return context.getString(R.string.exception_create_order_successful);
+                stringResourceId = R.string.exception_create_order_successful;
+                break;
             case IN_NOTIFY_QUEUE:
-                return context.getString(R.string.exception_in_notify_queue);
+                stringResourceId = R.string.exception_in_notify_queue;
+                break;
             case PROCESSING:
-                return context.getString(R.string.exception_processing);
+                stringResourceId = R.string.exception_processing;
+                break;
             case TRANS_NOT_FINISH:
-                return context.getString(R.string.exception_trans_not_finish);
+                stringResourceId = R.string.exception_trans_not_finish;
+                break;
             case ATM_WAIT_FOR_CHARGE:
-                return context.getString(R.string.exception_atm_wait_for_charge);
+                stringResourceId = R.string.exception_atm_wait_for_charge;
+                break;
             case INIT:
-                return context.getString(R.string.exception_init);
+                stringResourceId = R.string.exception_init;
+                break;
             case USER_NOT_MATCH:
-                return context.getString(R.string.exception_user_not_match);
+                stringResourceId = R.string.exception_user_not_match;
+                break;
             case NOT_FOUND_SMS_SERVICE_PHONE:
-                return context.getString(R.string.exception_not_found_sms_service_phone);
+                stringResourceId = R.string.exception_not_found_sms_service_phone;
+                break;
             case MAX_RETRY_GET_DBG_STATUS:
-                return context.getString(R.string.exception_max_retry_get_dbg_status);
+                stringResourceId = R.string.exception_max_retry_get_dbg_status;
+                break;
             case ATM_CREATE_ORDER_FAIL:
-                return context.getString(R.string.exception_atm_create_order_fail);
+                stringResourceId = R.string.exception_atm_create_order_fail;
+                break;
             case ATM_BANK_INVALID:
-                return context.getString(R.string.exception_atm_bank_invalid);
+                stringResourceId = R.string.exception_atm_bank_invalid;
+                break;
             case ATM_BANK_MAINTENANCE:
-                return context.getString(R.string.exception_atm_bank_maintenance);
+                stringResourceId = R.string.exception_atm_bank_maintenance;
+                break;
             case DUPLICATE_APPTRANSID:
-                return context.getString(R.string.exception_duplicate_apptransid);
+                stringResourceId = R.string.exception_duplicate_apptransid;
+                break;
             case ATM_VERIFY_CARD_SUCCESSFUL:
-                return context.getString(R.string.exception_atm_verify_card_successful);
+                stringResourceId = R.string.exception_atm_verify_card_successful;
+                break;
             case ATM_VERIFY_OTP_SUCCESS:
-                return context.getString(R.string.exception_atm_verify_otp_success);
+                stringResourceId = R.string.exception_atm_verify_otp_success;
+                break;
             case ATM_VERIFY_CARD_FAIL:
-                return context.getString(R.string.exception_atm_verify_card_fail);
+                stringResourceId = R.string.exception_atm_verify_card_fail;
+                break;
             case ATM_MAX_RETRY_OTP_FAIL:
-                return context.getString(R.string.exception_atm_max_retry_otp_fail);
+                stringResourceId = R.string.exception_atm_max_retry_otp_fail;
+                break;
             case ATM_QUERY_ORDER_FAIL:
-                return context.getString(R.string.exception_atm_query_order_fail);
+                stringResourceId = R.string.exception_atm_query_order_fail;
+                break;
             case ATM_BANK_SRC_INVALID:
-                return context.getString(R.string.exception_atm_bank_src_invalid);
+                stringResourceId = R.string.exception_atm_bank_src_invalid;
+                break;
             case DESERIALIZE_TRANS_FAIL:
-                return context.getString(R.string.exception_deserialize_trans_fail);
+                stringResourceId = R.string.exception_deserialize_trans_fail;
+                break;
             case IN_GET_STATUS_ATM_QUEUE:
-                return context.getString(R.string.exception_in_get_status_atm_queue);
+                stringResourceId = R.string.exception_in_get_status_atm_queue;
+                break;
             case ATM_CHARGE_FAIL:
-                return context.getString(R.string.exception_atm_charge_fail);
+                stringResourceId = R.string.exception_atm_charge_fail;
+                break;
             case ATM_RETRY_CAPTCHA:
-                return context.getString(R.string.exception_atm_retry_captcha);
+                stringResourceId = R.string.exception_atm_retry_captcha;
+                break;
             case ATM_RETRY_OTP:
-                return context.getString(R.string.exception_atm_retry_otp);
+                stringResourceId = R.string.exception_atm_retry_otp;
+                break;
             case ATM_CHARGE_SUCCESSFUL:
-                return context.getString(R.string.exception_atm_charge_successful);
+                stringResourceId = R.string.exception_atm_charge_successful;
+                break;
             case TRANS_INFO_NOT_FOUND:
-                return context.getString(R.string.exception_trans_info_not_found);
+                stringResourceId = R.string.exception_trans_info_not_found;
+                break;
             case ATM_CAPTCHA_INVALID:
-                return context.getString(R.string.exception_atm_captcha_invalid);
+                stringResourceId = R.string.exception_atm_captcha_invalid;
+                break;
             case ATM_COST_RATE_INVALID:
-                return context.getString(R.string.exception_atm_cost_rate_invalid);
+                stringResourceId = R.string.exception_atm_cost_rate_invalid;
+                break;
             case ITEMS_INVALID:
-                return context.getString(R.string.exception_items_invalid);
+                stringResourceId = R.string.exception_items_invalid;
+                break;
             case HMAC_INVALID:
-                return context.getString(R.string.exception_hmac_invalid);
+                stringResourceId = R.string.exception_hmac_invalid;
+                break;
             case TIME_INVALID:
-                return context.getString(R.string.exception_time_invalid);
+                stringResourceId = R.string.exception_time_invalid;
+                break;
             case CAL_NET_CHARGE_AMT_FAIL:
-                return context.getString(R.string.exception_cal_net_charge_amt_fail);
+                stringResourceId = R.string.exception_cal_net_charge_amt_fail;
+                break;
             case ATM_VERIFY_OTP_FAIL:
-                return context.getString(R.string.exception_atm_verify_otp_fail);
+                stringResourceId = R.string.exception_atm_verify_otp_fail;
+                break;
             case APP_USER_INVALID:
-                return context.getString(R.string.exception_app_user_invalid);
+                stringResourceId = R.string.exception_app_user_invalid;
+                break;
             case ZPW_GETTRANSID_FAIL:
-                return context.getString(R.string.exception_zpw_gettransid_fail);
+                stringResourceId = R.string.exception_zpw_gettransid_fail;
+                break;
             case ZPW_PURCHASE_FAIL:
-                return context.getString(R.string.exception_zpw_purchase_fail);
+                stringResourceId = R.string.exception_zpw_purchase_fail;
+                break;
             case ZPW_ACCOUNT_NAME_INVALID:
-                return context.getString(R.string.exception_zpw_account_name_invalid);
+                stringResourceId = R.string.exception_zpw_account_name_invalid;
+                break;
             case ZPW_ACCOUNT_SUSPENDED:
-                return context.getString(R.string.exception_zpw_account_suspended);
+                stringResourceId = R.string.exception_zpw_account_suspended;
+                break;
             case ZPW_ACCOUNT_NOT_EXIST:
-                return context.getString(R.string.exception_zpw_account_not_exist);
+                stringResourceId = R.string.exception_zpw_account_not_exist;
+                break;
             case ZPW_BALANCE_NOT_ENOUGH:
-                return context.getString(R.string.exception_zpw_balance_not_enough);
+                stringResourceId = R.string.exception_zpw_balance_not_enough;
+                break;
             case ZPW_GET_BALANCE_FAIL:
-                return context.getString(R.string.exception_zpw_get_balance_fail);
+                stringResourceId = R.string.exception_zpw_get_balance_fail;
+                break;
             case ZPW_WRONG_PASSWORD:
-                return context.getString(R.string.exception_zpw_wrong_password);
+                stringResourceId = R.string.exception_zpw_wrong_password;
+                break;
             case USER_INVALID:
-                return context.getString(R.string.exception_user_invalid);
+                stringResourceId = R.string.exception_user_invalid;
+                break;
             case CARD_NOT_MATCH:
-                return context.getString(R.string.exception_card_not_match);
+                stringResourceId = R.string.exception_card_not_match;
+                break;
             case TRANSID_FORMAT_INVALID:
-                return context.getString(R.string.exception_transid_format_invalid);
+                stringResourceId = R.string.exception_transid_format_invalid;
+                break;
             case CARD_TOKEN_INVALID:
-                return context.getString(R.string.exception_card_token_invalid);
+                stringResourceId = R.string.exception_card_token_invalid;
+                break;
             case CARD_TOKEN_EXPIRE:
-                return context.getString(R.string.exception_card_token_expire);
+                stringResourceId = R.string.exception_card_token_expire;
+                break;
             case TRANSTYPE_INVALID:
-                return context.getString(R.string.exception_transtype_invalid);
+                stringResourceId = R.string.exception_transtype_invalid;
+                break;
             case TRANSTYPE_INACTIVE:
-                return context.getString(R.string.exception_transtype_inactive);
+                stringResourceId = R.string.exception_transtype_inactive;
+                break;
             case TRANSTYPE_MAINTENANCE:
-                return context.getString(R.string.exception_transtype_maintenance);
+                stringResourceId = R.string.exception_transtype_maintenance;
+                break;
             case APPTRANSID_GEN_ERROR:
-                return context.getString(R.string.exception_apptransid_gen_error);
+                stringResourceId = R.string.exception_apptransid_gen_error;
+                break;
             case MAP_APPID_APPTRANSID_FAIL:
-                return context.getString(R.string.exception_map_appid_apptransid_fail);
+                stringResourceId = R.string.exception_map_appid_apptransid_fail;
+                break;
             case EXCEED_MAX_NOTIFY_WALLET_FEE:
-                return context.getString(R.string.exception_exceed_max_notify_wallet_fee);
+                stringResourceId = R.string.exception_exceed_max_notify_wallet_fee;
+                break;
             case UPDATE_RESULT_FAIL_WALLET_FEE:
-                return context.getString(R.string.exception_update_result_fail_wallet_fee);
+                stringResourceId = R.string.exception_update_result_fail_wallet_fee;
+                break;
             case APPTRANSID_INVALID:
-                return context.getString(R.string.exception_apptransid_invalid);
+                stringResourceId = R.string.exception_apptransid_invalid;
+                break;
             case TRANSTYPE_AMOUNT_INVALID:
-                return context.getString(R.string.exception_transtype_amount_invalid);
+                stringResourceId = R.string.exception_transtype_amount_invalid;
+                break;
             case CARD_ALREADY_MAP:
-                return context.getString(R.string.exception_card_already_map);
+                stringResourceId = R.string.exception_card_already_map;
+                break;
             case SERVER_MAINTAIN:
-                return context.getString(R.string.exception_server_maintain);
+                stringResourceId = R.string.exception_server_maintain;
+                break;
             case INVITATION_CODE_ERROR:
-                return context.getString(R.string.exception_invitation_code_error);
+                stringResourceId = R.string.exception_invitation_code_error;
+                break;
             case INVITATION_CODE_INVALID:
-                return context.getString(R.string.exception_invitation_code_invalid);
+                stringResourceId = R.string.exception_invitation_code_invalid;
+                break;
+            default:
+                return null;
         }
-        return null;
+
+        return context.getString(stringResourceId);
     }
 }
