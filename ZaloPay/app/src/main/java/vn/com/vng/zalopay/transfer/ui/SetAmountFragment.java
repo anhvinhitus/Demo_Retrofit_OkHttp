@@ -16,6 +16,8 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -58,6 +60,8 @@ public class SetAmountFragment extends BaseFragment {
 
     @OnClick(R.id.btnUpdate)
     public void onClickUpdate() {
+        trackEventSetAmount();
+
         Intent data = new Intent();
         data.putExtra("amount", mAmountView.getAmount());
         data.putExtra("message", mNoteView.getText().toString());
@@ -94,5 +98,15 @@ public class SetAmountFragment extends BaseFragment {
             mMaxAmount = Constants.MAX_TRANSFER_MONEY;
         }
         mAmountView.setMinMaxMoney(mMinAmount, mMaxAmount);
+    }
+
+    private void trackEventSetAmount() {
+        if (mAmountView.getAmount() > 0 && mNoteView.length() > 0) {
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETAMOUNTMESSAGE);
+        } else if (mAmountView.getAmount() > 0) {
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETAMOUNT);
+        } else if (mNoteView.length() > 0) {
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_SETMESSAGE);
+        }
     }
 }

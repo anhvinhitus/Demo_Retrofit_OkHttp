@@ -98,7 +98,7 @@ public interface NotificationStore {
 
         Observable<Boolean> removeAllNotification();
 
-        Observable<BaseResponse> sendNotification(String receiverid, String embededdata);
+        Observable<Boolean> sendNotification(String receiverid, String embededdata);
 
         Observable<Long> getOldestTimeNotification();
 

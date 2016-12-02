@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
@@ -40,7 +41,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     private TransactionStore.Repository mTransactionRepository;
     private final EventBus mEventBus;
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     ReactNotificationNativeModule(ReactApplicationContext reactContext,
                                   NotificationStore.Repository notificationRepository,
@@ -71,40 +72,59 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
                     }
                 }).subscribe(new NotificationSubscriber(promise));
 
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @ReactMethod
     public void reloadTransactionWithId(String transactionId, String notificationId, Promise promise) {
         Timber.d("Reload transaction transId [%s] notificationId [%s] ", transactionId, notificationId);
+      /*  long transId;
+        long notifyId;
+        try {
+            transId = Long.valueOf(transactionId);
+            notifyId = Long.valueOf(notificationId);
+        } catch (NumberFormatException e) {
+            Helpers.promiseResolveError(promise, -1, "Arguments invalid");
+            return;
+        }
+
+        Observable<NotificationData> notifyObservable = mNotificationRepository.getNotify(notifyId);
+*/
     }
 
     @ReactMethod
     public void updateStateReadWithNotificationId(String notificationid, Promise promise) {
         Timber.d("updateStateReadWithNotificationId %s ", notificationid);
+        long notifyId;
         try {
-            mNotificationRepository.markAsRead(Long.parseLong(notificationid));
-        } catch (Exception ex) {
-            Timber.w(ex, "message exception");
+            notifyId = Long.parseLong(notificationid);
+        } catch (NumberFormatException e) {
+            Helpers.promiseResolveError(promise, -1, "Arguments invalid");
+            return;
         }
+
+        Subscription subscription = mNotificationRepository.markAsRead(notifyId)
+                .subscribe(new DefaultSubscriber<Boolean>());
+        mCompositeSubscription.add(subscription);
+
+        Helpers.promiseResolveSuccess(promise, null);
     }
 
 
     @ReactMethod
     public void removeNotification(String notificationId, Promise promise) {
-
-        long notifyId = -1;
+        long notifyId;
         try {
             notifyId = Long.parseLong(notificationId);
         } catch (NumberFormatException e) {
             Timber.e(e, "exception");
-            Helpers.promiseResolveError(promise, -1, "Notification parse error");
+            Helpers.promiseResolveError(promise, -1, "Arguments invalid");
             return;
         }
 
         Subscription subscription = mNotificationRepository.removeNotification(notifyId)
                 .subscribe(new RemoveNotifySubscriber(promise));
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     @ReactMethod
@@ -112,7 +132,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         Subscription subscription = mNotificationRepository.removeAllNotification()
                 .subscribe(new RemoveNotifySubscriber(promise));
 
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     private class NotificationSubscriber extends DefaultSubscriber<WritableArray> {
@@ -208,7 +228,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     @Override
     public void onHostDestroy() {
         Timber.d("Activity onDestroy");
-        unsubscribeIfNotNull(compositeSubscription);
+        unsubscribeIfNotNull(mCompositeSubscription);
 
         getReactApplicationContext().removeActivityEventListener(this);
         getReactApplicationContext().removeLifecycleEventListener(this);
@@ -220,7 +240,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         }
     }
 
-    public void sendEvent(String eventName) {
+    private void sendEvent(String eventName) {
         ReactApplicationContext reactContext = getReactApplicationContext();
         if (reactContext == null) {
             return;

@@ -25,6 +25,8 @@ import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.IPassCodeFocusChanged;
 import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -71,6 +73,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
+        ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_REQUEST);
         if (isDifferencePin()) {
             mNewPassCodeView.hideError();
             presenter.changePin(mOldPassCodeView.getText(), mNewPassCodeView.getText());

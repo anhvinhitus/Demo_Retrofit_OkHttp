@@ -16,6 +16,8 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by longlv on 25/05/2016.
@@ -61,11 +63,13 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
     private void onConfirmOTPError(Throwable e) {
         hideLoading();
         if (mView != null) {
+            ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_INPUTWRONG);
             mView.showError(ErrorMessageFactory.create(applicationContext, e));
         }
     }
 
     private void onVerifyOTPSuccess() {
+        ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_INPUTOK);
         hideLoading();
         mView.confirmOTPSuccess();
     }

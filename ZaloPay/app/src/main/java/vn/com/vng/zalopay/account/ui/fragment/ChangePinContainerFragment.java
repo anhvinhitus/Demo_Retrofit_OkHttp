@@ -16,6 +16,8 @@ import vn.com.vng.zalopay.account.ui.adapter.ChangePinPagerAdapter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
@@ -123,5 +125,14 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     @Override
     public void onChangePinOverLimit() {
         getActivity().finish();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (viewPager.getCurrentItem() > 0) {
+            ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTNONE);
+        }
+
+        return super.onBackPressed();
     }
 }

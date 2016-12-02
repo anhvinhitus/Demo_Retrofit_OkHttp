@@ -42,6 +42,8 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -53,6 +55,9 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Controller for transfer money
  */
 public class TransferPresenter extends BaseUserPresenter implements IPresenter<ITransferView> {
+
+
+    public static String mPreviousTransferId = null;
 
     private ITransferView mView;
     private PaymentWrapper paymentWrapper;
@@ -73,14 +78,15 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     private final TransferNotificationHelper mTransferNotificationHelper;
 
     @Inject
-    public TransferPresenter(final User user, NotificationStore.Repository notificationRepository,
-                             BalanceStore.Repository balanceRepository,
-                             ZaloPayRepository zaloPayRepository,
-                             TransactionStore.Repository transactionRepository,
-                             final AccountStore.Repository accountRepository,
-                             Navigator navigator,
-                             TransferStore.Repository transferRepository,
-                             Context applicationContext) {
+    TransferPresenter(final User user, NotificationStore.Repository notificationRepository,
+                      BalanceStore.Repository balanceRepository,
+                      ZaloPayRepository zaloPayRepository,
+                      TransactionStore.Repository transactionRepository,
+                      final AccountStore.Repository accountRepository,
+                      Navigator navigator,
+                      TransferStore.Repository transferRepository,
+                      Context applicationContext) {
+
         this.user = user;
         this.mNotificationRepository = notificationRepository;
         mZaloPayRepository = zaloPayRepository;
@@ -220,9 +226,6 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
-        GetUserInfoSubscriber() {
-        }
-
         @Override
         public void onNext(MappingZaloAndZaloPay mappingZaloAndZaloPay) {
             TransferPresenter.this.onGetMappingUserSuccess(mappingZaloAndZaloPay);
@@ -295,7 +298,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             }
 
             showLoading();
-
+            mPreviousTransferId = null;
             Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
                     mTransaction.amount,
                     ETransactionType.WALLET_TRANSFER.toString(),
@@ -311,9 +314,6 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
-        CreateWalletOrderSubscriber() {
-        }
-
         @Override
         public void onNext(Order order) {
             Timber.d("CreateWalletOrderSubscriber success " + order);
@@ -560,11 +560,19 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             mTransaction.displayName = zaloFriend.displayName;
             mIsUserZaloPay = zaloFriend.usingApp;
         }
+
+        if (mPreviousTransferId != null && !mPreviousTransferId.equals(mTransaction.zaloPayId)) {
+            Timber.d("Change user tranfer money");
+            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_CHANGERECEIVER);
+        }
     }
 
     public void navigateBack() {
         if (mView == null) {
             return;
+        }
+        if (mTransaction != null && mTransaction.zaloPayId != null) {
+            mPreviousTransferId = mTransaction.zaloPayId;
         }
 
         if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {

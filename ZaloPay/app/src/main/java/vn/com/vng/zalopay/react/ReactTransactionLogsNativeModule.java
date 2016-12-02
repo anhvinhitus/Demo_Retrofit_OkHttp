@@ -62,7 +62,6 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         Timber.d("get transaction success index %s count %s", pageIndex, count);
 
         Subscription subscription = mTransactionRepository.getTransactions(pageIndex, count)
-
                 .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
                     @Override
                     public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {

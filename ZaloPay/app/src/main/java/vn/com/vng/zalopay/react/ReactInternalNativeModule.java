@@ -223,7 +223,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void payOrder(String notificationId, Promise promise) {
-        Timber.d("paymentOrder: %s", notificationId);
+        Timber.d("pay order notificationId [%s]", notificationId);
         final long notifyId;
         try {
             notifyId = Long.valueOf(notificationId);
@@ -252,7 +252,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     private void payOrder(NotificationData notify) {
         JsonObject embeddata = notify.getEmbeddata();
-        Timber.d("payment Order notificationId [%s] embeddata %s", notify.notificationId, embeddata);
+        Timber.d("pay Order notificationId [%s] embeddata %s", notify.notificationId, embeddata);
         if (embeddata == null) {
             return;
         }

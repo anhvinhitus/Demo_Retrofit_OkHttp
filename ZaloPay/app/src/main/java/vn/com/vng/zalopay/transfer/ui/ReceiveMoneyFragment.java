@@ -19,6 +19,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -107,10 +109,7 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
     }
 
     private boolean hasAmount() {
-        if (getHeaderView() != null) {
-            return getHeaderView().hasAmount();
-        }
-        return false;
+        return getHeaderView() != null && getHeaderView().hasAmount();
     }
 
     private void setNote(String message) {
@@ -138,6 +137,7 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
         } else if (itemId == R.id.action_amount_clear) {
             renderQRCode(0, "");
             getActivity().invalidateOptionsMenu();
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_CLEARINFO);
             return true;
         }
 

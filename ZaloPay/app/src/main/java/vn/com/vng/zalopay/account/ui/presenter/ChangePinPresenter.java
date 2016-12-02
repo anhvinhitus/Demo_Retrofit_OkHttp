@@ -21,6 +21,10 @@ import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
+
+import static vn.com.vng.zalopay.data.NetworkError.OTP_CHANGE_PASSWORF_WRONG;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -156,16 +160,29 @@ public class ChangePinPresenter extends BaseUserPresenter
     }
 
     private void onVerifyOTPError(Throwable e) {
-        mChangePinVerifyView.hideLoading();
+        if (mChangePinVerifyView != null) {
+            mChangePinVerifyView.hideLoading();
+        }
         if (e instanceof NetworkConnectionException) {
-            mChangePinView.showWarning(mChangePinView.getContext().getString(R.string.exception_no_connection_try_again));
+            if (mChangePinView != null) {
+                mChangePinView.showWarning(mApplicationContext.getString(R.string.exception_no_connection_try_again));
+            }
         } else {
+            if (e instanceof BodyException) {
+                if (((BodyException) e).errorCode == OTP_CHANGE_PASSWORF_WRONG) {
+                    ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTWRONG);
+                }
+            }
+
             String message = ErrorMessageFactory.create(mApplicationContext, e);
-            mChangePinVerifyView.showError(message);
+            if (mChangePinVerifyView != null) {
+                mChangePinVerifyView.showError(message);
+            }
         }
     }
 
     private void onVerifyOTPSuccess() {
+        ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTOK);
         mChangePinVerifyView.hideLoading();
         mChangePinContainer.onVerifySuccess();
     }

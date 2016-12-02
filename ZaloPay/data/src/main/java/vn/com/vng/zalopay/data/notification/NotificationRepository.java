@@ -123,7 +123,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     }
 
     @Override
-    public Observable<BaseResponse> sendNotification(String receiverid, String embededdata) {
+    public Observable<Boolean> sendNotification(String receiverid, String embededdata) {
         if (mCurrentUser == null || TextUtils.isEmpty(mCurrentUser.zaloPayId) || TextUtils.isEmpty(mCurrentUser.getSession())) {
             return Observable.error(new IllegalArgumentException("Current user is null"));
         }
@@ -132,7 +132,8 @@ public class NotificationRepository implements NotificationStore.Repository {
                 mCurrentUser.zaloPayId,
                 mCurrentUser.getSession(),
                 receiverid,
-                embededdata);
+                embededdata)
+                .map(BaseResponse::isSuccessfulResponse);
     }
 
     @Override

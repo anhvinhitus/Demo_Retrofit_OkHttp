@@ -26,6 +26,8 @@ import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -228,6 +230,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
             if (viewPager.getCurrentItem() == 0) {
                 adapter.getItem(0).onBackPressed();
             } else {
+                ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_INPUTNONE);
                 viewPager.setCurrentItem(0);
                 return;
             }

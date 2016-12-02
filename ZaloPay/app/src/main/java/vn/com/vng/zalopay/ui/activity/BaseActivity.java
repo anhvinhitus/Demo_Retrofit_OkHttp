@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
+import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
@@ -293,6 +294,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_LAUNCH);
         } else if (TAG.equals(UpdateProfileLevel2Activity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_LAUNCH);
+        }else if(TAG.equals(ReceiveMoneyActivity.class.getSimpleName())){
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_LAUNCH);
         }
     }
 
@@ -305,6 +308,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_NAVIGATEBACK);
         } else if (TAG.equals(UpdateProfileLevel2Activity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_NAVIGATEBACK);
+        }else if(TAG.equals(ReceiveMoneyActivity.class.getSimpleName())){
+            ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_BACK);
         }
     }
 

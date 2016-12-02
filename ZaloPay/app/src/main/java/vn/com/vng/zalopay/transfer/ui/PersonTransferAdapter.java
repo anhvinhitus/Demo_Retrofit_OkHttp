@@ -31,14 +31,14 @@ import vn.com.vng.zalopay.utils.ImageLoader;
  * Created by AnhHieu on 8/31/16.
  * *
  */
-public class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, RecyclerView.ViewHolder> {
+final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, RecyclerView.ViewHolder> {
 
     private static final int VIEWTYPE_HEADER = 0;
     private static final int VIEWTYPE_INPROGRESS = 1;
     private static final int VIEWTYPE_DONE = 2;
     private User mOwner;
 
-    public PersonTransferAdapter(Context context, User user) {
+    PersonTransferAdapter(Context context, User user) {
         super(context);
         mOwner = user;
     }

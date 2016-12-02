@@ -37,6 +37,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.notification.NotificationType;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 
 /**
@@ -52,10 +54,12 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
 
     private EventBus mEventBus;
 
-    final List<PersonTransfer> mListTransfer;
+    private final List<PersonTransfer> mListTransfer;
     private Set<Long> mMessageToUserId;
 
     private User mUser;
+
+    private Map<String, Subscription> mapSubscription = new HashMap<>();
 
     @Inject
     ReceiveMoneyPresenter(User user, EventBus eventBus) {
@@ -258,8 +262,6 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
 
     }
 
-    Map<String, Subscription> mapSubscription = new HashMap<>();
-
     private void startTimer(final String zaloPayId, final String senderDisplayName, final String senderAvatar) {
         Subscription subscription = Observable.timer(5, TimeUnit.MINUTES)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -293,6 +295,7 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
         mapSubscription.clear();
     }
 
+    private int mCountReceiveSuccess;
 
     private void displayReceivedMoney(String senderDisplayName, String senderAvatar, long amount, String transId) {
 
@@ -303,7 +306,8 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
         if (existTransaction(transId)) {
             return;
         }
-
+        
+        trackEvent(mCountReceiveSuccess++);
         mView.displayReceivedMoney(senderDisplayName, senderAvatar, amount, transId);
     }
 
@@ -382,5 +386,44 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
         item.amount = amount;
         item.transId = transId;
         return item;
+    }
+
+    private void trackEvent(int count) {
+        int eventId;
+        switch (count) {
+            case 1:
+                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_1;
+                break;
+            case 2:
+                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_2;
+                break;
+            case 3:
+                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_3;
+                break;
+            case 4:
+                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_4;
+                break;
+            case 5:
+                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_5;
+                break;
+            case 6:
+                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_6;
+                break;
+            case 7:
+                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_7;
+                break;
+            case 8:
+                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_8;
+                break;
+            case 9:
+                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_9;
+                break;
+            default:
+                eventId = ZPEvents.RECEIVEMONEY_RECEIVED_MORE;
+                break;
+
+        }
+
+        ZPAnalytics.trackEvent(eventId);
     }
 }

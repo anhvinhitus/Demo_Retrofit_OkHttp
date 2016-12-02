@@ -28,6 +28,8 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ImageLoader;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -181,6 +183,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     public void onClickContinue() {
         if (edtAmount.isValid() && !TextUtils.isEmpty(mPresenter.getZaloPayId())) {
             mPresenter.doTransfer(edtAmount.getAmount());
+            ZPAnalytics.trackEvent(edtTransferMsg.length() == 0 ? ZPEvents.MONEYTRANSFER_INPUTNODESCRIPTION : ZPEvents.MONEYTRANSFER_INPUTDESCRIPTION);
+            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TAPCONTINUE);
         }
     }
 

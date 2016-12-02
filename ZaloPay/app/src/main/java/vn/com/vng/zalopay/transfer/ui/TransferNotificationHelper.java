@@ -9,10 +9,8 @@ import rx.Subscription;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
-import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -50,6 +48,6 @@ class TransferNotificationHelper {
         embeddata = Base64.encodeToString(embeddata.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP | Base64.URL_SAFE);
         return mNotificationRepository.sendNotification(toZaloPayId, embeddata)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<BaseResponse>());
+                .subscribe(new DefaultSubscriber<>());
     }
 }

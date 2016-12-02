@@ -22,6 +22,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * A fragment representing a list of Items.
@@ -195,6 +197,7 @@ public class TransferHomeFragment extends BaseFragment implements
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
         navigator.startTransferActivity(this, bundle);
+        ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_CHOOSERECENTTRANSACTION);
     }
 
     @Override

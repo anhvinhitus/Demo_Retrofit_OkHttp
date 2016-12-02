@@ -166,7 +166,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
         mPresenter.updateProfile(mPassCodeView.getText(), mEdtPhoneView.getText().toString().toLowerCase());
-        ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_ZPN_EMPTY);
+        ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_REQUEST);
     }
 
 
