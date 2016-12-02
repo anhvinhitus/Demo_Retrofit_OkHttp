@@ -115,6 +115,12 @@ public static java.lang.String TABLENAME;
     <init>(java.lang.Throwable);
 }
 
+# https://github.com/greenrobot/greenDAO/issues/367
+# If not integrating with SQLCipher a rule like below (or similar) needs be added:
+-dontwarn org.greenrobot.greendao.database.**
+# to avoid the problems below:
+# Warning: org.greenrobot.greendao.database.DatabaseOpenHelper$EncryptedHelper: can't find superclass or interface net.sqlcipher.database.SQLiteOpenHelper
+
 # okhttp
 
 -keep class com.squareup.okhttp.** { *; }
