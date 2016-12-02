@@ -1,5 +1,7 @@
 <#--
 
+Contributor: Nguyen Huu Hoa
+
 Copyright (C) 2011-2016 Markus Junginger, greenrobot (http://greenrobot.org)
                                                                            
 This file is part of greenDAO Generator.                                   
@@ -116,7 +118,7 @@ ${property.javaDocField}
 <#elseif property.index??>
     @Index
 </#if>
-    private ${property.javaTypeInEntity} ${property.propertyName};
+    public ${property.javaTypeInEntity} ${property.propertyName};
 </#list>
 
 <#if entity.active>
@@ -212,34 +214,6 @@ property>${property.javaTypeInEntity} ${property.propertyName}<#if property_has_
     }
 
 </#if>
-<#list entity.properties as property>
-<#if property.javaDocGetter ??>
-${property.javaDocGetter}
-</#if>
-<#if property.codeBeforeGetter ??>
-    ${property.codeBeforeGetter}
-</#if>
-<#if property.notNull && !primitiveTypes?seq_contains(property.javaTypeInEntity)>
-    @NotNull
-</#if>
-    public ${property.javaTypeInEntity} get${property.propertyName?cap_first}() {
-        return ${property.propertyName};
-    }
-
-<#if property.notNull && !primitiveTypes?seq_contains(property.javaTypeInEntity)>
-    /** Not-null value; ensure this value is available before it is saved to the database. */
-</#if>
-<#if property.javaDocSetter ??>
-${property.javaDocSetter}
-</#if>
-<#if property.codeBeforeSetter ??>
-    ${property.codeBeforeSetter}
-</#if>
-    public void set${property.propertyName?cap_first}(<#if property.notNull && !primitiveTypes?seq_contains(property.javaTypeInEntity)>@NotNull </#if>${property.javaTypeInEntity} ${property.propertyName}) {
-        this.${property.propertyName} = ${property.propertyName};
-    }
-
-</#list>
 <#--
 ##########################################
 ########## To-One Relations ##############

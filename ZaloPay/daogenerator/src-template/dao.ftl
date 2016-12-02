@@ -143,7 +143,7 @@ as property>\"${property.dbName}\"<#if (index.propertiesOrder[property_index])??
         }
 </#if>
 <#else> <#-- nullable, non-protobuff -->
-        ${property.javaTypeInEntity} ${property.propertyName} = entity.get${property.propertyName?cap_first}();
+        ${property.javaTypeInEntity} ${property.propertyName} = entity.${property.propertyName};
         if (${property.propertyName} != null) {
             stmt.bind${toBindType[property.propertyType]}(${property_index + 1}, ${property.databaseValueExpression});
         }
@@ -154,7 +154,7 @@ as property>\"${property.dbName}\"<#if (index.propertiesOrder[property_index])??
 
         ${toOne.targetEntity.className} ${toOne.name} = entity.peak${toOne.name?cap_first}();
         if(${toOne.name} != null) {
-            ${toOne.targetEntity.pkProperty.javaType} ${toOne.name}__targetKey = ${toOne.name}.get${toOne.targetEntity.pkProperty.propertyName?cap_first}();
+            ${toOne.targetEntity.pkProperty.javaType} ${toOne.name}__targetKey = ${toOne.name}.${toOne.targetEntity.pkProperty.propertyName};
 <#if !toOne.targetEntity.pkProperty.notNull>
             if(${toOne.name}__targetKey != null) {
                 // TODO bind ${toOne.name}__targetKey
@@ -196,7 +196,7 @@ as property>\"${property.dbName}\"<#if (index.propertiesOrder[property_index])??
 <#list entity.properties as property>
 <#if !property.notNull>
         if (!cursor.isNull(offset + ${property_index})) {
-    </#if>        builder.set${property.propertyName?cap_first}(cursor.get${toCursorType[property.propertyType]}(offset + ${property_index}));
+    </#if>        builder.${property.propertyName} = cursor.get${toCursorType[property.propertyType]}(offset + ${property_index});
 <#if !property.notNull>
         }
 </#if>        
@@ -230,8 +230,8 @@ as property>\"${property.dbName}\"<#if (index.propertiesOrder[property_index])??
         throw new UnsupportedOperationException("Protobuf objects cannot be modified");
 <#else> 
 <#list entity.properties as property>
-        entity.set${property.propertyName?cap_first}(<#if !property.notNull>cursor.isNull(offset + ${property_index}) ? null : </#if><#--
-            -->${property.getEntityValueExpression("cursor.get${toCursorType[property.propertyType]}(offset + ${property_index})")});
+        entity.${property.propertyName} = <#if !property.notNull>cursor.isNull(offset + ${property_index}) ? null : </#if><#--
+            -->${property.getEntityValueExpression("cursor.get${toCursorType[property.propertyType]}(offset + ${property_index})")};
 </#list>
 </#if>
      }
@@ -241,11 +241,11 @@ as property>\"${property.dbName}\"<#if (index.propertiesOrder[property_index])??
 <#if entity.pkProperty??>
 <#if entity.pkProperty.propertyType == "Long">
 <#if !entity.protobuf>
-        entity.set${entity.pkProperty.propertyName?cap_first}(rowId);
+        entity.${entity.pkProperty.propertyName} = rowId;
 </#if>
         return rowId;
 <#else>
-        return entity.get${entity.pkProperty.propertyName?cap_first}();
+        return entity.${entity.pkProperty.propertyName};
 </#if>
 <#else>
         // Unsupported or missing PK type
@@ -257,7 +257,7 @@ as property>\"${property.dbName}\"<#if (index.propertiesOrder[property_index])??
     public ${entity.pkType} getKey(${entity.className} entity) {
 <#if entity.pkProperty??>
         if(entity != null) {
-            return entity.get${entity.pkProperty.propertyName?cap_first}();
+            return entity.${entity.pkProperty.propertyName};
         } else {
             return null;
         }
@@ -275,7 +275,7 @@ as property>\"${property.dbName}\"<#if (index.propertiesOrder[property_index])??
 <#if entity.protobuf>
         return entity.has${entity.pkProperty.propertyName?cap_first}();
 <#else>
-        return entity.get${entity.pkProperty.propertyName?cap_first}() != null;
+        return entity.${entity.pkProperty.propertyName} != null;
 </#if>
 </#if>
 <#else>
