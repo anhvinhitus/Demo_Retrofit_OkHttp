@@ -53,10 +53,6 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     TextView mErrorMessageCamera;
 
     protected void startPickImage(int requestCode) {
-        if (!checkAndRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
-                Constants.Permission.REQUEST_READ_STORAGE)) {
-            return;
-        }
         try {
             Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
             i.setType("image/*");
@@ -172,7 +168,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case Constants.Permission.REQUEST_CAMERA: {
+            case Constants.Permission.REQUEST_CAMERA:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     super.start();
@@ -180,7 +176,13 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
                     showCameraError(R.string.exception_open_camera_not_allow);
                     ZPAnalytics.trackEvent(ZPEvents.SCANQR_ACCESSDENIED);
                 }
-            }
+                break;
+            case Constants.Permission.REQUEST_READ_STORAGE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
+                }
+                break;
         }
     }
 
@@ -247,7 +249,10 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.action_scan_qr_from_image) {
-            startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
+            if (checkAndRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Constants.Permission.REQUEST_READ_STORAGE)) {
+                startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
