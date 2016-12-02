@@ -16,9 +16,11 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.google.gson.JsonObject;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
@@ -111,27 +113,17 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void navigateLinkCard() {
         Timber.d("navigateLinkCard");
-        AndroidUtils.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                if (getCurrentActivity() != null) {
-                    navigator.startLinkCardActivity(getCurrentActivity());
-                }
-            }
-        });
+        if (getCurrentActivity() != null) {
+            navigator.startLinkCardActivity(getCurrentActivity());
+        }
     }
 
     @ReactMethod
     public void navigateProfile() {
         Timber.d("navigateProfile");
-        AndroidUtils.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                if (getCurrentActivity() != null) {
-                    navigator.startProfileInfoActivity(getCurrentActivity());
-                }
-            }
-        });
+        if (getCurrentActivity() != null) {
+            navigator.startProfileInfoActivity(getCurrentActivity());
+        }
     }
 
     @ReactMethod
@@ -146,7 +138,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     public void showDetail(final int appid, final String transid) {
         Timber.d("show Detail appid %s transid %s", appid, transid);
         Subscription subscription = mResourceRepository.existResource(appid)
-                .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean aBoolean) {
@@ -231,12 +222,13 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void paymentOrder(String notificationId, Promise promise) {
+    public void payOrder(String notificationId, Promise promise) {
         Timber.d("paymentOrder: %s", notificationId);
         final long notifyId;
         try {
             notifyId = Long.valueOf(notificationId);
         } catch (NumberFormatException e) {
+            Helpers.promiseResolveError(promise, -1, "Arguments invalid");
             return;
         }
 
@@ -247,17 +239,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                         removeNotify(notifyId);
                     }
                 })
-                .subscribe(new DefaultSubscriber<NotificationData>() {
-                    @Override
-                    public void onNext(NotificationData notificationData) {
-                        paymentOrder(notificationData);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e, "error get notify");
-                    }
-                });
+                .subscribe(new PayOrderSubscriber(promise));
         mCompositeSubscription.add(subscription);
     }
 
@@ -268,7 +250,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         mCompositeSubscription.add(subscription);
     }
 
-    private void paymentOrder(NotificationData notify) {
+    private void payOrder(NotificationData notify) {
         JsonObject embeddata = notify.getEmbeddata();
         Timber.d("payment Order notificationId [%s] embeddata %s", notify.notificationId, embeddata);
         if (embeddata == null) {
@@ -330,11 +312,36 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
             @Override
             public void onCompleted() {
                 hideLoading();
-                if (getCurrentActivity() != null) {
+               /* if (getCurrentActivity() != null) {
                     showToast(R.string.you_pay_success);
-                }
+                }*/
             }
         });
+    }
+
+
+    private class PayOrderSubscriber extends DefaultSubscriber<NotificationData> {
+        private WeakReference<Promise> mPromise;
+
+        PayOrderSubscriber(Promise promise) {
+            mPromise = new WeakReference<>(promise);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d(e, "Error pay order");
+            if (mPromise.get() != null) {
+                Helpers.promiseResolveError(mPromise.get(), PaymentError.ERR_CODE_UNKNOWN.value(), e.getMessage());
+            }
+        }
+
+        @Override
+        public void onNext(NotificationData notify) {
+            payOrder(notify);
+            if (mPromise.get() != null) {
+                Helpers.promiseResolveSuccess(mPromise.get(), null);
+            }
+        }
     }
 
 }

@@ -481,13 +481,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         if (mHomeView == null) {
             return;
         }
-        
-        DialogManager.showSweetDialogConfirm(mHomeView.getActivity(), "Bạn có 1 đơn hàng cần thanh toán.",
+
+        DialogManager.showSweetDialogConfirm(mHomeView.getActivity(), mApplicationContext.getString(R.string.lbl_confirm_pay_order),
                 mApplicationContext.getString(R.string.accept), mApplicationContext.getString(R.string.cancel),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {
-
                     }
 
                     @Override

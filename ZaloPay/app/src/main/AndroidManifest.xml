@@ -157,7 +157,7 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
-        
+
         <activity
             android:name=".ui.activity.MiniApplicationActivity"
             android:theme="@style/AppTheme.NoActionBar"
