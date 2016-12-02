@@ -5,3 +5,5 @@ include ':ui.widget'
 include ':greendaogenerator'
 include ':app-loader'
 include ':zalopay.debug'
+include ':daogenerator'
+

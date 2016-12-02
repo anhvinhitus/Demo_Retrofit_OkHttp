@@ -11,7 +11,7 @@ project(':greendaogenerator') {
     dependencies {
         compile fileTree(dir: 'libs', include: ['*.jar'])
 
-        compile 'org.greenrobot:greendao-generator:3.2.0'
+        compile project(':daogenerator')
     }
 
     task createDocs {
