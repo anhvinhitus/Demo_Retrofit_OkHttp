@@ -43,14 +43,5 @@
         android:textColor="@color/white"
         android:textStyle="bold"/>
 
-    <Button
-        android:id="@+id/btnScanQRFormPhoto"
-        style="@style/Button.Default.Wrap"
-        android:layout_width="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_height="@dimen/button.height"
-        android:layout_marginBottom="96dp"
-        android:text="Quét ảnh có sẵn"/>
-
 </FrameLayout>
 

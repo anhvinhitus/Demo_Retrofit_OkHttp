@@ -9,13 +9,15 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -50,18 +52,13 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     @BindView(R.id.tvErrorMessage)
     TextView mErrorMessageCamera;
 
-    @OnClick(R.id.btnScanQRFormPhoto)
-    public void onClickScanQRFromPhoto() {
-        startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
-    }
-
     protected void startPickImage(int requestCode) {
-        if (!checkAndRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, Constants.Permission.REQUEST_READ_STORAGE)) {
+        if (!checkAndRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
+                Constants.Permission.REQUEST_READ_STORAGE)) {
             return;
         }
         try {
-            Intent i = new Intent(Intent.ACTION_PICK,
-                    MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
             i.setType("image/*");
             startActivityForResult(i, requestCode);
         } catch (Exception ex) {
@@ -97,6 +94,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         qrCodePresenter.setView(this);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -238,5 +236,20 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
                 qrCodePresenter.pay(uri);
             }
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_qrcode, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_scan_qr_from_image) {
+            startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
