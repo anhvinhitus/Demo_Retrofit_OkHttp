@@ -313,8 +313,8 @@ public class WsConnection extends Connection {
 
     private boolean sendFeedbackStatus(Event event) {
         try {
-            long mtaid = event.getMtaid();
-            long mtuid = event.getMtuid();
+            long mtaid = event.mtaid;
+            long mtuid = event.mtuid;
             long uid = getCurrentUserId();
 
             if (mtaid <= 0 && mtuid <= 0) {
@@ -354,7 +354,7 @@ public class WsConnection extends Connection {
                 return;
             }
 
-            ServerMessageType messageType = ServerMessageType.fromValue(message.getMsgType());
+            ServerMessageType messageType = ServerMessageType.fromValue(message.msgType);
             Timber.v("message.msgType %s", messageType);
             boolean needFeedback = true;
 

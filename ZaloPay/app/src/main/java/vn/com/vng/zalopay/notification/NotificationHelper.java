@@ -163,7 +163,7 @@ public class NotificationHelper {
         } else if (notificationType == NotificationType.LINK_CARD_EXPIRED) {
             removeLinkCard(notify);
         } else if (notificationType == NotificationType.MERCHANT_BILL) {
-            paymentOrderFromNotify(notify);
+            payOrderFromNotify(notify);
         }
 
         if (!skipStorage) {
@@ -263,11 +263,10 @@ public class NotificationHelper {
         CShareData.getInstance().removeCardOnCache(params);
     }
 
-    private void paymentOrderFromNotify(NotificationData notify) {
-        Timber.d("paymentOrderFromNotify %s", notify);
-
+    private void payOrderFromNotify(NotificationData notify) {
+        Timber.d("pay order via notify %s", notify);
         JsonObject embeddata = notify.getEmbeddata();
-        Timber.d("payment Order notificationId [%s] embeddata %s", notify.notificationId, embeddata);
+        Timber.d("pay order notificationId [%s] embeddata %s", notify.notificationId, embeddata);
         if (embeddata == null) {
             return;
         }
@@ -324,7 +323,7 @@ public class NotificationHelper {
      * Show notification numbers
      */
     private void showNotificationSystem(int numberUnread) {
-        Timber.d("showNotificationSystem numberUnread %s", numberUnread);
+        Timber.d("Show notification system numberUnread %s", numberUnread);
 
         if (numberUnread == 0) {
             return;
@@ -421,7 +420,7 @@ public class NotificationHelper {
 
 
     void recoveryNotification(List<NotificationData> listMessage) {
-        Timber.d("recoveryNotification %s", listMessage.size());
+        Timber.d("Recovery notification size [%s]", listMessage.size());
         Subscription subscription = mNotifyRepository.recoveryNotify(listMessage)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Void>());

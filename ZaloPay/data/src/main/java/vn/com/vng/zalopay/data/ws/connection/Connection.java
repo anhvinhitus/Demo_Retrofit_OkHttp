@@ -92,7 +92,7 @@ public abstract class Connection {
     Message postResult(Event message) {
 
         Message uiMsg = new Message();
-        uiMsg.what = message.getMsgType();
+        uiMsg.what = message.msgType;
         uiMsg.obj = message;
 
         if (messageHandler != null) {

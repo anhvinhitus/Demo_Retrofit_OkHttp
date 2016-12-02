@@ -58,7 +58,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     public long putSync(NotificationData val) {
         NotificationGD item = transform(val);
         if (item != null) {
-            boolean isExisted = isNotificationExisted(val.getMtaid(), val.getMtuid());
+            boolean isExisted = isNotificationExisted(val.mtaid, val.mtuid);
             if (isExisted) {
                 return getDaoSession().getNotificationGDDao().insertOrReplace(item);
             } else {
@@ -137,8 +137,8 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             _notification.setId(null);
         }
 
-        _notification.setMtaid(notificationEntity.getMtaid());
-        _notification.setMtuid(notificationEntity.getMtuid());
+        _notification.setMtaid(notificationEntity.mtaid);
+        _notification.setMtuid(notificationEntity.mtuid);
 
         return _notification;
     }

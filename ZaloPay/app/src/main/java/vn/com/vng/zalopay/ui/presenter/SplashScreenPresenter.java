@@ -60,6 +60,7 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
     }
 
     public void verifyUser() {
+        Timber.d("ApplicationState object [%s]", mApplicationState);
         if (mUserConfig.hasCurrentUser()) {
             if (mApplicationState.currentState() == ApplicationState.State.MAIN_SCREEN_CREATED) {
                 Timber.d("MainActivity is already created. Skip navigation");

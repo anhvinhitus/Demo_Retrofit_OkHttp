@@ -196,6 +196,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             mEventBus.register(this);
         }
         mUserSession.beginSession();
+
+        Timber.d("ApplicationState object [%s]", mApplicationState);
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_CREATED);
     }
 

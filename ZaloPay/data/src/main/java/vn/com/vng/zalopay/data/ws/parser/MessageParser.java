@@ -77,19 +77,18 @@ public class MessageParser implements Parser {
         if (event == null) {
             event = new Event();
         }
-
-        event.setMsgType(respMsg.msgtype);
+        event.msgType = respMsg.msgtype;
 
         if (respMsg.mtaid != null) {
-            event.setMtaid(respMsg.mtaid);
+            event.mtaid = respMsg.mtaid;
         }
 
         if (respMsg.mtuid != null) {
-            event.setMtuid(respMsg.mtuid);
+            event.mtuid = respMsg.mtuid;
         }
 
         if (respMsg.sourceid != null) {
-            event.setSourceid(respMsg.sourceid);
+            event.sourceid = respMsg.sourceid;
         }
 
         return event;
@@ -141,11 +140,11 @@ public class MessageParser implements Parser {
             NotificationData notificationData = (NotificationData) event;
 
             if (message.mtaid != null) {
-                event.setMtaid(message.mtaid);
+                event.mtaid = message.mtaid;
             }
 
             if (message.mtuid != null) {
-                event.setMtuid(message.mtuid);
+                event.mtuid = message.mtuid;
             }
 
             notificationData.setNotificationState(Enums.NotificationState.UNREAD.getId());
@@ -193,7 +192,7 @@ public class MessageParser implements Parser {
 
             try {
                 event = mGson.fromJson(str, NotificationData.class);
-                event.setHasData(true);
+                event.hasData = true;
             } catch (JsonSyntaxException e) {
                 Timber.w(e, "parse notification error %s", str);
                 event = new NotificationData();
