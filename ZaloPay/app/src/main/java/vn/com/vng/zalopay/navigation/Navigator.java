@@ -417,7 +417,7 @@ public class Navigator implements INavigator {
         }
     }
 
-    public void startMyQrCode(Context context) {
+    public void startReceiveMoneyActivity(Context context) {
         Intent intent = new Intent(context, ReceiveMoneyActivity.class);
         context.startActivity(intent);
     }

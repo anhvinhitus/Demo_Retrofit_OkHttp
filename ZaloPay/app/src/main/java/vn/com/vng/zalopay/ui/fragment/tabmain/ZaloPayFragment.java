@@ -251,25 +251,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public void onClickAppListener(AppResource app, int position) {
-        Timber.d("onclick app %s %s %s ", app.appType, app.appid, app.appname);
-        if (app.appType == PaymentAppTypeEnum.NATIVE.getValue()) {
-            if (app.appid == PaymentAppConfig.Constants.TRANSFER_MONEY) {
-                navigator.startTransferMoneyActivity(getActivity());
-            } else if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
-                navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
-            } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
-                navigator.startMyQrCode(getContext());
-            } else {
-                AppResource appResource = PaymentAppConfig.getAppResource(app.appid);
-                if (appResource == null) {
-                    appResource = new AppResource(app.appid);
-                }
-                presenter.startPaymentApp(appResource);
-            }
-        } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
-            presenter.startServiceWebViewActivity(app.appid, app.webUrl);
-        }
-
+        presenter.handleLaunchApp(app);
         this.logActionApp(position);
     }
 

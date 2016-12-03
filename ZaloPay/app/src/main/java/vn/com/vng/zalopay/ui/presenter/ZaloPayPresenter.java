@@ -26,4 +26,6 @@ public interface ZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView>
     void onTouchBanner(View v, MotionEvent event);
 
     void startPaymentApp(AppResource app);
+
+    void handleLaunchApp(AppResource app);
 }

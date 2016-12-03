@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.zalopay.apploader.internal.ModuleName;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -40,6 +42,7 @@ import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
@@ -178,6 +181,28 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                     }
                 });
         mCompositeSubscription.add(subscription);
+    }
+
+    @Override
+    public void handleLaunchApp(AppResource app) {
+        Timber.d("onclick app %s %s %s ", app.appType, app.appid, app.appname);
+        if (app.appType == PaymentAppTypeEnum.NATIVE.getValue()) {
+            if (app.appid == PaymentAppConfig.Constants.TRANSFER_MONEY) {
+                mNavigator.startTransferMoneyActivity(mZaloPayView.getActivity());
+            } else if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
+                mNavigator.startMiniAppActivity(mZaloPayView.getActivity(), ModuleName.RED_PACKET);
+            } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
+                mNavigator.startReceiveMoneyActivity(mZaloPayView.getContext());
+            } else {
+                AppResource appResource = PaymentAppConfig.getAppResource(app.appid);
+                if (appResource == null) {
+                    appResource = new AppResource(app.appid);
+                }
+                startPaymentApp(appResource);
+            }
+        } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
+            startServiceWebViewActivity(app.appid, app.webUrl);
+        }
     }
 
     // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
