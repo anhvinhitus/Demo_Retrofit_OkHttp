@@ -42,6 +42,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
+                android:maxLength="@integer/max_length_email"
                 app:zlp_paddingLeftLine="16dp"/>
 
             <com.zalopay.ui.widget.edittext.ZPEditText
@@ -50,7 +51,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/cmnd_passpost"
-                android:inputType="textCapCharacters"/>
+                android:inputType="textCapCharacters"
+                android:maxLength="@integer/max_length_identify"/>
 
         </LinearLayout>
 
