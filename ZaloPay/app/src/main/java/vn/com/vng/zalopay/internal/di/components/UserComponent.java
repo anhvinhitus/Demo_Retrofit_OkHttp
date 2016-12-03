@@ -65,6 +65,7 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.warningrooted.WarningRootedFragment;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
+import vn.com.vng.zalopay.withdraw.ui.fragment.CardSupportWithdrawFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
 
@@ -195,4 +196,6 @@ public interface UserComponent {
     void inject(CardSupportActivity a);
 
     void inject(ExternalCallSplashScreenActivity.HandleInAppPayment obj);
+
+    void inject(CardSupportWithdrawFragment f);
 }

@@ -5,15 +5,19 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.CheckBox;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import vn.com.vng.zalopay.Constants;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -39,14 +43,10 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @BindView(R.id.chkPin)
     CheckBox chkPin;
 
-    @BindView(R.id.chkVietinBank)
-    CheckBox chkVietinBank;
-
-    @BindView(R.id.chkSacomBank)
-    CheckBox chkSacomBank;
-
     @BindView(R.id.tvUpdateProfile)
     View tvUpdateProfile;
+
+    CardSupportWithdrawFragment mCardSupportFragment;
 
     @OnClick(R.id.tvUpdateProfile)
     public void onClickUpdateProfile() {
@@ -103,10 +103,14 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.setView(this);
+        mCardSupportFragment = (CardSupportWithdrawFragment)
+                getChildFragmentManager().findFragmentById(R.id.cardSupportWithdrawFragment);
+        showLoading();
     }
 
     @Override
     public void setProfileValid(boolean isValid) {
+        Timber.d("setProfileValid[%s]", isValid);
         if (isValid) {
             chkPhone.setChecked(true);
             chkPin.setChecked(true);
@@ -120,22 +124,26 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         }
     }
 
+    @Override
+    public void refreshListCardSupport(List<BankConfig> list) {
+        Timber.d("refresh CardSupportList[%s] mCardSupportFragment[%s]", list, mCardSupportFragment);
+        hideLoading();
+        if (mCardSupportFragment == null) {
+            return;
+        }
+        mCardSupportFragment.refreshCardSupportList(list);
+    }
+
     public void hideCardNote() {
         tvCardNote.setVisibility(View.GONE);
     }
 
-    public void setChkVietinBank(boolean isChecked) {
-        if (chkVietinBank == null) {
-            return;
-        }
-        chkVietinBank.setChecked(isChecked);
-    }
-
-    public void setChkSacomBank(boolean isChecked) {
-        if (chkSacomBank == null) {
-            return;
-        }
-        chkSacomBank.setChecked(isChecked);
+    @Override
+    public void showConfirmDialog(String message, ZPWOnEventConfirmDialogListener listener) {
+        super.showConfirmDialog(message,
+                getString(R.string.txt_retry),
+                getString(R.string.txt_close),
+                listener);
     }
 
     @Override

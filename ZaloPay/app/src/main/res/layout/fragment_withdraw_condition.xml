@@ -88,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="0.55"
+                android:layout_weight="0.5"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -115,7 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="0.45"
+                android:layout_weight="0.5"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -124,7 +124,6 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/spacing.medium"
                     android:button="@drawable/checkbox"
                     android:clickable="false"
                     android:gravity="center"/>
@@ -194,65 +193,11 @@
             android:text="@string/withdraw_condition_card_note"
             android:textSize="13sp"/>
 
-        <LinearLayout
+        <fragment
+            android:id="@+id/cardSupportWithdrawFragment"
+            android:name="vn.com.vng.zalopay.withdraw.ui.fragment.CardSupportWithdrawFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:minHeight="50dp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.55"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <CheckBox
-                    android:id="@+id/chkVietinBank"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/spacing.medium"
-                    android:button="@drawable/checkbox"
-                    android:clickable="false"
-                    android:gravity="center"/>
-
-                <TextView
-                    style="@style/TextView.Title.Default"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:lines="1"
-                    android:text="@string/vietin_bank"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.45"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <CheckBox
-                    android:id="@+id/chkSacomBank"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/spacing.medium"
-                    android:button="@drawable/checkbox"
-                    android:clickable="false"
-                    android:gravity="center"/>
-
-                <TextView
-                    style="@style/TextView.Title.Default"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:lines="1"
-                    android:text="@string/sacombank_bank"/>
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <View
