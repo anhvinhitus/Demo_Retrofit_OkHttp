@@ -14,13 +14,14 @@ public class RedPacketAppInfoGD {
     public Long id;
     public String checksum;
     public Long expiredTime;
-    public Long minAmounTeach;
+    public Long minAmountEach;
     public Long maxTotalAmountPerBundle;
     public Integer maxPackageQuantity;
     public Integer maxCountHist;
     public Integer maxMessageLength;
     public Long bundleExpiredTime;
     public Long minDivideAmount;
+    public Long maxAmountPerPackage;
 
 
 }

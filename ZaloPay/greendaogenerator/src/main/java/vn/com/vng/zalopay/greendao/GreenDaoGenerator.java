@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.ToMany;
 
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 48;
+    private static final int APP_DB_VERSION = 49;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -105,13 +105,14 @@ public class GreenDaoGenerator {
         appInfoGD.addIdProperty().autoincrement();
         appInfoGD.addStringProperty("checksum");
         appInfoGD.addLongProperty("expiredTime");
-        appInfoGD.addLongProperty("minAmounTeach");
+        appInfoGD.addLongProperty("minAmountEach");
         appInfoGD.addLongProperty("maxTotalAmountPerBundle");
         appInfoGD.addIntProperty("maxPackageQuantity");
         appInfoGD.addIntProperty("maxCountHist");
         appInfoGD.addIntProperty("maxMessageLength");
         appInfoGD.addLongProperty("bundleExpiredTime");
         appInfoGD.addLongProperty("minDivideAmount");
+        appInfoGD.addLongProperty("maxAmountPerPackage");
     }
 
     private static void addZaloContact(Schema appSchema) {

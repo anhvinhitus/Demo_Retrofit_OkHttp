@@ -230,13 +230,14 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         data.id = null;
         data.checksum = redPacketAppInfo.checksum;
         data.expiredTime = redPacketAppInfo.expiredTime;
-        data.minAmounTeach = redPacketAppInfo.appConfigEntity.minAmounTeach;
+        data.minAmountEach = redPacketAppInfo.appConfigEntity.minAmountEach;
         data.maxTotalAmountPerBundle = redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle;
         data.maxPackageQuantity = redPacketAppInfo.appConfigEntity.maxPackageQuantity;
         data.maxCountHist = redPacketAppInfo.appConfigEntity.maxCountHist;
         data.maxMessageLength = redPacketAppInfo.appConfigEntity.maxMessageLength;
         data.bundleExpiredTime = redPacketAppInfo.appConfigEntity.bundleExpiredTime;
         data.minDivideAmount = redPacketAppInfo.appConfigEntity.minDivideAmount;
+        data.maxAmountPerPackage = redPacketAppInfo.appConfigEntity.maxAmountPerPackage;
         getDaoSession().getRedPacketAppInfoGDDao().insertOrReplaceInTx(data);
     }
 
@@ -247,8 +248,8 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         return new RedPacketAppInfo(false, redPacketAppInfoGD.checksum, redPacketAppInfoGD.expiredTime,
                 new AppConfigEntity(redPacketAppInfoGD.bundleExpiredTime, redPacketAppInfoGD.maxCountHist,
                         redPacketAppInfoGD.maxMessageLength, redPacketAppInfoGD.maxPackageQuantity,
-                        redPacketAppInfoGD.maxTotalAmountPerBundle, redPacketAppInfoGD.minAmounTeach,
-                        redPacketAppInfoGD.minDivideAmount));
+                        redPacketAppInfoGD.maxTotalAmountPerBundle, redPacketAppInfoGD.minAmountEach,
+                        redPacketAppInfoGD.minDivideAmount, redPacketAppInfoGD.maxAmountPerPackage));
     }
 
     @Override

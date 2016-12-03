@@ -348,8 +348,8 @@ public class RedPacketDataMapper {
         }
         return new AppConfigEntity(appConfigResponse.bundleExpiredTime, appConfigResponse.maxCountHist,
                 appConfigResponse.maxMessageLength, appConfigResponse.maxPackageQuantity,
-                appConfigResponse.maxTotalAmountPerBundle, appConfigResponse.minAmounTeach,
-                appConfigResponse.minDivideAmount);
+                appConfigResponse.maxTotalAmountPerBundle, appConfigResponse.minAmountEach,
+                appConfigResponse.minDivideAmount, appConfigResponse.maxAmountPerPackage);
     }
 
     public List<BundleGD> transformToBundleGD(GetSentBundle getSentBundle) {

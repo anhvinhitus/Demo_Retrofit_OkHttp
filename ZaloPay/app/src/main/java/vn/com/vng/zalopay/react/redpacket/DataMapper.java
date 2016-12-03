@@ -195,13 +195,14 @@ class DataMapper {
         }
 
         WritableMap map = Arguments.createMap();
-        map.putDouble("minamounteach", redPacketAppInfo.appConfigEntity.minAmounTeach);
+        map.putDouble("minamounteach", redPacketAppInfo.appConfigEntity.minAmountEach);
         map.putDouble("maxtotalamountperbundle", redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle);
         map.putDouble("maxpackagequantity", redPacketAppInfo.appConfigEntity.maxPackageQuantity);
         map.putDouble("maxcounthist", redPacketAppInfo.appConfigEntity.maxCountHist);
         map.putDouble("maxmessagelength", redPacketAppInfo.appConfigEntity.maxMessageLength);
         map.putDouble("bundleexpiredtime", redPacketAppInfo.appConfigEntity.bundleExpiredTime);
         map.putDouble("mindivideamount", redPacketAppInfo.appConfigEntity.minDivideAmount);
+        map.putDouble("maxamountperpackage", redPacketAppInfo.appConfigEntity.maxAmountPerPackage);
         return map;
     }
 }

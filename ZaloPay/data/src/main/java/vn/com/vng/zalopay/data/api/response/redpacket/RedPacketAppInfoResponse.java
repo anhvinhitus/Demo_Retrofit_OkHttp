@@ -22,7 +22,7 @@ public class RedPacketAppInfoResponse {
 
     public class AppConfigResponse {
         @SerializedName("minamounteach")
-        public long minAmounTeach;
+        public long minAmountEach;
 
         @SerializedName("maxtotalamountperbundle")
         public long maxTotalAmountPerBundle;
@@ -41,5 +41,8 @@ public class RedPacketAppInfoResponse {
 
         @SerializedName("mindivideamount")
         public long minDivideAmount;
+
+        @SerializedName("maxamountperpackage")
+        public long maxAmountPerPackage;
     }
 }

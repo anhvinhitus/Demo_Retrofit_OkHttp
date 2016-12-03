@@ -6,24 +6,26 @@ package vn.com.vng.zalopay.domain.model.redpacket;
  */
 public class AppConfigEntity {
 
-    public long minAmounTeach;
+    public long minAmountEach;
     public long maxTotalAmountPerBundle;
     public int maxPackageQuantity;
     public int maxCountHist;
     public int maxMessageLength;
     public long bundleExpiredTime;
     public long minDivideAmount;
+    public long maxAmountPerPackage;
 
     public AppConfigEntity(long bundleExpiredTime, int maxCountHist,
                            int maxMessageLength, int maxPackageQuantity,
-                           long maxTotalAmountPerBundle, long minAmounTeach,
-                           long minDivideAmount) {
+                           long maxTotalAmountPerBundle, long minAmountEach,
+                           long minDivideAmount, long maxAmountPerPackage) {
         this.bundleExpiredTime = bundleExpiredTime;
         this.maxCountHist = maxCountHist;
         this.maxMessageLength = maxMessageLength;
         this.maxPackageQuantity = maxPackageQuantity;
         this.maxTotalAmountPerBundle = maxTotalAmountPerBundle;
-        this.minAmounTeach = minAmounTeach;
+        this.minAmountEach = minAmountEach;
         this.minDivideAmount = minDivideAmount;
+        this.maxAmountPerPackage = maxAmountPerPackage;
     }
 }

@@ -25,13 +25,14 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Checksum = new Property(1, String.class, "checksum", false, "CHECKSUM");
         public final static Property ExpiredTime = new Property(2, Long.class, "expiredTime", false, "EXPIRED_TIME");
-        public final static Property MinAmounTeach = new Property(3, Long.class, "minAmounTeach", false, "MIN_AMOUN_TEACH");
+        public final static Property MinAmountEach = new Property(3, Long.class, "minAmountEach", false, "MIN_AMOUNT_EACH");
         public final static Property MaxTotalAmountPerBundle = new Property(4, Long.class, "maxTotalAmountPerBundle", false, "MAX_TOTAL_AMOUNT_PER_BUNDLE");
         public final static Property MaxPackageQuantity = new Property(5, Integer.class, "maxPackageQuantity", false, "MAX_PACKAGE_QUANTITY");
         public final static Property MaxCountHist = new Property(6, Integer.class, "maxCountHist", false, "MAX_COUNT_HIST");
         public final static Property MaxMessageLength = new Property(7, Integer.class, "maxMessageLength", false, "MAX_MESSAGE_LENGTH");
         public final static Property BundleExpiredTime = new Property(8, Long.class, "bundleExpiredTime", false, "BUNDLE_EXPIRED_TIME");
         public final static Property MinDivideAmount = new Property(9, Long.class, "minDivideAmount", false, "MIN_DIVIDE_AMOUNT");
+        public final static Property MaxAmountPerPackage = new Property(10, Long.class, "maxAmountPerPackage", false, "MAX_AMOUNT_PER_PACKAGE");
     }
 
 
@@ -50,13 +51,14 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"CHECKSUM\" TEXT," + // 1: checksum
                 "\"EXPIRED_TIME\" INTEGER," + // 2: expiredTime
-                "\"MIN_AMOUN_TEACH\" INTEGER," + // 3: minAmounTeach
+                "\"MIN_AMOUNT_EACH\" INTEGER," + // 3: minAmountEach
                 "\"MAX_TOTAL_AMOUNT_PER_BUNDLE\" INTEGER," + // 4: maxTotalAmountPerBundle
                 "\"MAX_PACKAGE_QUANTITY\" INTEGER," + // 5: maxPackageQuantity
                 "\"MAX_COUNT_HIST\" INTEGER," + // 6: maxCountHist
                 "\"MAX_MESSAGE_LENGTH\" INTEGER," + // 7: maxMessageLength
                 "\"BUNDLE_EXPIRED_TIME\" INTEGER," + // 8: bundleExpiredTime
-                "\"MIN_DIVIDE_AMOUNT\" INTEGER);"); // 9: minDivideAmount
+                "\"MIN_DIVIDE_AMOUNT\" INTEGER," + // 9: minDivideAmount
+                "\"MAX_AMOUNT_PER_PACKAGE\" INTEGER);"); // 10: maxAmountPerPackage
     }
 
     /** Drops the underlying database table. */
@@ -84,9 +86,9 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
             stmt.bindLong(3, expiredTime);
         }
  
-        Long minAmounTeach = entity.minAmounTeach;
-        if (minAmounTeach != null) {
-            stmt.bindLong(4, minAmounTeach);
+        Long minAmountEach = entity.minAmountEach;
+        if (minAmountEach != null) {
+            stmt.bindLong(4, minAmountEach);
         }
  
         Long maxTotalAmountPerBundle = entity.maxTotalAmountPerBundle;
@@ -117,6 +119,11 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
         Long minDivideAmount = entity.minDivideAmount;
         if (minDivideAmount != null) {
             stmt.bindLong(10, minDivideAmount);
+        }
+ 
+        Long maxAmountPerPackage = entity.maxAmountPerPackage;
+        if (maxAmountPerPackage != null) {
+            stmt.bindLong(11, maxAmountPerPackage);
         }
     }
 
@@ -139,9 +146,9 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
             stmt.bindLong(3, expiredTime);
         }
  
-        Long minAmounTeach = entity.minAmounTeach;
-        if (minAmounTeach != null) {
-            stmt.bindLong(4, minAmounTeach);
+        Long minAmountEach = entity.minAmountEach;
+        if (minAmountEach != null) {
+            stmt.bindLong(4, minAmountEach);
         }
  
         Long maxTotalAmountPerBundle = entity.maxTotalAmountPerBundle;
@@ -173,6 +180,11 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
         if (minDivideAmount != null) {
             stmt.bindLong(10, minDivideAmount);
         }
+ 
+        Long maxAmountPerPackage = entity.maxAmountPerPackage;
+        if (maxAmountPerPackage != null) {
+            stmt.bindLong(11, maxAmountPerPackage);
+        }
     }
 
     @Override
@@ -192,13 +204,14 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
         entity.id = cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
         entity.checksum = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
         entity.expiredTime = cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2);
-        entity.minAmounTeach = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
+        entity.minAmountEach = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
         entity.maxTotalAmountPerBundle = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
         entity.maxPackageQuantity = cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5);
         entity.maxCountHist = cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6);
         entity.maxMessageLength = cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7);
         entity.bundleExpiredTime = cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8);
         entity.minDivideAmount = cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9);
+        entity.maxAmountPerPackage = cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10);
      }
     
     @Override
