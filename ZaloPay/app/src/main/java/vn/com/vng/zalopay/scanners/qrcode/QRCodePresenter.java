@@ -55,6 +55,7 @@ import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by longlv on 09/05/2016.
@@ -243,8 +244,6 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
         ZPAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
         qrDataInvalid();
-
-        mView.resumeScanner();
     }
 
     private boolean tryTransferMoney(JSONObject data) {
@@ -361,7 +360,18 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
     private void qrDataInvalid() {
         if (mView != null && mView.getContext() != null) {
-            mView.showError(mView.getContext().getString(R.string.data_invalid));
+            mView.showWarning(mView.getContext().getString(R.string.data_invalid),
+                    new ZPWOnEventConfirmDialogListener() {
+                        @Override
+                        public void onCancelEvent() {
+                            mView.resumeScanner();
+                        }
+
+                        @Override
+                        public void onOKevent() {
+                            mView.resumeScanner();
+                        }
+                    });
         }
     }
 

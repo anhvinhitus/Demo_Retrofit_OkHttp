@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -33,6 +32,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  */
 public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, FragmentLifecycle {
     private static final int FOREGROUND_IMAGE_REQUEST_CODE = 101;
+    private boolean mSelectedImageInGallery = false;
 
     public static QRCodeFragment newInstance() {
         Bundle args = new Bundle();
@@ -131,7 +131,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     @Override
     public void onResume() {
         super.onResume();
-        if (getUserVisibleHint()) {
+        if (getUserVisibleHint() && !mSelectedImageInGallery) {
             hideLoading();
             startAndCheckPermissionOnce();
         }
@@ -141,6 +141,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     public void onPause() {
         super.onPause();
         pause();
+        mSelectedImageInGallery = false;
     }
 
     private void startAndCheckPermissionOnce() {
@@ -227,6 +228,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         }
         if (requestCode == FOREGROUND_IMAGE_REQUEST_CODE) {
             Timber.d("onActivityResult of request select image, data[%s]", data);
+            mSelectedImageInGallery = true;
             if (qrCodePresenter != null) {
                 qrCodePresenter.pay(data);
             }

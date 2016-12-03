@@ -116,6 +116,10 @@ public abstract class BaseFragment extends Fragment {
         showWarningDialog(message, getString(R.string.txt_close), null);
     }
 
+    public void showWarning(String message, ZPWOnEventDialogListener cancelListener) {
+        showWarningDialog(message, getString(R.string.txt_close), cancelListener);
+    }
+
     public void showErrorDialog(String message) {
         DialogManager.showSweetDialogCustom(getActivity(),
                 message,
