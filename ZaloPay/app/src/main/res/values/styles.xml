@@ -250,11 +250,4 @@
         <item name="android:hint">@string/hint_amount</item>
     </style>
 
-    <!--  fresco:roundedCornerRadius="5dp"
-   fresco:roundBottomLeft="false"
-   fresco:roundBottomRight="false"
-   fresco:roundWithOverlayColor="@color/blue"
-   fresco:roundingBorderWidth="1dp"
-   fresco:roundingBorderColor="@color/red"-->
-
 </resources>

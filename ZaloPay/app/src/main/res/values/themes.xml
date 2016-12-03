@@ -101,4 +101,7 @@
                 <item name="android:background">#4CAF50</item>-->
     </style>
 
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@layout/activity_splash_background</item>
+    </style>
 </resources>
