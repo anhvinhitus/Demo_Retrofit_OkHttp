@@ -31,12 +31,14 @@ public class GreenDaoGenerator {
 
     private static void addRedPacket(Schema appSchema) {
         Entity sentBundleSummary = appSchema.addEntity("SentBundleSummaryDB");
+        sentBundleSummary.setConstructors(false);
         sentBundleSummary.addIdProperty();
         sentBundleSummary.addLongProperty("totalOfSentAmount");
         sentBundleSummary.addIntProperty("totalOfSentBundle");
         sentBundleSummary.addLongProperty("timeCreate");
 
         Entity receivePacketSummary = appSchema.addEntity("ReceivePacketSummaryDB");
+        receivePacketSummary.setConstructors(false);
         receivePacketSummary.addIdProperty();
         receivePacketSummary.addLongProperty("totalOfRevamount");
         receivePacketSummary.addIntProperty("totalOfRevPackage");
@@ -45,11 +47,13 @@ public class GreenDaoGenerator {
 
         //Cache all bundle (contain sent & received)
         Entity bundleEntity = appSchema.addEntity("BundleGD");
+        bundleEntity.setConstructors(false);
         bundleEntity.addIdProperty().unique().notNull();//bundleId
         bundleEntity.addLongProperty("createTime"); //Time when bundle has been created
         bundleEntity.addLongProperty("lastTimeGetPackage"); //Last time that get package in bundle from server.
 
         Entity packageEntity = appSchema.addEntity("PackageInBundleGD");
+        packageEntity.setConstructors(false);
         packageEntity.addIdProperty(); //packageId
         Property propertyBundleId = packageEntity.addLongProperty("bundleID").getProperty();
         packageEntity.addStringProperty("revZaloPayID");
@@ -62,6 +66,7 @@ public class GreenDaoGenerator {
         packageEntity.addIntProperty("isLuckiest");
 
         Entity sentBundleEntity = appSchema.addEntity("SentBundleGD");
+        sentBundleEntity.setConstructors(false);
         sentBundleEntity.addIdProperty().unique().notNull();//bundleId
         sentBundleEntity.addStringProperty("senderZaloPayID").notNull();//sendZaloPayID
         sentBundleEntity.addIntProperty("type");
@@ -77,6 +82,7 @@ public class GreenDaoGenerator {
         sentBundleToPackage.orderDesc(openTime);
 
         Entity receivePackageGD = appSchema.addEntity("ReceivePackageGD");
+        receivePackageGD.setConstructors(false);
         receivePackageGD.addIdProperty().unique().notNull();//packageID
         receivePackageGD.addLongProperty("bundleID");
         receivePackageGD.addStringProperty("receiverZaloPayID");
@@ -95,6 +101,7 @@ public class GreenDaoGenerator {
         revBundleToPackage.orderDesc(openTime);
 
         Entity appInfoGD = appSchema.addEntity("RedPacketAppInfoGD");
+        appInfoGD.setConstructors(false);
         appInfoGD.addIdProperty().autoincrement();
         appInfoGD.addStringProperty("checksum");
         appInfoGD.addLongProperty("expiredTime");
@@ -110,9 +117,10 @@ public class GreenDaoGenerator {
     private static void addZaloContact(Schema appSchema) {
 
         Entity entity = appSchema.addEntity("ZaloFriendGD");
+        entity.setConstructors(false);
 
         entity.addLongProperty("zaloId").notNull()
-                .columnName("_id").primaryKey();
+                .dbName("_id").primaryKey();
         
         entity.addStringProperty("userName");
         entity.addStringProperty("displayName");
@@ -130,95 +138,98 @@ public class GreenDaoGenerator {
     }
 
     private static void addTransferRecent(Schema appSchema) {
-        Entity appInfoEntity = appSchema.addEntity("TransferRecent");
-        appInfoEntity.addStringProperty("zaloPayId").primaryKey();
-        appInfoEntity.addStringProperty("zaloPayName");
-        appInfoEntity.addStringProperty("displayName");
-        appInfoEntity.addStringProperty("avatar");
-        appInfoEntity.addStringProperty("phoneNumber");
-        appInfoEntity.addIntProperty("transferType");
-        appInfoEntity.addLongProperty("amount");
-        appInfoEntity.addStringProperty("message");
-        appInfoEntity.addLongProperty("timeCreate");
+        Entity entity = appSchema.addEntity("TransferRecent");
+        entity.setConstructors(false);
+        entity.addStringProperty("zaloPayId").primaryKey();
+        entity.addStringProperty("zaloPayName");
+        entity.addStringProperty("displayName");
+        entity.addStringProperty("avatar");
+        entity.addStringProperty("phoneNumber");
+        entity.addIntProperty("transferType");
+        entity.addLongProperty("amount");
+        entity.addStringProperty("message");
+        entity.addLongProperty("timeCreate");
     }
 
     private static void addApplicationInfo(Schema schema) {
-        Entity appInfoEntity = schema.addEntity("AppResourceGD");
+        Entity entity = schema.addEntity("AppResourceGD");
+        entity.setConstructors(false);
 
-        appInfoEntity.addIntProperty("appid").notNull().unique();
-        appInfoEntity.addStringProperty("appname");
-        appInfoEntity.addIntProperty("needdownloadrs");
-        appInfoEntity.addStringProperty("imageurl");
-        appInfoEntity.addStringProperty("jsurl");
-        appInfoEntity.addIntProperty("status");
-        appInfoEntity.addStringProperty("checksum");
-        appInfoEntity.addIntProperty("apptype");
-        appInfoEntity.addStringProperty("weburl");
-        appInfoEntity.addStringProperty("iconurl");
-        appInfoEntity.addIntProperty("sortOrder");
+        entity.addIntProperty("appid").notNull().unique();
+        entity.addStringProperty("appname");
+        entity.addIntProperty("needdownloadrs");
+        entity.addStringProperty("imageurl");
+        entity.addStringProperty("jsurl");
+        entity.addIntProperty("status");
+        entity.addStringProperty("checksum");
+        entity.addIntProperty("apptype");
+        entity.addStringProperty("weburl");
+        entity.addStringProperty("iconurl");
+        entity.addIntProperty("sortOrder");
 
-        appInfoEntity.addIntProperty("stateDownload");
-        appInfoEntity.addLongProperty("timeDownload");
-        appInfoEntity.addIntProperty("numRetry");
+        entity.addIntProperty("stateDownload");
+        entity.addLongProperty("timeDownload");
+        entity.addIntProperty("numRetry");
 
     }
 
     private static void addPaymentTransactionType(Schema schema) {
-        Entity appInfoEntity = schema.addEntity("PaymentTransTypeGD");
+        Entity entity = schema.addEntity("PaymentTransTypeGD");
+        entity.setConstructors(false);
 
-        Property transtype = appInfoEntity.addLongProperty("transtype").notNull().primaryKey().getProperty();
-        Property pmcid = appInfoEntity.addLongProperty("pmcid").notNull().getProperty();
+        Property transtype = entity.addLongProperty("transtype").notNull().primaryKey().getProperty();
+        Property pmcid = entity.addLongProperty("pmcid").notNull().getProperty();
 
-        appInfoEntity.addStringProperty("pmcname");
-        appInfoEntity.addIntProperty("status");
-        appInfoEntity.addLongProperty("minvalue");
-        appInfoEntity.addLongProperty("maxvalue");
-        appInfoEntity.addFloatProperty("feerate");
+        entity.addStringProperty("pmcname");
+        entity.addIntProperty("status");
+        entity.addLongProperty("minvalue");
+        entity.addLongProperty("maxvalue");
+        entity.addFloatProperty("feerate");
 
-        appInfoEntity.addLongProperty("minfee");
-        appInfoEntity.addStringProperty("feecaltype");
+        entity.addLongProperty("minfee");
+        entity.addStringProperty("feecaltype");
 
-        Index uniqIndex = new Index();
-        uniqIndex.addProperty(transtype);
-        uniqIndex.addProperty(pmcid);
-        uniqIndex.makeUnique();
-        appInfoEntity.addIndex(uniqIndex);
+        Index index = new Index();
+        index.addProperty(transtype);
+        index.addProperty(pmcid);
+        index.makeUnique();
+        entity.addIndex(index);
     }
 
 
     private static void addTransactionLog(Schema schema) {
-        Entity transHistoryData = schema.addEntity("TransactionLog");
-        transHistoryData.addLongProperty("transid").notNull().unique().primaryKey();
-        transHistoryData.addLongProperty("appid")
-                .notNull()
-        //.unique() //Todo: xem có cần thiết không
-        ;
+        Entity entity = schema.addEntity("TransactionLog");
+        entity.setConstructors(false);
+        entity.addLongProperty("transid").notNull().unique().primaryKey();
+        entity.addLongProperty("appid").notNull();
 
-        transHistoryData.addStringProperty("userid");
-        transHistoryData.addStringProperty("appuser");
+        entity.addStringProperty("userid");
+        entity.addStringProperty("appuser");
 
-        transHistoryData.addStringProperty("platform");
-        transHistoryData.addStringProperty("description");
-        transHistoryData.addIntProperty("pmcid");
-        transHistoryData.addLongProperty("reqdate");
-        transHistoryData.addIntProperty("userchargeamt");
-        transHistoryData.addIntProperty("userfeeamt");
-        transHistoryData.addIntProperty("amount");
-        transHistoryData.addIntProperty("type");
-        transHistoryData.addIntProperty("sign");
-        transHistoryData.addStringProperty("username");
-        transHistoryData.addStringProperty("appusername");
-        transHistoryData.addIntProperty("statustype");
+        entity.addStringProperty("platform");
+        entity.addStringProperty("description");
+        entity.addIntProperty("pmcid");
+        entity.addLongProperty("reqdate");
+        entity.addIntProperty("userchargeamt");
+        entity.addIntProperty("userfeeamt");
+        entity.addIntProperty("amount");
+        entity.addIntProperty("type");
+        entity.addIntProperty("sign");
+        entity.addStringProperty("username");
+        entity.addStringProperty("appusername");
+        entity.addIntProperty("statustype");
     }
 
     private static void addDataManifest(Schema schema) {
-        Entity dataManifest = schema.addEntity("DataManifest");
-        dataManifest.addStringProperty("key").notNull().unique().primaryKey();
-        dataManifest.addStringProperty("value");
+        Entity entity = schema.addEntity("DataManifest");
+        entity.setConstructors(false);
+        entity.addStringProperty("key").notNull().unique().primaryKey();
+        entity.addStringProperty("value");
     }
 
     private static void addCardList(Schema schema) {
         Entity bankCard = schema.addEntity("BankCardGD");
+        bankCard.setConstructors(false);
         bankCard.addStringProperty("cardhash").primaryKey().notNull();
         bankCard.addStringProperty("cardname").notNull();
         bankCard.addStringProperty("first6cardno").notNull();
@@ -228,38 +239,40 @@ public class GreenDaoGenerator {
 
 
     private static void addNotification(Schema schema) {
-        Entity notificationGD = schema.addEntity("NotificationGD");
-        notificationGD.addIdProperty().primaryKey().autoincrement();
-        notificationGD.addLongProperty("transid");
-        notificationGD.addIntProperty("appid");
-        notificationGD.addLongProperty("timestamp");
-        notificationGD.addStringProperty("message");
-        notificationGD.addStringProperty("userid");
-        notificationGD.addStringProperty("destuserid");
-        notificationGD.addIntProperty("area");
-        notificationGD.addIntProperty("notificationstate");
-        notificationGD.addIntProperty("notificationtype");
-        Property mtaid = notificationGD.addLongProperty("mtaid").getProperty();
-        Property mtuid = notificationGD.addLongProperty("mtuid").getProperty();
-        notificationGD.addStringProperty("embeddata");
+        Entity entity = schema.addEntity("NotificationGD");
+        entity.setConstructors(false);
+        entity.addIdProperty().primaryKey().autoincrement();
+        entity.addLongProperty("transid");
+        entity.addIntProperty("appid");
+        entity.addLongProperty("timestamp");
+        entity.addStringProperty("message");
+        entity.addStringProperty("userid");
+        entity.addStringProperty("destuserid");
+        entity.addIntProperty("area");
+        entity.addIntProperty("notificationstate");
+        entity.addIntProperty("notificationtype");
+        Property mtaid = entity.addLongProperty("mtaid").getProperty();
+        Property mtuid = entity.addLongProperty("mtuid").getProperty();
+        entity.addStringProperty("embeddata");
 
-        Index uniqueIndex = new Index();
-        uniqueIndex.addProperty(mtaid);
-        uniqueIndex.addProperty(mtuid);
-        uniqueIndex.makeUnique();
+        Index index = new Index();
+        index.addProperty(mtaid);
+        index.addProperty(mtuid);
+        index.makeUnique();
 
-        notificationGD.addIndex(uniqueIndex);
+        entity.addIndex(index);
     }
 
     private static void addMerchantUser(Schema schema) {
-        Entity notificationGD = schema.addEntity("MerchantUser");
-        notificationGD.addLongProperty("appid").primaryKey().notNull();
-        notificationGD.addStringProperty("mUid");
-        notificationGD.addStringProperty("mAccessToken");
-        notificationGD.addStringProperty("displayName");
-        notificationGD.addStringProperty("avatar");
-        notificationGD.addStringProperty("birthday");
-        notificationGD.addIntProperty("gender");
+        Entity entity = schema.addEntity("MerchantUser");
+        entity.setConstructors(false);
+        entity.addLongProperty("appid").primaryKey().notNull();
+        entity.addStringProperty("mUid");
+        entity.addStringProperty("mAccessToken");
+        entity.addStringProperty("displayName");
+        entity.addStringProperty("avatar");
+        entity.addStringProperty("birthday");
+        entity.addIntProperty("gender");
     }
 
 }
