@@ -437,12 +437,18 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void responseToApp(Activity activity, long appId, int returnCode, String returnMessage) {
-        // TODO: 12/1/16 kiem tra truong hop user khong du tien thanh toan
+       /* // TODO: 12/1/16 kiem tra truong hop user khong du tien thanh toan
         String responseFormat = "zp-redirect-%s://result?returncode=%s&returnmessage=%s";
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setData(Uri.parse(String.format(Locale.getDefault(), responseFormat, appId, returnCode, returnMessage)));
-        activity.startActivity(intent);
+        activity.startActivity(intent);*/
+
+        Intent data = new Intent();
+        data.putExtra("returncode", returnCode);
+        data.putExtra("returnMessage", returnMessage);
+        activity.setResult(Activity.RESULT_OK, data);
+        activity.finish();
     }
 
     private PaymentWrapper getPaymentWrapper(final long appId, final boolean isAppToApp) {

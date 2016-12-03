@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.balance.BalanceRepository;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -41,6 +42,9 @@ public class ExternalCallSplashScreenActivity extends BaseActivity {
 
     @Inject
     EventBus mEventBus;
+
+    @Inject
+    UserConfig mUserConfig;
 
     @Override
     protected void setupActivityComponent() {
@@ -123,15 +127,9 @@ public class ExternalCallSplashScreenActivity extends BaseActivity {
         String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
         String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
 
-        if (TextUtils.isEmpty(appid)) {
-            return;
-        }
-
-        if (!TextUtils.isDigitsOnly(appid)) {
-            return;
-        }
-
-        if (TextUtils.isEmpty(zptranstoken)) {
+        if (TextUtils.isEmpty(appid) ||
+                !TextUtils.isDigitsOnly(appid) ||
+                TextUtils.isEmpty(zptranstoken)) {
             return;
         }
 
@@ -146,15 +144,15 @@ public class ExternalCallSplashScreenActivity extends BaseActivity {
 
         boolean shouldFinishCurrentActivity = true;
         try {
-            if (TextUtils.isEmpty(appid)) {
+            if (TextUtils.isEmpty(appid) ||
+                    !TextUtils.isDigitsOnly(appid) ||
+                    TextUtils.isEmpty(zptranstoken)) {
                 return;
             }
 
-            if (!TextUtils.isDigitsOnly(appid)) {
-                return;
-            }
-
-            if (TextUtils.isEmpty(zptranstoken)) {
+            if (!mUserConfig.hasCurrentUser()) {
+                pay(data, true);
+                navigator.startLoginActivity(this);
                 return;
             }
 
@@ -222,6 +220,7 @@ public class ExternalCallSplashScreenActivity extends BaseActivity {
                     }
                 }, new PaymentWrapper.IResponseListener() {
                     private String mTransactionId;
+
                     @Override
                     public void onParameterError(String param) {
                         Timber.d("onParameterError: %s", param);
