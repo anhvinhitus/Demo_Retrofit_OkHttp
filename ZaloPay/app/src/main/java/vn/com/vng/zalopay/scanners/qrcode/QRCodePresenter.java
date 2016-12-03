@@ -2,10 +2,12 @@ package vn.com.vng.zalopay.scanners.qrcode;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -25,17 +27,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.domain.Constants;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -45,7 +52,6 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
-import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -65,12 +71,12 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
     private PaymentWrapper paymentWrapper;
 
     @Inject
-    public QRCodePresenter(BalanceStore.Repository balanceRepository,
-                           ZaloPayRepository zaloPayRepository,
-                           TransactionStore.Repository transactionRepository,
-                           Context applicationContext,
-                           Navigator navigator,
-                           UserConfig userConfig) {
+    QRCodePresenter(BalanceStore.Repository balanceRepository,
+                    ZaloPayRepository zaloPayRepository,
+                    TransactionStore.Repository transactionRepository,
+                    Context applicationContext,
+                    Navigator navigator,
+                    UserConfig userConfig) {
         mApplicationContext = applicationContext;
         mNavigator = navigator;
         mUserConfig = userConfig;
@@ -202,18 +208,15 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             return;
         }
 
+        if (TextUtils.isEmpty(jsonString)) {
+            resumeScanningAfterWrongQR();
+            return;
+        }
         Timber.d("about to process payment with order: %s", jsonString);
         try {
             showLoadingView();
 
-            JSONObject data;
-            try {
-                data = new JSONObject(jsonString);
-            } catch (JSONException e) {
-                Timber.i("Invalid JSON input: %s", e.getMessage());
-                resumeScanningAfterWrongQR();
-                return;
-            }
+            JSONObject data = new JSONObject(jsonString);
 
             int type = data.optInt("type", -1);
             if (type == vn.com.vng.zalopay.Constants.QRCode.RECEIVE_MONEY) {
@@ -229,12 +232,10 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             if (orderTransaction(data)) {
                 return;
             }
-
-            resumeScanningAfterWrongQR();
         } catch (JSONException | IllegalArgumentException e) {
             Timber.i("Invalid JSON input: %s", e.getMessage());
-            resumeScanningAfterWrongQR();
         }
+        resumeScanningAfterWrongQR();
     }
 
     private void resumeScanningAfterWrongQR() {
@@ -359,7 +360,9 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
     }
 
     private void qrDataInvalid() {
-        ToastUtil.showToast(mView.getActivity(), "Dữ liệu không hợp lệ.");
+        if (mView != null && mView.getContext() != null) {
+            mView.showError(mView.getContext().getString(R.string.data_invalid));
+        }
     }
 
     private String scanQRImage(Bitmap bMap) {
@@ -382,28 +385,47 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         return contents;
     }
 
-    public void pay(Uri uri) {
-        if (uri == null) {
+    public void pay(final Intent data) {
+        if (data == null) {
+            qrDataInvalid();
             return;
         }
-        Timber.d("pay by image uri[%s]", uri.toString());
-        InputStream is = null;
-        try {
-            is = mView.getContext().getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(is);
-            String decoded = scanQRImage(bitmap);
-            Timber.d("Decoded string=" + decoded);
-            pay(decoded);
-        } catch (FileNotFoundException e) {
-            Timber.w(e, "Create input stream from uri exception");
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    Timber.d(e, "Close input stream exception");
-                }
-            }
+        final Uri uri = data.getData();
+        if (uri == null) {
+            qrDataInvalid();
         }
+        Timber.d("pay by image uri[%s]", uri.toString());
+        showLoadingView();
+        ObservableHelper.makeObservable(new Callable<String>() {
+            @Override
+            public String call() {
+                InputStream is = null;
+                try {
+                    is = mView.getContext().getContentResolver().openInputStream(uri);
+                    Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    String decoded = scanQRImage(bitmap);
+                    Timber.d("Decoded string=" + decoded);
+                    return decoded;
+                } catch (FileNotFoundException e) {
+                    Timber.w(e, "Create input stream from uri exception");
+                } finally {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            Timber.d(e, "Close input stream exception");
+                        }
+                    }
+                }
+                return null;
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<String>() {
+                    @Override
+                    public void onNext(String decoded) {
+                        pay(decoded);
+                    }
+                });
     }
+
 }

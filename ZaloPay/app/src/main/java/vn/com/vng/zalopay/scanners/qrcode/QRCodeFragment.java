@@ -226,16 +226,9 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
             return;
         }
         if (requestCode == FOREGROUND_IMAGE_REQUEST_CODE) {
-            if (data == null || data.getData() == null) {
-                return;
-            }
-            Uri uri = data.getData();
-            if (uri == null) {
-                return;
-            }
-            Timber.d("onActivityResult: uri %s", uri.toString());
+            Timber.d("onActivityResult of request select image, data[%s]", data);
             if (qrCodePresenter != null) {
-                qrCodePresenter.pay(uri);
+                qrCodePresenter.pay(data);
             }
         }
     }
