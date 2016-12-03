@@ -233,9 +233,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         List<Long> listId = new ArrayList<>();
 
         for (AppResource appResource : listAppResource) {
-            if (appResource != null) {
-                listId.add((long) appResource.appid);
+            if (appResource == null) {
+                continue;
             }
+
+            listId.add((long) appResource.appid);
         }
         return listId;
     }
