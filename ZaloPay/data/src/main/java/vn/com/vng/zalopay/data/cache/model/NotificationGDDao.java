@@ -221,21 +221,8 @@ public class NotificationGDDao extends AbstractDao<NotificationGD, Long> {
 
     @Override
     public NotificationGD readEntity(Cursor cursor, int offset) {
-        NotificationGD entity = new NotificationGD( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // transid
-            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // appid
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // timestamp
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // message
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // userid
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // destuserid
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // area
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // notificationstate
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // notificationtype
-            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // mtaid
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // mtuid
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // embeddata
-        );
+        NotificationGD entity = new NotificationGD();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

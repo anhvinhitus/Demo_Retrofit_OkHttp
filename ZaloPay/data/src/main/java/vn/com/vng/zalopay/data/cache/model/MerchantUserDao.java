@@ -138,15 +138,8 @@ public class MerchantUserDao extends AbstractDao<MerchantUser, Long> {
 
     @Override
     public MerchantUser readEntity(Cursor cursor, int offset) {
-        MerchantUser entity = new MerchantUser( //
-            cursor.getLong(offset + 0), // appid
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // mUid
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // mAccessToken
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // displayName
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // avatar
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // birthday
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6) // gender
-        );
+        MerchantUser entity = new MerchantUser();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

@@ -43,27 +43,6 @@ public class SentBundleGD {
     @OrderBy("openTime DESC")
     private List<PackageInBundleGD> sentPackages;
 
-    @Generated
-    public SentBundleGD() {
-    }
-
-    public SentBundleGD(long id) {
-        this.id = id;
-    }
-
-    @Generated
-    public SentBundleGD(long id, String senderZaloPayID, Integer type, Long createTime, Long lastOpenTime, Integer totalLuck, Integer numOfOpenedPakages, Integer numOfPackages, String sendMessage, Integer status) {
-        this.id = id;
-        this.senderZaloPayID = senderZaloPayID;
-        this.type = type;
-        this.createTime = createTime;
-        this.lastOpenTime = lastOpenTime;
-        this.totalLuck = totalLuck;
-        this.numOfOpenedPakages = numOfOpenedPakages;
-        this.numOfPackages = numOfPackages;
-        this.sendMessage = sendMessage;
-        this.status = status;
-    }
 
     /** called by internal mechanisms, do not call yourself. */
     @Generated

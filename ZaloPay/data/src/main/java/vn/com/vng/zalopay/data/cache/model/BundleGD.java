@@ -16,19 +16,5 @@ public class BundleGD {
     public Long createTime;
     public Long lastTimeGetPackage;
 
-    @Generated
-    public BundleGD() {
-    }
-
-    public BundleGD(long id) {
-        this.id = id;
-    }
-
-    @Generated
-    public BundleGD(long id, Long createTime, Long lastTimeGetPackage) {
-        this.id = id;
-        this.createTime = createTime;
-        this.lastTimeGetPackage = lastTimeGetPackage;
-    }
 
 }

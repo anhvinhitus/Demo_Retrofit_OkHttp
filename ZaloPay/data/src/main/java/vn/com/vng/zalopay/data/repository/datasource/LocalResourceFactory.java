@@ -42,7 +42,10 @@ public class LocalResourceFactory {
     }
 
     private void insertDataManifest(String key, String values) {
-        mDaoSession.getDataManifestDao().insertOrReplace(new DataManifest(key, values));
+        DataManifest data = new DataManifest();
+        data.key = key;
+        data.value = values;
+        mDaoSession.getDataManifestDao().insertOrReplace(data);
     }
 
     private String getDataManifest(String key) {

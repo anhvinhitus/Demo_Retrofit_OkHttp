@@ -26,21 +26,5 @@ public class BankCardGD {
     @NotNull
     public String bankcode;
 
-    @Generated
-    public BankCardGD() {
-    }
-
-    public BankCardGD(String cardhash) {
-        this.cardhash = cardhash;
-    }
-
-    @Generated
-    public BankCardGD(String cardhash, String cardname, String first6cardno, String last4cardno, String bankcode) {
-        this.cardhash = cardhash;
-        this.cardname = cardname;
-        this.first6cardno = first6cardno;
-        this.last4cardno = last4cardno;
-        this.bankcode = bankcode;
-    }
 
 }

@@ -360,9 +360,13 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         if (getReceivePacket == null) {
             return;
         }
-        mLocalStorage.putReceivePacketSummary(new ReceivePacketSummaryDB(null, getReceivePacket.totalofrevamount,
-                getReceivePacket.totalofrevpackage, getReceivePacket.numofluckiestdraw,
-                System.currentTimeMillis()));
+        ReceivePacketSummaryDB data = new ReceivePacketSummaryDB();
+        data.id = null;
+        data.totalOfRevamount = getReceivePacket.totalofrevamount;
+        data.totalOfLuckiestDraw = getReceivePacket.numofluckiestdraw;
+        data.totalOfRevPackage = getReceivePacket.totalofrevpackage;
+        data.timeCreate = System.currentTimeMillis();
+        mLocalStorage.putReceivePacketSummary(data);
     }
 
     @Override
@@ -384,9 +388,13 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         if (getSentBundle == null) {
             return;
         }
-        mLocalStorage.putSentBundleSummary(new SentBundleSummaryDB(null, getSentBundle.totalofsentamount,
-                getSentBundle.totalofsentbundle,
-                System.currentTimeMillis()));
+
+        SentBundleSummaryDB data = new SentBundleSummaryDB();
+        data.id = null;
+        data.totalOfSentAmount = getSentBundle.totalofsentamount;
+        data.totalOfSentBundle = getSentBundle.totalofsentbundle;
+        data.timeCreate = System.currentTimeMillis();
+        mLocalStorage.putSentBundleSummary(data);
     }
 
     @Override

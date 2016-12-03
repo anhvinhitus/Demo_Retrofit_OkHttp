@@ -238,24 +238,8 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
 
     @Override
     public TransactionLog readEntity(Cursor cursor, int offset) {
-        TransactionLog entity = new TransactionLog( //
-            cursor.getLong(offset + 0), // transid
-            cursor.getLong(offset + 1), // appid
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // userid
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // appuser
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // platform
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // description
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // pmcid
-            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // reqdate
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // userchargeamt
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // userfeeamt
-            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // amount
-            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // type
-            cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12), // sign
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // username
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // appusername
-            cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15) // statustype
-        );
+        TransactionLog entity = new TransactionLog();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

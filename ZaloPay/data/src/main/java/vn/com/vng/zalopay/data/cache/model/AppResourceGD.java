@@ -26,26 +26,5 @@ public class AppResourceGD {
     public Long timeDownload;
     public Integer numRetry;
 
-    @Generated
-    public AppResourceGD() {
-    }
-
-    @Generated
-    public AppResourceGD(int appid, String appname, Integer needdownloadrs, String imageurl, String jsurl, Integer status, String checksum, Integer apptype, String weburl, String iconurl, Integer sortOrder, Integer stateDownload, Long timeDownload, Integer numRetry) {
-        this.appid = appid;
-        this.appname = appname;
-        this.needdownloadrs = needdownloadrs;
-        this.imageurl = imageurl;
-        this.jsurl = jsurl;
-        this.status = status;
-        this.checksum = checksum;
-        this.apptype = apptype;
-        this.weburl = weburl;
-        this.iconurl = iconurl;
-        this.sortOrder = sortOrder;
-        this.stateDownload = stateDownload;
-        this.timeDownload = timeDownload;
-        this.numRetry = numRetry;
-    }
 
 }

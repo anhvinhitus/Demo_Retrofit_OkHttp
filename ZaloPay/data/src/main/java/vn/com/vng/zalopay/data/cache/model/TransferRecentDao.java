@@ -170,17 +170,8 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
 
     @Override
     public TransferRecent readEntity(Cursor cursor, int offset) {
-        TransferRecent entity = new TransferRecent( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // zaloPayId
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // zaloPayName
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // displayName
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // avatar
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // phoneNumber
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // transferType
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // amount
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // message
-            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8) // timeCreate
-        );
+        TransferRecent entity = new TransferRecent();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

@@ -219,21 +219,8 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
 
     @Override
     public ReceivePackageGD readEntity(Cursor cursor, int offset) {
-        ReceivePackageGD entity = new ReceivePackageGD( //
-            cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // bundleID
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // receiverZaloPayID
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // senderZaloPayID
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // senderFullName
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // senderAvatar
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // amount
-            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // openedTime
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // status
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // messageStatus
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // message
-            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // isLuckiest
-            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12) // createTime
-        );
+        ReceivePackageGD entity = new ReceivePackageGD();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

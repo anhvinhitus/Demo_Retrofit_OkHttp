@@ -90,11 +90,8 @@ public class BundleGDDao extends AbstractDao<BundleGD, Long> {
 
     @Override
     public BundleGD readEntity(Cursor cursor, int offset) {
-        BundleGD entity = new BundleGD( //
-            cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // createTime
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2) // lastTimeGetPackage
-        );
+        BundleGD entity = new BundleGD();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

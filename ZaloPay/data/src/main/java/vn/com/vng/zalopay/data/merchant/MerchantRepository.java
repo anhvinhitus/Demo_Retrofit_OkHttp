@@ -87,7 +87,8 @@ public class MerchantRepository implements MerchantStore.Repository {
         }
         List<MerchantUser> entities = new ArrayList<>();
         for (ListMUIResponse.MerchantUserSubInfo info : response.listmerchantuserinfo) {
-            MerchantUser merchantUser = new MerchantUser(info.appid);
+            MerchantUser merchantUser = new MerchantUser();
+            merchantUser.appid = info.appid;
             merchantUser.mUid = (info.muid);
             merchantUser.mAccessToken = (info.maccesstoken);
             merchantUser.displayName = (response.displayname);
@@ -99,7 +100,8 @@ public class MerchantRepository implements MerchantStore.Repository {
     }
 
     private MerchantUser transform(GetMerchantUserInfoResponse response, long appId) {
-        MerchantUser ret = new MerchantUser(appId);
+        MerchantUser ret = new MerchantUser();
+        ret.appid = appId;
         ret.birthday = (response.birthdate);
         ret.mUid = (response.muid);
         ret.mAccessToken = (response.maccesstoken);

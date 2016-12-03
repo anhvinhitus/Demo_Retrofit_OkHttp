@@ -98,7 +98,8 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
             return null;
         }
 
-        TransactionLog transDao = new TransactionLog(transEntity.transid);
+        TransactionLog transDao = new TransactionLog();
+        transDao.transid = transEntity.transid;
         transDao.appuser = (transEntity.appuser);
         transDao.appid = (transEntity.appid);
         transDao.description = (transEntity.description);

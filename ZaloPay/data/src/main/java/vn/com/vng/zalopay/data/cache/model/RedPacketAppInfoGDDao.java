@@ -182,18 +182,8 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
 
     @Override
     public RedPacketAppInfoGD readEntity(Cursor cursor, int offset) {
-        RedPacketAppInfoGD entity = new RedPacketAppInfoGD( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // checksum
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // expiredTime
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // minAmounTeach
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // maxTotalAmountPerBundle
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // maxPackageQuantity
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // maxCountHist
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // maxMessageLength
-            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // bundleExpiredTime
-            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9) // minDivideAmount
-        );
+        RedPacketAppInfoGD entity = new RedPacketAppInfoGD();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

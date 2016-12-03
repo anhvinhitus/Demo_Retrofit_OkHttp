@@ -32,7 +32,8 @@ public class PlatformDaoMapper {
     public BankCardGD transform(CardEntity cardEntity) {
         BankCardGD bankCardGD = null;
         if (cardEntity != null) {
-            bankCardGD = new BankCardGD(cardEntity.cardhash);
+            bankCardGD = new BankCardGD();
+            bankCardGD.cardhash = cardEntity.cardhash;
             bankCardGD.bankcode = (cardEntity.bankcode);
             bankCardGD.cardname = (cardEntity.cardname);
             bankCardGD.first6cardno = (cardEntity.first6cardno);
@@ -172,7 +173,8 @@ public class PlatformDaoMapper {
             listPaymentTransDao = new ArrayList<>();
 
             for (PCMEntity pcmEntity : appResourceEntity.pmclist) {
-                PaymentTransTypeGD paymentTransTypeGD = new PaymentTransTypeGD(appResourceEntity.transtype);
+                PaymentTransTypeGD paymentTransTypeGD = new PaymentTransTypeGD();
+                paymentTransTypeGD.transtype = appResourceEntity.transtype;
                 paymentTransTypeGD.pmcid = (pcmEntity.pmcid);
                 paymentTransTypeGD.status = (pcmEntity.status);
                 paymentTransTypeGD.feecaltype = (pcmEntity.feecaltype);

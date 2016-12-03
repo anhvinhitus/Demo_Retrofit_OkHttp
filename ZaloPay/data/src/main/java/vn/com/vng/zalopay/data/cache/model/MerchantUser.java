@@ -19,23 +19,5 @@ public class MerchantUser {
     public String birthday;
     public Integer gender;
 
-    @Generated
-    public MerchantUser() {
-    }
-
-    public MerchantUser(long appid) {
-        this.appid = appid;
-    }
-
-    @Generated
-    public MerchantUser(long appid, String mUid, String mAccessToken, String displayName, String avatar, String birthday, Integer gender) {
-        this.appid = appid;
-        this.mUid = mUid;
-        this.mAccessToken = mAccessToken;
-        this.displayName = displayName;
-        this.avatar = avatar;
-        this.birthday = birthday;
-        this.gender = gender;
-    }
 
 }

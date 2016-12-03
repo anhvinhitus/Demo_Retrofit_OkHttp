@@ -25,7 +25,10 @@ public class SqlBaseScopeImpl {
     }
 
     public void insertDataManifest(String key, String values) {
-        daoSession.getDataManifestDao().insertOrReplace(new DataManifest(key, values));
+        DataManifest item = new DataManifest();
+        item.key = key;
+        item.value = values;
+        daoSession.getDataManifestDao().insertOrReplace(item);
     }
 
     protected String getDataManifest(String key) {

@@ -82,13 +82,8 @@ public class BankCardGDDao extends AbstractDao<BankCardGD, String> {
 
     @Override
     public BankCardGD readEntity(Cursor cursor, int offset) {
-        BankCardGD entity = new BankCardGD( //
-            cursor.getString(offset + 0), // cardhash
-            cursor.getString(offset + 1), // cardname
-            cursor.getString(offset + 2), // first6cardno
-            cursor.getString(offset + 3), // last4cardno
-            cursor.getString(offset + 4) // bankcode
-        );
+        BankCardGD entity = new BankCardGD();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

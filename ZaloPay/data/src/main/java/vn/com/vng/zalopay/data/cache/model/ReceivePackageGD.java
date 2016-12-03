@@ -44,30 +44,6 @@ public class ReceivePackageGD {
     @OrderBy("openTime DESC")
     private List<PackageInBundleGD> receivePackages;
 
-    @Generated
-    public ReceivePackageGD() {
-    }
-
-    public ReceivePackageGD(long id) {
-        this.id = id;
-    }
-
-    @Generated
-    public ReceivePackageGD(long id, Long bundleID, String receiverZaloPayID, String senderZaloPayID, String senderFullName, String senderAvatar, Long amount, Long openedTime, Integer status, String messageStatus, String message, Integer isLuckiest, Long createTime) {
-        this.id = id;
-        this.bundleID = bundleID;
-        this.receiverZaloPayID = receiverZaloPayID;
-        this.senderZaloPayID = senderZaloPayID;
-        this.senderFullName = senderFullName;
-        this.senderAvatar = senderAvatar;
-        this.amount = amount;
-        this.openedTime = openedTime;
-        this.status = status;
-        this.messageStatus = messageStatus;
-        this.message = message;
-        this.isLuckiest = isLuckiest;
-        this.createTime = createTime;
-    }
 
     /** called by internal mechanisms, do not call yourself. */
     @Generated

@@ -222,22 +222,8 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
 
     @Override
     public AppResourceGD readEntity(Cursor cursor, int offset) {
-        AppResourceGD entity = new AppResourceGD( //
-            cursor.getInt(offset + 0), // appid
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // appname
-            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // needdownloadrs
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // imageurl
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // jsurl
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // status
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // checksum
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // apptype
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // weburl
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // iconurl
-            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // sortOrder
-            cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // stateDownload
-            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12), // timeDownload
-            cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13) // numRetry
-        );
+        AppResourceGD entity = new AppResourceGD();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

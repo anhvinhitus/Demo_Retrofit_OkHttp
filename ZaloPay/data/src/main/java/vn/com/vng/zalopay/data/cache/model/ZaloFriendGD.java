@@ -24,28 +24,5 @@ public class ZaloFriendGD {
     public Long phoneNumber;
     public String zaloPayName;
 
-    @Generated
-    public ZaloFriendGD() {
-    }
-
-    public ZaloFriendGD(long zaloId) {
-        this.zaloId = zaloId;
-    }
-
-    @Generated
-    public ZaloFriendGD(long zaloId, String userName, String displayName, String avatar, Integer userGender, String birthday, Boolean usingApp, String fulltextsearch, String zaloPayId, Integer status, Long phoneNumber, String zaloPayName) {
-        this.zaloId = zaloId;
-        this.userName = userName;
-        this.displayName = displayName;
-        this.avatar = avatar;
-        this.userGender = userGender;
-        this.birthday = birthday;
-        this.usingApp = usingApp;
-        this.fulltextsearch = fulltextsearch;
-        this.zaloPayId = zaloPayId;
-        this.status = status;
-        this.phoneNumber = phoneNumber;
-        this.zaloPayName = zaloPayName;
-    }
 
 }

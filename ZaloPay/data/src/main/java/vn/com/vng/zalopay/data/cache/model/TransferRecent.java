@@ -21,25 +21,5 @@ public class TransferRecent {
     public String message;
     public Long timeCreate;
 
-    @Generated
-    public TransferRecent() {
-    }
-
-    public TransferRecent(String zaloPayId) {
-        this.zaloPayId = zaloPayId;
-    }
-
-    @Generated
-    public TransferRecent(String zaloPayId, String zaloPayName, String displayName, String avatar, String phoneNumber, Integer transferType, Long amount, String message, Long timeCreate) {
-        this.zaloPayId = zaloPayId;
-        this.zaloPayName = zaloPayName;
-        this.displayName = displayName;
-        this.avatar = avatar;
-        this.phoneNumber = phoneNumber;
-        this.transferType = transferType;
-        this.amount = amount;
-        this.message = message;
-        this.timeCreate = timeCreate;
-    }
 
 }

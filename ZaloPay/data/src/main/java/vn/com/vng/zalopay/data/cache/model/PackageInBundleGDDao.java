@@ -187,18 +187,8 @@ public class PackageInBundleGDDao extends AbstractDao<PackageInBundleGD, Long> {
 
     @Override
     public PackageInBundleGD readEntity(Cursor cursor, int offset) {
-        PackageInBundleGD entity = new PackageInBundleGD( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // bundleID
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // revZaloPayID
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // revZaloID
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // revFullName
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // revAvatarURL
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // openTime
-            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // amount
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // sendMessage
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9) // isLuckiest
-        );
+        PackageInBundleGD entity = new PackageInBundleGD();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

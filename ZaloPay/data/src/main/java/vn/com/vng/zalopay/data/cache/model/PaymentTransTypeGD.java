@@ -23,25 +23,5 @@ public class PaymentTransTypeGD {
     public Long minfee;
     public String feecaltype;
 
-    @Generated
-    public PaymentTransTypeGD() {
-    }
-
-    public PaymentTransTypeGD(long transtype) {
-        this.transtype = transtype;
-    }
-
-    @Generated
-    public PaymentTransTypeGD(long transtype, long pmcid, String pmcname, Integer status, Long minvalue, Long maxvalue, Float feerate, Long minfee, String feecaltype) {
-        this.transtype = transtype;
-        this.pmcid = pmcid;
-        this.pmcname = pmcname;
-        this.status = status;
-        this.minvalue = minvalue;
-        this.maxvalue = maxvalue;
-        this.feerate = feerate;
-        this.minfee = minfee;
-        this.feecaltype = feecaltype;
-    }
 
 }

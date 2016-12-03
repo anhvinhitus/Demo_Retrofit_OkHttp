@@ -22,26 +22,5 @@ public class RedPacketAppInfoGD {
     public Long bundleExpiredTime;
     public Long minDivideAmount;
 
-    @Generated
-    public RedPacketAppInfoGD() {
-    }
-
-    public RedPacketAppInfoGD(Long id) {
-        this.id = id;
-    }
-
-    @Generated
-    public RedPacketAppInfoGD(Long id, String checksum, Long expiredTime, Long minAmounTeach, Long maxTotalAmountPerBundle, Integer maxPackageQuantity, Integer maxCountHist, Integer maxMessageLength, Long bundleExpiredTime, Long minDivideAmount) {
-        this.id = id;
-        this.checksum = checksum;
-        this.expiredTime = expiredTime;
-        this.minAmounTeach = minAmounTeach;
-        this.maxTotalAmountPerBundle = maxTotalAmountPerBundle;
-        this.maxPackageQuantity = maxPackageQuantity;
-        this.maxCountHist = maxCountHist;
-        this.maxMessageLength = maxMessageLength;
-        this.bundleExpiredTime = bundleExpiredTime;
-        this.minDivideAmount = minDivideAmount;
-    }
 
 }

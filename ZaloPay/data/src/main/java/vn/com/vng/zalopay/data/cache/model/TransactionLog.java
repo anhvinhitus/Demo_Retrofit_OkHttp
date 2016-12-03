@@ -29,32 +29,5 @@ public class TransactionLog {
     public String appusername;
     public Integer statustype;
 
-    @Generated
-    public TransactionLog() {
-    }
-
-    public TransactionLog(long transid) {
-        this.transid = transid;
-    }
-
-    @Generated
-    public TransactionLog(long transid, long appid, String userid, String appuser, String platform, String description, Integer pmcid, Long reqdate, Integer userchargeamt, Integer userfeeamt, Integer amount, Integer type, Integer sign, String username, String appusername, Integer statustype) {
-        this.transid = transid;
-        this.appid = appid;
-        this.userid = userid;
-        this.appuser = appuser;
-        this.platform = platform;
-        this.description = description;
-        this.pmcid = pmcid;
-        this.reqdate = reqdate;
-        this.userchargeamt = userchargeamt;
-        this.userfeeamt = userfeeamt;
-        this.amount = amount;
-        this.type = type;
-        this.sign = sign;
-        this.username = username;
-        this.appusername = appusername;
-        this.statustype = statustype;
-    }
 
 }

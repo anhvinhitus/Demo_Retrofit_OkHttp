@@ -16,18 +16,5 @@ public class DataManifest {
     public String key;
     public String value;
 
-    @Generated
-    public DataManifest() {
-    }
-
-    public DataManifest(String key) {
-        this.key = key;
-    }
-
-    @Generated
-    public DataManifest(String key, String value) {
-        this.key = key;
-        this.value = value;
-    }
 
 }

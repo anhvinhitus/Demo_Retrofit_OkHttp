@@ -110,12 +110,8 @@ public class SentBundleSummaryDBDao extends AbstractDao<SentBundleSummaryDB, Lon
 
     @Override
     public SentBundleSummaryDB readEntity(Cursor cursor, int offset) {
-        SentBundleSummaryDB entity = new SentBundleSummaryDB( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // totalOfSentAmount
-            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // totalOfSentBundle
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3) // timeCreate
-        );
+        SentBundleSummaryDB entity = new SentBundleSummaryDB();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

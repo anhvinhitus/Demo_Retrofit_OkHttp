@@ -78,10 +78,8 @@ public class DataManifestDao extends AbstractDao<DataManifest, String> {
 
     @Override
     public DataManifest readEntity(Cursor cursor, int offset) {
-        DataManifest entity = new DataManifest( //
-            cursor.getString(offset + 0), // key
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1) // value
-        );
+        DataManifest entity = new DataManifest();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

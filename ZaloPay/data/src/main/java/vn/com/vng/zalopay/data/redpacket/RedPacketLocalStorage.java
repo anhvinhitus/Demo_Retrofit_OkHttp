@@ -226,12 +226,18 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         if (redPacketAppInfo == null || redPacketAppInfo.appConfigEntity == null) {
             return;
         }
-        RedPacketAppInfoGD redPacketAppInfoGD = new RedPacketAppInfoGD(null, redPacketAppInfo.checksum, redPacketAppInfo.expiredTime,
-                redPacketAppInfo.appConfigEntity.minAmounTeach, redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle,
-                redPacketAppInfo.appConfigEntity.maxPackageQuantity, redPacketAppInfo.appConfigEntity.maxCountHist,
-                redPacketAppInfo.appConfigEntity.maxMessageLength, redPacketAppInfo.appConfigEntity.bundleExpiredTime,
-                redPacketAppInfo.appConfigEntity.minDivideAmount);
-        getDaoSession().getRedPacketAppInfoGDDao().insertOrReplaceInTx(redPacketAppInfoGD);
+        RedPacketAppInfoGD data = new RedPacketAppInfoGD();
+        data.id = null;
+        data.checksum = redPacketAppInfo.checksum;
+        data.expiredTime = redPacketAppInfo.expiredTime;
+        data.minAmounTeach = redPacketAppInfo.appConfigEntity.minAmounTeach;
+        data.maxTotalAmountPerBundle = redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle;
+        data.maxPackageQuantity = redPacketAppInfo.appConfigEntity.maxPackageQuantity;
+        data.maxCountHist = redPacketAppInfo.appConfigEntity.maxCountHist;
+        data.maxMessageLength = redPacketAppInfo.appConfigEntity.maxMessageLength;
+        data.bundleExpiredTime = redPacketAppInfo.appConfigEntity.bundleExpiredTime;
+        data.minDivideAmount = redPacketAppInfo.appConfigEntity.minDivideAmount;
+        getDaoSession().getRedPacketAppInfoGDDao().insertOrReplaceInTx(data);
     }
 
     private RedPacketAppInfo transform(RedPacketAppInfoGD redPacketAppInfoGD) {

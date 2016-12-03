@@ -122,13 +122,8 @@ public class ReceivePacketSummaryDBDao extends AbstractDao<ReceivePacketSummaryD
 
     @Override
     public ReceivePacketSummaryDB readEntity(Cursor cursor, int offset) {
-        ReceivePacketSummaryDB entity = new ReceivePacketSummaryDB( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // totalOfRevamount
-            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // totalOfRevPackage
-            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // totalOfLuckiestDraw
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4) // timeCreate
-        );
+        ReceivePacketSummaryDB entity = new ReceivePacketSummaryDB();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

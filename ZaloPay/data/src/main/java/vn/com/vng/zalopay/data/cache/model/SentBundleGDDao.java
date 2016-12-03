@@ -175,18 +175,8 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
 
     @Override
     public SentBundleGD readEntity(Cursor cursor, int offset) {
-        SentBundleGD entity = new SentBundleGD( //
-            cursor.getLong(offset + 0), // id
-            cursor.getString(offset + 1), // senderZaloPayID
-            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // type
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // createTime
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // lastOpenTime
-            cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5), // totalLuck
-            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // numOfOpenedPakages
-            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // numOfPackages
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // sendMessage
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9) // status
-        );
+        SentBundleGD entity = new SentBundleGD();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

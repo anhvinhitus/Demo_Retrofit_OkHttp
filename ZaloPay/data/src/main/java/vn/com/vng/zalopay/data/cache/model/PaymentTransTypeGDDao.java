@@ -157,17 +157,8 @@ public class PaymentTransTypeGDDao extends AbstractDao<PaymentTransTypeGD, Long>
 
     @Override
     public PaymentTransTypeGD readEntity(Cursor cursor, int offset) {
-        PaymentTransTypeGD entity = new PaymentTransTypeGD( //
-            cursor.getLong(offset + 0), // transtype
-            cursor.getLong(offset + 1), // pmcid
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // pmcname
-            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // status
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // minvalue
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // maxvalue
-            cursor.isNull(offset + 6) ? null : cursor.getFloat(offset + 6), // feerate
-            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // minfee
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // feecaltype
-        );
+        PaymentTransTypeGD entity = new PaymentTransTypeGD();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

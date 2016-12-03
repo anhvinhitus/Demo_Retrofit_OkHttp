@@ -27,29 +27,5 @@ public class NotificationGD {
     public Long mtuid;
     public String embeddata;
 
-    @Generated
-    public NotificationGD() {
-    }
-
-    public NotificationGD(Long id) {
-        this.id = id;
-    }
-
-    @Generated
-    public NotificationGD(Long id, Long transid, Integer appid, Long timestamp, String message, String userid, String destuserid, Integer area, Integer notificationstate, Integer notificationtype, Long mtaid, Long mtuid, String embeddata) {
-        this.id = id;
-        this.transid = transid;
-        this.appid = appid;
-        this.timestamp = timestamp;
-        this.message = message;
-        this.userid = userid;
-        this.destuserid = destuserid;
-        this.area = area;
-        this.notificationstate = notificationstate;
-        this.notificationtype = notificationtype;
-        this.mtaid = mtaid;
-        this.mtuid = mtuid;
-        this.embeddata = embeddata;
-    }
 
 }

@@ -16,20 +16,5 @@ public class SentBundleSummaryDB {
     public Integer totalOfSentBundle;
     public Long timeCreate;
 
-    @Generated
-    public SentBundleSummaryDB() {
-    }
-
-    public SentBundleSummaryDB(Long id) {
-        this.id = id;
-    }
-
-    @Generated
-    public SentBundleSummaryDB(Long id, Long totalOfSentAmount, Integer totalOfSentBundle, Long timeCreate) {
-        this.id = id;
-        this.totalOfSentAmount = totalOfSentAmount;
-        this.totalOfSentBundle = totalOfSentBundle;
-        this.timeCreate = timeCreate;
-    }
 
 }

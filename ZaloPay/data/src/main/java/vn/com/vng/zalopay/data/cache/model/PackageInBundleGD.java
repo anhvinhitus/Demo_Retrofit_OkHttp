@@ -22,26 +22,5 @@ public class PackageInBundleGD {
     public String sendMessage;
     public Integer isLuckiest;
 
-    @Generated
-    public PackageInBundleGD() {
-    }
-
-    public PackageInBundleGD(Long id) {
-        this.id = id;
-    }
-
-    @Generated
-    public PackageInBundleGD(Long id, Long bundleID, String revZaloPayID, Long revZaloID, String revFullName, String revAvatarURL, Long openTime, Long amount, String sendMessage, Integer isLuckiest) {
-        this.id = id;
-        this.bundleID = bundleID;
-        this.revZaloPayID = revZaloPayID;
-        this.revZaloID = revZaloID;
-        this.revFullName = revFullName;
-        this.revAvatarURL = revAvatarURL;
-        this.openTime = openTime;
-        this.amount = amount;
-        this.sendMessage = sendMessage;
-        this.isLuckiest = isLuckiest;
-    }
 
 }

@@ -198,20 +198,8 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
 
     @Override
     public ZaloFriendGD readEntity(Cursor cursor, int offset) {
-        ZaloFriendGD entity = new ZaloFriendGD( //
-            cursor.getLong(offset + 0), // zaloId
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // userName
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // displayName
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // avatar
-            cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // userGender
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // birthday
-            cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0, // usingApp
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // fulltextsearch
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // zaloPayId
-            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // status
-            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // phoneNumber
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // zaloPayName
-        );
+        ZaloFriendGD entity = new ZaloFriendGD();
+        readEntity(cursor, entity, offset);
         return entity;
     }
      

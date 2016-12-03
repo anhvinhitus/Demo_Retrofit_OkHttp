@@ -17,21 +17,5 @@ public class ReceivePacketSummaryDB {
     public Integer totalOfLuckiestDraw;
     public Long timeCreate;
 
-    @Generated
-    public ReceivePacketSummaryDB() {
-    }
-
-    public ReceivePacketSummaryDB(Long id) {
-        this.id = id;
-    }
-
-    @Generated
-    public ReceivePacketSummaryDB(Long id, Long totalOfRevamount, Integer totalOfRevPackage, Integer totalOfLuckiestDraw, Long timeCreate) {
-        this.id = id;
-        this.totalOfRevamount = totalOfRevamount;
-        this.totalOfRevPackage = totalOfRevPackage;
-        this.totalOfLuckiestDraw = totalOfLuckiestDraw;
-        this.timeCreate = timeCreate;
-    }
 
 }
