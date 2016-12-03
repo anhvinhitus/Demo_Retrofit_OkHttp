@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.data.ws.model.Event;
  */
 public abstract class Connection {
 
-    protected State mState = State.Disconnected;
+    State mState = State.Disconnected;
 
     public enum State {
         Disconnected,
@@ -32,30 +32,16 @@ public abstract class Connection {
     public static final int LENGTH_FIELD_LENGTH = 4;
     public static final int HEADER_LENGTH = TYPE_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
 
-    List<OnReceiverMessageListener> listCallBack;
+    private final List<OnReceiverMessageListener> listCallBack = new ArrayList<>();
 
-    protected String mHost;
-    protected int mPort;
-
-    public Connection(String hostname, int port) {
-        if (hostname == null || port < 0 || port > 65535) {
-            throw new IllegalArgumentException("host=" + hostname + ", port=" + port);
-        }
-        this.mHost = hostname;
-        this.mPort = port;
+    Connection() {
     }
 
     public abstract void connect();
 
-    public abstract void ping();
-
     public abstract void disconnect();
 
-    public abstract boolean send(int msgType, String data);
-
     public abstract boolean send(int msgType, byte[] data);
-
-//    public abstract boolean send(int msgType, AbstractMessage msgData);
 
     public boolean isConnected() {
         return mState == State.Connected;
@@ -70,23 +56,15 @@ public abstract class Connection {
     }
 
     public void addReceiverListener(OnReceiverMessageListener listener) {
-        if (listCallBack == null) {
-            listCallBack = new ArrayList<>();
-        }
-
         listCallBack.add(listener);
     }
 
     public void removeReceiverListener(OnReceiverMessageListener listener) {
-        if (listCallBack != null) {
-            listCallBack.remove(listener);
-        }
+        listCallBack.remove(listener);
     }
 
     public void clearReceiverListener() {
-        if (listCallBack != null) {
-            listCallBack.clear();
-        }
+        listCallBack.clear();
     }
 
     Message postResult(Event message) {
@@ -103,10 +81,8 @@ public abstract class Connection {
 
     private void onPostExecute(Event event) {
         try {
-            if (listCallBack != null) {
-                for (int i = listCallBack.size() - 1; i >= 0; i--) {
-                    listCallBack.get(i).onReceiverEvent(event);
-                }
+            for (int i = listCallBack.size() - 1; i >= 0; i--) {
+                listCallBack.get(i).onReceiverEvent(event);
             }
         } catch (Exception ex) {
             Timber.w(ex, "exception : ");
@@ -116,7 +92,6 @@ public abstract class Connection {
     public void cleanup() {
         messageHandler = null;
     }
-
 
     private Handler messageHandler = new MessageHandler(Looper.getMainLooper(), this);
 

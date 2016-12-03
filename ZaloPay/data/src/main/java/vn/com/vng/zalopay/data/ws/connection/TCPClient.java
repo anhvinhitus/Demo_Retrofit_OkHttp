@@ -17,33 +17,31 @@ import timber.log.Timber;
 class TCPClient implements SocketClient {
     private Listener mListener;
 
-    /**
-     * Thread for handling network connection
-     * Modification to mConnection will only be happened in this thread
-     */
-    private HandlerThread mConnectionThread;
-    private Handler mConnectionHandler;
+    private final Handler mConnectionHandler;
 
-    /**
-     * Thread for handling commands, network events, read/write queue to network connection
-     */
-    private HandlerThread mHandlerThread;
-    private Handler mHandler;
-
-    private boolean mRun = false;
+    private final Handler mEventHandler;
 
     private final SocketChannelConnection mConnection;
 
-    public TCPClient(String hostname, int port, Listener listener) {
+    TCPClient(String hostname, int port, Listener listener) {
         mListener = listener;
 
-        mHandlerThread = new HandlerThread("socket-thread");
-        mConnectionThread = new HandlerThread("connection-thread");
-        mHandlerThread.start();
-        mConnectionThread.start();
+        // event handler thread - all socket events are processed in that thread
+        // such as: data received, socket connected, socket disconnected, socket error
+        // Thread for handling commands, network events, read/write queue to network connection
+        HandlerThread eventHandlerThread = new HandlerThread("socket-thread");
 
-        mHandler = new Handler(mHandlerThread.getLooper());
-        mConnectionHandler = new Handler(mConnectionThread.getLooper());
+        // connection thread - create socket connection, sending data, ...
+        // are all processed in this thread
+        // Thread for handling network connection
+        // Modification to mConnection will only be happened in this thread
+        HandlerThread connectionThread = new HandlerThread("connection-thread");
+
+        eventHandlerThread.start();
+        connectionThread.start();
+
+        mEventHandler = new Handler(eventHandlerThread.getLooper());
+        mConnectionHandler = new Handler(connectionThread.getLooper());
 
         mConnection = new SocketChannelConnection(hostname, port, new ConnectionListener(this));
     }
@@ -93,12 +91,11 @@ class TCPClient implements SocketClient {
     }
 
     public void disconnect() {
-        mRun = false;
         disposeConnection();
     }
 
     private void disposeConnection() {
-        mHandler.post(mConnection::close);
+        mEventHandler.post(mConnection::close);
     }
 
     public void send(byte[] data) {
@@ -118,47 +115,47 @@ class TCPClient implements SocketClient {
 
     @Override
     public boolean isConnected() {
-        return mConnection != null && mConnection.isConnected();
+        return mConnection.isConnected();
     }
 
     @Override
     public boolean isConnecting() {
-        return mConnection != null && mConnection.isConnecting();
+        return mConnection.isConnecting();
     }
 
     void postDisconnectedEvent(ConnectionErrorCode reason) {
-        if (mHandler == null || mListener == null) {
+        if (mListener == null) {
             return;
         }
 
-        mHandler.post(() -> mListener.onDisconnected(reason, ""));
+        mEventHandler.post(() -> mListener.onDisconnected(reason, ""));
     }
 
     private void postWriteData(byte[] data) {
-        mHandler.post(() -> mConnection.write(data));
+        mEventHandler.post(() -> mConnection.write(data));
     }
 
     void postReceivedDataEvent(byte[] data) {
-        if (mHandler == null || mListener == null) {
+        if (mListener == null) {
             return;
         }
 
-        mHandler.post(() -> mListener.onMessage(data));
+        mEventHandler.post(() -> mListener.onMessage(data));
     }
 
     void postConnectedEvent() {
-        if (mHandler == null || mListener == null) {
+        if (mListener == null) {
             return;
         }
 
-        mHandler.post(() -> mListener.onConnected());
+        mEventHandler.post(() -> mListener.onConnected());
     }
 
     private void postErrorEvent(Throwable e) {
-        if (mHandler == null || mListener == null) {
+        if (mListener == null) {
             return;
         }
 
-        mHandler.post(() -> mListener.onError(e));
+        mEventHandler.post(() -> mListener.onError(e));
     }
 }

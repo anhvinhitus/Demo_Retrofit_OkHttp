@@ -61,28 +61,14 @@ public class WsConnection extends Connection {
      */
     private NextState mNextConnectionState = NextState.DISCONNECT;
 
-    private enum NextState {
-        RETRY_CONNECT(1),
-        DISCONNECT(2),
-        RETRY_AFTER_KICKEDOUT(3);
-
-        private final int value;
-
-        NextState(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-    }
-
     public WsConnection(String host, int port, Context context, Parser parser, User user) {
-        super(host, port);
+        if (host == null || port < 0 || port > 65535) {
+            throw new IllegalArgumentException("host=" + host + ", port=" + port);
+        }
+
         this.context = context;
         this.parser = parser;
         this.mUser = user;
-//        mSocketClient = new NettyClient(host, port, new ConnectionListener());
         mSocketClient = new TCPClient(host, port, new ConnectionListener());
         HandlerThread thread = new HandlerThread("wsconnection");
         thread.start();
@@ -200,8 +186,7 @@ public class WsConnection extends Connection {
         }
     }
 
-    @Override
-    public void ping() {
+    private void ping() {
         if (!isUserLoggedIn()) {
             Timber.d("User is not login. Should stop sending ping");
             return;
@@ -250,16 +235,6 @@ public class WsConnection extends Connection {
     public boolean isConnecting() {
         return mSocketClient.isConnecting();
     }
-
-    @Override
-    public boolean send(int msgType, String data) {
-        return false;
-    }
-
-//    @Override
-//    public boolean send(int msgType, AbstractMessage msgData) {
-//        return send(msgType, msgData.toByteArray());
-//    }
 
     @Override
     public boolean send(int msgType, byte[] data) {
@@ -448,15 +423,21 @@ public class WsConnection extends Connection {
     }
 
     private void ensureAuthenticationSuccess() {
-        Timber.d("ensureAuthenticationSuccess start, state[%s] isAuthe[%s]", mState, mIsAuthenSuccess);
+        Timber.d("ensureAuthenticationSuccess start, state=[%s] isAuthenSuccess=[%s]", mState, mIsAuthenSuccess);
         if (mState != State.Connected) {
             return;
         }
         if (!mIsAuthenSuccess) {
-            Timber.w("ensureAuthenticationSuccess, state is connected but socket isn't authen");
+            Timber.w("ensureAuthenticationSuccess, state is connected but socket isn't authenticated");
             sendAuthentication();
         } else {
             Timber.d("ensureAuthenticationSuccess, state is connected");
         }
+    }
+
+    private enum NextState {
+        RETRY_CONNECT,
+        DISCONNECT,
+        RETRY_AFTER_KICKEDOUT
     }
 }
