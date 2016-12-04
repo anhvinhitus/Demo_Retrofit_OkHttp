@@ -27,7 +27,11 @@ public abstract class AbsPWResponseListener implements PaymentWrapper.IResponseL
     private Navigator mNavigator;
 
     public AbsPWResponseListener(Activity activity) {
-        mAct = new WeakReference<>(activity);
+        this(new WeakReference<>(activity));
+    }
+
+    public AbsPWResponseListener(WeakReference<Activity> activity) {
+        mAct = activity;
         mNavigator = AndroidApplication.instance().getAppComponent().navigator();
     }
 
@@ -56,9 +60,9 @@ public abstract class AbsPWResponseListener implements PaymentWrapper.IResponseL
         }
 
         if (status == PaymentError.ERR_CODE_INTERNET) {
-            this.onError(new PaymentWrapperException(activity.getString(R.string.exception_no_connection_try_again)));
+            this.onError(new PaymentWrapperException(status.value(), activity.getString(R.string.exception_no_connection_try_again)));
         } else {
-            this.onError(new PaymentWrapperException(PaymentError.getErrorMessage(status)));
+            this.onError(new PaymentWrapperException(status.value(), PaymentError.getErrorMessage(status)));
         }
     }
 

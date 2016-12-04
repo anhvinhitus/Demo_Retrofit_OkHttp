@@ -45,6 +45,12 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(this, requestCode, resultCode, data);
+    }
+
+    @Override
     public Context getContext() {
         return this;
     }

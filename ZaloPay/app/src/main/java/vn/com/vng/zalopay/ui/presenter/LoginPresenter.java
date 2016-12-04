@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.crashlytics.android.answers.Answers;
@@ -10,11 +11,15 @@ import com.crashlytics.android.answers.LoginEvent;
 import com.zing.zalo.zalosdk.oauth.LoginVia;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
+import java.util.concurrent.Callable;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -27,8 +32,10 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.view.ILoginView;
@@ -50,27 +57,33 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     private Context mApplicationContext;
     private UserConfig mUserConfig;
     private PassportRepository mPassportRepository;
+    private ApplicationSession mApplicationSession;
+
+    private Uri mData;
 
     @Inject
     LoginPresenter(Context applicationContext,
                    UserConfig userConfig,
-                   PassportRepository passportRepository) {
+                   PassportRepository passportRepository,
+                   ApplicationSession applicationSession) {
+
         this.mApplicationContext = applicationContext;
         this.mUserConfig = userConfig;
         this.mPassportRepository = passportRepository;
+        this.mApplicationSession = applicationSession;
     }
 
     @Override
     public void setView(ILoginView view) {
         this.mView = view;
-        Timber.d("setView: mview %s", mView);
+        Timber.d("set login view");
     }
 
     @Override
     public void destroyView() {
         hideLoadingView();
         this.mView = null;
-        Timber.d("destroyView:");
+        Timber.d("destroyView");
     }
 
     @Override
@@ -87,6 +100,10 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         this.unsubscribe();
     }
 
+    public void setData(Uri data) {
+        this.mData = data;
+    }
+
     private void unsubscribe() {
         unsubscribeIfNotNull(compositeSubscription);
     }
@@ -101,7 +118,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     public void loginZalo(Activity activity) {
         if (NetworkHelper.isNetworkAvailable(mApplicationContext)) {
-            //   showLoadingView();
             ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, mLoginListener);
         } else {
             showNetworkError();
@@ -110,9 +126,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     @Override
     public void onAuthError(int errorCode, String message) {
-
-     /*   zaloProfilePreferences.setUserId(0);
-        zaloProfilePreferences.setAuthCode("");*/
         Timber.d(" Authen Zalo Error message %s error %s", message, errorCode);
         if (mView != null) { // chua destroy view
             if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
@@ -187,10 +200,17 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     private void onLoginSuccess(User user) {
         Timber.d("session %s zaloPayId %s", user.accesstoken, user.zaloPayId);
-        // Khởi tạo user component
         AndroidApplication.instance().createUserComponent(user);
+        if (mData != null) {
+            Activity act = mView.getActivity();
+            Intent intent = new Intent();
+            intent.setData(mData);
+            act.setResult(Activity.RESULT_OK, intent);
+            mView.getActivity().finish();
+        } else {
+            this.gotoHomeScreen();
+        }
         clearMerchant();
-        this.gotoHomeScreen();
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
     }
 
@@ -202,15 +222,11 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
             ZPAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
             ZPAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
         } else {
-            Timber.w(e, "exception  ");
+            Timber.w(e, "exception");
             String message = ErrorMessageFactory.create(mApplicationContext, e);
             showErrorView(message);
             ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
         }
-    }
-
-    private void clearMerchant() {
-        AndroidApplication.instance().getAppComponent().applicationSession().clearMerchant();
     }
 
     private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {
@@ -243,5 +259,12 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
             LoginPresenter.this.onLoginError(e);
         }
+    }
+
+    private void clearMerchant() {
+        Subscription subscription = mApplicationSession.clearMerchant()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+        compositeSubscription.add(subscription);
     }
 }

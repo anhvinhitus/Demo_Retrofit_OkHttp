@@ -48,6 +48,7 @@ import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
+import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
@@ -85,6 +86,12 @@ public class Navigator implements INavigator {
         this.userConfig = userConfig;
     }
 
+    public void startLoginActivityForResult(ExternalCallSplashScreenActivity act, int requestCode, Uri data) {
+        Intent intent = new Intent(act, LoginZaloActivity.class);
+        intent.setData(data);
+        intent.putExtra("parentAct", act.getClass().getSimpleName());
+        act.startActivityForResult(intent, requestCode);
+    }
 
     public void startLoginActivity(Context context) {
         startLoginActivity(context, false);

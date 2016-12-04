@@ -12,13 +12,16 @@ import org.greenrobot.greendao.AbstractDao;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
+import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -66,7 +69,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
             Timber.d(ex, "clearUserSession");
         }
 
-        clearMerchant();
+        clearMerchantSession();
 
         navigator.setLastTimeCheckPin(0);
 
@@ -95,8 +98,8 @@ public class ApplicationSessionImpl implements ApplicationSession {
         }
     }
 
-    @Override
-    public void clearMerchant() {
+
+    private void clearMerchantSession() {
         daoSession.getMerchantUserDao().deleteAll();
     }
 
@@ -137,5 +140,16 @@ public class ApplicationSessionImpl implements ApplicationSession {
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         OkHttpClient okHttpClient = applicationComponent.okHttpClient();
         okHttpClient.dispatcher().cancelAll();
+    }
+
+    @Override
+    public Observable<Boolean> clearMerchant() {
+        return ObservableHelper.makeObservable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                clearMerchantSession();
+                return Boolean.TRUE;
+            }
+        });
     }
 }

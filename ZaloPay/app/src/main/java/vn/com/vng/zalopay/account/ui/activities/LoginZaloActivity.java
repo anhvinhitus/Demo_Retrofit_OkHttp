@@ -2,7 +2,9 @@ package vn.com.vng.zalopay.account.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import javax.inject.Inject;
@@ -10,6 +12,7 @@ import javax.inject.Inject;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -51,6 +54,22 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loginPresenter.setView(this);
+        handleIntent(getIntent());
+    }
+
+    private void handleIntent(Intent data) {
+        if (data == null) {
+            return;
+        }
+
+        String parentAct = data.getStringExtra("parentAct");
+        if (TextUtils.isEmpty(parentAct)) {
+            return;
+        }
+
+        if (parentAct.equals(ExternalCallSplashScreenActivity.class.getSimpleName())) {
+            loginPresenter.setData(data.getData());
+        }
     }
 
     @OnClick(R.id.layoutLoginZalo)

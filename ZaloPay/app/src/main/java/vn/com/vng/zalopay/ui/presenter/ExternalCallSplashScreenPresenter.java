@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
 
 /**
@@ -24,6 +25,8 @@ import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
  */
 
 public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCallSplashScreenView> {
+
+    private static final int LOGIN_REQUEST_CODE = 100;
 
     private IExternalCallSplashScreenView mView;
 
@@ -87,6 +90,14 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
         if (Intent.ACTION_VIEW.equals(action)) {
             handleDeepLink(intent.getData());
         }
+    }
+
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        if (requestCode == LOGIN_REQUEST_CODE &&
+                resultCode == Activity.RESULT_OK) {
+            handleAppToAppPayment(data.getData());
+        }
+
     }
 
     private boolean handleZaloIntegration(Intent intent) {
@@ -162,19 +173,17 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
             }
 
             if (!mUserConfig.hasCurrentUser()) {
-                pay(data, true);
-                mNavigator.startLoginActivity(mView.getContext());
-                return;
-            }
-
-            if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
+                mNavigator.startLoginActivityForResult((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data);
                 return;
             }
 
             HandleInAppPayment payment = new HandleInAppPayment((Activity) mView.getContext());
             payment.initialize();
-            payment.start(Long.parseLong(appid), zptranstoken);
+            if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
+                payment.loadPaymentSdk();
+            }
 
+            payment.start(Long.parseLong(appid), zptranstoken);
             shouldFinishCurrentActivity = false;
         } finally {
             if (shouldFinishCurrentActivity) {
@@ -182,6 +191,5 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
             }
         }
     }
-
 
 }
