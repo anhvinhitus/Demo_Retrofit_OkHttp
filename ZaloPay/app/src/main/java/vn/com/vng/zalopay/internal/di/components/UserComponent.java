@@ -48,7 +48,6 @@ import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
-//import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
@@ -62,12 +61,15 @@ import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
+import vn.com.vng.zalopay.ui.presenter.HandleInAppPayment;
 import vn.com.vng.zalopay.warningrooted.WarningRootedFragment;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.CardSupportWithdrawFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
+
+//import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
 
 @UserScope
 @Subcomponent(
@@ -195,7 +197,7 @@ public interface UserComponent {
 
     void inject(CardSupportActivity a);
 
-    void inject(ExternalCallSplashScreenActivity.HandleInAppPayment obj);
+    void inject(HandleInAppPayment obj);
 
     void inject(CardSupportWithdrawFragment f);
 }
