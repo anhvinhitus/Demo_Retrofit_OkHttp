@@ -206,8 +206,16 @@ public class TransactionRepository implements TransactionStore.Repository {
             return false;
         }
 
-        if (timestamp == nextTimestamp) {
-            return false;
+        if (sortOrder == TRANSACTION_ORDER_LATEST) {
+            if (nextTimestamp <= timestamp) {
+                Timber.d("nextTimestamp lt timestamp [%s] lt [%s]", nextTimestamp, timestamp);
+                return false;
+            }
+        } else if (sortOrder == TRANSACTION_ORDER_OLDEST) {
+            if (nextTimestamp >= timestamp) {
+                Timber.d("nextTimestamp gt timestamp [%s] gt [%s]", nextTimestamp, timestamp);
+                return false;
+            }
         }
 
         if (Lists.isEmptyOrNull(data) || data.size() < TRANSACTION_LENGTH) { // hết data để lấy
