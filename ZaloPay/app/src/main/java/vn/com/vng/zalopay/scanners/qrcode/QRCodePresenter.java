@@ -200,6 +200,10 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
     }
 
     public void pay(String jsonString) {
+        pay(jsonString, false);
+    }
+
+    private void pay(String jsonString, boolean fromPhotoLibrary) {
 
         if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
             if (mView != null) {
@@ -222,6 +226,11 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             int type = data.optInt("type", -1);
             if (type == vn.com.vng.zalopay.Constants.QRCode.RECEIVE_MONEY) {
                 if (tryTransferMoney(data)) {
+                    if (fromPhotoLibrary) {
+                        ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
+                    } else {
+                        ZPAnalytics.trackEvent(ZPEvents.SCANQR_MONEYTRANSFER);
+                    }
                     return;
                 }
             }
@@ -433,7 +442,17 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                 .subscribe(new DefaultSubscriber<String>() {
                     @Override
                     public void onNext(String decoded) {
-                        pay(decoded);
+                        if (TextUtils.isEmpty(decoded)) {
+                            ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOQRCODE);
+                        } else {
+                            pay(decoded, true);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOQRCODE);
+                        super.onError(e);
                     }
                 });
     }

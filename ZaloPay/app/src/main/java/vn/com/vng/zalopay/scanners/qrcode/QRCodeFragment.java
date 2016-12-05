@@ -223,14 +223,15 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult: requestCode %s resultCode %s", requestCode, resultCode);
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
         if (requestCode == FOREGROUND_IMAGE_REQUEST_CODE) {
             Timber.d("onActivityResult of request select image, data[%s]", data);
-            mSelectedImageInGallery = true;
-            if (qrCodePresenter != null) {
-                qrCodePresenter.pay(data);
+            if (resultCode == Activity.RESULT_OK) {
+                mSelectedImageInGallery = true;
+                if (qrCodePresenter != null) {
+                    qrCodePresenter.pay(data);
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOPHOTO);
             }
         }
     }
@@ -244,6 +245,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.action_scan_qr_from_image) {
+            ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_TOUCHICON);
             if (checkAndRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
                     Constants.Permission.REQUEST_READ_STORAGE)) {
                 startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
