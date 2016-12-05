@@ -9,42 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="30dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/loremipsum"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_bg"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/loremipsum"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_logo_zalopay"/>
-
-            <TextView
-                style="@style/TextView.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:text="@string/slogan"
-                android:textColor="@color/colorPrimary"
-                android:textSize="16sp"/>
-        </LinearLayout>
+        android:layout_marginTop="0dp"
+        android:background="@layout/activity_splash_background">
     </FrameLayout>
 
     <LinearLayout

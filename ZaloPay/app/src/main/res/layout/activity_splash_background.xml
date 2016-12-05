@@ -4,14 +4,9 @@
             android:layout_height="match_parent"
             android:opacity="opaque">
     <item android:drawable="@android:color/white" />
-    <item>
+    <item android:top="30dp">
         <bitmap
-            android:src="@drawable/ic_bg"
-            android:gravity="center"/>
-    </item>
-    <item>
-        <bitmap
-            android:src="@drawable/ic_logo_zalopay"
-            android:gravity="center"/>
+            android:src="@drawable/ic_zalopay_with_bg"
+            android:gravity="top|center_horizontal"/>
     </item>
 </layer-list>
