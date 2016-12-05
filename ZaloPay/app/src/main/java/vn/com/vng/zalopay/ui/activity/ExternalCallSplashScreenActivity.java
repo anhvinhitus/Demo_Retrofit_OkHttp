@@ -35,6 +35,7 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.d("onCreate new ExternalCallSplashScreenActivity");
+        mPresenter.setView(this);
         mPresenter.handleIntent(getIntent());
     }
 
@@ -53,5 +54,11 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.destroy();
+        super.onDestroy();
     }
 }

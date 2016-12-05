@@ -69,7 +69,7 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
 
     @Override
     public void destroy() {
-
+        destroyView();
     }
 
     public void handleIntent(Intent intent) {
@@ -174,6 +174,7 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
 
             if (!mUserConfig.hasCurrentUser()) {
                 mNavigator.startLoginActivityForResult((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data);
+                shouldFinishCurrentActivity = false;
                 return;
             }
 
