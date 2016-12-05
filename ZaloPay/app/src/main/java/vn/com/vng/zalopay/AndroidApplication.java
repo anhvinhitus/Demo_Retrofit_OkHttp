@@ -11,6 +11,7 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.facebook.react.modules.fresco.FrescoModule;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -130,6 +131,7 @@ public class AndroidApplication extends Application {
                 .setDownsampleEnabled(true)
                 .build();
         Fresco.initialize(this, config);
+        FrescoModule.sHasBeenInitialized = true;
         //   }
     }
 
