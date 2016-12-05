@@ -206,6 +206,10 @@ public class TransactionRepository implements TransactionStore.Repository {
             return false;
         }
 
+        if (timestamp == nextTimestamp) {
+            return false;
+        }
+
         if (Lists.isEmptyOrNull(data) || data.size() < TRANSACTION_LENGTH) { // hết data để lấy
             return false;
         }
