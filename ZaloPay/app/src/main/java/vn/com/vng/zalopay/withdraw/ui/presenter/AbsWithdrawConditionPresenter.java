@@ -30,7 +30,7 @@ public abstract class AbsWithdrawConditionPresenter extends BaseUserPresenter {
 
     protected boolean isValidProfile() {
         User user = mUserConfig.getCurrentUser();
-        return !(user == null || user.profilelevel <= 2);
+        return !(user == null || user.profilelevel < 2);
     }
 
     protected void validLinkCard(final IListenerValid listenerValid) {
