@@ -163,13 +163,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
         }
     }
 
-    @OnClick(R.id.btnContinue)
-    public void onClickContinue() {
-        mPresenter.updateProfile(mPassCodeView.getText(), mEdtPhoneView.getText().toString().toLowerCase());
-        ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_REQUEST);
-    }
-
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -189,7 +182,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
                 });
 
         mRootView.setOnKeyboardStateListener(this);
-        
+
         mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
 
         AndroidUtils.runOnUIThread(mIntroRunnable, 300);
@@ -328,4 +321,20 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
         }
     }
 
+    @OnFocusChange(R.id.edtPhone)
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (mBtnContinueView != null) {
+            mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
+        }
+    }
+
+    @OnClick(R.id.btnContinue)
+    public void onClickContinue() {
+        if (!mPassCodeView.isValid() || !mEdtPhoneView.validate()) {
+            return;
+        }
+
+        mPresenter.updateProfile(mPassCodeView.getText(), mEdtPhoneView.getText().toString().toLowerCase());
+        ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_REQUEST);
+    }
 }

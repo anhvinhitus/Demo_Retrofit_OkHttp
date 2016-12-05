@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -128,7 +129,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         focusIdentity = getArguments().getBoolean("focusIdentity", false);
-
     }
 
     @Override
@@ -218,12 +218,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @OnClick(R.id.btnRemoveFrontCmnd)
     public void onClickRemoveFrontImage() {
         clearFrontImage();
-    }
-
-    @OnClick(R.id.btnContinue)
-    public void onClickContinue() {
-        nextPage();
-        hideKeyboard();
     }
 
     @OnClick(R.id.btnConfirm)
@@ -591,5 +585,22 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
                 presenter.getProfileInfo();
             }
         }
+    }
+
+    @OnFocusChange({R.id.edtEmail, R.id.edtIdentity})
+    public void onFocusChange(View v, boolean hasView) {
+        Timber.d("onFocusChange %s", hasView);
+        mBtnContinue.setEnabled(mEdtEmailView.isValid() && mEdtIdentityView.isValid());
+    }
+
+    @OnClick(R.id.btnContinue)
+    public void onClickContinue() {
+
+        if (!mEdtEmailView.validate() || !mEdtIdentityView.validate()) {
+            return;
+        }
+
+        nextPage();
+        hideKeyboard();
     }
 }
