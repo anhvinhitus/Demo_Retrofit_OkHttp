@@ -70,6 +70,11 @@ public class ZPEvents {
     public static final int SCANQR_WRONGCODE = 1504;
     public static final int SCANQR_GETORDER = 1505;
     public static final int SCANQR_NOORDER = 1506;
+    public static final int SCANQR_MONEYTRANSFER = 1507;
+    public static final int SCANQR_PL_TOUCHICON = 1508;
+    public static final int SCANQR_PL_GETMTCODE = 1509;
+    public static final int SCANQR_PL_NOQRCODE = 1510;
+    public static final int SCANQR_PL_NOPHOTO = 1511;
     public static final int MONEYTRANSFER_LAUNCH = 1600;
     public static final int MONEYTRANSFER_NAVIGATEBACK = 1601;
     public static final int MONEYTRANSFER_CHOOSERECENTTRANSACTION = 1602;
@@ -276,6 +281,16 @@ public class ZPEvents {
                 return "ScanQR_GetOrder";
             case SCANQR_NOORDER:
                 return "ScanQR_NoOrder";
+            case SCANQR_MONEYTRANSFER:
+                return "ScanQR_MoneyTransfer";
+            case SCANQR_PL_TOUCHICON:
+                return "ScanQR_PL_TouchIcon";
+            case SCANQR_PL_GETMTCODE:
+                return "ScanQR_PL_GetMTCode";
+            case SCANQR_PL_NOQRCODE:
+                return "ScanQR_PL_NoQRCode";
+            case SCANQR_PL_NOPHOTO:
+                return "ScanQR_PL_NoPhoto";
             case MONEYTRANSFER_LAUNCH:
                 return "MoneyTransfer_Launch";
             case MONEYTRANSFER_NAVIGATEBACK:
@@ -556,6 +571,16 @@ public class ZPEvents {
             case SCANQR_GETORDER:
                 return "Scan QR";
             case SCANQR_NOORDER:
+                return "Scan QR";
+            case SCANQR_MONEYTRANSFER:
+                return "Scan QR";
+            case SCANQR_PL_TOUCHICON:
+                return "Scan QR";
+            case SCANQR_PL_GETMTCODE:
+                return "Scan QR";
+            case SCANQR_PL_NOQRCODE:
+                return "Scan QR";
+            case SCANQR_PL_NOPHOTO:
                 return "Scan QR";
             case MONEYTRANSFER_LAUNCH:
                 return "Money Transfer";

@@ -65,6 +65,11 @@ EventId,Category,Action
 1504,Scan QR,ScanQR_WrongCode
 1505,Scan QR,ScanQR_GetOrder
 1506,Scan QR,ScanQR_NoOrder
+1507,Scan QR,ScanQR_MoneyTransfer
+1508,Scan QR,ScanQR_PL_TouchIcon
+1509,Scan QR,ScanQR_PL_GetMTCode
+1510,Scan QR,ScanQR_PL_NoQRCode
+1511,Scan QR,ScanQR_PL_NoPhoto
 1600,Money Transfer,MoneyTransfer_Launch
 1601,Money Transfer,MoneyTransfer_NavigateBack
 1602,Money Transfer,MoneyTransfer_ChooseRecentTransaction
