@@ -134,7 +134,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
      * A subclass may override this method if it needs to use a custom {@link ReactRootView}.
      */
     protected ReactRootView createRootView() {
-        return new ReactRootView(this);
+        return new ReactRootView(getApplicationContext());
     }
 
     @Override
