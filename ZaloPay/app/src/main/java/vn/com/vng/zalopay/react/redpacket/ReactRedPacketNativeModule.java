@@ -114,7 +114,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                             public void onNext(BundleOrder bundleOrder) {
                                 Timber.d("createBundleOrder onNext bundleOrder [%s]", bundleOrder);
                                 if (bundleOrder == null) {
-                                    Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), "bundleOrder null");
+                                    Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), "Có lỗi xảy ra trong quá trình xử lý. Vui lòng thử lại sau.");
                                 } else {
                                     pay(bundleOrder, promise);
                                 }
