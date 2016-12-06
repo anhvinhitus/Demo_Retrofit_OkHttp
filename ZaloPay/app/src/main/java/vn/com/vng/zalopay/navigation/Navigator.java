@@ -36,8 +36,8 @@ import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
-import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardActivity;
-import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
+import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardActivity;
+import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardFragment;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -189,7 +189,7 @@ public class Navigator implements INavigator {
         activity.startActivity(intent);
     }
 
-    public void startLinkCardActivity(Context context, TutorialLinkCardFragment.ILinkCardListener listener) {
+    public void startLinkCardActivity(Context context, NotificationLinkCardFragment.ILinkCardListener listener) {
         startLinkCardActivity(context, null, listener);
     }
 
@@ -198,7 +198,7 @@ public class Navigator implements INavigator {
     }
 
     public void startLinkCardActivity(Context context, Bundle bundle,
-                                      final TutorialLinkCardFragment.ILinkCardListener listener) {
+                                      final NotificationLinkCardFragment.ILinkCardListener listener) {
         if (!userConfig.hasCurrentUser()) {
             return;
         }
@@ -460,7 +460,7 @@ public class Navigator implements INavigator {
     }
 
     private void showPinDialog(Context context, Intent pendingIntent,
-                               final TutorialLinkCardFragment.ILinkCardListener listener) {
+                               final NotificationLinkCardFragment.ILinkCardListener listener) {
         PinProfileDialog pinProfileDialog = new PinProfileDialog(context, pendingIntent);
         pinProfileDialog.setListener(new PinProfileDialog.PinProfileListener() {
             @Override
@@ -547,12 +547,12 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startTutorialLinkCardActivity(Context context, DMapCardResult mapCardResult) {
-        Timber.d("startTutorialLinkCardActivity context [%s] card [%s]", context, mapCardResult);
+    public void startNotificationLinkCardActivity(Context context, DMapCardResult mapCardResult) {
+        Timber.d("startNotificationLinkCardActivity context [%s] card [%s]", context, mapCardResult);
         if (context == null || mapCardResult == null) {
             return;
         }
-        Intent intent = new Intent(context, TutorialLinkCardActivity.class);
+        Intent intent = new Intent(context, NotificationLinkCardActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(Constants.LAST4CARDNO, mapCardResult.getLast4Number());
         bundle.putString(Constants.IMAGE_FILE_PATH, mapCardResult.getCardLogo());

@@ -324,7 +324,7 @@
             android:label="@string/title.activity.card.support" />
 
         <activity
-            android:name=".linkcard.ui.TutorialLinkCardActivity"
+            android:name=".linkcard.ui.NotificationLinkCardActivity"
             android:label="@string/title.activity.tutorial.link.card" />
 
         <activity

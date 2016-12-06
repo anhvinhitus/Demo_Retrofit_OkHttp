@@ -41,7 +41,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportFragment;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardFragment;
-import vn.com.vng.zalopay.linkcard.ui.TutorialLinkCardFragment;
+import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardFragment;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
@@ -53,7 +53,6 @@ import vn.com.vng.zalopay.transfer.ui.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameFragment;
 import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloFriendListFragment;
-import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
@@ -191,7 +190,7 @@ public interface UserComponent {
 
     void inject(CardSupportFragment f);
 
-    void inject(TutorialLinkCardFragment f);
+    void inject(NotificationLinkCardFragment f);
 
     void inject(WarningRootedFragment f);
 

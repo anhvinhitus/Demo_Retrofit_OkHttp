@@ -18,10 +18,10 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
  * A simple {@link BaseFragment} subclass.
  * Activities that contain this fragment must implement the
  * to handle interaction events.
- * Use the {@link TutorialLinkCardFragment#newInstance} factory method to
+ * Use the {@link NotificationLinkCardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TutorialLinkCardFragment extends BaseFragment {
+public class NotificationLinkCardFragment extends BaseFragment {
 
     public interface ILinkCardListener {
         void onStartedLinkCardActivity();
@@ -53,7 +53,7 @@ public class TutorialLinkCardFragment extends BaseFragment {
         });
     }
 
-    public TutorialLinkCardFragment() {
+    public NotificationLinkCardFragment() {
         // Required empty public constructor
     }
 
@@ -61,11 +61,11 @@ public class TutorialLinkCardFragment extends BaseFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment TutorialLinkCardFragment.
+     * @return A new instance of fragment NotificationLinkCardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TutorialLinkCardFragment newInstance(Bundle bundle) {
-        TutorialLinkCardFragment fragment = new TutorialLinkCardFragment();
+    public static NotificationLinkCardFragment newInstance(Bundle bundle) {
+        NotificationLinkCardFragment fragment = new NotificationLinkCardFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -77,7 +77,7 @@ public class TutorialLinkCardFragment extends BaseFragment {
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_tutorial_link_card;
+        return R.layout.fragment_notification_link_card;
     }
 
     @Override
