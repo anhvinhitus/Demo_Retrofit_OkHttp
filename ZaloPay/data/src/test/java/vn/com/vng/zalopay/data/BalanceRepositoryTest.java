@@ -24,7 +24,7 @@ import vn.com.vng.zalopay.domain.model.User;
  * Created by huuhoa on 7/13/16.
  * Unit Tests for BalanceStore
  */
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(CustomRobolectricRunner.class)
 @Config(constants = BuildConfig.class, sdk = 16)
 public class BalanceRepositoryTest {
     BalanceStore.Repository mRepository;

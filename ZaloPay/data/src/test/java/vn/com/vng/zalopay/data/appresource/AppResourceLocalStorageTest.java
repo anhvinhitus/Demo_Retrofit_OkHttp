@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
  * Created by huuhoa on 6/18/16.
  * Unit tests for AppResourceLocalStorage
  */
-public class AppResourceLocalStorageTest extends ApplicationTestCase{
+public class AppResourceLocalStorageTest extends ApplicationTestCase {
     private AppResourceLocalStorage mLocalStorage;
 
     @Before

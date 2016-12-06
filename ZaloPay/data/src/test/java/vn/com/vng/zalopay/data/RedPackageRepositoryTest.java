@@ -32,17 +32,20 @@ import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleRespons
 import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.redpacket.RedPacketLocalStorage;
 import vn.com.vng.zalopay.data.redpacket.RedPacketRepository;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
 /**
  * Created by longlv on 14/07/2016.
  * Unit test for RedPackageRepository
  */
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(CustomRobolectricRunner.class)
 @Config(constants = BuildConfig.class, sdk = 16)
 public class RedPackageRepositoryTest {
 
@@ -61,6 +64,8 @@ public class RedPackageRepositoryTest {
     BundleOrderResponse bundleOrderResponse;
     BaseResponse baseResponse;
     SubmitOpenPackageResponse submitOpenPackageResponse;
+
+    DaoSession mDaoSession;
 
     private void setupRequestServiceVariable() {
         bundleOrderResponse = new BundleOrderResponse();
@@ -94,9 +99,9 @@ public class RedPackageRepositoryTest {
 
         DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, null, null);
         SQLiteDatabase db = openHelper.getWritableDatabase();
-        DaoSession daoSession = new DaoMaster(db).newSession();
+        mDaoSession = new DaoMaster(db).newSession();
         RedPacketDataMapper dataMapper = new RedPacketDataMapper();
-        mLocalStorage = new RedPacketLocalStorage(daoSession, dataMapper);
+        mLocalStorage = new RedPacketLocalStorage(mDaoSession, dataMapper);
 
         mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1, new Gson());
     }
@@ -188,7 +193,7 @@ public class RedPackageRepositoryTest {
     }
 
     @Test
-    public void testRedPackage() throws Exception{
+    public void testRedPackage() throws Exception {
 //        CountDownLatch countDownLatch = new CountDownLatch(6);
 //        final List<RedPacket> redPackages = new ArrayList<>();
 //        final List<BundleOrder> bundleOrders = new ArrayList<>();
@@ -249,4 +254,110 @@ public class RedPackageRepositoryTest {
     }
 
 
+    @Test
+    public void testDataTransform() {
+        RedPacketDataMapper mapper = new RedPacketDataMapper();
+        SentBundleGD inputItem = new SentBundleGD();
+        inputItem.numOfOpenedPakages = 10;
+        inputItem.numOfPackages = 20;
+        inputItem.totalLuck = 4;
+        inputItem.senderZaloPayID = "1611100000";
+        inputItem.type = 1;
+        inputItem.createTime = 1L;
+        inputItem.lastOpenTime = 2L;
+        inputItem.sendMessage = "message";
+        inputItem.status = 1;
+        inputItem.__setDaoSession(mDaoSession);
+
+        SentBundle bundle = new SentBundle();
+        bundle.numOfOpenedPakages = 10;
+        bundle.numOfPackages = 20;
+        bundle.totalLuck = 4;
+        bundle.sendZaloPayID = "1611100000";
+        bundle.type = 1;
+        bundle.createTime = 1L;
+        bundle.lastOpenTime = 2L;
+        bundle.sendMessage = "message";
+        bundle.status = 1;
+
+        SentBundle outputBundle = mapper.transform(inputItem);
+        assertEquals(bundle, outputBundle);
+    }
+
+    private void assertEquals(SentBundle b1, SentBundle b2) {
+        if (b1 == null && b2 == null) {
+            return;
+        }
+
+        if (b1 == null && b2 != null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        if (b1 != null && b2 == null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        Assert.assertEquals("numOfOpenedPakages", b1.numOfOpenedPakages, b2.numOfOpenedPakages);
+        Assert.assertEquals("numOfPackages", b1.numOfPackages, b2.numOfPackages);
+        Assert.assertEquals("totalLuck", b1.totalLuck, b2.totalLuck);
+        Assert.assertEquals("sendZaloPayID", b1.sendZaloPayID, b2.sendZaloPayID);
+        Assert.assertEquals("type", b1.type, b2.type);
+        Assert.assertEquals("createTime", b1.createTime, b2.createTime);
+        Assert.assertEquals("lastOpenTime", b1.lastOpenTime, b2.lastOpenTime);
+        Assert.assertEquals("sendMessage", b1.sendMessage, b2.sendMessage);
+        Assert.assertEquals("status", b1.status, b2.status);
+    }
+
+    @Test
+    public void testGetSentBundleSummary() throws Exception {
+//        CountDownLatch countDownLatch = new CountDownLatch(1);
+        SentBundleGD inputItem = new SentBundleGD();
+        inputItem.numOfOpenedPakages = 10;
+        inputItem.numOfPackages = 20;
+        inputItem.totalLuck = 4;
+        inputItem.senderZaloPayID = "1611100000";
+        inputItem.type = 1;
+        inputItem.createTime = 1L;
+        inputItem.lastOpenTime = 2L;
+        inputItem.sendMessage = "message";
+        inputItem.status = 1;
+
+        List<SentBundleGD> list = new ArrayList<>();
+        list.add(inputItem);
+        mLocalStorage.putSentBundle(list);
+        List<SentBundle> inputList = new ArrayList<>();
+        RedPacketDataMapper mapper = new RedPacketDataMapper();
+        inputList.add(mapper.transform(inputItem));
+
+        System.out.println("Begin to get sent bundle");
+        mLocalStorage.getSentBundle(0L, 2).subscribe(new DefaultSubscriber<List<SentBundle>>() {
+            @Override
+            public void onNext(List<SentBundle> sentBundles) {
+                super.onNext(sentBundles);
+                System.out.println("Got onNext");
+                System.out.println(String.format("Got %d item: ", sentBundles.size()));
+//                Assert.assertArrayEquals(sentBundles.toArray(), inputList.toArray());
+                SentBundle bundle = sentBundles.get(0);
+                Assert.assertEquals(bundle.sendMessage, "message");
+                assertEquals(mapper.transform(inputItem), bundle);
+                System.out.println("Completed onNext");
+
+//                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+
+                Assert.fail(e.getMessage());
+            }
+        });
+
+        System.out.println("Wait for completion");
+//        Assert.assertTrue(countDownLatch.await(10, TimeUnit.SECONDS));
+    }
 }

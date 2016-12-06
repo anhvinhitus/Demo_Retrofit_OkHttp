@@ -18,6 +18,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 import rx.Subscriber;
 import vn.com.vng.zalopay.data.BuildConfig;
+import vn.com.vng.zalopay.data.CustomRobolectricRunner;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.ListMUIResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
@@ -28,7 +29,7 @@ import vn.com.vng.zalopay.domain.model.User;
  * Created by huuhoa on 9/23/16.
  * Unit tests for Merchant repository test
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(CustomRobolectricRunner.class)
 @Config(constants = BuildConfig.class, sdk = 16, manifest=Config.NONE)
 public class MerchantRepositoryTest {
     @Test
