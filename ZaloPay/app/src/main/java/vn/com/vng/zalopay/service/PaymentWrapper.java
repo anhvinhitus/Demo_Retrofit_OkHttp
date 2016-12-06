@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
@@ -55,6 +56,7 @@ public class PaymentWrapper {
     private final BalanceStore.Repository balanceRepository;
     private final TransactionStore.Repository transactionRepository;
     private final Navigator mNavigator = AndroidApplication.instance().getAppComponent().navigator();
+    private final boolean mShowTutorialLinkCard;
 
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
         @Override
@@ -74,7 +76,10 @@ public class PaymentWrapper {
                     cardResult.setCardLogo("MASTER.png");
                     cardResult.setLast4Number("8668");
                     cardResult.setBankName("Master card");*/
-                    mNavigator.startTutorialLinkCardActivity(viewListener.getActivity(), pPaymentResult.mapCardResult);
+                    if (mShowTutorialLinkCard) {
+                        mNavigator.startTutorialLinkCardActivity(viewListener.getActivity(),
+                                pPaymentResult.mapCardResult);
+                    }
                     responseListener.onResponseSuccess(pPaymentResult);
                 } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID) {
                     responseListener.onResponseTokenInvalid();
@@ -167,6 +172,18 @@ public class PaymentWrapper {
         this.viewListener = viewListener;
         this.responseListener = responseListener;
         this.transactionRepository = transactionRepository;
+        this.mShowTutorialLinkCard = true;
+    }
+
+    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
+                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
+                          IResponseListener responseListener, boolean showTutorialLinkCard) {
+        this.balanceRepository = balanceRepository;
+        this.zaloPayRepository = zaloPayRepository;
+        this.viewListener = viewListener;
+        this.responseListener = responseListener;
+        this.transactionRepository = transactionRepository;
+        this.mShowTutorialLinkCard = showTutorialLinkCard;
     }
 
     public void payWithToken(long appId, String transactionToken) {

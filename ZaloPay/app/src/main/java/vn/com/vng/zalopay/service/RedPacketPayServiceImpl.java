@@ -84,7 +84,7 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
             public void onNotEnoughMoney() {
                 navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
             }
-        });
+        }, false);
 
         this.paymentWrapper.payWithOrder(bundleOrder);
     }
