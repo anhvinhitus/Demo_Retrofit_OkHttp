@@ -114,13 +114,16 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     @Override
     public Observable<PackageStatus> getpackagestatus(long packageID, long zpTransID, String deviceId) {
         return mRequestTPEService.getPackageStatus(mAppId, packageID, zpTransID, user.zaloPayId, user.accesstoken, deviceId)
-                .map(packageStatusResponse ->
-                        new PackageStatus(packageStatusResponse.isprocessing,
-                                packageStatusResponse.zptransid,
-                                packageStatusResponse.reqdate,
-                                packageStatusResponse.amount,
-                                packageStatusResponse.balance,
-                                packageStatusResponse.data));
+                .map(response -> {
+                    PackageStatus item = new PackageStatus();
+                    item.isProcessing = response.isprocessing;
+                    item.zpTransID = response.zptransid;
+                    item.reqdate = response.reqdate;
+                    item.amount = response.amount;
+                    item.balance = response.balance;
+                    item.data = response.data;
+                    return item;
+                });
     }
 
     private void insertSentBundles(GetSentBundle getSentBundle) {
@@ -159,11 +162,14 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     private Observable<GetReceivePacket> getReceivePacketListCache(long openTime, final int count) {
         return Observable.zip(mLocalStorage.getReceiveBundle(openTime, count),
                 mLocalStorage.getReceivePacketSummary(),
-                (receivePackages, getReceivePacket) ->
-                        new GetReceivePacket(getReceivePacket.totalofrevamount,
-                                getReceivePacket.totalofrevpackage,
-                                getReceivePacket.numofluckiestdraw,
-                                receivePackages));
+                (receivePackages, getReceivePacket) -> {
+                    GetReceivePacket item = new GetReceivePacket();
+                    item.totalofrevamount = getReceivePacket.totalofrevamount;
+                    item.totalofrevpackage = getReceivePacket.totalofrevpackage;
+                    item.numofluckiestdraw = getReceivePacket.numofluckiestdraw;
+                    item.revpackageList = receivePackages;
+                    return item;
+                });
     }
 
     private Observable<GetReceivePacket> getReceivePacketListCloud(long openTime, final int count) {
@@ -413,9 +419,13 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     private Observable<GetSentBundle> getSentBundleListCache(long timeCreate, int count) {
         return Observable.zip(mLocalStorage.getSentBundle(timeCreate, count), mLocalStorage.getSentBundleSummary(),
-                (sentBundles, getSentBundle) ->
-                        new GetSentBundle(getSentBundle.totalofsentamount, getSentBundle.totalofsentbundle, sentBundles))
-                ;
+                (sentBundles, getSentBundle) -> {
+                    GetSentBundle bundle = new GetSentBundle();
+                    bundle.totalofsentamount = getSentBundle.totalofsentamount;
+                    bundle.totalofsentbundle = getSentBundle.totalofsentbundle;
+                    bundle.sentbundlelist = sentBundles;
+                    return bundle;
+                });
     }
 
     private Observable<GetSentBundle> getSentBundleListCloud(long timeCreate, int count) {

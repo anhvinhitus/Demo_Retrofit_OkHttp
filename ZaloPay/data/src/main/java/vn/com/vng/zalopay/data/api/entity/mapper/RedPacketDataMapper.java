@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleStatusEnum;
@@ -90,16 +91,36 @@ public class RedPacketDataMapper {
         if (packageInBundleGD == null) {
             return null;
         }
-        return new PackageInBundle(packageInBundleGD.id, packageInBundleGD.bundleID, packageInBundleGD.revZaloPayID, packageInBundleGD.revZaloID, packageInBundleGD.revFullName, packageInBundleGD.revAvatarURL, packageInBundleGD.openTime, packageInBundleGD.amount, packageInBundleGD.sendMessage, packageInBundleGD.isLuckiest == 1);
+
+        PackageInBundle item = new PackageInBundle();
+        item.packageID = ConvertHelper.unboxValue(packageInBundleGD.id, 0L);
+        item.bundleID = ConvertHelper.unboxValue(packageInBundleGD.bundleID, 0L);
+        item.revZaloPayID = packageInBundleGD.revZaloPayID;
+        item.revZaloID = packageInBundleGD.revZaloID;
+        item.revFullName = packageInBundleGD.revFullName;
+        item.revAvatarURL = packageInBundleGD.revAvatarURL;
+        item.openTime = ConvertHelper.unboxValue(packageInBundleGD.openTime, 0L);
+        item.amount = ConvertHelper.unboxValue(packageInBundleGD.amount, 0L);
+        item.sendMessage = packageInBundleGD.sendMessage;
+        item.isLuckiest = (ConvertHelper.unboxValue(packageInBundleGD.isLuckiest, 0) == 1);
+        return item;
     }
 
     public SentBundle transform(SentBundleGD sentBundleGD) {
         List<PackageInBundle> sentPackages = transformToPackageInBundle(sentBundleGD.getSentPackages());
-        return new SentBundle(sentBundleGD.id, sentBundleGD.senderZaloPayID,
-                sentBundleGD.type, sentBundleGD.createTime,
-                sentBundleGD.lastOpenTime, sentBundleGD.totalLuck,
-                sentBundleGD.numOfOpenedPakages, sentBundleGD.numOfPackages,
-                sentBundleGD.sendMessage, sentBundleGD.status, sentPackages);
+        SentBundle item = new SentBundle();
+        item.bundleID = sentBundleGD.id;
+        item.sendZaloPayID = sentBundleGD.senderZaloPayID;
+        item.type = ConvertHelper.unboxValue(sentBundleGD.type, 0);
+        item.createTime = ConvertHelper.unboxValue(sentBundleGD.createTime, 0L);
+        item.lastOpenTime = ConvertHelper.unboxValue(sentBundleGD.lastOpenTime, 0L);
+        item.totalLuck = ConvertHelper.unboxValue(sentBundleGD.totalLuck, 0);
+        item.numOfOpenedPakages = ConvertHelper.unboxValue(sentBundleGD.numOfOpenedPakages, 0);
+        item.numOfPackages = ConvertHelper.unboxValue(sentBundleGD.numOfPackages, 0);
+        item.sendMessage = sentBundleGD.sendMessage;
+        item.status = ConvertHelper.unboxValue(sentBundleGD.status, 0);
+        item.packages = sentPackages;
+        return item;
     }
 
     public List<PackageInBundle> transformToPackageInBundle(SentPackageInBundleResponse packageInBundlesResponse) {
@@ -113,7 +134,19 @@ public class RedPacketDataMapper {
             if (response == null) {
                 continue;
             }
-            sentPackageList.add(new PackageInBundle(response.packageid, response.bundleid, response.revzalopayid, response.revzaloid, response.revfullname, response.revavatarurl, response.opentime, response.amount, response.sendmessage, response.isluckiest));
+            PackageInBundle item = new PackageInBundle();
+            item.packageID = response.packageid;
+            item.bundleID = response.bundleid;
+            item.revZaloPayID = response.revzalopayid;
+            item.revZaloID = response.revzaloid;
+            item.revFullName = response.revfullname;
+            item.revAvatarURL = response.revavatarurl;
+            item.openTime = response.opentime;
+            item.amount = response.amount;
+            item.sendMessage = response.message;
+            item.isLuckiest = response.isluckiest;
+
+            sentPackageList.add(item);
         }
         return sentPackageList;
     }
@@ -177,19 +210,27 @@ public class RedPacketDataMapper {
         if (response == null) {
             return null;
         }
+
         List<SentBundle> sentBundles = transformToSentBundles(response.bundleResponseList);
-        return new GetSentBundle(response.totalOfSentAmount,
-                response.totalOfSentBundle,
-                sentBundles);
+        GetSentBundle item = new GetSentBundle();
+        item.totalofsentamount = response.totalOfSentAmount;
+        item.totalofsentbundle = response.totalOfSentBundle;
+        item.sentbundlelist = sentBundles;
+        return item;
     }
 
     public GetSentBundle transformToSentBundleSummary(List<SentBundleSummaryDB> list) {
         if (list == null || list.size() <= 0 || list.get(0) == null) {
             return null;
         }
+
         SentBundleSummaryDB sentBundleSummaryDB = list.get(0);
-        return new GetSentBundle(sentBundleSummaryDB.totalOfSentAmount,
-                sentBundleSummaryDB.totalOfSentBundle, null);
+        GetSentBundle item = new GetSentBundle();
+        item.totalofsentamount = ConvertHelper.unboxValue(sentBundleSummaryDB.totalOfSentAmount, 0L);
+        item.totalofsentbundle = ConvertHelper.unboxValue(sentBundleSummaryDB.totalOfSentBundle, 0);
+        item.sentbundlelist = null;
+
+        return item;
     }
 
     public List<SentBundle> transformToSentBundles(List<SentBundleResponse> bundleResponseList) {
@@ -201,11 +242,20 @@ public class RedPacketDataMapper {
             if (bundleResponse == null) {
                 continue;
             }
-            sentBundleList.add(new SentBundle(bundleResponse.bundleid, bundleResponse.sendzalopayid,
-                    bundleResponse.type, bundleResponse.createtime,
-                    bundleResponse.lastopentime, bundleResponse.totalluck,
-                    bundleResponse.numofopenedpakages, bundleResponse.numofpackages,
-                    bundleResponse.sendmessage, BundleStatusEnum.AVAILABLE.getValue()));
+
+            SentBundle item = new SentBundle();
+            item.bundleID = bundleResponse.bundleid;
+            item.sendZaloPayID = bundleResponse.sendzalopayid;
+            item.type = bundleResponse.type;
+            item.createTime = bundleResponse.createtime;
+            item.lastOpenTime = bundleResponse.lastopentime;
+            item.totalLuck = bundleResponse.totalluck;
+            item.numOfOpenedPakages = bundleResponse.numofopenedpakages;
+            item.numOfPackages = bundleResponse.numofpackages;
+            item.sendMessage = bundleResponse.sendmessage;
+            item.status = BundleStatusEnum.AVAILABLE.getValue();
+
+            sentBundleList.add(item);
         }
         return sentBundleList;
     }
@@ -215,20 +265,20 @@ public class RedPacketDataMapper {
             return null;
         }
 
-        Long openTime = receivePackageGD.openedTime;
-        Integer isLuckiest = receivePackageGD.isLuckiest;
-        Long createTime = receivePackageGD.createTime;
-        Long amount = receivePackageGD.amount;
-        return new ReceivePackage(receivePackageGD.id, receivePackageGD.bundleID,
-                receivePackageGD.receiverZaloPayID, receivePackageGD.senderZaloPayID,
-                receivePackageGD.senderFullName,
-                receivePackageGD.senderAvatar,
-                receivePackageGD.message,
-                amount == null ? 0 : amount,
-                openTime == null ? 0 : openTime,
-                isLuckiest == null ? 0 : isLuckiest,
-                createTime == null ? 0 : createTime,
-                receivePackageGD.status);
+        ReceivePackage item = new ReceivePackage();
+        item.packageID = receivePackageGD.id;
+        item.bundleID = ConvertHelper.unboxValue(receivePackageGD.bundleID, 0L);
+        item.revZaloPayID = receivePackageGD.receiverZaloPayID;
+        item.senderZaloPayID = receivePackageGD.senderZaloPayID;
+        item.senderFullName = receivePackageGD.senderFullName;
+        item.senderAvatar = receivePackageGD.senderAvatar;
+        item.message = receivePackageGD.message;
+        item.amount = ConvertHelper.unboxValue(receivePackageGD.amount, 0L);
+        item.openedTime = ConvertHelper.unboxValue(receivePackageGD.openedTime, 0L);
+        item.isLuckiest = ConvertHelper.unboxValue(receivePackageGD.isLuckiest, 0);
+        item.createTime = ConvertHelper.unboxValue(receivePackageGD.createTime, 0L);
+        item.status = ConvertHelper.unboxValue(receivePackageGD.status, 0);
+        return item;
     }
 
     public List<ReceivePackage> transformDBToRevPackets(List<ReceivePackageGD> list) {
@@ -290,10 +340,16 @@ public class RedPacketDataMapper {
         if (response == null) {
             return null;
         }
+
         List<ReceivePackage> receivePackages = transformToRevPackets(response.receivePackageResponses);
-        return new GetReceivePacket(response.totalOfRevAmount,
-                response.totalOfRevPackage, response.numOfLuckiestDraw,
-                receivePackages);
+
+        GetReceivePacket item = new GetReceivePacket();
+        item.totalofrevamount = response.totalOfRevAmount;
+        item.totalofrevpackage = response.totalOfRevPackage;
+        item.numofluckiestdraw = response.numOfLuckiestDraw;
+        item.revpackageList = receivePackages;
+
+        return item;
     }
 
     public List<ReceivePackage> transformToRevPackets(List<ReceivePackageResponse> revpackageList) {
@@ -307,17 +363,21 @@ public class RedPacketDataMapper {
             if (response == null) {
                 continue;
             }
-            receivePackages.add(
-                    new ReceivePackage(response.packageid, response.bundleid,
-                            response.revzalopayid, response.sendzalopayid,
-                            response.sendfullname,
-                            response.avatarofsender,
-                            response.sendmessage,
-                            response.amount,
-                            response.openedtime,
-                            response.isluckiest,
-                            response.createtime,
-                            RedPacketStatus.Opened.getValue()));
+
+            ReceivePackage item = new ReceivePackage();
+            item.packageID = response.packageid;
+            item.bundleID = response.bundleid;
+            item.revZaloPayID = response.revzalopayid;
+            item.senderZaloPayID = response.sendzalopayid;
+            item.senderFullName = response.sendfullname;
+            item.senderAvatar = response.avatarofsender;
+            item.message = response.sendmessage;
+            item.amount = response.amount;
+            item.openedTime = response.openedtime;
+            item.isLuckiest = response.isluckiest;
+            item.createTime = response.createtime;
+            item.status = RedPacketStatus.Opened.getValue();
+            receivePackages.add(item);
         }
         return receivePackages;
     }
@@ -327,10 +387,14 @@ public class RedPacketDataMapper {
             return null;
         }
         ReceivePacketSummaryDB receivePacketSummarydb = list.get(0);
-        return new GetReceivePacket(receivePacketSummarydb.totalOfRevamount,
-                receivePacketSummarydb.totalOfRevPackage,
-                receivePacketSummarydb.totalOfLuckiestDraw,
-                null);
+
+        GetReceivePacket item = new GetReceivePacket();
+        item.totalofrevamount = ConvertHelper.unboxValue(receivePacketSummarydb.totalOfRevamount, 0L);
+        item.totalofrevpackage = ConvertHelper.unboxValue(receivePacketSummarydb.totalOfRevPackage, 0);
+        item.numofluckiestdraw = ConvertHelper.unboxValue(receivePacketSummarydb.totalOfLuckiestDraw, 0);
+        item.revpackageList = null;
+
+        return item;
     }
 
     public RedPacketAppInfo transform(RedPacketAppInfoResponse response) {
@@ -338,18 +402,31 @@ public class RedPacketDataMapper {
             return null;
         }
 
-        return new RedPacketAppInfo(response.isUpdateAppInfo, response.checksum,
-                response.expiredTime, transform(response.appConfigResponse));
+        RedPacketAppInfo item = new RedPacketAppInfo();
+        item.isUpdateAppInfo = response.isUpdateAppInfo;
+        item.checksum = response.checksum;
+        item.expiredTime = response.expiredTime;
+        item.appConfigEntity = transform(response.appConfigResponse);
+
+        return item;
     }
 
-    private AppConfigEntity transform(RedPacketAppInfoResponse.AppConfigResponse appConfigResponse) {
-        if (appConfigResponse == null) {
+    private AppConfigEntity transform(RedPacketAppInfoResponse.AppConfigResponse response) {
+        if (response == null) {
             return null;
         }
-        return new AppConfigEntity(appConfigResponse.bundleExpiredTime, appConfigResponse.maxCountHist,
-                appConfigResponse.maxMessageLength, appConfigResponse.maxPackageQuantity,
-                appConfigResponse.maxTotalAmountPerBundle, appConfigResponse.minAmountEach,
-                appConfigResponse.minDivideAmount, appConfigResponse.maxAmountPerPackage);
+
+        AppConfigEntity item = new AppConfigEntity();
+        item.bundleExpiredTime = response.bundleExpiredTime;
+        item.maxCountHist = response.maxCountHist;
+        item.maxMessageLength = response.maxMessageLength;
+        item.maxAmountPerPackage = response.maxAmountPerPackage;
+        item.maxPackageQuantity = response.maxPackageQuantity;
+        item.maxTotalAmountPerBundle = response.maxTotalAmountPerBundle;
+        item.minAmountEach = response.minAmountEach;
+        item.minDivideAmount = response.minDivideAmount;
+
+        return item;
     }
 
     public List<BundleGD> transformToBundleGD(GetSentBundle getSentBundle) {

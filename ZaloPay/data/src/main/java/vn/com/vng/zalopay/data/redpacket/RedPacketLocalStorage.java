@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.data.cache.model.SentBundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDBDao;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
@@ -245,11 +246,23 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         if (redPacketAppInfoGD == null) {
             return null;
         }
-        return new RedPacketAppInfo(false, redPacketAppInfoGD.checksum, redPacketAppInfoGD.expiredTime,
-                new AppConfigEntity(redPacketAppInfoGD.bundleExpiredTime, redPacketAppInfoGD.maxCountHist,
-                        redPacketAppInfoGD.maxMessageLength, redPacketAppInfoGD.maxPackageQuantity,
-                        redPacketAppInfoGD.maxTotalAmountPerBundle, redPacketAppInfoGD.minAmountEach,
-                        redPacketAppInfoGD.minDivideAmount, redPacketAppInfoGD.maxAmountPerPackage));
+
+        AppConfigEntity entity = new AppConfigEntity();
+        entity.bundleExpiredTime = ConvertHelper.unboxValue(redPacketAppInfoGD.bundleExpiredTime, 0L);
+        entity.maxCountHist = ConvertHelper.unboxValue(redPacketAppInfoGD.maxCountHist, 0);
+        entity.maxMessageLength = ConvertHelper.unboxValue(redPacketAppInfoGD.maxMessageLength, 0);
+        entity.maxPackageQuantity = ConvertHelper.unboxValue(redPacketAppInfoGD.maxPackageQuantity, 0);
+        entity.maxTotalAmountPerBundle = ConvertHelper.unboxValue(redPacketAppInfoGD.maxTotalAmountPerBundle, 0);
+        entity.maxAmountPerPackage = ConvertHelper.unboxValue(redPacketAppInfoGD.maxAmountPerPackage, 0L);
+        entity.minAmountEach = ConvertHelper.unboxValue(redPacketAppInfoGD.minAmountEach, 0);
+        entity.minDivideAmount = ConvertHelper.unboxValue(redPacketAppInfoGD.minDivideAmount, 0L);
+
+        RedPacketAppInfo item = new RedPacketAppInfo();
+        item.isUpdateAppInfo = false;
+        item.checksum = redPacketAppInfoGD.checksum;
+        item.expiredTime = ConvertHelper.unboxValue(redPacketAppInfoGD.expiredTime, 0L);
+        item.appConfigEntity = entity;
+        return item;
     }
 
     @Override

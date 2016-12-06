@@ -18,25 +18,4 @@ public class ReceivePackage {
     public int isLuckiest;
     public long createTime;
     public int status;
-
-    public ReceivePackage(long packageID, long bundleID,
-                          String revZaloPayID,
-                          String senderZaloPayID, String senderFullName,
-                          String senderAvatar, String message,
-                          long amount, long openedTime,
-                          int isLuckiest, long createTime,
-                          int status) {
-        this.packageID = packageID;
-        this.bundleID = bundleID;
-        this.revZaloPayID = revZaloPayID;
-        this.senderZaloPayID = senderZaloPayID;
-        this.senderFullName = senderFullName;
-        this.senderAvatar = senderAvatar;
-        this.message = message;
-        this.amount = amount;
-        this.openedTime = openedTime;
-        this.isLuckiest = isLuckiest;
-        this.createTime = createTime;
-        this.status = status;
-    }
 }

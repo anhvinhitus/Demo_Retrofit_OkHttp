@@ -6,6 +6,7 @@ import java.util.List;
 
 import rx.Observable;
 import vn.com.vng.zalopay.data.cache.model.TransferRecent;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
@@ -48,15 +49,16 @@ public class TransferRepository implements TransferStore.Repository {
 
     public RecentTransaction transform(TransferRecent item) {
         if (item != null) {
-            return new RecentTransaction(
-                    0,
-                    item.zaloPayId,
-                    item.zaloPayName,
-                    item.displayName,
-                    item.avatar,
-                    item.phoneNumber,
-                    item.amount,
-                    item.message);
+            RecentTransaction transaction = new RecentTransaction();
+            transaction.zaloId = 0L;
+            transaction.zaloPayId = item.zaloPayId;
+            transaction.zaloPayName = item.zaloPayName;
+            transaction.displayName = item.displayName;
+            transaction.avatar = item.avatar;
+            transaction.phoneNumber = item.phoneNumber;
+            transaction.amount = ConvertHelper.unboxValue(item.amount, 0L);
+            transaction.message = item.message;
+            return transaction;
         }
         return null;
     }

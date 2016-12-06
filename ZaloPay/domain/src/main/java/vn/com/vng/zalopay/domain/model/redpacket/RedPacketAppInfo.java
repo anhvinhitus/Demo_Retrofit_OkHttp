@@ -9,12 +9,12 @@ public class RedPacketAppInfo {
     public String checksum;
     public long expiredTime;
     public AppConfigEntity appConfigEntity;
-
-    public RedPacketAppInfo(boolean isUpdateAppInfo, String checksum,
-                            long expiredTime, AppConfigEntity appConfigEntity) {
-        this.isUpdateAppInfo = isUpdateAppInfo;
-        this.checksum = checksum;
-        this.expiredTime = expiredTime;
-        this.appConfigEntity = appConfigEntity;
-    }
+//
+//    public RedPacketAppInfo(boolean isUpdateAppInfo, String checksum,
+//                            long expiredTime, AppConfigEntity appConfigEntity) {
+//        this.isUpdateAppInfo = isUpdateAppInfo;
+//        this.checksum = checksum;
+//        this.expiredTime = expiredTime;
+//        this.appConfigEntity = appConfigEntity;
+//    }
 }

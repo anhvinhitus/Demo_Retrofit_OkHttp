@@ -13,14 +13,4 @@ public class GetReceivePacket {
     public int totalofrevpackage;
     public int numofluckiestdraw;
     public List<ReceivePackage> revpackageList;
-
-    public GetReceivePacket(long totalofrevamount,
-                            int totalofrevpackage,
-                            int numofluckiestdraw,
-                            List<ReceivePackage> revpackageList) {
-        this.totalofrevamount = totalofrevamount;
-        this.totalofrevpackage = totalofrevpackage;
-        this.numofluckiestdraw = numofluckiestdraw;
-        this.revpackageList = revpackageList;
-    }
 }

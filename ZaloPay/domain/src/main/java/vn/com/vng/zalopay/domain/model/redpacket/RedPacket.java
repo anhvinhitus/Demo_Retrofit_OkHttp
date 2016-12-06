@@ -35,26 +35,26 @@ public class RedPacket {
     public RedPacket() {
 
     }
-
-    public RedPacket(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage) {
-        this.bundleId = bundleId;
-        this.quantity = quantity;
-        this.totalLuck = totalLuck;
-        this.amountEach = amountEach;
-        this.type = type;
-        this.sendMessage = sendMessage;
-        this.friends = new ArrayList<>();
-        this.state = RedPacketState.CREATE.getValue();
-    }
-
-    public RedPacket(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage, List<Person> friends, int state) {
-        this.bundleId = bundleId;
-        this.quantity = quantity;
-        this.totalLuck = totalLuck;
-        this.amountEach = amountEach;
-        this.type = type;
-        this.sendMessage = sendMessage;
-        this.friends = friends;
-        this.state = state;
-    }
+//
+//    public RedPacket(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage) {
+//        this.bundleId = bundleId;
+//        this.quantity = quantity;
+//        this.totalLuck = totalLuck;
+//        this.amountEach = amountEach;
+//        this.type = type;
+//        this.sendMessage = sendMessage;
+//        this.friends = new ArrayList<>();
+//        this.state = RedPacketState.CREATE.getValue();
+//    }
+//
+//    public RedPacket(long bundleId, int quantity, long totalLuck, long amountEach, int type, String sendMessage, List<Person> friends, int state) {
+//        this.bundleId = bundleId;
+//        this.quantity = quantity;
+//        this.totalLuck = totalLuck;
+//        this.amountEach = amountEach;
+//        this.type = type;
+//        this.sendMessage = sendMessage;
+//        this.friends = friends;
+//        this.state = state;
+//    }
 }

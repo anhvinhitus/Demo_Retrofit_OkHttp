@@ -22,17 +22,17 @@ public class RecentTransaction implements Parcelable {
 
     public RecentTransaction() {
     }
-
-    public RecentTransaction(long zaloId, String zaloPayId, String userName, String displayName, String avatar, String phoneNumber, long amount, String message) {
-        this.zaloId = zaloId;
-        this.zaloPayId = zaloPayId;
-        this.zaloPayName = userName;
-        this.displayName = displayName;
-        this.avatar = avatar;
-        this.phoneNumber = phoneNumber;
-        this.amount = amount;
-        this.message = message;
-    }
+//
+//    public RecentTransaction(long zaloId, String zaloPayId, String userName, String displayName, String avatar, String phoneNumber, long amount, String message) {
+//        this.zaloId = zaloId;
+//        this.zaloPayId = zaloPayId;
+//        this.zaloPayName = userName;
+//        this.displayName = displayName;
+//        this.avatar = avatar;
+//        this.phoneNumber = phoneNumber;
+//        this.amount = amount;
+//        this.message = message;
+//    }
 
     @Override
     public int describeContents() {
