@@ -167,7 +167,7 @@ public class RedPacketDataMapper {
         item.lastOpenTime = sentBundle.lastOpenTime;
         item.totalLuck = sentBundle.totalLuck;
         item.numOfOpenedPakages = sentBundle.numOfOpenedPakages;
-        item.numOfOpenedPakages = sentBundle.numOfPackages;
+        item.numOfPackages = sentBundle.numOfPackages;
         item.sendMessage = sentBundle.sendMessage;
         item.status = sentBundle.status;
         return item;
