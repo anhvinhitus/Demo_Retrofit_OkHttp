@@ -8,6 +8,4 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  */
 public interface IChangePinView extends ILoadDataView{
     void requestFocusOldPin();
-
-    void onPinValid(boolean isValid);
 }

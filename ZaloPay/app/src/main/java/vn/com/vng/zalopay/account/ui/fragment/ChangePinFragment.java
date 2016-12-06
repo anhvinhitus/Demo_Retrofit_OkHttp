@@ -69,31 +69,37 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     @Inject
     IChangePinPresenter presenter;
 
-    @OnClick(R.id.btnContinue)
-    public void onClickContinue() {
-        ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_REQUEST);
-        if (isDifferencePin()) {
-            mNewPassCodeView.setError(null);
-            presenter.changePin(mOldPassCodeView.getText(), mNewPassCodeView.getText());
-        } else {
-            mNewPassCodeView.setError(getString(R.string.pin_not_change));
-            mNewPassCodeView.requestFocusView();
-        }
-    }
-
-    TextWatcher passCodeChanged = new TextWatcher() {
+    TextWatcher mNewPassCodeWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mNewPassCodeView.setError(null);
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            checkPinValid();
+            mNewPassCodeView.setError(null);
+            mBtnContinueView.setEnabled(isValid());
+        }
+    };
+
+    private TextWatcher mOldPassCodeWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            mOldPassCodeView.setError(null);
+            mBtnContinueView.setEnabled(isValid());
         }
     };
 
@@ -112,17 +118,12 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
         super.onViewCreated(view, savedInstanceState);
 
         presenter.setChangePassView(this);
-        mNewPassCodeView.addTextChangedListener(passCodeChanged);
-        mNewPassCodeView.setPassCodeFocusChanged(new IPassCodeFocusChanged() {
-            @Override
-            public void onFocusChangedPin(boolean isFocus) {
-                if (isFocus) {
-                    mScrollView.smoothScrollTo(0, mScrollView.getBottom());
-                }
-            }
-        });
 
-        mOldPassCodeView.addTextChangedListener(passCodeChanged);
+        mOldPassCodeView.addTextChangedListener(mOldPassCodeWatcher);
+        mOldPassCodeView.setPassCodeFocusChanged(mOldPassCodeFocusChanged);
+
+        mNewPassCodeView.addTextChangedListener(mNewPassCodeWatcher);
+        mNewPassCodeView.setPassCodeFocusChanged(mNewPassCodeFocusChanged);
 
         mOldPassCodeView.requestFocusView();
 
@@ -136,17 +137,14 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
                     }
                 });
 
-        checkPinValid();
-    }
-
-    private void checkPinValid() {
-        boolean valid = mNewPassCodeView.isValid() && mOldPassCodeView.isValid();
-        Timber.d("checkPinValid: valid %s", valid);
-        presenter.pinValid(valid);
+        mBtnContinueView.setEnabled(isValid());
     }
 
     @Override
     public void onDestroyView() {
+        mOldPassCodeView.setPassCodeFocusChanged(null);
+        mNewPassCodeView.setPassCodeFocusChanged(null);
+
         presenter.destroyChangePassView();
         super.onDestroyView();
     }
@@ -157,11 +155,6 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
         if (mOldPassCodeView != null) {
             mOldPassCodeView.requestFocusView();
         }
-    }
-
-    @Override
-    public void onPinValid(boolean isValid) {
-        mBtnContinueView.setEnabled(isValid);
     }
 
     @Override
@@ -176,17 +169,73 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
     @Override
     public void showRetry() {
-
     }
 
     @Override
     public void hideRetry() {
-
     }
 
     @Override
     public void showError(String message) {
         showToast(message);
     }
+
+    @OnClick(R.id.btnContinue)
+    public void onClickContinue() {
+
+        if (!mOldPassCodeView.isValid()) {
+            mOldPassCodeView.setError(getString(R.string.invalid_pin));
+            //mOldPassCodeView.requestFocusView();
+            return;
+        }
+
+        if (!mNewPassCodeView.isValid()) {
+            mNewPassCodeView.setError(getString(R.string.invalid_pin));
+            //  mNewPassCodeView.requestFocusView();
+            return;
+        }
+
+        if (!isDifferencePin()) {
+            mNewPassCodeView.setError(getString(R.string.pin_not_change));
+            return;
+        }
+
+        mOldPassCodeView.setError(null);
+        mNewPassCodeView.setError(null);
+
+        ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_REQUEST);
+        presenter.changePin(mOldPassCodeView.getText(), mNewPassCodeView.getText());
+
+    }
+
+    public boolean isValid() {
+        return mOldPassCodeView.isValid() && mNewPassCodeView.isValid() && isDifferencePin();
+    }
+
+    private IPassCodeFocusChanged mOldPassCodeFocusChanged = new IPassCodeFocusChanged() {
+        @Override
+        public void onFocusChangedPin(boolean isFocus) {
+            if (mBtnContinueView != null) {
+                mBtnContinueView.setEnabled(isValid());
+            }
+
+            mOldPassCodeView.setError(mOldPassCodeView.isValid() || isFocus ? null : getString(R.string.invalid_pin));
+        }
+    };
+
+    private IPassCodeFocusChanged mNewPassCodeFocusChanged = new IPassCodeFocusChanged() {
+        @Override
+        public void onFocusChangedPin(boolean isFocus) {
+            if (isFocus) {
+                mScrollView.smoothScrollTo(0, mScrollView.getBottom());
+            }
+
+            if (mBtnContinueView != null) {
+                mBtnContinueView.setEnabled(isValid());
+            }
+
+            mNewPassCodeView.setError(mNewPassCodeView.isValid() || isFocus ? null : getString(R.string.invalid_pin));
+        }
+    };
 }
 

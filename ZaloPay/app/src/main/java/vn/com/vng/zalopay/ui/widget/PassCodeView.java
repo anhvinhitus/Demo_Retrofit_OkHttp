@@ -58,6 +58,8 @@ public class PassCodeView extends FrameLayout {
 
     private IPassCodeMaxLength mIPassCodeMaxLength;
 
+    private ColorStateList mErrorColorStateList;
+
     public PassCodeView(Context context) {
         this(context, null);
     }
@@ -86,7 +88,7 @@ public class PassCodeView extends FrameLayout {
 
         mTextViews = new ArrayList<>();
         mTextViewSize = AndroidUtils.dp(36f);
-
+        mErrorColorStateList = ColorStateList.valueOf(Color.RED);
         View view = LayoutInflater.from(context).inflate(R.layout.passcodeview, this, false);
         ButterKnife.bind(this, view);
 
@@ -186,7 +188,7 @@ public class PassCodeView extends FrameLayout {
 
         mTvHint.setText(error);
         mTvHint.setTextColor(Color.RED);
-        mEditText.setSupportBackgroundTintList(ColorStateList.valueOf(Color.RED));
+        mEditText.setSupportBackgroundTintList(mErrorColorStateList);
     }
 
     @OnTextChanged(R.id.editText)
@@ -230,8 +232,10 @@ public class PassCodeView extends FrameLayout {
         }
     }
 
-    public boolean requestFocusView() {
-        return mEditText.requestFocus();
+    public void requestFocusView() {
+        if (!mEditText.hasFocus()) {
+            mEditText.requestFocus();
+        }
     }
 
     public void addTextChangedListener(TextWatcher textWatcher) {

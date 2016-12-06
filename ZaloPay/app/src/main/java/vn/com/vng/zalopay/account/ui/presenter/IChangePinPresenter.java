@@ -16,8 +16,6 @@ public interface IChangePinPresenter<ContainerView, ChangePassView, VerifyView> 
 
     void destroyVerifyView();
 
-    void pinValid(boolean valid);
-
     void changePin(String oldPin, String newPin);
 
     void verify(String otp);

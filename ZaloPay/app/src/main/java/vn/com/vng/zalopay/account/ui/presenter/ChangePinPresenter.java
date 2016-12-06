@@ -98,13 +98,6 @@ public class ChangePinPresenter extends BaseUserPresenter
     }
 
     @Override
-    public void pinValid(boolean valid) {
-        if (mChangePinView != null) {
-            mChangePinView.onPinValid(valid);
-        }
-    }
-
-    @Override
     public void changePin(String oldPin, String newPin) {
 
         if (mChangePinView != null) {
