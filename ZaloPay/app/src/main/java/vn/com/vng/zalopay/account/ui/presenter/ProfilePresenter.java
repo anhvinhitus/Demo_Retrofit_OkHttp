@@ -159,7 +159,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         }
 
         if (getProfileLevel() < 2) {
-            requireUpdateProfileLevel2();
+            requireUpdateProfileLevel2(mView.getContext().getString(R.string.alert_need_update_level_2));
         } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
             int message = isIdentity ? R.string.waiting_approve_identity : R.string.waiting_approve_email;
             mView.showDialogInfo(mView.getContext().getString(message));
@@ -176,15 +176,15 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
             return;
         }
         if (getProfileLevel() < 2) {
-            requireUpdateProfileLevel2();
+            requireUpdateProfileLevel2(mView.getContext().getString(R.string.alert_need_update_phone));
         } else {
             mNavigator.startEditAccountActivity(mView.getContext());
             ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_LAUNCH_FROMPROFILE);
         }
     }
 
-    private void requireUpdateProfileLevel2() {
-        mView.showConfirmDialog(mView.getContext().getString(R.string.alert_need_update_level_2),
+    private void requireUpdateProfileLevel2(String message) {
+        mView.showConfirmDialog(message,
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {
