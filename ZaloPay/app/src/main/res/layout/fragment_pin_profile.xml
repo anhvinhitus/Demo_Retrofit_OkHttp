@@ -85,7 +85,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:paddingBottom="@dimen/spacing.medium"
                 android:paddingLeft="@dimen/spacing.small"
                 android:paddingRight="@dimen/spacing.small"
                 android:paddingTop="@dimen/spacing.medium"
