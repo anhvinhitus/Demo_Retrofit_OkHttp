@@ -46,6 +46,8 @@ import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
+import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -243,7 +245,7 @@ public class NotificationHelper {
     }
 
     private void removeLinkCard(NotificationData data) {
-       /* JsonObject embeddata = data.getEmbeddata();
+        JsonObject embeddata = data.getEmbeddata();
         if (embeddata == null) {
             return;
         }
@@ -260,8 +262,17 @@ public class NotificationHelper {
         if (last4cardno <= 0 || first6cardno <= 0) {
             return;
         }
-        */
-        CShareData.getInstance().reloadMapCardList(null);
+        if (mUser == null) {
+            return;
+        }
+        ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
+        params.userID = mUser.zaloPayId;
+        params.accessToken = mUser.accesstoken;
+        DMappedCard card = new DMappedCard();
+        card.last4cardno = String.valueOf(last4cardno);
+        card.first6cardno = String.valueOf(first6cardno);
+        params.mapCard = card;
+        CShareData.getInstance().reloadMapCardList(params, null);
     }
 
     private void payOrderFromNotify(NotificationData notify) {
