@@ -444,6 +444,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                     public void onNext(String decoded) {
                         if (TextUtils.isEmpty(decoded)) {
                             ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOQRCODE);
+                            resumeScanningAfterWrongQR();
                         } else {
                             pay(decoded, true);
                         }
