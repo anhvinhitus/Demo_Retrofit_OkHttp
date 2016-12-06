@@ -23,7 +23,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 
@@ -34,6 +33,10 @@ import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
 
     private static final String AUTHORITY = "vn.com.vng.zalopay.provider";
+
+    private int mPickImageRequestCode;
+    private int mCaptureImageRequestCode;
+    private String mImageName;
 
     private Uri getCaptureImageOutputUri(String name, boolean removeOldFile) {
         Uri outputFileUri = null;
@@ -66,20 +69,12 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
         return new File(storageDir + File.separator + "images", name + ".jpg");
     }
 
-    protected boolean isPermissionReadStorageAndRequest() {
-        return isPermissionGrantedAndRequest(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                Constants.Permission.REQUEST_READ_STORAGE);
-    }
-
-    protected boolean isPermissionCameraAndRequest() {
-        return isPermissionGrantedAndRequest(new String[]{Manifest.permission.CAMERA},
-                Constants.Permission.REQUEST_CAMERA);
-    }
-
     protected void startPickImage(int requestCode) {
-        if (!isPermissionReadStorageAndRequest()) {
+        mPickImageRequestCode = requestCode;
+        if (!isPermissionGrantedAndRequest(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CODE.READ_EXTERNAL_STORAGE)) {
             return;
         }
+
         try {
             Intent i = new Intent(
                     Intent.ACTION_PICK,
@@ -91,15 +86,14 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
         }
     }
 
-    private int mRequestCode;
-    private String mImageName;
-
     protected void startCaptureImage(int requestCode, String name) {
-        mRequestCode = requestCode;
+        mCaptureImageRequestCode = requestCode;
         mImageName = name;
-        if (!isPermissionCameraAndRequest()) {
+
+        if (!isPermissionGrantedAndRequest(new String[]{Manifest.permission.CAMERA}, PERMISSION_CODE.CAMERA)) {
             return;
         }
+
         try {
             Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             Uri contentUri = getCaptureImageOutputUri(name, true);
@@ -120,10 +114,6 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
                 }
             }
 
-//            i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            i.setClipData(ClipData.newRawUri(null, contentUri));
-
             i.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
 
             startActivityForResult(i, requestCode);
@@ -133,23 +123,32 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == Constants.Permission.REQUEST_CAMERA) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    protected void permissionGranted(int permissionRequestCode) {
+        switch (permissionRequestCode) {
+            case PERMISSION_CODE.READ_EXTERNAL_STORAGE:
+                onPickImagePermissionAllowed();
+                break;
+            case PERMISSION_CODE.CAMERA:
                 onCapturePermissionAllowed();
-            } else {
-                // Your app will not have this permission. Turn off all functions
-                // that require this permission or it will force close like your
-                // original question
-                Timber.d("Your app will not have camera permission");
-            }
+                break;
+            case PERMISSION_CODE.DENY_PERMISSION:
+                mImageName = null;
+                mPickImageRequestCode = 0;
+                mCaptureImageRequestCode = 0;
+                break;
         }
     }
 
     private void onCapturePermissionAllowed() {
-        startCaptureImage(mRequestCode, mImageName);
+        if (mCaptureImageRequestCode > 0) {
+            startCaptureImage(mCaptureImageRequestCode, mImageName);
+        }
+    }
+
+    private void onPickImagePermissionAllowed() {
+        if (mPickImageRequestCode > 0) {
+            startPickImage(mPickImageRequestCode);
+        }
     }
 
     public static class CoverBottomSheetDialogFragment extends BottomSheetDialogFragment {

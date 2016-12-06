@@ -1,9 +1,9 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,30 +21,20 @@ import com.zalopay.ui.widget.KeyboardLinearLayout;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.UpdateProfile3Presenter;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 import vn.com.vng.zalopay.ui.widget.validate.PassportValidate;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.PhotoUtil;
 import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -68,6 +58,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     private static final int FOREGROUND_IMAGE_REQUEST_CODE = 101;
     private static final int AVATAR_REQUEST_CODE = 102;
 
+    private static final int PERMISSION_READ_EXTERNAL_STORAGE = 1001;
+
     @Inject
     UpdateProfile3Presenter presenter;
 
@@ -79,9 +71,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @BindView(R.id.viewFlipper)
     ViewFlipper viewFlipper;
-
-    @BindView(R.id.txtTitle)
-    View txtTitle;
 
     @BindView(R.id.edtEmail)
     ZPEditText mEdtEmailView;
@@ -163,7 +152,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveAvatar.setClickable(false);
         mBtnContinue.setEnabled(false);
 
-        //focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
+        focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
 
         mEdtEmailView.addValidator(new EmailValidate(getString(R.string.email_invalid)));
         mEdtIdentityView.addValidator(new PassportValidate(getString(R.string.cmnd_passport_invalid)));
@@ -187,11 +176,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         presenter.getProfileInfo();
-
-        //Request permission for read photo from storage by cache.
-        isPermissionReadStorageAndRequest();
     }
 
     @Override
@@ -222,17 +207,17 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @OnClick(R.id.btnRemoveAvatar)
     public void onClickRemoveAvatar() {
-        clearAvatar();
+        loadAvatar(null);
     }
 
     @OnClick(R.id.btnRemoveBackCmnd)
     public void onClickRemoveBackImage() {
-        clearBackgroundImage();
+        loadBackgroundImage(null);
     }
 
     @OnClick(R.id.btnRemoveFrontCmnd)
     public void onClickRemoveFrontImage() {
-        clearFrontImage();
+        loadFrontImage(null);
     }
 
     @OnClick(R.id.btnConfirm)
@@ -341,7 +326,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         showDialogSuccess();
     }
 
-
     private void showDialogSuccess() {
         SweetAlertDialog dialog = new SweetAlertDialog(getContext(), SweetAlertDialog.INFO_TYPE, R.style.alert_dialog);
         dialog.setContentText(getString(R.string.update_profile_success));
@@ -418,11 +402,11 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             switch (requestCode) {
                 case BACKGROUND_IMAGE_REQUEST_CODE:
                     mUriBgIdentity = uri;
-                    loadBackgroundImageCMND(mUriBgIdentity);
+                    loadBackgroundImage(mUriBgIdentity);
                     break;
                 case FOREGROUND_IMAGE_REQUEST_CODE:
                     mUriFgIdentity = uri;
-                    loadForegroundImageCMND(mUriFgIdentity);
+                    loadFrontImage(mUriFgIdentity);
                     break;
                 case AVATAR_REQUEST_CODE:
                     mUriAvatar = uri;
@@ -433,38 +417,23 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         }
     }
 
-    void loadForegroundImageCMND(Uri uri) {
-        Timber.d("loadForegroundImageCMND uri[%s]", uri);
-        loadImage(uri, new DefaultSubscriber<Bitmap>() {
-            @Override
-            public void onNext(Bitmap bitmap) {
-                Timber.d("loadForegroundImageCMND bitmap[%s]", bitmap);
-                if (bitmap == null) {
-                    return;
-                }
-                mFgIdentityView.setImageBitmap(bitmap);
-                mFgIdentityView.setVisibility(View.VISIBLE);
+    private void loadFrontImage(@Nullable Uri uri) {
+        Timber.d("loadFrontImage uri[%s]", uri);
 
-                mTvFgIdentityView.setVisibility(View.GONE);
-                btnRemoveFrontImage.setClickable(true);
-                btnRemoveFrontImage.setImageResource(R.drawable.ic_remove_circle);
-            }
+        if (uri == null) {
+            clearFrontImage();
+            return;
+        }
 
-            @Override
-            public void onError(Throwable e) {
-                Timber.w("loadForegroundImageCMND onError[%s]", e.getMessage());
-                super.onError(e);
-            }
+        mFgIdentityView.setImageURI(uri);
+        mFgIdentityView.setVisibility(View.VISIBLE);
 
-            @Override
-            public void onCompleted() {
-                Timber.w("loadForegroundImageCMND onCompleted");
-                super.onCompleted();
-            }
-        });
+        mTvFgIdentityView.setVisibility(View.GONE);
+        btnRemoveFrontImage.setClickable(true);
+        btnRemoveFrontImage.setImageResource(R.drawable.ic_remove_circle);
     }
 
-    void clearFrontImage() {
+    private void clearFrontImage() {
         mFgIdentityView.setImageDrawable(null);
         mFgIdentityView.setVisibility(View.GONE);
         mTvFgIdentityView.setVisibility(View.VISIBLE);
@@ -473,26 +442,21 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mUriFgIdentity = null;
     }
 
-    void loadAvatar(Uri uri) {
+    private void loadAvatar(@Nullable Uri uri) {
+        if (uri == null) {
+            clearAvatar();
+            return;
+        }
         Timber.d("loadAvatar uri[%s]", uri);
-        loadImage(uri, new DefaultSubscriber<Bitmap>() {
-            @Override
-            public void onNext(Bitmap bitmap) {
-                Timber.d("loadAvatar bitmap[%s]", bitmap);
-                if (bitmap == null) {
-                    return;
-                }
-                mAvatarView.setImageBitmap(bitmap);
-                mAvatarView.setVisibility(View.VISIBLE);
+        mAvatarView.setImageURI(uri);
+        mAvatarView.setVisibility(View.VISIBLE);
 
-                mTvAvatarView.setVisibility(View.GONE);
-                btnRemoveAvatar.setClickable(true);
-                btnRemoveAvatar.setImageResource(R.drawable.ic_remove_circle);
-            }
-        });
+        mTvAvatarView.setVisibility(View.GONE);
+        btnRemoveAvatar.setClickable(true);
+        btnRemoveAvatar.setImageResource(R.drawable.ic_remove_circle);
     }
 
-    void clearAvatar() {
+    private void clearAvatar() {
         mAvatarView.setImageDrawable(null);
         mAvatarView.setVisibility(View.GONE);
         mTvAvatarView.setVisibility(View.VISIBLE);
@@ -502,59 +466,28 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mUriAvatar = null;
     }
 
-    void loadBackgroundImageCMND(Uri uri) {
-        Timber.d("loadBackgroundImageCMND uri[%s]", uri);
-        loadImage(uri, new DefaultSubscriber<Bitmap>() {
-            @Override
-            public void onNext(Bitmap bitmap) {
-                Timber.d("loadBackgroundImageCMND bitmap[%s]", bitmap);
-                if (bitmap == null) {
-                    return;
-                }
-                mBgIdentityView.setImageBitmap(bitmap);
-                mBgIdentityView.setVisibility(View.VISIBLE);
+    private void loadBackgroundImage(@Nullable Uri uri) {
+        Timber.d("load background image [%s]", uri);
+        if (uri == null) {
+            clearBackgroundImage();
+            return;
+        }
 
-                mTvBgIdentityView.setVisibility(View.GONE);
-                btnRemoveBackImage.setClickable(true);
-                btnRemoveBackImage.setImageResource(R.drawable.ic_remove_circle);
-            }
-        });
+        mBgIdentityView.setImageURI(uri);
+        mBgIdentityView.setVisibility(View.VISIBLE);
+
+        mTvBgIdentityView.setVisibility(View.GONE);
+        btnRemoveBackImage.setClickable(true);
+        btnRemoveBackImage.setImageResource(R.drawable.ic_remove_circle);
     }
 
-    void clearBackgroundImage() {
+    private void clearBackgroundImage() {
         mBgIdentityView.setImageDrawable(null);
         mBgIdentityView.setVisibility(View.GONE);
         mTvBgIdentityView.setVisibility(View.VISIBLE);
         btnRemoveBackImage.setClickable(false);
         btnRemoveBackImage.setImageResource(R.drawable.ic_camera);
         mUriBgIdentity = null;
-    }
-
-    private void loadImage(final Uri uri, DefaultSubscriber<Bitmap> subscriber) {
-        Timber.d("loadImage uri[%s] subscriber[%s]", uri, subscriber);
-        if (subscriber == null) {
-            return;
-        }
-
-        if (uri == null) {
-            subscriber.onNext(null);
-        }
-
-        ObservableHelper.makeObservable(new Callable<Bitmap>() {
-            @Override
-            public Bitmap call() throws Exception {
-                try {
-                    return PhotoUtil.getThumbnail(getContext(), uri);
-                } catch (FileNotFoundException e) {
-                    showToast(R.string.exception_file_not_found);
-                    Timber.w(e, "get thumbnail ");
-                } catch (IOException e) {
-                    Timber.w(e, "loadImage");
-                }
-                return null;
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
     }
 
     @Override
@@ -573,33 +506,33 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         mBtnContinue.setEnabled(ValidateUtil.isEmailAddress(getEmail()) && ValidateUtil.isValidCMNDOrPassport(getIdentity()));
 
+        boolean shouldRequestPermission = false;
+
         if (!TextUtils.isEmpty(foregroundImg)) {
             mUriFgIdentity = Uri.parse(foregroundImg);
-            loadForegroundImageCMND(mUriFgIdentity);
+            shouldRequestPermission = true;
         }
-
         if (!TextUtils.isEmpty(backgroundImg)) {
             mUriBgIdentity = Uri.parse(backgroundImg);
-            loadBackgroundImageCMND(mUriBgIdentity);
+            shouldRequestPermission = true;
         }
-
         if (!TextUtils.isEmpty(avatarImg)) {
             mUriAvatar = Uri.parse(avatarImg);
-            loadAvatar(mUriAvatar);
+            shouldRequestPermission = true;
         }
-    }
 
-    @Override
-    protected void permissionGranted(int permissionRequestCode) {
-        if (permissionRequestCode == Constants.Permission.REQUEST_READ_STORAGE) {
-            if (mAvatarView == null || mFgIdentityView == null || mBgIdentityView == null) {
-                return;
-            }
-            if (mAvatarView.getDrawable() == null && mFgIdentityView.getDrawable() == null
-                    && mBgIdentityView.getDrawable() == null) {
-                presenter.getProfileInfo();
-            }
+        if (!shouldRequestPermission) {
+            return;
         }
+
+        if (!isPermissionGrantedAndRequest(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_READ_EXTERNAL_STORAGE)) {
+            return;
+        }
+
+        loadFrontImage(mUriFgIdentity);
+        loadBackgroundImage(mUriBgIdentity);
+        loadAvatar(mUriAvatar);
+
     }
 
     @OnFocusChange({R.id.edtEmail, R.id.edtIdentity})
@@ -621,15 +554,35 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void onKeyBoardShow(int height) {
+
         if (mEdtEmailView.isFocused()) {
-            mScrollView.smoothScrollTo(0, txtTitle.getHeight());
+            int[] location = new int[2];
+            Timber.d("onKeyBoardShow scroll to Top");
+            mEdtIdentityView.getLocationInWindow(location);
+            Timber.d("onKeyBoardShow: mEdtIdentityView.y %s", location[1]);
+            mScrollView.smoothScrollBy(0, location[1]);
         } else if (mEdtIdentityView.isFocused()) {
-            mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            mScrollView.smoothScrollBy(0, mScrollView.getBottom());
         }
     }
 
     @Override
     public void onKeyBoardHide() {
 
+    }
+
+    @Override
+    protected void permissionGranted(int permissionRequestCode) {
+        super.permissionGranted(permissionRequestCode);
+
+        switch (permissionRequestCode) {
+            case PERMISSION_READ_EXTERNAL_STORAGE:
+
+                loadFrontImage(mUriFgIdentity);
+                loadBackgroundImage(mUriBgIdentity);
+                loadAvatar(mUriAvatar);
+
+                break;
+        }
     }
 }
