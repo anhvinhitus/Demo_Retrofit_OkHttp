@@ -46,6 +46,7 @@ import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -313,8 +314,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void showWarning(String message) {
-        showWarningDialog(message, getString(R.string.txt_close), null);
+    public void showNetworkErrorDialog() {
+        DialogManager.showDialog(getActivity(),
+                getString(R.string.txt_warning),
+                getString(R.string.exception_no_connection_try_again),
+                R.drawable.ic_no_internet,
+                null,
+                getString(R.string.txt_close));
     }
 
     public void showCustomDialog(String message, int dialogType, String cancelBtnText, final ZPWOnEventDialogListener listener) {

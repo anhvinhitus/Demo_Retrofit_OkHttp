@@ -16,7 +16,7 @@ public interface ILoadDataView {
 
     void showError(String message);
 
-    void showWarning(String message);
+    void showNetworkErrorDialog();
 
     Context getContext();
 

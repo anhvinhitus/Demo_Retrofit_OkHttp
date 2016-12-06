@@ -85,7 +85,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
                 if (paymentError == PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD) {
                     mNavigator.startLinkCardActivity(mView.getActivity());
                 } else if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    mView.showWarning(mView.getContext().getString(R.string.exception_no_connection_try_again));
+                    mView.showNetworkErrorDialog();
                 }
             }
 
@@ -191,7 +191,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
 
         mView.hideLoading();
         if (e instanceof NetworkConnectionException) {
-            mView.showWarning(mView.getContext().getString(R.string.exception_no_connection_try_again));
+            mView.showNetworkErrorDialog();
         } else {
             String message = ErrorMessageFactory.create(mView.getContext(), e);
             mView.showError(message);

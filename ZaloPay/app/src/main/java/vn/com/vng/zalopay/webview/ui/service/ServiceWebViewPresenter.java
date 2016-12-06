@@ -169,7 +169,7 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
             public void onResponseError(PaymentError paymentError) {
                 Timber.d("onResponseError paymentError [%s]", paymentError.value());
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    showWarning(R.string.exception_no_connection_try_again);
+                    showWarningNetworkError();
                 }
             }
 
@@ -215,15 +215,11 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
                 mNavigator.startDepositActivity(mView.getActivity());
             }
 
-            private void showWarning(int stringResourceId) {
+            private void showWarningNetworkError() {
                 if (mView == null || mView.getActivity() == null) {
                     return;
                 }
-                String text = mView.getActivity().getString(stringResourceId);
-                if (TextUtils.isEmpty(text) || mView == null) {
-                    return;
-                }
-                mView.showWarning(text);
+                mView.showNetworkErrorDialog();
             }
 
             private void showError(int stringResourceId) {

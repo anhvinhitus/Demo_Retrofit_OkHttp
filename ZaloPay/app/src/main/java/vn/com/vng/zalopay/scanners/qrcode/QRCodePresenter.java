@@ -115,7 +115,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                 }
 
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    mView.showWarning(mApplicationContext.getString(R.string.exception_no_connection_try_again));
+                    mView.showNetworkErrorDialog();
                 }
                 hideLoadingView();
                 mView.resumeScanner();

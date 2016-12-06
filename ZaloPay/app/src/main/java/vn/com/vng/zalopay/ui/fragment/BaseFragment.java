@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -112,8 +113,13 @@ public abstract class BaseFragment extends Fragment {
         mProgressDialog.dismiss();
     }
 
-    public void showWarning(String message) {
-        showWarningDialog(message, getString(R.string.txt_close), null);
+    public void showNetworkErrorDialog() {
+        DialogManager.showDialog(getActivity(),
+                getString(R.string.txt_warning),
+                getString(R.string.exception_no_connection_try_again),
+                R.drawable.ic_no_internet,
+                null,
+                getString(R.string.txt_close));
     }
 
     public void showWarning(String message, ZPWOnEventDialogListener cancelListener) {

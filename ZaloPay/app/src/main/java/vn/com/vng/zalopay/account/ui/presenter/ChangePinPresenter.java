@@ -134,7 +134,7 @@ public class ChangePinPresenter extends BaseUserPresenter
         mChangePinView.hideLoading();
         String message = ErrorMessageFactory.create(mApplicationContext, e);
         if (e instanceof NetworkConnectionException) {
-            mChangePinView.showWarning(mChangePinView.getContext().getString(R.string.exception_no_connection_try_again));
+            mChangePinView.showNetworkErrorDialog();
         } else if (e instanceof BodyException) {
             mChangePinView.showError(message);
             int code = ((BodyException) e).errorCode;
@@ -158,7 +158,7 @@ public class ChangePinPresenter extends BaseUserPresenter
         }
         if (e instanceof NetworkConnectionException) {
             if (mChangePinView != null) {
-                mChangePinView.showWarning(mApplicationContext.getString(R.string.exception_no_connection_try_again));
+                mChangePinView.showNetworkErrorDialog();
             }
         } else {
             if (e instanceof BodyException) {

@@ -130,7 +130,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
                     handleFailedTransferZalo(mView.getActivity());
                 } else if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    mView.showWarning(mView.getActivity().getString(R.string.exception_no_connection_try_again));
+                    mView.showNetworkErrorDialog();
                 }
             }
 
@@ -338,7 +338,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             return;
         }
         if (e instanceof NetworkConnectionException) {
-            showWarning(mView.getContext().getString(R.string.exception_no_connection_try_again));
+            showNetworkErrorDialog();
         } else {
             String message = ErrorMessageFactory.create(mView.getContext(), e);
             showError(message);
@@ -699,11 +699,11 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         mView.showError(message);
     }
 
-    private void showWarning(String message) {
+    private void showNetworkErrorDialog() {
         if (mView == null) {
             return;
         }
-        mView.showWarning(message);
+        mView.showNetworkErrorDialog();
     }
 
     private void showDialogThenClose(String error, int cancelText, int dialogType) {
