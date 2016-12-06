@@ -252,9 +252,9 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         entity.maxCountHist = ConvertHelper.unboxValue(redPacketAppInfoGD.maxCountHist, 0);
         entity.maxMessageLength = ConvertHelper.unboxValue(redPacketAppInfoGD.maxMessageLength, 0);
         entity.maxPackageQuantity = ConvertHelper.unboxValue(redPacketAppInfoGD.maxPackageQuantity, 0);
-        entity.maxTotalAmountPerBundle = ConvertHelper.unboxValue(redPacketAppInfoGD.maxTotalAmountPerBundle, 0);
+        entity.maxTotalAmountPerBundle = ConvertHelper.unboxValue(redPacketAppInfoGD.maxTotalAmountPerBundle, 0L);
         entity.maxAmountPerPackage = ConvertHelper.unboxValue(redPacketAppInfoGD.maxAmountPerPackage, 0L);
-        entity.minAmountEach = ConvertHelper.unboxValue(redPacketAppInfoGD.minAmountEach, 0);
+        entity.minAmountEach = ConvertHelper.unboxValue(redPacketAppInfoGD.minAmountEach, 0L);
         entity.minDivideAmount = ConvertHelper.unboxValue(redPacketAppInfoGD.minDivideAmount, 0L);
 
         RedPacketAppInfo item = new RedPacketAppInfo();
