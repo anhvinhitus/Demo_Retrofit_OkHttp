@@ -12,11 +12,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zalopay.ui.widget.KeyboardLinearLayout;
 import com.zalopay.ui.widget.edittext.ZPEditText;
+import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -50,7 +53,8 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Created by AnhHieu on 6/30/16.
  * *
  */
-public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IUpdateProfile3View {
+public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IUpdateProfile3View,
+        OnKeyboardStateChangeListener {
 
     public static UpdateProfile3Fragment newInstance(boolean focusIdentity) {
         Bundle args = new Bundle();
@@ -66,6 +70,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Inject
     UpdateProfile3Presenter presenter;
+
+    @BindView(R.id.rootView)
+    KeyboardLinearLayout mRootView;
+
+    @BindView(R.id.scroll1)
+    ScrollView mScrollView;
 
     @BindView(R.id.viewFlipper)
     ViewFlipper viewFlipper;
@@ -154,6 +164,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         mEdtEmailView.addValidator(new EmailValidate(getString(R.string.email_invalid)));
         mEdtIdentityView.addValidator(new PassportValidate(getString(R.string.cmnd_passport_invalid)));
+
+        mRootView.setOnKeyboardStateListener(this);
     }
 
     private void focusInputText(EditText input) {
@@ -602,5 +614,27 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         nextPage();
         hideKeyboard();
+    }
+
+    @Override
+    public void onKeyBoardShow(int height) {
+        Timber.d("onKeyBoardShow: mEdtEmailView.isFocused() %s", mEdtEmailView.isFocused());
+        Timber.d("onKeyBoardShow: mEdtIdentityView.isFocused() %s", mEdtIdentityView.isFocused());
+        int[] location = new int[2];
+        if (mEdtEmailView.isFocused()) {
+            Timber.d("onKeyBoardShow scroll to Top");
+            mEdtIdentityView.getLocationInWindow(location);
+            Timber.d("onKeyBoardShow: mEdtIdentityView.y %s", location[1]);
+            mScrollView.smoothScrollBy(0, location[1]);
+        } else if (mEdtIdentityView.isFocused()) {
+//            mEdtIdentityView.getLocationInWindow(location);
+//            Timber.d("onKeyBoardShow: edtPhone.y %s", location[1]);
+            mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+        }
+    }
+
+    @Override
+    public void onKeyBoardHide() {
+
     }
 }
