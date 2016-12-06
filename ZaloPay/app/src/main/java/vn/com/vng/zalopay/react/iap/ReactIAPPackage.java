@@ -5,7 +5,10 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.network.NetworkService;
+import com.zalopay.apploader.picker.ReactDialogPickerManager;
+import com.zalopay.apploader.picker.ReactDropdownPickerManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,18 +29,21 @@ public class ReactIAPPackage implements ReactPackage {
     private final NetworkService mNetworkServiceWithRetry;
     private final NetworkService mNetworkServiceWithoutRetry;
     private final Navigator mNavigator;
+    private ReactNativeHostable mNativeHost;
 
     public ReactIAPPackage(IPaymentService paymentService,
                            User user, long appId,
                            NetworkService networkServiceWithRetry,
                            NetworkService networkServiceWithoutRetry,
-                           Navigator navigator) {
+                           Navigator navigator,
+                           ReactNativeHostable nativeHost) {
         this.paymentService = paymentService;
         this.mUser = user;
         this.appId = appId;
         this.mNetworkServiceWithRetry = networkServiceWithRetry;
         this.mNetworkServiceWithoutRetry = networkServiceWithoutRetry;
         this.mNavigator = navigator;
+        this.mNativeHost = nativeHost;
     }
 
     @Override
@@ -57,6 +63,8 @@ public class ReactIAPPackage implements ReactPackage {
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         List<ViewManager> viewManagers = new ArrayList<>();
         viewManagers.add(new ReactIconTextViewManager());
+        viewManagers.add(new ReactDialogPickerManager(mNativeHost));
+        viewManagers.add(new ReactDropdownPickerManager(mNativeHost));
         return viewManagers;
     }
 }

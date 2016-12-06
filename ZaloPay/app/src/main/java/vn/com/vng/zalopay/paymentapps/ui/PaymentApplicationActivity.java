@@ -196,7 +196,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     /**
      * Returns the name of the main module. Determines the URL used to fetch the JS bundle
      * from the packager server. It is only used when dev support is enabled.
-     * This is the first file to be executed once the {@link ReactInstanceManager} is created.
+     * This is the first file to be executed once the {@link com.facebook.react.ReactInstanceManager} is created.
      * e.g. "index.android"
      */
     protected String getJSMainModuleName() {
@@ -204,7 +204,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     }
 
     /**
-     * Returns the launchOptions which will be passed to the {@link ReactInstanceManager}
+     * Returns the launchOptions which will be passed to the {@link com.facebook.react.ReactInstanceManager}
      * when the application is started. By default, this will return null and an empty
      * object will be passed to your top level component as its initial props.
      * If your React Native application requires props set outside of JS, override
@@ -249,8 +249,12 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new RNSharePackage(),
                 new GoogleAnalyticsBridgePackage(),
                 new LinearGradientPackage(),
-                new ReactIAPPackage(paymentService, mUser, appId,
-                        mNetworkServiceWithRetry, mNetworkServiceWithoutRetry, mNavigator)
+                new ReactIAPPackage(paymentService,
+                        mUser, appId,
+                        mNetworkServiceWithRetry,
+                        mNetworkServiceWithoutRetry,
+                        mNavigator,
+                        mReactNativeHostable)
         );
     }
 
