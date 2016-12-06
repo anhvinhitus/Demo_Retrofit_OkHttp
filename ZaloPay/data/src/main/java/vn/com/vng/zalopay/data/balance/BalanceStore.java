@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.data.api.response.BalanceResponse;
 public interface BalanceStore {
     interface LocalStorage {
         void putBalance(long value);
+
         long getBalance();
     }
 
@@ -26,7 +27,13 @@ public interface BalanceStore {
      */
     interface Repository {
         Observable<Long> balance();
+
         Long currentBalance();
+
         Observable<Long> updateBalance();
+
+        Observable<Long> balanceLocal();
+
+        Observable<Long> fetchBalance();
     }
 }

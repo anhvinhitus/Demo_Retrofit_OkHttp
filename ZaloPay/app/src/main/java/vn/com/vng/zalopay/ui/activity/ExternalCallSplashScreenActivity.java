@@ -61,4 +61,14 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
         mPresenter.destroy();
         super.onDestroy();
     }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
 }

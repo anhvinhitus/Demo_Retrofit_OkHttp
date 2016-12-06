@@ -56,10 +56,15 @@ public class BalanceRepository implements BalanceStore.Repository {
         return mCurrentBalance;
     }
 
-    private Observable<Long> balanceLocal() {
+    public Observable<Long> balanceLocal() {
         return ObservableHelper.makeObservable(() -> {
             mCurrentBalance = mLocalStorage.getBalance();
             return mCurrentBalance;
         });
+    }
+
+    @Override
+    public Observable<Long> fetchBalance() {
+        return updateBalance().onErrorResumeNext(throwable -> balanceLocal());
     }
 }

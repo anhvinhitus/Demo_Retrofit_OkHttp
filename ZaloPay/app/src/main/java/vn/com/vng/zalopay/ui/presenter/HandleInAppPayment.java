@@ -7,9 +7,15 @@ import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
@@ -43,6 +49,8 @@ public class HandleInAppPayment {
     @Inject
     User mUser;
 
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+
     HandleInAppPayment(Activity activity) {
         mActivity = new WeakReference<>(activity);
     }
@@ -54,8 +62,19 @@ public class HandleInAppPayment {
         }
     }
 
-    void start(long appId, String zptranstoken) {
-        paymentWrapper.payWithToken(appId, zptranstoken);
+    void start(final long appId, final String zptranstoken) {
+        Subscription subscription = mBalanceRepository.fetchBalance()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Long>() {
+                    @Override
+                    public void onNext(Long aLong) {
+                        if (paymentWrapper != null) {
+                            paymentWrapper.payWithToken(appId, zptranstoken);
+                        }
+                    }
+                });
+
+        mCompositeSubscription.add(subscription);
     }
 
     private PaymentWrapper getPaymentWrapper() {
@@ -117,5 +136,11 @@ public class HandleInAppPayment {
 
     public void loadPaymentSdk() {
         loadGatewayInfoPaymentSDK(mUser);
+    }
+
+    public void cleanUp() {
+        if (mCompositeSubscription != null) {
+            mCompositeSubscription.unsubscribe();
+        }
     }
 }
