@@ -1,5 +1,4 @@
-<com.zalopay.ui.widget.KeyboardFrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.zalopay.ui.widget.KeyboardFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:zalopay="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootView"
@@ -35,13 +34,13 @@
                 android:paddingTop="14dp"
                 android:text="@string/pin_title"
                 android:textColor="#727f8c"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/separate"
-                android:paddingTop="@dimen/spacing.medium.s"/>
+                android:paddingTop="@dimen/spacing.medium.s" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -62,7 +61,7 @@
                         android:layout_marginLeft="16dp"
                         zalopay:hint="@string/pin"
                         zalopay:length="@integer/pin_length"
-                        zalopay:paddingRight="16dp"/>
+                        zalopay:paddingRight="16dp" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -76,7 +75,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:hint="@string/hint_phone"
-                        android:maxLength="@integer/max_length_phone"/>
+                        android:maxLength="@integer/max_length_phone"
+                        zalopay:zlp_autoValidate="false" />
                 </FrameLayout>
             </LinearLayout>
 
@@ -92,7 +92,7 @@
                 android:textColorLink="@color/colorPrimary"
                 android:textSize="13sp"
                 android:visibility="visible"
-                tools:text="@string/agree.term.of.use"/>
+                tools:text="@string/agree.term.of.use" />
 
             <Button
                 android:id="@+id/btnContinue"
@@ -101,7 +101,7 @@
                 android:layout_height="@dimen/button.height"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="@dimen/spacing.medium"
-                android:text="@string/btn_continue"/>
+                android:text="@string/btn_continue" />
         </LinearLayout>
     </ScrollView>
 </com.zalopay.ui.widget.KeyboardFrameLayout>
