@@ -13,7 +13,11 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.react.listener.DialogSimpleEventListener;
+import vn.com.vng.zalopay.react.listener.SweetDialogSimpleEventListener;
+import vn.com.vng.zalopay.react.model.DialogType;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
@@ -186,7 +190,7 @@ public class Helpers {
                                              String title, String message, ReadableArray btnNames,
                                              final Promise promise) {
         switch (dialogType) {
-            case SweetAlertDialog.NORMAL_TYPE:
+            case DialogType.NORMAL_TYPE:
                 if (btnNames.size() > 1) {
                     DialogManager.showSweetDialogConfirm(activity,
                             message,
@@ -214,7 +218,7 @@ public class Helpers {
                 }
                 break;
 
-            case SweetAlertDialog.ERROR_TYPE:
+            case DialogType.ERROR_TYPE:
                 DialogManager.showSweetDialogCustom(activity,
                         message,
                         btnNames.getString(0),
@@ -223,7 +227,7 @@ public class Helpers {
                         new DialogSimpleEventListener(promise, 0));
                 break;
 
-            case SweetAlertDialog.SUCCESS_TYPE:
+            case DialogType.SUCCESS_TYPE:
                 DialogManager.showSweetDialogCustom(activity,
                         message,
                         btnNames.getString(0),
@@ -232,7 +236,7 @@ public class Helpers {
                         new DialogSimpleEventListener(promise, 0));
                 break;
 
-            case SweetAlertDialog.WARNING_TYPE:
+            case DialogType.WARNING_TYPE:
                 DialogManager.showSweetDialogCustom(activity,
                         message,
                         btnNames.getString(0),
@@ -240,7 +244,6 @@ public class Helpers {
                         SweetAlertDialog.WARNING_TYPE,
                         new DialogSimpleEventListener(promise, 0));
                 break;
-
             default:
                 if (btnNames.size() > 1) {
                     DialogManager.showSweetDialogConfirm(activity,

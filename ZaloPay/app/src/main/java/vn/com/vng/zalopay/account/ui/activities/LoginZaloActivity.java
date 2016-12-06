@@ -178,13 +178,13 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Override
     public void showNetworkError() {
         DialogManager.showDialog(getActivity(),
-                getContext().getString(R.string.txt_warning),
+                getString(R.string.txt_warning),
                 getString(R.string.exception_no_connection_try_again),
                 R.drawable.ic_no_internet, new ZPWOnSweetDialogListener() {
                     @Override
                     public void onClickDiaLog(int pIndex) {
                     }
-                }, getContext().getString(R.string.txt_close));
+                }, getString(R.string.txt_close));
     }
 
     private void destroyErrorDialog() {
