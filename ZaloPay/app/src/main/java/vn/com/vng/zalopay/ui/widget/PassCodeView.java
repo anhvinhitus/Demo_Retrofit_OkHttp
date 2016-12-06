@@ -257,4 +257,12 @@ public class PassCodeView extends FrameLayout {
     public View getButtonShow() {
         return mTvShowHide;
     }
+
+    @Override
+    public boolean isFocused() {
+        if (mEditText != null) {
+            return mEditText.isFocused();
+        }
+        return super.isFocused();
+    }
 }

@@ -80,6 +80,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.viewFlipper)
     ViewFlipper viewFlipper;
 
+    @BindView(R.id.txtTitle)
+    View txtTitle;
+
     @BindView(R.id.edtEmail)
     ZPEditText mEdtEmailView;
 
@@ -160,7 +163,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveAvatar.setClickable(false);
         mBtnContinue.setEnabled(false);
 
-        focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
+        //focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
 
         mEdtEmailView.addValidator(new EmailValidate(getString(R.string.email_invalid)));
         mEdtIdentityView.addValidator(new PassportValidate(getString(R.string.cmnd_passport_invalid)));
@@ -618,17 +621,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void onKeyBoardShow(int height) {
-        Timber.d("onKeyBoardShow: mEdtEmailView.isFocused() %s", mEdtEmailView.isFocused());
-        Timber.d("onKeyBoardShow: mEdtIdentityView.isFocused() %s", mEdtIdentityView.isFocused());
-        int[] location = new int[2];
         if (mEdtEmailView.isFocused()) {
-            Timber.d("onKeyBoardShow scroll to Top");
-            mEdtIdentityView.getLocationInWindow(location);
-            Timber.d("onKeyBoardShow: mEdtIdentityView.y %s", location[1]);
-            mScrollView.smoothScrollBy(0, location[1]);
+            mScrollView.smoothScrollTo(0, txtTitle.getHeight());
         } else if (mEdtIdentityView.isFocused()) {
-//            mEdtIdentityView.getLocationInWindow(location);
-//            Timber.d("onKeyBoardShow: edtPhone.y %s", location[1]);
             mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
         }
     }

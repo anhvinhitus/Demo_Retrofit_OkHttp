@@ -81,6 +81,9 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     @BindView(R.id.ScrollView)
     ScrollView mScrollView;
 
+    @BindView(R.id.txtTitle)
+    View txtTitle;
+
     @BindView(R.id.passcodeInput)
     PassCodeView mPassCodeView;
 
@@ -96,19 +99,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     @OnTextChanged(value = R.id.edtPhone, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void onTextChangedPhone() {
         mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
-    }
-
-    @OnFocusChange(R.id.edtPhone)
-    public void onEdtPhoneFocusChange(View v, boolean hasFocus) {
-        Timber.d("EdtPhone onFocusChange focus %s", hasFocus);
-        if (hasFocus) {
-            int[] location = new int[2];
-            v.getLocationInWindow(location);
-            if (mScrollView != null) {
-                Timber.d("edtPhone onFocusChange y [%s]", (location[1] - AndroidUtils.dp(100)));
-                mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
-            }
-        }
     }
 
     IPassCodeFocusChanged mPassCodeFocusChanged = new IPassCodeFocusChanged() {
@@ -174,16 +164,10 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
     @Override
     public void onKeyBoardShow(int height) {
-        Timber.d("onKeyBoardShow: mPassCodeView.isFocused() %s", mPassCodeView.isFocused());
-        Timber.d("onKeyBoardShow: edtPhone.isFocused() %s", mEdtPhoneView.isFocused());
-        int[] location = new int[2];
         if (mPassCodeView.isFocused()) {
-            Timber.d("onKeyBoardShow scroll to Top");
-            mScrollView.smoothScrollBy(0, 0);
+            mScrollView.smoothScrollTo(0, txtTitle.getHeight());
         } else if (mEdtPhoneView.isFocused()) {
-            mEdtPhoneView.getLocationInWindow(location);
-            Timber.d("onKeyBoardShow: edtPhone.y %s", location[1]);
-            mScrollView.smoothScrollBy(0, (location[1] - AndroidUtils.dp(100)));
+            mScrollView.fullScroll(View.FOCUS_DOWN);
         }
     }
 

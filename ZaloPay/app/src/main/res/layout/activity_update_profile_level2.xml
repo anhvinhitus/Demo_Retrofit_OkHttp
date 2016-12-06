@@ -6,6 +6,7 @@
     android:layout_margin="0dp"
     android:clipToPadding="false"
     android:fillViewport="true"
+    android:background="@color/background"
     android:fitsSystemWindows="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
