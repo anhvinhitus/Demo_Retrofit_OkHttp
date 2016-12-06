@@ -138,32 +138,43 @@ public class NotificationHelper {
 
         int notificationType = notify.getNotificationType();
 
-        if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_OK) {
-            updateProfilePermission(notify);
-            mUserConfig.setWaitingApproveProfileLevel3(false);
-            refreshGatewayInfo();
-        } else if (notificationType == NotificationType.UPDATE_PROFILE_LEVEL_FAILED) {
-            mUserConfig.setWaitingApproveProfileLevel3(false);
-        } else if (notificationType == NotificationType.SEND_RED_PACKET) {
-            extractRedPacketFromNotification(notify);
-        } else if (notificationType == NotificationType.RETRY_TRANSACTION) {
-            updateTransactionStatus(notify);
-        } else if (notificationType == NotificationType.DONATE_MONEY) {
-            showAlertNotification(notify, mContext.getString(R.string.donate_money));
-        } else if (notificationType == NotificationType.MONEY_TRANSFER) {
-            if (!notify.isRead()) {
+        switch (notificationType) {
+            case NotificationType.UPDATE_PROFILE_LEVEL_OK:
+                updateProfilePermission(notify);
+                mUserConfig.setWaitingApproveProfileLevel3(false);
+                refreshGatewayInfo();
+                break;
+            case NotificationType.UPDATE_PROFILE_LEVEL_FAILED:
+                mUserConfig.setWaitingApproveProfileLevel3(false);
+                break;
+            case NotificationType.SEND_RED_PACKET:
+                extractRedPacketFromNotification(notify);
+                break;
+            case NotificationType.RETRY_TRANSACTION:
+                updateTransactionStatus(notify);
+                break;
+            case NotificationType.DONATE_MONEY:
+                showAlertNotification(notify, mContext.getString(R.string.donate_money));
+                break;
+            case NotificationType.MONEY_TRANSFER:
+                if (!notify.isRead()) {
+                    mEventBus.post(notify);
+                }
+                break;
+            case NotificationType.APP_P2P_NOTIFICATION:
+                // post notification and skip write to db
                 mEventBus.post(notify);
-            }
-        } else if (notificationType == NotificationType.APP_P2P_NOTIFICATION) {
-            // post notification and skip write to db
-            mEventBus.post(notify);
-            skipStorage = true;
-        } else if (notificationType == NotificationType.UPDATE_PLATFORMINFO) {
-            refreshGatewayInfo();
-        } else if (notificationType == NotificationType.LINK_CARD_EXPIRED) {
-            removeLinkCard(notify);
-        } else if (notificationType == NotificationType.MERCHANT_BILL) {
-            payOrderFromNotify(notify);
+                skipStorage = true;
+                break;
+            case NotificationType.UPDATE_PLATFORMINFO:
+                refreshGatewayInfo();
+                break;
+            case NotificationType.LINK_CARD_EXPIRED:
+                removeLinkCard(notify);
+                break;
+            case NotificationType.MERCHANT_BILL:
+                payOrderFromNotify(notify);
+                break;
         }
 
         if (!skipStorage) {
