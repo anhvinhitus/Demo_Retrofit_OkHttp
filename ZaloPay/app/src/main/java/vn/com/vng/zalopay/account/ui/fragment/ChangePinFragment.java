@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -8,7 +7,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -75,10 +73,10 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     public void onClickContinue() {
         ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_REQUEST);
         if (isDifferencePin()) {
-            mNewPassCodeView.hideError();
+            mNewPassCodeView.setError(null);
             presenter.changePin(mOldPassCodeView.getText(), mNewPassCodeView.getText());
         } else {
-            mNewPassCodeView.showError(getString(R.string.pin_not_change));
+            mNewPassCodeView.setError(getString(R.string.pin_not_change));
             mNewPassCodeView.requestFocusView();
         }
     }
@@ -90,9 +88,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (mNewPassCodeView.isValid()) {
-                mNewPassCodeView.hideError();
-            }
+            mNewPassCodeView.setError(null);
         }
 
         @Override

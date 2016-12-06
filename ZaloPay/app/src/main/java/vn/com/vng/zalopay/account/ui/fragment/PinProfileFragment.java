@@ -114,16 +114,12 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     IPassCodeFocusChanged mPassCodeFocusChanged = new IPassCodeFocusChanged() {
         @Override
         public void onFocusChangedPin(boolean isFocus) {
-            if (isFocus || mPassCodeView == null) {
-                return;
+
+            if (mBtnContinueView != null) {
+                mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
             }
 
-            if (mPassCodeView.isValid()) {
-                mPassCodeView.hideError();
-            } else {
-                mPassCodeView.showError(getString(R.string.invalid_pin));
-            }
-
+            mPassCodeView.setError(mPassCodeView.isValid() || isFocus ? null : getString(R.string.invalid_pin));
         }
     };
 
@@ -135,19 +131,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (mPassCodeView.isValid()) {
-                mPassCodeView.hideError();
-
-                if (!mEdtPhoneView.isValid() || TextUtils.isEmpty(mEdtPhoneView.getText().toString())) {
-                    mEdtPhoneView.requestFocus();
-                }
-            } else {
-                mPassCodeView.showError(getString(R.string.invalid_pin));
-            }
-
-            if (mBtnContinueView != null) {
-                mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
-            }
+            mPassCodeView.setError(null);
         }
 
         @Override
@@ -295,7 +279,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
         AndroidUtils.hideKeyboard(getActivity());
 
-        mPassCodeView.hideError();
+        mPassCodeView.setError(null);
 
         getActivity().getWindow().getDecorView().clearFocus();
 
@@ -330,7 +314,13 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
-        if (!mPassCodeView.isValid() || !mEdtPhoneView.validate()) {
+
+        if (!mPassCodeView.isValid()) {
+            mPassCodeView.setError(getString(R.string.invalid_pin));
+            return;
+        }
+
+        if (!mEdtPhoneView.validate()) {
             return;
         }
 

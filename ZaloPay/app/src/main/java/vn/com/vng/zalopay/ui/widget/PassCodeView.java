@@ -1,9 +1,11 @@
 package vn.com.vng.zalopay.ui.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -44,7 +46,7 @@ public class PassCodeView extends FrameLayout {
     TextView mTvHint;
 
     @BindView(R.id.editText)
-    EditText mEditText;
+    AppCompatEditText mEditText;
 
     @BindView(R.id.btnShowHide)
     Button mTvShowHide;
@@ -162,19 +164,17 @@ public class PassCodeView extends FrameLayout {
     }
 
     public String getText() {
-        if (mEditText == null) {
-            return "";
-        }
         return mEditText.getText().toString();
     }
 
 
-    public void hideError() {
+    private void hideError() {
         mTvHint.setText(mHint);
         mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        mEditText.setSupportBackgroundTintList(null);
     }
 
-    public void showError(String error) {
+    public void setError(String error) {
         if (TextUtils.isEmpty(error)) {
             hideError();
             return;
@@ -186,6 +186,7 @@ public class PassCodeView extends FrameLayout {
 
         mTvHint.setText(error);
         mTvHint.setTextColor(Color.RED);
+        mEditText.setSupportBackgroundTintList(ColorStateList.valueOf(Color.RED));
     }
 
     @OnTextChanged(R.id.editText)
