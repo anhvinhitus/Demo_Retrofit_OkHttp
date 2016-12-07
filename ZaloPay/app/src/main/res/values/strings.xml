@@ -337,7 +337,7 @@
     <string name="vietin_bank">Vietinbank</string>
     <string name="sacombank_bank">Sacombank</string>
     <string name="alert.need.update.phone">Vui lòng cập nhật số điện thoại trước.</string>
-    <string name="alert.need.update.level.2">Vui lòng cập nhật Zalo Pay ID và số điện thoại trước khi cập nhật email và CMND/Hộ chiếu.</string>
+    <string name="alert.need.update.level.2">Vui lòng cập nhật số điện thoại trước khi cập nhật email và CMND/Hộ chiếu.</string>
 
     <string name="miss_browser">Vui lòng kiểm tra lại trình duyệt web trên thiết bị của bạn</string>
     <string name="miss_playstore">Vui lòng kiểm tra lại google play store trên thiết bị của bạn</string>
