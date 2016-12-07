@@ -174,7 +174,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         _notification.setUserid(notificationGD.userid);
         _notification.setTransid(notificationGD.transid);
-        _notification.area = notificationGD.area == null ? 0 : notificationGD.area;
+        _notification.area = notificationGD.area == null ? 0L : notificationGD.area;
         _notification.setNotificationState(notificationGD.notificationstate);
 
         return _notification;
@@ -222,7 +222,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     public void markAsRead(long nId) {
         NotificationGD notify = getDaoSession().load(NotificationGD.class, nId);
         if (notify != null) {
-            notify.notificationstate = (Enums.NotificationState.READ.getId());
+            notify.notificationstate = (long)(Enums.NotificationState.READ.getId());
             Timber.d("markAsRead: nId %s", nId);
             getAsyncSession().insertOrReplaceInTx(NotificationGD.class, notify);
         }
@@ -232,7 +232,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     public void markAsReadAll() {
         List<NotificationGD> list = queryListUnRead();
         for (NotificationGD notify : list) {
-            notify.notificationstate = (Enums.NotificationState.READ.getId());
+            notify.notificationstate = (long)(Enums.NotificationState.READ.getId());
         }
 
         if (!Lists.isEmptyOrNull(list)) {
@@ -304,7 +304,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         }
 
         for (NotificationGD notify : list) {
-            notify.notificationstate = (Enums.NotificationState.VIEW.getId());
+            notify.notificationstate = (long)(Enums.NotificationState.VIEW.getId());
         }
         getDaoSession().getNotificationGDDao().updateInTx(list);
     }
@@ -326,7 +326,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     }
 
     @Override
-    public void delete(int notifyType, int appId, long transid) {
+    public void delete(long notifyType, long appId, long transid) {
         NotificationGDDao mDao = getDaoSession().getNotificationGDDao();
         List<NotificationGD> notifications = mDao.queryBuilder()
                 .where(NotificationGDDao.Properties.Appid.eq(appId),

@@ -9,7 +9,7 @@ public class MerchantUserInfo {
     public long appId;
     public String displayname;
     public String birthdate;
-    public int usergender;
+    public long usergender;
     public String muid;
     public String maccesstoken;
 

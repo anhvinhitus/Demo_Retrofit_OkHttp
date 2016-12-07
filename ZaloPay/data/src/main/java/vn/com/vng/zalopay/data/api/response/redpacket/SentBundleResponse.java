@@ -15,7 +15,7 @@ public class SentBundleResponse extends BaseResponse {
     public String sendzalopayid;
 
     @SerializedName("type")
-    public int type;
+    public long type;
 
     @SerializedName("createtime")
     public long createtime;
@@ -24,13 +24,13 @@ public class SentBundleResponse extends BaseResponse {
     public long lastopentime;
 
     @SerializedName("totalluck")
-    public int totalluck;
+    public long totalluck;
 
     @SerializedName("numofopenedpackages")
-    public int numofopenedpakages;
+    public long numofopenedpakages;
 
     @SerializedName("numofpackages")
-    public int numofpackages;
+    public long numofpackages;
 
     @SerializedName("sendmessage")
     public String sendmessage;

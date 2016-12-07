@@ -16,7 +16,7 @@ public class PaymentTransTypeGD {
     public long transtype;
     public long pmcid;
     public String pmcname;
-    public Integer status;
+    public Long status;
     public Long minvalue;
     public Long maxvalue;
     public Float feerate;

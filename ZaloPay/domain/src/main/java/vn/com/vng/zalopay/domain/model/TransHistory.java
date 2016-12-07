@@ -25,19 +25,19 @@ public class TransHistory extends AbstractData implements Parcelable {
 
     public String description;
 
-    public int pmcid;
+    public long pmcid;
 
     public long reqdate;
 
-    public int userchargeamt;
+    public long userchargeamt;
 
-    public int userfeeamt;
+    public long userfeeamt;
 
-    public int amount;
+    public long amount;
 
-    public int type;
+    public long type;
 
-    public int sign;
+    public long sign;
 
     public String username;
 
@@ -57,13 +57,13 @@ public class TransHistory extends AbstractData implements Parcelable {
         dest.writeString(this.appuser);
         dest.writeString(this.platform);
         dest.writeString(this.description);
-        dest.writeInt(this.pmcid);
+        dest.writeLong(this.pmcid);
         dest.writeLong(this.reqdate);
-        dest.writeInt(this.userchargeamt);
-        dest.writeInt(this.userfeeamt);
-        dest.writeInt(this.amount);
-        dest.writeInt(this.type);
-        dest.writeInt(this.sign);
+        dest.writeLong(this.userchargeamt);
+        dest.writeLong(this.userfeeamt);
+        dest.writeLong(this.amount);
+        dest.writeLong(this.type);
+        dest.writeLong(this.sign);
         dest.writeString(this.username);
         dest.writeString(this.appusername);
     }

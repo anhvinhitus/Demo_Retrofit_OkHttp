@@ -16,9 +16,9 @@ public class RedPacketAppInfoGD {
     public Long expiredTime;
     public Long minAmountEach;
     public Long maxTotalAmountPerBundle;
-    public Integer maxPackageQuantity;
-    public Integer maxCountHist;
-    public Integer maxMessageLength;
+    public Long maxPackageQuantity;
+    public Long maxCountHist;
+    public Long maxMessageLength;
     public Long bundleExpiredTime;
     public Long minDivideAmount;
     public Long maxAmountPerPackage;

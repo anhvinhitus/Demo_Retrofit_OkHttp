@@ -39,7 +39,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
-    public AppResourceEntity get(int appId) {
+    public AppResourceEntity get(long appId) {
         List<AppResourceEntity> entityList = platformDaoMapper.transformAppResourceDao(getAppInfoDao().queryBuilder()
                 .where(AppResourceGDDao.Properties.Appid.eq(appId)).limit(1).list());
         if (Lists.isEmptyOrNull(entityList)) {
@@ -65,8 +65,8 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
         }
 
         for (AppResourceGD appResource : list) {
-            appResource.stateDownload = 0;
-            appResource.numRetry = 0;
+            appResource.stateDownload = 0L;
+            appResource.numRetry = 0L;
             appResource.timeDownload = 0L;
         }
 
@@ -74,7 +74,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
-    public void updateAppList(List<Integer> listAppId) {
+    public void updateAppList(List<Long> listAppId) {
         getAppInfoDao().queryBuilder()
                 .where(AppResourceGDDao.Properties.Appid.notIn(listAppId))
                 .buildDelete()
@@ -82,7 +82,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
-    public void increaseStateDownload(int appId) {
+    public void increaseStateDownload(long appId) {
         Timber.d("increaseStateDownload appId %s", appId);
         List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder()
                 .where(AppResourceGDDao.Properties.Appid.eq(appId)).list();
@@ -92,10 +92,10 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
         for (AppResourceGD app : appResourceGD) {
 
-            int state = app.stateDownload == null ? 0: app.stateDownload + 1;
+            long state = app.stateDownload == null ? 0: app.stateDownload + 1;
             app.stateDownload = state;
             if (state >= 2) {
-                app.numRetry= (0);
+                app.numRetry= (0L);
                 app.timeDownload = (0L);
             }
         }
@@ -104,7 +104,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
-    public void resetStateDownload(int appId) {
+    public void resetStateDownload(long appId) {
         AppResourceEntity appResourceEntity = get(appId);
         if (appResourceEntity == null) {
             return;
@@ -131,7 +131,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
-    public void sortApplication(List<Integer> list) {
+    public void sortApplication(List<Long> list) {
         List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder()
                 .list();
         if (Lists.isEmptyOrNull(appResourceGD)) {
@@ -139,7 +139,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
         }
 
         for (AppResourceGD resourceGD : appResourceGD) {
-            resourceGD.sortOrder = (list.indexOf(resourceGD.appid));
+            resourceGD.sortOrder = (long)(list.indexOf(resourceGD.appid));
         }
 
         getAppInfoDao().insertOrReplaceInTx(appResourceGD);

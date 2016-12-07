@@ -118,8 +118,8 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
     }
 
     //AppId [0-1], [3-4]
-    private List<Integer> mAppList = Arrays.asList(0, 1, 3, 4);
-    private List<Integer> mSortAppSource = Arrays.asList(0, 1, 3, 4);
+    private List<Long> mAppList = Arrays.asList(0L, 1L, 3L, 4L);
+    private List<Long> mSortAppSource = Arrays.asList(0L, 1L, 3L, 4L);
     private List<AppResourceEntity> listUpgradeData() {
         List<AppResourceEntity> appResourceEntities = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
@@ -160,7 +160,7 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
         }
     }
 
-    private void compareSortOrder(List<AppResourceEntity> allAppResource, List<Integer> sortAppSource) {
+    private void compareSortOrder(List<AppResourceEntity> allAppResource, List<Long> sortAppSource) {
         for (int i = 0; i < allAppResource.size(); i++) {
             AppResourceEntity entity = allAppResource.get(i);
             assertTrue(entity.sortOrder == sortAppSource.indexOf(entity.appid));

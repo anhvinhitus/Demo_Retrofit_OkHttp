@@ -15,7 +15,7 @@ public class ReceivePackage {
     public String message;
     public long amount;
     public long openedTime;
-    public int isLuckiest;
+    public long isLuckiest;
     public long createTime;
-    public int status;
+    public long status;
 }

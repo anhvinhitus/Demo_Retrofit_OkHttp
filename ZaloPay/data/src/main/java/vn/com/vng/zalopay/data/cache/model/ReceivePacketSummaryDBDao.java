@@ -24,8 +24,8 @@ public class ReceivePacketSummaryDBDao extends AbstractDao<ReceivePacketSummaryD
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property TotalOfRevamount = new Property(1, Long.class, "totalOfRevamount", false, "TOTAL_OF_REVAMOUNT");
-        public final static Property TotalOfRevPackage = new Property(2, Integer.class, "totalOfRevPackage", false, "TOTAL_OF_REV_PACKAGE");
-        public final static Property TotalOfLuckiestDraw = new Property(3, Integer.class, "totalOfLuckiestDraw", false, "TOTAL_OF_LUCKIEST_DRAW");
+        public final static Property TotalOfRevPackage = new Property(2, Long.class, "totalOfRevPackage", false, "TOTAL_OF_REV_PACKAGE");
+        public final static Property TotalOfLuckiestDraw = new Property(3, Long.class, "totalOfLuckiestDraw", false, "TOTAL_OF_LUCKIEST_DRAW");
         public final static Property TimeCreate = new Property(4, Long.class, "timeCreate", false, "TIME_CREATE");
     }
 
@@ -69,12 +69,12 @@ public class ReceivePacketSummaryDBDao extends AbstractDao<ReceivePacketSummaryD
             stmt.bindLong(2, totalOfRevamount);
         }
  
-        Integer totalOfRevPackage = entity.totalOfRevPackage;
+        Long totalOfRevPackage = entity.totalOfRevPackage;
         if (totalOfRevPackage != null) {
             stmt.bindLong(3, totalOfRevPackage);
         }
  
-        Integer totalOfLuckiestDraw = entity.totalOfLuckiestDraw;
+        Long totalOfLuckiestDraw = entity.totalOfLuckiestDraw;
         if (totalOfLuckiestDraw != null) {
             stmt.bindLong(4, totalOfLuckiestDraw);
         }
@@ -99,12 +99,12 @@ public class ReceivePacketSummaryDBDao extends AbstractDao<ReceivePacketSummaryD
             stmt.bindLong(2, totalOfRevamount);
         }
  
-        Integer totalOfRevPackage = entity.totalOfRevPackage;
+        Long totalOfRevPackage = entity.totalOfRevPackage;
         if (totalOfRevPackage != null) {
             stmt.bindLong(3, totalOfRevPackage);
         }
  
-        Integer totalOfLuckiestDraw = entity.totalOfLuckiestDraw;
+        Long totalOfLuckiestDraw = entity.totalOfLuckiestDraw;
         if (totalOfLuckiestDraw != null) {
             stmt.bindLong(4, totalOfLuckiestDraw);
         }
@@ -131,8 +131,8 @@ public class ReceivePacketSummaryDBDao extends AbstractDao<ReceivePacketSummaryD
     public void readEntity(Cursor cursor, ReceivePacketSummaryDB entity, int offset) {
         entity.id = cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
         entity.totalOfRevamount = cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
-        entity.totalOfRevPackage = cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2);
-        entity.totalOfLuckiestDraw = cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3);
+        entity.totalOfRevPackage = cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2);
+        entity.totalOfLuckiestDraw = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
         entity.timeCreate = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
      }
     

@@ -19,5 +19,5 @@ public class UserExistEntity {
     @SerializedName("zalopayname")
     public String zalopayname;
     @SerializedName("status")
-    public int status;
+    public long status;
 }

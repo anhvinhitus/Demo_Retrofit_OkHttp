@@ -16,7 +16,7 @@ public class TransferRecent {
     public String displayName;
     public String avatar;
     public String phoneNumber;
-    public Integer transferType;
+    public Long transferType;
     public Long amount;
     public String message;
     public Long timeCreate;

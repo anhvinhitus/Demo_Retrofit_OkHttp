@@ -34,7 +34,7 @@ public class PackageInBundleGDDao extends AbstractDao<PackageInBundleGD, Long> {
         public final static Property OpenTime = new Property(6, Long.class, "openTime", false, "OPEN_TIME");
         public final static Property Amount = new Property(7, Long.class, "amount", false, "AMOUNT");
         public final static Property SendMessage = new Property(8, String.class, "sendMessage", false, "SEND_MESSAGE");
-        public final static Property IsLuckiest = new Property(9, Integer.class, "isLuckiest", false, "IS_LUCKIEST");
+        public final static Property IsLuckiest = new Property(9, Long.class, "isLuckiest", false, "IS_LUCKIEST");
     }
 
     private Query<PackageInBundleGD> sentBundleGD_SentPackagesQuery;
@@ -119,7 +119,7 @@ public class PackageInBundleGDDao extends AbstractDao<PackageInBundleGD, Long> {
             stmt.bindString(9, sendMessage);
         }
  
-        Integer isLuckiest = entity.isLuckiest;
+        Long isLuckiest = entity.isLuckiest;
         if (isLuckiest != null) {
             stmt.bindLong(10, isLuckiest);
         }
@@ -174,7 +174,7 @@ public class PackageInBundleGDDao extends AbstractDao<PackageInBundleGD, Long> {
             stmt.bindString(9, sendMessage);
         }
  
-        Integer isLuckiest = entity.isLuckiest;
+        Long isLuckiest = entity.isLuckiest;
         if (isLuckiest != null) {
             stmt.bindLong(10, isLuckiest);
         }
@@ -203,7 +203,7 @@ public class PackageInBundleGDDao extends AbstractDao<PackageInBundleGD, Long> {
         entity.openTime = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
         entity.amount = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
         entity.sendMessage = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
-        entity.isLuckiest = cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9);
+        entity.isLuckiest = cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9);
      }
     
     @Override

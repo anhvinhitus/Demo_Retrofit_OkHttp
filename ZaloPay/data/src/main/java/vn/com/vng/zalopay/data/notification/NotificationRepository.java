@@ -73,10 +73,10 @@ public class NotificationRepository implements NotificationStore.Repository {
             Timber.d("put notification rowId [%s] read [%s]", rowId, notify.notificationstate);
 
             if (rowId >= 0) {
-                mEventBus.post(new NotificationChangeEvent(notify.notificationstate));
+                mEventBus.post(new NotificationChangeEvent((int)notify.notificationstate));
 
                 if (mRxBus.hasObservers()) {
-                    mRxBus.send(new NotificationChangeEvent(notify.notificationstate));
+                    mRxBus.send(new NotificationChangeEvent((int)notify.notificationstate));
                 }
             }
 
@@ -164,7 +164,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> removeNotifyByType(int notifyType, int appId, long transid) {
+    public Observable<Boolean> removeNotifyByType(long notifyType, long appId, long transid) {
         return ObservableHelper.makeObservable(() -> {
             localStorage.delete(notifyType, appId, transid);
             return Boolean.TRUE;

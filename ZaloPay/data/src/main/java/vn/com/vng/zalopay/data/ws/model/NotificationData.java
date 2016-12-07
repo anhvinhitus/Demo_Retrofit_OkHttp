@@ -16,7 +16,7 @@ public class NotificationData extends Event {
     public long transid;
 
     @SerializedName("appid")
-    public int appid;
+    public long appid;
 
     @SerializedName("timestamp")
     public long timestamp;
@@ -28,10 +28,10 @@ public class NotificationData extends Event {
     public NotificationEmbedData embeddata;
 
     @SerializedName("transtype")
-    public int transtype;
+    public long transtype;
 
     @SerializedName("notificationtype")
-    public int notificationtype;
+    public long notificationtype;
 
     @SerializedName("userid")
     public String userid;
@@ -40,10 +40,10 @@ public class NotificationData extends Event {
     public String destuserid;
 
     @SerializedName("area")
-    public int area;
+    public long area;
 
     @Expose(deserialize = false, serialize = false)
-    public int notificationstate;
+    public long notificationstate;
 
     @Expose(deserialize = false, serialize = false)
     public long notificationId;
@@ -57,11 +57,11 @@ public class NotificationData extends Event {
         this.transid = transid;
     }
 
-    public int getAppid() {
+    public long getAppid() {
         return appid;
     }
 
-    public void setAppid(int appid) {
+    public void setAppid(long appid) {
         this.appid = appid;
     }
 
@@ -101,7 +101,7 @@ public class NotificationData extends Event {
         return notificationstate == Enums.NotificationState.READ.getId();
     }
 
-    public void setNotificationState(int state) {
+    public void setNotificationState(long state) {
         this.notificationstate = state;
     }
 
@@ -121,11 +121,11 @@ public class NotificationData extends Event {
         this.notificationId = notificationId;
     }
 
-    public int getNotificationType() {
+    public long getNotificationType() {
         return notificationtype;
     }
 
-    public void setNotificationtype(int notificationtype) {
+    public void setNotificationtype(long notificationtype) {
         this.notificationtype = notificationtype;
     }
 

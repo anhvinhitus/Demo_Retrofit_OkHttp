@@ -27,7 +27,7 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
         public final static Property DisplayName = new Property(2, String.class, "displayName", false, "DISPLAY_NAME");
         public final static Property Avatar = new Property(3, String.class, "avatar", false, "AVATAR");
         public final static Property PhoneNumber = new Property(4, String.class, "phoneNumber", false, "PHONE_NUMBER");
-        public final static Property TransferType = new Property(5, Integer.class, "transferType", false, "TRANSFER_TYPE");
+        public final static Property TransferType = new Property(5, Long.class, "transferType", false, "TRANSFER_TYPE");
         public final static Property Amount = new Property(6, Long.class, "amount", false, "AMOUNT");
         public final static Property Message = new Property(7, String.class, "message", false, "MESSAGE");
         public final static Property TimeCreate = new Property(8, Long.class, "timeCreate", false, "TIME_CREATE");
@@ -92,7 +92,7 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
             stmt.bindString(5, phoneNumber);
         }
  
-        Integer transferType = entity.transferType;
+        Long transferType = entity.transferType;
         if (transferType != null) {
             stmt.bindLong(6, transferType);
         }
@@ -142,7 +142,7 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
             stmt.bindString(5, phoneNumber);
         }
  
-        Integer transferType = entity.transferType;
+        Long transferType = entity.transferType;
         if (transferType != null) {
             stmt.bindLong(6, transferType);
         }
@@ -182,7 +182,7 @@ public class TransferRecentDao extends AbstractDao<TransferRecent, String> {
         entity.displayName = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
         entity.avatar = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
         entity.phoneNumber = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
-        entity.transferType = cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5);
+        entity.transferType = cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5);
         entity.amount = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
         entity.message = cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7);
         entity.timeCreate = cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8);

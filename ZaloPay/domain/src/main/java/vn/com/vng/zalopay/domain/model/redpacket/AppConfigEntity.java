@@ -8,9 +8,9 @@ public class AppConfigEntity {
 
     public long minAmountEach;
     public long maxTotalAmountPerBundle;
-    public int maxPackageQuantity;
-    public int maxCountHist;
-    public int maxMessageLength;
+    public long maxPackageQuantity;
+    public long maxCountHist;
+    public long maxMessageLength;
     public long bundleExpiredTime;
     public long minDivideAmount;
     public long maxAmountPerPackage;

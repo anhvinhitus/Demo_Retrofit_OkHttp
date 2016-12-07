@@ -136,7 +136,7 @@ public class NotificationHelper {
 
         boolean skipStorage = false;
 
-        int notificationType = notify.getNotificationType();
+        int notificationType = (int) notify.getNotificationType();
 
         switch (notificationType) {
             case NotificationType.UPDATE_PROFILE_LEVEL_OK:

@@ -18,16 +18,16 @@ public class TransactionLog {
     public String appuser;
     public String platform;
     public String description;
-    public Integer pmcid;
+    public Long pmcid;
     public Long reqdate;
-    public Integer userchargeamt;
-    public Integer userfeeamt;
-    public Integer amount;
-    public Integer type;
-    public Integer sign;
+    public Long userchargeamt;
+    public Long userfeeamt;
+    public Long amount;
+    public Long type;
+    public Long sign;
     public String username;
     public String appusername;
-    public Integer statustype;
+    public Long statustype;
 
 
 }

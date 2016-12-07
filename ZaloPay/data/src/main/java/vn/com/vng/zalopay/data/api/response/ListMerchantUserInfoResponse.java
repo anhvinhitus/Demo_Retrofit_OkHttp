@@ -25,7 +25,7 @@ public class ListMerchantUserInfoResponse extends BaseResponse {
 
     public class ListMerchantUserInfo {
         @SerializedName("appid")
-        public int appid;
+        public long appid;
         @SerializedName("muid")
         public String muid;
         @SerializedName("maccesstoken")

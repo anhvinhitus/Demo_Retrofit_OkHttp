@@ -22,20 +22,20 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Appid = new Property(0, int.class, "appid", false, "APPID");
+        public final static Property Appid = new Property(0, long.class, "appid", false, "APPID");
         public final static Property Appname = new Property(1, String.class, "appname", false, "APPNAME");
-        public final static Property Needdownloadrs = new Property(2, Integer.class, "needdownloadrs", false, "NEEDDOWNLOADRS");
+        public final static Property Needdownloadrs = new Property(2, Long.class, "needdownloadrs", false, "NEEDDOWNLOADRS");
         public final static Property Imageurl = new Property(3, String.class, "imageurl", false, "IMAGEURL");
         public final static Property Jsurl = new Property(4, String.class, "jsurl", false, "JSURL");
-        public final static Property Status = new Property(5, Integer.class, "status", false, "STATUS");
+        public final static Property Status = new Property(5, Long.class, "status", false, "STATUS");
         public final static Property Checksum = new Property(6, String.class, "checksum", false, "CHECKSUM");
-        public final static Property Apptype = new Property(7, Integer.class, "apptype", false, "APPTYPE");
+        public final static Property Apptype = new Property(7, Long.class, "apptype", false, "APPTYPE");
         public final static Property Weburl = new Property(8, String.class, "weburl", false, "WEBURL");
         public final static Property Iconurl = new Property(9, String.class, "iconurl", false, "ICONURL");
-        public final static Property SortOrder = new Property(10, Integer.class, "sortOrder", false, "SORT_ORDER");
-        public final static Property StateDownload = new Property(11, Integer.class, "stateDownload", false, "STATE_DOWNLOAD");
+        public final static Property SortOrder = new Property(10, Long.class, "sortOrder", false, "SORT_ORDER");
+        public final static Property StateDownload = new Property(11, Long.class, "stateDownload", false, "STATE_DOWNLOAD");
         public final static Property TimeDownload = new Property(12, Long.class, "timeDownload", false, "TIME_DOWNLOAD");
-        public final static Property NumRetry = new Property(13, Integer.class, "numRetry", false, "NUM_RETRY");
+        public final static Property NumRetry = new Property(13, Long.class, "numRetry", false, "NUM_RETRY");
     }
 
 
@@ -83,7 +83,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(2, appname);
         }
  
-        Integer needdownloadrs = entity.needdownloadrs;
+        Long needdownloadrs = entity.needdownloadrs;
         if (needdownloadrs != null) {
             stmt.bindLong(3, needdownloadrs);
         }
@@ -98,7 +98,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(5, jsurl);
         }
  
-        Integer status = entity.status;
+        Long status = entity.status;
         if (status != null) {
             stmt.bindLong(6, status);
         }
@@ -108,7 +108,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(7, checksum);
         }
  
-        Integer apptype = entity.apptype;
+        Long apptype = entity.apptype;
         if (apptype != null) {
             stmt.bindLong(8, apptype);
         }
@@ -123,12 +123,12 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(10, iconurl);
         }
  
-        Integer sortOrder = entity.sortOrder;
+        Long sortOrder = entity.sortOrder;
         if (sortOrder != null) {
             stmt.bindLong(11, sortOrder);
         }
  
-        Integer stateDownload = entity.stateDownload;
+        Long stateDownload = entity.stateDownload;
         if (stateDownload != null) {
             stmt.bindLong(12, stateDownload);
         }
@@ -138,7 +138,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindLong(13, timeDownload);
         }
  
-        Integer numRetry = entity.numRetry;
+        Long numRetry = entity.numRetry;
         if (numRetry != null) {
             stmt.bindLong(14, numRetry);
         }
@@ -154,7 +154,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(2, appname);
         }
  
-        Integer needdownloadrs = entity.needdownloadrs;
+        Long needdownloadrs = entity.needdownloadrs;
         if (needdownloadrs != null) {
             stmt.bindLong(3, needdownloadrs);
         }
@@ -169,7 +169,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(5, jsurl);
         }
  
-        Integer status = entity.status;
+        Long status = entity.status;
         if (status != null) {
             stmt.bindLong(6, status);
         }
@@ -179,7 +179,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(7, checksum);
         }
  
-        Integer apptype = entity.apptype;
+        Long apptype = entity.apptype;
         if (apptype != null) {
             stmt.bindLong(8, apptype);
         }
@@ -194,12 +194,12 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(10, iconurl);
         }
  
-        Integer sortOrder = entity.sortOrder;
+        Long sortOrder = entity.sortOrder;
         if (sortOrder != null) {
             stmt.bindLong(11, sortOrder);
         }
  
-        Integer stateDownload = entity.stateDownload;
+        Long stateDownload = entity.stateDownload;
         if (stateDownload != null) {
             stmt.bindLong(12, stateDownload);
         }
@@ -209,7 +209,7 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindLong(13, timeDownload);
         }
  
-        Integer numRetry = entity.numRetry;
+        Long numRetry = entity.numRetry;
         if (numRetry != null) {
             stmt.bindLong(14, numRetry);
         }
@@ -229,20 +229,20 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
      
     @Override
     public void readEntity(Cursor cursor, AppResourceGD entity, int offset) {
-        entity.appid = cursor.getInt(offset + 0);
+        entity.appid = cursor.getLong(offset + 0);
         entity.appname = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
-        entity.needdownloadrs = cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2);
+        entity.needdownloadrs = cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2);
         entity.imageurl = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
         entity.jsurl = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
-        entity.status = cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5);
+        entity.status = cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5);
         entity.checksum = cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6);
-        entity.apptype = cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7);
+        entity.apptype = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
         entity.weburl = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
         entity.iconurl = cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9);
-        entity.sortOrder = cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10);
-        entity.stateDownload = cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11);
+        entity.sortOrder = cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10);
+        entity.stateDownload = cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11);
         entity.timeDownload = cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12);
-        entity.numRetry = cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13);
+        entity.numRetry = cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13);
      }
     
     @Override

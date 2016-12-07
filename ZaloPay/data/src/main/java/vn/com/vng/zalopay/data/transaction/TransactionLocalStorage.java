@@ -179,7 +179,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     @Override
     public void updateStatusType(long transId, int status) {
         TransactionLog transactionLog = queryTransactionById(transId);
-        transactionLog.statustype = (status);
+        transactionLog.statustype = (long)(status);
         getDaoSession().getTransactionLogDao().insertOrReplaceInTx(transactionLog);
     }
 

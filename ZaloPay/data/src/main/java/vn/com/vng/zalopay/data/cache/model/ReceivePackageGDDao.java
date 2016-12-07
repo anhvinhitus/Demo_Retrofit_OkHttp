@@ -30,10 +30,10 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         public final static Property SenderAvatar = new Property(5, String.class, "senderAvatar", false, "SENDER_AVATAR");
         public final static Property Amount = new Property(6, Long.class, "amount", false, "AMOUNT");
         public final static Property OpenedTime = new Property(7, Long.class, "openedTime", false, "OPENED_TIME");
-        public final static Property Status = new Property(8, Integer.class, "status", false, "STATUS");
+        public final static Property Status = new Property(8, Long.class, "status", false, "STATUS");
         public final static Property MessageStatus = new Property(9, String.class, "messageStatus", false, "MESSAGE_STATUS");
         public final static Property Message = new Property(10, String.class, "message", false, "MESSAGE");
-        public final static Property IsLuckiest = new Property(11, Integer.class, "isLuckiest", false, "IS_LUCKIEST");
+        public final static Property IsLuckiest = new Property(11, Long.class, "isLuckiest", false, "IS_LUCKIEST");
         public final static Property CreateTime = new Property(12, Long.class, "createTime", false, "CREATE_TIME");
     }
 
@@ -114,7 +114,7 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
             stmt.bindLong(8, openedTime);
         }
  
-        Integer status = entity.status;
+        Long status = entity.status;
         if (status != null) {
             stmt.bindLong(9, status);
         }
@@ -129,7 +129,7 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
             stmt.bindString(11, message);
         }
  
-        Integer isLuckiest = entity.isLuckiest;
+        Long isLuckiest = entity.isLuckiest;
         if (isLuckiest != null) {
             stmt.bindLong(12, isLuckiest);
         }
@@ -180,7 +180,7 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
             stmt.bindLong(8, openedTime);
         }
  
-        Integer status = entity.status;
+        Long status = entity.status;
         if (status != null) {
             stmt.bindLong(9, status);
         }
@@ -195,7 +195,7 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
             stmt.bindString(11, message);
         }
  
-        Integer isLuckiest = entity.isLuckiest;
+        Long isLuckiest = entity.isLuckiest;
         if (isLuckiest != null) {
             stmt.bindLong(12, isLuckiest);
         }
@@ -234,10 +234,10 @@ public class ReceivePackageGDDao extends AbstractDao<ReceivePackageGD, Long> {
         entity.senderAvatar = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
         entity.amount = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
         entity.openedTime = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
-        entity.status = cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8);
+        entity.status = cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8);
         entity.messageStatus = cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9);
         entity.message = cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10);
-        entity.isLuckiest = cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11);
+        entity.isLuckiest = cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11);
         entity.createTime = cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12);
      }
     

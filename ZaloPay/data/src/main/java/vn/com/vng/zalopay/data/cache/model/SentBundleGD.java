@@ -20,14 +20,14 @@ public class SentBundleGD {
 
     @NotNull
     public String senderZaloPayID;
-    public Integer type;
+    public Long type;
     public Long createTime;
     public Long lastOpenTime;
-    public Integer totalLuck;
-    public Integer numOfOpenedPakages;
-    public Integer numOfPackages;
+    public Long totalLuck;
+    public Long numOfOpenedPakages;
+    public Long numOfPackages;
     public String sendMessage;
-    public Integer status;
+    public Long status;
 
     /** Used to resolve relations */
     @Generated

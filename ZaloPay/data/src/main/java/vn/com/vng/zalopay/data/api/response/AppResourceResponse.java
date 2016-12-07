@@ -18,10 +18,10 @@ public class AppResourceResponse extends BaseResponse {
     public String baseurl;
 
     @SerializedName("appidlist")
-    public List<Integer> appidlist;
+    public List<Long> appidlist;
 
     @SerializedName("orderedInsideApps")
-    public List<Integer> orderedInsideApps;
+    public List<Long> orderedInsideApps;
 
     @SerializedName("resourcelist")
     public List<AppResourceEntity> resourcelist;

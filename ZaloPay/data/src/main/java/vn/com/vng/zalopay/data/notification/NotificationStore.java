@@ -55,7 +55,7 @@ public interface NotificationStore {
         boolean isNotificationExisted(long mtaid, long mtuid);
 
 
-        void delete(int notifyType, int appId, long transid);
+        void delete(long notifyType, long appId, long transid);
 
         void delete(int mtuid, int mtaid);
     }
@@ -106,7 +106,7 @@ public interface NotificationStore {
 
         Observable<Boolean> removeNotify(long notificationId);
 
-        Observable<Boolean> removeNotifyByType(int notifyType, int appId, long transid);
+        Observable<Boolean> removeNotifyByType(long notifyType, long appId, long transid);
 
         Observable<Boolean> removeNotifyByMsgId(int mtuid, int mtaid);
     }

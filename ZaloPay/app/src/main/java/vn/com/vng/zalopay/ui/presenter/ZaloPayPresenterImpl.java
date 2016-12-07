@@ -348,7 +348,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     @Override
-    public void startServiceWebViewActivity(int appId, String webViewUrl) {
+    public void startServiceWebViewActivity(long appId, String webViewUrl) {
         Subscription subscription = mMerchantRepository.getMerchantUserInfo(appId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -414,10 +414,10 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     private class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInfo> {
-        private int mAppId;
+        private long mAppId;
         private String mWebViewUrl;
 
-        private MerchantUserInfoSubscribe(int appId, String webViewUrl) {
+        private MerchantUserInfoSubscribe(long appId, String webViewUrl) {
             this.mAppId = appId;
             this.mWebViewUrl = webViewUrl;
         }

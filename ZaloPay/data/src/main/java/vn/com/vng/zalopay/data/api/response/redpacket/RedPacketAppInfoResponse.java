@@ -28,13 +28,13 @@ public class RedPacketAppInfoResponse {
         public long maxTotalAmountPerBundle;
 
         @SerializedName("maxpackagequantity")
-        public int maxPackageQuantity;
+        public long maxPackageQuantity;
 
         @SerializedName("maxcounthist")
-        public int maxCountHist;
+        public long maxCountHist;
 
         @SerializedName("maxmessagelength")
-        public int maxMessageLength;
+        public long maxMessageLength;
 
         @SerializedName("bundleexpiredtime")
         public long bundleExpiredTime;

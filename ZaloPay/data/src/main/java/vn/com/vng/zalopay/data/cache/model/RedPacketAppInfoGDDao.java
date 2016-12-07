@@ -27,9 +27,9 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
         public final static Property ExpiredTime = new Property(2, Long.class, "expiredTime", false, "EXPIRED_TIME");
         public final static Property MinAmountEach = new Property(3, Long.class, "minAmountEach", false, "MIN_AMOUNT_EACH");
         public final static Property MaxTotalAmountPerBundle = new Property(4, Long.class, "maxTotalAmountPerBundle", false, "MAX_TOTAL_AMOUNT_PER_BUNDLE");
-        public final static Property MaxPackageQuantity = new Property(5, Integer.class, "maxPackageQuantity", false, "MAX_PACKAGE_QUANTITY");
-        public final static Property MaxCountHist = new Property(6, Integer.class, "maxCountHist", false, "MAX_COUNT_HIST");
-        public final static Property MaxMessageLength = new Property(7, Integer.class, "maxMessageLength", false, "MAX_MESSAGE_LENGTH");
+        public final static Property MaxPackageQuantity = new Property(5, Long.class, "maxPackageQuantity", false, "MAX_PACKAGE_QUANTITY");
+        public final static Property MaxCountHist = new Property(6, Long.class, "maxCountHist", false, "MAX_COUNT_HIST");
+        public final static Property MaxMessageLength = new Property(7, Long.class, "maxMessageLength", false, "MAX_MESSAGE_LENGTH");
         public final static Property BundleExpiredTime = new Property(8, Long.class, "bundleExpiredTime", false, "BUNDLE_EXPIRED_TIME");
         public final static Property MinDivideAmount = new Property(9, Long.class, "minDivideAmount", false, "MIN_DIVIDE_AMOUNT");
         public final static Property MaxAmountPerPackage = new Property(10, Long.class, "maxAmountPerPackage", false, "MAX_AMOUNT_PER_PACKAGE");
@@ -96,17 +96,17 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
             stmt.bindLong(5, maxTotalAmountPerBundle);
         }
  
-        Integer maxPackageQuantity = entity.maxPackageQuantity;
+        Long maxPackageQuantity = entity.maxPackageQuantity;
         if (maxPackageQuantity != null) {
             stmt.bindLong(6, maxPackageQuantity);
         }
  
-        Integer maxCountHist = entity.maxCountHist;
+        Long maxCountHist = entity.maxCountHist;
         if (maxCountHist != null) {
             stmt.bindLong(7, maxCountHist);
         }
  
-        Integer maxMessageLength = entity.maxMessageLength;
+        Long maxMessageLength = entity.maxMessageLength;
         if (maxMessageLength != null) {
             stmt.bindLong(8, maxMessageLength);
         }
@@ -156,17 +156,17 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
             stmt.bindLong(5, maxTotalAmountPerBundle);
         }
  
-        Integer maxPackageQuantity = entity.maxPackageQuantity;
+        Long maxPackageQuantity = entity.maxPackageQuantity;
         if (maxPackageQuantity != null) {
             stmt.bindLong(6, maxPackageQuantity);
         }
  
-        Integer maxCountHist = entity.maxCountHist;
+        Long maxCountHist = entity.maxCountHist;
         if (maxCountHist != null) {
             stmt.bindLong(7, maxCountHist);
         }
  
-        Integer maxMessageLength = entity.maxMessageLength;
+        Long maxMessageLength = entity.maxMessageLength;
         if (maxMessageLength != null) {
             stmt.bindLong(8, maxMessageLength);
         }
@@ -206,9 +206,9 @@ public class RedPacketAppInfoGDDao extends AbstractDao<RedPacketAppInfoGD, Long>
         entity.expiredTime = cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2);
         entity.minAmountEach = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
         entity.maxTotalAmountPerBundle = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
-        entity.maxPackageQuantity = cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5);
-        entity.maxCountHist = cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6);
-        entity.maxMessageLength = cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7);
+        entity.maxPackageQuantity = cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5);
+        entity.maxCountHist = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
+        entity.maxMessageLength = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
         entity.bundleExpiredTime = cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8);
         entity.minDivideAmount = cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9);
         entity.maxAmountPerPackage = cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10);

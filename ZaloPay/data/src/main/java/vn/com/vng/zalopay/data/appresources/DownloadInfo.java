@@ -7,10 +7,10 @@ final class DownloadInfo {
 
     public final String url;
     public final String appname;
-    public final int appid;
+    public final long appid;
     public final String checksum;
 
-     DownloadInfo(String url, String appname, int appid, String checksum) {
+     DownloadInfo(String url, String appname, long appid, String checksum) {
         this.url = url;
         this.appname = appname;
         this.appid = appid;
@@ -39,7 +39,7 @@ final class DownloadInfo {
     @Override
     public int hashCode() {
         int result = url != null ? url.hashCode() : 0;
-        result = 31 * result + appid;
+        result = 31 * result + (int) (appid ^ (appid >>> 32));
         return result;
     }
 }

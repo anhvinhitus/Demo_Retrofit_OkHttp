@@ -92,7 +92,7 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
 
         List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
         for (AppResourceEntity app : result) {
-            switch (app.appid) {
+            switch ((int)app.appid) {
                 case 11:
                     assertEquals(app.stateDownload, 1);
                     break;
@@ -121,7 +121,7 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
 
         List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
         for (AppResourceEntity app : result) {
-            switch (app.appid) {
+            switch ((int)app.appid) {
                 case 11:
                     assertEquals(app.numRetry, 1);
                     break;
@@ -149,7 +149,7 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
 
         // update new list
         mLocalStorage.put(resourceEntityList);
-        mLocalStorage.updateAppList(Arrays.asList(12, 13, 14));
+        mLocalStorage.updateAppList(Arrays.asList(12L, 13L, 14L));
 
         List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
         assertTrue(resourceEntityList.equals(result));
@@ -187,7 +187,7 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
         }
 
         //B3: Sort
-        List<Integer> sortApps = Arrays.asList(1,4,3,2,0);
+        List<Long> sortApps = Arrays.asList(1L,4L,3L,2L,0L);
         mLocalStorage.sortApplication(sortApps);
 
         //B4: Compare after sort

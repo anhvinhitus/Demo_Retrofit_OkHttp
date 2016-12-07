@@ -37,7 +37,7 @@ public class TransferRepository implements TransferStore.Repository {
             transferRecent.displayName = item.displayName;
             transferRecent.avatar = item.avatar;
             transferRecent.phoneNumber = item.phoneNumber;
-            transferRecent.transferType = transactionType;
+            transferRecent.transferType = (long)transactionType;
             transferRecent.amount = item.amount;
             transferRecent.message = item.message;
             transferRecent.timeCreate = System.currentTimeMillis();

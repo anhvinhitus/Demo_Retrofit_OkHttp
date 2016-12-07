@@ -194,7 +194,7 @@ public class MerchantRepositoryTest {
         merchantUser.mAccessToken = ("accesstoken");
         merchantUser.avatar = ("avatar");
         merchantUser.displayName = ("display");
-        merchantUser.gender = (1);
+        merchantUser.gender = (1L);
 
         localStorage.put(merchantUser);
 

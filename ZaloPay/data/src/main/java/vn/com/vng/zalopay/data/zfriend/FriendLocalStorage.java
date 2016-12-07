@@ -122,7 +122,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         ret.zaloPayId = entity.zaloPayId;
         ret.numberPhone = entity.phoneNumber == null ? 0 : entity.phoneNumber;
         ret.zaloPayName = entity.zaloPayName;
-        ret.status = entity.status == null ? 0 : entity.status;
+        ret.status = entity.status == null ? 0L : entity.status;
         return ret;
     }
 

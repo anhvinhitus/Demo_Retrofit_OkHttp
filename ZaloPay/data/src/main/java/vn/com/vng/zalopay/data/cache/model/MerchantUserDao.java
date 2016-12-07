@@ -28,7 +28,7 @@ public class MerchantUserDao extends AbstractDao<MerchantUser, Long> {
         public final static Property DisplayName = new Property(3, String.class, "displayName", false, "DISPLAY_NAME");
         public final static Property Avatar = new Property(4, String.class, "avatar", false, "AVATAR");
         public final static Property Birthday = new Property(5, String.class, "birthday", false, "BIRTHDAY");
-        public final static Property Gender = new Property(6, Integer.class, "gender", false, "GENDER");
+        public final static Property Gender = new Property(6, Long.class, "gender", false, "GENDER");
     }
 
 
@@ -89,7 +89,7 @@ public class MerchantUserDao extends AbstractDao<MerchantUser, Long> {
             stmt.bindString(6, birthday);
         }
  
-        Integer gender = entity.gender;
+        Long gender = entity.gender;
         if (gender != null) {
             stmt.bindLong(7, gender);
         }
@@ -125,7 +125,7 @@ public class MerchantUserDao extends AbstractDao<MerchantUser, Long> {
             stmt.bindString(6, birthday);
         }
  
-        Integer gender = entity.gender;
+        Long gender = entity.gender;
         if (gender != null) {
             stmt.bindLong(7, gender);
         }
@@ -151,7 +151,7 @@ public class MerchantUserDao extends AbstractDao<MerchantUser, Long> {
         entity.displayName = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
         entity.avatar = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
         entity.birthday = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
-        entity.gender = cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6);
+        entity.gender = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
      }
     
     @Override

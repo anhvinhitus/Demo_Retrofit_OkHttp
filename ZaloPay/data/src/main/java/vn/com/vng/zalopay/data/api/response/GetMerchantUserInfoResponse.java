@@ -14,7 +14,7 @@ public class GetMerchantUserInfoResponse extends BaseResponse {
     public String birthdate;
 
     @SerializedName("usergender")
-    public int usergender;
+    public long usergender;
 
     @SerializedName("muid")
     public String muid;

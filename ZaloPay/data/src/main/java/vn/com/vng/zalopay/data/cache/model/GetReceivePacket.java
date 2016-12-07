@@ -10,7 +10,7 @@ import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 
 public class GetReceivePacket {
     public long totalofrevamount;
-    public int totalofrevpackage;
-    public int numofluckiestdraw;
+    public long totalofrevpackage;
+    public long numofluckiestdraw;
     public List<ReceivePackage> revpackageList;
 }

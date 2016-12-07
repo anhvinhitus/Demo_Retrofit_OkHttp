@@ -25,7 +25,7 @@ public class PaymentTransTypeGDDao extends AbstractDao<PaymentTransTypeGD, Long>
         public final static Property Transtype = new Property(0, long.class, "transtype", true, "TRANSTYPE");
         public final static Property Pmcid = new Property(1, long.class, "pmcid", false, "PMCID");
         public final static Property Pmcname = new Property(2, String.class, "pmcname", false, "PMCNAME");
-        public final static Property Status = new Property(3, Integer.class, "status", false, "STATUS");
+        public final static Property Status = new Property(3, Long.class, "status", false, "STATUS");
         public final static Property Minvalue = new Property(4, Long.class, "minvalue", false, "MINVALUE");
         public final static Property Maxvalue = new Property(5, Long.class, "maxvalue", false, "MAXVALUE");
         public final static Property Feerate = new Property(6, Float.class, "feerate", false, "FEERATE");
@@ -77,7 +77,7 @@ public class PaymentTransTypeGDDao extends AbstractDao<PaymentTransTypeGD, Long>
             stmt.bindString(3, pmcname);
         }
  
-        Integer status = entity.status;
+        Long status = entity.status;
         if (status != null) {
             stmt.bindLong(4, status);
         }
@@ -119,7 +119,7 @@ public class PaymentTransTypeGDDao extends AbstractDao<PaymentTransTypeGD, Long>
             stmt.bindString(3, pmcname);
         }
  
-        Integer status = entity.status;
+        Long status = entity.status;
         if (status != null) {
             stmt.bindLong(4, status);
         }
@@ -167,7 +167,7 @@ public class PaymentTransTypeGDDao extends AbstractDao<PaymentTransTypeGD, Long>
         entity.transtype = cursor.getLong(offset + 0);
         entity.pmcid = cursor.getLong(offset + 1);
         entity.pmcname = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
-        entity.status = cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3);
+        entity.status = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
         entity.minvalue = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
         entity.maxvalue = cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5);
         entity.feerate = cursor.isNull(offset + 6) ? null : cursor.getFloat(offset + 6);

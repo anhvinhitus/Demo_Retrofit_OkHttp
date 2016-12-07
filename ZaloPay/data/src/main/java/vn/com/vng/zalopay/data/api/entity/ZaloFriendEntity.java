@@ -30,7 +30,7 @@ public class ZaloFriendEntity {
     public String zaloPayId;
     public long numberPhone;
     public String zaloPayName;
-    public int status;
+    public long status;
 
     public ZaloFriendEntity() {
     }

@@ -184,11 +184,11 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             updateInsideAppIndex(resourceResponse.orderedInsideApps);
         }
 
-        List<Integer> listAppId = resourceResponse.appidlist;
+        List<Long> listAppId = resourceResponse.appidlist;
         mLocalStorage.updateAppList(listAppId);
     }
 
-    private void updateInsideAppIndex(List<Integer> orderedInsideApps) {
+    private void updateInsideAppIndex(List<Long> orderedInsideApps) {
         if (Lists.isEmptyOrNull(orderedInsideApps)) {
             return;
         }
@@ -250,7 +250,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> existResource(int appId) {
+    public Observable<Boolean> existResource(long appId) {
         return makeObservable(() -> {
             AppResourceEntity entity = mLocalStorage.get(appId);
             Timber.d("existResource appId [%s] state [%s]", appId, entity.stateDownload);

@@ -30,7 +30,7 @@ public class NotificationType {
     public static final int LINK_CARD_EXPIRED = 112;
     public static final int MERCHANT_BILL = 113; //Thanh toán đơn hàng
 
-    static boolean isTransactionNotification(int notificationType) {
+    static boolean isTransactionNotification(long notificationType) {
         return notificationType == ORDER_PAYMENT ||
                 notificationType == TOPUP_WALLET ||
                 notificationType == ADD_BANK_CARD ||
@@ -47,17 +47,17 @@ public class NotificationType {
                 ;
     }
 
-    static boolean isProfileNotification(int notificationType) {
+    static boolean isProfileNotification(long notificationType) {
         return notificationType == UPDATE_PROFILE_LEVEL_OK
                 || notificationType == UPLOAD_PROFILE_LEVEL_3
                 || notificationType == UPDATE_PROFILE_LEVEL_FAILED;
     }
 
-    static boolean isRedPacket(int notificationType) {
+    static boolean isRedPacket(long notificationType) {
         return notificationType == SEND_RED_PACKET;
     }
 
-    static boolean shouldMarkRead(int notificationType) {
+    static boolean shouldMarkRead(long notificationType) {
         return notificationType == ORDER_PAYMENT || notificationType == APP_P2P_NOTIFICATION;
     }
 

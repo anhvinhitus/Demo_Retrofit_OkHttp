@@ -66,7 +66,7 @@ public class RedPacketDataMapper {
             item.openTime = sentPackage.openTime;
             item.amount = sentPackage.amount;
             item.sendMessage = sentPackage.sendMessage;
-            item.isLuckiest = sentPackage.isLuckiest ? 1 : 0;
+            item.isLuckiest = sentPackage.isLuckiest ? 1L : 0L;
             sentPackageGDs.add(item);
         }
         return sentPackageGDs;
@@ -102,7 +102,7 @@ public class RedPacketDataMapper {
         item.openTime = ConvertHelper.unboxValue(packageInBundleGD.openTime, 0L);
         item.amount = ConvertHelper.unboxValue(packageInBundleGD.amount, 0L);
         item.sendMessage = packageInBundleGD.sendMessage;
-        item.isLuckiest = (ConvertHelper.unboxValue(packageInBundleGD.isLuckiest, 0) == 1);
+        item.isLuckiest = (ConvertHelper.unboxValue(packageInBundleGD.isLuckiest, 0L) == 1L);
         return item;
     }
 
@@ -111,14 +111,14 @@ public class RedPacketDataMapper {
         SentBundle item = new SentBundle();
         item.bundleID = sentBundleGD.id;
         item.sendZaloPayID = sentBundleGD.senderZaloPayID;
-        item.type = ConvertHelper.unboxValue(sentBundleGD.type, 0);
+        item.type = ConvertHelper.unboxValue(sentBundleGD.type, 0L);
         item.createTime = ConvertHelper.unboxValue(sentBundleGD.createTime, 0L);
         item.lastOpenTime = ConvertHelper.unboxValue(sentBundleGD.lastOpenTime, 0L);
-        item.totalLuck = ConvertHelper.unboxValue(sentBundleGD.totalLuck, 0);
-        item.numOfOpenedPakages = ConvertHelper.unboxValue(sentBundleGD.numOfOpenedPakages, 0);
-        item.numOfPackages = ConvertHelper.unboxValue(sentBundleGD.numOfPackages, 0);
+        item.totalLuck = ConvertHelper.unboxValue(sentBundleGD.totalLuck, 0L);
+        item.numOfOpenedPakages = ConvertHelper.unboxValue(sentBundleGD.numOfOpenedPakages, 0L);
+        item.numOfPackages = ConvertHelper.unboxValue(sentBundleGD.numOfPackages, 0L);
         item.sendMessage = sentBundleGD.sendMessage;
-        item.status = ConvertHelper.unboxValue(sentBundleGD.status, 0);
+        item.status = ConvertHelper.unboxValue(sentBundleGD.status, 0L);
         item.packages = sentPackages;
         return item;
     }
@@ -227,7 +227,7 @@ public class RedPacketDataMapper {
         SentBundleSummaryDB sentBundleSummaryDB = list.get(0);
         GetSentBundle item = new GetSentBundle();
         item.totalofsentamount = ConvertHelper.unboxValue(sentBundleSummaryDB.totalOfSentAmount, 0L);
-        item.totalofsentbundle = ConvertHelper.unboxValue(sentBundleSummaryDB.totalOfSentBundle, 0);
+        item.totalofsentbundle = ConvertHelper.unboxValue(sentBundleSummaryDB.totalOfSentBundle, 0L);
         item.sentbundlelist = null;
 
         return item;
@@ -275,9 +275,9 @@ public class RedPacketDataMapper {
         item.message = receivePackageGD.message;
         item.amount = ConvertHelper.unboxValue(receivePackageGD.amount, 0L);
         item.openedTime = ConvertHelper.unboxValue(receivePackageGD.openedTime, 0L);
-        item.isLuckiest = ConvertHelper.unboxValue(receivePackageGD.isLuckiest, 0);
+        item.isLuckiest = ConvertHelper.unboxValue(receivePackageGD.isLuckiest, 0L);
         item.createTime = ConvertHelper.unboxValue(receivePackageGD.createTime, 0L);
-        item.status = ConvertHelper.unboxValue(receivePackageGD.status, 0);
+        item.status = ConvertHelper.unboxValue(receivePackageGD.status, 0L);
         return item;
     }
 
@@ -390,8 +390,8 @@ public class RedPacketDataMapper {
 
         GetReceivePacket item = new GetReceivePacket();
         item.totalofrevamount = ConvertHelper.unboxValue(receivePacketSummarydb.totalOfRevamount, 0L);
-        item.totalofrevpackage = ConvertHelper.unboxValue(receivePacketSummarydb.totalOfRevPackage, 0);
-        item.numofluckiestdraw = ConvertHelper.unboxValue(receivePacketSummarydb.totalOfLuckiestDraw, 0);
+        item.totalofrevpackage = ConvertHelper.unboxValue(receivePacketSummarydb.totalOfRevPackage, 0L);
+        item.numofluckiestdraw = ConvertHelper.unboxValue(receivePacketSummarydb.totalOfLuckiestDraw, 0L);
         item.revpackageList = null;
 
         return item;

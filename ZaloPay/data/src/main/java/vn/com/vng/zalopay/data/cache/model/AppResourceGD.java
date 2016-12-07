@@ -11,20 +11,20 @@ import org.greenrobot.greendao.annotation.*;
 public class AppResourceGD {
 
     @Unique
-    public int appid;
+    public long appid;
     public String appname;
-    public Integer needdownloadrs;
+    public Long needdownloadrs;
     public String imageurl;
     public String jsurl;
-    public Integer status;
+    public Long status;
     public String checksum;
-    public Integer apptype;
+    public Long apptype;
     public String weburl;
     public String iconurl;
-    public Integer sortOrder;
-    public Integer stateDownload;
+    public Long sortOrder;
+    public Long stateDownload;
     public Long timeDownload;
-    public Integer numRetry;
+    public Long numRetry;
 
 
 }

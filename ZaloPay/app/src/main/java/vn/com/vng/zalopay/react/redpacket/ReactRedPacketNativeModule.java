@@ -476,7 +476,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     public void onNext(ReceivePackageGD receivePackageGD) {
                         WritableMap writableMap = Arguments.createMap();
                         if (receivePackageGD != null) {
-                            writableMap.putInt("code", receivePackageGD.status);
+                            writableMap.putDouble("code", receivePackageGD.status);
                             writableMap.putString("message", receivePackageGD.messageStatus);
                             Timber.d("open status [%s][%s] for packet: %s", receivePackageGD.status,
                                     receivePackageGD.messageStatus, packetId);

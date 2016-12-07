@@ -53,7 +53,7 @@ public class BundleServiceImpl implements BundleService {
     }
 
     @Override
-    public String getExternalBundleFolder(int appId) {
+    public String getExternalBundleFolder(long appId) {
         //return String.format(Locale.getDefault(), "%s/modules/%d/app", mBundleRootFolder, appId);
         return ResourceHelper.getPath(appId);
     }

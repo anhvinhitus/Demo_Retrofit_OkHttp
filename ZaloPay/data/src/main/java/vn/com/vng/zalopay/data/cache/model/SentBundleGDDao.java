@@ -24,14 +24,14 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
         public final static Property SenderZaloPayID = new Property(1, String.class, "senderZaloPayID", false, "SENDER_ZALO_PAY_ID");
-        public final static Property Type = new Property(2, Integer.class, "type", false, "TYPE");
+        public final static Property Type = new Property(2, Long.class, "type", false, "TYPE");
         public final static Property CreateTime = new Property(3, Long.class, "createTime", false, "CREATE_TIME");
         public final static Property LastOpenTime = new Property(4, Long.class, "lastOpenTime", false, "LAST_OPEN_TIME");
-        public final static Property TotalLuck = new Property(5, Integer.class, "totalLuck", false, "TOTAL_LUCK");
-        public final static Property NumOfOpenedPakages = new Property(6, Integer.class, "numOfOpenedPakages", false, "NUM_OF_OPENED_PAKAGES");
-        public final static Property NumOfPackages = new Property(7, Integer.class, "numOfPackages", false, "NUM_OF_PACKAGES");
+        public final static Property TotalLuck = new Property(5, Long.class, "totalLuck", false, "TOTAL_LUCK");
+        public final static Property NumOfOpenedPakages = new Property(6, Long.class, "numOfOpenedPakages", false, "NUM_OF_OPENED_PAKAGES");
+        public final static Property NumOfPackages = new Property(7, Long.class, "numOfPackages", false, "NUM_OF_PACKAGES");
         public final static Property SendMessage = new Property(8, String.class, "sendMessage", false, "SEND_MESSAGE");
-        public final static Property Status = new Property(9, Integer.class, "status", false, "STATUS");
+        public final static Property Status = new Property(9, Long.class, "status", false, "STATUS");
     }
 
     private DaoSession daoSession;
@@ -74,7 +74,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
         stmt.bindLong(1, entity.id);
         stmt.bindString(2, entity.senderZaloPayID);
  
-        Integer type = entity.type;
+        Long type = entity.type;
         if (type != null) {
             stmt.bindLong(3, type);
         }
@@ -89,17 +89,17 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
             stmt.bindLong(5, lastOpenTime);
         }
  
-        Integer totalLuck = entity.totalLuck;
+        Long totalLuck = entity.totalLuck;
         if (totalLuck != null) {
             stmt.bindLong(6, totalLuck);
         }
  
-        Integer numOfOpenedPakages = entity.numOfOpenedPakages;
+        Long numOfOpenedPakages = entity.numOfOpenedPakages;
         if (numOfOpenedPakages != null) {
             stmt.bindLong(7, numOfOpenedPakages);
         }
  
-        Integer numOfPackages = entity.numOfPackages;
+        Long numOfPackages = entity.numOfPackages;
         if (numOfPackages != null) {
             stmt.bindLong(8, numOfPackages);
         }
@@ -109,7 +109,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
             stmt.bindString(9, sendMessage);
         }
  
-        Integer status = entity.status;
+        Long status = entity.status;
         if (status != null) {
             stmt.bindLong(10, status);
         }
@@ -121,7 +121,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
         stmt.bindLong(1, entity.id);
         stmt.bindString(2, entity.senderZaloPayID);
  
-        Integer type = entity.type;
+        Long type = entity.type;
         if (type != null) {
             stmt.bindLong(3, type);
         }
@@ -136,17 +136,17 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
             stmt.bindLong(5, lastOpenTime);
         }
  
-        Integer totalLuck = entity.totalLuck;
+        Long totalLuck = entity.totalLuck;
         if (totalLuck != null) {
             stmt.bindLong(6, totalLuck);
         }
  
-        Integer numOfOpenedPakages = entity.numOfOpenedPakages;
+        Long numOfOpenedPakages = entity.numOfOpenedPakages;
         if (numOfOpenedPakages != null) {
             stmt.bindLong(7, numOfOpenedPakages);
         }
  
-        Integer numOfPackages = entity.numOfPackages;
+        Long numOfPackages = entity.numOfPackages;
         if (numOfPackages != null) {
             stmt.bindLong(8, numOfPackages);
         }
@@ -156,7 +156,7 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
             stmt.bindString(9, sendMessage);
         }
  
-        Integer status = entity.status;
+        Long status = entity.status;
         if (status != null) {
             stmt.bindLong(10, status);
         }
@@ -184,14 +184,14 @@ public class SentBundleGDDao extends AbstractDao<SentBundleGD, Long> {
     public void readEntity(Cursor cursor, SentBundleGD entity, int offset) {
         entity.id = cursor.getLong(offset + 0);
         entity.senderZaloPayID = cursor.getString(offset + 1);
-        entity.type = cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2);
+        entity.type = cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2);
         entity.createTime = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
         entity.lastOpenTime = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
-        entity.totalLuck = cursor.isNull(offset + 5) ? null : cursor.getInt(offset + 5);
-        entity.numOfOpenedPakages = cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6);
-        entity.numOfPackages = cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7);
+        entity.totalLuck = cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5);
+        entity.numOfOpenedPakages = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
+        entity.numOfPackages = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
         entity.sendMessage = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
-        entity.status = cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9);
+        entity.status = cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9);
      }
     
     @Override

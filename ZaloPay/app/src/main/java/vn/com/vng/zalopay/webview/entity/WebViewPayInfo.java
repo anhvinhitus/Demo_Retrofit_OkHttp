@@ -7,7 +7,7 @@ public class WebViewPayInfo implements Parcelable {
 
     public String uid;
     public String accessToken;
-    public int appId;
+    public long appId;
     public String apptransid;
 
     public String getUid() {
@@ -26,11 +26,11 @@ public class WebViewPayInfo implements Parcelable {
         this.accessToken = accessToken;
     }
 
-    public int getAppId() {
+    public long getAppId() {
         return appId;
     }
 
-    public void setAppId(int appId) {
+    public void setAppId(long appId) {
         this.appId = appId;
     }
 
@@ -52,7 +52,7 @@ public class WebViewPayInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.uid);
         dest.writeString(this.accessToken);
-        dest.writeInt(this.appId);
+        dest.writeLong(this.appId);
         dest.writeString(this.apptransid);
     }
 

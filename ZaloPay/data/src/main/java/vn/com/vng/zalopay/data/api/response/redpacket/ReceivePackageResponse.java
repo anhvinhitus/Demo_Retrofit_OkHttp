@@ -31,7 +31,7 @@ public class ReceivePackageResponse extends BaseResponse {
     public long openedtime;
 
     @SerializedName("isluckiest")
-    public int isluckiest;
+    public long isluckiest;
 
     @SerializedName("sendmessage")
     public String sendmessage;

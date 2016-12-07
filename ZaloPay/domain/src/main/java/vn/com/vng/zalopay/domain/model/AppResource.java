@@ -5,32 +5,32 @@ import android.os.Parcelable;
 
 public class AppResource implements Parcelable {
 
-    public int appid;
+    public long appid;
 
     public String appname;
 
     public String checksum;
 
-    public int status;
+    public long status;
 
     public String urlImage;
 
-    public int appType;
+    public long appType;
 
     public String webUrl;
 
     public String iconUrl;
 
-    public AppResource(int appid) {
+    public AppResource(long appid) {
         this.appid = appid;
     }
 
-    public AppResource(int appid, int appType, String appname) {
+    public AppResource(long appid, long appType, String appname) {
         this(appid, appType, appname, "");
     }
 
 
-    public AppResource(int appid, int appType, String appname, String urlImage) {
+    public AppResource(long appid, long appType, String appname, String urlImage) {
         this.appid = appid;
         this.appType = appType;
         this.appname = appname;
@@ -53,17 +53,16 @@ public class AppResource implements Parcelable {
 
     @Override
     public int hashCode() {
-        int result = appid;
+        int result = (int) (appid ^ (appid >>> 32));
         result = 31 * result + (appname != null ? appname.hashCode() : 0);
         result = 31 * result + (checksum != null ? checksum.hashCode() : 0);
-        result = 31 * result + status;
+        result = 31 * result + (int) (status ^ (status >>> 32));
         result = 31 * result + (urlImage != null ? urlImage.hashCode() : 0);
-        result = 31 * result + appType;
+        result = 31 * result + (int) (appType ^ (appType >>> 32));
         result = 31 * result + (webUrl != null ? webUrl.hashCode() : 0);
         result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
         return result;
     }
-
 
     @Override
     public int describeContents() {
@@ -72,12 +71,12 @@ public class AppResource implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.appid);
+        dest.writeLong(this.appid);
         dest.writeString(this.appname);
         dest.writeString(this.checksum);
-        dest.writeInt(this.status);
+        dest.writeLong(this.status);
         dest.writeString(this.urlImage);
-        dest.writeInt(this.appType);
+        dest.writeLong(this.appType);
         dest.writeString(this.webUrl);
         dest.writeString(this.iconUrl);
     }

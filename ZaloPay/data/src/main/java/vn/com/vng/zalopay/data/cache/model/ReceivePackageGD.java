@@ -24,10 +24,10 @@ public class ReceivePackageGD {
     public String senderAvatar;
     public Long amount;
     public Long openedTime;
-    public Integer status;
+    public Long status;
     public String messageStatus;
     public String message;
-    public Integer isLuckiest;
+    public Long isLuckiest;
     public Long createTime;
 
     /** Used to resolve relations */

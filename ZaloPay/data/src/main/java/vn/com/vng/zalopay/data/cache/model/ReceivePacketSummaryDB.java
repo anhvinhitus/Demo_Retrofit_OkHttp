@@ -13,8 +13,8 @@ public class ReceivePacketSummaryDB {
     @Id
     public Long id;
     public Long totalOfRevamount;
-    public Integer totalOfRevPackage;
-    public Integer totalOfLuckiestDraw;
+    public Long totalOfRevPackage;
+    public Long totalOfLuckiestDraw;
     public Long timeCreate;
 
 

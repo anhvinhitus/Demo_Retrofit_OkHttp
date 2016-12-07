@@ -17,7 +17,7 @@ public interface ZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView>
 
     void getBanners();
 
-    void startServiceWebViewActivity(int appId, String webViewUrl);
+    void startServiceWebViewActivity(long appId, String webViewUrl);
 
     void startBannerCountDownTimer();
 

@@ -14,10 +14,10 @@ public class RedPacket {
     public int quantity;
     public long totalLuck;
     public long amountEach;
-    public int type;
+    public long type;
     public String sendMessage;
     public List<Person> friends;
-    public int state;
+    public long state;
 
     public enum RedPacketState {
         CREATE(0), SENT(1);

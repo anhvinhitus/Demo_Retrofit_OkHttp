@@ -17,7 +17,7 @@ public class MerchantUser {
     public String displayName;
     public String avatar;
     public String birthday;
-    public Integer gender;
+    public Long gender;
 
 
 }

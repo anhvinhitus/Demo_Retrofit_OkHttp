@@ -22,7 +22,7 @@ public class ResourceHelper {
     /**
      * Returns the path of this module.
      */
-    public static String getPath(int appId) {
+    public static String getPath(long appId) {
         return String.format(Locale.getDefault(), "%s/modules/%d/app", getBundleRootFolder(), appId);
     }
 

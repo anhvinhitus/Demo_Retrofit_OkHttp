@@ -20,7 +20,7 @@ public class PackageInBundleGD {
     public Long openTime;
     public Long amount;
     public String sendMessage;
-    public Integer isLuckiest;
+    public Long isLuckiest;
 
 
 }

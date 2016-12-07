@@ -15,14 +15,14 @@ public class NotificationGD {
     @Id(autoincrement = true)
     public Long id;
     public Long transid;
-    public Integer appid;
+    public Long appid;
     public Long timestamp;
     public String message;
     public String userid;
     public String destuserid;
-    public Integer area;
-    public Integer notificationstate;
-    public Integer notificationtype;
+    public Long area;
+    public Long notificationstate;
+    public Long notificationtype;
     public Long mtaid;
     public Long mtuid;
     public String embeddata;

@@ -258,15 +258,15 @@ public class RedPackageRepositoryTest {
     public void testDataTransform() {
         RedPacketDataMapper mapper = new RedPacketDataMapper();
         SentBundleGD inputItem = new SentBundleGD();
-        inputItem.numOfOpenedPakages = 10;
-        inputItem.numOfPackages = 20;
-        inputItem.totalLuck = 4;
+        inputItem.numOfOpenedPakages = 10L;
+        inputItem.numOfPackages = 20L;
+        inputItem.totalLuck = 4L;
         inputItem.senderZaloPayID = "1611100000";
-        inputItem.type = 1;
+        inputItem.type = 1L;
         inputItem.createTime = 1L;
         inputItem.lastOpenTime = 2L;
         inputItem.sendMessage = "message";
-        inputItem.status = 1;
+        inputItem.status = 1L;
         inputItem.__setDaoSession(mDaoSession);
 
         SentBundle bundle = new SentBundle();
@@ -314,15 +314,15 @@ public class RedPackageRepositoryTest {
     public void testGetSentBundleSummary() throws Exception {
 //        CountDownLatch countDownLatch = new CountDownLatch(1);
         SentBundleGD inputItem = new SentBundleGD();
-        inputItem.numOfOpenedPakages = 10;
-        inputItem.numOfPackages = 20;
-        inputItem.totalLuck = 4;
+        inputItem.numOfOpenedPakages = 10L;
+        inputItem.numOfPackages = 20L;
+        inputItem.totalLuck = 4L;
         inputItem.senderZaloPayID = "1611100000";
-        inputItem.type = 1;
+        inputItem.type = 1L;
         inputItem.createTime = 1L;
         inputItem.lastOpenTime = 2L;
         inputItem.sendMessage = "message";
-        inputItem.status = 1;
+        inputItem.status = 1L;
 
         List<SentBundleGD> list = new ArrayList<>();
         list.add(inputItem);

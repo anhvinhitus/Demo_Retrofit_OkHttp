@@ -15,10 +15,10 @@ public class GetReceivePackageResponse extends BaseResponse {
     public long totalOfRevAmount;
 
     @SerializedName("totalofrevpackage")
-    public int totalOfRevPackage;
+    public long totalOfRevPackage;
 
     @SerializedName("totalofluckiestdraw")
-    public int numOfLuckiestDraw;
+    public long numOfLuckiestDraw;
 
     @SerializedName("revpackagelist")
     public List<ReceivePackageResponse> receivePackageResponses;

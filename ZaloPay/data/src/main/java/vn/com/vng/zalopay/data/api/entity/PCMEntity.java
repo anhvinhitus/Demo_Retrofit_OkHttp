@@ -14,7 +14,7 @@ public class PCMEntity {
     public String pmcname;
 
     @SerializedName("status")
-    public int status;
+    public long status;
 
     @SerializedName("minvalue")
     public long minvalue;

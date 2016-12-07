@@ -17,14 +17,14 @@ public class ListMUIResponse extends BaseResponse {
     public String birthdate;
 
     @SerializedName("usergender")
-    public int usergender;
+    public long usergender;
 
     @SerializedName("listmerchantuserinfo")
     public List<MerchantUserSubInfo> listmerchantuserinfo;
 
     public class MerchantUserSubInfo {
         @SerializedName("appid")
-        public int appid;
+        public long appid;
         @SerializedName("muid")
         public String muid;
         @SerializedName("maccesstoken")

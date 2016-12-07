@@ -15,12 +15,12 @@ public class ZaloFriendGD {
     public String userName;
     public String displayName;
     public String avatar;
-    public Integer userGender;
+    public Long userGender;
     public String birthday;
     public Boolean usingApp;
     public String fulltextsearch;
     public String zaloPayId;
-    public Integer status;
+    public Long status;
     public Long phoneNumber;
     public String zaloPayName;
 

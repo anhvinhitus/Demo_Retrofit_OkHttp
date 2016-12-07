@@ -28,16 +28,16 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         public final static Property Appuser = new Property(3, String.class, "appuser", false, "APPUSER");
         public final static Property Platform = new Property(4, String.class, "platform", false, "PLATFORM");
         public final static Property Description = new Property(5, String.class, "description", false, "DESCRIPTION");
-        public final static Property Pmcid = new Property(6, Integer.class, "pmcid", false, "PMCID");
+        public final static Property Pmcid = new Property(6, Long.class, "pmcid", false, "PMCID");
         public final static Property Reqdate = new Property(7, Long.class, "reqdate", false, "REQDATE");
-        public final static Property Userchargeamt = new Property(8, Integer.class, "userchargeamt", false, "USERCHARGEAMT");
-        public final static Property Userfeeamt = new Property(9, Integer.class, "userfeeamt", false, "USERFEEAMT");
-        public final static Property Amount = new Property(10, Integer.class, "amount", false, "AMOUNT");
-        public final static Property Type = new Property(11, Integer.class, "type", false, "TYPE");
-        public final static Property Sign = new Property(12, Integer.class, "sign", false, "SIGN");
+        public final static Property Userchargeamt = new Property(8, Long.class, "userchargeamt", false, "USERCHARGEAMT");
+        public final static Property Userfeeamt = new Property(9, Long.class, "userfeeamt", false, "USERFEEAMT");
+        public final static Property Amount = new Property(10, Long.class, "amount", false, "AMOUNT");
+        public final static Property Type = new Property(11, Long.class, "type", false, "TYPE");
+        public final static Property Sign = new Property(12, Long.class, "sign", false, "SIGN");
         public final static Property Username = new Property(13, String.class, "username", false, "USERNAME");
         public final static Property Appusername = new Property(14, String.class, "appusername", false, "APPUSERNAME");
-        public final static Property Statustype = new Property(15, Integer.class, "statustype", false, "STATUSTYPE");
+        public final static Property Statustype = new Property(15, Long.class, "statustype", false, "STATUSTYPE");
     }
 
 
@@ -103,7 +103,7 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
             stmt.bindString(6, description);
         }
  
-        Integer pmcid = entity.pmcid;
+        Long pmcid = entity.pmcid;
         if (pmcid != null) {
             stmt.bindLong(7, pmcid);
         }
@@ -113,27 +113,27 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
             stmt.bindLong(8, reqdate);
         }
  
-        Integer userchargeamt = entity.userchargeamt;
+        Long userchargeamt = entity.userchargeamt;
         if (userchargeamt != null) {
             stmt.bindLong(9, userchargeamt);
         }
  
-        Integer userfeeamt = entity.userfeeamt;
+        Long userfeeamt = entity.userfeeamt;
         if (userfeeamt != null) {
             stmt.bindLong(10, userfeeamt);
         }
  
-        Integer amount = entity.amount;
+        Long amount = entity.amount;
         if (amount != null) {
             stmt.bindLong(11, amount);
         }
  
-        Integer type = entity.type;
+        Long type = entity.type;
         if (type != null) {
             stmt.bindLong(12, type);
         }
  
-        Integer sign = entity.sign;
+        Long sign = entity.sign;
         if (sign != null) {
             stmt.bindLong(13, sign);
         }
@@ -148,7 +148,7 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
             stmt.bindString(15, appusername);
         }
  
-        Integer statustype = entity.statustype;
+        Long statustype = entity.statustype;
         if (statustype != null) {
             stmt.bindLong(16, statustype);
         }
@@ -180,7 +180,7 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
             stmt.bindString(6, description);
         }
  
-        Integer pmcid = entity.pmcid;
+        Long pmcid = entity.pmcid;
         if (pmcid != null) {
             stmt.bindLong(7, pmcid);
         }
@@ -190,27 +190,27 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
             stmt.bindLong(8, reqdate);
         }
  
-        Integer userchargeamt = entity.userchargeamt;
+        Long userchargeamt = entity.userchargeamt;
         if (userchargeamt != null) {
             stmt.bindLong(9, userchargeamt);
         }
  
-        Integer userfeeamt = entity.userfeeamt;
+        Long userfeeamt = entity.userfeeamt;
         if (userfeeamt != null) {
             stmt.bindLong(10, userfeeamt);
         }
  
-        Integer amount = entity.amount;
+        Long amount = entity.amount;
         if (amount != null) {
             stmt.bindLong(11, amount);
         }
  
-        Integer type = entity.type;
+        Long type = entity.type;
         if (type != null) {
             stmt.bindLong(12, type);
         }
  
-        Integer sign = entity.sign;
+        Long sign = entity.sign;
         if (sign != null) {
             stmt.bindLong(13, sign);
         }
@@ -225,7 +225,7 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
             stmt.bindString(15, appusername);
         }
  
-        Integer statustype = entity.statustype;
+        Long statustype = entity.statustype;
         if (statustype != null) {
             stmt.bindLong(16, statustype);
         }
@@ -251,16 +251,16 @@ public class TransactionLogDao extends AbstractDao<TransactionLog, Long> {
         entity.appuser = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
         entity.platform = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
         entity.description = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
-        entity.pmcid = cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6);
+        entity.pmcid = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
         entity.reqdate = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
-        entity.userchargeamt = cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8);
-        entity.userfeeamt = cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9);
-        entity.amount = cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10);
-        entity.type = cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11);
-        entity.sign = cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12);
+        entity.userchargeamt = cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8);
+        entity.userfeeamt = cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9);
+        entity.amount = cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10);
+        entity.type = cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11);
+        entity.sign = cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12);
         entity.username = cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13);
         entity.appusername = cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14);
-        entity.statustype = cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15);
+        entity.statustype = cursor.isNull(offset + 15) ? null : cursor.getLong(offset + 15);
      }
     
     @Override

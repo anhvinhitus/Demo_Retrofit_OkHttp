@@ -26,12 +26,12 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
         public final static Property UserName = new Property(1, String.class, "userName", false, "USER_NAME");
         public final static Property DisplayName = new Property(2, String.class, "displayName", false, "DISPLAY_NAME");
         public final static Property Avatar = new Property(3, String.class, "avatar", false, "AVATAR");
-        public final static Property UserGender = new Property(4, Integer.class, "userGender", false, "USER_GENDER");
+        public final static Property UserGender = new Property(4, Long.class, "userGender", false, "USER_GENDER");
         public final static Property Birthday = new Property(5, String.class, "birthday", false, "BIRTHDAY");
         public final static Property UsingApp = new Property(6, Boolean.class, "usingApp", false, "USING_APP");
         public final static Property Fulltextsearch = new Property(7, String.class, "fulltextsearch", false, "FULLTEXTSEARCH");
         public final static Property ZaloPayId = new Property(8, String.class, "zaloPayId", false, "ZALO_PAY_ID");
-        public final static Property Status = new Property(9, Integer.class, "status", false, "STATUS");
+        public final static Property Status = new Property(9, Long.class, "status", false, "STATUS");
         public final static Property PhoneNumber = new Property(10, Long.class, "phoneNumber", false, "PHONE_NUMBER");
         public final static Property ZaloPayName = new Property(11, String.class, "zaloPayName", false, "ZALO_PAY_NAME");
     }
@@ -89,7 +89,7 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
             stmt.bindString(4, avatar);
         }
  
-        Integer userGender = entity.userGender;
+        Long userGender = entity.userGender;
         if (userGender != null) {
             stmt.bindLong(5, userGender);
         }
@@ -114,7 +114,7 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
             stmt.bindString(9, zaloPayId);
         }
  
-        Integer status = entity.status;
+        Long status = entity.status;
         if (status != null) {
             stmt.bindLong(10, status);
         }
@@ -150,7 +150,7 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
             stmt.bindString(4, avatar);
         }
  
-        Integer userGender = entity.userGender;
+        Long userGender = entity.userGender;
         if (userGender != null) {
             stmt.bindLong(5, userGender);
         }
@@ -175,7 +175,7 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
             stmt.bindString(9, zaloPayId);
         }
  
-        Integer status = entity.status;
+        Long status = entity.status;
         if (status != null) {
             stmt.bindLong(10, status);
         }
@@ -209,12 +209,12 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
         entity.userName = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
         entity.displayName = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
         entity.avatar = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
-        entity.userGender = cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4);
+        entity.userGender = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
         entity.birthday = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
         entity.usingApp = cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0;
         entity.fulltextsearch = cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7);
         entity.zaloPayId = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
-        entity.status = cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9);
+        entity.status = cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9);
         entity.phoneNumber = cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10);
         entity.zaloPayName = cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11);
      }

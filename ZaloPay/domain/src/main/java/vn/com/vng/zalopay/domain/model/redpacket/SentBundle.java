@@ -8,14 +8,14 @@ import java.util.List;
 public class SentBundle {
     public long bundleID;
     public String sendZaloPayID;
-    public int type;
+    public long type;
     public long createTime;
     public long lastOpenTime;
-    public int totalLuck;
-    public int numOfOpenedPakages;
-    public int numOfPackages;
+    public long totalLuck;
+    public long numOfOpenedPakages;
+    public long numOfPackages;
     public String sendMessage;
-    public int status;
+    public long status;
     public List<PackageInBundle> packages;
 //
 //    public SentBundle(long bundleID, String sendZaloPayID,

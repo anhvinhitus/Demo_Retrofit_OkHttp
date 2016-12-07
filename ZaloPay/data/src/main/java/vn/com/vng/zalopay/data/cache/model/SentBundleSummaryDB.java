@@ -13,7 +13,7 @@ public class SentBundleSummaryDB {
     @Id
     public Long id;
     public Long totalOfSentAmount;
-    public Integer totalOfSentBundle;
+    public Long totalOfSentBundle;
     public Long timeCreate;
 
 

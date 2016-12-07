@@ -10,7 +10,7 @@ import java.util.List;
 public class GetSentBundle {
 
     public long totalofsentamount;
-    public int totalofsentbundle;
+    public long totalofsentbundle;
     public List<SentBundle> sentbundlelist;
 //
 //    public GetSentBundle(long totalofsentamount, int totalofsentbundle, List<SentBundle> sentbundlelist) {

@@ -196,7 +196,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
             return null;
         }
 
-        sentBundleGD.status = (status);
+        sentBundleGD.status = (long)(status);
         getDaoSession().getSentBundleGDDao().insertOrReplace(sentBundleGD);
         Timber.d("SentBundle is set to be opened");
         return null;
@@ -287,7 +287,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
             return null;
         }
 
-        packageGD.status = (status);
+        packageGD.status = (long)(status);
         packageGD.messageStatus = (messageStatus);
         packageGD.amount = (amount);
         packageGD.openedTime = (System.currentTimeMillis());
@@ -304,7 +304,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         if (packageGD == null) {
             packageGD = new ReceivePackageGD();
             packageGD.id = (packetId);
-            packageGD.status = (RedPacketStatus.CanOpen.getValue());
+            packageGD.status = (long)(RedPacketStatus.CanOpen.getValue());
         }
         packageGD.bundleID = (bundleId);
         packageGD.senderFullName = (senderName);

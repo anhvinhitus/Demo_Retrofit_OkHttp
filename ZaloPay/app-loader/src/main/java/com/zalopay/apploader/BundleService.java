@@ -6,7 +6,7 @@ package com.zalopay.apploader;
  */
 public interface BundleService {
     String getInternalBundleFolder();
-    String getExternalBundleFolder(int appId);
+    String getExternalBundleFolder(long appId);
 
     /**
      * Make sure the local resources is up-to-date with resources shipped with apk

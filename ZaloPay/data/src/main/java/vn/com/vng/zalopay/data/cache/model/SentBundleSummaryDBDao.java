@@ -24,7 +24,7 @@ public class SentBundleSummaryDBDao extends AbstractDao<SentBundleSummaryDB, Lon
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property TotalOfSentAmount = new Property(1, Long.class, "totalOfSentAmount", false, "TOTAL_OF_SENT_AMOUNT");
-        public final static Property TotalOfSentBundle = new Property(2, Integer.class, "totalOfSentBundle", false, "TOTAL_OF_SENT_BUNDLE");
+        public final static Property TotalOfSentBundle = new Property(2, Long.class, "totalOfSentBundle", false, "TOTAL_OF_SENT_BUNDLE");
         public final static Property TimeCreate = new Property(3, Long.class, "timeCreate", false, "TIME_CREATE");
     }
 
@@ -67,7 +67,7 @@ public class SentBundleSummaryDBDao extends AbstractDao<SentBundleSummaryDB, Lon
             stmt.bindLong(2, totalOfSentAmount);
         }
  
-        Integer totalOfSentBundle = entity.totalOfSentBundle;
+        Long totalOfSentBundle = entity.totalOfSentBundle;
         if (totalOfSentBundle != null) {
             stmt.bindLong(3, totalOfSentBundle);
         }
@@ -92,7 +92,7 @@ public class SentBundleSummaryDBDao extends AbstractDao<SentBundleSummaryDB, Lon
             stmt.bindLong(2, totalOfSentAmount);
         }
  
-        Integer totalOfSentBundle = entity.totalOfSentBundle;
+        Long totalOfSentBundle = entity.totalOfSentBundle;
         if (totalOfSentBundle != null) {
             stmt.bindLong(3, totalOfSentBundle);
         }
@@ -119,7 +119,7 @@ public class SentBundleSummaryDBDao extends AbstractDao<SentBundleSummaryDB, Lon
     public void readEntity(Cursor cursor, SentBundleSummaryDB entity, int offset) {
         entity.id = cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
         entity.totalOfSentAmount = cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
-        entity.totalOfSentBundle = cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2);
+        entity.totalOfSentBundle = cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2);
         entity.timeCreate = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
      }
     

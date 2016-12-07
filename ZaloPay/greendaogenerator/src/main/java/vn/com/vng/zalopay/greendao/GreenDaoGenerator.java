@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.ToMany;
 
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 49;
+    private static final int APP_DB_VERSION = 50;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -34,15 +34,15 @@ public class GreenDaoGenerator {
         sentBundleSummary.setConstructors(false);
         sentBundleSummary.addIdProperty();
         sentBundleSummary.addLongProperty("totalOfSentAmount");
-        sentBundleSummary.addIntProperty("totalOfSentBundle");
+        sentBundleSummary.addLongProperty("totalOfSentBundle");
         sentBundleSummary.addLongProperty("timeCreate");
 
         Entity receivePacketSummary = appSchema.addEntity("ReceivePacketSummaryDB");
         receivePacketSummary.setConstructors(false);
         receivePacketSummary.addIdProperty();
         receivePacketSummary.addLongProperty("totalOfRevamount");
-        receivePacketSummary.addIntProperty("totalOfRevPackage");
-        receivePacketSummary.addIntProperty("totalOfLuckiestDraw");
+        receivePacketSummary.addLongProperty("totalOfRevPackage");
+        receivePacketSummary.addLongProperty("totalOfLuckiestDraw");
         receivePacketSummary.addLongProperty("timeCreate");
 
         //Cache all bundle (contain sent & received)
@@ -63,20 +63,20 @@ public class GreenDaoGenerator {
         Property openTime = packageEntity.addLongProperty("openTime").getProperty();
         packageEntity.addLongProperty("amount");
         packageEntity.addStringProperty("sendMessage");
-        packageEntity.addIntProperty("isLuckiest");
+        packageEntity.addLongProperty("isLuckiest");
 
         Entity sentBundleEntity = appSchema.addEntity("SentBundleGD");
         sentBundleEntity.setConstructors(false);
         sentBundleEntity.addIdProperty().unique().notNull();//bundleId
         sentBundleEntity.addStringProperty("senderZaloPayID").notNull();//sendZaloPayID
-        sentBundleEntity.addIntProperty("type");
+        sentBundleEntity.addLongProperty("type");
         sentBundleEntity.addLongProperty("createTime");
         sentBundleEntity.addLongProperty("lastOpenTime");
-        sentBundleEntity.addIntProperty("totalLuck");
-        sentBundleEntity.addIntProperty("numOfOpenedPakages");
-        sentBundleEntity.addIntProperty("numOfPackages");
+        sentBundleEntity.addLongProperty("totalLuck");
+        sentBundleEntity.addLongProperty("numOfOpenedPakages");
+        sentBundleEntity.addLongProperty("numOfPackages");
         sentBundleEntity.addStringProperty("sendMessage");
-        sentBundleEntity.addIntProperty("status");
+        sentBundleEntity.addLongProperty("status");
         ToMany sentBundleToPackage = sentBundleEntity.addToMany(packageEntity, propertyBundleId);
         sentBundleToPackage.setName("sentPackages");
         sentBundleToPackage.orderDesc(openTime);
@@ -91,10 +91,10 @@ public class GreenDaoGenerator {
         receivePackageGD.addStringProperty("senderAvatar");
         receivePackageGD.addLongProperty("amount");
         receivePackageGD.addLongProperty("openedTime");
-        receivePackageGD.addIntProperty("status");
+        receivePackageGD.addLongProperty("status");
         receivePackageGD.addStringProperty("messageStatus");
         receivePackageGD.addStringProperty("message");
-        receivePackageGD.addIntProperty("isLuckiest");
+        receivePackageGD.addLongProperty("isLuckiest");
         receivePackageGD.addLongProperty("createTime");
         ToMany revBundleToPackage = receivePackageGD.addToMany(packageEntity, propertyBundleId);
         revBundleToPackage.setName("receivePackages");
@@ -107,9 +107,9 @@ public class GreenDaoGenerator {
         appInfoGD.addLongProperty("expiredTime");
         appInfoGD.addLongProperty("minAmountEach");
         appInfoGD.addLongProperty("maxTotalAmountPerBundle");
-        appInfoGD.addIntProperty("maxPackageQuantity");
-        appInfoGD.addIntProperty("maxCountHist");
-        appInfoGD.addIntProperty("maxMessageLength");
+        appInfoGD.addLongProperty("maxPackageQuantity");
+        appInfoGD.addLongProperty("maxCountHist");
+        appInfoGD.addLongProperty("maxMessageLength");
         appInfoGD.addLongProperty("bundleExpiredTime");
         appInfoGD.addLongProperty("minDivideAmount");
         appInfoGD.addLongProperty("maxAmountPerPackage");
@@ -126,14 +126,14 @@ public class GreenDaoGenerator {
         entity.addStringProperty("userName");
         entity.addStringProperty("displayName");
         entity.addStringProperty("avatar");
-        entity.addIntProperty("userGender");
+        entity.addLongProperty("userGender");
         entity.addStringProperty("birthday");
         entity.addBooleanProperty("usingApp");
         entity.addStringProperty("fulltextsearch");
 
         //merge from zalopay system
         entity.addStringProperty("zaloPayId");
-        entity.addIntProperty("status");
+        entity.addLongProperty("status");
         entity.addLongProperty("phoneNumber");
         entity.addStringProperty("zaloPayName");
     }
@@ -146,7 +146,7 @@ public class GreenDaoGenerator {
         entity.addStringProperty("displayName");
         entity.addStringProperty("avatar");
         entity.addStringProperty("phoneNumber");
-        entity.addIntProperty("transferType");
+        entity.addLongProperty("transferType");
         entity.addLongProperty("amount");
         entity.addStringProperty("message");
         entity.addLongProperty("timeCreate");
@@ -156,21 +156,21 @@ public class GreenDaoGenerator {
         Entity entity = schema.addEntity("AppResourceGD");
         entity.setConstructors(false);
 
-        entity.addIntProperty("appid").notNull().unique();
+        entity.addLongProperty("appid").notNull().unique();
         entity.addStringProperty("appname");
-        entity.addIntProperty("needdownloadrs");
+        entity.addLongProperty("needdownloadrs");
         entity.addStringProperty("imageurl");
         entity.addStringProperty("jsurl");
-        entity.addIntProperty("status");
+        entity.addLongProperty("status");
         entity.addStringProperty("checksum");
-        entity.addIntProperty("apptype");
+        entity.addLongProperty("apptype");
         entity.addStringProperty("weburl");
         entity.addStringProperty("iconurl");
-        entity.addIntProperty("sortOrder");
+        entity.addLongProperty("sortOrder");
 
-        entity.addIntProperty("stateDownload");
+        entity.addLongProperty("stateDownload");
         entity.addLongProperty("timeDownload");
-        entity.addIntProperty("numRetry");
+        entity.addLongProperty("numRetry");
 
     }
 
@@ -182,7 +182,7 @@ public class GreenDaoGenerator {
         Property pmcid = entity.addLongProperty("pmcid").notNull().getProperty();
 
         entity.addStringProperty("pmcname");
-        entity.addIntProperty("status");
+        entity.addLongProperty("status");
         entity.addLongProperty("minvalue");
         entity.addLongProperty("maxvalue");
         entity.addFloatProperty("feerate");
@@ -209,16 +209,16 @@ public class GreenDaoGenerator {
 
         entity.addStringProperty("platform");
         entity.addStringProperty("description");
-        entity.addIntProperty("pmcid");
+        entity.addLongProperty("pmcid");
         entity.addLongProperty("reqdate");
-        entity.addIntProperty("userchargeamt");
-        entity.addIntProperty("userfeeamt");
-        entity.addIntProperty("amount");
-        entity.addIntProperty("type");
-        entity.addIntProperty("sign");
+        entity.addLongProperty("userchargeamt");
+        entity.addLongProperty("userfeeamt");
+        entity.addLongProperty("amount");
+        entity.addLongProperty("type");
+        entity.addLongProperty("sign");
         entity.addStringProperty("username");
         entity.addStringProperty("appusername");
-        entity.addIntProperty("statustype");
+        entity.addLongProperty("statustype");
     }
 
     private static void addDataManifest(Schema schema) {
@@ -244,14 +244,14 @@ public class GreenDaoGenerator {
         entity.setConstructors(false);
         entity.addIdProperty().primaryKey().autoincrement();
         entity.addLongProperty("transid");
-        entity.addIntProperty("appid");
+        entity.addLongProperty("appid");
         entity.addLongProperty("timestamp");
         entity.addStringProperty("message");
         entity.addStringProperty("userid");
         entity.addStringProperty("destuserid");
-        entity.addIntProperty("area");
-        entity.addIntProperty("notificationstate");
-        entity.addIntProperty("notificationtype");
+        entity.addLongProperty("area");
+        entity.addLongProperty("notificationstate");
+        entity.addLongProperty("notificationtype");
         Property mtaid = entity.addLongProperty("mtaid").getProperty();
         Property mtuid = entity.addLongProperty("mtuid").getProperty();
         entity.addStringProperty("embeddata");
@@ -273,7 +273,7 @@ public class GreenDaoGenerator {
         entity.addStringProperty("displayName");
         entity.addStringProperty("avatar");
         entity.addStringProperty("birthday");
-        entity.addIntProperty("gender");
+        entity.addLongProperty("gender");
     }
 
 }

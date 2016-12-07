@@ -10,13 +10,13 @@ import com.google.gson.annotations.SerializedName;
 public class AppResourceEntity {
 
     @SerializedName("appid")
-    public int appid;
+    public long appid;
 
     @SerializedName("appname")
     public String appname;
 
     @SerializedName("needdownloadrs")
-    public int needdownloadrs;
+    public long needdownloadrs;
 
     @SerializedName("imageurl")
     public String imageurl;
@@ -25,13 +25,13 @@ public class AppResourceEntity {
     public String jsurl;
 
     @SerializedName("status")
-    public int status;
+    public long status;
 
     @SerializedName("checksum")
     public String checksum;
 
     @SerializedName("apptype")
-    public int apptype;
+    public long apptype;
 
     @SerializedName("weburl")
     public String weburl;
@@ -39,57 +39,60 @@ public class AppResourceEntity {
     @SerializedName("iconurl")
     public String iconurl;
 
-    public int sortOrder;
+    public long sortOrder;
 
     @Expose(deserialize = false, serialize = false)
-    public int stateDownload;
+    public long stateDownload;
 
     @Expose(deserialize = false, serialize = false)
     public long timeDownload;
 
     @Expose(deserialize = false, serialize = false)
-    public int numRetry;
+    public long numRetry;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AppResourceEntity that = (AppResourceEntity) o;
+        AppResourceEntity entity = (AppResourceEntity) o;
 
-        if (appid != that.appid) return false;
-        if (needdownloadrs != that.needdownloadrs) return false;
-        if (status != that.status) return false;
-        if (apptype != that.apptype) return false;
-        if (stateDownload != that.stateDownload) return false;
-        if (timeDownload != that.timeDownload) return false;
-        if (numRetry != that.numRetry) return false;
-        if (appname != null ? !appname.equals(that.appname) : that.appname != null) return false;
-        if (imageurl != null ? !imageurl.equals(that.imageurl) : that.imageurl != null)
+        if (appid != entity.appid) return false;
+        if (needdownloadrs != entity.needdownloadrs) return false;
+        if (status != entity.status) return false;
+        if (apptype != entity.apptype) return false;
+        if (sortOrder != entity.sortOrder) return false;
+        if (stateDownload != entity.stateDownload) return false;
+        if (timeDownload != entity.timeDownload) return false;
+        if (numRetry != entity.numRetry) return false;
+        if (appname != null ? !appname.equals(entity.appname) : entity.appname != null)
             return false;
-        if (jsurl != null ? !jsurl.equals(that.jsurl) : that.jsurl != null) return false;
-        if (checksum != null ? !checksum.equals(that.checksum) : that.checksum != null)
+        if (imageurl != null ? !imageurl.equals(entity.imageurl) : entity.imageurl != null)
             return false;
-        if (weburl != null ? !weburl.equals(that.weburl) : that.weburl != null) return false;
-        return iconurl != null ? iconurl.equals(that.iconurl) : that.iconurl == null;
+        if (jsurl != null ? !jsurl.equals(entity.jsurl) : entity.jsurl != null) return false;
+        if (checksum != null ? !checksum.equals(entity.checksum) : entity.checksum != null)
+            return false;
+        if (weburl != null ? !weburl.equals(entity.weburl) : entity.weburl != null) return false;
+        return iconurl != null ? iconurl.equals(entity.iconurl) : entity.iconurl == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = appid;
+        int result = (int) (appid ^ (appid >>> 32));
         result = 31 * result + (appname != null ? appname.hashCode() : 0);
-        result = 31 * result + needdownloadrs;
+        result = 31 * result + (int) (needdownloadrs ^ (needdownloadrs >>> 32));
         result = 31 * result + (imageurl != null ? imageurl.hashCode() : 0);
         result = 31 * result + (jsurl != null ? jsurl.hashCode() : 0);
-        result = 31 * result + status;
+        result = 31 * result + (int) (status ^ (status >>> 32));
         result = 31 * result + (checksum != null ? checksum.hashCode() : 0);
-        result = 31 * result + apptype;
+        result = 31 * result + (int) (apptype ^ (apptype >>> 32));
         result = 31 * result + (weburl != null ? weburl.hashCode() : 0);
         result = 31 * result + (iconurl != null ? iconurl.hashCode() : 0);
-        result = 31 * result + stateDownload;
+        result = 31 * result + (int) (sortOrder ^ (sortOrder >>> 32));
+        result = 31 * result + (int) (stateDownload ^ (stateDownload >>> 32));
         result = 31 * result + (int) (timeDownload ^ (timeDownload >>> 32));
-        result = 31 * result + numRetry;
+        result = 31 * result + (int) (numRetry ^ (numRetry >>> 32));
         return result;
     }
 }
