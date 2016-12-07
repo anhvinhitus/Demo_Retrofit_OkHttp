@@ -74,51 +74,59 @@ public class PaymentWrapper {
             } else {
                 EPaymentStatus resultStatus = pPaymentResult.paymentStatus;
                 Timber.d("pay onComplete resultStatus [%s]", pPaymentResult.paymentStatus);
-                if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS) {
-                    /*DMapCardResult cardResult = new DMapCardResult();
-                    cardResult.setCardLogo("MASTER.png");
-                    cardResult.setLast4Number("8668");
-                    cardResult.setBankName("Master card");*/
-                    if (mShowNotificationLinkCard) {
-                        mNavigator.startNotificationLinkCardActivity(viewListener.getActivity(),
-                                pPaymentResult.mapCardResult);
-                    }
-                    responseListener.onResponseSuccess(pPaymentResult);
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID) {
-                    responseListener.onResponseTokenInvalid();
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE) {
-                    //Hien update profile level 2
-                    startUpdateProfileLevel(null);
-                    responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD) {
-                    String walletTransId = null;
-                    if (pPaymentResult.paymentInfo != null) {
-                        walletTransId = pPaymentResult.paymentInfo.walletTransID;
-                    }
-                    //Hien update profile level 2
-                    startUpdateProfileLevel(walletTransId);
-                    responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
-                } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
-                    responseListener.onResponseError(PaymentError.ERR_CODE_MONEY_NOT_ENOUGH);
-                    responseListener.onNotEnoughMoney();
-                } else {
-                    if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_CLOSE) {
+                switch (resultStatus) {
+                    case ZPC_TRANXSTATUS_SUCCESS:
+                        if (mShowNotificationLinkCard) {
+                            mNavigator.startNotificationLinkCardActivity(viewListener.getActivity(),
+                                    pPaymentResult.mapCardResult);
+                        }
+                        responseListener.onResponseSuccess(pPaymentResult);
+                        break;
+                    case ZPC_TRANXSTATUS_TOKEN_INVALID:
+                        responseListener.onResponseTokenInvalid();
+                        break;
+                    case ZPC_TRANXSTATUS_UPGRADE:
+                        //Hien update profile level 2
+                        startUpdateProfileLevel(null);
+                        responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
+                        break;
+                    case ZPC_TRANXSTATUS_UPGRADE_SAVECARD:
+                        String walletTransId = null;
+                        if (pPaymentResult.paymentInfo != null) {
+                            walletTransId = pPaymentResult.paymentInfo.walletTransID;
+                        }
+                        //Hien update profile level 2
+                        startUpdateProfileLevel(walletTransId);
+                        responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
+                        break;
+                    case ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH:
+                        responseListener.onResponseError(PaymentError.ERR_CODE_MONEY_NOT_ENOUGH);
+                        responseListener.onNotEnoughMoney();
+                        break;
+                    case ZPC_TRANXSTATUS_CLOSE:
                         responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID) {
+                        break;
+                    case ZPC_TRANXSTATUS_INPUT_INVALID:
                         responseListener.onResponseError(PaymentError.ERR_CODE_INPUT);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL) {
+                        break;
+                    case ZPC_TRANXSTATUS_FAIL:
                         responseListener.onResponseError(PaymentError.ERR_CODE_FAIL);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING) {
+                        break;
+                    case ZPC_TRANXSTATUS_PROCESSING:
                         responseListener.onResponseError(PaymentError.ERR_CODE_PROCESSING);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE) {
+                        break;
+                    case ZPC_TRANXSTATUS_SERVICE_MAINTENANCE:
                         responseListener.onResponseError(PaymentError.ERR_CODE_SERVICE_MAINTENANCE);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET) {
+                        break;
+                    case ZPC_TRANXSTATUS_NO_INTERNET:
                         responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NO_INTERNET);
-                    } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD) {
+                        break;
+                    case ZPC_TRANXSTATUS_NEED_LINKCARD:
                         responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD);
-                    } else {
+                        break;
+                    default:
                         responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
-                    }
+                        break;
                 }
                 if (resultStatus != EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
                     mPaymentInfoNotEnoughMoney = null;
@@ -130,14 +138,19 @@ public class PaymentWrapper {
         @Override
         public void onError(CError cError) {
             Timber.d("pay onError code [%s] msg [%s]", cError.payError, cError.messError);
-            if (cError.payError == EPayError.DATA_INVALID) {
-                responseListener.onParameterError(cError.messError);
-            } else if (cError.payError == EPayError.COMPONENT_NULL) {
-                responseListener.onAppError(cError.messError);
-            } else if (cError.payError == EPayError.NETWORKING_ERROR) {
-                responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
-            } else {
-                responseListener.onAppError(cError.messError);
+            switch (cError.payError) {
+                case DATA_INVALID:
+                    responseListener.onParameterError(cError.messError);
+                    break;
+                case COMPONENT_NULL:
+                    responseListener.onAppError(cError.messError);
+                    break;
+                case NETWORKING_ERROR:
+                    responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
+                    break;
+                default:
+                    responseListener.onAppError(cError.messError);
+                    break;
             }
         }
 
