@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -309,6 +311,22 @@ public class TransferFragment extends BaseFragment implements ITransferView {
                         mPresenter.transferMoney();
                     }
                 });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
+            if (resultCode == Activity.RESULT_OK) {
+                mPresenter.onDepositSuccess();
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public Fragment getFragment() {
+        return this;
     }
 
     @Override

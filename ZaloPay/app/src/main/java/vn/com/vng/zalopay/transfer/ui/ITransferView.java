@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
@@ -11,6 +12,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  */
 public interface ITransferView extends ILoadDataView {
     Activity getActivity();
+    Fragment getFragment();
 
     void onTokenInvalid();
 

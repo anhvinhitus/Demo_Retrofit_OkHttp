@@ -220,9 +220,19 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 if (mView == null) {
                     return;
                 }
-                mNavigator.startDepositActivity(mView.getContext());
+                mNavigator.startDepositForResultActivity(mView.getFragment());
             }
         });
+    }
+
+    void onDepositSuccess() {
+        Timber.d("onDepositSuccess");
+        if (paymentWrapper == null) {
+            return;
+        }
+        if (paymentWrapper.hasOrderNotPayBecauseNotEnoughMoney()) {
+            paymentWrapper.continuePayAfterDeposit();
+        }
     }
 
     private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
