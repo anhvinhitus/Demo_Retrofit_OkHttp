@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.view;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 
@@ -10,6 +11,8 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
  */
 public interface IQRScanView extends ILoadDataView {
     Activity getActivity();
+    Fragment getFragment();
+
     void onTokenInvalid();
     void resumeScanner();
     void showWarning(String message, ZPWOnEventDialogListener cancelListener);

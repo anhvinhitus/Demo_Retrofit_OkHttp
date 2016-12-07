@@ -69,11 +69,12 @@ public interface Constants {
     String COMMANDTYPE = "commandType";
     String RECORDNAME = "recordName";
 
+    int ZALOPAY_APP_ID = BuildConfig.ZALOPAY_APP_ID;
     int REQUEST_CODE_TRANSFER = 124;
 //    int REQUEST_CODE_INTRO = 125;
     int REQUEST_CODE_CARD_SUPPORT = 126;
     int REQUEST_CODE_TRANSFER_VIA_ZALOPAYID = 127;
-    int ZALOPAY_APP_ID = BuildConfig.ZALOPAY_APP_ID;
+    int REQUEST_CODE_DEPOSIT = 128;
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
 
     //Contain request code that request permission in Android 6

@@ -146,6 +146,12 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startDepositForResultActivity(Fragment fragment) {
+        Intent intent = new Intent(fragment.getContext(), BalanceTopupActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_DEPOSIT);
+    }
+
     public void startScanToPayActivity(Activity activity) {
         Intent intent = new Intent(activity, ScanToPayActivity.class);
         activity.startActivity(intent);

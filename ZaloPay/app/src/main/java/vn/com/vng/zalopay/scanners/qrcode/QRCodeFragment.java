@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
@@ -80,6 +82,11 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         getAppComponent().monitorTiming().finishEvent(MonitorEvents.QR_SCANNING);
         ZPAnalytics.trackEvent(ZPEvents.SCANQR_GETCODE);
         qrCodePresenter.pay(result);
+    }
+
+    @Override
+    public Fragment getFragment() {
+        return this;
     }
 
     @Override
@@ -232,6 +239,10 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOPHOTO);
+            }
+        } else if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
+            if (resultCode == Activity.RESULT_OK) {
+                qrCodePresenter.onDepositSuccess();
             }
         }
     }

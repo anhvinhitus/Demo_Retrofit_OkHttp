@@ -56,6 +56,8 @@ public class PaymentWrapper {
     private final TransactionStore.Repository transactionRepository;
     private final Navigator mNavigator = AndroidApplication.instance().getAppComponent().navigator();
     private final boolean mShowNotificationLinkCard;
+    public ZPWPaymentInfo mPaymentInfoNotEnoughMoney;
+    public EPaymentChannel mPaymentChannelEnoughMoney;
 
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
         @Override
@@ -67,6 +69,8 @@ public class PaymentWrapper {
                 } else {
                     responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
                 }
+                mPaymentInfoNotEnoughMoney = null;
+                mPaymentChannelEnoughMoney = null;
             } else {
                 EPaymentStatus resultStatus = pPaymentResult.paymentStatus;
                 Timber.d("pay onComplete resultStatus [%s]", pPaymentResult.paymentStatus);
@@ -115,6 +119,10 @@ public class PaymentWrapper {
                     } else {
                         responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
                     }
+                }
+                if (resultStatus != EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
+                    mPaymentInfoNotEnoughMoney = null;
+                    mPaymentChannelEnoughMoney = null;
                 }
             }
         }
@@ -336,9 +344,10 @@ public class PaymentWrapper {
             paymentInfo.userInfo.balance = balanceRepository.currentBalance();
         }
 
-
         Timber.d("Call Pay to sdk activity [%s] paymentChannel [%s] paymentInfo [%s]",
                 viewListener.getActivity(), paymentChannel, paymentInfo);
+        mPaymentInfoNotEnoughMoney = paymentInfo;
+        mPaymentChannelEnoughMoney = paymentChannel;
         WalletSDKPayment.pay(viewListener.getActivity(), paymentChannel, paymentInfo, zpPaymentListener);
     }
 
@@ -465,5 +474,16 @@ public class PaymentWrapper {
         Subscription subscription = balanceRepository.updateBalance()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
+    }
+
+    public boolean hasOrderNotPayBecauseNotEnoughMoney() {
+        return (mPaymentInfoNotEnoughMoney != null);
+    }
+
+    public void continuePayAfterDeposit() {
+        if (mPaymentInfoNotEnoughMoney == null) {
+            return;
+        }
+        callPayAPI(mPaymentInfoNotEnoughMoney, mPaymentChannelEnoughMoney);
     }
 }

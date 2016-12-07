@@ -11,4 +11,9 @@ public class BalanceTopupActivity extends BaseToolBarActivity {
         return BalanceTopupFragment.newInstance();
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
+    }
 }

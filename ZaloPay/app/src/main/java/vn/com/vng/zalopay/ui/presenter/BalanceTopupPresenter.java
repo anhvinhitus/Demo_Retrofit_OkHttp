@@ -87,9 +87,10 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
 
             @Override
             public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                if (mView == null) {
+                if (mView == null || mView.getActivity() == null) {
                     return;
                 }
+                mView.getActivity().setResult(Activity.RESULT_OK);
                 mView.getActivity().finish();
             }
 

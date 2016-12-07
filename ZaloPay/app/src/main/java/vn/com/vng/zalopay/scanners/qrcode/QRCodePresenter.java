@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -157,11 +156,11 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
             @Override
             public void onNotEnoughMoney() {
-                if (mView == null) {
+                if (mView == null || mView.getFragment() == null) {
                     return;
                 }
 
-                mNavigator.startDepositActivity(mApplicationContext);
+                mNavigator.startDepositForResultActivity(mView.getFragment());
             }
         });
     }
@@ -412,6 +411,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         final Uri uri = data.getData();
         if (uri == null) {
             qrDataInvalid();
+            return;
         }
         Timber.d("pay by image uri[%s]", uri.toString());
         showLoadingView();
@@ -458,4 +458,13 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                 });
     }
 
+    void onDepositSuccess() {
+        Timber.d("onDepositSuccess");
+        if (paymentWrapper == null) {
+            return;
+        }
+        if (paymentWrapper.hasOrderNotPayBecauseNotEnoughMoney()) {
+            paymentWrapper.continuePayAfterDeposit();
+        }
+    }
 }
