@@ -35,6 +35,10 @@ public class PhoneUtil {
 
     public static String formatPhoneNumber(String rawNumber) {
 
+        if (TextUtils.isEmpty(rawNumber)) {
+            return rawNumber;
+        }
+
         String phoneNumber = rawNumber.replaceAll("\\D+", "");
 
         if (!isPhoneNumber(phoneNumber)) {
