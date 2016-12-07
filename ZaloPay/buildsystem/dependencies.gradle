@@ -16,7 +16,7 @@ ext {
 
     javaxAnnotationVersion = '10.0-b28'
 
-    gsonVersion = '2.6.2'
+    gsonVersion = '2.8.0'
 
     okHttpVersion = '3.4.1'
     okHttpLoggingInterceptor = '3.4.1'
@@ -46,8 +46,8 @@ ext {
     zxingAndroidCoreVersion = "3.2.1"
 
     reactNativeVersion = "0.31.1"
-    animatedGifVersion = "0.13.0"
-    frescoVersion = "0.13.0"
+    animatedGifVersion = "0.14.1"
+    frescoVersion = "0.14.1"
 
     multidexVersion = "1.0.1"
 
