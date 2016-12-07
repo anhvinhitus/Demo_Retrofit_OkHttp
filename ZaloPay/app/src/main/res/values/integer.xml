@@ -5,8 +5,8 @@
     <integer name="max_length_message">50</integer>
     <integer name="max_length_zalopay_name">24</integer>
     <integer name="max_length_edittext_money">13</integer>
-    <integer name="max_length_email">128</integer>
-    <integer name="max_length_identify">64</integer>
+    <integer name="max_length_email">50</integer>
+    <integer name="max_length_identify">50</integer>
     <integer name="max_length_otp">6</integer>
     <integer name="max_length_phone">20</integer>
 </resources>
