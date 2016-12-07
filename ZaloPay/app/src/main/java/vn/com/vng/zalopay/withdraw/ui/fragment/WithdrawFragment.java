@@ -1,8 +1,11 @@
 package vn.com.vng.zalopay.withdraw.ui.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
@@ -205,6 +208,17 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
+            if (resultCode == Activity.RESULT_OK) {
+                mPresenter.onDepositSuccess();
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void showLoading() {
         super.showProgressDialog();
     }
@@ -227,6 +241,11 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     @Override
     public void showError(String message) {
         showErrorDialog(message);
+    }
+
+    @Override
+    public Fragment getFragment() {
+        return this;
     }
 
     @Override

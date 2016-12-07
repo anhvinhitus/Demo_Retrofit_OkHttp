@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.webview.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -112,6 +113,11 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
     private void initWebView(View rootView) {
         ZPWebView webView = (ZPWebView) rootView.findViewById(R.id.webview);
         mWebViewProcessor = new ZPWebViewProcessor(webView, mTimeOutListener, this);
+    }
+
+    @Override
+    public Fragment getFragment() {
+        return this;
     }
 
     @Override

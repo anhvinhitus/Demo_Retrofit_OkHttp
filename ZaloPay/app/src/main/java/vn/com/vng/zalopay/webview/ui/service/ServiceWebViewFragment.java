@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.webview.ui.service;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,6 +14,7 @@ import android.webkit.ValueCallback;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.webview.ui.IWebView;
 import vn.com.vng.zalopay.webview.ui.WebViewActivity;
@@ -116,4 +119,14 @@ public class ServiceWebViewFragment extends WebViewFragment {
         return super.onBackPressed();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
+            if (resultCode == Activity.RESULT_OK) {
+                mPresenter.onDepositSuccess();
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

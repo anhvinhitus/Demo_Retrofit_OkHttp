@@ -1,8 +1,10 @@
 package vn.com.vng.zalopay.scanners.nfc;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,6 +13,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
@@ -162,6 +165,11 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
     }
 
     @Override
+    public Fragment getFragment() {
+        return this;
+    }
+
+    @Override
     public void onStartFragment() {
         if (readerPresenter != null) {
             readerPresenter.setupForegroundDispatch();
@@ -183,5 +191,16 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
         if (readerPresenter != null) {
             readerPresenter.handleDispatch(intent);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
+            if (resultCode == Activity.RESULT_OK) {
+                readerPresenter.onDepositSuccess();
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

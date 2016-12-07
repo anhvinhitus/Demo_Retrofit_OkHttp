@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.scanners.nfc;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 
 /**
  * Created by huuhoa on 6/1/16.
@@ -17,4 +18,6 @@ interface NfcView {
     Context getContext();
 
     Activity getActivity();
+
+    Fragment getFragment();
 }

@@ -231,10 +231,20 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
                     @Override
                     public void onNotEnoughMoney() {
                         if (mNfcView != null) {
-                            mNavigator.startDepositActivity(mNfcView.getActivity());
+                            mNavigator.startDepositForResultActivity(mNfcView.getFragment());
                         }
                     }
                 });
+    }
+
+    void onDepositSuccess() {
+        Timber.d("onDepositSuccess");
+        if (paymentWrapper == null) {
+            return;
+        }
+        if (paymentWrapper.hasOrderNotPayBecauseNotEnoughMoney()) {
+            paymentWrapper.continuePayAfterDeposit();
+        }
     }
 
     /**

@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.webview.ui;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
@@ -11,6 +12,8 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 public interface IWebView extends ILoadDataView {
 
     Activity getActivity();
+
+    Fragment getFragment();
 
     void showInputErrorDialog();
 

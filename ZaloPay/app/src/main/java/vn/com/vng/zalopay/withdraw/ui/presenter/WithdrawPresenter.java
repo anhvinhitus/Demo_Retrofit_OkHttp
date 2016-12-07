@@ -131,7 +131,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
                 if (mView == null) {
                     return;
                 }
-                mNavigator.startDepositActivity(mView.getContext());
+                mNavigator.startDepositForResultActivity(mView.getFragment());
             }
         });
     }
@@ -157,6 +157,16 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
                 .subscribe(new CreateWalletOrderSubscriber());
 
         mCompositeSubscription.add(subscription);
+    }
+
+    public void onDepositSuccess() {
+        Timber.d("onDepositSuccess");
+        if (paymentWrapper == null) {
+            return;
+        }
+        if (paymentWrapper.hasOrderNotPayBecauseNotEnoughMoney()) {
+            paymentWrapper.continuePayAfterDeposit();
+        }
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
