@@ -304,7 +304,7 @@ class SocketChannelConnection {
             mSelector.close();
             mChannel.socket().close();
             mChannel.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Timber.w(e, "Exception while disconnect connection");
         } finally {
             mListenable.onDisconnected(reason);
