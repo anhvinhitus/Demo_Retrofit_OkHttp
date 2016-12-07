@@ -153,7 +153,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveBackImage.setClickable(false);
         btnRemoveAvatar.setClickable(false);
         mBtnContinue.setEnabled(false);
-        mBtnConfirm.setEnabled(false);
+        mBtnSubmitView.setEnabled(false);
 
         focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
 
