@@ -115,6 +115,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.btnContinue)
     Button mBtnContinue;
 
+    @BindView(R.id.btnConfirm)
+    Button mBtnConfirm;
+
     boolean focusIdentity;
 
     @Override
@@ -151,6 +154,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveBackImage.setClickable(false);
         btnRemoveAvatar.setClickable(false);
         mBtnContinue.setEnabled(false);
+        mBtnConfirm.setEnabled(false);
 
         focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
 
@@ -431,6 +435,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mTvFgIdentityView.setVisibility(View.GONE);
         btnRemoveFrontImage.setClickable(true);
         btnRemoveFrontImage.setImageResource(R.drawable.ic_remove_circle);
+
+        refreshBtnConfirmState();
     }
 
     private void clearFrontImage() {
@@ -440,6 +446,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveFrontImage.setClickable(false);
         btnRemoveFrontImage.setImageResource(R.drawable.ic_camera);
         mUriFgIdentity = null;
+
+        refreshBtnConfirmState();
     }
 
     private void loadAvatar(@Nullable Uri uri) {
@@ -454,6 +462,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mTvAvatarView.setVisibility(View.GONE);
         btnRemoveAvatar.setClickable(true);
         btnRemoveAvatar.setImageResource(R.drawable.ic_remove_circle);
+
+        refreshBtnConfirmState();
     }
 
     private void clearAvatar() {
@@ -464,6 +474,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveAvatar.setClickable(false);
         btnRemoveAvatar.setImageResource(R.drawable.ic_camera);
         mUriAvatar = null;
+
+        refreshBtnConfirmState();
     }
 
     private void loadBackgroundImage(@Nullable Uri uri) {
@@ -479,6 +491,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mTvBgIdentityView.setVisibility(View.GONE);
         btnRemoveBackImage.setClickable(true);
         btnRemoveBackImage.setImageResource(R.drawable.ic_remove_circle);
+
+        refreshBtnConfirmState();
     }
 
     private void clearBackgroundImage() {
@@ -488,6 +502,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveBackImage.setClickable(false);
         btnRemoveBackImage.setImageResource(R.drawable.ic_camera);
         mUriBgIdentity = null;
+
+        refreshBtnConfirmState();
     }
 
     @Override
@@ -532,7 +548,16 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         loadFrontImage(mUriFgIdentity);
         loadBackgroundImage(mUriBgIdentity);
         loadAvatar(mUriAvatar);
+    }
 
+    private void refreshBtnConfirmState() {
+        if (mUriFgIdentity == null
+                || mUriBgIdentity == null
+                || mUriAvatar == null) {
+            mBtnConfirm.setEnabled(false);
+        } else {
+            mBtnConfirm.setEnabled(true);
+        }
     }
 
     @OnFocusChange({R.id.edtEmail, R.id.edtIdentity})
