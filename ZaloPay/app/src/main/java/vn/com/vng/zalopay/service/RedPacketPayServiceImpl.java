@@ -100,7 +100,7 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         if (paymentWrapper == null) {
             return;
         }
-        if (paymentWrapper.hasOrderNotPayBecauseNotEnoughMoney()) {
+        if (paymentWrapper.hasPendingOrder()) {
             paymentWrapper.continuePayAfterDeposit();
         }
     }
