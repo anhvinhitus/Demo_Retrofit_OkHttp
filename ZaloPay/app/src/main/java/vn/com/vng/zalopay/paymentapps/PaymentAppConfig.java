@@ -61,7 +61,7 @@ public class PaymentAppConfig {
     }
 
     public static AppResource getAppResource(long appId) {
-        return APP_RESOURCE_MAP.get(appId);
+        return APP_RESOURCE_MAP.get((int) appId);
     }
 
 }
