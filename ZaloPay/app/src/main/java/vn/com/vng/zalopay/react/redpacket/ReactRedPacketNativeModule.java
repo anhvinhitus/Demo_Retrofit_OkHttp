@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.react.redpacket;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -251,12 +250,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     private Observable<Boolean> updateBalance() {
-        return mBalanceRepository.updateBalance().map(new Func1<Long, Boolean>() {
-            @Override
-            public Boolean call(Long aLong) {
-                return Boolean.TRUE;
-            }
-        })
+        return mBalanceRepository.updateBalance()
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<Long, Boolean>() {
+                    @Override
+                    public Boolean call(Long aLong) {
+                        return Boolean.TRUE;
+                    }
+                })
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends Boolean>>() {
                     @Override
                     public Observable<? extends Boolean> call(Throwable throwable) {
@@ -319,6 +320,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         }
         isRunningGetStatus = true;
         Subscription subscription = mRedPackageRepository.getpackagestatus(packageId, zpTransId, "")
+                .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<PackageStatus>() {
                     @Override
                     public void onError(Throwable e) {
@@ -340,12 +342,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     private void onGetPackageStatus(long packageId, PackageStatus packageStatus) {
         Subscription subscription = mRedPackageRepository.setPacketStatus(packageId, packageStatus.amount, RedPacketStatus.Opened.getValue(), null)
+                .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Void>());
         compositeSubscription.add(subscription);
 
         Subscription balanceSub = updateBalance()
                 .subscribe(new DefaultSubscriber<Boolean>());
-
         compositeSubscription.add(balanceSub);
     }
 
