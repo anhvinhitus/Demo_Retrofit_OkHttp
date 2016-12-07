@@ -164,7 +164,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
         if (paymentWrapper == null) {
             return;
         }
-        if (paymentWrapper.hasOrderNotPayBecauseNotEnoughMoney()) {
+        if (paymentWrapper.hasPendingOrder()) {
             paymentWrapper.continuePayAfterDeposit();
         }
     }

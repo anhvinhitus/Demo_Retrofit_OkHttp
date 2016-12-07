@@ -279,7 +279,7 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         if (mPaymentWrapper == null) {
             return;
         }
-        if (mPaymentWrapper.hasOrderNotPayBecauseNotEnoughMoney()) {
+        if (mPaymentWrapper.hasPendingOrder()) {
             mPaymentWrapper.continuePayAfterDeposit();
         }
     }

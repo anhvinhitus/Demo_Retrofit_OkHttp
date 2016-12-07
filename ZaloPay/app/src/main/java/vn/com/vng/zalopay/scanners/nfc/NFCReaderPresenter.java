@@ -242,7 +242,7 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
         if (paymentWrapper == null) {
             return;
         }
-        if (paymentWrapper.hasOrderNotPayBecauseNotEnoughMoney()) {
+        if (paymentWrapper.hasPendingOrder()) {
             paymentWrapper.continuePayAfterDeposit();
         }
     }

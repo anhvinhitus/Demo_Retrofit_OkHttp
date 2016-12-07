@@ -463,7 +463,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         if (paymentWrapper == null) {
             return;
         }
-        if (paymentWrapper.hasOrderNotPayBecauseNotEnoughMoney()) {
+        if (paymentWrapper.hasPendingOrder()) {
             paymentWrapper.continuePayAfterDeposit();
         }
     }

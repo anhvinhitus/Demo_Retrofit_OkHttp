@@ -56,8 +56,8 @@ public class PaymentWrapper {
     private final TransactionStore.Repository transactionRepository;
     private final Navigator mNavigator = AndroidApplication.instance().getAppComponent().navigator();
     private final boolean mShowNotificationLinkCard;
-    public ZPWPaymentInfo mPaymentInfoNotEnoughMoney;
-    public EPaymentChannel mPaymentChannelEnoughMoney;
+    public ZPWPaymentInfo mPendingOrder;
+    public EPaymentChannel mPendingChannel;
 
     private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
         @Override
@@ -69,8 +69,7 @@ public class PaymentWrapper {
                 } else {
                     responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
                 }
-                mPaymentInfoNotEnoughMoney = null;
-                mPaymentChannelEnoughMoney = null;
+                clearPendingOrder();
             } else {
                 EPaymentStatus resultStatus = pPaymentResult.paymentStatus;
                 Timber.d("pay onComplete resultStatus [%s]", pPaymentResult.paymentStatus);
@@ -128,9 +127,9 @@ public class PaymentWrapper {
                         responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
                         break;
                 }
+
                 if (resultStatus != EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
-                    mPaymentInfoNotEnoughMoney = null;
-                    mPaymentChannelEnoughMoney = null;
+                    clearPendingOrder();
                 }
             }
         }
@@ -359,8 +358,8 @@ public class PaymentWrapper {
 
         Timber.d("Call Pay to sdk activity [%s] paymentChannel [%s] paymentInfo [%s]",
                 viewListener.getActivity(), paymentChannel, paymentInfo);
-        mPaymentInfoNotEnoughMoney = paymentInfo;
-        mPaymentChannelEnoughMoney = paymentChannel;
+        mPendingOrder = paymentInfo;
+        mPendingChannel = paymentChannel;
         WalletSDKPayment.pay(viewListener.getActivity(), paymentChannel, paymentInfo, zpPaymentListener);
     }
 
@@ -489,14 +488,20 @@ public class PaymentWrapper {
                 .subscribe(new DefaultSubscriber<>());
     }
 
-    public boolean hasOrderNotPayBecauseNotEnoughMoney() {
-        return (mPaymentInfoNotEnoughMoney != null);
+    public boolean hasPendingOrder() {
+        return (mPendingOrder != null);
+    }
+
+    private void clearPendingOrder() {
+        mPendingOrder = null;
+        mPendingChannel = null;
     }
 
     public void continuePayAfterDeposit() {
-        if (mPaymentInfoNotEnoughMoney == null) {
+        if (!hasPendingOrder()) {
             return;
         }
-        callPayAPI(mPaymentInfoNotEnoughMoney, mPaymentChannelEnoughMoney);
+
+        callPayAPI(mPendingOrder, mPendingChannel);
     }
 }
