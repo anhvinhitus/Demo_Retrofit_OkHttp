@@ -56,7 +56,6 @@ ext {
     parcelerVersion = "1.1.5"
 
     zalopayanalyticsVersion = "1.4"
-    debugviewerVersion = "1.0"
 
     cborVersion = "0.7"
 
@@ -108,8 +107,6 @@ ext {
             parceler_apt           : "org.parceler:parceler:${parcelerVersion}",
 
             zalopay_analytics      : "vn.com.zalopay:analytics:${zalopayanalyticsVersion}",
-            debugViewer            : "vn.com.vng:debugviewer:${debugviewerVersion}",
-            debugViewer_noops      : "vn.com.vng:debugviewer-noops:${debugviewerVersion}",
 
             cbor                   : "co.nstant.in:cbor:${cborVersion}",
 

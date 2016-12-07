@@ -3,7 +3,6 @@ package vn.com.vng.zalopay;
 import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
-import android.support.annotation.Nullable;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
@@ -22,12 +21,7 @@ import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
-import vn.com.vng.debugviewer.DebugViewer;
 import vn.com.vng.zalopay.app.AppLifeCycle;
-import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.exception.InvitationCodeException;
-import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
-import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
@@ -77,13 +71,6 @@ public class AndroidApplication extends Application {
             AndroidDevMetrics.initWith(this);
             StrictMode.enableDefaults();
             LeakCanary.install(this);
-            DebugViewer.registerInstance(this);
-            Timber.plant(new Timber.DebugTree() {
-                @Override
-                protected void log(int priority, String tag, String message, Throwable t) {
-                    DebugViewer.postLog(priority, tag, message);
-                }
-            });
         } else {
             FLog.setMinimumLoggingLevel(Log.ERROR);
             Timber.plant(new CrashlyticsTree());
