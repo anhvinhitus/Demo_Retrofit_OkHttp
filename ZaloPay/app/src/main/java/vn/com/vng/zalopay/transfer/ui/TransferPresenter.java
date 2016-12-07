@@ -222,16 +222,23 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 }
                 mNavigator.startDepositForResultActivity(mView.getFragment());
             }
+        }, new PaymentWrapper.IRedirectListener() {
+            @Override
+            public void startUpdateProfileLevel(String walletTransId) {
+                if (mView == null || mView.getFragment() == null) {
+                    return;
+                }
+                mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
+            }
         });
     }
 
-    void onDepositSuccess() {
-        Timber.d("onDepositSuccess");
+    void payPendingOrder() {
         if (paymentWrapper == null) {
             return;
         }
         if (paymentWrapper.hasPendingOrder()) {
-            paymentWrapper.continuePayAfterDeposit();
+            paymentWrapper.continuePayPendingOrder();
         }
     }
 

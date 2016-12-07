@@ -89,19 +89,26 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
                     navigator.startDepositForResultActivity(mWeakReference.get());
                 }
             }
+        }, new PaymentWrapper.IRedirectListener() {
+            @Override
+            public void startUpdateProfileLevel(String walletTransId) {
+                if (mWeakReference.get() == null) {
+                    return;
+                }
+                navigator.startUpdateProfile2ForResult(mWeakReference.get(), walletTransId);
+            }
         }, false);
 
         this.paymentWrapper.payWithOrder(bundleOrder);
     }
 
     @Override
-    public void onDepositSuccess() {
-        Timber.d("onDepositSuccess");
+    public void payPendingOrder() {
         if (paymentWrapper == null) {
             return;
         }
         if (paymentWrapper.hasPendingOrder()) {
-            paymentWrapper.continuePayAfterDeposit();
+            paymentWrapper.continuePayPendingOrder();
         }
     }
 

@@ -150,6 +150,14 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
                 applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
                 applicationSession.clearUserSession();
             }
+        }, new PaymentWrapper.IRedirectListener() {
+            @Override
+            public void startUpdateProfileLevel(String walletTransId) {
+                if (mView == null || mView.getFragment() == null) {
+                    return;
+                }
+                mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
+            }
         });
     }
 
@@ -274,13 +282,12 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
 
     }
 
-    public void onDepositSuccess() {
-        Timber.d("onDepositSuccess");
+    public void payPendingOrder() {
         if (mPaymentWrapper == null) {
             return;
         }
         if (mPaymentWrapper.hasPendingOrder()) {
-            mPaymentWrapper.continuePayAfterDeposit();
+            mPaymentWrapper.continuePayPendingOrder();
         }
     }
 }

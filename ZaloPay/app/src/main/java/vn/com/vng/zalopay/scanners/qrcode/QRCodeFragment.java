@@ -21,7 +21,6 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
@@ -242,7 +241,11 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
             }
         } else if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
             if (resultCode == Activity.RESULT_OK) {
-                qrCodePresenter.onDepositSuccess();
+                qrCodePresenter.payPendingOrder();
+            }
+        } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
+            if (resultCode == Activity.RESULT_OK) {
+                qrCodePresenter.payPendingOrder();
             }
         }
     }

@@ -234,16 +234,23 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
                             mNavigator.startDepositForResultActivity(mNfcView.getFragment());
                         }
                     }
+                }, new PaymentWrapper.IRedirectListener() {
+                    @Override
+                    public void startUpdateProfileLevel(String walletTransId) {
+                        if (mNfcView == null || mNfcView.getFragment() == null) {
+                            return;
+                        }
+                        mNavigator.startUpdateProfile2ForResult(mNfcView.getFragment(), walletTransId);
+                    }
                 });
     }
 
-    void onDepositSuccess() {
-        Timber.d("onDepositSuccess");
+    void payPendingOrder() {
         if (paymentWrapper == null) {
             return;
         }
         if (paymentWrapper.hasPendingOrder()) {
-            paymentWrapper.continuePayAfterDeposit();
+            paymentWrapper.continuePayPendingOrder();
         }
     }
 

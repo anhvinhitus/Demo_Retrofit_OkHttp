@@ -15,13 +15,9 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
-import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.WaveView;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -197,7 +193,12 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
             if (resultCode == Activity.RESULT_OK) {
-                readerPresenter.onDepositSuccess();
+                readerPresenter.payPendingOrder();
+            }
+            return;
+        } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
+            if (resultCode == Activity.RESULT_OK) {
+                readerPresenter.payPendingOrder();
             }
             return;
         }

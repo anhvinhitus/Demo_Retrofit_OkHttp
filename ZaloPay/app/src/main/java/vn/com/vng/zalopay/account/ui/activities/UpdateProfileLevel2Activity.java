@@ -203,6 +203,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
                         return;
                     }
                     showToastLonger(getString(R.string.txt_link_card_success));
+                    setResult(RESULT_OK);
                     getActivity().finish();
                 }
 
@@ -216,10 +217,12 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
                     } else {
                         showToastLonger(s);
                     }
+                    setResult(RESULT_OK);
                     getActivity().finish();
                 }
             });
         } else if (getActivity() != null && !getActivity().isFinishing()) {
+            setResult(RESULT_OK);
             getActivity().finish();
         }
     }
@@ -235,6 +238,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
                 return;
             }
         }
+        setResult(RESULT_CANCELED);
         super.onBackPressed();
     }
 }

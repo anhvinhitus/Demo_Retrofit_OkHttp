@@ -291,8 +291,13 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
             if (resultCode == Activity.RESULT_OK) {
-                paymentService.onDepositSuccess();
+                paymentService.payPendingOrder();
             }
+        } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
+            if (resultCode == Activity.RESULT_OK) {
+                paymentService.payPendingOrder();
+            }
+            return;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

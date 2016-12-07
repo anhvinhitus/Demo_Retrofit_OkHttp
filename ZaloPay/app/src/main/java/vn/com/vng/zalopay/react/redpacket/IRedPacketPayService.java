@@ -10,5 +10,5 @@ import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
  */
 public interface IRedPacketPayService {
     void pay(Activity activity, BundleOrder bundleOrder, RedPacketPayListener listener);
-    void onDepositSuccess();
+    void payPendingOrder();
 }

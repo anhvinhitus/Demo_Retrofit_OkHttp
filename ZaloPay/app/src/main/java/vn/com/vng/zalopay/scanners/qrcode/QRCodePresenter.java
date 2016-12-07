@@ -162,6 +162,15 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
                 mNavigator.startDepositForResultActivity(mView.getFragment());
             }
+        }, new PaymentWrapper.IRedirectListener() {
+            @Override
+            public void startUpdateProfileLevel(String walletTransId) {
+                if (mView == null || mView.getFragment() == null) {
+                    return;
+                }
+                Timber.d("startUpdateProfileLevel");
+                mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
+            }
         });
     }
 
@@ -458,13 +467,12 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                 });
     }
 
-    void onDepositSuccess() {
-        Timber.d("onDepositSuccess");
+    void payPendingOrder() {
         if (paymentWrapper == null) {
             return;
         }
         if (paymentWrapper.hasPendingOrder()) {
-            paymentWrapper.continuePayAfterDeposit();
+            paymentWrapper.continuePayPendingOrder();
         }
     }
 }

@@ -270,6 +270,34 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startUpdateProfile2ForResult(Fragment fragment, String walletTransID) {
+        if (fragment == null || fragment.getContext() == null) {
+            Timber.w("Cannot start pre-profile activity due to NULL context");
+            return;
+        }
+
+        Intent intent = new Intent(fragment.getContext(), UpdateProfileLevel2Activity.class);
+        if (!TextUtils.isEmpty(walletTransID)) {
+            intent.putExtra(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID, walletTransID);
+        }
+
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2);
+    }
+
+    public void startUpdateProfile2ForResult(Activity activity, String walletTransID) {
+        if (activity == null) {
+            Timber.w("Cannot start pre-profile activity due to NULL context");
+            return;
+        }
+
+        Intent intent = new Intent(activity, UpdateProfileLevel2Activity.class);
+        if (!TextUtils.isEmpty(walletTransID)) {
+            intent.putExtra(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID, walletTransID);
+        }
+
+        activity.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2);
+    }
+
     @Override
     public void startProfileInfoActivity(Context context) {
         if (!userConfig.hasCurrentUser()) {

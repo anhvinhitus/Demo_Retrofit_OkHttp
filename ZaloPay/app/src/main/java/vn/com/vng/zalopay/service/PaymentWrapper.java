@@ -50,6 +50,7 @@ public class PaymentWrapper {
     }
 
     private final IViewListener viewListener;
+    private final IRedirectListener mRedirectListener;
     private final IResponseListener responseListener;
     private final ZaloPayRepository zaloPayRepository;
     private final BalanceStore.Repository balanceRepository;
@@ -86,7 +87,11 @@ public class PaymentWrapper {
                         break;
                     case ZPC_TRANXSTATUS_UPGRADE:
                         //Hien update profile level 2
-                        startUpdateProfileLevel(null);
+                        if (mRedirectListener == null) {
+                            startUpdateProfileLevel(null);
+                        } else {
+                            mRedirectListener.startUpdateProfileLevel(null);
+                        }
                         responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
                         break;
                     case ZPC_TRANXSTATUS_UPGRADE_SAVECARD:
@@ -95,7 +100,11 @@ public class PaymentWrapper {
                             walletTransId = pPaymentResult.paymentInfo.walletTransID;
                         }
                         //Hien update profile level 2
-                        startUpdateProfileLevel(walletTransId);
+                        if (mRedirectListener == null) {
+                            startUpdateProfileLevel(walletTransId);
+                        } else {
+                            mRedirectListener.startUpdateProfileLevel(walletTransId);
+                        }
                         responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
                         break;
                     case ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH:
@@ -128,7 +137,7 @@ public class PaymentWrapper {
                         break;
                 }
 
-                if (resultStatus != EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
+                if (needClearPendingOrder(resultStatus)) {
                     clearPendingOrder();
                 }
             }
@@ -192,16 +201,31 @@ public class PaymentWrapper {
         this.responseListener = responseListener;
         this.transactionRepository = transactionRepository;
         this.mShowNotificationLinkCard = true;
+        this.mRedirectListener = null;
     }
 
     public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
                           TransactionStore.Repository transactionRepository, IViewListener viewListener,
-                          IResponseListener responseListener, boolean showNotificationLinkCard) {
+                          IResponseListener responseListener, IRedirectListener redirectListener) {
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.viewListener = viewListener;
         this.responseListener = responseListener;
         this.transactionRepository = transactionRepository;
+        this.mShowNotificationLinkCard = true;
+        this.mRedirectListener = redirectListener;
+    }
+
+    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
+                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
+                          IResponseListener responseListener, IRedirectListener redirectListener,
+                          boolean showNotificationLinkCard) {
+        this.balanceRepository = balanceRepository;
+        this.zaloPayRepository = zaloPayRepository;
+        this.viewListener = viewListener;
+        this.responseListener = responseListener;
+        this.transactionRepository = transactionRepository;
+        this.mRedirectListener = redirectListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
     }
 
@@ -427,6 +451,10 @@ public class PaymentWrapper {
         Activity getActivity();
     }
 
+    public interface IRedirectListener {
+        void startUpdateProfileLevel(String walletTransId);
+    }
+
     public interface IResponseListener {
         void onParameterError(String param);
 
@@ -488,6 +516,19 @@ public class PaymentWrapper {
                 .subscribe(new DefaultSubscriber<>());
     }
 
+    private boolean needClearPendingOrder(EPaymentStatus resultStatus) {
+        if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
+            return false;
+        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD &&
+                mRedirectListener != null) {
+            return false;
+        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE &&
+                mRedirectListener != null) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean hasPendingOrder() {
         return (mPendingOrder != null);
     }
@@ -497,7 +538,7 @@ public class PaymentWrapper {
         mPendingChannel = null;
     }
 
-    public void continuePayAfterDeposit() {
+    public void continuePayPendingOrder() {
         if (!hasPendingOrder()) {
             return;
         }

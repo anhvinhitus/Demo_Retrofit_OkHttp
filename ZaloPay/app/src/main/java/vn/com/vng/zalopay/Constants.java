@@ -75,6 +75,7 @@ public interface Constants {
     int REQUEST_CODE_CARD_SUPPORT = 126;
     int REQUEST_CODE_TRANSFER_VIA_ZALOPAYID = 127;
     int REQUEST_CODE_DEPOSIT = 128;
+    int REQUEST_CODE_UPDATE_PROFILE_LEVEL_2 = 129;
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
 
     //Contain request code that request permission in Android 6

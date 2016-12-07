@@ -4,25 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.ValueCallback;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.webview.ui.IWebView;
-import vn.com.vng.zalopay.webview.ui.WebViewActivity;
-import vn.com.vng.zalopay.webview.ui.WebViewFragment;
-import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 
 /**
@@ -123,7 +114,12 @@ public class ServiceWebViewFragment extends WebViewFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
             if (resultCode == Activity.RESULT_OK) {
-                mPresenter.onDepositSuccess();
+                mPresenter.payPendingOrder();
+            }
+            return;
+        } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
+            if (resultCode == Activity.RESULT_OK) {
+                mPresenter.payPendingOrder();
             }
             return;
         }
