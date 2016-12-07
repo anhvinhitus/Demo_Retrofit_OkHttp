@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import java.lang.ref.WeakReference;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -82,11 +83,26 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
 
             @Override
             public void onNotEnoughMoney() {
-                navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
+                if (mWeakReference == null || mWeakReference.get() == null) {
+                    navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
+                } else {
+                    navigator.startDepositForResultActivity(mWeakReference.get());
+                }
             }
         }, false);
 
         this.paymentWrapper.payWithOrder(bundleOrder);
+    }
+
+    @Override
+    public void onDepositSuccess() {
+        Timber.d("onDepositSuccess");
+        if (paymentWrapper == null) {
+            return;
+        }
+        if (paymentWrapper.hasOrderNotPayBecauseNotEnoughMoney()) {
+            paymentWrapper.continuePayAfterDeposit();
+        }
     }
 
     public void destroyVariable() {
