@@ -36,7 +36,6 @@ import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 import vn.com.vng.zalopay.ui.widget.validate.PassportValidate;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -115,8 +114,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @BindView(R.id.btnContinue)
     Button mBtnContinue;
 
-    @BindView(R.id.btnConfirm)
-    Button mBtnConfirm;
+    @BindView(R.id.btnSubmit)
+    Button mBtnSubmitView;
 
     boolean focusIdentity;
 
@@ -224,7 +223,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         loadFrontImage(null);
     }
 
-    @OnClick(R.id.btnConfirm)
+    @OnClick(R.id.btnSubmit)
     public void onClickConfirm() {
         updateProfile();
     }
@@ -281,38 +280,25 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         }
     }
 
+    private void checkIfNoInput() {
+
+        if (mUriFgIdentity == null || mUriBgIdentity == null || mUriAvatar == null) {
+            mBtnSubmitView.setEnabled(false);
+            return;
+        }
+
+        if (mAvatarView.getDrawable() == null || mFgIdentityView.getDrawable() == null || mBgIdentityView.getDrawable() == null) {
+            mBtnSubmitView.setEnabled(false);
+            return;
+        }
+
+        mBtnSubmitView.setEnabled(true);
+    }
 
     private void updateProfile() {
         String identity = getIdentity();
         String email = getEmail();
-
-        if (isValidatePageTwo()) {
-            presenter.updateProfile3(identity, email, mUriFgIdentity, mUriBgIdentity, mUriAvatar);
-        }
-    }
-
-    private boolean isValidatePageTwo() {
-        if (mUriFgIdentity == null || TextUtils.isEmpty(mUriFgIdentity.getPath())) {
-            showMessageDialog(R.string.exception_uri_fg_cmnd);
-            return false;
-        }
-
-        if (mUriBgIdentity == null || TextUtils.isEmpty(mUriBgIdentity.getPath())) {
-            showMessageDialog(R.string.exception_uri_bg_cmnd);
-            return false;
-        }
-
-        if (mUriAvatar == null || TextUtils.isEmpty(mUriAvatar.getPath())) {
-            showMessageDialog(R.string.exception_uri_avatar);
-            return false;
-        }
-
-        return true;
-    }
-
-    private void showMessageDialog(int message) {
-        DialogManager.showSweetDialogCustom(getActivity(), getString(message),
-                getString(R.string.txt_close), SweetAlertDialog.NORMAL_TYPE, null);
+        presenter.updateProfile3(identity, email, mUriFgIdentity, mUriBgIdentity, mUriAvatar);
     }
 
     @Override
@@ -436,7 +422,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveFrontImage.setClickable(true);
         btnRemoveFrontImage.setImageResource(R.drawable.ic_remove_circle);
 
-        refreshBtnConfirmState();
+        checkIfNoInput();
     }
 
     private void clearFrontImage() {
@@ -447,7 +433,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveFrontImage.setImageResource(R.drawable.ic_camera);
         mUriFgIdentity = null;
 
-        refreshBtnConfirmState();
+        checkIfNoInput();
     }
 
     private void loadAvatar(@Nullable Uri uri) {
@@ -463,7 +449,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveAvatar.setClickable(true);
         btnRemoveAvatar.setImageResource(R.drawable.ic_remove_circle);
 
-        refreshBtnConfirmState();
+        checkIfNoInput();
     }
 
     private void clearAvatar() {
@@ -475,7 +461,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveAvatar.setImageResource(R.drawable.ic_camera);
         mUriAvatar = null;
 
-        refreshBtnConfirmState();
+        checkIfNoInput();
     }
 
     private void loadBackgroundImage(@Nullable Uri uri) {
@@ -492,7 +478,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveBackImage.setClickable(true);
         btnRemoveBackImage.setImageResource(R.drawable.ic_remove_circle);
 
-        refreshBtnConfirmState();
+        checkIfNoInput();
     }
 
     private void clearBackgroundImage() {
@@ -503,7 +489,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         btnRemoveBackImage.setImageResource(R.drawable.ic_camera);
         mUriBgIdentity = null;
 
-        refreshBtnConfirmState();
+        checkIfNoInput();
     }
 
     @Override
@@ -548,16 +534,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         loadFrontImage(mUriFgIdentity);
         loadBackgroundImage(mUriBgIdentity);
         loadAvatar(mUriAvatar);
-    }
 
-    private void refreshBtnConfirmState() {
-        if (mUriFgIdentity == null
-                || mUriBgIdentity == null
-                || mUriAvatar == null) {
-            mBtnConfirm.setEnabled(false);
-        } else {
-            mBtnConfirm.setEnabled(true);
-        }
     }
 
     @OnFocusChange({R.id.edtEmail, R.id.edtIdentity})

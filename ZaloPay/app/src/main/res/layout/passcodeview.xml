@@ -18,22 +18,20 @@
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/editText"
-            style="@style/Passcode.EditText"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="bottom"
             android:background="@drawable/txt_bottom_default_style"
-            android:clickable="true"
             android:cursorVisible="false"
+            android:digits="1234567890"
             android:ellipsize="end"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:gravity="left|bottom"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:longClickable="false"
             android:maxLength="@integer/pin_length"
             android:maxLines="1"
-            android:singleLine="true"
+            android:textColor="@color/transparent"
+            android:textCursorDrawable="@null"
             android:textSize="1sp" />
 
         <FrameLayout

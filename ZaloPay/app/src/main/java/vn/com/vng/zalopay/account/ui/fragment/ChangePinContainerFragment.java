@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
@@ -46,21 +45,16 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     }
 
     @BindView(R.id.viewPager)
-    NonSwipeableViewPager viewPager;
+    NonSwipeableViewPager mPager;
 
     @Inject
     IChangePinPresenter presenter;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        viewPager.setAdapter(new ChangePinPagerAdapter(getFragmentManager()));
+        mPager.setAdapter(new ChangePinPagerAdapter(getFragmentManager()));
     }
 
     @OnPageChange(value = R.id.viewPager, callback = OnPageChange.Callback.PAGE_SELECTED)
@@ -72,10 +66,10 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
 
     @Override
     public void nextPage() {
-        if (viewPager != null) {
-            int current = viewPager.getCurrentItem();
+        if (mPager != null) {
+            int current = mPager.getCurrentItem();
             if (current == 0) {
-                viewPager.setCurrentItem(current + 1, false);
+                mPager.setCurrentItem(current + 1, false);
             } else {
                 getActivity().finish();
             }
@@ -129,7 +123,7 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
 
     @Override
     public boolean onBackPressed() {
-        if (viewPager.getCurrentItem() > 0) {
+        if (mPager.getCurrentItem() > 0) {
             ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTNONE);
         }
 

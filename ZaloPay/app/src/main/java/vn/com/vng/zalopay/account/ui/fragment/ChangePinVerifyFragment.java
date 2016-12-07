@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.validate.DigitsOnlyValidate;
 
@@ -29,7 +30,7 @@ import vn.com.vng.zalopay.ui.widget.validate.DigitsOnlyValidate;
  * Created by AnhHieu on 8/25/16.
  * *
  */
-public class ChangePinVerifyFragment extends BaseFragment implements IChangePinVerifyView {
+public class ChangePinVerifyFragment extends BaseFragment implements IChangePinVerifyView, FragmentLifecycle {
 
     public static ChangePinVerifyFragment newInstance() {
 
@@ -129,5 +130,15 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
     @Override
     public void showError(String message) {
         showErrorDialog(message);
+    }
+
+    @Override
+    public void onStartFragment() {
+        
+    }
+
+    @Override
+    public void onStopFragment() {
+
     }
 }

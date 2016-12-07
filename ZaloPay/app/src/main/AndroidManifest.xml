@@ -267,7 +267,7 @@
         <activity
             android:name=".account.ui.activities.ChangePinActivity"
             android:label="@string/title.activity.change.pin"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
             android:name=".transfer.ui.ReceiveMoneyActivity"

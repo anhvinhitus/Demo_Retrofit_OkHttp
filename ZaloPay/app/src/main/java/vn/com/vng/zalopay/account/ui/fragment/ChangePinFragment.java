@@ -18,6 +18,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.IPassCodeFocusChanged;
@@ -30,7 +31,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Created by AnhHieu on 8/25/16.
  * *
  */
-public class ChangePinFragment extends BaseFragment implements IChangePinView {
+public class ChangePinFragment extends BaseFragment implements IChangePinView, FragmentLifecycle {
 
     public static ChangePinFragment newInstance() {
 
@@ -125,8 +126,6 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
         mNewPassCodeView.addTextChangedListener(mNewPassCodeWatcher);
         mNewPassCodeView.setPassCodeFocusChanged(mNewPassCodeFocusChanged);
 
-        mOldPassCodeView.requestFocusView();
-
         AndroidUtils.setSpannedMessageToView(mContactView,
                 getString(R.string.lbl_note_forget_pin),
                 getString(R.string.phone_support), false, false,
@@ -138,6 +137,8 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
                 });
 
         mBtnContinueView.setEnabled(isValid());
+
+        //   mOldPassCodeView.requestFocusView();
     }
 
     @Override
@@ -215,6 +216,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     private IPassCodeFocusChanged mOldPassCodeFocusChanged = new IPassCodeFocusChanged() {
         @Override
         public void onFocusChangedPin(boolean isFocus) {
+            Timber.d("old password view focus [%s]", isFocus);
             if (mBtnContinueView != null) {
                 mBtnContinueView.setEnabled(isValid());
             }
@@ -226,6 +228,9 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
     private IPassCodeFocusChanged mNewPassCodeFocusChanged = new IPassCodeFocusChanged() {
         @Override
         public void onFocusChangedPin(boolean isFocus) {
+
+            Timber.d("new password view focus [%s]", isFocus);
+
             if (isFocus) {
                 mScrollView.smoothScrollTo(0, mScrollView.getBottom());
             }
@@ -237,5 +242,15 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView {
             mNewPassCodeView.setError(mNewPassCodeView.isValid() || isFocus ? null : getString(R.string.invalid_pin));
         }
     };
+
+    @Override
+    public void onStartFragment() {
+
+    }
+
+    @Override
+    public void onStopFragment() {
+
+    }
 }
 
