@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -254,14 +255,15 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             public Boolean call() throws Exception {
                 return !RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted();
             }
-        }).subscribe(new Action1<Boolean>() {
-            @Override
-            public void call(Boolean aBoolean) {
-                if (!aBoolean && mHomeView != null) {
-                    mNavigator.startWarningRootedActivity(mHomeView.getContext());
-                }
-            }
-        });
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (!aBoolean && mHomeView != null) {
+                            mNavigator.startWarningRootedActivity(mHomeView.getContext());
+                        }
+                    }
+                });
 
         mCompositeSubscription.add(subscription);
     }
