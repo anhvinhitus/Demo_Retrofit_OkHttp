@@ -76,7 +76,7 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
         String action = intent.getAction();
         if (TextUtils.isEmpty(action)) {
             Timber.d("Launching with empty action");
-            ((Activity) mView.getContext()).finish();
+            finish();
             return;
         }
 
@@ -93,11 +93,13 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
     }
 
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        Timber.d("onActivityResult: requestCode [%s] resultCode [%s]");
         if (requestCode == LOGIN_REQUEST_CODE &&
                 resultCode == Activity.RESULT_OK) {
             handleAppToAppPayment(data.getData());
+        } else {
+            finish();
         }
-
     }
 
     private boolean handleZaloIntegration(Intent intent) {
@@ -121,13 +123,13 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
         bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
         mNavigator.startTransferActivity(mView.getContext(), bundle, true);
-        ((Activity) mView.getContext()).finish();
+        finish();
         return true;
     }
 
     private void handleDeepLink(Uri data) {
         if (data == null) {
-            ((Activity) mView.getContext()).finish();
+            finish();
             return;
         }
 
@@ -141,23 +143,26 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
         } else if (scheme.equalsIgnoreCase("zalopay") && host.equalsIgnoreCase("zalopay.vn")) {
             handleAppToAppPayment(data);
         } else {
-            ((Activity) mView.getContext()).finish();
+            finish();
         }
     }
 
     private void pay(Uri data, boolean isAppToApp) {
+        Timber.d("pay with uri [%s] isAppToTpp [%s]", data, isAppToApp);
+
         String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
         String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
 
         if (TextUtils.isEmpty(appid) ||
                 !TextUtils.isDigitsOnly(appid) ||
                 TextUtils.isEmpty(zptranstoken)) {
+            finish();
             return;
         }
 
         mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken, isAppToApp));
         Timber.d("post sticky payment");
-        ((Activity) mView.getContext()).finish();
+        finish();
     }
 
     private void handleAppToAppPayment(Uri data) {
@@ -173,6 +178,7 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
             }
 
             if (!mUserConfig.hasCurrentUser()) {
+                Timber.d("start login activity");
                 mNavigator.startLoginActivityForResult((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data);
                 shouldFinishCurrentActivity = false;
                 return;
@@ -181,15 +187,23 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
             HandleInAppPayment payment = new HandleInAppPayment((Activity) mView.getContext());
             payment.initialize();
             if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
+                Timber.d("need load payment sdk");
                 payment.loadPaymentSdk();
             }
 
             payment.start(Long.parseLong(appid), zptranstoken);
             shouldFinishCurrentActivity = false;
         } finally {
+            Timber.d("should finish current activity [%s] ", shouldFinishCurrentActivity);
             if (shouldFinishCurrentActivity) {
-                ((Activity) mView.getContext()).finish();
+                finish();
             }
+        }
+    }
+
+    private void finish() {
+        if (mView != null) {
+            ((Activity) mView.getContext()).finish();
         }
     }
 
