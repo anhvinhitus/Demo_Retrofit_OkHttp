@@ -68,7 +68,7 @@ public class HandleInAppPayment {
                     @Override
                     public void onNext(Long aLong) {
                         if (paymentWrapper != null) {
-                            paymentWrapper.payWithToken(appId, zptranstoken);
+                            paymentWrapper.payWithToken(mActivity.get(), appId, zptranstoken);
                         }
                     }
                 });

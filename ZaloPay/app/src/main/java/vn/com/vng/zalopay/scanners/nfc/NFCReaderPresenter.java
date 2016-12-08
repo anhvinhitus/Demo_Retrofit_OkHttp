@@ -182,7 +182,7 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
         }
 
         Timber.i("appId: %d, token: [%s]", record.appId, record.transactionToken);
-        paymentWrapper.payWithToken(record.appId, record.transactionToken);
+        paymentWrapper.payWithToken(mNfcView.getActivity(), record.appId, record.transactionToken);
     }
 
     private void initPaymentWrapper() {

@@ -270,7 +270,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
         showLoading();
         Timber.d("Pay with token call");
-        paymentWrapper.payWithToken(appId, zptranstoken);
+        paymentWrapper.payWithToken(getCurrentActivity(), appId, zptranstoken);
     }
 
     private void showToast(final int message) {

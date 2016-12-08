@@ -233,9 +233,9 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
 
             beaconScanner.stopScan();
             if (item.order != null) {
-                mPaymentWrapper.payWithOrder(item.order);
+                mPaymentWrapper.payWithOrder(getActivity(), item.order);
             } else {
-                mPaymentWrapper.payWithToken(item.paymentRecord.appId, item.paymentRecord.transactionToken);
+                mPaymentWrapper.payWithToken(getActivity(), item.paymentRecord.appId, item.paymentRecord.transactionToken);
             }
         }
     }

@@ -78,7 +78,7 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
         if (user.profilelevel < 2) {
             mNavigator.startUpdateProfileLevel2Activity(getContext());
         } else {
-            paymentWrapper.linkCard();
+            paymentWrapper.linkCard(getActivity());
             hideLoadingView();
         }
     }

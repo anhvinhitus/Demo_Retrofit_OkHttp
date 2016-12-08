@@ -257,7 +257,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         if (appId < 0 || TextUtils.isEmpty(transactionToken)) {
             return false;
         }
-        paymentWrapper.payWithToken(appId, transactionToken);
+        paymentWrapper.payWithToken(mView.getActivity(), appId, transactionToken);
         return true;
     }
 
@@ -287,7 +287,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         if (TextUtils.isEmpty(order.mac)) {
             return false;
         }
-        paymentWrapper.payWithOrder(order);
+        paymentWrapper.payWithOrder(mView.getActivity(), order);
         hideLoadingView();
         return true;
     }

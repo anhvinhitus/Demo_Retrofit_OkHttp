@@ -88,7 +88,7 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     public void payPendingOrder() {
-        if (paymentWrapper == null) {
+        if (paymentWrapper == null || mView == null) {
             return;
         }
         if (paymentWrapper.hasPendingOrder()) {
@@ -136,11 +136,11 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
-        paymentWrapper.withdraw(order, mUser.displayName, mUser.avatar, String.valueOf(mUser.phonenumber), mUser.zalopayname);
-
         if (mView == null) {
             return;
         }
+
+        paymentWrapper.withdraw(mView.getActivity(), order, mUser.displayName, mUser.avatar, String.valueOf(mUser.phonenumber), mUser.zalopayname);
 
         mView.hideLoading();
     }

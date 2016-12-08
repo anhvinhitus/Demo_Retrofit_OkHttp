@@ -39,8 +39,9 @@ class WalletListener implements ZPPaymentListener {
     @Override
     public void onComplete(ZPPaymentResult pPaymentResult) {
         Timber.d("pay onComplete pPaymentResult [%s]", pPaymentResult);
+        boolean paymentIsCompleted = true;
         if (pPaymentResult == null) {
-            if (NetworkHelper.isNetworkAvailable(mPaymentWrapper.viewListener.getActivity())) {
+            if (NetworkHelper.isNetworkAvailable(mPaymentWrapper.mActivity)) {
                 mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
             } else {
                 mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
@@ -52,7 +53,7 @@ class WalletListener implements ZPPaymentListener {
             switch (resultStatus) {
                 case ZPC_TRANXSTATUS_SUCCESS:
                     if (mPaymentWrapper.mShowNotificationLinkCard) {
-                        mPaymentWrapper.mNavigator.startNotificationLinkCardActivity(mPaymentWrapper.viewListener.getActivity(),
+                        mPaymentWrapper.mNavigator.startNotificationLinkCardActivity(mPaymentWrapper.mActivity,
                                 pPaymentResult.mapCardResult);
                     }
                     mPaymentWrapper.responseListener.onResponseSuccess(pPaymentResult);
@@ -68,6 +69,8 @@ class WalletListener implements ZPPaymentListener {
                         mPaymentWrapper.mRedirectListener.startUpdateProfileLevel(null);
                     }
                     mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
+
+                    paymentIsCompleted = false; // will continue after update profile
                     break;
                 case ZPC_TRANXSTATUS_UPGRADE_SAVECARD:
                     String walletTransId = null;
@@ -81,10 +84,14 @@ class WalletListener implements ZPPaymentListener {
                         mPaymentWrapper.mRedirectListener.startUpdateProfileLevel(walletTransId);
                     }
                     mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
+
+                    paymentIsCompleted = false; // will continue after update profile
                     break;
                 case ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH:
                     mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_MONEY_NOT_ENOUGH);
                     mPaymentWrapper.responseListener.onNotEnoughMoney();
+
+                    paymentIsCompleted = false; // will continue after update profile
                     break;
                 case ZPC_TRANXSTATUS_CLOSE:
                     mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
@@ -116,6 +123,11 @@ class WalletListener implements ZPPaymentListener {
                 mPaymentWrapper.clearPendingOrder();
             }
         }
+
+        // cleanup temporary variables
+        if (paymentIsCompleted) {
+            mPaymentWrapper.cleanup();
+        }
     }
 
     @Override
@@ -135,6 +147,8 @@ class WalletListener implements ZPPaymentListener {
                 mPaymentWrapper.responseListener.onAppError(cError.messError);
                 break;
         }
+
+        mPaymentWrapper.cleanup();
     }
 
     @Override
@@ -142,7 +156,9 @@ class WalletListener implements ZPPaymentListener {
         Timber.d("onUpVersion forceUpdate[%s] latestVersion [%s] msg [%s]",
                 forceUpdate, latestVersion, msg);
         AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
-        AppVersionUtils.showDialogUpgradeAppIfNeed(mPaymentWrapper.viewListener.getActivity());
+        AppVersionUtils.showDialogUpgradeAppIfNeed(mPaymentWrapper.mActivity);
+
+        mPaymentWrapper.cleanup();
     }
 
     @Override

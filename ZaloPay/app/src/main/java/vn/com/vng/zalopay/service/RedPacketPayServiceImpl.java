@@ -43,7 +43,7 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
                 .setShowNotificationLinkCard(false)
                 .build();
 
-        this.paymentWrapper.payWithOrder(bundleOrder);
+        this.paymentWrapper.payWithOrder(activity, bundleOrder);
     }
 
     @Override

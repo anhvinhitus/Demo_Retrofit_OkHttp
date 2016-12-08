@@ -63,7 +63,7 @@ public class PaymentServiceImpl implements IPaymentService {
                 .setResponseListener(new PaymentResponseListener(promise))
                 .build();
 
-        this.mPaymentWrapper.payWithOrder(order);
+        this.mPaymentWrapper.payWithOrder(activity, order);
     }
 
     private void logout() {

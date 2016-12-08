@@ -153,7 +153,7 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
-        paymentWrapper.payWithOrder(order);
+        paymentWrapper.payWithOrder(mView.getActivity(), order);
         hideLoadingView();
     }
 

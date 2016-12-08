@@ -150,7 +150,7 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
             return;
         }
         Timber.d("pay order [%s] view [%s]", order.toString(), mView);
-        mPaymentWrapper.payWithOrder(order);
+        mPaymentWrapper.payWithOrder(mView.getActivity(), order);
     }
 
     private void showInputErrorDialog() {

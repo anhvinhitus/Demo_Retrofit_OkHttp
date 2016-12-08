@@ -70,6 +70,6 @@ public class PaymentWrapperBuilder {
 //        }
 //
         return new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository,
-                mViewListener, mResponseListener, mRedirectListener, mShowNotificationLinkCard);
+                mResponseListener, mRedirectListener, mShowNotificationLinkCard);
     }
 }

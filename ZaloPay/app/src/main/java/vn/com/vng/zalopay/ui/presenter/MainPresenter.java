@@ -416,7 +416,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         if (paymentWrapper == null) {
             paymentWrapper = getPaymentWrapper(appId, isAppToApp);
         }
-        paymentWrapper.payWithToken(appId, zptranstoken);
+        paymentWrapper.payWithToken(mHomeView.getActivity(), appId, zptranstoken);
     }
 
     private void showLoadingView() {

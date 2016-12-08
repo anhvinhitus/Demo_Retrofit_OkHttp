@@ -44,7 +44,6 @@ public class PaymentWrapper {
         void onResponseError(int status);
     }
 
-    final IViewListener viewListener;
     final IRedirectListener mRedirectListener;
     final IResponseListener responseListener;
     private final ZaloPayRepository zaloPayRepository;
@@ -55,6 +54,8 @@ public class PaymentWrapper {
     private EPaymentChannel mPendingChannel;
 
     private final ZPPaymentListener mWalletListener;
+
+    Activity mActivity;
 
 //    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
 //                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
@@ -81,23 +82,138 @@ public class PaymentWrapper {
 //    }
 
     PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
-                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
-                          IResponseListener responseListener, IRedirectListener redirectListener,
-                          boolean showNotificationLinkCard) {
+                   TransactionStore.Repository transactionRepository,
+                   IResponseListener responseListener, IRedirectListener redirectListener,
+                   boolean showNotificationLinkCard) {
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
-        this.viewListener = viewListener;
         this.responseListener = responseListener;
         this.mRedirectListener = redirectListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
         mWalletListener = new WalletListener(this, transactionRepository, balanceRepository);
     }
 
-    public void payWithToken(long appId, String transactionToken) {
+    public void payWithToken(Activity activity, long appId, String transactionToken) {
+        mActivity = activity;
         Subscription subscription = zaloPayRepository.getOrder(appId, transactionToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetOrderSubscriber());
+    }
+
+
+    public void withdraw(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
+        EPaymentChannel forcedPaymentChannel = EPaymentChannel.WITHDRAW;
+        ZPWPaymentInfo paymentInfo = transform(order);
+        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber, zaloPayName);
+        callPayAPI(activity, paymentInfo, forcedPaymentChannel);
+    }
+
+    public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
+
+        EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
+        ZPWPaymentInfo paymentInfo = transform(order);
+        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber, zaloPayName);
+        callPayAPI(activity, paymentInfo, forcedPaymentChannel);
+    }
+
+    public void payWithOrder(Activity activity, Order order) {
+        Timber.d("payWithOrder: Start");
+        if (order == null) {
+            Timber.i("payWithOrder: order is invalid");
+            responseListener.onParameterError("order");
+//            showErrorView(mView.getContext().getString(R.string.order_invalid));
+            return;
+        }
+        Timber.d("payWithOrder: Order is valid");
+
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
+
+        if (TextUtils.isEmpty(user.zaloPayId)) {
+            Timber.i("payWithOrder: zaloPayId is invalid");
+            responseListener.onParameterError("uid");
+//            showErrorView(mView.getContext().getString(R.string.user_invalid));
+            return;
+        }
+        try {
+            ZPWPaymentInfo paymentInfo = transform(order);
+
+            Timber.d("payWithOrder: ZPWPaymentInfo is ready");
+
+//        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
+            callPayAPI(activity, paymentInfo, null);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "Exception with number format");
+            responseListener.onParameterError("exception");
+        }
+    }
+
+    public void getOrder(long appId, String transactionToken, final IGetOrderCallback callback) {
+        zaloPayRepository.getOrder(appId, transactionToken)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Order>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        callback.onResponseError(-1);
+                    }
+
+                    @Override
+                    public void onNext(Order order) {
+                        callback.onResponseSuccess(order);
+                    }
+                });
+    }
+
+    public void linkCard(Activity activity) {
+        Timber.d("linkCard Start");
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        if (TextUtils.isEmpty(user.zaloPayId)) {
+            Timber.i("payWithOrder: zaloPayId is invalid");
+            responseListener.onParameterError("uid");
+//            showErrorView(mView.getContext().getString(R.string.user_invalid));
+            return;
+        }
+        try {
+            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+            paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
+            paymentInfo.appTime = System.currentTimeMillis();
+            paymentInfo.userInfo = getUserInfo();
+
+            Timber.d("payWithOrder: ZPWPaymentInfo is ready");
+
+//        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
+            callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_CARD);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "Exception with number format");
+            responseListener.onParameterError("exception");
+        }
+    }
+
+    public void saveCardMap(String walletTransId, ZPWSaveMapCardListener listener) {
+        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+        paymentInfo.userInfo = getUserInfo();
+        paymentInfo.walletTransID = walletTransId;
+
+        Timber.d("saveCardMap, start paymentsdk");
+        WalletSDKApplication.saveCardMap(paymentInfo, listener);
+    }
+
+    public boolean hasPendingOrder() {
+        return (mPendingOrder != null);
+    }
+
+    public void continuePayPendingOrder() {
+        if (!hasPendingOrder()) {
+            return;
+        }
+
+        callPayAPI(mActivity, mPendingOrder, mPendingChannel);
+    }
+
+    void cleanup() {
+        Timber.i("PaymentWrapper is cleaning up");
+        mActivity = null;
+        clearPendingOrder();
     }
 
     private UserInfo getUserInfo(String displayName, String avatar, String phoneNumber, String zaloPayName) {
@@ -126,109 +242,10 @@ public class PaymentWrapper {
         return mUserInfo;
     }
 
-    public void withdraw(Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
-        EPaymentChannel forcedPaymentChannel = EPaymentChannel.WITHDRAW;
-        ZPWPaymentInfo paymentInfo = transform(order);
-        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber, zaloPayName);
-        callPayAPI(paymentInfo, forcedPaymentChannel);
-    }
-
-    public void transfer(Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
-
-        EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
-        ZPWPaymentInfo paymentInfo = transform(order);
-        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber, zaloPayName);
-        callPayAPI(paymentInfo, forcedPaymentChannel);
-    }
-
-    public void payWithOrder(Order order) {
-        Timber.d("payWithOrder: Start");
-        if (order == null) {
-            Timber.i("payWithOrder: order is invalid");
-            responseListener.onParameterError("order");
-//            showErrorView(mView.getContext().getString(R.string.order_invalid));
-            return;
-        }
-        Timber.d("payWithOrder: Order is valid");
-
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
-
-        if (TextUtils.isEmpty(user.zaloPayId)) {
-            Timber.i("payWithOrder: zaloPayId is invalid");
-            responseListener.onParameterError("uid");
-//            showErrorView(mView.getContext().getString(R.string.user_invalid));
-            return;
-        }
-        try {
-            ZPWPaymentInfo paymentInfo = transform(order);
-
-            Timber.d("payWithOrder: ZPWPaymentInfo is ready");
-
-//        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-            callPayAPI(paymentInfo, null);
-        } catch (NumberFormatException e) {
-            Timber.e(e, "Exception with number format");
-            responseListener.onParameterError("exception");
-        }
-    }
-
-    public void getOrder(long appId, String transactionToken, final IGetOrderCallback callback) {
-        zaloPayRepository.getOrder(appId, transactionToken)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Order>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        callback.onResponseError(-1);
-                    }
-
-                    @Override
-                    public void onNext(Order order) {
-                        callback.onResponseSuccess(order);
-                    }
-                });
-    }
-
-    public void linkCard() {
-        Timber.d("linkCard Start");
-        User user = AndroidApplication.instance().getUserComponent().currentUser();
-        if (TextUtils.isEmpty(user.zaloPayId)) {
-            Timber.i("payWithOrder: zaloPayId is invalid");
-            responseListener.onParameterError("uid");
-//            showErrorView(mView.getContext().getString(R.string.user_invalid));
-            return;
-        }
-        try {
-            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-            paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
-            paymentInfo.appTime = System.currentTimeMillis();
-            paymentInfo.userInfo = getUserInfo();
-
-            Timber.d("payWithOrder: ZPWPaymentInfo is ready");
-
-//        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-            callPayAPI(paymentInfo, EPaymentChannel.LINK_CARD);
-        } catch (NumberFormatException e) {
-            Timber.e(e, "Exception with number format");
-            responseListener.onParameterError("exception");
-        }
-    }
-
-    public void saveCardMap(String walletTransId, ZPWSaveMapCardListener listener) {
-        Timber.d("saveCardMap, viewListener: %s", viewListener);
-        if (viewListener == null) {
-            return;
-        }
-
-        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        paymentInfo.userInfo = getUserInfo();
-        paymentInfo.walletTransID = walletTransId;
-
-        Timber.d("saveCardMap, start paymentsdk");
-        WalletSDKApplication.saveCardMap(paymentInfo, listener);
-    }
-
-    private void callPayAPI(ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {
+    private void callPayAPI(Activity owner, ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {
+        mActivity = owner;
         if (paymentInfo == null) {
+            mActivity = null;
             return;
         }
         if (paymentInfo.userInfo == null
@@ -238,6 +255,7 @@ public class PaymentWrapper {
         }
         if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
             mWalletListener.onError(new CError(EPayError.DATA_INVALID, "Vui lòng cập nhật thông tin tài khoản."));
+            mActivity = null;
             return;
         }
         if (balanceRepository != null) {
@@ -245,10 +263,10 @@ public class PaymentWrapper {
         }
 
         Timber.d("Call Pay to sdk activity [%s] paymentChannel [%s] paymentInfo [%s]",
-                viewListener.getActivity(), paymentChannel, paymentInfo);
+                owner, paymentChannel, paymentInfo);
         mPendingOrder = paymentInfo;
         mPendingChannel = paymentChannel;
-        WalletSDKPayment.pay(viewListener.getActivity(), paymentChannel, paymentInfo, mWalletListener);
+        WalletSDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener);
     }
 
     private int getUserProfileLevel() {
@@ -299,12 +317,12 @@ public class PaymentWrapper {
     }
 
     void startUpdateProfileLevel(String walletTransID) {
-        if (viewListener == null || viewListener.getActivity() == null) {
+        if (mActivity == null ) {
             return;
         }
 
         Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
-        navigator.startUpdateProfileLevel2Activity(viewListener.getActivity(), walletTransID);
+        navigator.startUpdateProfileLevel2Activity(mActivity, walletTransID);
     }
 
     public interface IViewListener {
@@ -336,7 +354,7 @@ public class PaymentWrapper {
         @Override
         public void onNext(Order order) {
             Timber.d("getOrder response: %s", order.item);
-            payWithOrder(order);
+            payWithOrder(mActivity, order);
         }
 
         @Override
@@ -373,17 +391,4 @@ public class PaymentWrapper {
         mPendingOrder = null;
         mPendingChannel = null;
     }
-
-    public boolean hasPendingOrder() {
-        return (mPendingOrder != null);
-    }
-
-    public void continuePayPendingOrder() {
-        if (!hasPendingOrder()) {
-            return;
-        }
-
-        callPayAPI(mPendingOrder, mPendingChannel);
-    }
-
 }
