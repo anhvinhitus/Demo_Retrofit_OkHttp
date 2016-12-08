@@ -102,7 +102,6 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new PaymentRedirectListener())
                 .build();
@@ -603,13 +602,6 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             return;
         }
         mView.showDialogThenClose(error, mView.getContext().getString(cancelText), dialogType);
-    }
-
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            return mView.getActivity();
-        }
     }
 
     private class PaymentResponseListener implements PaymentWrapper.IResponseListener {

@@ -59,7 +59,6 @@ public class PaymentServiceImpl implements IPaymentService {
                 .setBalanceRepository(mBalanceRepository)
                 .setZaloPayRepository(null)
                 .setTransactionRepository(mTransactionRepository)
-                .setViewListener(new PaymentViewListener(mWeakReference))
                 .setResponseListener(new PaymentResponseListener(promise))
                 .build();
 
@@ -113,19 +112,6 @@ public class PaymentServiceImpl implements IPaymentService {
             activity.startActivity(Intent.createChooser(sharingIntent, "Share via"));
         } catch (Exception e) {
             //empty
-        }
-    }
-
-    private static class PaymentViewListener implements PaymentWrapper.IViewListener {
-        private final WeakReference<Activity> mMWeakReference;
-
-        public PaymentViewListener(WeakReference<Activity> mWeakReference) {
-            mMWeakReference = mWeakReference;
-        }
-
-        @Override
-        public Activity getActivity() {
-            return mMWeakReference.get();
         }
     }
 

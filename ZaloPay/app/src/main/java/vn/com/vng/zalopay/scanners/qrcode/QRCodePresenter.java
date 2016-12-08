@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.scanners.qrcode;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -85,7 +84,6 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new PaymentRedirectListener())
                 .build();
@@ -390,16 +388,6 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         }
         if (paymentWrapper.hasPendingOrder()) {
             paymentWrapper.continuePayPendingOrder();
-        }
-    }
-
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            if (mView != null) {
-                return mView.getActivity();
-            }
-            return null;
         }
     }
 

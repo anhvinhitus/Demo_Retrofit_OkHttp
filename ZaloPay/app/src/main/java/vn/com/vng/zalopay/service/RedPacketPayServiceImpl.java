@@ -37,7 +37,6 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         this.paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(mBalanceRepository)
                 .setTransactionRepository(mTransactionRepository)
-                .setViewListener(new PaymentViewListener(mWeakReference))
                 .setResponseListener(new PaymentResponseListener(listener, mWeakReference))
                 .setRedirectListener(new PaymentRedirectListener(mWeakReference))
                 .setShowNotificationLinkCard(false)
@@ -58,19 +57,6 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
 
     public void destroyVariable() {
         paymentWrapper = null;
-    }
-
-    private static class PaymentViewListener implements PaymentWrapper.IViewListener {
-        private final WeakReference<Activity> mMWeakReference;
-
-        public PaymentViewListener(WeakReference<Activity> mWeakReference) {
-            mMWeakReference = mWeakReference;
-        }
-
-        @Override
-        public Activity getActivity() {
-            return mMWeakReference.get();
-        }
     }
 
     private class PaymentResponseListener implements PaymentWrapper.IResponseListener {

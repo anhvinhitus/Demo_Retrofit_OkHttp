@@ -81,7 +81,6 @@ public class HandleInAppPayment {
                 .setBalanceRepository(mBalanceRepository)
                 .setZaloPayRepository(mZaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new AbsPWResponseListener(mActivity) {
 
             private String mTransactionId;
@@ -140,13 +139,6 @@ public class HandleInAppPayment {
     public void cleanUp() {
         if (mCompositeSubscription != null) {
             mCompositeSubscription.unsubscribe();
-        }
-    }
-
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            return mActivity.get();
         }
     }
 }

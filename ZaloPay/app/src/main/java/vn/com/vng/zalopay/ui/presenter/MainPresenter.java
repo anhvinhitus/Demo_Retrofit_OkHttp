@@ -457,7 +457,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 .setBalanceRepository(mBalanceRepository)
                 .setZaloPayRepository(mZaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new AbsPWResponseListener(mHomeView.getActivity()) {
             @Override
             public void onError(PaymentWrapperException exception) {
@@ -519,15 +518,5 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     }
                 });
         mCompositeSubscription.add(subscription);
-    }
-
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            if (mHomeView != null) {
-                return mHomeView.getActivity();
-            }
-            return null;
-        }
     }
 }

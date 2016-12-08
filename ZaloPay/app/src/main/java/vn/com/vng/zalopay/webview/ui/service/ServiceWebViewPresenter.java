@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.webview.ui.service;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -58,7 +57,6 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
                 .setBalanceRepository(mBalanceRepository)
                 .setZaloPayRepository(mZaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new PaymentRedirectListener())
                 .build();
@@ -191,13 +189,6 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         }
         if (mPaymentWrapper.hasPendingOrder()) {
             mPaymentWrapper.continuePayPendingOrder();
-        }
-    }
-
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            return mView.getActivity();
         }
     }
 

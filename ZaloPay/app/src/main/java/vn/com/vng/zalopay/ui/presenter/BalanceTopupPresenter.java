@@ -55,7 +55,6 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new PaymentResponseListener())
                 .build();
     }
@@ -159,13 +158,6 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
 
     public void deposit(long amount) {
         createWalletOrder(amount);
-    }
-
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            return mView.getActivity();
-        }
     }
 
     private class PaymentResponseListener implements PaymentWrapper.IResponseListener {

@@ -190,7 +190,6 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
                 .setBalanceRepository(mBalanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new PaymentRedirectListener())
                 .build();
@@ -269,16 +268,6 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
             if (mPresenter.get() != null) {
                 mPresenter.get().onReceivePaymentRecord(result);
             }
-        }
-    }
-
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            if (mNfcView != null) {
-                return mNfcView.getActivity();
-            }
-            return null;
         }
     }
 

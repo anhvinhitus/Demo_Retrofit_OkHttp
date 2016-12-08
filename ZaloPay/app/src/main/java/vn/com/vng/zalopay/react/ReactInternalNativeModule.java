@@ -295,7 +295,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 .setBalanceRepository(mBalanceRepository)
                 .setZaloPayRepository(mZaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new AbsPWResponseListener(getCurrentActivity()) {
             @Override
             public void onError(PaymentWrapperException exception) {
@@ -335,13 +334,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
             if (mPromise.get() != null) {
                 Helpers.promiseResolveSuccess(mPromise.get(), null);
             }
-        }
-    }
-
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            return getCurrentActivity();
         }
     }
 }

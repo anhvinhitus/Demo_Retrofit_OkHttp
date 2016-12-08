@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.service;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -10,6 +11,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
@@ -208,6 +210,25 @@ public class PaymentWrapper {
         }
 
         callPayAPI(mActivity, mPendingOrder, mPendingChannel);
+    }
+
+    /**
+     * Handle fragment/activity result
+     */
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        boolean shouldProcessPendingOrder = false;
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == Constants.REQUEST_CODE_DEPOSIT ||
+            requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
+            shouldProcessPendingOrder = true;
+        }
+
+        if (shouldProcessPendingOrder && hasPendingOrder()) {
+            continuePayPendingOrder();
+        }
     }
 
     void cleanup() {

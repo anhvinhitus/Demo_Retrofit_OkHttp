@@ -8,7 +8,6 @@ public class PaymentWrapperBuilder {
     private BalanceStore.Repository mBalanceRepository;
     private ZaloPayRepository mZaloPayRepository;
     private TransactionStore.Repository mTransactionRepository;
-    private PaymentWrapper.IViewListener mViewListener;
     private PaymentWrapper.IResponseListener mResponseListener;
     private PaymentWrapper.IRedirectListener mRedirectListener = null;
     private boolean mShowNotificationLinkCard = true;
@@ -25,11 +24,6 @@ public class PaymentWrapperBuilder {
 
     public PaymentWrapperBuilder setTransactionRepository(TransactionStore.Repository transactionRepository) {
         mTransactionRepository = transactionRepository;
-        return this;
-    }
-
-    public PaymentWrapperBuilder setViewListener(PaymentWrapper.IViewListener viewListener) {
-        mViewListener = viewListener;
         return this;
     }
 

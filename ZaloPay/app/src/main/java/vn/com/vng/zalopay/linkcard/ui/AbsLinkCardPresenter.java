@@ -66,7 +66,6 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new PaymentResponseListener())
                 .build();
     }
@@ -80,13 +79,6 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
         } else {
             paymentWrapper.linkCard(getActivity());
             hideLoadingView();
-        }
-    }
-
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            return AbsLinkCardPresenter.this.getActivity();
         }
     }
 

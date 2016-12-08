@@ -73,14 +73,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
     }
 
     private void initPaymentWrapper() {
-        final WeakReference<Activity> weakReference = new WeakReference<Activity>(this);
-        paymentWrapper = new PaymentWrapperBuilder()
-                .setViewListener(new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                return weakReference.get();
-            }
-        }).build();
+        paymentWrapper = new PaymentWrapperBuilder().build();
     }
 
     private void initData() {

@@ -102,7 +102,6 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
                 .setBalanceRepository(mBalanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new PaymentResponseListener())
                 .build();
         Timber.d("Finish setupFragmentComponent");
@@ -407,14 +406,7 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
             }
         }
     }
-
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            return CounterBeaconFragment.this.getActivity();
-        }
-    }
-
+    
     private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
         @Override
         public void onParameterError(String param) {
