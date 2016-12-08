@@ -208,17 +208,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
-            if (resultCode == Activity.RESULT_OK) {
-                mPresenter.payPendingOrder();
-            }
-            return;
-        } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
-            if (resultCode == Activity.RESULT_OK) {
-                mPresenter.payPendingOrder();
-            }
-            return;
-        }
+        mPresenter.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 

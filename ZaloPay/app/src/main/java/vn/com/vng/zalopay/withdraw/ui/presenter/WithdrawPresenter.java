@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.withdraw.ui.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import javax.inject.Inject;
@@ -58,7 +59,6 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
-                .setViewListener(new PaymentViewListener())
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new PaymentRedirectListener())
                 .build();
@@ -87,13 +87,12 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
         mCompositeSubscription.add(subscription);
     }
 
-    public void payPendingOrder() {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (paymentWrapper == null || mView == null) {
             return;
         }
-        if (paymentWrapper.hasPendingOrder()) {
-            paymentWrapper.continuePayPendingOrder();
-        }
+
+        paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
