@@ -104,6 +104,7 @@
             style="@style/Button.Default.New"
             android:layout_width="match_parent"
             android:layout_height="@dimen/button.height"
+            android:layout_marginBottom="@dimen/button.margin.bottom"
             android:text="@string/manager_card"/>
     </LinearLayout>
 

@@ -76,6 +76,7 @@
 
     <dimen name="button.margin.left">10dp</dimen>
     <dimen name="button.margin.right">10dp</dimen>
+    <dimen name="button.margin.bottom">10dp</dimen>
     <dimen name="button.padding.left">16dp</dimen>
     <dimen name="button.padding.right">16dp</dimen>
     <dimen name="button.margin.top.max">45dp</dimen>
