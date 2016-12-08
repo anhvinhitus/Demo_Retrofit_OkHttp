@@ -57,6 +57,8 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
     @Inject
     NFCReaderPresenter readerPresenter;
 
+    private boolean isResumed;
+
     @Override
     protected int getResLayoutId() {
         return R.layout.fragment_scan_nfc;
@@ -121,6 +123,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
     @Override
     public void onResume() {
         super.onResume();
+        isResumed = true;
         if (readerPresenter != null) {
             readerPresenter.resume();
         }
@@ -132,6 +135,8 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
         if (readerPresenter != null) {
             readerPresenter.pause();
         }
+
+        isResumed = false;
     }
 
     @Override
@@ -168,14 +173,14 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
 
     @Override
     public void onStartFragment() {
-        if (readerPresenter != null) {
+        if (readerPresenter != null && isResumed) {
             readerPresenter.setupForegroundDispatch();
         }
     }
 
     @Override
     public void onStopFragment() {
-        if (readerPresenter != null) {
+        if (readerPresenter != null && isResumed) {
             readerPresenter.stopForegroundDispatch();
         }
     }
