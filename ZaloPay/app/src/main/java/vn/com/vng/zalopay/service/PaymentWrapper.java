@@ -216,6 +216,12 @@ public class PaymentWrapper {
         clearPendingOrder();
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        Timber.d("PaymentWrapper is finalize");
+    }
+
     private UserInfo getUserInfo(String displayName, String avatar, String phoneNumber, String zaloPayName) {
         UserInfo mUserInfo = getUserInfo();
         mUserInfo.phoneNumber = phoneNumber;
