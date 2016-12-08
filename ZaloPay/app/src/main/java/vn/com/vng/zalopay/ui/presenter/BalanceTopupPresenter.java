@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -160,21 +161,9 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
         createWalletOrder(amount);
     }
 
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
-        @Override
-        public void onParameterError(String param) {
-            if (mView == null) {
-                return;
-            }
-
-            switch (param) {
-                case "order":
-                    mView.showError(mView.getContext().getString(R.string.order_invalid));
-                    break;
-                case "uid":
-                    mView.showError(mView.getContext().getString(R.string.user_invalid));
-                    break;
-            }
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+        PaymentResponseListener() {
+            super(mView);
         }
 
         @Override
@@ -207,25 +196,9 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
             clearAndLogout();
         }
 
-        @Override
-        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-
-        }
-
-        @Override
-        public void onAppError(String msg) {
-            if (mView == null) {
-                return;
-            }
-            if (mView.getContext() != null) {
-                mView.showError(mView.getContext().getString(R.string.exception_generic));
-            }
-            mView.hideLoading();
-        }
-
-        @Override
-        public void onNotEnoughMoney() {
-            mNavigator.startDepositActivity(mView.getContext());
-        }
+        // Topup don't support add more money since this is action to add more money
+//        @Override
+//        public void onNotEnoughMoney() {
+//        }
     }
 }

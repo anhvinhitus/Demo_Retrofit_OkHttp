@@ -406,7 +406,7 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
             }
         }
     }
-    
+
     private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
         @Override
         public void onParameterError(String param) {

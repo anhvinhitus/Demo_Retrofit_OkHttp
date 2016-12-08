@@ -39,6 +39,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -604,22 +605,9 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         mView.showDialogThenClose(error, mView.getContext().getString(cancelText), dialogType);
     }
 
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
-        @Override
-        public void onParameterError(String param) {
-            if (mView == null) {
-                return;
-            }
-            if ("order".equalsIgnoreCase(param)) {
-                showError(mView.getContext().getString(R.string.order_invalid));
-            } else if ("uid".equalsIgnoreCase(param)) {
-                showError(mView.getContext().getString(R.string.user_invalid));
-            } else if ("token".equalsIgnoreCase(param)) {
-                showError(mView.getContext().getString(R.string.order_invalid));
-            } else if (!TextUtils.isEmpty(param)) {
-                showError(param);
-            }
-            hideLoading();
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+        PaymentResponseListener() {
+            super(mView);
         }
 
         @Override
@@ -701,20 +689,6 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             }
             mView.onTokenInvalid();
             clearAndLogout();
-        }
-
-        @Override
-        public void onAppError(String msg) {
-            if (!TextUtils.isEmpty(msg)) {
-                showError(msg);
-                hideLoading();
-            } else {
-                if (mView == null || mView.getContext() == null) {
-                    return;
-                }
-                showError(mView.getContext().getString(R.string.exception_generic));
-                hideLoading();
-            }
         }
 
         @Override

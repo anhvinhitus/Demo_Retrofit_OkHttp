@@ -352,10 +352,6 @@ public class PaymentWrapper {
         navigator.startUpdateProfileLevel2Activity(mActivity, walletTransID);
     }
 
-    public interface IViewListener {
-        Activity getActivity();
-    }
-
     public interface IRedirectListener {
         void startUpdateProfileLevel(String walletTransId);
     }

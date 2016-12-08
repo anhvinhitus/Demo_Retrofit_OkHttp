@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -104,10 +105,6 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
         }
 
         @Override
-        public void onCompleted() {
-        }
-
-        @Override
         public void onError(Throwable e) {
             if (ResponseHelper.shouldIgnoreError(e)) {
                 // simply ignore the error
@@ -169,31 +166,10 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
         mView = null;
     }
 
-    private class PaymentViewListener implements PaymentWrapper.IViewListener {
-        @Override
-        public Activity getActivity() {
-            return mView.getActivity();
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+        PaymentResponseListener() {
+            super(mView);
         }
-    }
-
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
-        @Override
-        public void onParameterError(String param) {
-            if (mView == null) {
-                return;
-            }
-            if ("order".equalsIgnoreCase(param)) {
-                mView.showError(mView.getContext().getString(R.string.order_invalid));
-            } else if ("uid".equalsIgnoreCase(param)) {
-                mView.showError(mView.getContext().getString(R.string.user_invalid));
-            } else if ("token".equalsIgnoreCase(param)) {
-                mView.showError(mView.getContext().getString(R.string.order_invalid));
-            } else if (!TextUtils.isEmpty(param)) {
-                mView.showError(param);
-            }
-            mView.hideLoading();
-        }
-
         @Override
         public void onResponseError(PaymentError paymentError) {
             if (mView == null) {
@@ -226,22 +202,6 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
             }
             mView.onTokenInvalid();
             clearAndLogout();
-        }
-
-        @Override
-        public void onAppError(String msg) {
-            if (mView == null) {
-                return;
-            }
-            if (mView.getContext() != null) {
-                mView.showError(mView.getContext().getString(R.string.exception_generic));
-            }
-            mView.hideLoading();
-        }
-
-        @Override
-        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-
         }
 
         @Override
