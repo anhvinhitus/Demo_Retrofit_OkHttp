@@ -103,19 +103,17 @@ public class PaymentWrapper {
                 .subscribe(new GetOrderSubscriber());
     }
 
-
     public void withdraw(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WITHDRAW;
         ZPWPaymentInfo paymentInfo = transform(order);
-        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber, zaloPayName);
+        paymentInfo.userInfo = createUserInfo(displayName, avatar, phoneNumber, zaloPayName);
         callPayAPI(activity, paymentInfo, forcedPaymentChannel);
     }
 
     public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
-
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
         ZPWPaymentInfo paymentInfo = transform(order);
-        paymentInfo.userInfo = getUserInfo(displayName, avatar, phoneNumber, zaloPayName);
+        paymentInfo.userInfo = createUserInfo(displayName, avatar, phoneNumber, zaloPayName);
         callPayAPI(activity, paymentInfo, forcedPaymentChannel);
     }
 
@@ -179,7 +177,6 @@ public class PaymentWrapper {
             ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
             paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
-            paymentInfo.userInfo = getUserInfo();
 
             Timber.d("payWithOrder: ZPWPaymentInfo is ready");
 
@@ -193,7 +190,7 @@ public class PaymentWrapper {
 
     public void saveCardMap(String walletTransId, ZPWSaveMapCardListener listener) {
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        paymentInfo.userInfo = getUserInfo();
+        paymentInfo.userInfo = assignBaseUserInfo(paymentInfo.userInfo);
         paymentInfo.walletTransID = walletTransId;
 
         Timber.d("saveCardMap, start paymentsdk");
@@ -243,30 +240,31 @@ public class PaymentWrapper {
         Timber.d("PaymentWrapper is finalize");
     }
 
-    private UserInfo getUserInfo(String displayName, String avatar, String phoneNumber, String zaloPayName) {
-        UserInfo mUserInfo = getUserInfo();
+    private UserInfo createUserInfo(String displayName, String avatar, String phoneNumber, String zaloPayName) {
+        UserInfo mUserInfo = new UserInfo();
         mUserInfo.phoneNumber = phoneNumber;
         mUserInfo.userName = displayName;
         mUserInfo.zaloPayName = zaloPayName;
         return mUserInfo;
     }
 
-    private UserInfo getUserInfo() {
-
+    private UserInfo assignBaseUserInfo(UserInfo userInfo) {
         User user = null;
         if (getUserComponent() != null) {
             user = getUserComponent().currentUser();
         }
 
-        UserInfo mUserInfo = new UserInfo();
-        if (user != null) {
-            mUserInfo.zaloUserId = String.valueOf(user.zaloId);
-            mUserInfo.zaloPayUserId = user.zaloPayId;
-            mUserInfo.accessToken = user.accesstoken;
-            mUserInfo.level = getUserProfileLevel();
-            mUserInfo.userProfile = getUserPermission();
+        if (userInfo == null) {
+            userInfo = new UserInfo();
         }
-        return mUserInfo;
+        if (user != null) {
+            userInfo.zaloUserId = String.valueOf(user.zaloId);
+            userInfo.zaloPayUserId = user.zaloPayId;
+            userInfo.accessToken = user.accesstoken;
+            userInfo.level = getUserProfileLevel();
+            userInfo.userProfile = getUserPermission();
+        }
+        return userInfo;
     }
 
     private void callPayAPI(Activity owner, ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {
@@ -275,11 +273,8 @@ public class PaymentWrapper {
             mActivity = null;
             return;
         }
-        if (paymentInfo.userInfo == null
-                || paymentInfo.userInfo.level < 0
-                || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
-            paymentInfo.userInfo = getUserInfo();
-        }
+
+        paymentInfo.userInfo =  assignBaseUserInfo(paymentInfo.userInfo);
         if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
             mWalletListener.onError(new CError(EPayError.DATA_INVALID, "Vui lòng cập nhật thông tin tài khoản."));
             mActivity = null;
@@ -330,7 +325,6 @@ public class PaymentWrapper {
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
 
         paymentInfo.appID = order.appid;
-        paymentInfo.userInfo = getUserInfo();
         paymentInfo.appTime = order.apptime;
         paymentInfo.appTransID = order.apptransid;
         paymentInfo.itemName = order.item;
