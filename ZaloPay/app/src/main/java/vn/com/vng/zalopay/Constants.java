@@ -77,6 +77,7 @@ public interface Constants {
     int REQUEST_CODE_DEPOSIT = 128;
     int REQUEST_CODE_UPDATE_PROFILE_LEVEL_2 = 129;
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
+    String ARG_SHOW_NOTIFICATION_LINK_CARD = "show_notification_link_card";
 
     //Contain request code that request permission in Android 6
     interface Permission {

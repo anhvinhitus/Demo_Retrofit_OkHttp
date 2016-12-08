@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 import javax.inject.Inject;
 
@@ -10,6 +11,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
@@ -30,6 +32,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 
 /**
  * Created by longlv on 10/05/2016.
+ * *
  */
 public class BalanceTopupPresenter extends BaseUserPresenter implements IPresenter<IBalanceTopupView> {
 
@@ -112,6 +115,14 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
         mCompositeSubscription.add(subscription);
+    }
+
+    public void initData(Bundle bundle) {
+        if (bundle == null) {
+            return;
+        }
+        boolean showNotificationLinkCard = bundle.getBoolean(Constants.ARG_SHOW_NOTIFICATION_LINK_CARD, true);
+        paymentWrapper.setShowNotificationLinkCard(showNotificationLinkCard);
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {

@@ -112,7 +112,7 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
             if (mMWeakReference == null || mMWeakReference.get() == null) {
                 navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
             } else {
-                navigator.startDepositForResultActivity(mMWeakReference.get());
+                navigator.startDepositForResultActivity(mMWeakReference.get(), false);
             }
         }
     }

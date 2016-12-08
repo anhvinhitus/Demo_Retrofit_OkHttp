@@ -51,7 +51,7 @@ public class PaymentWrapper {
     private final ZaloPayRepository zaloPayRepository;
     private final BalanceStore.Repository balanceRepository;
     final Navigator mNavigator = AndroidApplication.instance().getAppComponent().navigator();
-    final boolean mShowNotificationLinkCard;
+    boolean mShowNotificationLinkCard;
     private ZPWPaymentInfo mPendingOrder;
     private EPaymentChannel mPendingChannel;
 
@@ -407,5 +407,9 @@ public class PaymentWrapper {
     void clearPendingOrder() {
         mPendingOrder = null;
         mPendingChannel = null;
+    }
+
+    public void setShowNotificationLinkCard(boolean showNotificationLinkCard) {
+        mShowNotificationLinkCard = showNotificationLinkCard;
     }
 }

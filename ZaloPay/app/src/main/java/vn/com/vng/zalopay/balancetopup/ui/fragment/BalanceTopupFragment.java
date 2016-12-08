@@ -33,10 +33,9 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  */
 public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupView {
 
-    public static BalanceTopupFragment newInstance() {
+    public static BalanceTopupFragment newInstance(Bundle bundle) {
         BalanceTopupFragment fragment = new BalanceTopupFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -105,6 +104,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.setView(this);
+        mPresenter.initData(getArguments());
         initLimitAmount();
         mEdtAmountView.addValidator(new ZPEditTextValidate(getString(R.string.valid_money)) {
             @Override

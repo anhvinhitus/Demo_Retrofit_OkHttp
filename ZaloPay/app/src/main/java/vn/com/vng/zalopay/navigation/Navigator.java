@@ -152,9 +152,10 @@ public class Navigator implements INavigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_DEPOSIT);
     }
 
-    public void startDepositForResultActivity(Activity activity) {
+    public void startDepositForResultActivity(Activity activity, boolean showNotificationLinkCard) {
         Intent intent = new Intent(activity, BalanceTopupActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.ARG_SHOW_NOTIFICATION_LINK_CARD, showNotificationLinkCard);
         activity.startActivityForResult(intent, Constants.REQUEST_CODE_DEPOSIT);
     }
 
