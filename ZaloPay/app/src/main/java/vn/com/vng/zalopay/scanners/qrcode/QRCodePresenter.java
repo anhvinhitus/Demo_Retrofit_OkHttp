@@ -46,6 +46,7 @@ import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -391,20 +392,20 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         }
     }
 
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+        PaymentResponseListener() {
+            super(mView);
+        }
+
         @Override
         public void onParameterError(String param) {
+            super.onParameterError(param);
+
             if (mView == null) {
                 return;
             }
 
-            if ("order".equalsIgnoreCase(param)) {
-                mView.showError(mView.getContext().getString(R.string.order_invalid));
-            } else if ("uid".equalsIgnoreCase(param)) {
-                mView.showError(mView.getContext().getString(R.string.user_invalid));
-            } else if ("token".equalsIgnoreCase(param)) {
-                hideLoadingView();
-                mView.showError(mView.getContext().getString(R.string.order_invalid));
+            if ("token".equalsIgnoreCase(param)) {
                 ZPAnalytics.trackEvent(ZPEvents.SCANQR_NOORDER);
                 mView.resumeScanner();
             }
@@ -441,19 +442,8 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         }
 
         @Override
-        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-
-        }
-
-        @Override
         public void onAppError(String msg) {
-            if (mView == null) {
-                return;
-            }
-            if (mView.getContext() != null) {
-                mView.showError(mView.getContext().getString(R.string.exception_generic));
-            }
-            hideLoadingView();
+            super.onAppError(msg);
             mView.resumeScanner();
         }
 

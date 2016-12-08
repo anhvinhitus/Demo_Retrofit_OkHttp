@@ -85,14 +85,6 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     public void destroy() {
     }
 
-    private void showLoadingView() {
-        if (mView == null) {
-            return;
-        }
-
-        mView.showLoading();
-    }
-
     private void hideLoadingView() {
         if (mView == null) {
             return;
@@ -127,10 +119,6 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
         public void onNext(Order order) {
             Timber.d("Create order for WalletTopup success: " + order);
             BalanceTopupPresenter.this.onCreateWalletOrderSuccess(order);
-        }
-
-        @Override
-        public void onCompleted() {
         }
 
         @Override
