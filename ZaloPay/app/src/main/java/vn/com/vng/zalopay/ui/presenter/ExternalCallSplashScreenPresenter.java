@@ -8,14 +8,19 @@ import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
+import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
@@ -140,11 +145,43 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
 
         if (scheme.equalsIgnoreCase("zalopay-1") && host.equalsIgnoreCase("post")) {
             pay(data, false);
-        } else if (scheme.equalsIgnoreCase("zalopay") && host.equalsIgnoreCase("zalopay.vn")) {
-            handleAppToAppPayment(data);
+        } else if (scheme.equalsIgnoreCase("zalopay")) {
+
+            if (host.equalsIgnoreCase("zalopay.vn")) {
+                handleAppToAppPayment(data);
+            } else if (host.equalsIgnoreCase("otp")) {
+                handleOTPDeepLink(data);
+                finish();
+            } else {
+                finish();
+            }
+
         } else {
             finish();
         }
+    }
+
+    private boolean handleOTPDeepLink(Uri data) {
+        if (!mUserConfig.hasCurrentUser()) {
+            return false;
+        }
+
+        List<String> list = data.getPathSegments();
+        if (Lists.isEmptyOrNull(list)) {
+            return false;
+        }
+
+        String otp = list.get(0);
+        Timber.d("handleDeepLink: %s", otp);
+        if (TextUtils.isEmpty(otp) || !TextUtils.isDigitsOnly(otp)) {
+            return false;
+        }
+
+       /* Intent intent = mNavigator.intentChangePinActivity((Activity) mView.getContext());
+        intent.putExtra("otp", otp);
+        mView.getContext().startActivity(intent);*/
+
+        return true;
     }
 
     private void pay(Uri data, boolean isAppToApp) {

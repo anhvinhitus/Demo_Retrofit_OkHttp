@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
@@ -58,6 +59,7 @@ public class PassCodeView extends FrameLayout {
     private IPassCodeMaxLength mIPassCodeMaxLength;
 
     private ColorStateList mErrorColorStateList;
+    private ColorStateList mOriginalTintList;
 
     public PassCodeView(Context context) {
         this(context, null);
@@ -97,6 +99,7 @@ public class PassCodeView extends FrameLayout {
         mTvHint.setPadding((int) paddingLeft, 0, 0, 0);
         mRootView.setPadding((int) paddingLeft, 0, 0, 0);
         mEditText.setCustomSelectionActionModeCallback(new NonSelectionActionModeCallback());
+        mOriginalTintList = mEditText.getSupportBackgroundTintList();
         initTextView(context);
         addView(view);
     }
@@ -170,9 +173,10 @@ public class PassCodeView extends FrameLayout {
 
 
     private void hideError() {
+        Timber.d("hideError");
         mTvHint.setText(mHint);
         mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        mEditText.setSupportBackgroundTintList(null);
+        mEditText.setSupportBackgroundTintList(mOriginalTintList);
     }
 
     public void setError(String error) {
@@ -188,6 +192,7 @@ public class PassCodeView extends FrameLayout {
         mTvHint.setText(error);
         mTvHint.setTextColor(Color.RED);
         mEditText.setSupportBackgroundTintList(mErrorColorStateList);
+        Timber.d("setError %s", error);
     }
 
     @OnTextChanged(R.id.editText)

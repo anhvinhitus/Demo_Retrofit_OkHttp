@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.account.ui.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
+import vn.com.vng.zalopay.event.ReceiveOTPEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
@@ -133,6 +135,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
         super.onDestroy();
         hideLoading();
         mProgressDialog = null;
+        eventBus.removeStickyEvent(ReceiveOTPEvent.class);
     }
 
     @Override
@@ -235,5 +238,16 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
         }
         setResult(RESULT_CANCELED);
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String otp = intent.getStringExtra("otp");
+
+        if (!TextUtils.isEmpty(otp)) {
+            eventBus.postSticky(new ReceiveOTPEvent(otp));
+        }
+
     }
 }

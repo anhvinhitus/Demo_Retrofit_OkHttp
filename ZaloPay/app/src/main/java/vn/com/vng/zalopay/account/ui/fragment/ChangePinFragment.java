@@ -110,11 +110,6 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -210,7 +205,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
     }
 
     public boolean isValid() {
-        return mOldPassCodeView.isValid() && mNewPassCodeView.isValid() && isDifferencePin();
+        return mOldPassCodeView.isValid() && mNewPassCodeView.isValid();
     }
 
     private IPassCodeFocusChanged mOldPassCodeFocusChanged = new IPassCodeFocusChanged() {

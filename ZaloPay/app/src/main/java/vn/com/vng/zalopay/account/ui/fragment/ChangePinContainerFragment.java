@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
@@ -14,6 +15,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ChangePinPagerAdapter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -47,21 +49,40 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     @BindView(R.id.viewPager)
     NonSwipeableViewPager mPager;
 
+    ChangePinPagerAdapter mAdapter;
+
     @Inject
     IChangePinPresenter presenter;
+
+    private int mCurrentPage;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAdapter = new ChangePinPagerAdapter(getChildFragmentManager());
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        mPager.setAdapter(new ChangePinPagerAdapter(getFragmentManager()));
+        mPager.setAdapter(mAdapter);
     }
 
     @OnPageChange(value = R.id.viewPager, callback = OnPageChange.Callback.PAGE_SELECTED)
-    public void onPageSelected(int position) {
-        if (position == 1) {
-            checkAndRequestReadSMSPermission();
+    public void onPageSelected(int newPosition) {
+
+        Fragment fragmentToShow = mAdapter.getPage(newPosition);
+        if (fragmentToShow instanceof FragmentLifecycle) {
+            ((FragmentLifecycle) fragmentToShow).onStartFragment();
         }
+
+        Fragment fragmentToHide = mAdapter.getPage(mCurrentPage);
+        if (fragmentToHide instanceof FragmentLifecycle) {
+            ((FragmentLifecycle) fragmentToHide).onStopFragment();
+        }
+
+        mCurrentPage = newPosition;
     }
 
     @Override

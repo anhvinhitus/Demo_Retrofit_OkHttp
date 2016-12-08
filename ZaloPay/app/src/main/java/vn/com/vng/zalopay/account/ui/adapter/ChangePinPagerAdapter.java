@@ -3,6 +3,9 @@ package vn.com.vng.zalopay.account.ui.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
+
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ChangePinVerifyFragment;
 
@@ -10,7 +13,7 @@ import vn.com.vng.zalopay.account.ui.fragment.ChangePinVerifyFragment;
  * Created by AnhHieu on 8/25/16.
  * *
  */
-public class ChangePinPagerAdapter extends FragmentPagerAdapter {
+public class ChangePinPagerAdapter extends AbsFragmentPagerAdapter {
 
     public ChangePinPagerAdapter(FragmentManager fm) {
         super(fm);

@@ -24,6 +24,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.OTPProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
+import vn.com.vng.zalopay.event.ReceiveOTPEvent;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.validate.DigitsOnlyValidate;
@@ -38,7 +39,6 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
  * create an instance of this fragment.
  */
 public class OtpProfileFragment extends BaseFragment implements IOTPProfileView {
-
 
     public static OtpProfileFragment newInstance() {
         return new OtpProfileFragment();
@@ -189,6 +189,19 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
             }
         }
         mEventBus.removeStickyEvent(ReceiveSmsEvent.class);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onReceiveOTP(ReceiveOTPEvent event) {
+
+        Timber.d("onReceiveOTP %s", event.otp);
+        if (getUserVisibleHint()) {
+            if (mEdtOTPView != null) {
+                mEdtOTPView.setText(event.otp);
+            }
+        }
+
+        mEventBus.removeStickyEvent(ReceiveOTPEvent.class);
     }
 
     public interface OnOTPFragmentListener {

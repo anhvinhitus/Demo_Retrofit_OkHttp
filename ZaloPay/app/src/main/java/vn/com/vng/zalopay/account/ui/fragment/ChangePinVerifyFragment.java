@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -8,6 +9,7 @@ import com.zalopay.ui.widget.edittext.ZPEditText;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,16 +23,17 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
+import vn.com.vng.zalopay.event.ReceiveOTPEvent;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.widget.validate.DigitsOnlyValidate;
 
 /**
  * Created by AnhHieu on 8/25/16.
  * *
  */
-public class ChangePinVerifyFragment extends BaseFragment implements IChangePinVerifyView, FragmentLifecycle {
+public class ChangePinVerifyFragment extends RuntimePermissionFragment implements IChangePinVerifyView, FragmentLifecycle {
 
     public static ChangePinVerifyFragment newInstance() {
 
@@ -77,16 +80,16 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         mEventBus.unregister(this);
     }
 
@@ -101,7 +104,7 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
         mBtnConfirmView.setEnabled(mEdtOTPView.isValid());
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiveSmsMessages(ReceiveSmsEvent event) {
         String pattern = "(.*)(\\d{6})(.*)";
         // Create a Pattern object
@@ -134,11 +137,30 @@ public class ChangePinVerifyFragment extends BaseFragment implements IChangePinV
 
     @Override
     public void onStartFragment() {
-        
+        Timber.d("onStartFragment");
+        isPermissionGrantedAndRequest(new String[]{Manifest.permission.RECEIVE_SMS}, PERMISSION_CODE.RECEIVE_SMS);
     }
 
     @Override
     public void onStopFragment() {
+        Timber.d("onStopFragment");
+    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onReceiveOTP(ReceiveOTPEvent event) {
+
+        Timber.d("onReceiveOTP %s", event.otp);
+        if (getUserVisibleHint()) {
+            if (mEdtOTPView != null) {
+                mEdtOTPView.setText(event.otp);
+            }
+        }
+
+        mEventBus.removeStickyEvent(ReceiveOTPEvent.class);
+    }
+
+    @Override
+    protected void permissionGranted(int permissionRequestCode) {
+        Timber.d("permissionGranted: %s", permissionRequestCode);
     }
 }

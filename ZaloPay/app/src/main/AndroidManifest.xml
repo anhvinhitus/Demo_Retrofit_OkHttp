@@ -116,10 +116,17 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="zalopay-1" />
+
                 <data
                     android:host="zalopay.vn"
                     android:scheme="zalopay" />
+
+                <data
+                    android:host="otp"
+                    android:scheme="zalopay" />
+
             </intent-filter>
+
         </activity-alias>
 
         <activity
@@ -224,9 +231,11 @@
             android:name=".linkcard.ui.LinkCardActivity"
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel2Activity"
             android:label="@string/title.activity.profile"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
@@ -267,6 +276,7 @@
         <activity
             android:name=".account.ui.activities.ChangePinActivity"
             android:label="@string/title.activity.change.pin"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity

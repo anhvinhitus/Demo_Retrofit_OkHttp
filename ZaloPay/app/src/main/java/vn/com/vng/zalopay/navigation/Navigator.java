@@ -311,8 +311,12 @@ public class Navigator implements INavigator {
         }
     }
 
+    public Intent intentChangePinActivity(Activity activity) {
+        return new Intent(activity, ChangePinActivity.class);
+    }
+
     public void startChangePinActivity(Activity activity) {
-        Intent intent = new Intent(activity, ChangePinActivity.class);
+        Intent intent = intentChangePinActivity(activity);
         activity.startActivity(intent);
     }
 
