@@ -31,6 +31,7 @@ public class BaseNetworkInterceptor implements Interceptor {
                 .addQueryParameter("deviceModel", DEVICE_MODEL)
                 .addQueryParameter("osVer", DEVICE_VERSION)
                 .addQueryParameter("appVer", BuildConfig.VERSION_NAME)
+                .addQueryParameter("appversion", BuildConfig.VERSION_NAME)
                 .addQueryParameter("sdkVer", vn.com.zalopay.wallet.BuildConfig.VERSION_NAME)
                 .addQueryParameter("distSrc", "")
                 .addQueryParameter("mno", CARRIER_NAME)
