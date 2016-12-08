@@ -365,6 +365,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         }
 
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+        paymentInfo.userInfo = new UserInfo();
         paymentInfo.userInfo.zaloPayUserId = mUser.zaloPayId;
         paymentInfo.userInfo.accessToken = mUser.accesstoken;
         WalletSDKApplication.refreshGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
@@ -458,32 +459,32 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 .setZaloPayRepository(mZaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new AbsPWResponseListener(mHomeView.getActivity()) {
-            @Override
-            public void onError(PaymentWrapperException exception) {
-                if (mHomeView == null) {
-                    return;
-                }
+                    @Override
+                    public void onError(PaymentWrapperException exception) {
+                        if (mHomeView == null) {
+                            return;
+                        }
 
-                hideLoadingView();
-                showErrorView(exception.getMessage());
+                        hideLoadingView();
+                        showErrorView(exception.getMessage());
 
-                if (isAppToApp) {
-                    responseToApp(mHomeView.getActivity(), appId, exception.getErrorCode(), exception.getMessage());
-                }
-            }
+                        if (isAppToApp) {
+                            responseToApp(mHomeView.getActivity(), appId, exception.getErrorCode(), exception.getMessage());
+                        }
+                    }
 
-            @Override
-            public void onCompleted() {
-                if (mHomeView == null) {
-                    return;
-                }
+                    @Override
+                    public void onCompleted() {
+                        if (mHomeView == null) {
+                            return;
+                        }
 
-                hideLoadingView();
-                if (isAppToApp) {
-                    responseToApp(mHomeView.getActivity(), appId, PaymentError.ERR_CODE_SUCCESS.value(), "");
-                }
-            }
-        }).build();
+                        hideLoadingView();
+                        if (isAppToApp) {
+                            responseToApp(mHomeView.getActivity(), appId, PaymentError.ERR_CODE_SUCCESS.value(), "");
+                        }
+                    }
+                }).build();
     }
 
     private void showPayDialogConfirm(final PaymentDataEvent dataEvent) {

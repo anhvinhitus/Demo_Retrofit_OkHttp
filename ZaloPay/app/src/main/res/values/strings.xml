@@ -383,7 +383,7 @@
     <string name="device_not_internet_connection">Không có kết nối mạng.\nHãy bật Wi-Fi hoặc 3G.</string>
     <string name="please_do_tutorial">Vui lòng làm theo hướng dẫn:</string>
     <string name="turn_on_wifi"><![CDATA[<b>Bật Wi-fi:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Wi-fi\"</b> và chọn mạng Wi-fi có sẵn.]]></string>
-    <string name="turn_on_3g"><![CDATA[<b>Bật 3G:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Cellular\"</b> (di động) và bật  <b>\"Cellular Data\"</b> (dữ liệu di động).]]></string>
+    <string name="turn_on_3g"><![CDATA[<b>Bật 3G:</b> chọn <b>\"Settings\"</b> (cài đặt) - <b>\"Mobile Networks\"</b> (di động) và bật  <b>\"Mobile Data\"</b> (dữ liệu di động).]]></string>
     <string name="display.pin">Hiển thị mật khẩu thanh toán</string>
 
     <string name="warning.rooted.title">Thiết bị đang sử dụng đã bị root.</string>
