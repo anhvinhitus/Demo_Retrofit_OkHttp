@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.react.redpacket;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 
@@ -10,5 +11,6 @@ import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
  */
 public interface IRedPacketPayService {
     void pay(Activity activity, BundleOrder bundleOrder, RedPacketPayListener listener);
-    void payPendingOrder();
+//    void payPendingOrder();
+    void onActivityResult(int requestCode, int resultCode, Intent data);
 }

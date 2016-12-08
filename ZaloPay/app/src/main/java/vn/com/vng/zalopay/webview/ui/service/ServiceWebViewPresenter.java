@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.webview.ui.service;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
@@ -38,9 +40,6 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
 
     private String mHost;
     private WebViewPayInfo mAppGamePayInfo;
-    private BalanceStore.Repository mBalanceRepository;
-    private ZaloPayRepository mZaloPayRepository;
-    private TransactionStore.Repository mTransactionRepository;
     private Navigator mNavigator;
     private PaymentWrapper mPaymentWrapper;
 
@@ -49,14 +48,11 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
                             ZaloPayRepository zaloPayRepository,
                             TransactionStore.Repository transactionRepository,
                             Navigator navigator) {
-        this.mBalanceRepository = balanceRepository;
-        this.mZaloPayRepository = zaloPayRepository;
-        this.mTransactionRepository = transactionRepository;
         this.mNavigator = navigator;
         this.mPaymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(mBalanceRepository)
-                .setZaloPayRepository(mZaloPayRepository)
-                .setTransactionRepository(mTransactionRepository)
+                .setBalanceRepository(balanceRepository)
+                .setZaloPayRepository(zaloPayRepository)
+                .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new PaymentRedirectListener())
                 .build();
@@ -183,32 +179,17 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
 
     }
 
-    public void payPendingOrder() {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (mPaymentWrapper == null) {
             return;
         }
-        if (mPaymentWrapper.hasPendingOrder()) {
-            mPaymentWrapper.continuePayPendingOrder();
-        }
+
+        mPaymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
-        @Override
-        public void onParameterError(String param) {
-            Timber.d("onParameterError param [%s]", param);
-            if ("order".equalsIgnoreCase(param)) {
-                showError(R.string.order_invalid);
-            } else if ("uid".equalsIgnoreCase(param)) {
-                showError(R.string.user_invalid);
-            } else if ("token".equalsIgnoreCase(param)) {
-                showError(R.string.order_invalid);
-            }
-        }
-
-        @Override
-        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-            Timber.d("onPreComplete appTransID [%s]", pAppTransId);
-
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+        PaymentResponseListener() {
+            super(mView);
         }
 
         @Override
@@ -241,21 +222,9 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         }
 
         @Override
-        public void onResponseTokenInvalid() {
-            Timber.d("onResponseTokenInvalid");
-            onSessionExpired();
-        }
-
-        @Override
-        public void onAppError(String msg) {
-            Timber.d("onAppError msg [%s]", msg);
-            showError(R.string.exception_generic);
-        }
-
-        @Override
         public void onNotEnoughMoney() {
             Timber.d("onNotEnoughMoney");
-            if (mNavigator == null || mView == null || mView.getActivity() == null) {
+            if (mNavigator == null || mView == null || mView.getFragment() == null) {
                 return;
             }
             mNavigator.startDepositForResultActivity(mView.getFragment());
@@ -266,23 +235,6 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
                 return;
             }
             mView.showNetworkErrorDialog();
-        }
-
-        private void showError(int stringResourceId) {
-            if (mView == null || mView.getActivity() == null) {
-                return;
-            }
-            String text = mView.getActivity().getString(stringResourceId);
-            if (TextUtils.isEmpty(text) || mView == null) {
-                return;
-            }
-            mView.showError(text);
-        }
-
-        private void onSessionExpired() {
-            ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
-            applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
-            applicationSession.clearUserSession();
         }
     }
 

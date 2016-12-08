@@ -4,7 +4,10 @@ import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
 
+import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -52,7 +55,11 @@ public class DefaultPaymentResponseListener implements PaymentWrapper.IResponseL
 
     @Override
     public void onResponseTokenInvalid() {
+        Timber.d("onResponseTokenInvalid - cleanup and logout");
 
+        ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
+        applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
+        applicationSession.clearUserSession();
     }
 
     @Override

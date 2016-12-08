@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.service;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import java.lang.ref.WeakReference;
 
@@ -45,18 +46,27 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         this.paymentWrapper.payWithOrder(activity, bundleOrder);
     }
 
-    @Override
-    public void payPendingOrder() {
-        if (paymentWrapper == null) {
-            return;
-        }
-        if (paymentWrapper.hasPendingOrder()) {
-            paymentWrapper.continuePayPendingOrder();
-        }
-    }
+//    @Override
+//    public void payPendingOrder() {
+//        if (paymentWrapper == null) {
+//            return;
+//        }
+//        if (paymentWrapper.hasPendingOrder()) {
+//            paymentWrapper.continuePayPendingOrder();
+//        }
+//    }
 
     public void destroyVariable() {
         paymentWrapper = null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (paymentWrapper == null) {
+            return;
+        }
+
+        paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
     private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
