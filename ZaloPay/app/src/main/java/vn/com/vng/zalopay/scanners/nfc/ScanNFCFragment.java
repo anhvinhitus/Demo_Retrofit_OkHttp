@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.widget.RippleBackground;
 import vn.com.vng.zalopay.ui.widget.WaveView;
 
 /**
@@ -51,7 +52,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
     ImageView mHandView;
 
     @BindView(R.id.waveView)
-    WaveView mWareWaveView;
+    RippleBackground mWareWaveView;
 
     @Inject
     NFCReaderPresenter readerPresenter;

@@ -39,6 +39,8 @@ import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.widget.RippleBackground;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
@@ -47,7 +49,6 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
 
     private BeaconScanner beaconScanner;
     private CounterBeaconRecyclerViewAdapter mViewAdapter;
-    private Handler mMainLooperHandler;
 
     private PaymentWrapper mPaymentWrapper;
     private final HashMap<String, OrderCache> mTransactionCache = new HashMap<>();
@@ -63,6 +64,14 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
 
     @BindView(R.id.beaconList)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.waveView)
+    RippleBackground mWareWaveView;
+
+    @BindView(R.id.tvLabel)
+    View mLableView;
+
+    private Timer timer;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -125,22 +134,38 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+    }
 
-        mMainLooperHandler = new Handler(context.getMainLooper());
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getUserVisibleHint()) {
+            startScanning();
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        stopBeaconScanner();
-        mMainLooperHandler.removeCallbacks(removeDeviceExpiredRunnable);
-        mMainLooperHandler = null;
+        stopScanning();
+        AndroidUtils.cancelRunOnUIThread(removeDeviceExpiredRunnable);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopScanning();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        stopBeaconScanner();
+    }
+
+    @Override
+    public void onDestroyView() {
+        mRecyclerView.setAdapter(null);
+        super.onDestroyView();
     }
 
     @Override
@@ -155,11 +180,10 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
         }
     }
 
-    private Timer timer;
-
     private void startBeaconScanner() {
+        Timber.d("startBeaconScanner");
         stopTimer();
-        
+
         timer = new Timer();
         timer.scheduleAtFixedRate(new MyTimerTask(), 0, 1000);
 
@@ -172,6 +196,7 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
     }
 
     private void stopBeaconScanner() {
+        Timber.d("stopBeaconScanner");
         getAppComponent().threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -189,10 +214,12 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
     }
 
     public void startScanning() {
+        starAnimation();
         startBeaconScanner();
     }
 
     public void stopScanning() {
+        stopAnimation();
         stopBeaconScanner();
     }
 
@@ -251,6 +278,7 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
             }
 
             mViewAdapter.insertOrReplace(device);
+            checkIfEmpty();
 
         }
 
@@ -313,9 +341,7 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
     private class MyTimerTask extends TimerTask {
         @Override
         public void run() {
-            if (mMainLooperHandler != null) {
-                mMainLooperHandler.post(removeDeviceExpiredRunnable);
-            }
+            AndroidUtils.runOnUIThread(removeDeviceExpiredRunnable);
         }
     }
 
@@ -331,6 +357,7 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
 
             if (!expiredList.isEmpty()) {
                 mViewAdapter.removeAll(expiredList);
+                checkIfEmpty();
             }
         }
     };
@@ -426,6 +453,28 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
         @Override
         public void onNotEnoughMoney() {
             navigator.startDepositActivity(CounterBeaconFragment.this.getContext());
+        }
+    }
+
+    private void stopAnimation() {
+        if (mWareWaveView != null) {
+            mWareWaveView.stopRippleAnimation();
+        }
+    }
+
+    private void starAnimation() {
+        if (mWareWaveView != null) {
+            mWareWaveView.startRippleAnimation();
+        }
+    }
+
+    private void checkIfEmpty() {
+        if (mViewAdapter.getItemCount() == 0) {
+            mWareWaveView.setVisibility(View.VISIBLE);
+            mLableView.setVisibility(View.VISIBLE);
+        } else {
+            mWareWaveView.setVisibility(View.INVISIBLE);
+            mLableView.setVisibility(View.INVISIBLE);
         }
     }
 }

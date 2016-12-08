@@ -2,48 +2,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <vn.com.vng.zalopay.ui.widget.WaveView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <vn.com.vng.zalopay.ui.widget.RippleBackground
         android:id="@+id/waveView"
+        style="@style/RippleBackground"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/height_tab_pay_with_margin"
-        app:rb_color="#ffffff"
-        app:rb_duration="3000"
-        app:rb_radius="72dp"
-        app:rb_rippleAmount="4"
-        app:rb_scale="2.4"
-        app:rb_strokeWidth="4dp"
-        app:rb_type="strokeRipple"
-        tools:background="@color/colorPrimary">
+        android:layout_height="match_parent" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/imMachine"
+            android:layout_width="118dp"
+            android:layout_height="118dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="74dp"
+            android:layout_marginRight="45dp"
+            android:src="@drawable/ic_pay_machine" />
 
-            <ImageView
-                android:id="@+id/imMachine"
-                android:layout_width="118dp"
-                android:layout_height="118dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="74dp"
-                android:layout_marginRight="45dp"
-                android:src="@drawable/ic_pay_machine" />
-
-            <ImageView
-                android:id="@+id/imHand"
-                android:layout_width="184dp"
-                android:layout_height="223dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="36dp"
-                android:layout_marginLeft="45dp"
-                android:src="@drawable/ic_pay_hand" />
-        </FrameLayout>
-
-
-    </vn.com.vng.zalopay.ui.widget.WaveView>
+        <ImageView
+            android:id="@+id/imHand"
+            android:layout_width="184dp"
+            android:layout_height="223dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="36dp"
+            android:layout_marginLeft="45dp"
+            android:src="@drawable/ic_pay_hand" />
+    </FrameLayout>
 
     <TextView
         style="@style/TextView.Default"
@@ -55,6 +41,5 @@
         android:text="@string/lbl.nfc.fragment"
         android:textColor="@color/white"
         android:textSize="@dimen/font_size_large" />
-
 
 </FrameLayout>

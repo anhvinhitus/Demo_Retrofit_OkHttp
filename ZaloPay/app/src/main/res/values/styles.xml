@@ -250,4 +250,13 @@
         <item name="android:hint">@string/hint_amount</item>
     </style>
 
+    <style name="RippleBackground">
+        <item name="rb_color">#40FFFFFF</item>
+        <item name="rb_duration">3000</item>
+        <item name="rb_radius">32dp</item>
+        <item name="rb_rippleAmount">6</item>
+        <item name="rb_scale">6</item>
+        <item name="android:layout_marginBottom">120dp</item>
+    </style>
+
 </resources>
