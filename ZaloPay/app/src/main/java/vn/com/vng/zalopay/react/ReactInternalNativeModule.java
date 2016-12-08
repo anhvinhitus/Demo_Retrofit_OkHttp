@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
@@ -20,20 +19,16 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action0;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.data.ws.model.NotificationEmbedData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -42,9 +37,9 @@ import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -296,13 +291,12 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     private PaymentWrapper getPaymentWrapper() {
-        return new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository,
-                new PaymentWrapper.IViewListener() {
-                    @Override
-                    public Activity getActivity() {
-                        return getCurrentActivity();
-                    }
-                }, new AbsPWResponseListener(getCurrentActivity()) {
+        return new PaymentWrapperBuilder()
+                .setBalanceRepository(mBalanceRepository)
+                .setZaloPayRepository(mZaloPayRepository)
+                .setTransactionRepository(mTransactionRepository)
+                .setViewListener(new PaymentViewListener())
+                .setResponseListener(new AbsPWResponseListener(getCurrentActivity()) {
             @Override
             public void onError(PaymentWrapperException exception) {
                 hideLoading();
@@ -316,7 +310,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                     showToast(R.string.you_pay_success);
                 }*/
             }
-        });
+        }).build();
     }
 
 
@@ -344,4 +338,10 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         }
     }
 
+    private class PaymentViewListener implements PaymentWrapper.IViewListener {
+        @Override
+        public Activity getActivity() {
+            return getCurrentActivity();
+        }
+    }
 }

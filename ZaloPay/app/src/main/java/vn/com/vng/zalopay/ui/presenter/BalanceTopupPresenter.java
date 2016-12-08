@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 
@@ -50,79 +51,13 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
         mZaloPayRepository = zaloPayRepository;
         mNavigator = navigator;
         mUser = user;
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                return mView.getActivity();
-            }
-        }, new PaymentWrapper.IResponseListener() {
-            @Override
-            public void onParameterError(String param) {
-                if (mView == null) {
-                    return;
-                }
-
-                switch (param) {
-                    case "order":
-                        mView.showError(mView.getContext().getString(R.string.order_invalid));
-                        break;
-                    case "uid":
-                        mView.showError(mView.getContext().getString(R.string.user_invalid));
-                        break;
-                }
-            }
-
-            @Override
-            public void onResponseError(PaymentError paymentError) {
-                if (mView == null) {
-                    return;
-                }
-                if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    mView.showNetworkErrorDialog();
-                }
-                /*else {
-                    mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
-                }*/
-            }
-
-            @Override
-            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                if (mView == null || mView.getActivity() == null) {
-                    return;
-                }
-                mView.getActivity().setResult(Activity.RESULT_OK);
-                mView.getActivity().finish();
-            }
-
-            @Override
-            public void onResponseTokenInvalid() {
-                if (mView == null) {
-                    return;
-                }
-                clearAndLogout();
-            }
-
-            @Override
-            public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-
-            }
-
-            @Override
-            public void onAppError(String msg) {
-                if (mView == null) {
-                    return;
-                }
-                if (mView.getContext() != null) {
-                    mView.showError(mView.getContext().getString(R.string.exception_generic));
-                }
-                mView.hideLoading();
-            }
-
-            @Override
-            public void onNotEnoughMoney() {
-                mNavigator.startDepositActivity(mView.getContext());
-            }
-        });
+        paymentWrapper = new PaymentWrapperBuilder()
+                .setBalanceRepository(balanceRepository)
+                .setZaloPayRepository(zaloPayRepository)
+                .setTransactionRepository(transactionRepository)
+                .setViewListener(new PaymentViewListener())
+                .setResponseListener(new PaymentResponseListener())
+                .build();
     }
 
     @Override
@@ -226,4 +161,79 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
         createWalletOrder(amount);
     }
 
+    private class PaymentViewListener implements PaymentWrapper.IViewListener {
+        @Override
+        public Activity getActivity() {
+            return mView.getActivity();
+        }
+    }
+
+    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+        @Override
+        public void onParameterError(String param) {
+            if (mView == null) {
+                return;
+            }
+
+            switch (param) {
+                case "order":
+                    mView.showError(mView.getContext().getString(R.string.order_invalid));
+                    break;
+                case "uid":
+                    mView.showError(mView.getContext().getString(R.string.user_invalid));
+                    break;
+            }
+        }
+
+        @Override
+        public void onResponseError(PaymentError paymentError) {
+            if (mView == null) {
+                return;
+            }
+            if (paymentError == PaymentError.ERR_CODE_INTERNET) {
+                mView.showNetworkErrorDialog();
+            }
+            /*else {
+                mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
+            }*/
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            if (mView == null || mView.getActivity() == null) {
+                return;
+            }
+            mView.getActivity().setResult(Activity.RESULT_OK);
+            mView.getActivity().finish();
+        }
+
+        @Override
+        public void onResponseTokenInvalid() {
+            if (mView == null) {
+                return;
+            }
+            clearAndLogout();
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
+
+        }
+
+        @Override
+        public void onAppError(String msg) {
+            if (mView == null) {
+                return;
+            }
+            if (mView.getContext() != null) {
+                mView.showError(mView.getContext().getString(R.string.exception_generic));
+            }
+            mView.hideLoading();
+        }
+
+        @Override
+        public void onNotEnoughMoney() {
+            mNavigator.startDepositActivity(mView.getContext());
+        }
+    }
 }

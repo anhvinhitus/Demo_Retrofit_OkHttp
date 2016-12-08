@@ -55,53 +55,13 @@ public class PaymentServiceImpl implements IPaymentService {
 
         final WeakReference<Activity> mWeakReference = new WeakReference<>(activity);
 
-        this.mPaymentWrapper = new PaymentWrapper(mBalanceRepository, null, mTransactionRepository, new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                return mWeakReference.get();
-            }
-        }, new PaymentWrapper.IResponseListener() {
-            @Override
-            public void onParameterError(String param) {
-                reportInvalidParameter(promise, param);
-            }
-
-            @Override
-            public void onResponseError(PaymentError paymentError) {
-                Helpers.promiseResolveError(promise, paymentError.value(),
-                        PaymentError.getErrorMessage(paymentError));
-            }
-
-            @Override
-            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                Helpers.promiseResolveSuccess(promise, null);
-            }
-
-            @Override
-            public void onResponseTokenInvalid() {
-                Timber.d("onResponseTokenInvalid errorCode");
-                /*Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_TOKEN_INVALID.value(),
-                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_TOKEN_INVALID));*/
-                logout();
-            }
-
-            @Override
-            public void onAppError(String msg) {
-                Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_SYSTEM.value(),
-                        PaymentError.getErrorMessage(PaymentError.ERR_CODE_SYSTEM));
-                destroyVariable();
-            }
-
-            @Override
-            public void onNotEnoughMoney() {
-                navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
-            }
-
-            @Override
-            public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-
-            }
-        });
+        this.mPaymentWrapper = new PaymentWrapperBuilder()
+                .setBalanceRepository(mBalanceRepository)
+                .setZaloPayRepository(null)
+                .setTransactionRepository(mTransactionRepository)
+                .setViewListener(new PaymentViewListener(mWeakReference))
+                .setResponseListener(new PaymentResponseListener(promise))
+                .build();
 
         this.mPaymentWrapper.payWithOrder(order);
     }
@@ -153,6 +113,68 @@ public class PaymentServiceImpl implements IPaymentService {
             activity.startActivity(Intent.createChooser(sharingIntent, "Share via"));
         } catch (Exception e) {
             //empty
+        }
+    }
+
+    private static class PaymentViewListener implements PaymentWrapper.IViewListener {
+        private final WeakReference<Activity> mMWeakReference;
+
+        public PaymentViewListener(WeakReference<Activity> mWeakReference) {
+            mMWeakReference = mWeakReference;
+        }
+
+        @Override
+        public Activity getActivity() {
+            return mMWeakReference.get();
+        }
+    }
+
+    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+        private final Promise mPromise;
+
+        public PaymentResponseListener(Promise promise) {
+            mPromise = promise;
+        }
+
+        @Override
+        public void onParameterError(String param) {
+            reportInvalidParameter(mPromise, param);
+        }
+
+        @Override
+        public void onResponseError(PaymentError paymentError) {
+            Helpers.promiseResolveError(mPromise, paymentError.value(),
+                    PaymentError.getErrorMessage(paymentError));
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            Helpers.promiseResolveSuccess(mPromise, null);
+        }
+
+        @Override
+        public void onResponseTokenInvalid() {
+            Timber.d("onResponseTokenInvalid errorCode");
+            /*Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_TOKEN_INVALID.value(),
+                    PaymentError.getErrorMessage(PaymentError.ERR_CODE_TOKEN_INVALID));*/
+            logout();
+        }
+
+        @Override
+        public void onAppError(String msg) {
+            Helpers.promiseResolveError(mPromise, PaymentError.ERR_CODE_SYSTEM.value(),
+                    PaymentError.getErrorMessage(PaymentError.ERR_CODE_SYSTEM));
+            destroyVariable();
+        }
+
+        @Override
+        public void onNotEnoughMoney() {
+            navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
+
         }
     }
 }

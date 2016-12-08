@@ -4,11 +4,9 @@ import android.app.Activity;
 
 import java.lang.ref.WeakReference;
 
-import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.redpacket.RedPacketPayListener;
@@ -36,68 +34,14 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
 
         final WeakReference<Activity> mWeakReference = new WeakReference<>(activity);
 
-        this.paymentWrapper = new PaymentWrapper(mBalanceRepository, null, mTransactionRepository, new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                return mWeakReference.get();
-            }
-        }, new PaymentWrapper.IResponseListener() {
-            @Override
-            public void onParameterError(String param) {
-                if (listener != null) {
-                    listener.onParameterError(param);
-                }
-            }
-
-            @Override
-            public void onResponseError(PaymentError paymentError) {
-                if (listener != null) {
-                    listener.onResponseError(paymentError);
-                }
-            }
-
-            @Override
-            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                if (listener != null) {
-                    listener.onResponseSuccess(null);
-                }
-            }
-
-            @Override
-            public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-
-            }
-
-            @Override
-            public void onResponseTokenInvalid() {
-
-            }
-
-            @Override
-            public void onAppError(String msg) {
-                if (listener != null) {
-                    listener.onAppError(msg);
-                }
-                destroyVariable();
-            }
-
-            @Override
-            public void onNotEnoughMoney() {
-                if (mWeakReference == null || mWeakReference.get() == null) {
-                    navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
-                } else {
-                    navigator.startDepositForResultActivity(mWeakReference.get());
-                }
-            }
-        }, new PaymentWrapper.IRedirectListener() {
-            @Override
-            public void startUpdateProfileLevel(String walletTransId) {
-                if (mWeakReference.get() == null) {
-                    return;
-                }
-                navigator.startUpdateProfile2ForResult(mWeakReference.get(), walletTransId);
-            }
-        }, false);
+        this.paymentWrapper = new PaymentWrapperBuilder()
+                .setBalanceRepository(mBalanceRepository)
+                .setTransactionRepository(mTransactionRepository)
+                .setViewListener(new PaymentViewListener(mWeakReference))
+                .setResponseListener(new PaymentResponseListener(listener, mWeakReference))
+                .setRedirectListener(new PaymentRedirectListener(mWeakReference))
+                .setShowNotificationLinkCard(false)
+                .build();
 
         this.paymentWrapper.payWithOrder(bundleOrder);
     }
@@ -116,4 +60,90 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         paymentWrapper = null;
     }
 
+    private static class PaymentViewListener implements PaymentWrapper.IViewListener {
+        private final WeakReference<Activity> mMWeakReference;
+
+        public PaymentViewListener(WeakReference<Activity> mWeakReference) {
+            mMWeakReference = mWeakReference;
+        }
+
+        @Override
+        public Activity getActivity() {
+            return mMWeakReference.get();
+        }
+    }
+
+    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+        private final RedPacketPayListener mListener;
+        private final WeakReference<Activity> mMWeakReference;
+
+        public PaymentResponseListener(RedPacketPayListener listener, WeakReference<Activity> mWeakReference) {
+            mListener = listener;
+            mMWeakReference = mWeakReference;
+        }
+
+        @Override
+        public void onParameterError(String param) {
+            if (mListener != null) {
+                mListener.onParameterError(param);
+            }
+        }
+
+        @Override
+        public void onResponseError(PaymentError paymentError) {
+            if (mListener != null) {
+                mListener.onResponseError(paymentError);
+            }
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            if (mListener != null) {
+                mListener.onResponseSuccess(null);
+            }
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
+
+        }
+
+        @Override
+        public void onResponseTokenInvalid() {
+
+        }
+
+        @Override
+        public void onAppError(String msg) {
+            if (mListener != null) {
+                mListener.onAppError(msg);
+            }
+            destroyVariable();
+        }
+
+        @Override
+        public void onNotEnoughMoney() {
+            if (mMWeakReference == null || mMWeakReference.get() == null) {
+                navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
+            } else {
+                navigator.startDepositForResultActivity(mMWeakReference.get());
+            }
+        }
+    }
+
+    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
+        private final WeakReference<Activity> mMWeakReference;
+
+        public PaymentRedirectListener(WeakReference<Activity> mWeakReference) {
+            mMWeakReference = mWeakReference;
+        }
+
+        @Override
+        public void startUpdateProfileLevel(String walletTransId) {
+            if (mMWeakReference.get() == null) {
+                return;
+            }
+            navigator.startUpdateProfile2ForResult(mMWeakReference.get(), walletTransId);
+        }
+    }
 }

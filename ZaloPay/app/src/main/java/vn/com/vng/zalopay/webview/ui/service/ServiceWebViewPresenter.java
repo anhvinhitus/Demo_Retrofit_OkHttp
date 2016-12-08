@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.webview.WebViewConstants;
@@ -53,112 +54,14 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
         this.mNavigator = navigator;
-        this.mPaymentWrapper = new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository, new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                return mView.getActivity();
-            }
-        }, new PaymentWrapper.IResponseListener() {
-            @Override
-            public void onParameterError(String param) {
-                Timber.d("onParameterError param [%s]", param);
-                if ("order".equalsIgnoreCase(param)) {
-                    showError(R.string.order_invalid);
-                } else if ("uid".equalsIgnoreCase(param)) {
-                    showError(R.string.user_invalid);
-                } else if ("token".equalsIgnoreCase(param)) {
-                    showError(R.string.order_invalid);
-                }
-            }
-
-            @Override
-            public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-                Timber.d("onPreComplete appTransID [%s]", pAppTransId);
-
-            }
-
-            @Override
-            public void onResponseError(PaymentError paymentError) {
-                Timber.d("onResponseError paymentError [%s]", paymentError.value());
-                if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    showWarningNetworkError();
-                }
-            }
-
-            @Override
-            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                Timber.d("onResponseSuccess zpPaymentResult [%s]", zpPaymentResult);
-                if (zpPaymentResult == null || mView == null || mAppGamePayInfo == null) {
-                    return;
-                }
-                mAppGamePayInfo.setApptransid(zpPaymentResult.paymentInfo.appTransID);
-
-                Timber.d("onResponseSuccess appGamePayInfo [%s]", mAppGamePayInfo);
-                Timber.d("onResponseSuccess getAccessToken [%s]", mAppGamePayInfo.getAccessToken());
-                Timber.d("onResponseSuccess getAppId [%s]", mAppGamePayInfo.getAppId());
-                Timber.d("onResponseSuccess getApptransid [%s]", mAppGamePayInfo.getApptransid());
-                Timber.d("onResponseSuccess getUid [%s]", mAppGamePayInfo.getUid());
-                mAppGamePayInfo.setApptransid(mAppGamePayInfo.getApptransid());
-
-                final String urlPage = String.format(WebViewConfig.getResultWebViewUrl(mHost), mAppGamePayInfo.getApptransid(),
-                        mAppGamePayInfo.getUid(), mAppGamePayInfo.getAccessToken());
-                Timber.d("onResponseSuccess url [%s]", urlPage);
-                mView.loadUrl(urlPage);
-            }
-
-            @Override
-            public void onResponseTokenInvalid() {
-                Timber.d("onResponseTokenInvalid");
-                onSessionExpired();
-            }
-
-            @Override
-            public void onAppError(String msg) {
-                Timber.d("onAppError msg [%s]", msg);
-                showError(R.string.exception_generic);
-            }
-
-            @Override
-            public void onNotEnoughMoney() {
-                Timber.d("onNotEnoughMoney");
-                if (mNavigator == null || mView == null || mView.getActivity() == null) {
-                    return;
-                }
-                mNavigator.startDepositForResultActivity(mView.getFragment());
-            }
-
-            private void showWarningNetworkError() {
-                if (mView == null || mView.getActivity() == null) {
-                    return;
-                }
-                mView.showNetworkErrorDialog();
-            }
-
-            private void showError(int stringResourceId) {
-                if (mView == null || mView.getActivity() == null) {
-                    return;
-                }
-                String text = mView.getActivity().getString(stringResourceId);
-                if (TextUtils.isEmpty(text) || mView == null) {
-                    return;
-                }
-                mView.showError(text);
-            }
-
-            private void onSessionExpired() {
-                ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
-                applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
-                applicationSession.clearUserSession();
-            }
-        }, new PaymentWrapper.IRedirectListener() {
-            @Override
-            public void startUpdateProfileLevel(String walletTransId) {
-                if (mView == null || mView.getFragment() == null) {
-                    return;
-                }
-                mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
-            }
-        });
+        this.mPaymentWrapper = new PaymentWrapperBuilder()
+                .setBalanceRepository(mBalanceRepository)
+                .setZaloPayRepository(mZaloPayRepository)
+                .setTransactionRepository(mTransactionRepository)
+                .setViewListener(new PaymentViewListener())
+                .setResponseListener(new PaymentResponseListener())
+                .setRedirectListener(new PaymentRedirectListener())
+                .build();
     }
 
     void initData(Bundle arguments) {
@@ -288,6 +191,117 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         }
         if (mPaymentWrapper.hasPendingOrder()) {
             mPaymentWrapper.continuePayPendingOrder();
+        }
+    }
+
+    private class PaymentViewListener implements PaymentWrapper.IViewListener {
+        @Override
+        public Activity getActivity() {
+            return mView.getActivity();
+        }
+    }
+
+    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+        @Override
+        public void onParameterError(String param) {
+            Timber.d("onParameterError param [%s]", param);
+            if ("order".equalsIgnoreCase(param)) {
+                showError(R.string.order_invalid);
+            } else if ("uid".equalsIgnoreCase(param)) {
+                showError(R.string.user_invalid);
+            } else if ("token".equalsIgnoreCase(param)) {
+                showError(R.string.order_invalid);
+            }
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
+            Timber.d("onPreComplete appTransID [%s]", pAppTransId);
+
+        }
+
+        @Override
+        public void onResponseError(PaymentError paymentError) {
+            Timber.d("onResponseError paymentError [%s]", paymentError.value());
+            if (paymentError == PaymentError.ERR_CODE_INTERNET) {
+                showWarningNetworkError();
+            }
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            Timber.d("onResponseSuccess zpPaymentResult [%s]", zpPaymentResult);
+            if (zpPaymentResult == null || mView == null || mAppGamePayInfo == null) {
+                return;
+            }
+            mAppGamePayInfo.setApptransid(zpPaymentResult.paymentInfo.appTransID);
+
+            Timber.d("onResponseSuccess appGamePayInfo [%s]", mAppGamePayInfo);
+            Timber.d("onResponseSuccess getAccessToken [%s]", mAppGamePayInfo.getAccessToken());
+            Timber.d("onResponseSuccess getAppId [%s]", mAppGamePayInfo.getAppId());
+            Timber.d("onResponseSuccess getApptransid [%s]", mAppGamePayInfo.getApptransid());
+            Timber.d("onResponseSuccess getUid [%s]", mAppGamePayInfo.getUid());
+            mAppGamePayInfo.setApptransid(mAppGamePayInfo.getApptransid());
+
+            final String urlPage = String.format(WebViewConfig.getResultWebViewUrl(mHost), mAppGamePayInfo.getApptransid(),
+                    mAppGamePayInfo.getUid(), mAppGamePayInfo.getAccessToken());
+            Timber.d("onResponseSuccess url [%s]", urlPage);
+            mView.loadUrl(urlPage);
+        }
+
+        @Override
+        public void onResponseTokenInvalid() {
+            Timber.d("onResponseTokenInvalid");
+            onSessionExpired();
+        }
+
+        @Override
+        public void onAppError(String msg) {
+            Timber.d("onAppError msg [%s]", msg);
+            showError(R.string.exception_generic);
+        }
+
+        @Override
+        public void onNotEnoughMoney() {
+            Timber.d("onNotEnoughMoney");
+            if (mNavigator == null || mView == null || mView.getActivity() == null) {
+                return;
+            }
+            mNavigator.startDepositForResultActivity(mView.getFragment());
+        }
+
+        private void showWarningNetworkError() {
+            if (mView == null || mView.getActivity() == null) {
+                return;
+            }
+            mView.showNetworkErrorDialog();
+        }
+
+        private void showError(int stringResourceId) {
+            if (mView == null || mView.getActivity() == null) {
+                return;
+            }
+            String text = mView.getActivity().getString(stringResourceId);
+            if (TextUtils.isEmpty(text) || mView == null) {
+                return;
+            }
+            mView.showError(text);
+        }
+
+        private void onSessionExpired() {
+            ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
+            applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
+            applicationSession.clearUserSession();
+        }
+    }
+
+    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
+        @Override
+        public void startUpdateProfileLevel(String walletTransId) {
+            if (mView == null || mView.getFragment() == null) {
+                return;
+            }
+            mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
         }
     }
 }

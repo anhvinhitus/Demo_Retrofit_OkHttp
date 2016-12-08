@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -97,140 +98,14 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
 
         mTransferNotificationHelper = new TransferNotificationHelper(mNotificationRepository, user);
 
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                return mView.getActivity();
-            }
-        }, new PaymentWrapper.IResponseListener() {
-            @Override
-            public void onParameterError(String param) {
-                if (mView == null) {
-                    return;
-                }
-                if ("order".equalsIgnoreCase(param)) {
-                    showError(mView.getContext().getString(R.string.order_invalid));
-                } else if ("uid".equalsIgnoreCase(param)) {
-                    showError(mView.getContext().getString(R.string.user_invalid));
-                } else if ("token".equalsIgnoreCase(param)) {
-                    showError(mView.getContext().getString(R.string.order_invalid));
-                } else if (!TextUtils.isEmpty(param)) {
-                    showError(param);
-                }
-                hideLoading();
-            }
-
-            @Override
-            public void onResponseError(PaymentError paymentError) {
-                if (mView == null || mView.getActivity() == null) {
-                    return;
-                }
-                hideLoading();
-
-                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
-                    handleFailedTransferZalo(mView.getActivity());
-                } else if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    mView.showNetworkErrorDialog();
-                }
-            }
-
-            @Override
-            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                if (mView == null) {
-                    return;
-                }
-
-                if (mView.getActivity() != null) {
-                    if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
-                        handleCompletedTransferZalo(mView.getActivity());
-                    } else {
-                        mView.getActivity().setResult(Activity.RESULT_OK);
-                        mView.getActivity().finish();
-                    }
-                }
-                if (zpPaymentResult == null || zpPaymentResult.paymentInfo == null) {
-                    return;
-                }
-
-                saveTransferRecentToDB();
-            }
-
-            private void handleFailedTransferZalo(Activity activity) {
-                Intent data = new Intent();
-                data.putExtra("code", 2);
-                activity.setResult(Activity.RESULT_OK, data);
-                activity.finish();
-            }
-
-            private void handleCompletedTransferZalo(Activity activity) {
-                Intent data = new Intent();
-                data.putExtra("code", 1);
-                data.putExtra("amount", mTransaction.amount);
-                data.putExtra("message", mTransaction.message);
-                data.putExtra("transactionId", mTransaction.transactionId);
-
-                activity.setResult(Activity.RESULT_OK, data);
-                activity.finish();
-            }
-
-            @Override
-            public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-                Timber.d("Transaction is completed: [%s, %s]", isSuccessful, transId);
-                mTransaction.transactionId = transId;
-                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
-                    if (isSuccessful) {
-                        compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
-                                mTransaction.zaloPayId,
-                                Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount, transId
-                        ));
-                    } else {
-                        compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
-                                mTransaction.zaloPayId,
-                                Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0, null
-                        ));
-                    }
-                }
-            }
-
-            @Override
-            public void onResponseTokenInvalid() {
-                if (mView == null) {
-                    return;
-                }
-                mView.onTokenInvalid();
-                clearAndLogout();
-            }
-
-            @Override
-            public void onAppError(String msg) {
-                if (!TextUtils.isEmpty(msg)) {
-                    showError(msg);
-                    hideLoading();
-                } else {
-                    if (mView == null || mView.getContext() == null) {
-                        return;
-                    }
-                    showError(mView.getContext().getString(R.string.exception_generic));
-                    hideLoading();
-                }
-            }
-
-            @Override
-            public void onNotEnoughMoney() {
-                if (mView == null) {
-                    return;
-                }
-                mNavigator.startDepositForResultActivity(mView.getFragment());
-            }
-        }, new PaymentWrapper.IRedirectListener() {
-            @Override
-            public void startUpdateProfileLevel(String walletTransId) {
-                if (mView == null || mView.getFragment() == null) {
-                    return;
-                }
-                mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
-            }
-        });
+        paymentWrapper = new PaymentWrapperBuilder()
+                .setBalanceRepository(balanceRepository)
+                .setZaloPayRepository(zaloPayRepository)
+                .setTransactionRepository(transactionRepository)
+                .setViewListener(new PaymentViewListener())
+                .setResponseListener(new PaymentResponseListener())
+                .setRedirectListener(new PaymentRedirectListener())
+                .build();
     }
 
     void payPendingOrder() {
@@ -728,5 +603,144 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             return;
         }
         mView.showDialogThenClose(error, mView.getContext().getString(cancelText), dialogType);
+    }
+
+    private class PaymentViewListener implements PaymentWrapper.IViewListener {
+        @Override
+        public Activity getActivity() {
+            return mView.getActivity();
+        }
+    }
+
+    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+        @Override
+        public void onParameterError(String param) {
+            if (mView == null) {
+                return;
+            }
+            if ("order".equalsIgnoreCase(param)) {
+                showError(mView.getContext().getString(R.string.order_invalid));
+            } else if ("uid".equalsIgnoreCase(param)) {
+                showError(mView.getContext().getString(R.string.user_invalid));
+            } else if ("token".equalsIgnoreCase(param)) {
+                showError(mView.getContext().getString(R.string.order_invalid));
+            } else if (!TextUtils.isEmpty(param)) {
+                showError(param);
+            }
+            hideLoading();
+        }
+
+        @Override
+        public void onResponseError(PaymentError paymentError) {
+            if (mView == null || mView.getActivity() == null) {
+                return;
+            }
+            hideLoading();
+
+            if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
+                handleFailedTransferZalo(mView.getActivity());
+            } else if (paymentError == PaymentError.ERR_CODE_INTERNET) {
+                mView.showNetworkErrorDialog();
+            }
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            if (mView == null) {
+                return;
+            }
+
+            if (mView.getActivity() != null) {
+                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
+                    handleCompletedTransferZalo(mView.getActivity());
+                } else {
+                    mView.getActivity().setResult(Activity.RESULT_OK);
+                    mView.getActivity().finish();
+                }
+            }
+            if (zpPaymentResult == null || zpPaymentResult.paymentInfo == null) {
+                return;
+            }
+
+            saveTransferRecentToDB();
+        }
+
+        private void handleFailedTransferZalo(Activity activity) {
+            Intent data = new Intent();
+            data.putExtra("code", 2);
+            activity.setResult(Activity.RESULT_OK, data);
+            activity.finish();
+        }
+
+        private void handleCompletedTransferZalo(Activity activity) {
+            Intent data = new Intent();
+            data.putExtra("code", 1);
+            data.putExtra("amount", mTransaction.amount);
+            data.putExtra("message", mTransaction.message);
+            data.putExtra("transactionId", mTransaction.transactionId);
+
+            activity.setResult(Activity.RESULT_OK, data);
+            activity.finish();
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
+            Timber.d("Transaction is completed: [%s, %s]", isSuccessful, transId);
+            mTransaction.transactionId = transId;
+            if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
+                if (isSuccessful) {
+                    compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+                            mTransaction.zaloPayId,
+                            Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount, transId
+                    ));
+                } else {
+                    compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+                            mTransaction.zaloPayId,
+                            Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0, null
+                    ));
+                }
+            }
+        }
+
+        @Override
+        public void onResponseTokenInvalid() {
+            if (mView == null) {
+                return;
+            }
+            mView.onTokenInvalid();
+            clearAndLogout();
+        }
+
+        @Override
+        public void onAppError(String msg) {
+            if (!TextUtils.isEmpty(msg)) {
+                showError(msg);
+                hideLoading();
+            } else {
+                if (mView == null || mView.getContext() == null) {
+                    return;
+                }
+                showError(mView.getContext().getString(R.string.exception_generic));
+                hideLoading();
+            }
+        }
+
+        @Override
+        public void onNotEnoughMoney() {
+            if (mView == null) {
+                return;
+            }
+            mNavigator.startDepositForResultActivity(mView.getFragment());
+        }
+    }
+
+    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
+        @Override
+        public void startUpdateProfileLevel(String walletTransId) {
+            if (mView == null || mView.getFragment() == null) {
+                return;
+            }
+            mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
+        }
     }
 }

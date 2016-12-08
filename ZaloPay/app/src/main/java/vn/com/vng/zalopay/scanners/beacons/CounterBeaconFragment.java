@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -88,55 +89,13 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
             return;
         }
 
-        mPaymentWrapper = new PaymentWrapper(mBalanceRepository,
-                zaloPayRepository, mTransactionRepository,
-                new PaymentWrapper.IViewListener() {
-                    @Override
-                    public Activity getActivity() {
-                        return CounterBeaconFragment.this.getActivity();
-                    }
-                },
-                new PaymentWrapper.IResponseListener() {
-                    @Override
-                    public void onParameterError(String param) {
-//                        showToast("Error in parameter: " + param);
-                        beaconScanner.startScan();
-                    }
-
-                    @Override
-                    public void onResponseError(PaymentError paymentError) {
-                        Timber.d("Payment error: " + paymentError.value());
-                        beaconScanner.startScan();
-                    }
-
-                    @Override
-                    public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                        CounterBeaconFragment.this.getActivity().finish();
-                    }
-
-                    @Override
-                    public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
-
-                    }
-
-                    @Override
-                    public void onResponseTokenInvalid() {
-                        Timber.d("Invalid token");
-                    }
-
-                    @Override
-                    public void onAppError(String msg) {
-                        Timber.d("onAppError msg[%s]", msg);
-                        showToast(getString(R.string.exception_generic));
-                        beaconScanner.startScan();
-                    }
-
-                    @Override
-                    public void onNotEnoughMoney() {
-                        navigator.startDepositActivity(CounterBeaconFragment.this.getContext());
-                    }
-                }
-        );
+        mPaymentWrapper = new PaymentWrapperBuilder()
+                .setBalanceRepository(mBalanceRepository)
+                .setZaloPayRepository(zaloPayRepository)
+                .setTransactionRepository(mTransactionRepository)
+                .setViewListener(new PaymentViewListener())
+                .setResponseListener(new PaymentResponseListener())
+                .build();
         Timber.d("Finish setupFragmentComponent");
     }
 
@@ -419,6 +378,54 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
                 }
                 break;
             }
+        }
+    }
+
+    private class PaymentViewListener implements PaymentWrapper.IViewListener {
+        @Override
+        public Activity getActivity() {
+            return CounterBeaconFragment.this.getActivity();
+        }
+    }
+
+    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+        @Override
+        public void onParameterError(String param) {
+//                        showToast("Error in parameter: " + param);
+            beaconScanner.startScan();
+        }
+
+        @Override
+        public void onResponseError(PaymentError paymentError) {
+            Timber.d("Payment error: " + paymentError.value());
+            beaconScanner.startScan();
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            CounterBeaconFragment.this.getActivity().finish();
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
+
+        }
+
+        @Override
+        public void onResponseTokenInvalid() {
+            Timber.d("Invalid token");
+        }
+
+        @Override
+        public void onAppError(String msg) {
+            Timber.d("onAppError msg[%s]", msg);
+            showToast(getString(R.string.exception_generic));
+            beaconScanner.startScan();
+        }
+
+        @Override
+        public void onNotEnoughMoney() {
+            navigator.startDepositActivity(CounterBeaconFragment.this.getContext());
         }
     }
 }

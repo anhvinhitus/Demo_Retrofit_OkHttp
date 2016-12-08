@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -185,64 +186,14 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
     }
 
     private void initPaymentWrapper() {
-        paymentWrapper = new PaymentWrapper(mBalanceRepository, zaloPayRepository, mTransactionRepository,
-                new PaymentWrapper.IViewListener() {
-                    @Override
-                    public Activity getActivity() {
-                        if (mNfcView != null) {
-                            return mNfcView.getActivity();
-                        }
-                        return null;
-                    }
-                },
-                new PaymentWrapper.IResponseListener() {
-                    @Override
-                    public void onParameterError(String param) {
-                        //mNFCStatus.setText("Tham số hoá đơn không hợp lệ");
-                    }
-
-                    @Override
-                    public void onResponseError(PaymentError paymentError) {
-                        //mNFCStatus.setText("");
-//                        //mNFCStatus.setText(String.format("Response error: %d", status));
-                    }
-
-                    @Override
-                    public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                        //mNFCStatus.setText("Thanh toán thành công");
-
-                    }
-
-                    @Override
-                    public void onResponseTokenInvalid() {
-
-                    }
-
-                    @Override
-                    public void onAppError(String msg) {
-
-                    }
-
-                    @Override
-                    public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
-
-                    }
-
-                    @Override
-                    public void onNotEnoughMoney() {
-                        if (mNfcView != null) {
-                            mNavigator.startDepositForResultActivity(mNfcView.getFragment());
-                        }
-                    }
-                }, new PaymentWrapper.IRedirectListener() {
-                    @Override
-                    public void startUpdateProfileLevel(String walletTransId) {
-                        if (mNfcView == null || mNfcView.getFragment() == null) {
-                            return;
-                        }
-                        mNavigator.startUpdateProfile2ForResult(mNfcView.getFragment(), walletTransId);
-                    }
-                });
+        paymentWrapper = new PaymentWrapperBuilder()
+                .setBalanceRepository(mBalanceRepository)
+                .setZaloPayRepository(zaloPayRepository)
+                .setTransactionRepository(mTransactionRepository)
+                .setViewListener(new PaymentViewListener())
+                .setResponseListener(new PaymentResponseListener())
+                .setRedirectListener(new PaymentRedirectListener())
+                .build();
     }
 
     void payPendingOrder() {
@@ -321,4 +272,64 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
         }
     }
 
+    private class PaymentViewListener implements PaymentWrapper.IViewListener {
+        @Override
+        public Activity getActivity() {
+            if (mNfcView != null) {
+                return mNfcView.getActivity();
+            }
+            return null;
+        }
+    }
+
+    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+        @Override
+        public void onParameterError(String param) {
+            //mNFCStatus.setText("Tham số hoá đơn không hợp lệ");
+        }
+
+        @Override
+        public void onResponseError(PaymentError paymentError) {
+            //mNFCStatus.setText("");
+//                        //mNFCStatus.setText(String.format("Response error: %d", status));
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            //mNFCStatus.setText("Thanh toán thành công");
+
+        }
+
+        @Override
+        public void onResponseTokenInvalid() {
+
+        }
+
+        @Override
+        public void onAppError(String msg) {
+
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
+
+        }
+
+        @Override
+        public void onNotEnoughMoney() {
+            if (mNfcView != null) {
+                mNavigator.startDepositForResultActivity(mNfcView.getFragment());
+            }
+        }
+    }
+
+    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
+        @Override
+        public void startUpdateProfileLevel(String walletTransId) {
+            if (mNfcView == null || mNfcView.getFragment() == null) {
+                return;
+            }
+            mNavigator.startUpdateProfile2ForResult(mNfcView.getFragment(), walletTransId);
+        }
+    }
 }

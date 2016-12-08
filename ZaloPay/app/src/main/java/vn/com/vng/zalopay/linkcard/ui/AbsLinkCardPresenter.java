@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
@@ -61,58 +62,13 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
                          BalanceStore.Repository balanceRepository,
                          TransactionStore.Repository transactionRepository) {
         mNavigator = navigator;
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                return AbsLinkCardPresenter.this.getActivity();
-            }
-        }, new PaymentWrapper.IResponseListener() {
-            @Override
-            public void onParameterError(String param) {
-                showErrorView(param);
-            }
-
-            @Override
-            public void onResponseError(PaymentError paymentError) {
-                if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    showWarningView(getContext().getString(R.string.exception_no_connection_try_again));
-                }
-            }
-
-            @Override
-            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
-                if (paymentInfo == null) {
-                    Timber.d("onResponseSuccess paymentInfo null");
-                    return;
-                }
-                onAddCardSuccess(paymentInfo.mappedCreditCard);
-            }
-
-            @Override
-            public void onResponseTokenInvalid() {
-                onTokenInvalid();
-                clearAndLogout();
-            }
-
-            @Override
-            public void onAppError(String msg) {
-                showErrorView(msg);
-            }
-
-            @Override
-            public void onPreComplete(boolean isSuccessful, String tId, String pAppTransId) {
-                Timber.d("onPreComplete isSuccessful [%s]", isSuccessful);
-                if (isSuccessful) {
-                    AbsLinkCardPresenter.this.onPreComplete();
-                }
-            }
-
-            @Override
-            public void onNotEnoughMoney() {
-
-            }
-        });
+        paymentWrapper = new PaymentWrapperBuilder()
+                .setBalanceRepository(balanceRepository)
+                .setZaloPayRepository(zaloPayRepository)
+                .setTransactionRepository(transactionRepository)
+                .setViewListener(new PaymentViewListener())
+                .setResponseListener(new PaymentResponseListener())
+                .build();
     }
 
     void addLinkCard() {
@@ -124,6 +80,61 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
         } else {
             paymentWrapper.linkCard();
             hideLoadingView();
+        }
+    }
+
+    private class PaymentViewListener implements PaymentWrapper.IViewListener {
+        @Override
+        public Activity getActivity() {
+            return AbsLinkCardPresenter.this.getActivity();
+        }
+    }
+
+    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+        @Override
+        public void onParameterError(String param) {
+            showErrorView(param);
+        }
+
+        @Override
+        public void onResponseError(PaymentError paymentError) {
+            if (paymentError == PaymentError.ERR_CODE_INTERNET) {
+                showWarningView(getContext().getString(R.string.exception_no_connection_try_again));
+            }
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
+            if (paymentInfo == null) {
+                Timber.d("onResponseSuccess paymentInfo null");
+                return;
+            }
+            onAddCardSuccess(paymentInfo.mappedCreditCard);
+        }
+
+        @Override
+        public void onResponseTokenInvalid() {
+            onTokenInvalid();
+            clearAndLogout();
+        }
+
+        @Override
+        public void onAppError(String msg) {
+            showErrorView(msg);
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String tId, String pAppTransId) {
+            Timber.d("onPreComplete isSuccessful [%s]", isSuccessful);
+            if (isSuccessful) {
+                AbsLinkCardPresenter.this.onPreComplete();
+            }
+        }
+
+        @Override
+        public void onNotEnoughMoney() {
+
         }
     }
 }

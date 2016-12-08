@@ -48,6 +48,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
@@ -80,98 +81,14 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         mApplicationContext = applicationContext;
         mNavigator = navigator;
         mUserConfig = userConfig;
-        paymentWrapper = new PaymentWrapper(balanceRepository, zaloPayRepository, transactionRepository, new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                if (mView != null) {
-                    return mView.getActivity();
-                }
-                return null;
-            }
-        }, new PaymentWrapper.IResponseListener() {
-            @Override
-            public void onParameterError(String param) {
-                if (mView == null) {
-                    return;
-                }
-
-                if ("order".equalsIgnoreCase(param)) {
-                    mView.showError(mView.getContext().getString(R.string.order_invalid));
-                } else if ("uid".equalsIgnoreCase(param)) {
-                    mView.showError(mView.getContext().getString(R.string.user_invalid));
-                } else if ("token".equalsIgnoreCase(param)) {
-                    hideLoadingView();
-                    mView.showError(mView.getContext().getString(R.string.order_invalid));
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_NOORDER);
-                    mView.resumeScanner();
-                }
-            }
-
-            @Override
-            public void onResponseError(PaymentError paymentError) {
-                if (mView == null) {
-                    return;
-                }
-
-                if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                    mView.showNetworkErrorDialog();
-                }
-                hideLoadingView();
-                mView.resumeScanner();
-            }
-
-            @Override
-            public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                if (mView != null && mView.getActivity() != null) {
-                    mView.getActivity().finish();
-                }
-            }
-
-            @Override
-            public void onResponseTokenInvalid() {
-                if (mView == null) {
-                    return;
-                }
-
-                mView.onTokenInvalid();
-                clearAndLogout();
-            }
-
-            @Override
-            public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-
-            }
-
-            @Override
-            public void onAppError(String msg) {
-                if (mView == null) {
-                    return;
-                }
-                if (mView.getContext() != null) {
-                    mView.showError(mView.getContext().getString(R.string.exception_generic));
-                }
-                hideLoadingView();
-                mView.resumeScanner();
-            }
-
-            @Override
-            public void onNotEnoughMoney() {
-                if (mView == null || mView.getFragment() == null) {
-                    return;
-                }
-
-                mNavigator.startDepositForResultActivity(mView.getFragment());
-            }
-        }, new PaymentWrapper.IRedirectListener() {
-            @Override
-            public void startUpdateProfileLevel(String walletTransId) {
-                if (mView == null || mView.getFragment() == null) {
-                    return;
-                }
-                Timber.d("startUpdateProfileLevel");
-                mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
-            }
-        });
+        paymentWrapper = new PaymentWrapperBuilder()
+                .setBalanceRepository(balanceRepository)
+                .setZaloPayRepository(zaloPayRepository)
+                .setTransactionRepository(transactionRepository)
+                .setViewListener(new PaymentViewListener())
+                .setResponseListener(new PaymentResponseListener())
+                .setRedirectListener(new PaymentRedirectListener())
+                .build();
     }
 
     @Override
@@ -473,6 +390,103 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         }
         if (paymentWrapper.hasPendingOrder()) {
             paymentWrapper.continuePayPendingOrder();
+        }
+    }
+
+    private class PaymentViewListener implements PaymentWrapper.IViewListener {
+        @Override
+        public Activity getActivity() {
+            if (mView != null) {
+                return mView.getActivity();
+            }
+            return null;
+        }
+    }
+
+    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+        @Override
+        public void onParameterError(String param) {
+            if (mView == null) {
+                return;
+            }
+
+            if ("order".equalsIgnoreCase(param)) {
+                mView.showError(mView.getContext().getString(R.string.order_invalid));
+            } else if ("uid".equalsIgnoreCase(param)) {
+                mView.showError(mView.getContext().getString(R.string.user_invalid));
+            } else if ("token".equalsIgnoreCase(param)) {
+                hideLoadingView();
+                mView.showError(mView.getContext().getString(R.string.order_invalid));
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_NOORDER);
+                mView.resumeScanner();
+            }
+        }
+
+        @Override
+        public void onResponseError(PaymentError paymentError) {
+            if (mView == null) {
+                return;
+            }
+
+            if (paymentError == PaymentError.ERR_CODE_INTERNET) {
+                mView.showNetworkErrorDialog();
+            }
+            hideLoadingView();
+            mView.resumeScanner();
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            if (mView != null && mView.getActivity() != null) {
+                mView.getActivity().finish();
+            }
+        }
+
+        @Override
+        public void onResponseTokenInvalid() {
+            if (mView == null) {
+                return;
+            }
+
+            mView.onTokenInvalid();
+            clearAndLogout();
+        }
+
+        @Override
+        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
+
+        }
+
+        @Override
+        public void onAppError(String msg) {
+            if (mView == null) {
+                return;
+            }
+            if (mView.getContext() != null) {
+                mView.showError(mView.getContext().getString(R.string.exception_generic));
+            }
+            hideLoadingView();
+            mView.resumeScanner();
+        }
+
+        @Override
+        public void onNotEnoughMoney() {
+            if (mView == null || mView.getFragment() == null) {
+                return;
+            }
+
+            mNavigator.startDepositForResultActivity(mView.getFragment());
+        }
+    }
+
+    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
+        @Override
+        public void startUpdateProfileLevel(String walletTransId) {
+            if (mView == null || mView.getFragment() == null) {
+                return;
+            }
+            Timber.d("startUpdateProfileLevel");
+            mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
         }
     }
 }

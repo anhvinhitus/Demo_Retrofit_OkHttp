@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import org.greenrobot.eventbus.EventBus;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -14,10 +12,8 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -25,7 +21,6 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
@@ -49,174 +44,43 @@ public class PaymentWrapper {
         void onResponseError(int status);
     }
 
-    private final IViewListener viewListener;
-    private final IRedirectListener mRedirectListener;
-    private final IResponseListener responseListener;
+    final IViewListener viewListener;
+    final IRedirectListener mRedirectListener;
+    final IResponseListener responseListener;
     private final ZaloPayRepository zaloPayRepository;
     private final BalanceStore.Repository balanceRepository;
-    private final TransactionStore.Repository transactionRepository;
-    private final Navigator mNavigator = AndroidApplication.instance().getAppComponent().navigator();
-    private final boolean mShowNotificationLinkCard;
-    public ZPWPaymentInfo mPendingOrder;
-    public EPaymentChannel mPendingChannel;
+    final Navigator mNavigator = AndroidApplication.instance().getAppComponent().navigator();
+    final boolean mShowNotificationLinkCard;
+    private ZPWPaymentInfo mPendingOrder;
+    private EPaymentChannel mPendingChannel;
 
-    private ZPPaymentListener zpPaymentListener = new ZPPaymentListener() {
-        @Override
-        public void onComplete(ZPPaymentResult pPaymentResult) {
-            Timber.d("pay onComplete pPaymentResult [%s]", pPaymentResult);
-            if (pPaymentResult == null) {
-                if (NetworkHelper.isNetworkAvailable(viewListener.getActivity())) {
-                    responseListener.onResponseError(PaymentError.ERR_CODE_SYSTEM);
-                } else {
-                    responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
-                }
-                clearPendingOrder();
-            } else {
-                EPaymentStatus resultStatus = pPaymentResult.paymentStatus;
-                Timber.d("pay onComplete resultStatus [%s]", pPaymentResult.paymentStatus);
-                switch (resultStatus) {
-                    case ZPC_TRANXSTATUS_SUCCESS:
-                        if (mShowNotificationLinkCard) {
-                            mNavigator.startNotificationLinkCardActivity(viewListener.getActivity(),
-                                    pPaymentResult.mapCardResult);
-                        }
-                        responseListener.onResponseSuccess(pPaymentResult);
-                        break;
-                    case ZPC_TRANXSTATUS_TOKEN_INVALID:
-                        responseListener.onResponseTokenInvalid();
-                        break;
-                    case ZPC_TRANXSTATUS_UPGRADE:
-                        //Hien update profile level 2
-                        if (mRedirectListener == null) {
-                            startUpdateProfileLevel(null);
-                        } else {
-                            mRedirectListener.startUpdateProfileLevel(null);
-                        }
-                        responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
-                        break;
-                    case ZPC_TRANXSTATUS_UPGRADE_SAVECARD:
-                        String walletTransId = null;
-                        if (pPaymentResult.paymentInfo != null) {
-                            walletTransId = pPaymentResult.paymentInfo.walletTransID;
-                        }
-                        //Hien update profile level 2
-                        if (mRedirectListener == null) {
-                            startUpdateProfileLevel(walletTransId);
-                        } else {
-                            mRedirectListener.startUpdateProfileLevel(walletTransId);
-                        }
-                        responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
-                        break;
-                    case ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH:
-                        responseListener.onResponseError(PaymentError.ERR_CODE_MONEY_NOT_ENOUGH);
-                        responseListener.onNotEnoughMoney();
-                        break;
-                    case ZPC_TRANXSTATUS_CLOSE:
-                        responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
-                        break;
-                    case ZPC_TRANXSTATUS_INPUT_INVALID:
-                        responseListener.onResponseError(PaymentError.ERR_CODE_INPUT);
-                        break;
-                    case ZPC_TRANXSTATUS_FAIL:
-                        responseListener.onResponseError(PaymentError.ERR_CODE_FAIL);
-                        break;
-                    case ZPC_TRANXSTATUS_PROCESSING:
-                        responseListener.onResponseError(PaymentError.ERR_CODE_PROCESSING);
-                        break;
-                    case ZPC_TRANXSTATUS_SERVICE_MAINTENANCE:
-                        responseListener.onResponseError(PaymentError.ERR_CODE_SERVICE_MAINTENANCE);
-                        break;
-                    case ZPC_TRANXSTATUS_NO_INTERNET:
-                        responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NO_INTERNET);
-                        break;
-                    case ZPC_TRANXSTATUS_NEED_LINKCARD:
-                        responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD);
-                        break;
-                    default:
-                        responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
-                        break;
-                }
+    private final ZPPaymentListener mWalletListener;
 
-                if (needClearPendingOrder(resultStatus)) {
-                    clearPendingOrder();
-                }
-            }
-        }
+//    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
+//                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
+//                          IResponseListener responseListener) {
+//        this.balanceRepository = balanceRepository;
+//        this.zaloPayRepository = zaloPayRepository;
+//        this.viewListener = viewListener;
+//        this.responseListener = responseListener;
+//        this.mShowNotificationLinkCard = true;
+//        this.mRedirectListener = null;
+//        mWalletListener = new WalletListener(this, transactionRepository, balanceRepository);
+//    }
+//
+//    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
+//                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
+//                          IResponseListener responseListener, IRedirectListener redirectListener) {
+//        this.balanceRepository = balanceRepository;
+//        this.zaloPayRepository = zaloPayRepository;
+//        this.viewListener = viewListener;
+//        this.responseListener = responseListener;
+//        this.mShowNotificationLinkCard = true;
+//        this.mRedirectListener = redirectListener;
+//        mWalletListener = new WalletListener(this, transactionRepository, balanceRepository);
+//    }
 
-        @Override
-        public void onError(CError cError) {
-            Timber.d("pay onError code [%s] msg [%s]", cError.payError, cError.messError);
-            switch (cError.payError) {
-                case DATA_INVALID:
-                    responseListener.onParameterError(cError.messError);
-                    break;
-                case COMPONENT_NULL:
-                    responseListener.onAppError(cError.messError);
-                    break;
-                case NETWORKING_ERROR:
-                    responseListener.onResponseError(PaymentError.ERR_CODE_INTERNET);
-                    break;
-                default:
-                    responseListener.onAppError(cError.messError);
-                    break;
-            }
-        }
-
-        @Override
-        public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
-            Timber.d("onUpVersion forceUpdate[%s] latestVersion [%s] msg [%s]",
-                    forceUpdate, latestVersion, msg);
-            AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
-            AppVersionUtils.showDialogUpgradeAppIfNeed(viewListener.getActivity());
-        }
-
-        @Override
-        public void onUpdateAccessToken(String token) {
-            if (!TextUtils.isEmpty(token)) {
-                return;
-            }
-            EventBus.getDefault().post(new NewSessionEvent(token));
-        }
-
-        @Override
-        public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
-
-            responseListener.onPreComplete(isSuccessful, pTransId, pAppTransId);
-
-            if (isSuccessful) {
-                updateBalance();
-                updateTransactionSuccess();
-            } else {
-                updateTransactionFail();
-            }
-        }
-    };
-
-    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
-                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
-                          IResponseListener responseListener) {
-        this.balanceRepository = balanceRepository;
-        this.zaloPayRepository = zaloPayRepository;
-        this.viewListener = viewListener;
-        this.responseListener = responseListener;
-        this.transactionRepository = transactionRepository;
-        this.mShowNotificationLinkCard = true;
-        this.mRedirectListener = null;
-    }
-
-    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
-                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
-                          IResponseListener responseListener, IRedirectListener redirectListener) {
-        this.balanceRepository = balanceRepository;
-        this.zaloPayRepository = zaloPayRepository;
-        this.viewListener = viewListener;
-        this.responseListener = responseListener;
-        this.transactionRepository = transactionRepository;
-        this.mShowNotificationLinkCard = true;
-        this.mRedirectListener = redirectListener;
-    }
-
-    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
+    PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
                           TransactionStore.Repository transactionRepository, IViewListener viewListener,
                           IResponseListener responseListener, IRedirectListener redirectListener,
                           boolean showNotificationLinkCard) {
@@ -224,9 +88,9 @@ public class PaymentWrapper {
         this.zaloPayRepository = zaloPayRepository;
         this.viewListener = viewListener;
         this.responseListener = responseListener;
-        this.transactionRepository = transactionRepository;
         this.mRedirectListener = redirectListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
+        mWalletListener = new WalletListener(this, transactionRepository, balanceRepository);
     }
 
     public void payWithToken(long appId, String transactionToken) {
@@ -301,7 +165,7 @@ public class PaymentWrapper {
             Timber.d("payWithOrder: ZPWPaymentInfo is ready");
 
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-            callPayAPI(paymentInfo);
+            callPayAPI(paymentInfo, null);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
@@ -373,7 +237,7 @@ public class PaymentWrapper {
             paymentInfo.userInfo = getUserInfo();
         }
         if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
-            zpPaymentListener.onError(new CError(EPayError.DATA_INVALID, "Vui lòng cập nhật thông tin tài khoản."));
+            mWalletListener.onError(new CError(EPayError.DATA_INVALID, "Vui lòng cập nhật thông tin tài khoản."));
             return;
         }
         if (balanceRepository != null) {
@@ -384,7 +248,7 @@ public class PaymentWrapper {
                 viewListener.getActivity(), paymentChannel, paymentInfo);
         mPendingOrder = paymentInfo;
         mPendingChannel = paymentChannel;
-        WalletSDKPayment.pay(viewListener.getActivity(), paymentChannel, paymentInfo, zpPaymentListener);
+        WalletSDKPayment.pay(viewListener.getActivity(), paymentChannel, paymentInfo, mWalletListener);
     }
 
     private int getUserProfileLevel() {
@@ -416,10 +280,6 @@ public class PaymentWrapper {
         return permissionsStr;
     }
 
-    private void callPayAPI(ZPWPaymentInfo paymentInfo) {
-        callPayAPI(paymentInfo, null);
-    }
-
     @NonNull
     private ZPWPaymentInfo transform(Order order) {
         ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
@@ -438,7 +298,7 @@ public class PaymentWrapper {
         return paymentInfo;
     }
 
-    private void startUpdateProfileLevel(String walletTransID) {
+    void startUpdateProfileLevel(String walletTransID) {
         if (viewListener == null || viewListener.getActivity() == null) {
             return;
         }
@@ -496,27 +356,7 @@ public class PaymentWrapper {
         }
     }
 
-
-    private void updateTransactionSuccess() {
-        Subscription subscription = transactionRepository.fetchTransactionHistorySuccessLatest()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
-    }
-
-    private void updateTransactionFail() {
-        Subscription subscription = transactionRepository.fetchTransactionHistoryFailLatest()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
-    }
-
-    private void updateBalance() {
-        // update balance
-        Subscription subscription = balanceRepository.updateBalance()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
-    }
-
-    private boolean needClearPendingOrder(EPaymentStatus resultStatus) {
+    boolean shouldClearPendingOrder(EPaymentStatus resultStatus) {
         if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
             return false;
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD &&
@@ -529,13 +369,13 @@ public class PaymentWrapper {
         return true;
     }
 
-    public boolean hasPendingOrder() {
-        return (mPendingOrder != null);
-    }
-
-    private void clearPendingOrder() {
+    void clearPendingOrder() {
         mPendingOrder = null;
         mPendingChannel = null;
+    }
+
+    public boolean hasPendingOrder() {
+        return (mPendingOrder != null);
     }
 
     public void continuePayPendingOrder() {
@@ -545,4 +385,5 @@ public class PaymentWrapper {
 
         callPayAPI(mPendingOrder, mPendingChannel);
     }
+
 }

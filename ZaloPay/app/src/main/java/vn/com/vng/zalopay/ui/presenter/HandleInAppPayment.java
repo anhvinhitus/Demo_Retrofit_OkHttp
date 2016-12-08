@@ -7,9 +7,7 @@ import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -21,6 +19,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -78,12 +77,12 @@ public class HandleInAppPayment {
     }
 
     private PaymentWrapper getPaymentWrapper() {
-        return new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository, new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                return mActivity.get();
-            }
-        }, new AbsPWResponseListener(mActivity) {
+        return new PaymentWrapperBuilder()
+                .setBalanceRepository(mBalanceRepository)
+                .setZaloPayRepository(mZaloPayRepository)
+                .setTransactionRepository(mTransactionRepository)
+                .setViewListener(new PaymentViewListener())
+                .setResponseListener(new AbsPWResponseListener(mActivity) {
 
             private String mTransactionId;
 
@@ -120,7 +119,7 @@ public class HandleInAppPayment {
             public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
                 mTransactionId = pTransId;
             }
-        });
+        }).build();
     }
 
 
@@ -141,6 +140,13 @@ public class HandleInAppPayment {
     public void cleanUp() {
         if (mCompositeSubscription != null) {
             mCompositeSubscription.unsubscribe();
+        }
+    }
+
+    private class PaymentViewListener implements PaymentWrapper.IViewListener {
+        @Override
+        public Activity getActivity() {
+            return mActivity.get();
         }
     }
 }

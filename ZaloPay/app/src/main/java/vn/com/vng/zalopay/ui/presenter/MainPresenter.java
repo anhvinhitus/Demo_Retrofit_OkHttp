@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -12,7 +11,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -55,6 +53,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
@@ -454,15 +453,12 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private PaymentWrapper getPaymentWrapper(final long appId, final boolean isAppToApp) {
-        return new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository, new PaymentWrapper.IViewListener() {
-            @Override
-            public Activity getActivity() {
-                if (mHomeView != null) {
-                    return mHomeView.getActivity();
-                }
-                return null;
-            }
-        }, new AbsPWResponseListener(mHomeView.getActivity()) {
+        return new PaymentWrapperBuilder()
+                .setBalanceRepository(mBalanceRepository)
+                .setZaloPayRepository(mZaloPayRepository)
+                .setTransactionRepository(mTransactionRepository)
+                .setViewListener(new PaymentViewListener())
+                .setResponseListener(new AbsPWResponseListener(mHomeView.getActivity()) {
             @Override
             public void onError(PaymentWrapperException exception) {
                 if (mHomeView == null) {
@@ -488,7 +484,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     responseToApp(mHomeView.getActivity(), appId, PaymentError.ERR_CODE_SUCCESS.value(), "");
                 }
             }
-        });
+        }).build();
     }
 
     private void showPayDialogConfirm(final PaymentDataEvent dataEvent) {
@@ -525,4 +521,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         mCompositeSubscription.add(subscription);
     }
 
+    private class PaymentViewListener implements PaymentWrapper.IViewListener {
+        @Override
+        public Activity getActivity() {
+            if (mHomeView != null) {
+                return mHomeView.getActivity();
+            }
+            return null;
+        }
+    }
 }

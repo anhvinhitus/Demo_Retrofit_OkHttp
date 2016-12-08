@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -73,12 +74,13 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
 
     private void initPaymentWrapper() {
         final WeakReference<Activity> weakReference = new WeakReference<Activity>(this);
-        paymentWrapper = new PaymentWrapper(null, null, null, new PaymentWrapper.IViewListener() {
+        paymentWrapper = new PaymentWrapperBuilder()
+                .setViewListener(new PaymentWrapper.IViewListener() {
             @Override
             public Activity getActivity() {
                 return weakReference.get();
             }
-        }, null);
+        }).build();
     }
 
     private void initData() {
