@@ -422,9 +422,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                 return;
             }
 
-            if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                mView.showNetworkErrorDialog();
-            }
+            super.onResponseError(paymentError);
             hideLoadingView();
             mView.resumeScanner();
         }

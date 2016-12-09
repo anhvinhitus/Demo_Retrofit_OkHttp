@@ -176,19 +176,6 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
         }
 
         @Override
-        public void onResponseError(PaymentError paymentError) {
-            if (mView == null) {
-                return;
-            }
-            if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                mView.showNetworkErrorDialog();
-            }
-            /*else {
-                mView.showError("Lỗi xảy ra trong quá trình nạp tiền. Vui lòng thử lại sau.");
-            }*/
-        }
-
-        @Override
         public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
             if (mView == null || mView.getActivity() == null) {
                 return;

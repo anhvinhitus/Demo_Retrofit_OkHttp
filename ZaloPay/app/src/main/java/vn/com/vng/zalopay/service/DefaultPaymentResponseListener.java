@@ -26,6 +26,8 @@ public class DefaultPaymentResponseListener implements PaymentWrapper.IResponseL
 
     @Override
     public void onParameterError(String param) {
+        Timber.d("SDK Response Parameter Error: [%s]", param);
+
         if (mDataView.get() == null) {
             return;
         }
@@ -45,7 +47,16 @@ public class DefaultPaymentResponseListener implements PaymentWrapper.IResponseL
 
     @Override
     public void onResponseError(PaymentError status) {
+        Timber.d("SDK Response Error: [%s]", status);
 
+        if (mDataView.get() == null) {
+            return;
+        }
+
+        ILoadDataView view = mDataView.get();
+        if (status == PaymentError.ERR_CODE_INTERNET) {
+            view.showNetworkErrorDialog();
+        }
     }
 
     @Override
@@ -64,6 +75,8 @@ public class DefaultPaymentResponseListener implements PaymentWrapper.IResponseL
 
     @Override
     public void onAppError(String msg) {
+        Timber.d("SDK Response App Error: [%s]", msg);
+
         if (mDataView.get() == null) {
             return;
         }

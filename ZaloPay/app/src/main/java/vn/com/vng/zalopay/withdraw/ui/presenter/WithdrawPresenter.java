@@ -176,10 +176,11 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
                 return;
             }
             mView.hideLoading();
+
+            super.onResponseError(paymentError);
+
             if (paymentError == PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD) {
                 mNavigator.startLinkCardActivity(mView.getActivity());
-            } else if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                mView.showNetworkErrorDialog();
             }
         }
 

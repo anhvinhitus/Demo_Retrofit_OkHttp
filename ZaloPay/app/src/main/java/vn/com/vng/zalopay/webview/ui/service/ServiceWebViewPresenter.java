@@ -193,14 +193,6 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
         }
 
         @Override
-        public void onResponseError(PaymentError paymentError) {
-            Timber.d("onResponseError paymentError [%s]", paymentError.value());
-            if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                showWarningNetworkError();
-            }
-        }
-
-        @Override
         public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
             Timber.d("onResponseSuccess zpPaymentResult [%s]", zpPaymentResult);
             if (zpPaymentResult == null || mView == null || mAppGamePayInfo == null) {
@@ -228,13 +220,6 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
                 return;
             }
             mNavigator.startDepositForResultActivity(mView.getFragment());
-        }
-
-        private void showWarningNetworkError() {
-            if (mView == null || mView.getActivity() == null) {
-                return;
-            }
-            mView.showNetworkErrorDialog();
         }
     }
 

@@ -613,12 +613,13 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             if (mView == null || mView.getActivity() == null) {
                 return;
             }
+
+            super.onResponseError(paymentError);
+
             hideLoading();
 
             if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
                 handleFailedTransferZalo(mView.getActivity());
-            } else if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                mView.showNetworkErrorDialog();
             }
         }
 
