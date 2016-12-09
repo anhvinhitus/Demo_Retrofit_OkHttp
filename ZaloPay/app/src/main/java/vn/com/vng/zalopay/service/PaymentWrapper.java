@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
@@ -59,29 +60,7 @@ public class PaymentWrapper {
 
     Activity mActivity;
 
-//    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
-//                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
-//                          IResponseListener responseListener) {
-//        this.balanceRepository = balanceRepository;
-//        this.zaloPayRepository = zaloPayRepository;
-//        this.viewListener = viewListener;
-//        this.responseListener = responseListener;
-//        this.mShowNotificationLinkCard = true;
-//        this.mRedirectListener = null;
-//        mWalletListener = new WalletListener(this, transactionRepository, balanceRepository);
-//    }
-//
-//    public PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
-//                          TransactionStore.Repository transactionRepository, IViewListener viewListener,
-//                          IResponseListener responseListener, IRedirectListener redirectListener) {
-//        this.balanceRepository = balanceRepository;
-//        this.zaloPayRepository = zaloPayRepository;
-//        this.viewListener = viewListener;
-//        this.responseListener = responseListener;
-//        this.mShowNotificationLinkCard = true;
-//        this.mRedirectListener = redirectListener;
-//        mWalletListener = new WalletListener(this, transactionRepository, balanceRepository);
-//    }
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
                    TransactionStore.Repository transactionRepository,
@@ -101,6 +80,7 @@ public class PaymentWrapper {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetOrderSubscriber());
+        mCompositeSubscription.add(subscription);
     }
 
     public void withdraw(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
@@ -149,7 +129,7 @@ public class PaymentWrapper {
     }
 
     public void getOrder(long appId, String transactionToken, final IGetOrderCallback callback) {
-        zaloPayRepository.getOrder(appId, transactionToken)
+        Subscription subscription = zaloPayRepository.getOrder(appId, transactionToken)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Order>() {
                     @Override
@@ -162,6 +142,7 @@ public class PaymentWrapper {
                         callback.onResponseSuccess(order);
                     }
                 });
+        mCompositeSubscription.add(subscription);
     }
 
     public void linkCard(Activity activity) {
@@ -219,7 +200,7 @@ public class PaymentWrapper {
         }
 
         if (requestCode == Constants.REQUEST_CODE_DEPOSIT ||
-            requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
+                requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
             shouldProcessPendingOrder = true;
         }
 
@@ -232,6 +213,9 @@ public class PaymentWrapper {
         Timber.i("PaymentWrapper is cleaning up");
         mActivity = null;
         clearPendingOrder();
+        if (mCompositeSubscription != null) {
+            mCompositeSubscription.unsubscribe();
+        }
     }
 
     @Override
@@ -338,12 +322,11 @@ public class PaymentWrapper {
     }
 
     void startUpdateProfileLevel(String walletTransID) {
-        if (mActivity == null ) {
+        if (mActivity == null) {
             return;
         }
 
-        Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
-        navigator.startUpdateProfileLevel2Activity(mActivity, walletTransID);
+        mNavigator.startUpdateProfileLevel2Activity(mActivity, walletTransID);
     }
 
     public interface IRedirectListener {

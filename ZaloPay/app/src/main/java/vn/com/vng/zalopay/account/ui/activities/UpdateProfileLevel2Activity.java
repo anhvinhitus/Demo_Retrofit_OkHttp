@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +9,6 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
