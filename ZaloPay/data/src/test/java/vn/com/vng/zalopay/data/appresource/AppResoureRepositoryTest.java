@@ -52,13 +52,9 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
         DaoSession daoSession = new DaoMaster(db).newSession();
         mAppResourceLocalStorage = new AppResourceLocalStorage(daoSession, new PlatformDaoMapper(), 1);
         mRequestService = new AppResourceStore.RequestService() {
-            @Override
-            public Observable<AppResourceResponse> insideappresource(@Query(encoded = false, value = "appidlist") List<Long> appidlist, @Query("checksumlist") List<String> checksumlist, @QueryMap HashMap<String, String> params, @Query("appversion") String appVersion) {
-                return null;
-            }
 
             @Override
-            public Observable<AppResourceResponse> insideappresource(@Query(value = "appidlist", encoded = false) String appidlist, @Query(value = "checksumlist", encoded = true) String checksumlist, @QueryMap HashMap<String, String> params, @Query("appversion") String appVersion) {
+            public Observable<AppResourceResponse> getinsideappresource(@Query(value = "appidlist", encoded = false) String appidlist, @Query(value = "checksumlist", encoded = true) String checksumlist, @QueryMap HashMap<String, String> params, @Query("appversion") String appVersion) {
                 AppResourceResponse resourceResponse = new AppResourceResponse();
                 resourceResponse.resourcelist = listUpgradeData();
                 resourceResponse.orderedInsideApps = mSortAppSource;
@@ -75,7 +71,7 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
                 true,
                 "rootBundle",
                 "2.4.0",
-                Arrays.asList(6));
+                Arrays.asList(6L));
     }
 
     private AppResourceEntity createAppResource(int index) {

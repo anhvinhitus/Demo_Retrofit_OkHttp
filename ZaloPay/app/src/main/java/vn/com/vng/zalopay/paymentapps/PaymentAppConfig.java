@@ -17,13 +17,13 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 public class PaymentAppConfig {
 
     public static class Constants {
-        public static final int TRANSFER_MONEY = 1;
-        public static final int RECEIVE_MONEY = 3;
-        public static final int RED_PACKET = 6;
-        public static final int SHOW_SHOW = 22;
+        public static final long TRANSFER_MONEY = 1;
+        public static final long RECEIVE_MONEY = 3;
+        public static final long RED_PACKET = 6;
+        public static final long SHOW_SHOW = 22;
     }
 
-    static final HashMap<Integer, AppResource> APP_RESOURCE_MAP;
+    private static final HashMap<Long, AppResource> APP_RESOURCE_MAP;
     public static final List<AppResource> APP_RESOURCE_LIST;
 
     public static final List<AppResource> EXCLUDE_APP_RESOURCE_LIST;
@@ -61,7 +61,7 @@ public class PaymentAppConfig {
     }
 
     public static AppResource getAppResource(long appId) {
-        return APP_RESOURCE_MAP.get((int) appId);
+        return APP_RESOURCE_MAP.get(appId);
     }
 
 }

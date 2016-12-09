@@ -39,7 +39,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     //Retry 3 times, each time to download 2 file (js & image)
     private final int RETRY_DOWNLOAD_NUMBER = 6;
     //List AppID that exclude download
-    private final List<Integer> mListAppIdExcludeDownload;
+    private final List<Long> mListAppIdExcludeDownload;
 
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
@@ -50,7 +50,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                                  boolean download,
                                  String rootBundle,
                                  String appVersion,
-                                 List<Integer> excludeDownloadApps) {
+                                 List<Long> excludeDownloadApps) {
         this.mAppConfigEntityDataMapper = mapper;
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
@@ -93,7 +93,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
         Timber.d("appIds react-native %s checkSum %s", appIds, checkSum);
 
-        return mRequestService.insideappresource(appIds, checkSum, mRequestParameters, mAppVersion)
+        return mRequestService.getinsideappresource(appIds, checkSum, mRequestParameters, mAppVersion)
                 .doOnNext(this::processAppResourceResponse)
                 ;
     }

@@ -35,7 +35,6 @@ public class Constants {
         String GETINSIDEAPPRESOURCE = "v001/tpe/getinsideappresource";
         String GETORDERINFO = "v001/tpe/getorderinfo";
         String GETTRANSSTATUS = "v001/tpe/gettransstatus";
-        String INSIDEAPPRESOURCE = "v001/tpe/insideappresource";
         String TRANSHISTORY = "v001/tpe/transhistory";
     }
 
