@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -15,18 +16,17 @@
     </style>
 
     <style name="AppTheme.NoActionBar.FullScreen">
-        <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@layout/activity_splash_background</item>
+    <style name="AppTheme.NoActionBar.Splash">
         <item name="android:windowFullscreen">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:statusBarColor">@color/splash_bg</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowBackground">@layout/activity_splash_background</item>
     </style>
 </resources>

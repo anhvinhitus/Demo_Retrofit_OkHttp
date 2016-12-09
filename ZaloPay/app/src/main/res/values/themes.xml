@@ -38,8 +38,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar">
-        <item name="android:windowBackground">@color/splash_bg</item>
+    <style name="AppTheme.NoActionBar.Splash">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@layout/activity_splash_background</item>
     </style>
 
     <style name="AppTheme.NoActionBar.Primary">
@@ -47,8 +49,6 @@
     </style>
 
     <style name="AppTheme.NoActionBar.FullScreen">
-        <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
@@ -101,7 +101,4 @@
                 <item name="android:background">#4CAF50</item>-->
     </style>
 
-    <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@layout/activity_splash_background</item>
-    </style>
 </resources>

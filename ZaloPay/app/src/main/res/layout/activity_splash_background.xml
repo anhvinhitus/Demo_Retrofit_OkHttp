@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:opacity="opaque">
-    <item android:drawable="@android:color/white" />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:opacity="opaque">
+
+    <item android:drawable="@color/splash_bg" />
+
     <item android:top="30dp">
+
         <bitmap
-            android:src="@drawable/ic_zalopay_with_bg"
-            android:gravity="top|center_horizontal"/>
+            android:gravity="top|center_horizontal"
+            android:src="@drawable/ic_zalopay_with_bg" />
     </item>
 </layer-list>
