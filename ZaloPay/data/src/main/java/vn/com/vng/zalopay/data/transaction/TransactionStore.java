@@ -64,9 +64,12 @@ public interface TransactionStore {
 
         Observable<Boolean> fetchTransactionHistoryFailLatest();
 
-        Observable<Boolean> reloadTransactionHistoryTime(long time);
-
         Observable<Boolean> fetchTransactionHistoryLatest();
 
+        Observable<Boolean> fetchTransactionHistoryOldest(long thresholdTime);
+
+        Observable<Boolean> fetchTransactionHistoryLatest(long thresholdTime);
+
+        Observable<Boolean> reloadTransactionHistory(long time);
     }
 }

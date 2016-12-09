@@ -19,14 +19,12 @@ import org.greenrobot.eventbus.Subscribe;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -38,19 +36,16 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 class ReactNotificationNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
     private NotificationStore.Repository mNotificationRepository;
-    private TransactionStore.Repository mTransactionRepository;
     private final EventBus mEventBus;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     ReactNotificationNativeModule(ReactApplicationContext reactContext,
                                   NotificationStore.Repository notificationRepository,
-                                  TransactionStore.Repository transactionRepository,
                                   EventBus eventBus) {
         super(reactContext);
         this.mNotificationRepository = notificationRepository;
         this.mEventBus = eventBus;
-        this.mTransactionRepository = transactionRepository;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -73,23 +68,6 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
                 }).subscribe(new NotificationSubscriber(promise));
 
         mCompositeSubscription.add(subscription);
-    }
-
-    @ReactMethod
-    public void reloadTransactionWithId(String transactionId, String notificationId, Promise promise) {
-        Timber.d("Reload transaction transId [%s] notificationId [%s] ", transactionId, notificationId);
-      /*  long transId;
-        long notifyId;
-        try {
-            transId = Long.valueOf(transactionId);
-            notifyId = Long.valueOf(notificationId);
-        } catch (NumberFormatException e) {
-            Helpers.promiseResolveError(promise, -1, "Arguments invalid");
-            return;
-        }
-
-        Observable<NotificationData> notifyObservable = mNotificationRepository.getNotify(notifyId);
-*/
     }
 
     @ReactMethod

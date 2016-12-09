@@ -191,15 +191,21 @@ public class ZPNotificationService implements OnReceiverMessageListener {
             Timber.d("RecoveryMessageEvent %s", listMessage);
 
             if (Lists.isEmptyOrNull(listMessage)) {
+                this.recoveryTransaction();
                 return;
             }
 
             if (notificationHelper != null) {
                 notificationHelper.recoveryNotification(listMessage);
             }
+
             if (listMessage.size() >= NUMBER_NOTIFICATION) {
                 this.recoveryNotification(false);
+            } else {
+                //begin load transaction
+                this.recoveryTransaction();
             }
+
         }
     }
 
@@ -225,6 +231,10 @@ public class ZPNotificationService implements OnReceiverMessageListener {
                 });
 
         mCompositeSubscription.add(subscription);
+    }
+
+    private void recoveryTransaction() {
+        notificationHelper.recoveryTransaction();
     }
 
 

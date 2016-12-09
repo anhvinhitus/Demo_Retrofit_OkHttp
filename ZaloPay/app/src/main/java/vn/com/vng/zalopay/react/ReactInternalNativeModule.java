@@ -19,8 +19,11 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action0;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
@@ -273,12 +276,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         paymentWrapper.payWithToken(getCurrentActivity(), appId, zptranstoken);
     }
 
-    private void showToast(final int message) {
-        if (getCurrentActivity() != null) {
-            showToast(getCurrentActivity().getString(message));
-        }
-    }
-
     private void showToast(final String message) {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
@@ -296,20 +293,17 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 .setZaloPayRepository(mZaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new AbsPWResponseListener(getCurrentActivity()) {
-            @Override
-            public void onError(PaymentWrapperException exception) {
-                hideLoading();
-                showToast(exception.getMessage());
-            }
+                    @Override
+                    public void onError(PaymentWrapperException exception) {
+                        hideLoading();
+                        showToast(exception.getMessage());
+                    }
 
-            @Override
-            public void onCompleted() {
-                hideLoading();
-               /* if (getCurrentActivity() != null) {
-                    showToast(R.string.you_pay_success);
-                }*/
-            }
-        }).build();
+                    @Override
+                    public void onCompleted() {
+                        hideLoading();
+                    }
+                }).build();
     }
 
 
@@ -336,4 +330,5 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
             }
         }
     }
+
 }

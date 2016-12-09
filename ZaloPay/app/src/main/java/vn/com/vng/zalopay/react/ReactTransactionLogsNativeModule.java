@@ -21,14 +21,18 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
+import vn.com.vng.zalopay.data.notification.NotificationRepository;
+import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -41,14 +45,19 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
     private TransactionStore.Repository mTransactionRepository;
     private final EventBus mEventBus;
+    private final NotificationStore.Repository mNotificationRepository;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
-    ReactTransactionLogsNativeModule(ReactApplicationContext reactContext, TransactionStore.Repository repository, EventBus eventBus) {
+    ReactTransactionLogsNativeModule(ReactApplicationContext reactContext,
+                                     TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
+                                     EventBus eventBus) {
         super(reactContext);
         this.mTransactionRepository = repository;
+        this.mEventBus = eventBus;
+        this.mNotificationRepository = notificationRepository;
+
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
-        this.mEventBus = eventBus;
     }
 
     @Override
@@ -109,7 +118,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
         Timber.d("loadTransactionWithId %s", id);
 
-        long value = 0;
+        long value;
         try {
             value = Long.parseLong(id);
         } catch (NumberFormatException e) {
@@ -160,7 +169,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
     @Override
-    public void onActivityResult( int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
     }
 
@@ -259,4 +268,42 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         mCompositeSubscription.add(subscription);
     }
 
+
+    @ReactMethod
+    public void reloadTransactionWithId(final String transactionId, String notificationId, final Promise promise) {
+        Timber.d("reloadTransactionWithId: transactionId [%s] notificationId [%s]", transactionId, notificationId);
+        final long notifyId;
+        try {
+            notifyId = Long.valueOf(notificationId);
+        } catch (NumberFormatException e) {
+            Helpers.promiseResolveError(promise, -1, "Arguments invalid");
+            return;
+        }
+
+        Subscription subscription = mNotificationRepository.getNotify(notifyId)
+                .filter(new Func1<NotificationData, Boolean>() {
+                    @Override
+                    public Boolean call(NotificationData notify) {
+                        return notify.timestamp > 0;
+                    }
+                }).flatMap(new Func1<NotificationData, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(NotificationData notify) {
+                        return mTransactionRepository.reloadTransactionHistory(notify.timestamp);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        loadTransactionWithId(transactionId, promise);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Helpers.promiseResolveError(promise, -1, "Reload error");
+                    }
+                });
+        mCompositeSubscription.add(subscription);
+    }
 }

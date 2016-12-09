@@ -7,13 +7,11 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.functions.Func2;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
-import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.TransHistory;
@@ -83,14 +81,13 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private Observable<List<TransHistoryEntity>> fetchTransactionHistoryOldest(int statusType) {
-        return makeObservable(() -> mTransactionLocalStorage.getOldestTimeTransaction(statusType))
+        return getOldestTimeTransaction(statusType)
                 .flatMap(timeStamp -> fetchTransactionHistory(timeStamp, TRANSACTION_ORDER_OLDEST, statusType));
     }
 
     private Observable<List<TransHistoryEntity>> fetchTransactionHistoryLatest(int statusType) {
-        return makeObservable(() -> mTransactionLocalStorage.getLatestTimeTransaction(statusType))
-                .flatMap(timeStamp -> fetchTransactionHistoryRecurse(timeStamp, TRANSACTION_ORDER_LATEST, statusType))
-                ;
+        return getLatestTimeTransaction(statusType)
+                .flatMap(timeStamp -> fetchTransactionHistoryRecurse(timeStamp, TRANSACTION_ORDER_LATEST, statusType));
     }
 
     @Override
@@ -138,11 +135,6 @@ public class TransactionRepository implements TransactionStore.Repository {
     @Override
     public Boolean isLoadedTransactionFail() {
         return mTransactionLocalStorage.isLoadedTransactionFail();
-    }
-
-    @Override
-    public Observable<Boolean> reloadTransactionHistoryTime(final long time) {
-        return null;
     }
 
     private Observable<List<TransHistoryEntity>> getTransactionHistoryLocal(int pageIndex, int count, int statusType) {
@@ -273,5 +265,89 @@ public class TransactionRepository implements TransactionStore.Repository {
             }
             mTransactionLocalStorage.put(data);
         }
+    }
+
+    @Override
+    public Observable<Boolean> fetchTransactionHistoryOldest(long threshold) {
+        Observable<Boolean> observableOldestSuccess = fetchTransactionHistoryOldestSuccess(threshold).doOnError(throwable -> Observable.empty());
+        Observable<Boolean> observableOldestFail = fetchTransactionHistoryOldestFail(threshold).doOnError(throwable -> Observable.empty());
+
+        return Observable.zip(observableOldestSuccess, observableOldestFail,
+                (result1, result2) -> result1 && result2);
+    }
+
+    @Override
+    public Observable<Boolean> fetchTransactionHistoryLatest(long threshold) {
+        Observable<Boolean> observableLatestSuccess = fetchTransactionHistoryLatestSuccess(threshold).doOnError(throwable -> Observable.empty());
+        Observable<Boolean> observableLatestFail = fetchTransactionHistoryLatestFail(threshold).doOnError(throwable -> Observable.empty());
+        return Observable.zip(observableLatestSuccess, observableLatestFail,
+                (result1, result2) -> result1 && result2);
+    }
+
+    @Override
+    public Observable<Boolean> reloadTransactionHistory(long time) {
+        Observable<Long> observableLatestSuccess = getLatestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
+        Observable<Long> observableOldestSuccess = getOldestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
+
+        return Observable.zip(observableLatestSuccess, observableOldestSuccess, (latest, oldest) -> {
+            if (latest == 0 || oldest == 0) {
+                return TRANSACTION_ORDER_LATEST;
+            }
+
+            if (time >= latest) {
+                return TRANSACTION_ORDER_LATEST;
+            }
+
+            if (time <= oldest) {
+                return TRANSACTION_ORDER_OLDEST;
+            }
+
+            return 0;
+        }).flatMap(sortOder -> {
+            if (sortOder == TRANSACTION_ORDER_LATEST) {
+                return fetchTransactionHistoryLatestSuccess(time);
+            } else if (sortOder == TRANSACTION_ORDER_OLDEST) {
+                return fetchTransactionHistoryOldestSuccess(time);
+            } else {
+                return Observable.empty();
+            }
+        });
+
+    }
+
+    private Observable<Long> getLatestTimeTransaction(int statusType) {
+        return makeObservable(() -> mTransactionLocalStorage.getLatestTimeTransaction(statusType));
+    }
+
+    private Observable<Long> getOldestTimeTransaction(int statusType) {
+        return makeObservable(() -> mTransactionLocalStorage.getOldestTimeTransaction(statusType));
+    }
+
+    private Observable<Boolean> fetchTransactionHistoryOldestSuccess(long thresholdTime) {
+        Observable<Long> observableOldestSuccess = getOldestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
+        return observableOldestSuccess.filter(oldestTime -> thresholdTime > 0 && (oldestTime == 0 || oldestTime > thresholdTime))
+                .flatMap(oldestTime -> fetchTransactionHistoryRecurse(oldestTime, TRANSACTION_ORDER_OLDEST, TRANSACTION_STATUS_SUCCESS, thresholdTime, true))
+                .map(entities -> Boolean.TRUE);
+    }
+
+    private Observable<Boolean> fetchTransactionHistoryOldestFail(long thresholdTime) {
+        Observable<Long> observableOldestFail = getOldestTimeTransaction(TRANSACTION_STATUS_FAIL);
+        return observableOldestFail.filter(oldestTime -> thresholdTime > 0 && (oldestTime == 0 || oldestTime > thresholdTime))
+                .flatMap(oldestTime -> fetchTransactionHistoryRecurse(oldestTime, TRANSACTION_ORDER_OLDEST, TRANSACTION_STATUS_FAIL, thresholdTime, true))
+                .map(entities -> Boolean.TRUE);
+    }
+
+    private Observable<Boolean> fetchTransactionHistoryLatestSuccess(long thresholdTime) {
+        Observable<Long> latestTimeTransaction = getLatestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
+        return latestTimeTransaction.filter(latestTime -> thresholdTime > latestTime)
+                .flatMap(latestTime -> fetchTransactionHistoryRecurse(latestTime, TRANSACTION_ORDER_LATEST, TRANSACTION_STATUS_SUCCESS, thresholdTime, true))
+                .map(entities -> Boolean.TRUE);
+    }
+
+    private Observable<Boolean> fetchTransactionHistoryLatestFail(long thresholdTime) {
+        Observable<Long> latestTimeTransaction = getLatestTimeTransaction(TRANSACTION_STATUS_FAIL);
+        return latestTimeTransaction.filter(latestTime -> thresholdTime > latestTime)
+                .flatMap(latestTime -> fetchTransactionHistoryRecurse(latestTime, TRANSACTION_ORDER_LATEST, TRANSACTION_STATUS_FAIL, thresholdTime, true))
+                .map(entities -> Boolean.TRUE);
     }
 }

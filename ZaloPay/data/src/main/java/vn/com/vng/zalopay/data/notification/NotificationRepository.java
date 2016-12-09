@@ -140,7 +140,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     public Observable<Long> getOldestTimeNotification() {
         return Observable.just(localStorage.getDataManifest(Constants.MANIFEST_RECOVERY_NOTIFICATION, 0L))
                 .filter(lastTime -> lastTime > 0L)
-                .map(aLong -> localStorage.getOldestTimeNotification());
+                .map(lastTime -> localStorage.getOldestTimeNotification());
     }
 
     @Override

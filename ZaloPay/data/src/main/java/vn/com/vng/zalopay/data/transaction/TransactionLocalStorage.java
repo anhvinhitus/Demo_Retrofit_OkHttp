@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransactionLog;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 
 import static java.util.Collections.emptyList;
@@ -123,24 +124,24 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
             return null;
         }
 
-        TransHistoryEntity transHistoryEntity = new TransHistoryEntity();
-        transHistoryEntity.appid = transDao.appid;
-        transHistoryEntity.appuser = transDao.appuser;
-        transHistoryEntity.description = transDao.description;
-        transHistoryEntity.userchargeamt = transDao.userchargeamt;
-        transHistoryEntity.userfeeamt = transDao.userfeeamt;
-        transHistoryEntity.amount = transDao.amount;
-        transHistoryEntity.platform = transDao.platform;
-        transHistoryEntity.pmcid = transDao.pmcid;
-        transHistoryEntity.reqdate = transDao.reqdate;
-        transHistoryEntity.transid = transDao.transid;
-        transHistoryEntity.type = transDao.type;
-        transHistoryEntity.userid = transDao.userid;
-        transHistoryEntity.sign = transDao.sign;
-        transHistoryEntity.username = transDao.username;
-        transHistoryEntity.appusername = transDao.appusername;
-        transHistoryEntity.statustype = transDao.statustype;
-        return transHistoryEntity;
+        TransHistoryEntity entity = new TransHistoryEntity();
+        entity.appid = transDao.appid;
+        entity.appuser = transDao.appuser;
+        entity.description = transDao.description;
+        entity.userchargeamt = transDao.userchargeamt;
+        entity.userfeeamt = transDao.userfeeamt;
+        entity.amount = transDao.amount;
+        entity.platform = transDao.platform;
+        entity.pmcid = transDao.pmcid;
+        entity.reqdate = ConvertHelper.unboxValue(transDao.reqdate, 0);
+        entity.transid = transDao.transid;
+        entity.type = transDao.type;
+        entity.userid = transDao.userid;
+        entity.sign = transDao.sign;
+        entity.username = transDao.username;
+        entity.appusername = transDao.appusername;
+        entity.statustype = transDao.statustype;
+        return entity;
     }
 
     private List<TransHistoryEntity> transform2Entity(Collection<TransactionLog> transactionLogs) {
@@ -179,7 +180,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     @Override
     public void updateStatusType(long transId, int status) {
         TransactionLog transactionLog = queryTransactionById(transId);
-        transactionLog.statustype = (long)(status);
+        transactionLog.statustype = (long) (status);
         getDaoSession().getTransactionLogDao().insertOrReplaceInTx(transactionLog);
     }
 
@@ -211,7 +212,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
                 .orderDesc(TransactionLogDao.Properties.Reqdate)
                 .limit(1).list();
         if (!Lists.isEmptyOrNull(log)) {
-            timeUpdate = log.get(0).reqdate;
+            timeUpdate = ConvertHelper.unboxValue(log.get(0).reqdate, 0);
         }
         Timber.d("getLatestTimeTransaction timeUpdate %s", timeUpdate);
         return timeUpdate;
@@ -225,7 +226,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
                 .orderAsc(TransactionLogDao.Properties.Reqdate)
                 .limit(1).list();
         if (!Lists.isEmptyOrNull(log)) {
-            timeUpdate = log.get(0).reqdate;
+            timeUpdate = ConvertHelper.unboxValue(log.get(0).reqdate, 0);
         }
         Timber.d("getOldestTimeTransaction timeUpdate %s", timeUpdate);
         return timeUpdate;

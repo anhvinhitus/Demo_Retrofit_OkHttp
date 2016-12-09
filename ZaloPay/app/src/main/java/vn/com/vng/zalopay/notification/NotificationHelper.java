@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -440,6 +441,21 @@ public class NotificationHelper {
         Subscription subscription = mNotifyRepository.recoveryNotify(listMessage)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Void>());
+        compositeSubscription.add(subscription);
+    }
+
+    void recoveryTransaction() {
+        Timber.d("recovery Transaction");
+        Subscription subscription = getOldestTimeNotification()
+                .flatMap(new Func1<Long, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Long oldest) {
+                        Timber.d("begin recover transaction [%s]", oldest);
+                        return mTransactionRepository.fetchTransactionHistoryOldest(oldest);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
         compositeSubscription.add(subscription);
     }
 
