@@ -55,6 +55,7 @@ public class DefaultPaymentResponseListener implements PaymentWrapper.IResponseL
 
         ILoadDataView view = mDataView.get();
         if (status == PaymentError.ERR_CODE_INTERNET) {
+            view.hideLoading();
             view.showNetworkErrorDialog();
         }
     }
