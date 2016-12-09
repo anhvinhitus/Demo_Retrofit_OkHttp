@@ -15,6 +15,9 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
+import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
+import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -177,9 +180,11 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
             return false;
         }
 
-       /* Intent intent = mNavigator.intentChangePinActivity((Activity) mView.getContext());
-        intent.putExtra("otp", otp);
-        mView.getContext().startActivity(intent);*/
+        if (AppLifeCycle.isLastActivity(ChangePinActivity.class.getSimpleName())) {
+            mNavigator.startChangePinActivity((Activity) mView.getContext(), otp);
+        } else if (AppLifeCycle.isLastActivity(UpdateProfileLevel2Activity.class.getSimpleName())) {
+            mNavigator.startUpdateProfileLevel2ActivityWithOtp(mView.getContext(), otp);
+        }
 
         return true;
     }

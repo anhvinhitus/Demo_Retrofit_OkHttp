@@ -3,9 +3,12 @@ package vn.com.vng.zalopay.app;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -15,6 +18,7 @@ import timber.log.Timber;
 public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
 
     private static HashMap<String, Integer> activities;
+    private static String mLastActivity;
 
     public AppLifeCycle() {
         activities = new HashMap<>();
@@ -22,11 +26,14 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
-        activities.put(activity.getLocalClassName(), 1);
+        String className = activity.getLocalClassName();
+        activities.put(className, 1);
+        mLastActivity = className;
         applicationStatus();
     }
 
@@ -79,5 +86,13 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
             }
             mLastState = 1;
         }
+    }
+
+    public static boolean activityExistInStack(String simpleName) {
+        return false;
+    }
+
+    public static boolean isLastActivity(@NonNull String simpleName) {
+        return simpleName.equalsIgnoreCase(mLastActivity);
     }
 }

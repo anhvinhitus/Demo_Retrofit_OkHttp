@@ -131,14 +131,17 @@ public class Navigator implements INavigator {
     }
 
     public void startUpdateProfileLevel2Activity(Context context) {
+        startUpdateProfileLevel2Activity(context, null);
+    }
+
+    public void startUpdateProfileLevel2ActivityWithOtp(Context context, String otp) {
         Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
+        if (!TextUtils.isEmpty(otp)) {
+            intent.putExtra("otp", otp);
+        }
         context.startActivity(intent);
     }
 
-    /*public void startQrCodeActivity(Context context) {
-        Intent intent = new Intent(context, QRCodeScannerActivity.class);
-        context.startActivity(intent);
-    }*/
 
     public void startDepositActivity(Context context) {
         Intent intent = new Intent(context, BalanceTopupActivity.class);
@@ -314,6 +317,12 @@ public class Navigator implements INavigator {
 
     public Intent intentChangePinActivity(Activity activity) {
         return new Intent(activity, ChangePinActivity.class);
+    }
+
+    public void startChangePinActivity(Activity activity, String otp) {
+        Intent intent = intentChangePinActivity(activity);
+        intent.putExtra("otp", otp);
+        activity.startActivity(intent);
     }
 
     public void startChangePinActivity(Activity activity) {
