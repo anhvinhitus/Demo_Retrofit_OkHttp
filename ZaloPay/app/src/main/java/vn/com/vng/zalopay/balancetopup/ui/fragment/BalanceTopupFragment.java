@@ -66,7 +66,6 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         if (!mEdtAmountView.isValid()) {
             return;
         }
-        showLoading();
         mPresenter.deposit(mEdtAmountView.getAmount());
     }
 

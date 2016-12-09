@@ -160,10 +160,8 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         }
         String message = ErrorMessageFactory.create(applicationContext, e);
         if (e instanceof NetworkConnectionException) {
-            if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
-                showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.WARNING_TYPE);
-                return;
-            }
+            showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
+            return;
         }
         showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
     }

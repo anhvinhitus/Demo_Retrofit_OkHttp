@@ -34,6 +34,7 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -213,6 +214,13 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             super.showErrorDialog(message, cancelText, onClickCancel);
         } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
             super.showWarningDialog(message, cancelText, onClickCancel);
+        } else if (dialogType == SweetAlertDialog.NO_INTERNET) {
+            super.showNetworkErrorDialog(new ZPWOnSweetDialogListener() {
+                @Override
+                public void onClickDiaLog(int i) {
+                    getActivity().finish();
+                }
+            });
         }
     }
 

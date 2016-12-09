@@ -315,11 +315,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void showNetworkErrorDialog() {
+        showNetworkErrorDialog(null);
+    }
+    public void showNetworkErrorDialog(ZPWOnSweetDialogListener listener) {
         DialogManager.showDialog(getActivity(),
                 getString(R.string.txt_warning),
                 getString(R.string.exception_no_connection_try_again),
                 R.drawable.ic_no_internet,
-                null,
+                listener,
                 getString(R.string.txt_close));
     }
 

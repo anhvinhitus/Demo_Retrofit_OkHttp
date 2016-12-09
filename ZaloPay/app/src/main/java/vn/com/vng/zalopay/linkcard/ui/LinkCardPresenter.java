@@ -280,12 +280,12 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
     }
 
     @Override
-    void showWarningView(String message) {
+    void showNetworkErrorDialog() {
         if (mLinkCardView == null) {
             return;
         }
         mLinkCardView.hideLoading();
-        mLinkCardView.showWarningView(message);
+        mLinkCardView.showNetworkErrorDialog();
     }
 
     String detectCardType(String bankcode, String first6cardno) {

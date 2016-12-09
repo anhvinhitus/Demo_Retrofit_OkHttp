@@ -56,6 +56,7 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**
  * Created by longlv on 09/05/2016.
@@ -131,8 +132,12 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
         if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
             if (mView != null) {
-                mView.showError(mApplicationContext.getString(R.string.exception_no_connection_try_again));
-                mView.resumeScanner();
+                mView.showNetworkErrorDialog(new ZPWOnSweetDialogListener() {
+                    @Override
+                    public void onClickDiaLog(int i) {
+                        mView.resumeScanner();
+                    }
+                });
             }
             return;
         }

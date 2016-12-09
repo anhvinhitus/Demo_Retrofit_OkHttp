@@ -124,11 +124,11 @@ class CardSupportPresenter extends AbsLinkCardPresenter implements IPresenter<IC
     }
 
     @Override
-    void showWarningView(String message) {
+    void showNetworkErrorDialog() {
         if (mCardSupportView == null) {
             return;
         }
         mCardSupportView.hideLoading();
-        mCardSupportView.showWarningView(message);
+        mCardSupportView.showNetworkErrorDialog();
     }
 }

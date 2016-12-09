@@ -55,7 +55,7 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
 
     abstract void showErrorView(String message);
 
-    abstract void showWarningView(String message);
+    abstract void showNetworkErrorDialog();
 
     AbsLinkCardPresenter(ZaloPayRepository zaloPayRepository,
                          Navigator navigator,
@@ -91,7 +91,7 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
         @Override
         public void onResponseError(PaymentError paymentError) {
             if (paymentError == PaymentError.ERR_CODE_INTERNET) {
-                showWarningView(getContext().getString(R.string.exception_no_connection_try_again));
+                showNetworkErrorDialog();
             }
         }
 

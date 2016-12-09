@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -88,7 +89,7 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     public void destroy() {
     }
 
-    private void hideLoadingView() {
+    private void hideLoading() {
         if (mView == null) {
             return;
         }
@@ -96,12 +97,13 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
         mView.hideLoading();
     }
 
-    private void showErrorView(String message) {
+
+    private void showLoading() {
         if (mView == null) {
             return;
         }
 
-        mView.showError(message);
+        mView.showLoading();
     }
 
     private void createWalletOrder(long amount) {
@@ -146,17 +148,25 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     }
 
     private void onCreateWalletOrderError(Throwable e) {
-        hideLoadingView();
-        String message = ErrorMessageFactory.create(mView.getContext(), e);
-        showErrorView(message);
+        hideLoading();
+        if (mView == null || mView.getContext() == null) {
+            return;
+        }
+        if (e instanceof NetworkConnectionException) {
+            mView.showNetworkErrorDialog();
+        } else {
+            String message = ErrorMessageFactory.create(mView.getContext(), e);
+            mView.showError(message);
+        }
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
         paymentWrapper.payWithOrder(mView.getActivity(), order);
-        hideLoadingView();
+        hideLoading();
     }
 
     public void deposit(long amount) {
+        showLoading();
         createWalletOrder(amount);
     }
 
