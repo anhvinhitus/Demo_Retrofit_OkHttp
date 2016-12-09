@@ -114,7 +114,7 @@ public class AndroidUtils {
         } else if (density == 3) {
             return "xxhdpi";
         } else if (density == 4) {
-            return "xxxhdpi";
+            return "xxhdpi";
         } else {
             return "xhdpi";
         }
