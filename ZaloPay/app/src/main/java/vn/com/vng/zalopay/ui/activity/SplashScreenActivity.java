@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.activity;
 
 import android.os.Bundle;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
@@ -27,9 +28,8 @@ public class SplashScreenActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme_NoActionBar_FullScreen);
-
         super.onCreate(savedInstanceState);
+        Timber.d("onCreate: [%s]", isTaskRoot());
     }
 
     @Override

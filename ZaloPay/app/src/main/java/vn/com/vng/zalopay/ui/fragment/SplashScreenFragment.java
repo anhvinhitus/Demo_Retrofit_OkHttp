@@ -1,23 +1,15 @@
 package vn.com.vng.zalopay.ui.fragment;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.View;
-
-import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.ui.presenter.SplashScreenPresenter;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
-import vn.com.vng.zalopay.utils.IntroAppUtils;
 
 /**
  * Created by AnhHieu on 5/13/16.
@@ -49,7 +41,6 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
         return R.layout.activity_splashscreen;
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +56,17 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Intent intent = getActivity().getIntent();
-        presenter.handleDeepLinks(intent);
+        boolean isTaskRoot = getActivity().isTaskRoot();
+
+        Timber.d("onActivityCreated task [%s] taskRoot [%s]", getActivity().getTaskId(), isTaskRoot);
+
+        if (!isTaskRoot) {
+            getActivity().finish();
+            return;
+        }
+
+       /* Intent intent = getActivity().getIntent();
+        presenter.handleDeepLinks(intent);*/
         presenter.verifyUser();
     }
 
