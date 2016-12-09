@@ -16,15 +16,14 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.ui.presenter.BalanceManagementPresenter;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -195,8 +194,11 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     }
 
     @Override
-    public void showConfirmDialog(String message, String btnConfirm, String btnCancel, ZPWOnEventConfirmDialogListener listener) {
-        DialogManager.showSweetDialogOptionNotice(getActivity(), message, btnConfirm, btnCancel, listener);
+    public void showConfirmDialog(String message,
+                                  String btnConfirm,
+                                  String btnCancel,
+                                  ZPWOnEventConfirmDialogListener listener) {
+        DialogHelper.showNoticeDialog(getActivity(), message, btnConfirm, btnCancel, listener);
     }
 
     @Override

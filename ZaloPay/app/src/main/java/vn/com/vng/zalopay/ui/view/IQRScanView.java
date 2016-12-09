@@ -15,5 +15,5 @@ public interface IQRScanView extends ILoadDataView {
 
     void onTokenInvalid();
     void resumeScanner();
-    void showWarning(String message, ZPWOnEventDialogListener cancelListener);
+    void showWarningDialog(String message, ZPWOnEventDialogListener cancelListener);
 }

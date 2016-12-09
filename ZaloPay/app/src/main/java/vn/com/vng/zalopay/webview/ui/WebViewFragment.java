@@ -17,14 +17,13 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by chucvv on 8/28/16.
@@ -69,7 +68,7 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
                 if (getActivity() == null) {
                     return;
                 }
-                DialogManager.showSweetDialogConfirm(getActivity(),
+                DialogHelper.showConfirmDialog(getActivity(),
                         getActivity().getResources().getString(R.string.appgame_waiting_loading),
                         getActivity().getResources().getString(R.string.btn_exit),
                         getActivity().getResources().getString(R.string.btn_wait_loading),
@@ -122,10 +121,9 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
 
     @Override
     public void showInputErrorDialog() {
-        DialogManager.showSweetDialogCustom(getActivity(),
+        DialogHelper.showWarningDialog(getActivity(),
                 getContext().getString(R.string.appgame_alert_input_error),
-                getContext().getString(R.string.txt_close),
-                SweetAlertDialog.WARNING_TYPE, new ZPWOnEventDialogListener() {
+                new ZPWOnEventDialogListener() {
                     @Override
                     public void onOKevent() {
                         getActivity().finish();
@@ -203,11 +201,11 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
     }
 
     public void hideLoading() {
-        DialogManager.closeProcessDialog();
+        DialogHelper.hideLoading();
     }
 
     public void showLoading() {
-        DialogManager.showProcessDialog(getActivity(), new ZPWOnProgressDialogTimeoutListener() {
+        DialogHelper.showLoading(getActivity(), new ZPWOnProgressDialogTimeoutListener() {
             @Override
             public void onProgressTimeout() {
                 if (mTimeOutListener != null) {

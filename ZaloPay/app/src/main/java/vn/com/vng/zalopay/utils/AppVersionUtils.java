@@ -10,7 +10,6 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
  * Created by longlv on 05/08/2016.
@@ -110,23 +109,30 @@ public class AppVersionUtils {
         AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
     }
 
-    private static void showDialogRecommendUpgradeApp(final Activity activity) {
-        Timber.d("Show update Dialog, context [%s]", activity);
+    private static void showDialogUpgradeApp(final Activity activity, final boolean forceUpdate) {
+        Timber.d("Show upgrade dialog, context [%s]", activity);
         String contentText = getUpdateMessageInServer();
         String newVersion = getLatestVersionInServer();
         if (activity == null || isShowedDialogUpdateApp(newVersion)) {
             return;
         }
         if (TextUtils.isEmpty(contentText)) {
-            contentText = activity.getString(R.string.recommend_update_to_use);
+            if (forceUpdate) {
+                contentText = activity.getString(R.string.need_update_to_use);
+            } else {
+                contentText = activity.getString(R.string.recommend_update_to_use);
+            }
         }
         showedDialogUpdateApp(newVersion);
-        DialogManager.showSweetDialogUpdate(activity, contentText, newVersion,
-                activity.getString(R.string.btn_update),
-                activity.getString(R.string.btn_cancel),
+        DialogHelper.showSweetDialogUpdate(activity,
+                contentText,
+                newVersion,
                 new ZPWOnEventUpdateListener() {
                     @Override
                     public void onUpdateListenner() {
+                        if (forceUpdate) {
+                            clearSession();
+                        }
                         AndroidUtils.openPlayStoreForUpdate(activity);
                     }
 
@@ -134,35 +140,7 @@ public class AppVersionUtils {
                     public void onCancelListenner() {
 
                     }
-                });
-    }
-
-    private static void showDialogForceUpgradeApp(final Activity activity) {
-        Timber.d("Show update Dialog, context [%s]", activity);
-        if (activity == null) {
-            return;
-        }
-        String contentText = getUpdateMessageInServer();
-        String newVersion = getLatestVersionInServer();
-        if (TextUtils.isEmpty(contentText)) {
-            contentText = activity.getString(R.string.need_update_to_use);
-        }
-        showedDialogUpdateApp(newVersion);
-        DialogManager.showSweetDialogUpdate(activity, contentText, newVersion,
-                activity.getString(R.string.btn_update),
-                null,
-                new ZPWOnEventUpdateListener() {
-                    @Override
-                    public void onUpdateListenner() {
-                        clearSession();
-                        AndroidUtils.openPlayStoreForUpdate(activity);
-                    }
-
-                    @Override
-                    public void onCancelListenner() {
-
-                    }
-                });
+                }, forceUpdate);
     }
 
     public static void showDialogUpgradeAppIfNeed(Activity activity) {
@@ -170,11 +148,7 @@ public class AppVersionUtils {
         if (!upgradeApp) {
             return;
         }
-        if (isForceUpdateApp()) {
-            showDialogForceUpgradeApp(activity);
-        } else {
-            showDialogRecommendUpgradeApp(activity);
-        }
+        showDialogUpgradeApp(activity, isForceUpdateApp());
     }
 
     public static void setVersionInfoInServer(boolean forceUpdate, String latestVersion, String msg) {

@@ -30,10 +30,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
-import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
-import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
@@ -41,18 +37,23 @@ import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.ToastUtil;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**
  * Created by AnhHieu on 3/24/16.
+ * *
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -266,7 +267,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         if (this instanceof LoginZaloActivity) {
-            showCustomDialog(eventMessage, SweetAlertDialog.NORMAL_TYPE, getString(R.string.txt_close), null);
+            showCustomDialog(eventMessage,
+                    getString(R.string.txt_close),
+                    SweetAlertDialog.NORMAL_TYPE,
+                    null);
         } else {
             getAppComponent().applicationSession().setMessageAtLogin(eventMessage);
             getAppComponent().applicationSession().clearUserSession();
@@ -280,7 +284,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_zpw_account_suspended);
             getAppComponent().applicationSession().clearUserSession();
         } else {
-            showWarningDialog(getString(R.string.exception_zpw_account_suspended), getString(R.string.txt_close), null);
+            showWarningDialog(getString(R.string.exception_zpw_account_suspended), null);
         }
     }
 
@@ -295,7 +299,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_LAUNCH);
         } else if (TAG.equals(UpdateProfileLevel2Activity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_LAUNCH);
-        }else if(TAG.equals(ReceiveMoneyActivity.class.getSimpleName())){
+        } else if (TAG.equals(ReceiveMoneyActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_LAUNCH);
         }
     }
@@ -309,7 +313,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_NAVIGATEBACK);
         } else if (TAG.equals(UpdateProfileLevel2Activity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.UPDATEPROFILE2_NAVIGATEBACK);
-        }else if(TAG.equals(ReceiveMoneyActivity.class.getSimpleName())){
+        } else if (TAG.equals(ReceiveMoneyActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.RECEIVEMONEY_BACK);
         }
     }
@@ -317,20 +321,26 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void showNetworkErrorDialog() {
         showNetworkErrorDialog(null);
     }
+
     public void showNetworkErrorDialog(ZPWOnSweetDialogListener listener) {
-        DialogManager.showDialog(getActivity(),
-                getString(R.string.txt_warning),
-                getString(R.string.exception_no_connection_try_again),
-                R.drawable.ic_no_internet,
-                listener,
-                getString(R.string.txt_close));
+        DialogHelper.showNetworkErrorDialog(getActivity(), listener);
     }
 
-    public void showCustomDialog(String message, int dialogType, String cancelBtnText, final ZPWOnEventDialogListener listener) {
-        DialogManager.showSweetDialogCustom(getActivity(), message, cancelBtnText, dialogType, listener);
+    public void showCustomDialog(String message,
+                                 String cancelBtnText,
+                                 int dialogType,
+                                 final ZPWOnEventDialogListener listener) {
+        DialogHelper.showCustomDialog(getActivity(),
+                message,
+                cancelBtnText,
+                dialogType,
+                listener);
     }
 
-    public void showWarningDialog(String message, String cancelBtnText, final ZPWOnEventDialogListener cancelListener) {
-        DialogManager.showSweetDialogCustom(getActivity(), message, cancelBtnText, SweetAlertDialog.WARNING_TYPE, cancelListener);
+    public void showWarningDialog(String message,
+                                  final ZPWOnEventDialogListener cancelListener) {
+        DialogHelper.showWarningDialog(getActivity(),
+                message,
+                cancelListener);
     }
 }

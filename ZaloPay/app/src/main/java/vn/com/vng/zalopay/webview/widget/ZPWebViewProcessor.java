@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -17,10 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
 import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
 import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public class ZPWebViewProcessor extends WebViewClient {
 
@@ -43,7 +41,7 @@ public class ZPWebViewProcessor extends WebViewClient {
         if (pActivity == null || TextUtils.isEmpty(pUrl) || mWebView == null) {
             return;
         }
-        DialogManager.showProcessDialog(pActivity, new ZPWOnProgressDialogTimeoutListener() {
+        DialogHelper.showLoading(pActivity, new ZPWOnProgressDialogTimeoutListener() {
             @Override
             public void onProgressTimeout() {
                 if (mTimeOutListener != null)
@@ -65,7 +63,7 @@ public class ZPWebViewProcessor extends WebViewClient {
             return;
         }
 
-        DialogManager.closeProcessDialog();
+        DialogHelper.hideLoading();
         injectScriptFile("webapp.js");
 
         mWebView.runScript("webapp_hideHeaderZalo()", new ValueCallback<String>() {

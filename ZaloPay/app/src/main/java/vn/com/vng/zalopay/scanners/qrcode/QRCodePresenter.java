@@ -298,7 +298,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
     private void qrDataInvalid() {
         if (mView != null && mView.getContext() != null) {
-            mView.showWarning(mView.getContext().getString(R.string.data_invalid),
+            mView.showWarningDialog(mView.getContext().getString(R.string.data_invalid),
                     new ZPWOnEventConfirmDialogListener() {
                         @Override
                         public void onCancelEvent() {

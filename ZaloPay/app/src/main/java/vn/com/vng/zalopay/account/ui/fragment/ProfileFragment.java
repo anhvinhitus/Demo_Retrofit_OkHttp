@@ -21,8 +21,8 @@ import vn.com.vng.zalopay.account.ui.view.IProfileView;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 public class ProfileFragment extends BaseFragment implements IProfileView {
@@ -161,13 +161,16 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     }
 
     public void showDialogInfo(String message) {
-        DialogManager.showSweetDialogCustom(getActivity(), message, getString(R.string.txt_close), SweetAlertDialog.INFO_TYPE, null);
+        DialogHelper.showInfoDialog(getActivity(), message, null);
     }
 
     @Override
     public void showConfirmDialog(String message, ZPWOnEventConfirmDialogListener listener) {
-        DialogManager.showSweetDialogOptionNotice(getActivity(), message, getString(R.string.txt_update),
-                getString(R.string.txt_close), listener);
+        DialogHelper.showConfirmDialog(getActivity(),
+                message,
+                getString(R.string.txt_update),
+                getString(R.string.txt_close),
+                listener);
     }
 
     private void setCMND(String cmnd) {

@@ -9,8 +9,7 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+import vn.com.vng.zalopay.utils.DialogHelper;
 
 public class CardSupportActivity extends BaseToolBarActivity implements ICardSupportView {
 
@@ -57,17 +56,17 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
 
     @Override
     public void showWarningView(String error) {
-        showWarningDialog(error, getString(R.string.txt_close), null);
+        showWarningDialog(error, null);
     }
 
     @Override
     public void showLoading() {
-        DialogManager.showProcessDialog(this, null);
+        DialogHelper.showLoading(this, null);
     }
 
     @Override
     public void hideLoading() {
-        DialogManager.closeProcessDialog();
+        DialogHelper.hideLoading();
     }
 
     @Override
@@ -82,8 +81,7 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
 
     @Override
     public void showError(String message) {
-        DialogManager.showSweetDialogCustom(getActivity(), message,
-                getString(R.string.txt_close), SweetAlertDialog.ERROR_TYPE, null);
+        DialogHelper.showErrorDialog(getActivity(), message);
     }
 
     @Override

@@ -2,14 +2,12 @@ package vn.com.vng.zalopay.scanners.beacons;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,9 +39,9 @@ import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.RippleBackground;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public class CounterBeaconFragment extends BaseFragment implements FragmentLifecycle {
 
@@ -374,18 +372,23 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
     @TargetApi(Build.VERSION_CODES.M)
     private void checkBluetoothPermission() {
         // Android M Permission check 
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            DialogManager.showSweetDialogConfirm(getActivity(), "Xin hãy cho phép Zalo Pay sử dụng thông tin vị trí để hỗ trợ tốt thanh toán bằng Bluetooth", getString(R.string.ok), getString(R.string.cancel), new ZPWOnEventConfirmDialogListener() {
-                @Override
-                public void onCancelEvent() {
-                }
+        if (ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            DialogHelper.showConfirmDialog(getActivity(),
+                    getString(R.string.request_permission_bluetooth),
+                    getString(R.string.accept),
+                    getString(R.string.cancel),
+                    new ZPWOnEventConfirmDialogListener() {
+                        @Override
+                        public void onCancelEvent() {
+                        }
 
-                @Override
-                public void onOKevent() {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                            Constants.Permission.REQUEST_COARSE_LOCATION);
-                }
-            });
+                        @Override
+                        public void onOKevent() {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                    Constants.Permission.REQUEST_COARSE_LOCATION);
+                        }
+                    });
         }
     }
 
@@ -398,9 +401,11 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
                 if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Timber.d("coarse location permission granted");
                 } else {
-                    DialogManager.showSweetDialogCustom(getActivity(),
-                            "Do Zalo Pay chưa được cấp quyền lấy thông tin vị trí, Zalo Pay chưa thể hỗ trợ thanh toán bằng Bluetooth",
-                            getString(R.string.ok), DialogManager.NORMAL_TYPE, null);
+                    DialogHelper.showConfirmDialog(getActivity(),
+                            getString(R.string.deny_permission_bluetooth),
+                            getString(R.string.accept),
+                            null,
+                            null);
                 }
                 break;
             }

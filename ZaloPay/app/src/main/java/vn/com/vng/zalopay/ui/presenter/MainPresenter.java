@@ -57,6 +57,7 @@ import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
@@ -68,7 +69,6 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -488,12 +488,14 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     private void showPayDialogConfirm(final PaymentDataEvent dataEvent) {
-        if (mHomeView == null) {
+        if (mHomeView == null || mHomeView.getActivity() == null) {
             return;
         }
 
-        DialogManager.showSweetDialogConfirm(mHomeView.getActivity(), mApplicationContext.getString(R.string.lbl_confirm_pay_order),
-                mApplicationContext.getString(R.string.accept), mApplicationContext.getString(R.string.cancel),
+        DialogHelper.showConfirmDialog(mHomeView.getActivity(),
+                mHomeView.getActivity().getString(R.string.lbl_confirm_pay_order),
+                mHomeView.getActivity().getString(R.string.accept),
+                mHomeView.getActivity().getString(R.string.cancel),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {

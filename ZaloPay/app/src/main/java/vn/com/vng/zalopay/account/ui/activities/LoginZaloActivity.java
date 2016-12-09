@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.account.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,18 +11,16 @@ import javax.inject.Inject;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
-import vn.com.vng.zalopay.utils.AppVersionUtils;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
+import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.LoginPresenter;
 import vn.com.vng.zalopay.ui.view.ILoginView;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
+import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
@@ -90,7 +87,10 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
         if (message == null) {
             return;
         }
-        showCustomDialog(message.content, message.messageType, getString(R.string.txt_close), null);
+        showCustomDialog(message.content,
+                getString(R.string.txt_close),
+                message.messageType,
+                null);
     }
 
     @Override
@@ -175,14 +175,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void showNetworkError() {
-        DialogManager.showDialog(getActivity(),
-                getString(R.string.txt_warning),
-                getString(R.string.exception_no_connection_try_again),
-                R.drawable.ic_no_internet, new ZPWOnSweetDialogListener() {
-                    @Override
-                    public void onClickDiaLog(int pIndex) {
-                    }
-                }, getString(R.string.txt_close));
+        DialogHelper.showNetworkErrorDialog(getActivity(), null);
     }
 
     private void destroyErrorDialog() {

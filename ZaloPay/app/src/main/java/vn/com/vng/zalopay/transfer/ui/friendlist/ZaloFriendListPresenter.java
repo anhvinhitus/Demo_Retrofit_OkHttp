@@ -24,7 +24,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
+import vn.com.vng.zalopay.utils.DialogHelper;
 
 /**
  * Created by AnhHieu on 10/10/16.
@@ -141,10 +141,10 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
     void showDialogNotUsingApp(ZaloFriend zaloFriend) {
         if (mZaloFriendListView != null) {
             String message = String.format(mContext.getString(R.string.account_not_use_zalopay), zaloFriend.displayName, zaloFriend.displayName);
-            DialogManager.showSweetDialogCustom((Activity) mZaloFriendListView.getContext(),
-                    message, mContext.getString(R.string.txt_close), mContext.getString(R.string.notification),
-                    DialogManager.NORMAL_TYPE, null
-            );
+            DialogHelper.showInfoDialog((Activity) mZaloFriendListView.getContext(),
+                    mContext.getString(R.string.notification),
+                    message,
+                    null);
         }
     }
 

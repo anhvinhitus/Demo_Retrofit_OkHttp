@@ -12,15 +12,18 @@ import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import timber.log.Timber;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.listener.DialogSimpleEventListener;
 import vn.com.vng.zalopay.react.listener.SweetDialogSimpleEventListener;
 import vn.com.vng.zalopay.react.model.DialogType;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -158,7 +161,7 @@ public class Helpers {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                DialogManager.showProcessDialog(activity, null);
+                DialogHelper.showLoading(activity, null);
             }
         });
     }
@@ -167,7 +170,7 @@ public class Helpers {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                DialogManager.closeProcessDialog();
+                DialogHelper.hideLoading();
             }
         });
     }
@@ -186,101 +189,71 @@ public class Helpers {
         });
     }
 
-    private static void showDialogInUIThread(Activity activity, int dialogType,
-                                             String title, String message, ReadableArray btnNames,
+    private static void showDialogInUIThread(Activity activity,
+                                             int dialogType,
+                                             String title,
+                                             String message,
+                                             ReadableArray btnNames,
                                              final Promise promise) {
-        switch (dialogType) {
-            case DialogType.NORMAL_TYPE:
-                if (btnNames.size() > 1) {
-                    DialogManager.showSweetDialogConfirm(activity,
-                            message,
-                            btnNames.getString(1),
-                            btnNames.getString(0),
-                            new ZPWOnEventConfirmDialogListener() {
-                                @Override
-                                public void onCancelEvent() {
-                                    Helpers.promiseResolve(promise, 0);
-                                }
+        if (dialogType == DialogType.NO_INTERNET_TYPE) {
+            DialogHelper.showNetworkErrorDialog(activity, new SweetDialogSimpleEventListener(promise, 0));
+        } else {
+            int sweetAlertType;
+            switch (dialogType) {
+                case DialogType.NORMAL_TYPE:
+                    sweetAlertType = SweetAlertDialog.CUSTOM_IMAGE_TYPE;
+                    break;
 
-                                @Override
-                                public void onOKevent() {
-                                    Helpers.promiseResolve(promise, 1);
-                                }
+                case DialogType.ERROR_TYPE:
+                    sweetAlertType = SweetAlertDialog.ERROR_TYPE;
+                    break;
+
+                case DialogType.SUCCESS_TYPE:
+                    sweetAlertType = SweetAlertDialog.SUCCESS_TYPE;
+                    break;
+
+                case DialogType.WARNING_TYPE:
+                    sweetAlertType = SweetAlertDialog.WARNING_TYPE;
+                    break;
+
+                case DialogType.NOTIFICATION_TYPE:
+                    sweetAlertType = SweetAlertDialog.INFO_TYPE;
+                    break;
+
+                default:
+                    sweetAlertType = SweetAlertDialog.CUSTOM_IMAGE_TYPE;
+            }
+
+            DialogHelper.showCustomDialog(activity,
+                    sweetAlertType,
+                    title,
+                    message,
+                    new ZPWOnSweetDialogListener() {
+                        @Override
+                        public void onClickDiaLog(int i) {
+                            if (promise == null) {
+                                return;
                             }
-                    );
-                } else {
-                    DialogManager.showSweetDialogCustom(activity,
-                            message,
-                            btnNames.getString(0),
-                            title,
-                            SweetAlertDialog.NORMAL_TYPE,
-                            new DialogSimpleEventListener(promise, 0));
-                }
-                break;
-
-            case DialogType.ERROR_TYPE:
-                DialogManager.showSweetDialogCustom(activity,
-                        message,
-                        btnNames.getString(0),
-                        title,
-                        SweetAlertDialog.ERROR_TYPE,
-                        new DialogSimpleEventListener(promise, 0));
-                break;
-
-            case DialogType.SUCCESS_TYPE:
-                DialogManager.showSweetDialogCustom(activity,
-                        message,
-                        btnNames.getString(0),
-                        title,
-                        SweetAlertDialog.SUCCESS_TYPE,
-                        new DialogSimpleEventListener(promise, 0));
-                break;
-
-            case DialogType.WARNING_TYPE:
-                DialogManager.showSweetDialogCustom(activity,
-                        message,
-                        btnNames.getString(0),
-                        title,
-                        SweetAlertDialog.WARNING_TYPE,
-                        new DialogSimpleEventListener(promise, 0));
-                break;
-
-            case DialogType.NO_INTERNET_TYPE:
-                DialogManager.showDialog(activity,
-                        activity.getString(R.string.txt_warning),
-                        activity.getString(R.string.exception_no_connection_try_again),
-                        R.drawable.ic_no_internet,
-                        new SweetDialogSimpleEventListener(promise, 0),
-                        activity.getString(R.string.txt_close));
-                break;
-
-            default:
-                if (btnNames.size() > 1) {
-                    DialogManager.showSweetDialogConfirm(activity,
-                            message,
-                            btnNames.getString(1),
-                            btnNames.getString(0),
-                            new ZPWOnEventConfirmDialogListener() {
-                                @Override
-                                public void onCancelEvent() {
-                                    Helpers.promiseResolve(promise, 0);
-                                }
-
-                                @Override
-                                public void onOKevent() {
-                                    Helpers.promiseResolve(promise, 1);
-                                }
-                            }
-                    );
-                } else {
-                    DialogManager.showSweetDialogCustom(activity,
-                            message,
-                            btnNames.getString(0),
-                            title,
-                            SweetAlertDialog.NORMAL_TYPE,
-                            new DialogSimpleEventListener(promise, 0));
-                }
-                break;
+                            Helpers.promiseResolve(promise, i);
+                        }
+                    },
+                    convert(btnNames));
         }
+    }
+
+    private static String[] convert(ReadableArray btnNames) {
+        if (btnNames == null) {
+            return null;
+        }
+        List<String> buttons = new ArrayList<>();
+        for (int i = 0; i < btnNames.size(); i++) {
+            String btn = btnNames.getString(i);
+            if (!TextUtils.isEmpty(btn)) {
+                buttons.add(btn);
+            }
+        }
+        String[] buttonArr = new String[buttons.size()];
+        buttonArr = buttons.toArray(buttonArr);
+        return buttonArr;
     }
 }

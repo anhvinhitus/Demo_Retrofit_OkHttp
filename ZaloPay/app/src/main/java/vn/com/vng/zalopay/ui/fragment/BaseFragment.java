@@ -25,16 +25,17 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**
  * Created by AnhHieu on 3/24/16.
+ * *
  */
 public abstract class BaseFragment extends Fragment {
     protected abstract void setupFragmentComponent();
@@ -118,56 +119,48 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showNetworkErrorDialog(ZPWOnSweetDialogListener listener) {
-        DialogManager.showDialog(getActivity(),
-                getString(R.string.txt_warning),
-                getString(R.string.exception_no_connection_try_again),
-                R.drawable.ic_no_internet,
-                listener,
-                getString(R.string.txt_close));
+        DialogHelper.showNetworkErrorDialog(getActivity(), listener);
     }
 
-    public void showWarning(String message, ZPWOnEventDialogListener cancelListener) {
-        showWarningDialog(message, getString(R.string.txt_close), cancelListener);
+    public void showWarningDialog(String message,
+                            ZPWOnEventDialogListener cancelListener) {
+        DialogHelper.showWarningDialog(getActivity(), message, cancelListener);
+    }
+
+    public void showWarningDialog(String message,
+                                  String cancelBtnText,
+                                  final ZPWOnEventDialogListener cancelListener) {
+        DialogHelper.showWarningDialog(getActivity(),
+                message,
+                cancelBtnText,
+                cancelListener);
     }
 
     public void showErrorDialog(String message) {
-        DialogManager.showSweetDialogCustom(getActivity(),
-                message,
+        showErrorDialog(message,
                 getString(R.string.txt_close),
-                SweetAlertDialog.ERROR_TYPE,
                 null);
     }
 
     public void showErrorDialog(String message,
                                 String cancelText,
                                 final ZPWOnEventDialogListener cancelListener) {
-        DialogManager.showSweetDialogCustom(getActivity(),
+        DialogHelper.showErrorDialog(getActivity(),
                 message,
                 cancelText,
-                SweetAlertDialog.ERROR_TYPE,
-                cancelListener);
-    }
-
-    public void showWarningDialog(String message,
-                                  String cancelBtnText,
-                                  final ZPWOnEventDialogListener cancelListener) {
-        DialogManager.showSweetDialogCustom(getActivity(),
-                message,
-                cancelBtnText,
-                SweetAlertDialog.WARNING_TYPE,
                 cancelListener);
     }
 
     public void showRetryDialog(String retryMessage,
                                 final ZPWOnEventConfirmDialogListener retryListener) {
-        DialogManager.showSweetDialogRetry(getActivity(), retryMessage, retryListener);
+        DialogHelper.showRetryDialog(getActivity(), retryMessage, retryListener);
     }
 
     public void showConfirmDialog(String pMessage,
                                   String pOKButton,
                                   String pCancelButton,
                                   final ZPWOnEventConfirmDialogListener callback) {
-        DialogManager.showSweetDialogConfirm(getActivity(),
+        DialogHelper.showConfirmDialog(getActivity(),
                 pMessage,
                 pOKButton,
                 pCancelButton,
@@ -175,8 +168,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showSuccessDialog(String message, ZPWOnEventDialogListener listener) {
-        DialogManager.showSweetDialogCustom(getActivity(), message, getString(R.string.txt_close),
-                DialogManager.NORMAL_TYPE, listener);
+        DialogHelper.showSuccessDialog(getActivity(), message, listener);
     }
 
     public UserComponent getUserComponent() {
