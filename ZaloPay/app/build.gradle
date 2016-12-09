@@ -402,8 +402,8 @@ dependencies {
     compile(libs.react_native) {
         exclude module: 'bolts-android'
     }
-    compile('com.zalo:zalosdk:2.1.0612')
     compile(name: 'WALLET-release', ext: 'aar')
+    compile(name: 'zdk-v2.1.1106', ext: 'aar')
 //    compile(name: 'soundtranscoder-release', ext: 'aar')
 
     debugCompile project(':zalopay.debug')
