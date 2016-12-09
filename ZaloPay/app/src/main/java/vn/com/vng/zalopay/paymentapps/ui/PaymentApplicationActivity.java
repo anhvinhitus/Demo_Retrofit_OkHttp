@@ -18,7 +18,7 @@ import com.facebook.react.shell.MainReactPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.zalopay.apploader.BuildConfig;
+import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactBasedActivity;
 import com.zalopay.apploader.ReactNativeHostable;
@@ -42,6 +42,7 @@ import javax.inject.Named;
 import cl.json.RNSharePackage;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
@@ -249,6 +250,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new RNSharePackage(),
                 new GoogleAnalyticsBridgePackage(),
                 new LinearGradientPackage(),
+                new ReactNativePermissionsPackage(),
                 new ReactIAPPackage(paymentService,
                         mUser, appId,
                         mNetworkServiceWithRetry,
