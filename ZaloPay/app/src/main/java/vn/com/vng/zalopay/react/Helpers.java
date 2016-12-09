@@ -244,6 +244,7 @@ public class Helpers {
                         SweetAlertDialog.WARNING_TYPE,
                         new DialogSimpleEventListener(promise, 0));
                 break;
+
             case DialogType.NO_INTERNET_TYPE:
                 DialogManager.showDialog(activity,
                         activity.getString(R.string.txt_warning),
@@ -251,6 +252,8 @@ public class Helpers {
                         R.drawable.ic_no_internet,
                         new SweetDialogSimpleEventListener(promise, 0),
                         activity.getString(R.string.txt_close));
+                break;
+
             default:
                 if (btnNames.size() > 1) {
                     DialogManager.showSweetDialogConfirm(activity,
