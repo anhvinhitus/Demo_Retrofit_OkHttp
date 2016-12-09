@@ -37,8 +37,6 @@ import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.banner.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
-import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
@@ -52,6 +50,8 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
+import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.Constants;
+import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /**
  * Created by AnhHieu on 4/11/16.
@@ -176,8 +176,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_showshow) {
-            navigator.startPaymentApplicationActivity(getContext(),
-                    PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW));
+            presenter.startPaymentApp(getAppResource(Constants.SHOW_SHOW));
             return true;
         }
 
