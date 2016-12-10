@@ -75,10 +75,11 @@ public class PaymentWrapper {
     }
 
     public void payWithToken(Activity activity, long appId, String transactionToken) {
+        Timber.d("start payWithToken [%s-%s]", appId, transactionToken);
         mActivity = activity;
         Subscription subscription = zaloPayRepository.getOrder(appId, transactionToken)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+//                .observeOn(Schedulers.io())
                 .subscribe(new GetOrderSubscriber());
         mCompositeSubscription.add(subscription);
     }
@@ -214,7 +215,7 @@ public class PaymentWrapper {
         mActivity = null;
         clearPendingOrder();
         if (mCompositeSubscription != null) {
-            mCompositeSubscription.unsubscribe();
+            mCompositeSubscription.clear();
         }
     }
 
