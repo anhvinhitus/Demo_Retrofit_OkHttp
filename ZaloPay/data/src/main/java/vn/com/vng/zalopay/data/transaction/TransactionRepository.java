@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -179,7 +180,26 @@ public class TransactionRepository implements TransactionStore.Repository {
                         subscriber.onCompleted();
                     }
                 })
-                .subscribe(subscriber::onNext);
+                .subscribe(new DefaultSubscriber<List<TransHistoryEntity>>() {
+                    @Override
+                    public void onNext(List<TransHistoryEntity> entities) {
+                        if (subscriber.isUnsubscribed()) {
+                            Timber.i("fetch transaction is UnSubscribed");
+                            return;
+                        }
+                        subscriber.onNext(entities);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (subscriber.isUnsubscribed()) {
+                            Timber.i(e, "fetch transaction is UnSubscribed");
+                            return;
+                        }
+
+                        subscriber.onError(e);
+                    }
+                });
     }
 
     private long getNextTimestamp(int sortOrder, int statusType) {
