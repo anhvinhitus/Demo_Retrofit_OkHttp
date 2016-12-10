@@ -124,6 +124,10 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
             mLaunchOptions = savedInstanceState.getBundle("launchOptions");
         }
 
+        if (mLaunchOptions == null) {
+            mLaunchOptions = new Bundle();
+        }
+
         if (appResource != null && appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
             mLaunchOptions.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
         }
@@ -363,4 +367,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
+
 }
