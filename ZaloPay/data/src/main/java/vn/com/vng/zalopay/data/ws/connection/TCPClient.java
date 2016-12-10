@@ -109,7 +109,7 @@ class TCPClient implements SocketClient {
             return;
         }
 
-        Timber.d("QUEUE: send message");
+//        Timber.d("QUEUE: send message");
         postWriteData(frame);
     }
 

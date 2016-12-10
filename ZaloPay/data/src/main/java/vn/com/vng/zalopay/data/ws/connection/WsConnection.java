@@ -323,14 +323,14 @@ public class WsConnection extends Connection {
 
         @Override
         public void onMessage(byte[] data) {
-            Timber.v("onReceived: %s bytes", data.length);
+//            Timber.v("onReceived: %s bytes", data.length);
             Event message = parser.parserMessage(data);
             if (message == null) {
                 return;
             }
 
             ServerMessageType messageType = ServerMessageType.fromValue(message.msgType);
-            Timber.v("message.msgType %s", messageType);
+//            Timber.v("message.msgType %s", messageType);
             boolean needFeedback = true;
 
             if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
@@ -423,15 +423,15 @@ public class WsConnection extends Connection {
     }
 
     private void ensureAuthenticationSuccess() {
-        Timber.d("ensureAuthenticationSuccess start, state=[%s] isAuthenSuccess=[%s]", mState, mIsAuthenSuccess);
+//        Timber.d("ensureAuthenticationSuccess start, state=[%s] isAuthenSuccess=[%s]", mState, mIsAuthenSuccess);
         if (mState != State.Connected) {
             return;
         }
         if (!mIsAuthenSuccess) {
-            Timber.w("ensureAuthenticationSuccess, state is connected but socket isn't authenticated");
+            Timber.w("ConnectionState is connected but socket isn't authenticated");
             sendAuthentication();
         } else {
-            Timber.d("ensureAuthenticationSuccess, state is connected");
+//            Timber.d("ensureAuthenticationSuccess, state is connected");
         }
     }
 

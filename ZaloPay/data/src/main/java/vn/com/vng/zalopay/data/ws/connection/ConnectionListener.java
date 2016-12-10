@@ -27,7 +27,7 @@ class ConnectionListener implements SocketChannelConnection.ConnectionListenable
     public void onReceived(byte[] data) {
         ByteBuffer buffer = ByteBuffer.wrap(data);
         int messageLength = buffer.getInt();
-        Timber.d("Message length: %d", messageLength);
+//        Timber.d("Message length: %d", messageLength);
         if (messageLength > 20000) {
             Timber.e("Wrong message length: %s", messageLength);
             return;
@@ -35,7 +35,7 @@ class ConnectionListener implements SocketChannelConnection.ConnectionListenable
         if (messageLength > 0) {
             byte[] dataBuffer = new byte[messageLength];
             buffer.get(dataBuffer);
-            Timber.d("Read %s bytes as message body", messageLength);
+//            Timber.d("Read %s bytes as message body", messageLength);
             if (mTcpClient.get() != null) {
                 mTcpClient.get().postReceivedDataEvent(dataBuffer);
             }
