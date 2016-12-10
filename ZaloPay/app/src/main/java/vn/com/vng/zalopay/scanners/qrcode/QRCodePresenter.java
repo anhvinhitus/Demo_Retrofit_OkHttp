@@ -53,6 +53,7 @@ import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -420,7 +421,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
             if ("token".equalsIgnoreCase(param)) {
                 ZPAnalytics.trackEvent(ZPEvents.SCANQR_NOORDER);
-                mView.resumeScanner();
+                ensureResumeScannerInUIThread();
             }
         }
 
@@ -432,7 +433,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
             super.onResponseError(paymentError);
             hideLoadingView();
-            mView.resumeScanner();
+            ensureResumeScannerInUIThread();
         }
 
         @Override
@@ -455,7 +456,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         @Override
         public void onAppError(String msg) {
             super.onAppError(msg);
-            mView.resumeScanner();
+            ensureResumeScannerInUIThread();
         }
 
         @Override
@@ -477,5 +478,14 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             Timber.d("startUpdateProfileLevel");
             mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
         }
+    }
+
+    private void ensureResumeScannerInUIThread() {
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                mView.resumeScanner();
+            }
+        });
     }
 }
