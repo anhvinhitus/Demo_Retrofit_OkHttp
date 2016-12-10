@@ -100,7 +100,7 @@ class SocketChannelConnection {
     }
 
     void run() {
-        Timber.d("Waiting for data");
+//        Timber.d("Waiting for data");
         try {
             while (!Thread.interrupted()) {
                 processChangeRequests();
@@ -138,23 +138,23 @@ class SocketChannelConnection {
             // again the next time around.
             keys.remove();
 
-            Timber.d("selector is fired");
+//            Timber.d("selector is fired");
             if (!key.isValid()) {
                 continue;
             }
 
             if (key.isConnectable()) {
-                Timber.d("OP_CONNECT is fired");
+//                Timber.d("OP_CONNECT is fired");
                 if (!this.handleConnect(key)) {
                     return false;
                 }
             } else if (key.isReadable()) {
-                Timber.d("OP_READ is fired");
+//                Timber.d("OP_READ is fired");
                 if (!this.read(key)) {
                     return false;
                 }
             } else if (key.isWritable()) {
-                Timber.d("OP_WRITE is fired");
+//                Timber.d("OP_WRITE is fired");
                 this.handleWrite(key);
             }
         }
@@ -183,10 +183,10 @@ class SocketChannelConnection {
             while (!mWriteQueue.isEmpty()) {
                 ByteBuffer buf = mWriteQueue.get(0);
                 int byteWritten = channel.write(buf);
-                Timber.d("Byte written: %s", byteWritten);
+//                Timber.d("Byte written: %s", byteWritten);
                 if (buf.remaining() > 0) {
                     // ... or the socket's buffer fills up
-                    Timber.d("Remaining %s byte to be written again", buf.remaining());
+//                    Timber.d("Remaining %s byte to be written again", buf.remaining());
                     break;
                 }
                 mWriteQueue.remove(0);
@@ -208,7 +208,7 @@ class SocketChannelConnection {
             // Finish the connection. If the connection operation failed
             // this will raise an IOException.
             if (channel.finishConnect()) {
-                Timber.d("connection made");
+//                Timber.d("connection made");
                 mConnectionState = ConnectionState.CONNECTED;
                 mListenable.onConnected();
                 key.interestOps(SelectionKey.OP_READ);
@@ -266,16 +266,16 @@ class SocketChannelConnection {
             mReadBuffer.get(buffer, 0, remaining);
             outputStream.write(buffer, 0, remaining);
 
-            Timber.v("Read %s byte of data. Read buffer: %s %s", numRead, mReadBuffer.position(), mReadBuffer.limit());
+//            Timber.v("Read %s byte of data. Read buffer: %s %s", numRead, mReadBuffer.position(), mReadBuffer.limit());
             if (numRead < mReadBuffer.capacity()) {
-                Timber.v("Finish reading data");
+//                Timber.v("Finish reading data");
                 break;
             }
         }
 
         outputStream.flush();
         byte[] data = outputData.toByteArray();
-        Timber.d("Read %s bytes", data.length);
+//        Timber.d("Read %s bytes", data.length);
 
         outputStream.close();
         outputData.close();
@@ -319,11 +319,11 @@ class SocketChannelConnection {
 
     void write(byte[] frame) {
         if (frame == null || frame.length == 0) {
-            Timber.d("Empty data. Skipping");
+//            Timber.d("Empty data. Skipping");
             return;
         }
 
-        Timber.d("QUEUE: %s bytes to be sent", frame.length);
+//        Timber.d("QUEUE: %s bytes to be sent", frame.length);
         synchronized (mChangeRequests) {
             // Indicate we want the interest ops set changed
             mChangeRequests.add(new ChangeRequest(ChangeRequest.CHANGEOPS, SelectionKey.OP_WRITE));
