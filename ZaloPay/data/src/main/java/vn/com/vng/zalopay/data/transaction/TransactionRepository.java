@@ -180,26 +180,7 @@ public class TransactionRepository implements TransactionStore.Repository {
                         subscriber.onCompleted();
                     }
                 })
-                .subscribe(new DefaultSubscriber<List<TransHistoryEntity>>() {
-                    @Override
-                    public void onNext(List<TransHistoryEntity> entities) {
-                        if (subscriber.isUnsubscribed()) {
-                            Timber.i("fetch transaction is UnSubscribed");
-                            return;
-                        }
-                        subscriber.onNext(entities);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (subscriber.isUnsubscribed()) {
-                            Timber.i(e, "fetch transaction is UnSubscribed");
-                            return;
-                        }
-
-                        subscriber.onError(e);
-                    }
-                });
+                .subscribe(subscriber::onNext, subscriber::onError);
     }
 
     private long getNextTimestamp(int sortOrder, int statusType) {
