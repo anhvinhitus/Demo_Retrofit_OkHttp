@@ -27,7 +27,7 @@ public class LocalResourceFactory {
         return getDataManifest(Constants.MANIFEST_RESOURCE_INTERNAL_VERSION);
     }
 
-    public String getExternalResourceVersion(int appId) {
+    public String getExternalResourceVersion(long appId) {
         String key = String.format(Locale.getDefault(), "%s_%d", Constants.MANIFEST_RESOURCE_EXTERNAL_VERSION, appId);
         return getDataManifest(key);
     }
@@ -36,7 +36,7 @@ public class LocalResourceFactory {
         insertDataManifest(Constants.MANIFEST_RESOURCE_INTERNAL_VERSION, version);
     }
 
-    public void setExternalResourceVersion(int appId, String version) {
+    public void setExternalResourceVersion(long appId, String version) {
         String key = String.format(Locale.getDefault(), "%s_%d", Constants.MANIFEST_RESOURCE_EXTERNAL_VERSION, appId);
         insertDataManifest(key, version);
     }

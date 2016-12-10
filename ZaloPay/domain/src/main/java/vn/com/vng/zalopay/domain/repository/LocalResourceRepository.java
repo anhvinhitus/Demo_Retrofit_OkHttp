@@ -6,7 +6,7 @@ package vn.com.vng.zalopay.domain.repository;
  */
 public interface LocalResourceRepository {
     String getInternalResourceVersion();
-    String getExternalResourceVersion(int appId);
+    String getExternalResourceVersion(long appId);
     void setInternalResourceVersion(String version);
-    void setExternalResourceVersion(int appId, String version);
+    void setExternalResourceVersion(long appId, String version);
 }

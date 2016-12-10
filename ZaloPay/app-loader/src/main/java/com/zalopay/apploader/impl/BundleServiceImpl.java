@@ -32,19 +32,17 @@ import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 public class BundleServiceImpl implements BundleService {
 
 
-    public static final int ZALOPAY_INTERNAL_APPLICATION_ID = 1;
+    public static final long ZALOPAY_INTERNAL_APPLICATION_ID = 1;
 
     private Application mApplication;
     //    private String mCurrentInternalBundleFolder;
     private final LocalResourceRepository mLocalResourceRepository;
-    private final String mBundleRootFolder;
     private Gson mGson;
 
     public BundleServiceImpl(Application application, LocalResourceRepository localResourceRepository, Gson gson, String rootbundle) {
         this.mApplication = application;
         this.mLocalResourceRepository = localResourceRepository;
         this.mGson = gson;
-        this.mBundleRootFolder = rootbundle;
     }
 
     @Override
@@ -127,7 +125,7 @@ public class BundleServiceImpl implements BundleService {
     private void ensurePaymentAppFolder(String destination) {
         try {
             File destinationFolder = new File(destination);
-            destinationFolder.mkdirs();
+            boolean b = destinationFolder.mkdirs();
         } catch (Exception e) {
             Timber.w(e, "exception while ensuring payment app folder %s", destination);
         }

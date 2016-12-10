@@ -19,7 +19,7 @@ public class LocalResourceRepositoryImpl implements LocalResourceRepository {
     }
 
     @Override
-    public String getExternalResourceVersion(int appId) {
+    public String getExternalResourceVersion(long appId) {
         return mFactory.getExternalResourceVersion(appId);
     }
 
@@ -29,7 +29,7 @@ public class LocalResourceRepositoryImpl implements LocalResourceRepository {
     }
 
     @Override
-    public void setExternalResourceVersion(int appId, String version) {
+    public void setExternalResourceVersion(long appId, String version) {
         mFactory.setExternalResourceVersion(appId, version);
     }
 }
