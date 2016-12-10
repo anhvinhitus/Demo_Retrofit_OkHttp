@@ -330,7 +330,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         if (TextUtils.isEmpty(error)) {
             return;
         }
-        showErrorDialog(error);
+        super.showErrorDialog(error);
     }
 
     @Override
