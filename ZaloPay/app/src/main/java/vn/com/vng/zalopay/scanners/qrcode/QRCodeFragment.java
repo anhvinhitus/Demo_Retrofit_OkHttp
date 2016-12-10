@@ -72,6 +72,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Override
     protected void handleResult(String result) {
+        Timber.d("Scan QR: %s", result);
         try {
             vibrate();
         } catch (Exception ex) {

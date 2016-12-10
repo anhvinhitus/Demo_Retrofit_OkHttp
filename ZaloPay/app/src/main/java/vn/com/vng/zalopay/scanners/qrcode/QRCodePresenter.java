@@ -130,7 +130,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
     }
 
     private void pay(String jsonString, boolean fromPhotoLibrary) {
-
+        Timber.d("start to process paying QR code: %s, from lib: %s", jsonString, fromPhotoLibrary);
         if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
             if (mView != null) {
                 mView.showNetworkErrorDialog(new ZPWOnSweetDialogListener() {
@@ -144,9 +144,11 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         }
 
         if (TextUtils.isEmpty(jsonString)) {
+            Timber.i("Empty QR code");
             resumeScanningAfterWrongQR();
             return;
         }
+
         Timber.d("about to process payment with order: %s", jsonString);
         try {
             showLoadingView();
@@ -257,8 +259,11 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
     }
 
     private boolean zpTransaction(JSONObject jsonObject) throws IllegalArgumentException {
+        Timber.d("Trying with zptranstoken");
         long appId = jsonObject.optInt(Constants.APPID);
+        Timber.d("AppID: %d", appId);
         String transactionToken = jsonObject.optString(Constants.ZPTRANSTOKEN);
+        Timber.d("Transtoken: %s", transactionToken);
         if (appId < 0 || TextUtils.isEmpty(transactionToken)) {
             return false;
         }
