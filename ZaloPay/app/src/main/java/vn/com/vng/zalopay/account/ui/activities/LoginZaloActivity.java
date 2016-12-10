@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -83,14 +82,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public void onResume() {
         super.onResume();
         loginPresenter.resume();
-        GlobalEventHandlingService.Message message = getAppComponent().globalEventService().popMessageAtLogin();
-        if (message == null) {
-            return;
-        }
-        showCustomDialog(message.content,
-                getString(R.string.txt_close),
-                message.messageType,
-                null);
     }
 
     @Override

@@ -14,7 +14,6 @@ import vn.com.vng.zalopay.domain.repository.PassportRepository;
 
 /**
  * Created by AnhHieu on 3/26/16.
- *
  */
 
 @Singleton
@@ -38,8 +37,7 @@ public class PassportRepositoryImpl implements PassportRepository {
     @Override
     public Observable<User> login(final long zuid, String zAuthCode) {
         return passportFactory.login(zuid, zAuthCode)
-                .map(response -> saveUser(response))
-                ;
+                .map(this::saveUser);
     }
 
     @Override
@@ -50,8 +48,7 @@ public class PassportRepositoryImpl implements PassportRepository {
     @Override
     public Observable<User> verifyCode(String code) {
         return passportFactory.verifyInvitationCode(code)
-                .map(response -> saveUser(response))
-                ;
+                .map(this::saveUser);
     }
 
     private User transformWithZaloInfo(LoginResponse response) {

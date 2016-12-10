@@ -38,6 +38,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -58,19 +60,21 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     private UserConfig mUserConfig;
     private PassportRepository mPassportRepository;
     private ApplicationSession mApplicationSession;
-
+    private GlobalEventHandlingService mGlobalEventService;
     private Uri mData;
 
     @Inject
     LoginPresenter(Context applicationContext,
                    UserConfig userConfig,
                    PassportRepository passportRepository,
-                   ApplicationSession applicationSession) {
+                   ApplicationSession applicationSession,
+                   GlobalEventHandlingService globalEventHandlingService) {
 
         this.mApplicationContext = applicationContext;
         this.mUserConfig = userConfig;
         this.mPassportRepository = passportRepository;
         this.mApplicationSession = applicationSession;
+        this.mGlobalEventService = globalEventHandlingService;
     }
 
     @Override
@@ -88,6 +92,28 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     @Override
     public void resume() {
+
+        Timber.d("resume has current user [%s]", mUserConfig.hasCurrentUser());
+        UserComponent userComponent = ((AndroidApplication) mApplicationContext).getUserComponent();
+        // Trường hợp user login ở merchant app sau đó quay lại zalopay
+        // TODO: 12/10/16 kiểm tra lại trường hợp user đang login (chưa kết thúc quá trình đã qua zalopay)
+        if (mUserConfig.hasCurrentUser() && userComponent != null) {
+            Timber.d("go to home screen ignore login screen");
+            gotoHomeScreen();
+            return;
+        }
+
+        GlobalEventHandlingService.Message message = mGlobalEventService.popMessageAtLogin();
+        if (message == null) {
+            return;
+        }
+
+        if (mView != null) {
+            mView.showCustomDialog(message.content,
+                    mApplicationContext.getString(R.string.txt_close),
+                    message.messageType,
+                    null);
+        }
     }
 
     @Override
@@ -195,7 +221,9 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     private void gotoHomeScreen() {
-        mView.gotoMainActivity();
+        if (mView != null) {
+            mView.gotoMainActivity();
+        }
     }
 
     private void onLoginSuccess(User user) {
