@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.withdraw.ui.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.text.TextUtils;
 
 import javax.inject.Inject;
 
@@ -28,12 +27,14 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 
 /**
  * Created by longlv on 11/08/2016.
+ * *
  */
 public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<IWithdrawView> {
     private final int WITHDRAW_APPID = 2;
@@ -167,9 +168,11 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
-        PaymentResponseListener() {
-            super(mView);
+        @Override
+        protected ILoadDataView getView() {
+            return mView;
         }
+
         @Override
         public void onResponseError(PaymentError paymentError) {
             if (mView == null) {

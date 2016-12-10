@@ -24,10 +24,10 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 
@@ -171,8 +171,9 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     }
 
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
-        PaymentResponseListener() {
-            super(mView);
+        @Override
+        protected ILoadDataView getView() {
+            return mView;
         }
 
         @Override

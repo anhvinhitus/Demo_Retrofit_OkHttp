@@ -44,6 +44,7 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -590,8 +591,10 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
-        PaymentResponseListener() {
-            super(mView);
+
+        @Override
+        protected ILoadDataView getView() {
+            return mView;
         }
 
         @Override

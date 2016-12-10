@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.service;
 
 import android.text.TextUtils;
 
-import java.lang.ref.WeakReference;
-
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -17,22 +15,20 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
  * Default response handler
  */
 
-public class DefaultPaymentResponseListener implements PaymentWrapper.IResponseListener {
-    private final WeakReference<ILoadDataView> mDataView;
+public abstract class DefaultPaymentResponseListener implements PaymentWrapper.IResponseListener {
+    protected abstract ILoadDataView getView();
 
-    public DefaultPaymentResponseListener(ILoadDataView dataView) {
-        mDataView = new WeakReference<>(dataView);
+    public DefaultPaymentResponseListener() {
     }
 
     @Override
     public void onParameterError(String param) {
         Timber.d("SDK Response Parameter Error: [%s]", param);
-
-        if (mDataView.get() == null) {
+        ILoadDataView view = getView();
+        if (view == null) {
             return;
         }
 
-        ILoadDataView view = mDataView.get();
         if ("order".equalsIgnoreCase(param)) {
             view.showError(view.getContext().getString(R.string.order_invalid));
         } else if ("uid".equalsIgnoreCase(param)) {
@@ -49,11 +45,11 @@ public class DefaultPaymentResponseListener implements PaymentWrapper.IResponseL
     public void onResponseError(PaymentError status) {
         Timber.d("SDK Response Error: [%s]", status);
 
-        if (mDataView.get() == null) {
+        ILoadDataView view = getView();
+        if (view == null) {
             return;
         }
 
-        ILoadDataView view = mDataView.get();
         if (status == PaymentError.ERR_CODE_INTERNET) {
             view.hideLoading();
             view.showNetworkErrorDialog();
@@ -78,11 +74,11 @@ public class DefaultPaymentResponseListener implements PaymentWrapper.IResponseL
     public void onAppError(String msg) {
         Timber.d("SDK Response App Error: [%s]", msg);
 
-        if (mDataView.get() == null) {
+        ILoadDataView view = getView();
+        if (view == null) {
             return;
         }
 
-        ILoadDataView view = mDataView.get();
         String message = msg;
         if (TextUtils.isEmpty(msg) && view.getContext() != null) {
             message = view.getContext().getString(R.string.exception_generic);
@@ -100,4 +96,5 @@ public class DefaultPaymentResponseListener implements PaymentWrapper.IResponseL
     public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
 
     }
+
 }

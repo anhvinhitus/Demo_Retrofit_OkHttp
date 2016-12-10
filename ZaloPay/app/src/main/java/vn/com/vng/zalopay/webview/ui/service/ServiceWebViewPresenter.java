@@ -11,20 +11,17 @@ import java.net.URLDecoder;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
@@ -33,6 +30,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
  * Created by longlv on 14/09/2016.
+ * *
  */
 public class ServiceWebViewPresenter extends BaseUserPresenter implements IPresenter<IWebView> {
 
@@ -188,8 +186,9 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
     }
 
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
-        PaymentResponseListener() {
-            super(mView);
+        @Override
+        protected ILoadDataView getView() {
+            return mView;
         }
 
         @Override

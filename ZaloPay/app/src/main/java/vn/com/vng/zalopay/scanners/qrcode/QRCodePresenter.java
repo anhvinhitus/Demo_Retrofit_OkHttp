@@ -51,6 +51,7 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -398,8 +399,10 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
     }
 
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
-        PaymentResponseListener() {
-            super(mView);
+
+        @Override
+        protected ILoadDataView getView() {
+            return mView;
         }
 
         @Override
