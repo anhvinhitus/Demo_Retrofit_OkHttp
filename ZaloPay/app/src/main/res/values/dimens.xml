@@ -5,6 +5,7 @@
     <dimen name="textsize.group.title">12sp</dimen>
 
     <dimen name="button.height">50dp</dimen>
+    <dimen name="banner_height">90dp</dimen>
 
     <item name="intro.app.top.weight" format="float" type="dimen">0.30</item>
     <item name="intro.app.bottom.weight" format="float" type="dimen">0.70</item>

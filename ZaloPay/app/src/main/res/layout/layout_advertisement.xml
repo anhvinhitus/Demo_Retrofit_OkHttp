@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/layoutBannerFullScreen"
         android:layout_width="match_parent"
-        android:layout_height="101dp"
-        android:visibility="gone"
-        android:background="@color/white">
+        android:layout_height="@dimen/banner_height"
+        android:background="@color/white"
+        android:visibility="gone">
 
         <vn.com.vng.zalopay.ui.widget.SmoothViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
-        <com.ogaclejapan.smarttablayout.SmartTabLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.ogaclejapan.smarttablayout.SmartTabLayout
             android:id="@+id/indicator"
             android:layout_width="wrap_content"
             android:layout_height="16dp"
@@ -30,14 +33,13 @@
             app:stl_indicatorInterpolation="linear"
             app:stl_indicatorThickness="6dp"
             app:stl_underlineColor="@color/transparent"
-            app:stl_underlineThickness="0dp" />
+            app:stl_underlineThickness="0dp"/>
     </FrameLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginBottom="@dimen/app_padding"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 
     <TextView
         android:id="@+id/tvAdsSubContent"
@@ -45,13 +47,13 @@
         android:layout_width="match_parent"
         android:layout_height="34dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginBottom="@dimen/app_padding"
+        android:layout_marginTop="@dimen/app_padding"
         android:background="@color/white"
         android:drawableLeft="@drawable/ic_thongbao"
         android:drawablePadding="10dp"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
         android:textSize="12sp"
-        tools:text="Mobi khuyen mai 50%...." />
+        tools:text="Mobi khuyen mai 50%...."/>
 
-</merge>
+</LinearLayout>
