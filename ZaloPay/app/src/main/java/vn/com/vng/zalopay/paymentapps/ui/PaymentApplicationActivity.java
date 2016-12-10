@@ -55,6 +55,7 @@ import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
@@ -130,6 +131,13 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
         if (appResource != null && appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
             mLaunchOptions.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
+        }
+
+
+        if (appResource != null && appResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
+            mLaunchOptions.putString("url", BuildConfig.APP22_URL);
+            mLaunchOptions.putString("uid", mUser.zaloPayId);
+            mLaunchOptions.putString("accesstoken", mUser.accesstoken);
         }
 
         Timber.d("Starting module: %s", mComponentName);

@@ -259,10 +259,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     public void request(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("request: baseUrl [%s] String content [%s]", baseUrl, content);
 
-
-        ReadableMap readableMap = shouldPostAuthKey(content);
-
-        Subscription subscription = mNetworkServiceWithoutRetry.request(baseUrl, readableMap)
+        Subscription subscription = mNetworkServiceWithoutRetry.request(baseUrl, content)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         compositeSubscription.add(subscription);
@@ -272,35 +269,10 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     public void requestWithRetry(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("request: baseUrl [%s] String content [%s]", baseUrl, content);
 
-
-        ReadableMap readableMap = shouldPostAuthKey(content);
-
-        Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, readableMap)
+        Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, content)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         compositeSubscription.add(subscription);
-    }
-
-    private ReadableMap shouldPostAuthKey(ReadableMap content) {
-
-        if (mAppId == PaymentAppConfig.Constants.SHOW_SHOW) {
-            WritableMap writableMap = Arguments.createMap();
-            if (content != null) {
-                writableMap.merge(content);
-            }
-            WritableMap queryMap = Arguments.createMap();
-            if (content.hasKey("query")) {
-                queryMap.merge(content.getMap("query"));
-            }
-
-            queryMap.putString("accesstoken", mUser.accesstoken);
-            queryMap.putString("userid", mUser.zaloPayId);
-
-            writableMap.putMap("query", queryMap);
-            return writableMap;
-        }
-
-        return content;
     }
 
     @Override

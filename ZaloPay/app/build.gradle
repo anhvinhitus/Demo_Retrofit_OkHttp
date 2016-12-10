@@ -150,6 +150,7 @@ android {
             buildConfigField 'int', 'WS_PORT', '8414'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
             buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"https://comerchant.zalopay.vn/api/"'
         }
 
         sandbox {
@@ -162,6 +163,7 @@ android {
             buildConfigField 'int', 'WS_PORT', '8404'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
         }
 
         staging {
@@ -174,6 +176,7 @@ android {
             buildConfigField 'int', 'WS_PORT', '8424'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
             buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"http://stgcomerchant.zalopay.vn/api/"'
         }
 
         internalProduction {
@@ -186,6 +189,7 @@ android {
             buildConfigField 'int', 'WS_PORT', '8414'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
             buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"https://comerchant.zalopay.vn/api/"'
         }
 
         internalSandbox {
@@ -198,6 +202,7 @@ android {
             buildConfigField 'int', 'WS_PORT', '8404'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
         }
 
         internalStaging {
@@ -210,6 +215,7 @@ android {
             buildConfigField 'int', 'WS_PORT', '8424'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
             buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"http://stgcomerchant.zalopay.vn/api/"'
         }
 
         iapSandbox {
@@ -223,6 +229,7 @@ android {
             buildConfigField 'int', 'WS_PORT', '8404'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
         }
 
         iapProduction {
@@ -236,6 +243,7 @@ android {
             buildConfigField 'int', 'WS_PORT', '8414'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://upload.zalopay.com.vn/"'
             buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"https://comerchant.zalopay.vn/api/"'
         }
 
         iapStaging {
@@ -249,6 +257,7 @@ android {
             buildConfigField 'int', 'WS_PORT', '8424'
             buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"http://stgupload.zalopay.com.vn/"'
             buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"http://stgcomerchant.zalopay.vn/api/"'
         }
     }
 
