@@ -79,7 +79,7 @@ public class PaymentWrapper {
         mActivity = activity;
         Subscription subscription = zaloPayRepository.getOrder(appId, transactionToken)
                 .subscribeOn(Schedulers.io())
-//                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetOrderSubscriber());
         mCompositeSubscription.add(subscription);
     }
