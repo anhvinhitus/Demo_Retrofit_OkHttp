@@ -62,7 +62,7 @@ public class FriendRepository implements FriendStore.Repository {
         Timber.d("fetchZaloFriends");
         return mZaloRequestService.fetchFriendList()
                 .doOnNext(entities -> mLocalStorage.put(entities))
-                .doOnCompleted(() -> updateTimeStamp())
+                .doOnCompleted(this::updateTimeStamp)
                 .map(entities -> Boolean.TRUE);
     }
 
@@ -137,7 +137,7 @@ public class FriendRepository implements FriendStore.Repository {
     @Override
     public Observable<List<ZaloFriend>> getZaloFriendList() {
         return ObservableHelper.makeObservable(() -> mLocalStorage.get())
-                .map(entities -> transform(entities));
+                .map(this::transform);
     }
 
     private ZaloFriend transform(ZaloFriendEntity entity) {
@@ -205,7 +205,7 @@ public class FriendRepository implements FriendStore.Repository {
                     }
                 })
                 .doOnTerminate(() -> mPreviousZaloId = null)
-                .subscribe(subscriber::onNext);
+                .subscribe(subscriber::onNext, subscriber::onError);
     }
 
     private String transformZpId(List<ZaloFriendEntity> list) {

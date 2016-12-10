@@ -252,7 +252,7 @@
 
     <style name="RippleBackground">
         <item name="rb_color">#40FFFFFF</item>
-        <item name="rb_duration">1500</item>
+        <item name="rb_duration">4000</item>
         <item name="rb_radius">40dp</item>
         <item name="rb_rippleAmount">5</item>
         <item name="rb_scale">5</item>
