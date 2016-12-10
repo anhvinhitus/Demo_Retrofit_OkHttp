@@ -5,7 +5,13 @@ import android.content.Context;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
@@ -69,6 +75,10 @@ public class NetworkModule {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
         gsonBuilder.registerTypeAdapter(NotificationEmbedData.class, new NotificationMessageDeserializer());
+        gsonBuilder.registerTypeAdapter(long.class, NumberTypeAdapter);
+        gsonBuilder.registerTypeAdapter(Long.class, NumberTypeAdapter);
+        gsonBuilder.registerTypeAdapter(double.class, NumberTypeAdapter);
+        gsonBuilder.registerTypeAdapter(Double.class, NumberTypeAdapter);
         return gsonBuilder.create();
     }
 
@@ -190,4 +200,49 @@ public class NetworkModule {
                 .client(okHttpClient)
                 .build();
     }
+
+    private static TypeAdapter<Number> NumberTypeAdapter = new TypeAdapter<Number>() {
+
+        /**
+         * Writes one JSON value (an array, object, string, number, boolean or null)
+         * for {@code value}.
+         *
+         * @param out
+         * @param value the Java object to write. May be null.
+         */
+        @Override
+        public void write(JsonWriter out, Number value) throws IOException {
+            out.value(value);
+        }
+
+        /**
+         * Reads one JSON value (an array, object, string, number, boolean or null)
+         * and converts it to a Java object. Returns the converted object.
+         *
+         * @param in
+         * @return the converted Java object. May be null.
+         */
+        @Override
+        public Number read(JsonReader in) throws IOException {
+            if (in.peek() == JsonToken.NULL) {
+                in.nextNull();
+                return null;
+            }
+            String result = in.nextString();
+            if ("".equals(result)) {
+                return null;
+            }
+            try {
+                return Long.parseLong(result);
+            } catch (NumberFormatException e) {
+                // empty catch exception to try another parser Double
+            }
+
+            try {
+                return Double.parseDouble(result);
+            } catch (NumberFormatException e) {
+                throw new JsonSyntaxException(e);
+            }
+        }
+    };
 }
