@@ -209,6 +209,7 @@
     </style>
 
     <style name="IconDraweeView" parent="BannerDraweeView">
+        <item name="failureImage">@drawable/ic_imagedefault</item>
         <item name="placeholderImage">@drawable/ic_imagedefault</item>
         <item name="actualImageScaleType">centerInside</item>
         <item name="failureImageScaleType">centerInside</item>
