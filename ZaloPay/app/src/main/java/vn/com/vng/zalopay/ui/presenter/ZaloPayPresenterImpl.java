@@ -58,10 +58,6 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
     private final int BANNER_COUNT_DOWN_INTERVAL = 3000;
     private int BANNER_MILLIS_IN_FUTURE = 60 * 60 * 1000; //Finish countDownTimer after 1h (60*60*1000)
 
-    private IZaloPayView mView;
-
-    protected CompositeSubscription mSubscription = new CompositeSubscription();
-
     private final MerchantStore.Repository mMerchantRepository;
     private EventBus mEventBus;
     private BalanceStore.Repository mBalanceRepository;
