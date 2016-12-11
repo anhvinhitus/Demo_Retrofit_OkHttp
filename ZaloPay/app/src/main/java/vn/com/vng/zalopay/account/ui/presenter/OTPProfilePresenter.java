@@ -93,16 +93,4 @@ public class OTPProfilePresenter extends AbstractPresenter<IOTPProfileView> {
             mView.hideLoading();
         }
     }
-
-    public void showRetry() {
-        if (mView != null) {
-            mView.showRetry();
-        }
-    }
-
-    public void hideRetry() {
-        if (mView != null) {
-            mView.hideRetry();
-        }
-    }
 }

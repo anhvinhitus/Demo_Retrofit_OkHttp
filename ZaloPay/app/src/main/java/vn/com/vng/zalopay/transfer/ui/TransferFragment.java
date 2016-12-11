@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.transfer.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -344,14 +343,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Override
     public void hideLoading() {
         super.hideProgressDialog();
-    }
-
-    @Override
-    public void showRetry() {
-    }
-
-    @Override
-    public void hideRetry() {
     }
 
     @Override

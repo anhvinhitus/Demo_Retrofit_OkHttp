@@ -212,14 +212,6 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     }
 
     @Override
-    public void showRetry() {
-    }
-
-    @Override
-    public void hideRetry() {
-    }
-
-    @Override
     public void showError(String message) {
         showToast(message);
     }

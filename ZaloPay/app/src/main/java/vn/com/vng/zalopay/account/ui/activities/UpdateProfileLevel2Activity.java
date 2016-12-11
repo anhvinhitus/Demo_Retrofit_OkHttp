@@ -152,16 +152,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
     }
 
     @Override
-    public void showRetry() {
-
-    }
-
-    @Override
-    public void hideRetry() {
-
-    }
-
-    @Override
     public void showError(String message) {
         super.showToast(message);
     }

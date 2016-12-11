@@ -312,16 +312,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         hideProgressDialog();
     }
 
-    @Override
-    public void showRetry() {
-
-    }
-
-    @Override
-    public void hideRetry() {
-
-    }
-
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);

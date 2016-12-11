@@ -12,10 +12,6 @@ public interface ILoadDataView {
 
     void hideLoading();
 
-    void showRetry();
-
-    void hideRetry();
-
     void showError(String message);
 
     void showNetworkErrorDialog();

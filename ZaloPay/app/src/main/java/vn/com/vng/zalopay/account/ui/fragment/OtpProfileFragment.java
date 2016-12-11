@@ -151,14 +151,6 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
     }
 
     @Override
-    public void showRetry() {
-    }
-
-    @Override
-    public void hideRetry() {
-    }
-
-    @Override
     public void showError(String message) {
         super.showErrorDialog(message, getContext().getString(R.string.txt_close), new ZPWOnEventDialogListener() {
             @Override

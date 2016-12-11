@@ -72,12 +72,4 @@ public class PreProfilePresenter extends AbstractPresenter<IPreProfileView> {
     public void hideLoading() {
         mView.hideLoading();
     }
-
-    public void showRetry() {
-        mView.showRetry();
-    }
-
-    public void hideRetry() {
-        mView.hideRetry();
-    }
 }

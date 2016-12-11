@@ -222,16 +222,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     }
 
     @Override
-    public void showRetry() {
-
-    }
-
-    @Override
-    public void hideRetry() {
-
-    }
-
-    @Override
     public void showError(String message) {
         showErrorDialog(message);
     }

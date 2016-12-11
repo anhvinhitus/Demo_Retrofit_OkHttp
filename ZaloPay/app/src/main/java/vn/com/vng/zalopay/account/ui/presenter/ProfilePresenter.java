@@ -107,15 +107,6 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
         mView.hideLoading();
     }
 
-    public void showRetry() {
-        mView.showRetry();
-    }
-
-    public void hideRetry() {
-        mView.hideRetry();
-    }
-
-
     private void getUserProfile() {
         Subscription subscription = mAccountRepository.getUserProfileLevelCloud()
                 .subscribeOn(Schedulers.io())

@@ -131,16 +131,6 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
                 });
     }
 
-    @Override
-    public void showRetry() {
-
-    }
-
-    @Override
-    public void hideRetry() {
-
-    }
-
     public void loadUrl(final String pUrl) {
         if (mWebViewProcessor == null) {
             return;

@@ -148,14 +148,6 @@ public class TransferHomeFragment extends BaseFragment implements
     }
 
     @Override
-    public void showRetry() {
-    }
-
-    @Override
-    public void hideRetry() {
-    }
-
-    @Override
     public void showError(String message) {
         showErrorDialog(message);
     }

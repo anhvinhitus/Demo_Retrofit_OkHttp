@@ -227,14 +227,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     }
 
     @Override
-    public void showRetry() {
-    }
-
-    @Override
-    public void hideRetry() {
-    }
-
-    @Override
     public void showError(String message) {
         super.showToast(message);
     }

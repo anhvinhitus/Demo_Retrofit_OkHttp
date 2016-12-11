@@ -154,12 +154,4 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
     public void hideLoading() {
         mView.hideLoading();
     }
-
-    public void showRetry() {
-        mView.showRetry();
-    }
-
-    public void hideRetry() {
-        mView.hideRetry();
-    }
 }

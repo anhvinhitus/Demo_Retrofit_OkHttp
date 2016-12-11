@@ -117,14 +117,6 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     }
 
     @Override
-    public void showRetry() {
-    }
-
-    @Override
-    public void hideRetry() {
-    }
-
-    @Override
     public void showError(String message) {
         showToast(message);
         hideLoading();

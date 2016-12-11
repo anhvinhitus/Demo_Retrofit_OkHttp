@@ -140,14 +140,6 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
-    public void showRetry() {
-    }
-
-    @Override
-    public void hideRetry() {
-    }
-
-    @Override
     public void showError(String message) {
         Timber.d("showError message %s", message);
         if (mErrorDialog == null) {

@@ -140,14 +140,6 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     }
 
     @Override
-    public void showRetry() {
-    }
-
-    @Override
-    public void hideRetry() {
-    }
-
-    @Override
     public void showError(String message) {
         showToast(message);
     }

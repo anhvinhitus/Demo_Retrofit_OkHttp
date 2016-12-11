@@ -70,16 +70,6 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
     }
 
     @Override
-    public void showRetry() {
-
-    }
-
-    @Override
-    public void hideRetry() {
-
-    }
-
-    @Override
     public void showError(String message) {
         DialogHelper.showErrorDialog(getActivity(), message);
     }

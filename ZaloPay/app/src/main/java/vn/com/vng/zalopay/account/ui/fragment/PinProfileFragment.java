@@ -249,14 +249,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
         super.hideProgressDialog();
     }
 
-    @Override
-    public void showRetry() {
-    }
-
-    @Override
-    public void hideRetry() {
-    }
-
     private void showIntro() {
 
         AndroidUtils.hideKeyboard(getActivity());
