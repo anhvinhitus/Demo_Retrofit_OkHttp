@@ -29,7 +29,7 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
     }
 
     @Override

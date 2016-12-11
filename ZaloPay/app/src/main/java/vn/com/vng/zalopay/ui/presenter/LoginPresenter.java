@@ -4,22 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
 import com.zing.zalo.zalosdk.oauth.LoginVia;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -32,7 +26,6 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
@@ -78,16 +71,16 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     @Override
-    public void setView(ILoginView view) {
+    public void attachView(ILoginView view) {
         this.mView = view;
         Timber.d("set login view");
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         hideLoadingView();
         this.mView = null;
-        Timber.d("destroyView");
+        Timber.d("detachView");
     }
 
     @Override
@@ -122,7 +115,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
     @Override
     public void destroy() {
-        this.destroyView();
+        this.detachView();
         this.unsubscribe();
     }
 

@@ -71,7 +71,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter.setView(this);
+        presenter.attachView(this);
         presenter.initialize();
 
         if (getIntent() != null) {
@@ -126,7 +126,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         Timber.d("destroy main activity");
 
         drawer.removeDrawerListener(toggle);
-        presenter.destroyView();
+        presenter.detachView();
         presenter.destroy();
         super.onDestroy();
     }

@@ -35,13 +35,13 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
     }
 
     @Override
-    public void setView(IPinProfileView iProfileView) {
+    public void attachView(IPinProfileView iProfileView) {
         mView = iProfileView;
         showProfileLevel2Cache();
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         hideLoading();
         this.mView = null;
     }

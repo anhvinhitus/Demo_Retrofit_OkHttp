@@ -66,6 +66,7 @@ public class PaymentWrapper {
                    TransactionStore.Repository transactionRepository,
                    IResponseListener responseListener, IRedirectListener redirectListener,
                    boolean showNotificationLinkCard) {
+        Timber.d("Create new instance of PaymentWrapper");
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.responseListener = responseListener;

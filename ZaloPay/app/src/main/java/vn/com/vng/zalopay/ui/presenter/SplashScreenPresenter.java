@@ -35,12 +35,12 @@ public class SplashScreenPresenter extends BaseAppPresenter implements IPresente
     }
 
     @Override
-    public void setView(ISplashScreenView iSplashScreenView) {
+    public void attachView(ISplashScreenView iSplashScreenView) {
         mView = iSplashScreenView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         mView = null;
     }
 

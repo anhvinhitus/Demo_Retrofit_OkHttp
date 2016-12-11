@@ -81,6 +81,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                     Context applicationContext,
                     Navigator navigator,
                     UserConfig userConfig) {
+        Timber.d("New instance of QRCodePresenter");
         mApplicationContext = applicationContext;
         mNavigator = navigator;
         mUserConfig = userConfig;
@@ -94,12 +95,12 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
     }
 
     @Override
-    public void setView(IQRScanView view) {
+    public void attachView(IQRScanView view) {
         this.mView = view;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         this.mView = null;
     }
 
@@ -115,7 +116,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
 
     @Override
     public void destroy() {
-        this.destroyView();
+        this.detachView();
     }
 
     private void showLoadingView() {

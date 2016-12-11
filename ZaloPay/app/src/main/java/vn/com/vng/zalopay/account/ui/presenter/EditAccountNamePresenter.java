@@ -38,12 +38,12 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
     }
 
     @Override
-    public void setView(IEditAccountNameView view) {
+    public void attachView(IEditAccountNameView view) {
         mView = view;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(mCompositeSubscription);
         mView = null;
     }

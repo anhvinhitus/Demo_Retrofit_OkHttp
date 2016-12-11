@@ -97,7 +97,7 @@ public class TransferHomeFragment extends BaseFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
+        presenter.attachView(this);
 
         mList.setLayoutManager(new LinearLayoutManager(getContext()));
         mList.setHasFixedSize(true);
@@ -128,7 +128,7 @@ public class TransferHomeFragment extends BaseFragment implements
 
     @Override
     public void onDestroyView() {
-        presenter.destroyView();
+        presenter.detachView();
         super.onDestroyView();
     }
 

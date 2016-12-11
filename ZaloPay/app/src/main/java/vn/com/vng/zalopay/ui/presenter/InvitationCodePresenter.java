@@ -44,12 +44,12 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
     private PassportRepository mPassportRepository;
 
     @Override
-    public void setView(IInvitationCodeView iInvitationCodeView) {
+    public void attachView(IInvitationCodeView iInvitationCodeView) {
         mView = iInvitationCodeView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(compositeSubscription);
         mView = null;
     }

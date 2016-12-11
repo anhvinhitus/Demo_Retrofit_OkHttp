@@ -70,7 +70,7 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
     }
 
     @Override
-    public void setView(IReceiveMoneyView view) {
+    public void attachView(IReceiveMoneyView view) {
         mView = view;
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
@@ -78,7 +78,7 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         mEventBus.unregister(this);
         mView = null;
         mListTransfer.clear();

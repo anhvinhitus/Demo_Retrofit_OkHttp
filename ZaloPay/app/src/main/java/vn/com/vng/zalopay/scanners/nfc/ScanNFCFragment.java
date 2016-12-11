@@ -18,7 +18,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.RippleBackground;
-import vn.com.vng.zalopay.ui.widget.WaveView;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -72,7 +71,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        readerPresenter.setView(this);
+        readerPresenter.attachView(this);
         starAnimation();
     }
 
@@ -111,7 +110,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
     @Override
     public void onDestroyView() {
         if (readerPresenter != null) {
-            readerPresenter.destroyView();
+            readerPresenter.detachView();
         }
 
         ViewCompat.animate(mHandView).cancel();

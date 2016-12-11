@@ -98,7 +98,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 //        mRecyclerView.setHasFixedSize(true);
         RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
@@ -189,7 +189,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @Override
     public void onDestroyView() {
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 

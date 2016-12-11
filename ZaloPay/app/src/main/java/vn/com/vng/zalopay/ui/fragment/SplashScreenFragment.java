@@ -49,7 +49,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
+        presenter.attachView(this);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
 
     @Override
     public void onDestroyView() {
-        presenter.destroyView();
+        presenter.detachView();
         super.onDestroyView();
     }
 

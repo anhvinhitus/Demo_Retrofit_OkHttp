@@ -121,7 +121,7 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
         super.onViewCreated(view, savedInstanceState);
         addHeader(listView);
         listView.setAdapter(mAdapter);
-        presenter.setView(this);
+        presenter.attachView(this);
     }
 
     private void addHeader(ListView listView) {
@@ -148,7 +148,7 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
 
     @Override
     public void onDestroyView() {
-        presenter.destroyView();
+        presenter.detachView();
         CShareData.dispose();
         super.onDestroyView();
     }

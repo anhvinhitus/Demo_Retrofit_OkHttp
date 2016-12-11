@@ -65,7 +65,7 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
+        presenter.attachView(this);
         mPager.setAdapter(mAdapter);
     }
 
@@ -115,7 +115,7 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     @Override
     public void onDestroyView() {
 
-        presenter.destroyView();
+        presenter.detachView();
         super.onDestroyView();
     }
 

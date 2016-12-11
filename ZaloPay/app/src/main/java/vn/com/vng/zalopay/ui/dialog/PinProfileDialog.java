@@ -81,7 +81,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
         setContentView(R.layout.dialog_pin_profile);
         ButterKnife.bind(this, this);
         setWidthDialog();
-        presenter.setView(this);
+        presenter.attachView(this);
 
         setOnShowListener(new OnShowListener() {
             @Override
@@ -129,7 +129,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
         Timber.d("onDetachedFromWindow");
         hideLoading();
         setOnShowListener(null);
-        presenter.destroyView();
+        presenter.detachView();
         listener = null;
         super.onDetachedFromWindow();
     }

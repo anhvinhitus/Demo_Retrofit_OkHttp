@@ -102,7 +102,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
         mPresenter.initData(getArguments());
         initLimitAmount();
         mEdtAmountView.addValidator(new ZPEditTextValidate(getString(R.string.valid_money)) {
@@ -118,7 +118,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onDestroyView() {
         mEdtAmountView.clearValidators();
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 

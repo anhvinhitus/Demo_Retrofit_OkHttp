@@ -37,12 +37,12 @@ public class TransferViaZaloPayNamePresenter extends BaseUserPresenter implement
     }
 
     @Override
-    public void setView(ITransferMoneyView iTransferMoneyView) {
+    public void attachView(ITransferMoneyView iTransferMoneyView) {
         mView = iTransferMoneyView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(compositeSubscription);
         mView = null;
     }

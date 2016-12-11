@@ -49,12 +49,12 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
     }
 
     @Override
-    public void setView(IUpdateProfile3View iUpdateProfile3View) {
+    public void attachView(IUpdateProfile3View iUpdateProfile3View) {
         mView = iUpdateProfile3View;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(compositeSubscription);
         mView = null;
     }

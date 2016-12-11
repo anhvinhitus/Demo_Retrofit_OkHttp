@@ -33,12 +33,12 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
     private Context mApplicationContext;
 
     @Override
-    public void setView(IPinProfileView iPinProfileView) {
+    public void attachView(IPinProfileView iPinProfileView) {
         pinProfileView = iPinProfileView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(compositeSubscription);
         pinProfileView = null;
     }

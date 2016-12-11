@@ -92,7 +92,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
+        presenter.attachView(this);
 
         invitationCodeLength = getResources().getInteger(R.integer.invitation_code_length);
 
@@ -112,7 +112,7 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
     @Override
     public void onDestroyView() {
-        presenter.destroyView();
+        presenter.detachView();
         super.onDestroyView();
     }
 

@@ -96,13 +96,13 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        qrCodePresenter.setView(this);
+        qrCodePresenter.attachView(this);
         setHasOptionsMenu(true);
     }
 
     @Override
     public void onDestroyView() {
-        qrCodePresenter.destroyView();
+        qrCodePresenter.detachView();
         super.onDestroyView();
     }
 

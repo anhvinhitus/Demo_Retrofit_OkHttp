@@ -135,12 +135,12 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
     private NfcView mNfcView;
 
     @Override
-    public void setView(NfcView nfcView) {
+    public void attachView(NfcView nfcView) {
         mNfcView = nfcView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         mNfcView = null;
     }
 

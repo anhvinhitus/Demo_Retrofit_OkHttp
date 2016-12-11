@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +24,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
@@ -140,7 +138,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
 
         mEdtPhoneView.addValidator(new VNPhoneValidate(getString(R.string.invalid_phone)));
         mPassCodeView.addTextChangedListener(mPassCodeChange);
@@ -210,7 +208,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     public void onDestroyView() {
         mRootView.setOnKeyboardStateListener(null);
         mPassCodeView.setPassCodeFocusChanged(null);
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 

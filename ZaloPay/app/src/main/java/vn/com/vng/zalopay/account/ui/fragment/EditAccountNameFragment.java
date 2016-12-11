@@ -1,14 +1,11 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.zalopay.ui.widget.edittext.ZPEditText;
-import com.zalopay.ui.widget.edittext.ZPEditTextValidate;
 
 import javax.inject.Inject;
 
@@ -19,10 +16,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.EditAccountNamePresenter;
 import vn.com.vng.zalopay.account.ui.view.IEditAccountNameView;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.widget.ZPTextInputLayout;
 import vn.com.vng.zalopay.ui.widget.validate.MinCharactersValidate;
 import vn.com.vng.zalopay.ui.widget.validate.SpecialCharactersValidate;
-import vn.com.vng.zalopay.utils.ValidateUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -66,7 +61,7 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
+        presenter.attachView(this);
         mBtnCheckView.setEnabled(false);
         mCheckView.setVisibility(View.INVISIBLE);
         mBtnCheckView.setText(R.string.check);
@@ -85,7 +80,7 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
 
     @Override
     public void onDestroyView() {
-        presenter.destroyView();
+        presenter.detachView();
         super.onDestroyView();
     }
 

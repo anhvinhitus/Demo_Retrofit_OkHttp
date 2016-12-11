@@ -13,7 +13,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
@@ -23,7 +22,6 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
-import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
@@ -56,12 +54,12 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
     }
 
     @Override
-    public void setView(IExternalCallSplashScreenView view) {
+    public void attachView(IExternalCallSplashScreenView view) {
         this.mView = view;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         this.mView = null;
     }
 
@@ -77,7 +75,7 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
 
     @Override
     public void destroy() {
-        destroyView();
+        detachView();
     }
 
     public void handleIntent(Intent intent) {

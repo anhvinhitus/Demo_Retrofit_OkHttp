@@ -108,7 +108,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
         checkShowHideDeposit();
     }
 
@@ -156,7 +156,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
 
     @Override
     public void onDestroyView() {
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 

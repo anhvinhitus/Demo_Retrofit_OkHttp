@@ -61,12 +61,12 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
     }
 
     @Override
-    public void setView(ILinkCardView iLinkCardView) {
+    public void attachView(ILinkCardView iLinkCardView) {
         mLinkCardView = iLinkCardView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         mLinkCardView = null;
         unsubscribeIfNotNull(mCompositeSubscription);
     }

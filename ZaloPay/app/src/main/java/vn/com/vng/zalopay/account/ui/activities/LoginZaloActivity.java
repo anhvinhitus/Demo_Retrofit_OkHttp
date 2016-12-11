@@ -49,7 +49,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loginPresenter.setView(this);
+        loginPresenter.attachView(this);
         handleIntent(getIntent());
     }
 

@@ -14,7 +14,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
@@ -113,7 +112,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
     }
 
     private void initView() {
-        presenter.setView(this);
+        presenter.attachView(this);
         presenter.getZaloProfileInfo(getApplicationContext(), userConfig);
         getToolbar().setTitleTextColor(Color.TRANSPARENT);
 

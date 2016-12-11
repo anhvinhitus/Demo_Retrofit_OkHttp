@@ -106,7 +106,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
             return;
         }
 
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
 
         mPresenter.initView((ZaloFriend) argument.getParcelable(Constants.ARG_ZALO_FRIEND),
                 (RecentTransaction) argument.getParcelable(Constants.ARG_TRANSFERRECENT),
@@ -161,7 +161,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @Override
     public void onDestroyView() {
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 

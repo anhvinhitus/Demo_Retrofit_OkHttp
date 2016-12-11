@@ -138,7 +138,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
+        presenter.attachView(this);
         AndroidUtils.setSpannedMessageToView(tvTerm,
                 R.string.agree_term_of_use, R.string.term_of_use,
                 false, false, R.color.colorPrimary,
@@ -184,7 +184,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void onDestroyView() {
-        presenter.destroyView();
+        presenter.detachView();
         super.onDestroyView();
     }
 

@@ -37,7 +37,7 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
     }
 
     @Override
-    public void setView(IPreProfileView iPreProfileView) {
+    public void attachView(IPreProfileView iPreProfileView) {
         mView = iPreProfileView;
         initPagerContent();
     }
@@ -68,7 +68,7 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(mCompositeSubscription);
         mView = null;
     }
@@ -83,7 +83,7 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
 
     @Override
     public void destroy() {
-        this.destroyView();
+        this.detachView();
     }
 
     public void saveUserPhone(String phone) {

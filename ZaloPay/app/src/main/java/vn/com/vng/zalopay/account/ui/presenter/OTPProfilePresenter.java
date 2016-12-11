@@ -37,12 +37,12 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
     }
 
     @Override
-    public void setView(IOTPProfileView iProfileView) {
+    public void attachView(IOTPProfileView iProfileView) {
         mView = iProfileView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         hideLoading();
         unsubscribeIfNotNull(mCompositeSubscription);
         this.mView = null;

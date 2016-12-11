@@ -194,7 +194,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     @Override
-    public void setView(IHomeView iHomeView) {
+    public void attachView(IHomeView iHomeView) {
         this.mHomeView = iHomeView;
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
@@ -206,7 +206,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         mEventBus.unregister(this);
         unsubscribeIfNotNull(mRefPlatformSubscription);
         unsubscribeIfNotNull(mCompositeSubscription);

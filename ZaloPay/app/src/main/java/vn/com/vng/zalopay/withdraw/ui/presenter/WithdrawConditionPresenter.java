@@ -81,12 +81,12 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
     }
 
     @Override
-    public void setView(IWithdrawConditionView view) {
+    public void attachView(IWithdrawConditionView view) {
         mView = view;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         mView = null;
     }
 

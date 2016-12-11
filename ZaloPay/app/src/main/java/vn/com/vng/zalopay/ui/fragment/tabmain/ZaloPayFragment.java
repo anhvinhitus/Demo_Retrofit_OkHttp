@@ -127,7 +127,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated");
-        presenter.setView(this);
+        presenter.attachView(this);
 
         listView.setHasFixedSize(true);
         listView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
@@ -204,7 +204,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public void onDestroyView() {
-        presenter.destroyView();
+        presenter.detachView();
         super.onDestroyView();
     }
 

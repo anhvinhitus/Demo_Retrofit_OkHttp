@@ -30,12 +30,12 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
     }
 
     @Override
-    public void setView(ITransferHomeView iTransferHomeView) {
+    public void attachView(ITransferHomeView iTransferHomeView) {
         mView = iTransferHomeView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(compositeSubscription);
         mView = null;
     }

@@ -35,7 +35,7 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.d("onCreate new ExternalCallSplashScreenActivity");
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
         mPresenter.handleIntent(getIntent());
     }
 

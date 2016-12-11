@@ -86,7 +86,7 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.setView(this);
+        presenter.attachView(this);
         mEdtOTPView.addValidator(new DigitsOnlyValidate(getString(R.string.exception_otp_invaild)));
         mEdtOTPView.requestFocus();
         btnContinue.setEnabled(mEdtOTPView.isValid());
@@ -117,7 +117,7 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
 
     @Override
     public void onDestroyView() {
-        presenter.destroyView();
+        presenter.detachView();
         super.onDestroyView();
     }
 

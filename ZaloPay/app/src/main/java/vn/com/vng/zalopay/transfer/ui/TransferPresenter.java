@@ -266,12 +266,12 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     @Override
-    public void setView(ITransferView view) {
+    public void attachView(ITransferView view) {
         mView = view;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(compositeSubscription);
         this.mView = null;
         mTransaction = null;

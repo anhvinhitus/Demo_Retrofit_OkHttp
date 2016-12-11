@@ -64,12 +64,12 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
     }
 
     @Override
-    public void setView(IBalanceManagementView iWithdrawView) {
+    public void attachView(IBalanceManagementView iWithdrawView) {
         mView = iWithdrawView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(compositeSubscription);
         mView = null;
     }

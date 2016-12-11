@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.withdraw.ui.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -157,7 +156,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
         edtAmount.requestFocus();
         edtAmount.addTextChangedListener(new VNDCurrencyTextWatcher(edtAmount) {
             @Override
@@ -195,7 +194,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     @Override
     public void onDestroyView() {
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 

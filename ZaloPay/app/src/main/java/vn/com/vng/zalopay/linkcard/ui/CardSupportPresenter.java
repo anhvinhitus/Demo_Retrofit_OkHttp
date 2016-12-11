@@ -35,12 +35,12 @@ class CardSupportPresenter extends AbsLinkCardPresenter implements IPresenter<IC
     }
 
     @Override
-    public void setView(ICardSupportView iLinkCardView) {
+    public void attachView(ICardSupportView iLinkCardView) {
         mCardSupportView = iLinkCardView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         mCardSupportView = null;
         unsubscribeIfNotNull(mCompositeSubscription);
     }

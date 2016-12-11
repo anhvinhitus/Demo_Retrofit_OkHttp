@@ -23,7 +23,6 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 public class ProfileFragment extends BaseFragment implements IProfileView {
 
@@ -87,7 +86,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
     }
 
     @Override
@@ -112,7 +111,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @Override
     public void onDestroyView() {
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 

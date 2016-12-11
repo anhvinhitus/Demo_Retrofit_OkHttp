@@ -65,12 +65,12 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     }
 
     @Override
-    public void setView(IBalanceTopupView iBalanceTopupView) {
+    public void attachView(IBalanceTopupView iBalanceTopupView) {
         this.mView = iBalanceTopupView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(mCompositeSubscription);
         this.mView = null;
     }

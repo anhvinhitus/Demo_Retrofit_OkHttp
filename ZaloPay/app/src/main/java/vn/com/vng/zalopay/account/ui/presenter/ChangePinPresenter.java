@@ -72,12 +72,12 @@ public class ChangePinPresenter extends BaseUserPresenter
     }
 
     @Override
-    public void setView(IChangePinContainer iChangePinContainer) {
+    public void attachView(IChangePinContainer iChangePinContainer) {
         mChangePinContainer = iChangePinContainer;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(mCompositeSubscription);
         mChangePinContainer = null;
     }

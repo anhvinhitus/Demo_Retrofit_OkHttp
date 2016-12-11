@@ -95,7 +95,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     @Override
-    public void setView(IZaloPayView o) {
+    public void attachView(IZaloPayView o) {
         this.mZaloPayView = o;
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
@@ -103,7 +103,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(mCompositeSubscription);
         mEventBus.unregister(this);
         this.mZaloPayView = null;

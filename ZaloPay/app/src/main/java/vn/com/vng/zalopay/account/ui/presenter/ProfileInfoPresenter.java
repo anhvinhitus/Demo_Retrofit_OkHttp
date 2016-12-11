@@ -34,7 +34,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     }
 
     @Override
-    public void setView(IProfileInfoView iProfileInfoView) {
+    public void attachView(IProfileInfoView iProfileInfoView) {
         mView = iProfileInfoView;
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
@@ -42,7 +42,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(compositeSubscription);
         mEventBus.unregister(this);
         mView = null;
@@ -60,7 +60,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void destroy() {
-        destroyView();
+        detachView();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

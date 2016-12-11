@@ -153,12 +153,12 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
     }
 
     @Override
-    public void setView(IWebView iWebView) {
+    public void attachView(IWebView iWebView) {
         mView = iWebView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         mView = null;
     }
 

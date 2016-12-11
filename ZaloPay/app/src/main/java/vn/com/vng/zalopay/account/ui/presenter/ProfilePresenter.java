@@ -50,7 +50,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     }
 
     @Override
-    public void setView(IProfileView iProfileView) {
+    public void attachView(IProfileView iProfileView) {
         mView = iProfileView;
 
         if (!mEventBus.isRegistered(this)) {
@@ -59,7 +59,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(compositeSubscription);
         mEventBus.unregister(this);
         mView = null;

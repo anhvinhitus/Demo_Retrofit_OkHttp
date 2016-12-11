@@ -52,12 +52,12 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
     }
 
     @Override
-    public void setView(IZaloFriendListView iZaloFriendListView) {
+    public void attachView(IZaloFriendListView iZaloFriendListView) {
         mZaloFriendListView = iZaloFriendListView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         unsubscribeIfNotNull(mCompositeSubscription);
         mZaloFriendListView = null;
     }

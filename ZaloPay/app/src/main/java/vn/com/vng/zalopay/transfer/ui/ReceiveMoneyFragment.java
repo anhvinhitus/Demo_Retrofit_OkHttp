@@ -68,7 +68,7 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
         Timber.d("onViewCreated");
         mListView.setLayoutManager(new LinearLayoutManager(getContext()));
         mListView.setAdapter(mAdapter);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
         mPresenter.onViewCreated();
     }
 
@@ -158,7 +158,7 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
 
     @Override
     public void onDestroyView() {
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 

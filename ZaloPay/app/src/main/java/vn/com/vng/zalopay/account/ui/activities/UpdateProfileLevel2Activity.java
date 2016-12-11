@@ -66,7 +66,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter.setView(this);
+        presenter.attachView(this);
         initData();
         initPaymentWrapper();
     }

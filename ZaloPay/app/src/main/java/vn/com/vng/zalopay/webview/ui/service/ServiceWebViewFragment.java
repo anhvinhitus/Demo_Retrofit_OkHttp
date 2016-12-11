@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.webview.ui.service;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +11,6 @@ import android.view.View;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 
@@ -45,7 +43,7 @@ public class ServiceWebViewFragment extends WebViewFragment {
     @Override
     protected void initPresenter(View view) {
         super.initPresenter(view);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
         mPresenter.initData(getArguments());
     }
 
@@ -73,7 +71,7 @@ public class ServiceWebViewFragment extends WebViewFragment {
 
     @Override
     public void onDestroyView() {
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 

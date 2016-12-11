@@ -143,12 +143,12 @@ public class WithdrawPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     @Override
-    public void setView(IWithdrawView iWithdrawView) {
+    public void attachView(IWithdrawView iWithdrawView) {
         mView = iWithdrawView;
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         mView = null;
     }
 

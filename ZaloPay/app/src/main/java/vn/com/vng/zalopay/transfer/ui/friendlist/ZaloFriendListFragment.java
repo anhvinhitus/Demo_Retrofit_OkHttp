@@ -22,7 +22,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 
 /**
@@ -75,7 +74,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
 
         mListView.setDivider(null);
 
@@ -120,7 +119,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     @Override
     public void onDestroyView() {
         mListView.setAdapter(null);
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 

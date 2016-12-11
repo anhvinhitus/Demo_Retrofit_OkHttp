@@ -76,7 +76,7 @@ public class BannerPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-//        Timber.d("destroyView %s", position);
+//        Timber.d("detachView %s", position);
         container.removeView((View) object);
     }
 }

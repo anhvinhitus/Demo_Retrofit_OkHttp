@@ -70,7 +70,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     @Override
-    public void setView(ILeftMenuView iLeftMenuView) {
+    public void attachView(ILeftMenuView iLeftMenuView) {
         menuView = iLeftMenuView;
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
@@ -78,7 +78,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     @Override
-    public void destroyView() {
+    public void detachView() {
         mEventBus.unregister(this);
         unsubscribeIfNotNull(compositeSubscription);
         menuView = null;

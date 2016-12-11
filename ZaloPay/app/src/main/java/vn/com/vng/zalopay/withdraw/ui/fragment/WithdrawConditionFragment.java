@@ -102,7 +102,7 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter.setView(this);
+        mPresenter.attachView(this);
         mCardSupportFragment = (CardSupportWithdrawFragment)
                 getChildFragmentManager().findFragmentById(R.id.cardSupportWithdrawFragment);
         showLoading();
@@ -148,7 +148,7 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
 
     @Override
     public void onDestroyView() {
-        mPresenter.destroyView();
+        mPresenter.detachView();
         super.onDestroyView();
     }
 
