@@ -33,6 +33,12 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
     }
 
     @Override
+    protected void onDestroy() {
+        mPresenter.destroy();
+        super.onDestroy();
+    }
+
+    @Override
     public BaseFragment getFragmentToHost() {
         return CardSupportFragment.newInstance();
     }
