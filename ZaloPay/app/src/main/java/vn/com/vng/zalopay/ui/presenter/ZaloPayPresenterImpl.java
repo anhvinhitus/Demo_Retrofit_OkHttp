@@ -159,26 +159,10 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
     }
 
     @Override
-    public void startPaymentApp(final AppResource app) {
-        // @TODO: Examine the observeOn in following statement
-        // Issue on GitLab: https://gitlab.com/zalopay/bugs/issues/256
+    public void startPaymentApp(AppResource app) {
         Subscription subscription = mAppResourceRepository.existResource(app.appid)
-                .observeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<Boolean>() {
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        if (aBoolean) {
-                            if (mView != null) {
-                                mNavigator.startPaymentApplicationActivity(mView.getContext(), app);
-                            }
-                        } else {
-                            if (mView != null && mView.getContext() != null) {
-                                mView.showErrorDialog(mView.getContext().getString(R.string.application_downloading));
-                            }
-                        }
-                    }
-                });
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new StartPaymentAppSubscriber(app));
         mSubscription.add(subscription);
     }
 
@@ -242,11 +226,11 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
         return listId;
     }
 
-    private int numberCallAppResouce;
+    private int numberCallAppResource;
 
     private void onGetAppResourceSuccess(List<AppResource> resources) {
-        numberCallAppResouce++;
-        Timber.d("get app resource call : " + numberCallAppResouce);
+        numberCallAppResource++;
+        Timber.d("get app resource call : " + numberCallAppResource);
 
         boolean isEnableShowShow = resources.contains(
                 PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW));
@@ -332,6 +316,9 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
         }
     }
 
+
+    int numberRefreshBanner;
+
     public void getBanners() {
         try {
             List<DBanner> banners = CShareData.getInstance().getBannerList();
@@ -340,10 +327,10 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
             } else {
                 stopBannerCountDownTimer();
             }
-
+            Timber.d("getBanners: %s", numberRefreshBanner++);
             mView.showBannerAds(banners);
         } catch (Exception e) {
-            Timber.w("Get banners exception: [%s]", e.getMessage());
+            Timber.w(e, "Get banners exception");
         }
     }
 
@@ -443,6 +430,28 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
                 return;
             }
             mView.showErrorDialog(ErrorMessageFactory.create(mView.getContext(), e));
+        }
+    }
+
+
+    private class StartPaymentAppSubscriber extends DefaultSubscriber<Boolean> {
+        private AppResource app;
+
+        StartPaymentAppSubscriber(AppResource app) {
+            this.app = app;
+        }
+
+        @Override
+        public void onNext(Boolean result) {
+            if (mView == null) {
+                return;
+            }
+
+            if (result) {
+                mNavigator.startPaymentApplicationActivity(mView.getContext(), app);
+            } else {
+                mView.showErrorDialog(mView.getContext().getString(R.string.application_downloading));
+            }
         }
     }
 

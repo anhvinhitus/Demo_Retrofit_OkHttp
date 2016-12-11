@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
