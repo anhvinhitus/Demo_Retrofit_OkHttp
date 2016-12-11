@@ -42,6 +42,11 @@ public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
     private User user;
 
     private EventBus mEventBus;
+
+    /**
+     * @TODO: Examine the need to refresh transaction history and balance in this presenter
+     * Issue on GitLab: https://gitlab.com/zalopay/bugs/issues/255
+     */
     private TransactionStore.Repository mTransactionRepository;
     private UserConfig mUserConfig;
     private BalanceStore.Repository mBalanceRepository;
