@@ -163,7 +163,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     private void showLinkCardEmpty() {
-        mCardSupportFragment.getCardSupport();
+        if (mCardSupportFragment.getCountCardSupport() <= 0) {
+            mCardSupportFragment.getCardSupport();
+        }
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
         mLayoutContent.setVisibility(View.GONE);
     }

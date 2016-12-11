@@ -133,6 +133,13 @@ public class CardSupportFragment extends BaseFragment {
         hideProgressDialog();
     }
 
+    public int getCountCardSupport() {
+        if (mAdapter == null) {
+            return 0;
+        }
+        return mAdapter.getItemCount();
+    }
+
     public void getCardSupport() {
         Timber.d("Get card support");
         showProgressDialog();
