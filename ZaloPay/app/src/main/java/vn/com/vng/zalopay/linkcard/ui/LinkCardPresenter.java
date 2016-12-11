@@ -107,8 +107,8 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     }
 
     private void onGetLinkCardSuccess(List<BankCard> list) {
-        mView.setData(list);
         hideLoadingView();
+        mView.setData(list);
     }
 
     void removeLinkCard(BankCard bankCard) {

@@ -43,6 +43,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     private Dialog mBottomSheetDialog;
     private BankCard mCurrentBankCard;
     private LinkCardAdapter mAdapter;
+    private CardSupportFragment mCardSupportFragment;
 
     @BindView(R.id.layoutLinkCardEmpty)
     View mLayoutLinkCardEmpty;
@@ -110,9 +111,10 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         }
 //        mRecyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
         mRecyclerView.setAdapter(mAdapter);
+        mCardSupportFragment = (CardSupportFragment)
+                getChildFragmentManager().findFragmentById(R.id.cardSupportFragment);
 
         initBottomSheet();
-        showOrHidekLinkCardEmpty();
     }
 
     private void initBottomSheet() {
@@ -152,7 +154,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 //        });
     }
 
-    private void showOrHidekLinkCardEmpty() {
+    private void showOrHideLinkCardEmpty() {
         if (mAdapter == null || mAdapter.getItemCount() <= 0) {
             showLinkCardEmpty();
         } else {
@@ -161,6 +163,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     private void showLinkCardEmpty() {
+        mCardSupportFragment.getCardSupport();
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
         mLayoutContent.setVisibility(View.GONE);
     }
@@ -204,20 +207,20 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @Override
     public void setData(List<BankCard> bankCards) {
         mAdapter.setData(bankCards);
-        showOrHidekLinkCardEmpty();
+        showOrHideLinkCardEmpty();
     }
 
 
     @Override
     public void updateData(BankCard bankCard) {
         mAdapter.insert(bankCard);
-        showOrHidekLinkCardEmpty();
+        showOrHideLinkCardEmpty();
     }
 
     @Override
     public void removeData(BankCard bankCard) {
         mAdapter.remove(bankCard);
-        showOrHidekLinkCardEmpty();
+        showOrHideLinkCardEmpty();
     }
 
     @Override
@@ -251,11 +254,13 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @Override
     public void showLoading() {
+        Timber.d("Show progress dialog");
         super.showProgressDialog();
     }
 
     @Override
     public void hideLoading() {
+        Timber.d("Hide progress dialog");
         super.hideProgressDialog();
     }
 

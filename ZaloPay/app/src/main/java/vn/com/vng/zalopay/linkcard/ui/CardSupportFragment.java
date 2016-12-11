@@ -17,8 +17,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -76,7 +76,6 @@ public class CardSupportFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        showProgressDialog();
         mAdapter = new CardSupportAdapter(getContext());
 
         mRecyclerView.setHasFixedSize(true);
@@ -85,8 +84,6 @@ public class CardSupportFragment extends BaseFragment {
         //mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUMN_COUNT, 2, false));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setFocusable(false);
-
-        getCardSupport();
     }
 
     private void refreshCardSupportList(List<ZPCard> cardSupportList) {
@@ -97,7 +94,9 @@ public class CardSupportFragment extends BaseFragment {
         hideProgressDialog();
     }
 
-    private void getCardSupport() {
+    public void getCardSupport() {
+        Timber.d("Get card support");
+        showProgressDialog();
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;
@@ -126,7 +125,6 @@ public class CardSupportFragment extends BaseFragment {
 
                             @Override
                             public void onOKevent() {
-                                showProgressDialog();
                                 getCardSupport();
                             }
                         });
@@ -144,7 +142,9 @@ public class CardSupportFragment extends BaseFragment {
 
     @Override
     public void onDestroy() {
+        //release cache
         CShareData.dispose();
+        GlobalData.initApplication(null);
         super.onDestroy();
     }
 }
