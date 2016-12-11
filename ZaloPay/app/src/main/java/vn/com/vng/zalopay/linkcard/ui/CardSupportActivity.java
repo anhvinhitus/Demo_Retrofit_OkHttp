@@ -71,11 +71,6 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
     }
 
     @Override
-    public void showWarningView(String error) {
-        showWarningDialog(error, null);
-    }
-
-    @Override
     public void showLoading() {
         DialogHelper.showLoading(this, null);
     }

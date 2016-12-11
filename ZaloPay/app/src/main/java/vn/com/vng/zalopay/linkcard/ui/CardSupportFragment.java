@@ -39,6 +39,7 @@ public class CardSupportFragment extends BaseFragment {
     RecyclerView mRecyclerView;
 
     private CardSupportAdapter mAdapter;
+    private IGetCardSupportListListener mGetCardSupportListListener;
 
     @Inject
     User mUser;
@@ -84,6 +85,44 @@ public class CardSupportFragment extends BaseFragment {
         //mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUMN_COUNT, 2, false));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setFocusable(false);
+
+        mGetCardSupportListListener = new IGetCardSupportListListener() {
+            @Override
+            public void onProcess() {
+                Timber.d("getCardSupportList onProcess");
+            }
+
+            @Override
+            public void onComplete(ArrayList<ZPCard> cardSupportList) {
+                Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
+                refreshCardSupportList(cardSupportList);
+            }
+
+            @Override
+            public void onError(String pErrorMess) {
+                Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
+                hideProgressDialog();
+                showRetryDialog(getString(R.string.exception_generic), new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        getCardSupport();
+                    }
+                });
+            }
+
+            @Override
+            public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
+                Timber.d("cardSupportHashMap forceUpdate [%s] latestVersion [%s] message [%s]",
+                        forceUpdate, latestVersion, message);
+                AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, message);
+                AppVersionUtils.showDialogUpgradeAppIfNeed(getActivity());
+            }
+        };
     }
 
     private void refreshCardSupportList(List<ZPCard> cardSupportList) {
@@ -100,48 +139,14 @@ public class CardSupportFragment extends BaseFragment {
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;
-        CShareData.getInstance().setUserInfo(userInfo)
-                .getCardSupportList(new IGetCardSupportListListener() {
-                    @Override
-                    public void onProcess() {
-                        Timber.d("getCardSupportList onProcess");
-                    }
-
-                    @Override
-                    public void onComplete(ArrayList<ZPCard> cardSupportList) {
-                        Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
-                        refreshCardSupportList(cardSupportList);
-                    }
-
-                    @Override
-                    public void onError(String pErrorMess) {
-                        Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
-                        hideProgressDialog();
-                        showRetryDialog(getString(R.string.exception_generic), new ZPWOnEventConfirmDialogListener() {
-                            @Override
-                            public void onCancelEvent() {
-
-                            }
-
-                            @Override
-                            public void onOKevent() {
-                                getCardSupport();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
-                        Timber.d("cardSupportHashMap forceUpdate [%s] latestVersion [%s] message [%s]",
-                                forceUpdate, latestVersion, message);
-                        AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, message);
-                        AppVersionUtils.showDialogUpgradeAppIfNeed(getActivity());
-                    }
-                });
+        CShareData.getInstance().setUserInfo(userInfo).getCardSupportList(mGetCardSupportListListener);
     }
 
     @Override
     public void onDestroy() {
+        hideProgressDialog();
+        mGetCardSupportListListener = null;
+        mAdapter = null;
         //release cache
         CShareData.dispose();
         GlobalData.initApplication(null);

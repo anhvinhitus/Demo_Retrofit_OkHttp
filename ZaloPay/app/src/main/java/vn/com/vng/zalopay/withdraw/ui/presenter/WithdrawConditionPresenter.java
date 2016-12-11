@@ -21,29 +21,20 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  */
 public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IWithdrawConditionView> {
     private Navigator mNavigator;
+    private IListenerValid mIListenerValid;
 
     @Inject
     WithdrawConditionPresenter(UserConfig userConfig, Navigator navigator) {
         super(userConfig);
         mNavigator = navigator;
-    }
-
-    private void checkConditionAndStartWithdrawActivity() {
-        if (mView == null) {
-            return;
-        }
-        final boolean isProfileValid = isValidProfile();
-        mView.setProfileValid(isProfileValid);
-
-
-        validLinkCard(new IListenerValid() {
+        mIListenerValid = new IListenerValid() {
             @Override
             public void onSuccess(List<BankConfig> list, boolean isValid) {
                 if (isValid) {
                     if (mView == null) {
                         return;
                     }
-                    if (isProfileValid && mView.getActivity() != null) {
+                    if (isValidProfile() && mView.getActivity() != null) {
                         mNavigator.startWithdrawActivity(mView.getActivity());
                         mView.getActivity().finish();
                         return;
@@ -74,7 +65,18 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
                     }
                 });
             }
-        });
+        };
+    }
+
+    private void checkConditionAndStartWithdrawActivity() {
+        if (mView == null) {
+            return;
+        }
+        final boolean isProfileValid = isValidProfile();
+        mView.setProfileValid(isProfileValid);
+
+
+        validLinkCard(mIListenerValid);
     }
 
     @Override
@@ -84,9 +86,9 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
 
     @Override
     public void destroy() {
+        mIListenerValid = null;
         CShareData.dispose();
         GlobalData.initApplication(null);
-
         super.destroy();
     }
 

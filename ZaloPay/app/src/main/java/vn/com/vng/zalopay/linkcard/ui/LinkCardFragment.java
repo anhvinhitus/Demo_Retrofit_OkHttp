@@ -199,8 +199,14 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @Override
     public void onDestroy() {
         mPresenter.destroy();
+        if (mBottomSheetDialog != null && mBottomSheetDialog.isShowing()) {
+            mBottomSheetDialog.dismiss();
+        }
+        mBottomSheetDialog = null;
+        mCurrentBankCard = null;
         // break circular link between this and mAdapter
         mAdapter = null;
+        mCardSupportFragment = null;
         super.onDestroy();
     }
 
