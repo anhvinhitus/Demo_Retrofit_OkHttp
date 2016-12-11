@@ -30,8 +30,6 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  */
 
 abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
-
-    CompositeSubscription mSubscription = new CompositeSubscription();
     private PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
 
