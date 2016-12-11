@@ -54,13 +54,13 @@ import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
  * Created by AnhHieu on 5/9/16.
  * *
  */
-public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPresenter<IZaloPayView> {
+public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implements ZaloPayPresenter<IZaloPayView> {
     private final int BANNER_COUNT_DOWN_INTERVAL = 3000;
     private int BANNER_MILLIS_IN_FUTURE = 60 * 60 * 1000; //Finish countDownTimer after 1h (60*60*1000)
 
-    private IZaloPayView mZaloPayView;
+    private IZaloPayView mView;
 
-    protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    protected CompositeSubscription mSubscription = new CompositeSubscription();
 
     private final MerchantStore.Repository mMerchantRepository;
     private EventBus mEventBus;
@@ -96,7 +96,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void attachView(IZaloPayView o) {
-        this.mZaloPayView = o;
+        super.attachView(o);
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
@@ -104,16 +104,15 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void detachView() {
-        unsubscribeIfNotNull(mCompositeSubscription);
         mEventBus.unregister(this);
-        this.mZaloPayView = null;
+        super.detachView();
     }
 
     @Override
     public void resume() {
         startBannerCountDownTimer();
-        if (NetworkHelper.isNetworkAvailable(mZaloPayView.getContext())) {
-            mZaloPayView.hideNetworkError();
+        if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
+            mView.hideNetworkError();
         }
     }
 
@@ -124,6 +123,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Override
     public void destroy() {
+        super.destroy();
         mBannerCountDownTimer = null;
         mBannerHandle = null;
         mBannerRunnable = null;
@@ -146,7 +146,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BalanceSubscriber());
 
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private void getListAppResource() {
@@ -159,28 +159,31 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 })
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     @Override
     public void startPaymentApp(final AppResource app) {
+        // @TODO: Examine the observeOn in following statement
+        // Issue on GitLab: https://gitlab.com/zalopay/bugs/issues/256
         Subscription subscription = mAppResourceRepository.existResource(app.appid)
-                .observeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
-                            if (mZaloPayView != null) {
-                                mNavigator.startPaymentApplicationActivity(mZaloPayView.getContext(), app);
+                            if (mView != null) {
+                                mNavigator.startPaymentApplicationActivity(mView.getContext(), app);
                             }
                         } else {
-                            if (mZaloPayView != null && mZaloPayView.getContext() != null) {
-                                mZaloPayView.showErrorDialog(mZaloPayView.getContext().getString(R.string.application_downloading));
+                            if (mView != null && mView.getContext() != null) {
+                                mView.showErrorDialog(mView.getContext().getString(R.string.application_downloading));
                             }
                         }
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     @Override
@@ -188,11 +191,11 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         Timber.d("onclick app %s %s %s ", app.appType, app.appid, app.appname);
         if (app.appType == PaymentAppTypeEnum.NATIVE.getValue()) {
             if (app.appid == PaymentAppConfig.Constants.TRANSFER_MONEY) {
-                mNavigator.startTransferMoneyActivity(mZaloPayView.getActivity());
+                mNavigator.startTransferMoneyActivity(mView.getActivity());
             } else if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
-                mNavigator.startMiniAppActivity(mZaloPayView.getActivity(), ModuleName.RED_PACKET);
+                mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.RED_PACKET);
             } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
-                mNavigator.startReceiveMoneyActivity(mZaloPayView.getContext());
+                mNavigator.startReceiveMoneyActivity(mView.getContext());
             } else {
                 AppResource appResource = PaymentAppConfig.getAppResource(app.appid);
                 if (appResource == null) {
@@ -210,9 +213,10 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
     private void getTotalNotification(long delay) {
         Subscription subscription = mNotificationRepository.totalNotificationUnRead()
                 .delaySubscription(delay, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private void getListMerchantUser(List<AppResource> listAppResource) {
@@ -226,7 +230,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         Subscription subscription = mMerchantRepository.getListMerchantUserInfo(listId)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private List<Long> toStringListAppId(List<AppResource> listAppResource) {
@@ -250,7 +254,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
         boolean isEnableShowShow = resources.contains(
                 PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW));
-        mZaloPayView.enableShowShow(isEnableShowShow);
+        mView.enableShowShow(isEnableShowShow);
 
         resources.removeAll(PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST);
 
@@ -260,7 +264,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             listApps.addAll(resources);
         }
 
-        mZaloPayView.refreshInsideApps(listApps);
+        mView.refreshInsideApps(listApps);
     }
 
     private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
@@ -281,7 +285,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     private void onGetBalanceSuccess(Long balance) {
         Timber.d("onGetBalanceSuccess %s", balance);
-        mZaloPayView.setBalance(balance);
+        mView.setBalance(balance);
     }
 
     @Override
@@ -293,10 +297,10 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             @Override
             public void onTick(long millisUntilFinished) {
 //                Timber.d("onTick currentTime [%s]", System.currentTimeMillis());
-                if (mZaloPayView == null) {
+                if (mView == null) {
                     return;
                 }
-                mZaloPayView.changeBanner();
+                mView.changeBanner();
             }
 
             @Override
@@ -341,7 +345,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 stopBannerCountDownTimer();
             }
 
-            mZaloPayView.showBannerAds(banners);
+            mView.showBannerAds(banners);
         } catch (Exception e) {
             Timber.w("Get banners exception: [%s]", e.getMessage());
         }
@@ -353,27 +357,27 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new MerchantUserInfoSubscribe(appId, webViewUrl));
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWsConnectionChanged(WsConnectionEvent event) {
         if (event.isConnect) {
-            mZaloPayView.hideNetworkError();
+            mView.hideNetworkError();
         } else {
-            mZaloPayView.showWsConnectError();
+            mView.showWsConnectError();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetworkChange(NetworkChangeEvent event) {
-        if (mZaloPayView == null) {
+        if (mView == null) {
             return;
         }
         if (!event.isOnline) {
-            mZaloPayView.showNetworkError();
+            mView.showNetworkError();
         } else {
-            mZaloPayView.hideNetworkError();
+            mView.hideNetworkError();
         }
     }
 
@@ -393,8 +397,8 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBalanceChangeEvent(ChangeBalanceEvent event) {
-        if (mZaloPayView != null) {
-            mZaloPayView.setBalance(event.balance);
+        if (mView != null) {
+            mView.setBalance(event.balance);
         }
     }
 
@@ -407,8 +411,8 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         @Override
         public void onNext(Integer integer) {
             Timber.d("Got total %s unread notification messages", integer);
-            if (mZaloPayView != null) {
-                mZaloPayView.setTotalNotify(integer);
+            if (mView != null) {
+                mView.setTotalNotify(integer);
             }
         }
     }
@@ -426,14 +430,14 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
         public void onNext(MerchantUserInfo merchantUserInfo) {
             Timber.d("onNext merchantInfo [%s]", merchantUserInfo);
             if (merchantUserInfo == null) {
-                mZaloPayView.showError("MerchantUserInfo invalid");
+                mView.showError("MerchantUserInfo invalid");
                 return;
             }
             WebViewPayInfo gamePayInfo = new WebViewPayInfo();
             gamePayInfo.setUid(merchantUserInfo.muid);
             gamePayInfo.setAccessToken(merchantUserInfo.maccesstoken);
             gamePayInfo.setAppId(mAppId);
-            mNavigator.startServiceWebViewActivity(mZaloPayView.getContext(), gamePayInfo, mWebViewUrl);
+            mNavigator.startServiceWebViewActivity(mView.getContext(), gamePayInfo, mWebViewUrl);
         }
 
         @Override
@@ -442,7 +446,7 @@ public class ZaloPayPresenterImpl extends BaseUserPresenter implements ZaloPayPr
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-            mZaloPayView.showErrorDialog(ErrorMessageFactory.create(mZaloPayView.getContext(), e));
+            mView.showErrorDialog(ErrorMessageFactory.create(mView.getContext(), e));
         }
     }
 
