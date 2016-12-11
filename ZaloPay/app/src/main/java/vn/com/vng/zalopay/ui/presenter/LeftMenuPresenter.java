@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -39,11 +38,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  * Created by AnhHieu on 5/11/16.
  * *
  */
-public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<ILeftMenuView> {
-    private ILeftMenuView menuView;
-
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
-
+public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
     private User user;
 
     private EventBus mEventBus;
@@ -71,7 +66,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Override
     public void attachView(ILeftMenuView iLeftMenuView) {
-        menuView = iLeftMenuView;
+        super.attachView(iLeftMenuView);
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
@@ -80,13 +75,12 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
     @Override
     public void detachView() {
         mEventBus.unregister(this);
-        unsubscribeIfNotNull(compositeSubscription);
-        menuView = null;
+        super.detachView();
     }
 
     public void initialize() {
         listMenuItem();
-        menuView.setUserInfo(user);
+        mView.setUserInfo(user);
         this.getTransaction();
     }
 
@@ -99,19 +93,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
                         isInitiated = true;
                     }
                 });
-        compositeSubscription.add(subscriptionSuccess);
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void destroy() {
+        mSubscription.add(subscriptionSuccess);
     }
 
     private void getBalance() {
@@ -120,7 +102,7 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<Long>());
 
-        compositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -129,9 +111,9 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
         user.avatar = event.avatar;
         user.displayName = event.displayName;
 
-        if (menuView != null) {
-            menuView.setAvatar(event.avatar);
-            menuView.setDisplayName(event.displayName);
+        if (mView != null) {
+            mView.setAvatar(event.avatar);
+            mView.setDisplayName(event.displayName);
         }
 
         mEventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
@@ -163,13 +145,13 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
-        if (menuView != null) {
-            menuView.setZaloPayName(event.zaloPayName);
+        if (mView != null) {
+            mView.setZaloPayName(event.zaloPayName);
         }
     }
 
     private void listMenuItem() {
-        if (menuView == null) {
+        if (mView == null) {
             return;
         }
 
@@ -183,8 +165,8 @@ public class LeftMenuPresenter extends BaseUserPresenter implements IPresenter<I
             //empty
         }
 
-        if (menuView != null) {
-            menuView.setMenuItem(listItem);
+        if (mView != null) {
+            mView.setMenuItem(listItem);
         }
     }
 

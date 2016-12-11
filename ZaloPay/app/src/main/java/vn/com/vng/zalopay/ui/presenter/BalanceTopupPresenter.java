@@ -13,6 +13,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -21,6 +22,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -35,15 +37,11 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
  * Created by longlv on 10/05/2016.
  * *
  */
-public class BalanceTopupPresenter extends BaseUserPresenter implements IPresenter<IBalanceTopupView> {
+public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> {
 
     private final ZaloPayRepository mZaloPayRepository;
-    private final Navigator mNavigator;
-    private IBalanceTopupView mView;
-
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-
     private final PaymentWrapper paymentWrapper;
+    private final ApplicationSession mApplicationSession;
 
     private User mUser;
 
@@ -51,10 +49,9 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
     BalanceTopupPresenter(BalanceStore.Repository balanceRepository,
                           ZaloPayRepository zaloPayRepository,
                           TransactionStore.Repository transactionRepository,
-                          Navigator navigator,
-                          User user) {
+                          ApplicationSession applicationSession, User user) {
         mZaloPayRepository = zaloPayRepository;
-        mNavigator = navigator;
+        mApplicationSession = applicationSession;
         mUser = user;
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
@@ -62,31 +59,6 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
                 .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .build();
-    }
-
-    @Override
-    public void attachView(IBalanceTopupView iBalanceTopupView) {
-        this.mView = iBalanceTopupView;
-    }
-
-    @Override
-    public void detachView() {
-        unsubscribeIfNotNull(mCompositeSubscription);
-        this.mView = null;
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
     }
 
     private void hideLoading() {
@@ -114,9 +86,10 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
                 ETransactionType.TOPUP.toString(),
                 mUser.zaloPayId,
                 description)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     public void initData(Bundle bundle) {
@@ -190,7 +163,7 @@ public class BalanceTopupPresenter extends BaseUserPresenter implements IPresent
             if (mView == null) {
                 return;
             }
-            clearAndLogout();
+            mApplicationSession.clearUserSession();
         }
 
         // Topup don't support add more money since this is action to add more money

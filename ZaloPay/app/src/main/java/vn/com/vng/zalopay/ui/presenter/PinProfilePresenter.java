@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.ui.view.IPinProfileView;
  * Created by AnhHieu on 9/10/16.
  * *
  */
-public class PinProfilePresenter extends BaseUserPresenter implements IPresenter<IPinProfileView> {
+public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
 
     @Inject
     public PinProfilePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
@@ -27,55 +27,28 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         this.mApplicationContext = applicationContext;
     }
 
-    IPinProfileView pinProfileView;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
     private AccountStore.Repository mAccountRepository;
     private Context mApplicationContext;
 
-    @Override
-    public void attachView(IPinProfileView iPinProfileView) {
-        pinProfileView = iPinProfileView;
-    }
-
-    @Override
-    public void detachView() {
-        unsubscribeIfNotNull(compositeSubscription);
-        pinProfileView = null;
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
-
     private void showLoadingView() {
-        if (pinProfileView != null) {
-            pinProfileView.showLoading();
+        if (mView != null) {
+            mView.showLoading();
         }
     }
 
     private void hideLoadingView() {
-        if (pinProfileView != null) {
-            pinProfileView.hideLoading();
+        if (mView != null) {
+            mView.hideLoading();
         }
     }
 
     public void validatePin(String pin) {
         showLoadingView();
         Subscription subscription = mAccountRepository.validatePin(pin)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ValidatePinSubscriber());
-        compositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private class ValidatePinSubscriber extends DefaultSubscriber<Boolean> {
@@ -88,9 +61,9 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
             }
 
             hideLoadingView();
-            if (pinProfileView != null) {
-                pinProfileView.setError(ErrorMessageFactory.create(mApplicationContext, e));
-                pinProfileView.clearPin();
+            if (mView != null) {
+                mView.setError(ErrorMessageFactory.create(mApplicationContext, e));
+                mView.clearPin();
             }
         }
 
@@ -98,7 +71,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
         public void onCompleted() {
             Timber.d("onCompleted");
             hideLoadingView();
-            pinProfileView.onPinSuccess();
+            mView.onPinSuccess();
         }
     }
 }

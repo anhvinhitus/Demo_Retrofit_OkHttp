@@ -35,6 +35,7 @@ import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -42,6 +43,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
@@ -57,28 +59,25 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Created by longlv on 13/06/2016.
  * Controller for transfer money
  */
-public class TransferPresenter extends BaseUserPresenter implements IPresenter<ITransferView> {
+public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
 
     public static String mPreviousTransferId = null;
 
-    private ITransferView mView;
     private PaymentWrapper paymentWrapper;
-
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private RecentTransaction mTransaction;
     private int mMoneyTransferMode;
     private boolean mIsUserZaloPay = true;
 
     private User user;
-    private NotificationStore.Repository mNotificationRepository;
     private final ZaloPayRepository mZaloPayRepository;
     private final AccountStore.Repository accountRepository;
     private final Navigator mNavigator;
     private final TransferStore.Repository mTransferRepository;
     private Context applicationContext;
     private final TransferNotificationHelper mTransferNotificationHelper;
+    private final ApplicationSession mApplicationSession;
 
     @Inject
     TransferPresenter(final User user, NotificationStore.Repository notificationRepository,
@@ -88,17 +87,17 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                       final AccountStore.Repository accountRepository,
                       Navigator navigator,
                       TransferStore.Repository transferRepository,
-                      Context applicationContext) {
+                      Context applicationContext, ApplicationSession applicationSession) {
 
         this.user = user;
-        this.mNotificationRepository = notificationRepository;
         mZaloPayRepository = zaloPayRepository;
         this.accountRepository = accountRepository;
         mNavigator = navigator;
         this.mTransferRepository = transferRepository;
         this.applicationContext = applicationContext;
 
-        mTransferNotificationHelper = new TransferNotificationHelper(mNotificationRepository, user);
+        mTransferNotificationHelper = new TransferNotificationHelper(notificationRepository, user);
+        mApplicationSession = applicationSession;
 
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
@@ -109,13 +108,12 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 .build();
     }
 
-    void payPendingOrder() {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (paymentWrapper == null) {
             return;
         }
-        if (paymentWrapper.hasPendingOrder()) {
-            paymentWrapper.continuePayPendingOrder();
-        }
+
+        paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
     private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
@@ -177,7 +175,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetUserInfoSubscriber());
-        compositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     public void transferMoney() {
@@ -200,7 +198,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new CreateWalletOrderSubscriber());
 
-            compositeSubscription.add(subscription);
+            mSubscription.add(subscription);
         }
     }
 
@@ -266,29 +264,14 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
     }
 
     @Override
-    public void attachView(ITransferView view) {
-        mView = view;
-    }
-
-    @Override
     public void detachView() {
-        unsubscribeIfNotNull(compositeSubscription);
-        this.mView = null;
         mTransaction = null;
+        super.detachView();
     }
 
     @Override
     public void resume() {
         checkShowBtnContinue();
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
     }
 
     /**
@@ -375,9 +358,10 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         }
         Timber.d("getUserInfoByZaloPayId zaloPayId [%s]", zaloPayId);
         Subscription subscription = accountRepository.getUserInfoByZaloPayId(zaloPayId)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UserInfoSubscriber(mTransaction, mView, this));
-        compositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private void initLimitAmount() {
@@ -481,7 +465,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
 
         if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
 
-            compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+            mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
                     mTransaction.zaloPayId,
                     Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL, 0, null
             ));
@@ -492,7 +476,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
         mMoneyTransferMode = mode;
         if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
             // Send notification to receiver
-            compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+            mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
                     mTransaction.zaloPayId,
                     Constants.MoneyTransfer.STAGE_PRETRANSFER, 0, null
             ));
@@ -657,12 +641,12 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
             mTransaction.transactionId = transId;
             if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
                 if (isSuccessful) {
-                    compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+                    mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
                             mTransaction.zaloPayId,
                             Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount, transId
                     ));
                 } else {
-                    compositeSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+                    mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
                             mTransaction.zaloPayId,
                             Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0, null
                     ));
@@ -676,7 +660,7 @@ public class TransferPresenter extends BaseUserPresenter implements IPresenter<I
                 return;
             }
             mView.onTokenInvalid();
-            clearAndLogout();
+            mApplicationSession.clearUserSession();
         }
 
         @Override
