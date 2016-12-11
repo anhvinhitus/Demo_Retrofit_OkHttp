@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -34,6 +33,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.view.ILoginView;
+import vn.com.vng.zalopay.utils.ZaloHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -42,12 +42,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * *
  */
 
-public final class LoginPresenter extends BaseAppPresenter implements IPresenter<ILoginView>, LoginListener.ILoginZaloListener {
-
-    private ILoginView mView;
-
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
-
+public final class LoginPresenter extends AbstractPresenter<ILoginView> implements LoginListener.ILoginZaloListener {
     private LoginListener mLoginListener = new LoginListener(this);
     private Context mApplicationContext;
     private UserConfig mUserConfig;
@@ -71,16 +66,9 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
     }
 
     @Override
-    public void attachView(ILoginView view) {
-        this.mView = view;
-        Timber.d("set login view");
-    }
-
-    @Override
     public void detachView() {
         hideLoadingView();
-        this.mView = null;
-        Timber.d("detachView");
+        super.detachView();
     }
 
     @Override
@@ -109,22 +97,8 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         }
     }
 
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void destroy() {
-        this.detachView();
-        this.unsubscribe();
-    }
-
     public void setData(Uri data) {
         this.mData = data;
-    }
-
-    private void unsubscribe() {
-        unsubscribeIfNotNull(compositeSubscription);
     }
 
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -173,7 +147,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
 
         mUserConfig.saveUserInfo(zaloId, "", "", 0, 0);
         if (mView != null) {
-            this.getZaloProfileInfo(mApplicationContext, mUserConfig);
+            ZaloHelper.getZaloProfileInfo(mApplicationContext, mUserConfig);
             this.loginPayment(zaloId, authCode);
         }
 
@@ -199,7 +173,7 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LoginPaymentSubscriber());
-        compositeSubscription.add(subscriptionLogin);
+        mSubscription.add(subscriptionLogin);
     }
 
     private void showErrorView(String message) {
@@ -286,6 +260,6 @@ public final class LoginPresenter extends BaseAppPresenter implements IPresenter
         Subscription subscription = mApplicationSession.clearMerchant()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
-        compositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 }

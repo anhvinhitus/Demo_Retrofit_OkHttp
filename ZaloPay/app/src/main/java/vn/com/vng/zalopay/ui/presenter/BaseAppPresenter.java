@@ -44,17 +44,4 @@ public abstract class BaseAppPresenter {
     protected void clearAndLogout() {
         AndroidApplication.instance().getAppComponent().applicationSession().clearUserSession();
     }
-
-    public void getZaloProfileInfo(Context context, final UserConfig userConfig) {
-        ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
-            @Override
-            public void onResult(JSONObject profile) {
-                try {
-                    userConfig.saveZaloUserInfo(profile);
-                } catch (Exception ex) {
-                    Timber.w(ex, " Exception :");
-                }
-            }
-        });
-    }
 }

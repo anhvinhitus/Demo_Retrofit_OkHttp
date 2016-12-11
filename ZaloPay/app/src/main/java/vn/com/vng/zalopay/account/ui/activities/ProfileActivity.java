@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ImageLoader;
+import vn.com.vng.zalopay.utils.ZaloHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -113,7 +114,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
 
     private void initView() {
         presenter.attachView(this);
-        presenter.getZaloProfileInfo(getApplicationContext(), userConfig);
+        ZaloHelper.getZaloProfileInfo(getApplicationContext(), userConfig);
         getToolbar().setTitleTextColor(Color.TRANSPARENT);
 
         mCollapsingToolbarLayout.setTitleEnabled(false);
@@ -123,6 +124,10 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
             int scrollRange = -1;
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (ProfileActivity.this.isFinishing()) {
+                    return;
+                }
+
                 float alpha = 1 + ((float) verticalOffset / mAppBarLayout.getTotalScrollRange());
                 //Timber.d("onOffsetChanged verticalOffset %s alpha %s", verticalOffset, alpha);
                 layoutUser.setAlpha(alpha);

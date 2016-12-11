@@ -12,6 +12,7 @@ import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -19,10 +20,8 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
  * Created by longlv on 19/05/2016.
  * *
  */
-public class ProfileInfoPresenter extends BaseUserPresenter implements IPresenter<IProfileInfoView> {
+public class ProfileInfoPresenter extends AbstractPresenter<IProfileInfoView> {
 
-    IProfileInfoView mView;
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private EventBus mEventBus;
     private UserConfig mUserConfig;
 
@@ -35,7 +34,7 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void attachView(IProfileInfoView iProfileInfoView) {
-        mView = iProfileInfoView;
+        super.attachView(iProfileInfoView);
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
@@ -43,24 +42,13 @@ public class ProfileInfoPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void detachView() {
-        unsubscribeIfNotNull(compositeSubscription);
         mEventBus.unregister(this);
-        mView = null;
+        super.detachView();
     }
 
     @Override
     public void resume() {
         mView.updateUserInfo(mUserConfig.getCurrentUser());
-    }
-
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void destroy() {
-        detachView();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
