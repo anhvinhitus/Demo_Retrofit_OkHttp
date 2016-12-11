@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfileLevel2;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseAppPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -21,11 +22,7 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
  * Created by longlv on 19/05/2016.
  * *
  */
-public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<IPreProfileView> {
-
-    private IPreProfileView mView;
-
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+public class PreProfilePresenter extends AbstractPresenter<IPreProfileView> {
     private AccountStore.Repository mAccountRepository;
 
     @Inject
@@ -38,7 +35,7 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
 
     @Override
     public void attachView(IPreProfileView iPreProfileView) {
-        mView = iPreProfileView;
+        super.attachView(iPreProfileView);
         initPagerContent();
     }
 
@@ -64,26 +61,7 @@ public class PreProfilePresenter extends BaseAppPresenter implements IPresenter<
                         }
                     }
                 });
-        mCompositeSubscription.add(subscription);
-    }
-
-    @Override
-    public void detachView() {
-        unsubscribeIfNotNull(mCompositeSubscription);
-        mView = null;
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void destroy() {
-        this.detachView();
+        mSubscription.add(subscription);
     }
 
     public void saveUserPhone(String phone) {

@@ -8,30 +8,35 @@ import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
-import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by longlv on 10/25/16.
  * Contains linkCard function
  */
 
-abstract class AbsLinkCardPresenter extends BaseUserPresenter {
+abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
-    CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    CompositeSubscription mSubscription = new CompositeSubscription();
     private PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
+
+    @Inject
+    ApplicationSession mApplicationSession;
 
     @Inject
     User user;
@@ -57,10 +62,10 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
 
     abstract void showNetworkErrorDialog();
 
-    AbsLinkCardPresenter(ZaloPayRepository zaloPayRepository,
-                         Navigator navigator,
-                         BalanceStore.Repository balanceRepository,
-                         TransactionStore.Repository transactionRepository) {
+    AbstractLinkCardPresenter(ZaloPayRepository zaloPayRepository,
+                              Navigator navigator,
+                              BalanceStore.Repository balanceRepository,
+                              TransactionStore.Repository transactionRepository) {
         mNavigator = navigator;
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
@@ -68,6 +73,15 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
                 .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .build();
+    }
+
+    @Override
+    public void destroy() {
+        //release cache
+        CShareData.dispose();
+        GlobalData.initApplication(null);
+
+        super.destroy();
     }
 
     void addLinkCard() {
@@ -108,7 +122,7 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
         @Override
         public void onResponseTokenInvalid() {
             onTokenInvalid();
-            clearAndLogout();
+            mApplicationSession.clearUserSession();
         }
 
         @Override
@@ -120,7 +134,7 @@ abstract class AbsLinkCardPresenter extends BaseUserPresenter {
         public void onPreComplete(boolean isSuccessful, String tId, String pAppTransId) {
             Timber.d("onPreComplete isSuccessful [%s]", isSuccessful);
             if (isSuccessful) {
-                AbsLinkCardPresenter.this.onPreComplete();
+                AbstractLinkCardPresenter.this.onPreComplete();
             }
         }
 

@@ -30,11 +30,9 @@ import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
  * Created by hieuvm on 12/4/16.
  */
 
-public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCallSplashScreenView> {
+public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExternalCallSplashScreenView> {
 
     private static final int LOGIN_REQUEST_CODE = 100;
-
-    private IExternalCallSplashScreenView mView;
 
     private UserConfig mUserConfig;
 
@@ -51,31 +49,6 @@ public class ExternalCallSplashScreenPresenter implements IPresenter<IExternalCa
         this.mApplicationState = applicationState;
         this.mEventBus = eventBus;
         this.mNavigator = navigator;
-    }
-
-    @Override
-    public void attachView(IExternalCallSplashScreenView view) {
-        this.mView = view;
-    }
-
-    @Override
-    public void detachView() {
-        this.mView = null;
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-        detachView();
     }
 
     public void handleIntent(Intent intent) {

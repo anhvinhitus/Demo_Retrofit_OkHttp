@@ -10,19 +10,13 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by longlv on 10/22/16.
  * *
  */
-class CardSupportPresenter extends AbsLinkCardPresenter implements IPresenter<ICardSupportView> {
-
-    private ICardSupportView mCardSupportView;
-
+class CardSupportPresenter extends AbstractLinkCardPresenter<ICardSupportView> {
     @Inject
     User user;
 
@@ -35,62 +29,35 @@ class CardSupportPresenter extends AbsLinkCardPresenter implements IPresenter<IC
     }
 
     @Override
-    public void attachView(ICardSupportView iLinkCardView) {
-        mCardSupportView = iLinkCardView;
-    }
-
-    @Override
-    public void detachView() {
-        mCardSupportView = null;
-        unsubscribeIfNotNull(mCompositeSubscription);
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-        //release cache
-        CShareData.dispose();
-        GlobalData.initApplication(null);
-    }
-
-    @Override
     Activity getActivity() {
-        if (mCardSupportView == null) {
+        if (mView == null) {
             return null;
         }
-        return mCardSupportView.getActivity();
+        return mView.getActivity();
     }
 
     @Override
     Context getContext() {
-        if (mCardSupportView == null) {
+        if (mView == null) {
             return null;
         }
-        return mCardSupportView.getContext();
+        return mView.getContext();
     }
 
     @Override
     void onTokenInvalid() {
-        if (mCardSupportView == null) {
+        if (mView == null) {
             return;
         }
-        mCardSupportView.onTokenInvalid();
+        mView.onTokenInvalid();
     }
 
     @Override
     void onPreComplete() {
-        if (mCardSupportView == null) {
+        if (mView == null) {
             return;
         }
-        mCardSupportView.onPreComplete();
+        mView.onPreComplete();
     }
 
     @Override
@@ -100,35 +67,35 @@ class CardSupportPresenter extends AbsLinkCardPresenter implements IPresenter<IC
 
     @Override
     protected void showLoadingView() {
-        if (mCardSupportView == null) {
+        if (mView == null) {
             return;
         }
-        mCardSupportView.showLoading();
+        mView.showLoading();
     }
 
     @Override
     protected void hideLoadingView() {
-        if (mCardSupportView == null) {
+        if (mView == null) {
             return;
         }
-        mCardSupportView.hideLoading();
+        mView.hideLoading();
     }
 
     @Override
     protected void showErrorView(String message) {
-        if (mCardSupportView == null) {
+        if (mView == null) {
             return;
         }
-        mCardSupportView.hideLoading();
-        mCardSupportView.showError(message);
+        mView.hideLoading();
+        mView.showError(message);
     }
 
     @Override
     void showNetworkErrorDialog() {
-        if (mCardSupportView == null) {
+        if (mView == null) {
             return;
         }
-        mCardSupportView.hideLoading();
-        mCardSupportView.showNetworkErrorDialog();
+        mView.hideLoading();
+        mView.showNetworkErrorDialog();
     }
 }

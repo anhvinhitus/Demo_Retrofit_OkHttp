@@ -15,6 +15,7 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfileLevel2;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
@@ -22,11 +23,7 @@ import vn.com.vng.zalopay.ui.presenter.IPresenter;
  * Created by longlv on 25/05/2016.
  * *
  */
-public class PinProfilePresenter extends BaseUserPresenter implements IPresenter<IPinProfileView> {
-
-    private IPinProfileView mView;
-
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
     private AccountStore.Repository mAccountRepository;
 
     @Inject
@@ -36,33 +33,14 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
 
     @Override
     public void attachView(IPinProfileView iProfileView) {
-        mView = iProfileView;
+        super.attachView(iProfileView);
         showProfileLevel2Cache();
     }
 
     @Override
     public void detachView() {
         hideLoading();
-        this.mView = null;
-    }
-
-    private void unsubscribe() {
-        unsubscribeIfNotNull(mCompositeSubscription);
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-        this.unsubscribe();
+        super.detachView();
     }
 
     public void updateProfile(String pin, String phone) {
@@ -71,7 +49,7 @@ public class PinProfilePresenter extends BaseUserPresenter implements IPresenter
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UpdateProfileSubscriber(phone));
-        mCompositeSubscription.add(subscriptionLogin);
+        mSubscription.add(subscriptionLogin);
     }
 
     private final class UpdateProfileSubscriber extends DefaultSubscriber<Boolean> {

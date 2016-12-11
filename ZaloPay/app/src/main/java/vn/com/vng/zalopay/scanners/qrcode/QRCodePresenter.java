@@ -43,14 +43,14 @@ import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
-import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
-import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -65,14 +65,14 @@ import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
  * Controller for QR code scanning
  */
 
-public final class QRCodePresenter extends BaseUserPresenter implements IPresenter<IQRScanView> {
+public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
 
     private final Context mApplicationContext;
     private final Navigator mNavigator;
     private final UserConfig mUserConfig;
-    private IQRScanView mView;
 
     private PaymentWrapper paymentWrapper;
+    private ApplicationSession mApplicationSession;
 
     @Inject
     QRCodePresenter(BalanceStore.Repository balanceRepository,
@@ -80,8 +80,10 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
                     TransactionStore.Repository transactionRepository,
                     Context applicationContext,
                     Navigator navigator,
-                    UserConfig userConfig) {
+                    UserConfig userConfig,
+                    ApplicationSession applicationSession) {
         Timber.d("New instance of QRCodePresenter");
+        mApplicationSession = applicationSession;
         mApplicationContext = applicationContext;
         mNavigator = navigator;
         mUserConfig = userConfig;
@@ -95,28 +97,8 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
     }
 
     @Override
-    public void attachView(IQRScanView view) {
-        this.mView = view;
-    }
-
-    @Override
-    public void detachView() {
-        this.mView = null;
-    }
-
-    @Override
     public void resume() {
         hideLoadingView();
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-        this.detachView();
     }
 
     private void showLoadingView() {
@@ -405,6 +387,15 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
         }
     }
 
+    private void ensureResumeScannerInUIThread() {
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                mView.resumeScanner();
+            }
+        });
+    }
+
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
 
         @Override
@@ -451,7 +442,7 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             }
 
             mView.onTokenInvalid();
-            clearAndLogout();
+            mApplicationSession.clearUserSession();
         }
 
         @Override
@@ -479,14 +470,5 @@ public final class QRCodePresenter extends BaseUserPresenter implements IPresent
             Timber.d("startUpdateProfileLevel");
             mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
         }
-    }
-
-    private void ensureResumeScannerInUIThread() {
-        AndroidUtils.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                mView.resumeScanner();
-            }
-        });
     }
 }

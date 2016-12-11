@@ -23,7 +23,6 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -75,15 +74,11 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Created by AnhHieu on 5/24/16.
  * *
  */
-public class MainPresenter extends BaseUserPresenter implements IPresenter<IHomeView> {
-
-    private IHomeView mHomeView;
+public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     private boolean isLoadedGateWayInfo;
 
     private PaymentWrapper paymentWrapper;
-
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     private EventBus mEventBus;
     private AppResourceStore.Repository mAppResourceRepository;
@@ -95,6 +90,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     private TransactionStore.Repository mTransactionRepository;
     private User mUser;
     private FriendStore.Repository mFriendRepository;
+    private Subscription mRefPlatformSubscription;
 
     @Inject
     NotificationStore.Repository mNotifyRepository;
@@ -152,7 +148,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                     }
                 });
 
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private Observable<Boolean> retrieveZaloFriendsAsNeeded() {
@@ -189,13 +185,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                             Timber.d(e, "Sync contact exception");
                         }
                     });
-            mCompositeSubscription.add(subscription);
+            mSubscription.add(subscription);
         }
     }
 
     @Override
     public void attachView(IHomeView iHomeView) {
-        this.mHomeView = iHomeView;
+        super.attachView(iHomeView);
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
@@ -209,12 +205,11 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     public void detachView() {
         mEventBus.unregister(this);
         unsubscribeIfNotNull(mRefPlatformSubscription);
-        unsubscribeIfNotNull(mCompositeSubscription);
         GlobalData.initApplication(null);
         notificationService.destroy();
         CShareData.dispose();
-        this.mHomeView = null;
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
+        super.detachView();
     }
 
     @Override
@@ -222,8 +217,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         notificationService.startNotificationService();
 
         GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
-        if (message != null && mHomeView != null) {
-            SweetAlertDialog alertDialog = new SweetAlertDialog(mHomeView.getContext(), message.messageType, R.style.alert_dialog);
+        if (message != null && mView != null) {
+            SweetAlertDialog alertDialog = new SweetAlertDialog(mView.getContext(), message.messageType, R.style.alert_dialog);
             alertDialog.setConfirmText(message.title);
             alertDialog.setContentText(message.content);
             alertDialog.show();
@@ -232,12 +227,9 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     }
 
     @Override
-    public void pause() {
-    }
-
-    @Override
     public void destroy() {
         mUserSession.endSession();
+        super.destroy();
     }
 
     public void initialize() {
@@ -258,20 +250,20 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
-                        if (!aBoolean && mHomeView != null) {
-                            mNavigator.startWarningRootedActivity(mHomeView.getContext());
+                        if (!aBoolean && mView != null) {
+                            mNavigator.startWarningRootedActivity(mView.getContext());
                         }
                     }
                 });
 
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private void initializeAppConfig() {
         Subscription subscription = mAppResourceRepository.initialize()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private void refreshBanners() {
@@ -307,13 +299,17 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
                 refreshBanners();
                 AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
-                AppVersionUtils.showDialogUpgradeAppIfNeed(mHomeView.getActivity());
+                AppVersionUtils.showDialogUpgradeAppIfNeed(mView.getActivity());
             }
         });
     }
 
 
-    private Subscription mRefPlatformSubscription;
+    private void unsubscribeIfNotNull(Subscription subscription) {
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
+    }
 
     private void beginAutoRefreshPlatform() {
         unsubscribeIfNotNull(mRefPlatformSubscription);
@@ -360,7 +356,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onRefreshPaymentSdk(RefreshPaymentSdkEvent event) {
-        if (mHomeView == null) {
+        if (mView == null) {
             return;
         }
 
@@ -374,13 +370,13 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiverAlertNotification(AlertNotificationEvent event) {
 
-        if (mHomeView == null) {
+        if (mView == null) {
             return;
         }
 
         final NotificationData notify = event.notify;
         if (notify.transid > 0) {
-            SweetAlertDialog dialog = new SweetAlertDialog(mHomeView.getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
+            SweetAlertDialog dialog = new SweetAlertDialog(mView.getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog);
 
             dialog.setTitleText(TextUtils.isEmpty(event.mTitle) ? mApplicationContext.getString(R.string.notification) : event.mTitle);
             dialog.setCancelText(mApplicationContext.getString(R.string.txt_close));
@@ -389,8 +385,8 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
             dialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                 @Override
                 public void onClick(SweetAlertDialog dialog) {
-                    if (mHomeView != null) {
-                        mNavigator.startTransactionDetail(mHomeView.getContext(), String.valueOf(notify.transid));
+                    if (mView != null) {
+                        mNavigator.startTransactionDetail(mView.getContext(), String.valueOf(notify.transid));
                     }
                     dialog.dismiss();
                 }
@@ -403,7 +399,7 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         Subscription subscription = passportRepository.logout()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
 
         if (mEventBus.isRegistered(this)) {
             mEventBus.unregister(this);
@@ -417,24 +413,24 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
         if (paymentWrapper == null) {
             paymentWrapper = getPaymentWrapper(appId, isAppToApp);
         }
-        paymentWrapper.payWithToken(mHomeView.getActivity(), appId, zptranstoken);
+        paymentWrapper.payWithToken(mView.getActivity(), appId, zptranstoken);
     }
 
     private void showLoadingView() {
-        if (mHomeView != null) {
-            mHomeView.showLoading();
+        if (mView != null) {
+            mView.showLoading();
         }
     }
 
     private void hideLoadingView() {
-        if (mHomeView != null) {
-            mHomeView.hideLoading();
+        if (mView != null) {
+            mView.hideLoading();
         }
     }
 
     private void showErrorView(String mess) {
-        if (mHomeView != null) {
-            mHomeView.showError(mess);
+        if (mView != null) {
+            mView.showError(mess);
         }
     }
 
@@ -458,10 +454,10 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                 .setBalanceRepository(mBalanceRepository)
                 .setZaloPayRepository(mZaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
-                .setResponseListener(new AbsPWResponseListener(mHomeView.getActivity()) {
+                .setResponseListener(new AbsPWResponseListener(mView.getActivity()) {
                     @Override
                     public void onError(PaymentWrapperException exception) {
-                        if (mHomeView == null) {
+                        if (mView == null) {
                             return;
                         }
 
@@ -469,33 +465,33 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                         showErrorView(exception.getMessage());
 
                         if (isAppToApp) {
-                            responseToApp(mHomeView.getActivity(), appId, exception.getErrorCode(), exception.getMessage());
+                            responseToApp(mView.getActivity(), appId, exception.getErrorCode(), exception.getMessage());
                         }
                     }
 
                     @Override
                     public void onCompleted() {
-                        if (mHomeView == null) {
+                        if (mView == null) {
                             return;
                         }
 
                         hideLoadingView();
                         if (isAppToApp) {
-                            responseToApp(mHomeView.getActivity(), appId, PaymentError.ERR_CODE_SUCCESS.value(), "");
+                            responseToApp(mView.getActivity(), appId, PaymentError.ERR_CODE_SUCCESS.value(), "");
                         }
                     }
                 }).build();
     }
 
     private void showPayDialogConfirm(final PaymentDataEvent dataEvent) {
-        if (mHomeView == null || mHomeView.getActivity() == null) {
+        if (mView == null || mView.getActivity() == null) {
             return;
         }
 
-        DialogHelper.showConfirmDialog(mHomeView.getActivity(),
-                mHomeView.getActivity().getString(R.string.lbl_confirm_pay_order),
-                mHomeView.getActivity().getString(R.string.accept),
-                mHomeView.getActivity().getString(R.string.cancel),
+        DialogHelper.showConfirmDialog(mView.getActivity(),
+                mView.getActivity().getString(R.string.lbl_confirm_pay_order),
+                mView.getActivity().getString(R.string.accept),
+                mView.getActivity().getString(R.string.cancel),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {
@@ -520,6 +516,6 @@ public class MainPresenter extends BaseUserPresenter implements IPresenter<IHome
                         Timber.d(e, "onError");
                     }
                 });
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 }

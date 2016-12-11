@@ -12,16 +12,16 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**
  * Created by AnhHieu on 8/15/16.
+ *
  */
-public class TransferHomePresenter extends BaseUserPresenter implements IPresenter<ITransferHomeView> {
+public class TransferHomePresenter extends AbstractPresenter<ITransferHomeView> {
 
-    ITransferHomeView mView;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
     private TransferStore.Repository mTransferRepository;
 
     @Inject
@@ -30,36 +30,16 @@ public class TransferHomePresenter extends BaseUserPresenter implements IPresent
     }
 
     @Override
-    public void attachView(ITransferHomeView iTransferHomeView) {
-        mView = iTransferHomeView;
-    }
-
-    @Override
-    public void detachView() {
-        unsubscribeIfNotNull(compositeSubscription);
-        mView = null;
-    }
-
-    @Override
     public void resume() {
         this.getRecent();
     }
 
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
-
-    public void getRecent() {
+    private void getRecent() {
         Subscription subscription = mTransferRepository.getRecent()
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RecentSubscriber());
-        compositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private class RecentSubscriber extends DefaultSubscriber<List<RecentTransaction>> {

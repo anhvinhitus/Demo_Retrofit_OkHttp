@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -31,16 +32,9 @@ import vn.com.vng.zalopay.utils.DialogHelper;
  * *
  */
 
-final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresenter<IZaloFriendListView> {
-
-    private IZaloFriendListView mZaloFriendListView;
-
+final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListView> {
     private FriendStore.Repository mFriendRepository;
-
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-
     private Context mContext;
-
     private Navigator mNavigator;
 
 
@@ -51,47 +45,23 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
         this.mNavigator = navigator;
     }
 
-    @Override
-    public void attachView(IZaloFriendListView iZaloFriendListView) {
-        mZaloFriendListView = iZaloFriendListView;
-    }
-
-    @Override
-    public void detachView() {
-        unsubscribeIfNotNull(mCompositeSubscription);
-        mZaloFriendListView = null;
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
-
     void refreshFriendList() {
         Subscription subscription = mFriendRepository.fetchZaloFriendList()
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FriendListSubscriber());
 
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     void getFriendList() {
         Subscription subscription = mFriendRepository.zaloFriendList()
                 .concatWith(retrieveZaloFriendsAsNeeded())
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FriendListSubscriber());
 
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private Observable<Cursor> retrieveZaloFriendsAsNeeded() {
@@ -108,11 +78,11 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
                 });
     }
 
-    public void syncContact() {
+    void syncContact() {
         Subscription subscription = mFriendRepository.syncContact()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     void doSearch(String s) {
@@ -120,7 +90,7 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FriendListSubscriber());
 
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     void startTransfer(Fragment fragment, Cursor cursor) {
@@ -138,10 +108,10 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
         }
     }
 
-    void showDialogNotUsingApp(ZaloFriend zaloFriend) {
-        if (mZaloFriendListView != null) {
+    private void showDialogNotUsingApp(ZaloFriend zaloFriend) {
+        if (mView != null) {
             String message = String.format(mContext.getString(R.string.account_not_use_zalopay), zaloFriend.displayName, zaloFriend.displayName);
-            DialogHelper.showInfoDialog((Activity) mZaloFriendListView.getContext(),
+            DialogHelper.showInfoDialog((Activity) mView.getContext(),
                     mContext.getString(R.string.notification),
                     message,
                     null);
@@ -161,9 +131,9 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
         public void onNext(Cursor cursor) {
             Timber.d("onNext:  %s %s", next++, cursor);
             if (cursor != null) {
-                mZaloFriendListView.swapCursor(cursor);
-                mZaloFriendListView.hideLoading();
-                mZaloFriendListView.setRefreshing(false);
+                mView.swapCursor(cursor);
+                mView.hideLoading();
+                mView.setRefreshing(false);
             }
         }
 
@@ -171,9 +141,9 @@ final class ZaloFriendListPresenter extends BaseUserPresenter implements IPresen
         public void onError(Throwable e) {
             Timber.d(e, "Get friend zalo error");
             String message = ErrorMessageFactory.create(mContext, e);
-            if (mZaloFriendListView != null) {
-                mZaloFriendListView.showError(message);
-                mZaloFriendListView.setRefreshing(false);
+            if (mView != null) {
+                mView.showError(message);
+                mView.setRefreshing(false);
             }
         }
     }

@@ -35,6 +35,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.notification.NotificationType;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -46,10 +47,8 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
  * Controller for receiving money
  */
 
-final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresenter<IReceiveMoneyView>, GenerateQrCodeTask.ImageListener {
-
-    private IReceiveMoneyView mView;
-
+final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
+        implements GenerateQrCodeTask.ImageListener {
     private String mPreviousContent;
 
     private EventBus mEventBus;
@@ -71,7 +70,7 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
 
     @Override
     public void attachView(IReceiveMoneyView view) {
-        mView = view;
+        super.attachView(view);
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
@@ -80,23 +79,17 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
     @Override
     public void detachView() {
         mEventBus.unregister(this);
-        mView = null;
         mListTransfer.clear();
         mMessageToUserId.clear();
         cancelAllTimer();
-    }
 
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void pause() {
+        super.detachView();
     }
 
     @Override
     public void destroy() {
         GlobalData.initApplication(null);
+        super.destroy();
     }
 
 
@@ -104,7 +97,7 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
         return generateQrContent(0, "");
     }
 
-    public String generateQrContent(long amount, String message) {
+    private String generateQrContent(long amount, String message) {
         try {
             List<String> fields = new ArrayList<>();
             JSONObject jsonObject = new JSONObject();
@@ -144,7 +137,7 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
         }
     }
 
-    public void updateQRWithAmount(long amount, String message) {
+    void updateQRWithAmount(long amount, String message) {
         String content = generateQrContent(amount, message);
         if (content.equals(mPreviousContent)) {
             return;
@@ -277,6 +270,12 @@ final class ReceiveMoneyPresenter extends BaseUserPresenter implements IPresente
                     }
                 });
         mapSubscription.put(zaloPayId, subscription);
+    }
+
+    private void unsubscribeIfNotNull(Subscription subscription) {
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
     }
 
     private void cancelTimer(String zaloPayId) {

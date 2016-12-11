@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IEditAccountNameView;
 import vn.com.vng.zalopay.data.NetworkError;
@@ -16,18 +15,14 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
-import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 8/12/16.
  */
-public class EditAccountNamePresenter extends BaseUserPresenter implements IPresenter<IEditAccountNameView> {
-
-    private IEditAccountNameView mView;
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+public class EditAccountNamePresenter extends AbstractPresenter<IEditAccountNameView> {
     private AccountStore.Repository accountRepository;
     private Context applicationContext;
 
@@ -37,39 +32,13 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
         this.applicationContext = applicationContext;
     }
 
-    @Override
-    public void attachView(IEditAccountNameView view) {
-        mView = view;
-    }
-
-    @Override
-    public void detachView() {
-        unsubscribeIfNotNull(mCompositeSubscription);
-        mView = null;
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
-
     public void existAccountName(String accountName) {
         Timber.d("exist account name %s", accountName);
         Subscription subscription = accountRepository.checkZaloPayNameExist(accountName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CheckAccountNameSubscriber());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     public void updateAccountName(String accountName) {
@@ -78,7 +47,7 @@ public class EditAccountNamePresenter extends BaseUserPresenter implements IPres
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UpdateAccountNameSubscriber());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private class CheckAccountNameSubscriber extends DefaultSubscriber<Boolean> {

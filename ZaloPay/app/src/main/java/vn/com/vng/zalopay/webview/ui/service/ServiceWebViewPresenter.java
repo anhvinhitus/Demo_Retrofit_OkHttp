@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
@@ -32,10 +33,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
  * Created by longlv on 14/09/2016.
  * *
  */
-public class ServiceWebViewPresenter extends BaseUserPresenter implements IPresenter<IWebView> {
-
-    private IWebView mView;
-
+public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
     private String mHost;
     private WebViewPayInfo mAppGamePayInfo;
     private Navigator mNavigator;
@@ -150,31 +148,6 @@ public class ServiceWebViewPresenter extends BaseUserPresenter implements IPrese
             return;
         }
         mView.showInputErrorDialog();
-    }
-
-    @Override
-    public void attachView(IWebView iWebView) {
-        mView = iWebView;
-    }
-
-    @Override
-    public void detachView() {
-        mView = null;
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

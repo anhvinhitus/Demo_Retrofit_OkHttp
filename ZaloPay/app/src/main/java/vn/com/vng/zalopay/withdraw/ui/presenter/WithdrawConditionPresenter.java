@@ -19,10 +19,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  * Created by longlv on 11/08/2016.
  * Presenter of WithdrawConditionFragment
  */
-public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
-        implements IPresenter<IWithdrawConditionView> {
-
-    private IWithdrawConditionView mView;
+public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IWithdrawConditionView> {
     private Navigator mNavigator;
 
     @Inject
@@ -81,29 +78,16 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
     }
 
     @Override
-    public void attachView(IWithdrawConditionView view) {
-        mView = view;
-    }
-
-    @Override
-    public void detachView() {
-        mView = null;
-    }
-
-    @Override
     public void resume() {
         checkConditionAndStartWithdrawActivity();
-    }
-
-    @Override
-    public void pause() {
-
     }
 
     @Override
     public void destroy() {
         CShareData.dispose();
         GlobalData.initApplication(null);
+
+        super.destroy();
     }
 
     @Override
@@ -120,5 +104,4 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter
         }
         mView.refreshListCardSupport(list);
     }
-
 }

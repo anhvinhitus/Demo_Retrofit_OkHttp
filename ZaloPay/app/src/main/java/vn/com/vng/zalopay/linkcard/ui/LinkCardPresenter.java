@@ -30,8 +30,6 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.presenter.IPresenter;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
@@ -45,10 +43,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  * Created by AnhHieu on 5/11/16.
  * *
  */
-public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresenter<ILinkCardView> {
-
-    private ILinkCardView mLinkCardView;
-
+public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> {
     @Inject
     User user;
 
@@ -58,17 +53,6 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
                       BalanceStore.Repository balanceRepository,
                       TransactionStore.Repository transactionRepository) {
         super(zaloPayRepository, navigator, balanceRepository, transactionRepository);
-    }
-
-    @Override
-    public void attachView(ILinkCardView iLinkCardView) {
-        mLinkCardView = iLinkCardView;
-    }
-
-    @Override
-    public void detachView() {
-        mLinkCardView = null;
-        unsubscribeIfNotNull(mCompositeSubscription);
     }
 
     private void getListCard() {
@@ -81,9 +65,8 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LinkCardSubscriber());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
-
 
     private BankCard transform(DMappedCard card) {
         BankCard bankCard = null;
@@ -123,20 +106,8 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
         getListCard();
     }
 
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-        //release cache
-        CShareData.dispose();
-        GlobalData.initApplication(null);
-    }
-
     private void onGetLinkCardSuccess(List<BankCard> list) {
-        mLinkCardView.setData(list);
+        mView.setData(list);
         hideLoadingView();
     }
 
@@ -169,7 +140,7 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
             if (mapCard != null) {
                 BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno,
                         mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
-                mLinkCardView.removeData(bankCard);
+                mView.removeData(bankCard);
             }
         }
 
@@ -178,7 +149,7 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
             Timber.tag("LinkCardPresenter").d("RemoveMapCard onError: " + pMessage);
             hideLoadingView();
             if (pMessage == null) {
-                if (NetworkHelper.isNetworkAvailable(mLinkCardView.getContext())) {
+                if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
                     showErrorView("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
                 } else {
                     showErrorView("Vui lòng kiểm tra kết nối mạng và thử lại.");
@@ -219,26 +190,26 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
 
     @Override
     Activity getActivity() {
-        if (mLinkCardView == null) {
+        if (mView == null) {
             return null;
         }
-        return mLinkCardView.getActivity();
+        return mView.getActivity();
     }
 
     @Override
     Context getContext() {
-        if (mLinkCardView == null) {
+        if (mView == null) {
             return null;
         }
-        return mLinkCardView.getContext();
+        return mView.getContext();
     }
 
     @Override
     void onTokenInvalid() {
-        if (mLinkCardView == null) {
+        if (mView == null) {
             return;
         }
-        mLinkCardView.onTokenInvalid();
+        mView.onTokenInvalid();
     }
 
     @Override
@@ -248,44 +219,44 @@ public class LinkCardPresenter extends AbsLinkCardPresenter implements IPresente
 
     @Override
     void onAddCardSuccess(DMappedCard mappedCreditCard) {
-        if (mLinkCardView == null) {
+        if (mView == null) {
             return;
         }
-        mLinkCardView.onAddCardSuccess(mappedCreditCard);
+        mView.onAddCardSuccess(mappedCreditCard);
     }
 
     @Override
     protected void showLoadingView() {
-        if (mLinkCardView == null) {
+        if (mView == null) {
             return;
         }
-        mLinkCardView.showLoading();
+        mView.showLoading();
     }
 
     @Override
     protected void hideLoadingView() {
-        if (mLinkCardView == null) {
+        if (mView == null) {
             return;
         }
-        mLinkCardView.hideLoading();
+        mView.hideLoading();
     }
 
     @Override
     protected void showErrorView(String message) {
-        if (mLinkCardView == null) {
+        if (mView == null) {
             return;
         }
-        mLinkCardView.hideLoading();
-        mLinkCardView.showError(message);
+        mView.hideLoading();
+        mView.showError(message);
     }
 
     @Override
     void showNetworkErrorDialog() {
-        if (mLinkCardView == null) {
+        if (mView == null) {
             return;
         }
-        mLinkCardView.hideLoading();
-        mLinkCardView.showNetworkErrorDialog();
+        mView.hideLoading();
+        mView.showNetworkErrorDialog();
     }
 
     String detectCardType(String bankcode, String first6cardno) {

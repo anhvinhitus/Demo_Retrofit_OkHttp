@@ -30,7 +30,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * *
  */
 @Singleton
-public class InvitationCodePresenter extends BaseAppPresenter implements IPresenter<IInvitationCodeView> {
+public class InvitationCodePresenter extends AbstractPresenter<IInvitationCodeView> {
 
     @Inject
     public InvitationCodePresenter(Context applicationContext, PassportRepository passportRepository) {
@@ -38,36 +38,8 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
         this.mPassportRepository = passportRepository;
     }
 
-    private IInvitationCodeView mView;
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private Context mApplicationContext;
     private PassportRepository mPassportRepository;
-
-    @Override
-    public void attachView(IInvitationCodeView iInvitationCodeView) {
-        mView = iInvitationCodeView;
-    }
-
-    @Override
-    public void detachView() {
-        unsubscribeIfNotNull(compositeSubscription);
-        mView = null;
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
 
     private void showLoadingView() {
         if (mView != null) {
@@ -88,7 +60,7 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LoginPaymentSubscriber());
-        compositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {
@@ -144,6 +116,4 @@ public class InvitationCodePresenter extends BaseAppPresenter implements IPresen
         String message = ErrorMessageFactory.create(mApplicationContext, e);
         mView.showError(message);
     }
-
-
 }

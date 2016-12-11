@@ -8,7 +8,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
@@ -20,6 +19,7 @@ import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -29,10 +29,9 @@ import static vn.com.vng.zalopay.data.NetworkError.OTP_CHANGE_PASSWORF_WRONG;
 /**
  * Created by AnhHieu on 8/25/16.
  */
-public class ChangePinPresenter extends BaseUserPresenter
+public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
         implements IChangePinPresenter<IChangePinContainer, IChangePinView, IChangePinVerifyView> {
 
-    private IChangePinContainer mChangePinContainer;
     private IChangePinView mChangePinView;
     private IChangePinVerifyView mChangePinVerifyView;
 
@@ -42,7 +41,7 @@ public class ChangePinPresenter extends BaseUserPresenter
 
     private AccountStore.Repository mAccountRepository;
     private final Context mApplicationContext;
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private CompositeSubscription mSubscription = new CompositeSubscription();
 
     @Inject
     public ChangePinPresenter(Context context, AccountStore.Repository accountRepository) {
@@ -72,32 +71,6 @@ public class ChangePinPresenter extends BaseUserPresenter
     }
 
     @Override
-    public void attachView(IChangePinContainer iChangePinContainer) {
-        mChangePinContainer = iChangePinContainer;
-    }
-
-    @Override
-    public void detachView() {
-        unsubscribeIfNotNull(mCompositeSubscription);
-        mChangePinContainer = null;
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
-
-    @Override
     public void changePin(String oldPin, String newPin) {
 
         if (mChangePinView != null) {
@@ -108,7 +81,7 @@ public class ChangePinPresenter extends BaseUserPresenter
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ChangePinSubscriber());
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     @Override
@@ -120,13 +93,12 @@ public class ChangePinPresenter extends BaseUserPresenter
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new VerifySubscriber());
-        mCompositeSubscription.add(subscription);
-
+        mSubscription.add(subscription);
     }
 
     private void onChangePinSuccess() {
         mChangePinView.hideLoading();
-        mChangePinContainer.nextPage();
+        mView.nextPage();
     }
 
 
@@ -140,7 +112,7 @@ public class ChangePinPresenter extends BaseUserPresenter
             int code = ((BodyException) e).errorCode;
             if (code == NetworkError.OLD_PIN_NOT_MATCH) {
                 if (numberError == LIMIT_CHANGE_PASSWORD_ERROR) {
-                    mChangePinContainer.onChangePinOverLimit();
+                    mView.onChangePinOverLimit();
                 } else {
                     mChangePinView.requestFocusOldPin();
                 }
@@ -177,17 +149,13 @@ public class ChangePinPresenter extends BaseUserPresenter
     private void onVerifyOTPSuccess() {
         ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTOK);
         mChangePinVerifyView.hideLoading();
-        mChangePinContainer.onVerifySuccess();
+        mView.onVerifySuccess();
     }
 
     private class ChangePinSubscriber extends DefaultSubscriber<BaseResponse> {
         @Override
         public void onNext(BaseResponse baseResponse) {
             ChangePinPresenter.this.onChangePinSuccess();
-        }
-
-        @Override
-        public void onCompleted() {
         }
 
         @Override
@@ -203,10 +171,6 @@ public class ChangePinPresenter extends BaseUserPresenter
         @Override
         public void onNext(BaseResponse baseResponse) {
             ChangePinPresenter.this.onVerifyOTPSuccess();
-        }
-
-        @Override
-        public void onCompleted() {
         }
 
         @Override

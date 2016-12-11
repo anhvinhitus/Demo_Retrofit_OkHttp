@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -32,10 +33,7 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
  * Created by longlv on 25/05/2016.
  * *
  */
-public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IProfileView> {
-
-    private IProfileView mView;
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     private EventBus mEventBus;
     private UserConfig mUserConfig;
     private AccountStore.Repository mAccountRepository;
@@ -51,7 +49,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     @Override
     public void attachView(IProfileView iProfileView) {
-        mView = iProfileView;
+        super.attachView(iProfileView);
 
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
@@ -60,9 +58,8 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
 
     @Override
     public void detachView() {
-        unsubscribeIfNotNull(compositeSubscription);
         mEventBus.unregister(this);
-        mView = null;
+        super.detachView();
     }
 
     @Override
@@ -71,14 +68,6 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
         if (user != null) {
             updateUserInfo(user);
         }
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void destroy() {
     }
 
     public void getProfile() {
@@ -135,7 +124,7 @@ public class ProfilePresenter extends BaseUserPresenter implements IPresenter<IP
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ProfileSubscriber());
-        compositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private void getProfileSuccess() {

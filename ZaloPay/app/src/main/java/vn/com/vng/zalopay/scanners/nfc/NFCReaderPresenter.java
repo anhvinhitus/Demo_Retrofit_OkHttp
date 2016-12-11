@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.scanners.nfc;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +28,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -37,7 +37,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
  * Created by huuhoa on 6/1/16.
  * Read NFC
  */
-final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<NfcView> {
+final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
     private final String MIME_TEXT_PLAIN = "text/plain";
 
     private NfcAdapter mNfcAdapter;
@@ -65,40 +65,40 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
     }
 
     public void initialize() {
-        if (mNfcView == null) {
+        if (mView == null) {
             return;
         }
 
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(mNfcView.getContext());
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(mView.getContext());
         if (mNfcAdapter == null) {
             // Stop here, we definitely need NFC
-            mNfcView.onInitDone(NfcView.STATUS_NOT_AVAILABLE);
+            mView.onInitDone(NfcView.STATUS_NOT_AVAILABLE);
             return;
         }
 
         if (mNfcAdapter.isEnabled()) {
-            mNfcView.onInitDone(NfcView.STATUS_ENABLE);
+            mView.onInitDone(NfcView.STATUS_ENABLE);
         } else {
-            mNfcView.onInitDone(NfcView.STATUS_DISABLE);
+            mView.onInitDone(NfcView.STATUS_DISABLE);
         }
     }
 
     public void setupForegroundDispatch() {
         Timber.d("setupForegroundDispatch");
-        final Intent intent = new Intent(mNfcView.getContext(), mNfcView.getActivity().getClass());
+        final Intent intent = new Intent(mView.getContext(), mView.getActivity().getClass());
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        final PendingIntent pendingIntent = PendingIntent.getActivity(mNfcView.getContext(), 0, intent, 0);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(mView.getContext(), 0, intent, 0);
 
         if (mNfcAdapter != null) {
-            mNfcAdapter.enableForegroundDispatch(mNfcView.getActivity(), pendingIntent, null, null);
+            mNfcAdapter.enableForegroundDispatch(mView.getActivity(), pendingIntent, null, null);
         }
     }
 
     public void stopForegroundDispatch() {
         Timber.d("stopForegroundDispatch");
         if (mNfcAdapter != null) {
-            mNfcAdapter.disableForegroundDispatch(mNfcView.getActivity());
+            mNfcAdapter.disableForegroundDispatch(mView.getActivity());
         }
     }
 
@@ -132,18 +132,6 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
         new NdefReaderTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tag);
     }
 
-    private NfcView mNfcView;
-
-    @Override
-    public void attachView(NfcView nfcView) {
-        mNfcView = nfcView;
-    }
-
-    @Override
-    public void detachView() {
-        mNfcView = null;
-    }
-
     @Override
     public void resume() {
         if (mNfcAdapter == null) {
@@ -164,7 +152,7 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
     @Override
     public void destroy() {
         mNfcAdapter = null;
-        mNfcView = null;
+        super.destroy();
     }
 
     private void onReceivePaymentRecord(PaymentRecord record) {
@@ -182,7 +170,7 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
         }
 
         Timber.i("appId: %d, token: [%s]", record.appId, record.transactionToken);
-        paymentWrapper.payWithToken(mNfcView.getActivity(), record.appId, record.transactionToken);
+        paymentWrapper.payWithToken(mView.getActivity(), record.appId, record.transactionToken);
     }
 
     private void initPaymentWrapper() {
@@ -306,8 +294,8 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
 
         @Override
         public void onNotEnoughMoney() {
-            if (mNfcView != null) {
-                mNavigator.startDepositForResultActivity(mNfcView.getFragment());
+            if (mView != null) {
+                mNavigator.startDepositForResultActivity(mView.getFragment());
             }
         }
     }
@@ -315,10 +303,10 @@ final class NFCReaderPresenter extends BaseUserPresenter implements IPresenter<N
     private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
         @Override
         public void startUpdateProfileLevel(String walletTransId) {
-            if (mNfcView == null || mNfcView.getFragment() == null) {
+            if (mView == null || mView.getFragment() == null) {
                 return;
             }
-            mNavigator.startUpdateProfile2ForResult(mNfcView.getFragment(), walletTransId);
+            mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
         }
     }
 }

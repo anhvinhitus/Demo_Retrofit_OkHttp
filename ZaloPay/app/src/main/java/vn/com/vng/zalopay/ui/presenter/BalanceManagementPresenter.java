@@ -34,12 +34,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  * Created by longlv on 11/08/2016.
  * *
  */
-public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
-        implements IPresenter<IBalanceManagementView> {
-
-    private IBalanceManagementView mView;
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
-
+public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IBalanceManagementView> {
     private User mUser;
     private EventBus mEventBus;
     private BalanceStore.Repository mBalanceRepository;
@@ -64,17 +59,6 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
     }
 
     @Override
-    public void attachView(IBalanceManagementView iWithdrawView) {
-        mView = iWithdrawView;
-    }
-
-    @Override
-    public void detachView() {
-        unsubscribeIfNotNull(compositeSubscription);
-        mView = null;
-    }
-
-    @Override
     public void resume() {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
@@ -93,6 +77,8 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
     public void destroy() {
         CShareData.dispose();
         GlobalData.initApplication(null);
+
+        super.destroy();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -114,7 +100,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter
         Subscription subscription = mBalanceRepository.updateBalance()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
-        compositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     public void startWithdrawActivity() {

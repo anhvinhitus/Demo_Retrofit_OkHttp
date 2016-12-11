@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -22,11 +23,7 @@ import vn.com.zalopay.analytics.ZPEvents;
 /**
  * Created by longlv on 25/05/2016.
  */
-public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter<IOTPProfileView> {
-
-    private IOTPProfileView mView;
-
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+public class OTPProfilePresenter extends AbstractPresenter<IOTPProfileView> {
     private AccountStore.Repository mAccountRepository;
     private Context applicationContext;
 
@@ -37,27 +34,9 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
     }
 
     @Override
-    public void attachView(IOTPProfileView iProfileView) {
-        mView = iProfileView;
-    }
-
-    @Override
     public void detachView() {
         hideLoading();
-        unsubscribeIfNotNull(mCompositeSubscription);
-        this.mView = null;
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void destroy() {
+        super.detachView();
     }
 
     private void onConfirmOTPError(Throwable e) {
@@ -81,7 +60,7 @@ public class OTPProfilePresenter extends BaseUserPresenter implements IPresenter
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new VerifyOTPProfileSubscriber());
 
-        mCompositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private final class VerifyOTPProfileSubscriber extends DefaultSubscriber<Boolean> {

@@ -15,7 +15,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
 import vn.com.vng.zalopay.data.NetworkError;
@@ -26,8 +25,7 @@ import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
-import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
-import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 
 import static vn.com.vng.zalopay.utils.PhotoUtil.resizeImageByteArray;
 
@@ -35,10 +33,8 @@ import static vn.com.vng.zalopay.utils.PhotoUtil.resizeImageByteArray;
  * Created by AnhHieu on 7/1/16.
  * *
  */
-public class UpdateProfile3Presenter extends BaseUserPresenter implements IPresenter<IUpdateProfile3View> {
+public class UpdateProfile3Presenter extends AbstractPresenter<IUpdateProfile3View> {
 
-    private IUpdateProfile3View mView;
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private AccountStore.Repository mAccountRepository;
     private Context mApplicationContext;
 
@@ -46,29 +42,6 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
     UpdateProfile3Presenter(AccountStore.Repository accountRepository, Context applicationContext) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
-    }
-
-    @Override
-    public void attachView(IUpdateProfile3View iUpdateProfile3View) {
-        mView = iUpdateProfile3View;
-    }
-
-    @Override
-    public void detachView() {
-        unsubscribeIfNotNull(compositeSubscription);
-        mView = null;
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void destroy() {
     }
 
     public void updateProfile3(final String identityNumber,
@@ -127,7 +100,9 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
                         bytes.get(1),
                         bytes.get(2));
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UpdateSubscriber());
     }
 
@@ -195,9 +170,10 @@ public class UpdateProfile3Presenter extends BaseUserPresenter implements IPrese
 
     public void getProfileInfo() {
         Subscription subscription = mAccountRepository.getProfileInfo3Cache()
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ProfileInfo3Subscriber());
-        compositeSubscription.add(subscription);
+        mSubscription.add(subscription);
     }
 
     private class ProfileInfo3Subscriber extends DefaultSubscriber<ProfileInfo3> {
