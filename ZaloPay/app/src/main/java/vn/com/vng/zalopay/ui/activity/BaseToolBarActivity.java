@@ -9,6 +9,7 @@ import vn.com.vng.zalopay.R;
 
 /**
  * Created by AnhHieu on 3/26/16.
+ * *
  */
 public abstract class BaseToolBarActivity extends BaseActivity {
 

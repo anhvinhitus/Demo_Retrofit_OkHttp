@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.linkcard.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import javax.inject.Inject;
 
@@ -30,6 +31,15 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter.attachView(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Fragment fragment = getActiveFragment();
+        if (fragment instanceof CardSupportFragment) {
+            ((CardSupportFragment) fragment).getCardSupport();
+        }
     }
 
     @Override
