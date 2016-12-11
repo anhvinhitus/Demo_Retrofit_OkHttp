@@ -34,8 +34,8 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
         Fragment fragment = getActiveFragment();
         if (fragment instanceof CardSupportFragment) {
             ((CardSupportFragment) fragment).getCardSupport();
