@@ -29,8 +29,6 @@ import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
-import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**

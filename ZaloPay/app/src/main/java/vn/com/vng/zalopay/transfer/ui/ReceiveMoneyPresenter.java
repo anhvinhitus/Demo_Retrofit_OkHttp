@@ -36,8 +36,6 @@ import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.notification.NotificationType;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.vng.zalopay.ui.presenter.BaseUserPresenter;
-import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.GlobalData;
