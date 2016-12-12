@@ -152,7 +152,7 @@ public class ZPEditText extends AppCompatEditText {
     OnFocusChangeListener outerFocusChangeListener;
     private List<ZPEditTextValidate> validators;
     private ZPEditTextLengthChecker lengthChecker;
-    private ZPEditTextClearText cleaTextListener;
+    private ZPEditTextClearText clearTextListener;
     private int paddingLeftLine;
     private int paddingRightLine;
 
@@ -849,7 +849,7 @@ public class ZPEditText extends AppCompatEditText {
     }
 
     public void setClearTextListener(ZPEditTextClearText listener) {
-        this.cleaTextListener = listener;
+        this.clearTextListener = listener;
     }
 
     @Override
@@ -1051,8 +1051,8 @@ public class ZPEditText extends AppCompatEditText {
                             setText(null);
                         }
                         clearButtonClicking = false;
-                        if (cleaTextListener != null) {
-                            cleaTextListener.onClearTextSuccess();
+                        if (clearTextListener != null) {
+                            clearTextListener.onClearTextSuccess();
                         }
                     }
                     if (clearButtonTouched) {
