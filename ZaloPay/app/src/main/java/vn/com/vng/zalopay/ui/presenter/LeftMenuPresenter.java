@@ -42,28 +42,16 @@ public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
     private User user;
 
     private EventBus mEventBus;
-
-    /**
-     * @TODO: Examine the need to refresh transaction history and balance in this presenter
-     * Issue on GitLab: https://gitlab.com/zalopay/bugs/issues/255
-     */
-    private TransactionStore.Repository mTransactionRepository;
+    
     private UserConfig mUserConfig;
-    private BalanceStore.Repository mBalanceRepository;
     private Context context;
-
-    private boolean isInitiated;
 
     @Inject
     LeftMenuPresenter(User user, EventBus mEventBus,
-                      TransactionStore.Repository mTransactionRepository,
                       UserConfig userConfig,
-                      BalanceStore.Repository balanceRepository,
                       Context context) {
         this.mEventBus = mEventBus;
-        this.mTransactionRepository = mTransactionRepository;
         this.mUserConfig = userConfig;
-        this.mBalanceRepository = balanceRepository;
         this.context = context;
         this.user = user;
         Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
@@ -86,28 +74,6 @@ public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
     public void initialize() {
         listMenuItem();
         mView.setUserInfo(user);
-        this.getTransaction();
-    }
-
-    private void getTransaction() {
-        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistoryLatest()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-                        isInitiated = true;
-                    }
-                });
-        mSubscription.add(subscriptionSuccess);
-    }
-
-    private void getBalance() {
-        Subscription subscription = mBalanceRepository.balance()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<Long>());
-
-        mSubscription.add(subscription);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -129,10 +95,7 @@ public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
         if (!event.isOnline) {
             return;
         }
-        if (!isInitiated) {
-            this.getBalance();
-            this.getTransaction();
-        }
+
         if (TextUtils.isEmpty(mUserConfig.getCurrentUser().displayName) ||
                 TextUtils.isEmpty(mUserConfig.getCurrentUser().avatar)) {
             ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {

@@ -107,6 +107,8 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     @Inject
     GlobalEventHandlingService globalEventHandlingService;
 
+    private boolean isInitTransaction;
+
     @Inject
     MainPresenter(User user, EventBus eventBus,
                   AppResourceStore.Repository appResourceRepository,
@@ -246,7 +248,9 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             public Boolean call() throws Exception {
                 return !RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted();
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
@@ -337,6 +341,10 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (!event.isOnline) {
             return;
         }
+        if (!isInitTransaction) {
+            this.getTransaction();
+        }
+
         if (!isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
@@ -517,5 +525,17 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                     }
                 });
         mSubscription.add(subscription);
+    }
+
+    private void getTransaction() {
+        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistoryLatest()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        isInitTransaction = true;
+                    }
+                });
+        mSubscription.add(subscriptionSuccess);
     }
 }

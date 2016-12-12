@@ -360,9 +360,11 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
         }
         if (!event.isOnline) {
             mView.showNetworkError();
-        } else {
-            mView.hideNetworkError();
+            return;
         }
+        getBalance();
+        mView.hideNetworkError();
+
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
