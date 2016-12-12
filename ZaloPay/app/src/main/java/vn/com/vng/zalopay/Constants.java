@@ -47,6 +47,7 @@ public interface Constants {
     String ARG_APPID = "appid";
     String ARG_ZPTRANSTOKEN = "zptranstoken";
     String ARG_URL = "url";
+    String ARG_AUTO_LOAD_DATA = "auto_load_data";
 
     //DMappedCard: model of zalo payment sdk
     String CARDNAME = "cardname";

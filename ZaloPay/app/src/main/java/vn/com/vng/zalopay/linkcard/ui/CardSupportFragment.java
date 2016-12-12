@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -38,6 +39,7 @@ public class CardSupportFragment extends BaseFragment {
     @BindView(R.id.bankRecyclerView)
     RecyclerView mRecyclerView;
 
+    private boolean mAutoLoadData;
     private CardSupportAdapter mAdapter;
     private IGetCardSupportListListener mGetCardSupportListListener;
 
@@ -55,8 +57,12 @@ public class CardSupportFragment extends BaseFragment {
      * @return A new instance of fragment CardSupportFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CardSupportFragment newInstance() {
-        return new CardSupportFragment();
+    public static CardSupportFragment newInstance(boolean autoLoadData) {
+        Bundle args = new Bundle();
+        args.putBoolean(Constants.ARG_AUTO_LOAD_DATA, autoLoadData);
+        CardSupportFragment fragment = new CardSupportFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -72,6 +78,15 @@ public class CardSupportFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initData();
+    }
+
+    private void initData() {
+        Bundle bundle = getArguments();
+        if (bundle == null) {
+            return;
+        }
+        mAutoLoadData = bundle.getBoolean(Constants.ARG_AUTO_LOAD_DATA, false);
     }
 
     @Override
@@ -123,6 +138,10 @@ public class CardSupportFragment extends BaseFragment {
                 AppVersionUtils.showDialogUpgradeAppIfNeed(getActivity());
             }
         };
+
+        if (mAutoLoadData) {
+            getCardSupport();
+        }
     }
 
     private void refreshCardSupportList(List<ZPCard> cardSupportList) {

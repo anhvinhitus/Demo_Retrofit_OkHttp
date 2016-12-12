@@ -34,15 +34,6 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
     }
 
     @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        Fragment fragment = getActiveFragment();
-        if (fragment instanceof CardSupportFragment) {
-            ((CardSupportFragment) fragment).getCardSupport();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         mPresenter.destroy();
         super.onDestroy();
@@ -50,7 +41,7 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return CardSupportFragment.newInstance();
+        return CardSupportFragment.newInstance(true);
     }
 
     @Override
