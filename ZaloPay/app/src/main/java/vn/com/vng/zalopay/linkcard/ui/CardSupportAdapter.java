@@ -45,12 +45,7 @@ class CardSupportAdapter extends AbsRecyclerAdapter<ZPCard, CardSupportAdapter.V
 
     @Override
     public int getItemCount() {
-        int itemCount = super.getItemCount();
-        int tmp = itemCount % 3;
-        if (tmp != 0) {
-            itemCount = ((itemCount / 3) + 1) * 3;
-        }
-        return itemCount;
+        return((super.getItemCount() + 2) / 3) * 3;
     }
 
     @Override
