@@ -161,7 +161,8 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
     @Override
     public void startPaymentApp(AppResource app) {
         Subscription subscription = mAppResourceRepository.existResource(app.appid)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new StartPaymentAppSubscriber(app));
         mSubscription.add(subscription);
     }
@@ -221,7 +222,7 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
                 continue;
             }
 
-            listId.add((long) appResource.appid);
+            listId.add(appResource.appid);
         }
         return listId;
     }

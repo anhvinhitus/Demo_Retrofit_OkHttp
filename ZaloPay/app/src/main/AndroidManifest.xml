@@ -91,13 +91,15 @@
             android:configChanges="keyboardHidden|orientation"
             android:enabled="true"
             android:exported="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.Splash" />
 
         <activity-alias
             android:name="vn.zalopay.apps.ZaloAppActivityAlias"
             android:exported="true"
             android:label="ZaloAppAlias"
-            android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
+            android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity"
+            android:theme="@style/AppTheme.NoActionBar.Splash">
             <intent-filter>
                 <action android:name="vn.zalopay.intent.action.SEND_MONEY" />
                 <category android:name="android.intent.category.DEFAULT" />
