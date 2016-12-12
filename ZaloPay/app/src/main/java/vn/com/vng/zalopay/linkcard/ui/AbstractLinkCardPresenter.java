@@ -18,6 +18,8 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
@@ -91,6 +93,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         } else {
             paymentWrapper.linkCard(getActivity());
             hideLoadingView();
+            ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_ADDCARD_LAUNCH);
         }
     }
 

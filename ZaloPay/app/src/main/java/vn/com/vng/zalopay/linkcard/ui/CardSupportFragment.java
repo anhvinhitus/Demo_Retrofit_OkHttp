@@ -145,11 +145,11 @@ public class CardSupportFragment extends BaseFragment {
     }
 
     private void refreshCardSupportList(List<ZPCard> cardSupportList) {
+        hideProgressDialog();
         if (mAdapter == null) {
             return;
         }
         mAdapter.setData(cardSupportList);
-        hideProgressDialog();
     }
 
     public int getCountCardSupport() {

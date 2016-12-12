@@ -65,6 +65,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @OnClick(R.id.btn_add_more)
     public void onClickAddMoreBankCard() {
         navigator.startCardSupportActivity(getContext());
+        ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_TAPADDCARD);
     }
 
     @Inject
@@ -303,6 +304,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
             mBottomSheetDialog.dismiss();
         } else if (itemId == R.id.layoutRemoveLink) {
             showConfirmRemoveSaveCard();
+            ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
         } else if (itemId == R.id.root) {
             mBottomSheetDialog.dismiss();
         }

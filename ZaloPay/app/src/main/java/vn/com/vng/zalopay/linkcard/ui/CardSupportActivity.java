@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.linkcard.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 
 import javax.inject.Inject;
 
