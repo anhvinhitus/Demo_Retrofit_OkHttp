@@ -63,7 +63,7 @@ public class CardSupportWithdrawFragment extends BaseFragment {
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_card_support;
+        return R.layout.fragment_card_support_withdraw;
     }
 
     @Override

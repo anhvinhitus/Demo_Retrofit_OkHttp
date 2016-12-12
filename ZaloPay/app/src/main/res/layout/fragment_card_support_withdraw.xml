@@ -3,17 +3,7 @@
               android:layout_height="wrap_content"
               android:background="@color/white"
               android:orientation="vertical">
-
-    <TextView
-        style="@style/TextView.Group.Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingTop="@dimen/spacing.medium"
-        android:text="@string/link_bank"
-        android:textAllCaps="true"
-        android:textColor="@color/txt_item_main" />
-
+    
     <android.support.v7.widget.RecyclerView
         android:id="@+id/bankRecyclerView"
         style="@style/RecyclerView"
