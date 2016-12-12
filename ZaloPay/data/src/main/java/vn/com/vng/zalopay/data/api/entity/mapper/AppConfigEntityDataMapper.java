@@ -21,7 +21,6 @@ public class AppConfigEntityDataMapper {
 
     }
 
-
     public BankCard transform(CardEntity card) {
         BankCard bankCard = null;
         if (card != null) {
@@ -31,15 +30,17 @@ public class AppConfigEntityDataMapper {
     }
 
     public List<BankCard> transform(List<CardEntity> cards) {
-        if (Lists.isEmptyOrNull(cards)) return Collections.emptyList();
-        List<BankCard> list = new ArrayList<>();
-        for (CardEntity dMappedCard : cards) {
-            BankCard bCard = transform(dMappedCard);
-            if (bCard != null) {
-                list.add(bCard);
-            }
-        }
-        return list;
+        return Lists.transform(cards, this::transform);
+//        if (Lists.isEmptyOrNull(cards)) return Collections.emptyList();
+//        List<BankCard> list = new ArrayList<>();
+//        for (CardEntity dMappedCard : cards) {
+//            BankCard bCard = transform(dMappedCard);
+//            if (bCard != null) {
+//                list.add(bCard);
+//            }
+//        }
+//
+//        return list;
     }
 
 
@@ -60,15 +61,16 @@ public class AppConfigEntityDataMapper {
     }
 
     public List<AppResource> transformAppResourceEntity(List<AppResourceEntity> appResourceEntities) {
-        if (Lists.isEmptyOrNull(appResourceEntities)) return Collections.emptyList();
-        List<AppResource> list = new ArrayList<>();
-        for (AppResourceEntity appResourceEntity : appResourceEntities) {
-            AppResource appResource = transform(appResourceEntity);
-            if (appResource != null) {
-                list.add(appResource);
-            }
-        }
-        return list;
+        return Lists.transform(appResourceEntities, this::transform);
+//        if (Lists.isEmptyOrNull(appResourceEntities)) return Collections.emptyList();
+//        List<AppResource> list = new ArrayList<>();
+//        for (AppResourceEntity appResourceEntity : appResourceEntities) {
+//            AppResource appResource = transform(appResourceEntity);
+//            if (appResource != null) {
+//                list.add(appResource);
+//            }
+//        }
+//        return list;
     }
 
 }

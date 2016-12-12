@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.data.cache.mapper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,10 +15,9 @@ import vn.com.vng.zalopay.data.cache.model.BankCardGD;
 import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGD;
 import vn.com.vng.zalopay.data.util.Lists;
 
-import static java.util.Collections.emptyList;
-
 /**
  * Created by AnhHieu on 5/18/16.
+ * transform data
  */
 
 @Singleton
@@ -55,35 +53,6 @@ public class PlatformDaoMapper {
         }
         return cardEntity;
     }
-
-    public List<CardEntity> transformCardEntity(Collection<BankCardGD> cardGDs) {
-        if (Lists.isEmptyOrNull(cardGDs))
-            return emptyList();
-
-        List<CardEntity> cardEntities = new ArrayList<>(cardGDs.size());
-        for (BankCardGD cardGD : cardGDs) {
-            CardEntity cardEntity = transform(cardGD);
-            if (cardEntity != null) {
-                cardEntities.add(cardEntity);
-            }
-        }
-        return cardEntities;
-    }
-
-    public List<BankCardGD> transformCardGreenDao(Collection<CardEntity> cardEntities) {
-        if (Lists.isEmptyOrNull(cardEntities))
-            return emptyList();
-
-        List<BankCardGD> bankCardGDs = new ArrayList<>(cardEntities.size());
-        for (CardEntity cardEntity : cardEntities) {
-            BankCardGD bankCardGD = transform(cardEntity);
-            if (bankCardGD != null) {
-                bankCardGDs.add(bankCardGD);
-            }
-        }
-        return bankCardGDs;
-    }
-
 
     public AppResourceGD transform(AppResourceEntity appResourceEntity) {
         AppResourceGD appResourceGD = null;
@@ -138,35 +107,6 @@ public class PlatformDaoMapper {
         return appResourceEntity;
     }
 
-    public List<AppResourceGD> transformAppResourceEntity(Collection<AppResourceEntity> appResourceEntities) {
-        if (Lists.isEmptyOrNull(appResourceEntities))
-            return emptyList();
-
-        List<AppResourceGD> appResourceGDs = new ArrayList<>(appResourceEntities.size());
-        for (AppResourceEntity appResourceEntity : appResourceEntities) {
-            AppResourceGD appResourceGD = transform(appResourceEntity);
-            if (appResourceGD != null) {
-                appResourceGDs.add(appResourceGD);
-            }
-        }
-        return appResourceGDs;
-    }
-
-    public List<AppResourceEntity> transformAppResourceDao(Collection<AppResourceGD> appResourceGDs) {
-        if (Lists.isEmptyOrNull(appResourceGDs))
-            return emptyList();
-
-        List<AppResourceEntity> appResourceEntities = new ArrayList<>(appResourceGDs.size());
-        for (AppResourceGD appResourceGD : appResourceGDs) {
-            AppResourceEntity appResourceEntity = transform(appResourceGD);
-            if (appResourceEntity != null) {
-                appResourceEntities.add(appResourceEntity);
-            }
-        }
-        return appResourceEntities;
-    }
-
-
     public List<PaymentTransTypeGD> transform(PaymentTransTypeEntity appResourceEntity) {
         List<PaymentTransTypeGD> listPaymentTransDao = null;
         if (appResourceEntity != null && !Lists.isEmptyOrNull(appResourceEntity.pmclist)) {
@@ -188,18 +128,5 @@ public class PlatformDaoMapper {
             }
         }
         return listPaymentTransDao;
-    }
-
-
-    public List<PaymentTransTypeGD> transformPaymentTransTypeEntity(List<PaymentTransTypeEntity> appResourceEntity) {
-        if (Lists.isEmptyOrNull(appResourceEntity))
-            return emptyList();
-        List<PaymentTransTypeGD> appResourceEntities = new ArrayList<>();
-        for (PaymentTransTypeEntity paymentTransTypeEntity : appResourceEntity) {
-            if (paymentTransTypeEntity == null) continue;
-            appResourceEntities.addAll(transform(paymentTransTypeEntity));
-        }
-        return appResourceEntities;
-
     }
 }

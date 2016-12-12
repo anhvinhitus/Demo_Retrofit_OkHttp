@@ -2,7 +2,9 @@ package vn.com.vng.zalopay.data.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -39,12 +41,21 @@ public final class Lists {
         return list == null || list.length == 0;
     }
 
-    public static <T1, T2> List<T2> map(List<T1> list, Func1<T1, T2> converter) {
-        ArrayList<T2> mappedList = new ArrayList<>(list.size());
-        for (T1 item : list) {
-            mappedList.add(converter.call(item));
+    public static <T, R> List<R> transform(List<T> list, Func1<? super T, ? extends R> converter) {
+        if (list == null || list.isEmpty()) {
+            return Collections.emptyList();
         }
 
-        return mappedList;
+        ArrayList<R> transformedList = new ArrayList<>(list.size());
+        for (T t : list) {
+            R r = converter.call(t);
+            if (r == null) {
+                continue;
+            }
+
+            transformedList.add(r);
+        }
+
+        return transformedList;
     }
 }
