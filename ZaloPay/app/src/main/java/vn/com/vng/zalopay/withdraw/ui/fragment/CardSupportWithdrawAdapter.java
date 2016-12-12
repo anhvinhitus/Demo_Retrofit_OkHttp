@@ -46,12 +46,9 @@ class CardSupportWithdrawAdapter extends AbsRecyclerAdapter<CardSupportWithdraw,
 
     @Override
     public int getItemCount() {
-        int itemCount = super.getItemCount();
-        int tmp = itemCount % 2;
-        if (tmp != 0) {
-            itemCount += 2 - tmp;
-        }
-        return itemCount;
+        // Lấy số nhỏ nhất chia hết cho 2, lớn hơn itemCount.
+        // Để đảm bảo item empty cuối cùng trong grid có màu khác với màu nền.
+        return ((super.getItemCount() + 1) / 2) * 2;
     }
 
     @Override
