@@ -62,23 +62,25 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
     @Override
     public void saveProfileInfo3(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg) {
 
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("email", TextUtils.isEmpty(email) ? "" : email);
-        jsonObject.addProperty("identity", TextUtils.isEmpty(identity) ? "" : identity);
-        jsonObject.addProperty("foregroundImg", TextUtils.isEmpty(foregroundImg) ? "" : foregroundImg);
-        jsonObject.addProperty("backgroundImg", TextUtils.isEmpty(backgroundImg) ? "" : backgroundImg);
-        jsonObject.addProperty("avatarImg", TextUtils.isEmpty(avatarImg) ? "" : avatarImg);
+        JsonObject json = new JsonObject();
+        json.addProperty("email", TextUtils.isEmpty(email) ? "" : email);
+        json.addProperty("identity", TextUtils.isEmpty(identity) ? "" : identity);
+        json.addProperty("foregroundImg", TextUtils.isEmpty(foregroundImg) ? "" : foregroundImg);
+        json.addProperty("backgroundImg", TextUtils.isEmpty(backgroundImg) ? "" : backgroundImg);
+        json.addProperty("avatarImg", TextUtils.isEmpty(avatarImg) ? "" : avatarImg);
 
-        insertDataManifest("profile3info", jsonObject.toString());
+        insertDataManifest("profile3info", json.toString());
     }
 
     @Override
     public void clearProfileInfo3() {
-        deleteByKey("profile3info");
+        // Chỉ xóa Image. Khi update success. Yêu cầu của QC
+        Map<String, String> profile = getProfileInfo3();
+        saveProfileInfo3(profile.get("email"), profile.get("identity"), null, null, null);
     }
 
     @Override
-    public Map getProfileInfo3() {
+    public Map<String, String> getProfileInfo3() {
         Map<String, String> map = new HashMap<>();
         String temp = getDataManifest("profile3info");
         if (!TextUtils.isEmpty(temp)) {

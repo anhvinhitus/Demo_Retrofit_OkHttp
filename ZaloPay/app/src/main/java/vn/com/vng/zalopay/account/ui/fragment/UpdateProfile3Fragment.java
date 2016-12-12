@@ -69,7 +69,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     ScrollView mScrollView;
 
     @BindView(R.id.viewFlipper)
-    ViewFlipper viewFlipper;
+    ViewFlipper mViewFlipper;
 
     @BindView(R.id.edtEmail)
     ZPEditText mEdtEmailView;
@@ -155,6 +155,10 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mBtnContinue.setEnabled(false);
         mBtnSubmitView.setEnabled(false);
 
+        mViewFlipper.setFlipInterval(0);
+        mViewFlipper.setInAnimation(null);
+        mViewFlipper.setOutAnimation(null);
+
         focusInputText(focusIdentity ? mEdtIdentityView : mEdtEmailView);
 
         mEdtEmailView.addValidator(new EmailValidate(getString(R.string.email_invalid)));
@@ -190,6 +194,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public boolean onBackPressed() {
+
+        if (getCurrentPage() > 0) {
+            previousPage();
+            return true;
+        }
+
         String email = getEmail();
         String identity = getIdentity();
 
@@ -244,13 +254,15 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     public int getCurrentPage() {
-        return viewFlipper.getDisplayedChild();
+        return mViewFlipper.getDisplayedChild();
     }
 
-    public void nextPage() {
-        viewFlipper.setInAnimation(getContext(), R.anim.in_from_left);
-        viewFlipper.setOutAnimation(getContext(), R.anim.out_to_right);
-        viewFlipper.showNext();
+    private void nextPage() {
+        mViewFlipper.showNext();
+    }
+
+    private void previousPage() {
+        mViewFlipper.showPrevious();
     }
 
     private String getEmail() {

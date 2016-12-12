@@ -163,7 +163,7 @@ public class UpdateProfile3Presenter extends AbstractPresenter<IUpdateProfile3Vi
             avatarImgPath = avatarImg.toString();
         }
 
-        mAccountRepository.saveProfileInfo3(email, identity, foregroundImgPath, backgroundImgPath, avatarImgPath)
+        Subscription subscription = mAccountRepository.saveProfileInfo3(email, identity, foregroundImgPath, backgroundImgPath, avatarImgPath)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
     }
