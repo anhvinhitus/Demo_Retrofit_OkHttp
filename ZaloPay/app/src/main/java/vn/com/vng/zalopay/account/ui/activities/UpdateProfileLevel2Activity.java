@@ -147,8 +147,9 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
 
     @Override
     public void hideLoading() {
-        if (mProgressDialog != null && mProgressDialog.isShowing())
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+        }
     }
 
     @Override
