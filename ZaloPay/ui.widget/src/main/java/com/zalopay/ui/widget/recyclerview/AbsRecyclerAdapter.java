@@ -35,8 +35,9 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
     public T getItem(int position) {
-        if (position >= 0 && position < mItems.size())
+        if (position >= 0 && position < mItems.size()) {
             return this.mItems.get(position);
+        }
 
         return null;
     }
@@ -46,7 +47,9 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
     public void setData(Collection<T> items) {
-        if (items == null) return;
+        if (items == null) {
+            return;
+        }
 
         synchronized (_lock) {
             mItems.clear();
@@ -63,7 +66,9 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
 
 
     public void insertItems(Collection<T> items) {
-        if (items == null || items.isEmpty()) return;
+        if (items == null || items.isEmpty()) {
+            return;
+        }
 
         int before = mItems.size();
 
@@ -134,6 +139,4 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
         }
         notifyItemChanged(location);
     }
-
-
 }
