@@ -349,27 +349,27 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     private List<SentBundle> querySentBundleList(int limit) {
-        return mDataMapper.transformDBToSentBundles(
-                getDaoSession()
-                        .getSentBundleGDDao()
-                        .queryBuilder()
-                        .orderDesc(SentBundleGDDao.Properties.CreateTime)
-                        .limit(limit)
-                        .list());
+        List<SentBundleGD> list = getDaoSession()
+                .getSentBundleGDDao()
+                .queryBuilder()
+                .orderDesc(SentBundleGDDao.Properties.CreateTime)
+                .limit(limit)
+                .list();
+        return Lists.transform(list, mDataMapper::transform);
     }
 
     private List<SentBundle> querySentBundleList(long timeCreate, int limit) {
         if (timeCreate == 0) {
             return querySentBundleList(limit);
         } else {
-            return mDataMapper.transformDBToSentBundles(
-                    getDaoSession()
-                            .getSentBundleGDDao()
-                            .queryBuilder()
-                            .where(SentBundleGDDao.Properties.CreateTime.lt(timeCreate))
-                            .orderDesc(SentBundleGDDao.Properties.CreateTime)
-                            .limit(limit)
-                            .list());
+            List<SentBundleGD> list = getDaoSession()
+                    .getSentBundleGDDao()
+                    .queryBuilder()
+                    .where(SentBundleGDDao.Properties.CreateTime.lt(timeCreate))
+                    .orderDesc(SentBundleGDDao.Properties.CreateTime)
+                    .limit(limit)
+                    .list();
+            return Lists.transform(list, mDataMapper::transform);
         }
     }
 
@@ -388,36 +388,36 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     }
 
     private List<PackageInBundle> querySentPackage(long bundleID) {
-        return mDataMapper.transformToPackageInBundle(
-                getDaoSession()
-                        .getPackageInBundleGDDao()
-                        .queryBuilder()
-                        .where(PackageInBundleGDDao.Properties.BundleID.eq(bundleID))
-                        .list());
+        List<PackageInBundleGD> list = getDaoSession()
+                .getPackageInBundleGDDao()
+                .queryBuilder()
+                .where(PackageInBundleGDDao.Properties.BundleID.eq(bundleID))
+                .list();
+        return Lists.transform(list, mDataMapper::transform);
     }
 
     private List<ReceivePackage> queryReceivePackageList(int limit) {
-        return mDataMapper.transformDBToRevPackets(
-                getDaoSession()
-                        .getReceivePackageGDDao()
-                        .queryBuilder()
-                        .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
-                        .limit(limit)
-                        .list());
+        List<ReceivePackageGD> list = getDaoSession()
+                .getReceivePackageGDDao()
+                .queryBuilder()
+                .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
+                .limit(limit)
+                .list();
+        return Lists.transform(list, mDataMapper::transform);
     }
 
     private List<ReceivePackage> queryReceivePackageList(long timeCreate, int limit) {
         if (timeCreate == 0) {
             return queryReceivePackageList(limit);
         } else {
-            return mDataMapper.transformDBToRevPackets(
-                    getDaoSession()
-                            .getReceivePackageGDDao()
-                            .queryBuilder()
-                            .where(ReceivePackageGDDao.Properties.OpenedTime.lt(timeCreate))
-                            .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
-                            .limit(limit)
-                            .list());
+            List<ReceivePackageGD> list = getDaoSession()
+                    .getReceivePackageGDDao()
+                    .queryBuilder()
+                    .where(ReceivePackageGDDao.Properties.OpenedTime.lt(timeCreate))
+                    .orderDesc(ReceivePackageGDDao.Properties.OpenedTime)
+                    .limit(limit)
+                    .list();
+            return Lists.transform(list, mDataMapper::transform);
         }
     }
 

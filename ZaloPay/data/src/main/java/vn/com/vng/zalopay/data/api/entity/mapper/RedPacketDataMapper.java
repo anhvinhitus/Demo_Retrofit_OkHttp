@@ -47,48 +47,27 @@ public class RedPacketDataMapper {
 
     }
 
-    public List<PackageInBundleGD> transformToPackageInBundleGD(List<PackageInBundle> sentPackages) {
-        List<PackageInBundleGD> sentPackageGDs = new ArrayList<>();
-        if (sentPackages == null || sentPackages.size() <= 0) {
-            return sentPackageGDs;
+    public PackageInBundleGD transform(PackageInBundle sentPackage) {
+        if (sentPackage == null || sentPackage.revZaloID <= 0) {
+            return null;
         }
-        for (PackageInBundle sentPackage : sentPackages) {
-            if (sentPackage == null || sentPackage.revZaloID <= 0) {
-                continue;
-            }
-            PackageInBundleGD item = new PackageInBundleGD();
-            item.id = sentPackage.packageID;
-            item.bundleID = sentPackage.bundleID;
-            item.revZaloPayID = sentPackage.revZaloPayID;
-            item.revZaloID = sentPackage.revZaloID;
-            item.revFullName = sentPackage.revFullName;
-            item.revAvatarURL = sentPackage.revAvatarURL;
-            item.openTime = sentPackage.openTime;
-            item.amount = sentPackage.amount;
-            item.sendMessage = sentPackage.sendMessage;
-            item.isLuckiest = sentPackage.isLuckiest ? 1L : 0L;
-            sentPackageGDs.add(item);
-        }
-        return sentPackageGDs;
+
+        PackageInBundleGD item = new PackageInBundleGD();
+        item.id = sentPackage.packageID;
+        item.bundleID = sentPackage.bundleID;
+        item.revZaloPayID = sentPackage.revZaloPayID;
+        item.revZaloID = sentPackage.revZaloID;
+        item.revFullName = sentPackage.revFullName;
+        item.revAvatarURL = sentPackage.revAvatarURL;
+        item.openTime = sentPackage.openTime;
+        item.amount = sentPackage.amount;
+        item.sendMessage = sentPackage.sendMessage;
+        item.isLuckiest = sentPackage.isLuckiest ? 1L : 0L;
+        return item;
     }
 
-    public List<PackageInBundle> transformToPackageInBundle(List<PackageInBundleGD> list) {
-        List<PackageInBundle> sentPackages = new ArrayList<>();
-        if (list == null || list.size() <= 0) {
-            return sentPackages;
-        }
-        for (PackageInBundleGD packageInBundleGD : list) {
-            if (packageInBundleGD.id <= 0) {
-                continue;
-            }
-            PackageInBundle sentPackage = transform(packageInBundleGD);
-            sentPackages.add(sentPackage);
-        }
-        return sentPackages;
-    }
-
-    private PackageInBundle transform(PackageInBundleGD packageInBundleGD) {
-        if (packageInBundleGD == null) {
+    public PackageInBundle transform(PackageInBundleGD packageInBundleGD) {
+        if (packageInBundleGD == null || packageInBundleGD.id <= 0) {
             return null;
         }
 
@@ -107,7 +86,7 @@ public class RedPacketDataMapper {
     }
 
     public SentBundle transform(SentBundleGD sentBundleGD) {
-        List<PackageInBundle> sentPackages = transformToPackageInBundle(sentBundleGD.getSentPackages());
+        List<PackageInBundle> sentPackages = Lists.transform(sentBundleGD.getSentPackages(), this::transform);
         SentBundle item = new SentBundle();
         item.bundleID = sentBundleGD.id;
         item.sendZaloPayID = sentBundleGD.senderZaloPayID;
@@ -151,43 +130,43 @@ public class RedPacketDataMapper {
         return sentPackageList;
     }
 
-    public List<SentBundle> transformDBToSentBundles(List<SentBundleGD> list) {
-        if (Lists.isEmptyOrNull(list)) {
-            return emptyList();
-        }
+//    public List<SentBundle> transformDBToSentBundles(List<SentBundleGD> list) {
+//        if (Lists.isEmptyOrNull(list)) {
+//            return emptyList();
+//        }
+//
+//        List<SentBundle> sentBundles = new ArrayList<>(list.size());
+//        for (SentBundleGD sentBundleGD : list) {
+//            SentBundle sentBundle = transform(sentBundleGD);
+//            if (sentBundle == null) {
+//                continue;
+//            }
+//
+//            sentBundles.add(sentBundle);
+//        }
+//
+//        return sentBundles;
+//    }
+//
+//    public List<SentBundleGD> transformToSenBundleGD(List<SentBundle> list) {
+//        if (Lists.isEmptyOrNull(list)) {
+//            return emptyList();
+//        }
+//
+//        List<SentBundleGD> sentBundleGDs = new ArrayList<>();
+//        for (SentBundle sentBundle : list) {
+//            SentBundleGD sentBundleGD = transform(sentBundle);
+//            if (sentBundleGD == null) {
+//                continue;
+//            }
+//
+//            sentBundleGDs.add(sentBundleGD);
+//        }
+//
+//        return sentBundleGDs;
+//    }
 
-        List<SentBundle> sentBundles = new ArrayList<>(list.size());
-        for (SentBundleGD sentBundleGD : list) {
-            SentBundle sentBundle = transform(sentBundleGD);
-            if (sentBundle == null) {
-                continue;
-            }
-
-            sentBundles.add(sentBundle);
-        }
-
-        return sentBundles;
-    }
-
-    public List<SentBundleGD> transformToSenBundleGD(List<SentBundle> list) {
-        if (Lists.isEmptyOrNull(list)) {
-            return emptyList();
-        }
-
-        List<SentBundleGD> sentBundleGDs = new ArrayList<>();
-        for (SentBundle sentBundle : list) {
-            SentBundleGD sentBundleGD = transform(sentBundle);
-            if (sentBundleGD == null) {
-                continue;
-            }
-
-            sentBundleGDs.add(sentBundleGD);
-        }
-
-        return sentBundleGDs;
-    }
-
-    private SentBundleGD transform(SentBundle sentBundle) {
+    public SentBundleGD transform(SentBundle sentBundle) {
         if (sentBundle == null) {
             return null;
         }
@@ -211,7 +190,7 @@ public class RedPacketDataMapper {
             return null;
         }
 
-        List<SentBundle> sentBundles = transformToSentBundles(response.bundleResponseList);
+        List<SentBundle> sentBundles = Lists.transform(response.bundleResponseList, this::transform);
         GetSentBundle item = new GetSentBundle();
         item.totalofsentamount = response.totalOfSentAmount;
         item.totalofsentbundle = response.totalOfSentBundle;
@@ -233,31 +212,19 @@ public class RedPacketDataMapper {
         return item;
     }
 
-    public List<SentBundle> transformToSentBundles(List<SentBundleResponse> bundleResponseList) {
-        List<SentBundle> sentBundleList = new ArrayList<>();
-        if (bundleResponseList == null || bundleResponseList.size() <= 0) {
-            return sentBundleList;
-        }
-        for (SentBundleResponse bundleResponse : bundleResponseList) {
-            if (bundleResponse == null) {
-                continue;
-            }
-
-            SentBundle item = new SentBundle();
-            item.bundleID = bundleResponse.bundleid;
-            item.sendZaloPayID = bundleResponse.sendzalopayid;
-            item.type = bundleResponse.type;
-            item.createTime = bundleResponse.createtime;
-            item.lastOpenTime = bundleResponse.lastopentime;
-            item.totalLuck = bundleResponse.totalluck;
-            item.numOfOpenedPakages = bundleResponse.numofopenedpakages;
-            item.numOfPackages = bundleResponse.numofpackages;
-            item.sendMessage = bundleResponse.sendmessage;
-            item.status = BundleStatusEnum.AVAILABLE.getValue();
-
-            sentBundleList.add(item);
-        }
-        return sentBundleList;
+    private SentBundle transform(SentBundleResponse bundleResponse) {
+        SentBundle item = new SentBundle();
+        item.bundleID = bundleResponse.bundleid;
+        item.sendZaloPayID = bundleResponse.sendzalopayid;
+        item.type = bundleResponse.type;
+        item.createTime = bundleResponse.createtime;
+        item.lastOpenTime = bundleResponse.lastopentime;
+        item.totalLuck = bundleResponse.totalluck;
+        item.numOfOpenedPakages = bundleResponse.numofopenedpakages;
+        item.numOfPackages = bundleResponse.numofpackages;
+        item.sendMessage = bundleResponse.sendmessage;
+        item.status = BundleStatusEnum.AVAILABLE.getValue();
+        return item;
     }
 
     public ReceivePackage transform(ReceivePackageGD receivePackageGD) {
@@ -281,39 +248,7 @@ public class RedPacketDataMapper {
         return item;
     }
 
-    public List<ReceivePackage> transformDBToRevPackets(List<ReceivePackageGD> list) {
-        if (Lists.isEmptyOrNull(list)) {
-            return emptyList();
-        }
-        List<ReceivePackage> receivePackages = new ArrayList<>();
-        for (ReceivePackageGD receivePackageGD : list) {
-            if (receivePackageGD == null || receivePackageGD.id <= 0) {
-                continue;
-            }
-            ReceivePackage receivePackage = transform(receivePackageGD);
-            receivePackages.add(receivePackage);
-
-        }
-        return receivePackages;
-    }
-
-    public List<ReceivePackageGD> transformToRevPacketsDB(List<ReceivePackage> receivePackages) {
-        if (Lists.isEmptyOrNull(receivePackages)) {
-            return emptyList();
-        }
-        List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
-        for (ReceivePackage receivePackage : receivePackages) {
-            if (receivePackage == null || receivePackage.packageID <= 0) {
-                continue;
-            }
-            ReceivePackageGD receivePackageGD = transform(receivePackage);
-            receivePackageGDs.add(receivePackageGD);
-
-        }
-        return receivePackageGDs;
-    }
-
-    private ReceivePackageGD transform(ReceivePackage receivePackage) {
+    public ReceivePackageGD transform(ReceivePackage receivePackage) {
         if (receivePackage == null || receivePackage.packageID <= 0) {
             return null;
         }

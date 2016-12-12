@@ -130,7 +130,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         if (getSentBundle == null) {
             return;
         }
-        List<SentBundleGD> sentBundleGDList = mDataMapper.transformToSenBundleGD(getSentBundle.sentbundlelist);
+        List<SentBundleGD> sentBundleGDList = Lists.transform(getSentBundle.sentbundlelist, mDataMapper::transform);
         if (sentBundleGDList != null) {
             mLocalStorage.putSentBundle(sentBundleGDList);
         }
@@ -187,7 +187,9 @@ public class RedPacketRepository implements RedPacketStore.Repository {
             return;
         }
 
-        List<ReceivePackageGD> receivePackageGDs = mDataMapper.transformToRevPacketsDB(getReceivePacket.revpackageList);
+        List<ReceivePackageGD> receivePackageGDs =
+                Lists.transform(getReceivePacket.revpackageList,
+                        mDataMapper::transform);
         if (receivePackageGDs != null) {
             mLocalStorage.putReceivePackages(receivePackageGDs);
         }
@@ -437,8 +439,6 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     private void insertPackageInBundle(List<PackageInBundle> packageInBundles) {
-        mLocalStorage.putPackageInBundle(mDataMapper.transformToPackageInBundleGD(packageInBundles));
+        mLocalStorage.putPackageInBundle(Lists.transform(packageInBundles, mDataMapper::transform));
     }
-
-
 }
