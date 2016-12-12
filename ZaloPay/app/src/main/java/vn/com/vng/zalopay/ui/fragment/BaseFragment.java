@@ -17,7 +17,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
@@ -30,8 +29,8 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
 import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**
@@ -46,6 +45,7 @@ public abstract class BaseFragment extends Fragment {
     public final String TAG = getClass().getSimpleName();
 
     private Snackbar mSnackBar;
+    private SweetAlertDialog mProgressDialog;
     private Unbinder unbinder;
 
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
@@ -68,8 +68,9 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroyView() {
         hideKeyboard();
-        hideProgressDialog();
         super.onDestroyView();
+        hideProgressDialog();
+        mProgressDialog = null;
         unbinder.unbind();
     }
 
@@ -98,16 +99,19 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showProgressDialog() {
-        DialogHelper.showLoading(getActivity(), new ZPWOnProgressDialogTimeoutListener() {
-            @Override
-            public void onProgressTimeout() {
-                showErrorDialog(getString(R.string.exception_generic));
-            }
-        });
+        if (mProgressDialog == null) {
+            mProgressDialog = new SweetAlertDialog(getContext(),
+                    SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
+            mProgressDialog.setCancelable(false);
+        }
+        mProgressDialog.show();
     }
 
     public void hideProgressDialog() {
-        DialogHelper.hideLoading();
+        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
+            return;
+        }
+        mProgressDialog.dismiss();
     }
 
     public void showNetworkErrorDialog() {
@@ -119,7 +123,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showWarningDialog(String message,
-                                  ZPWOnEventDialogListener cancelListener) {
+                            ZPWOnEventDialogListener cancelListener) {
         DialogHelper.showWarningDialog(getActivity(), message, cancelListener);
     }
 
