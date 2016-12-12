@@ -45,6 +45,8 @@ class CardSupportAdapter extends AbsRecyclerAdapter<ZPCard, CardSupportAdapter.V
 
     @Override
     public int getItemCount() {
+        // Lấy số nhỏ nhất chia hết cho 3, lớn hơn itemCount.
+        // Để đảm bảo 1-2 item empty cuối cùng trong grid có màu khác với màu nền.
         return ((super.getItemCount() + 2) / 3) * 3;
     }
 
