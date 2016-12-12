@@ -30,7 +30,9 @@ public class CustomRobolectricRunner extends RobolectricGradleTestRunner {
     }
 
     private String getModuleRootPath(Config config) {
+        System.out.println("Module root before replace file " + config.constants().getResource("").toString());
         String moduleRoot = config.constants().getResource("").toString().replace("file:", "");
+        System.out.println("Module root after replace file " + moduleRoot);
         return moduleRoot.substring(0, moduleRoot.indexOf("/build"));
     }
 }
