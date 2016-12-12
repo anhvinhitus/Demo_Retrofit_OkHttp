@@ -1,19 +1,13 @@
 package vn.com.vng.zalopay.data;
 
-import android.support.annotation.NonNull;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
-import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
@@ -80,21 +74,6 @@ public class ListsTransformTest {
         assertEquals(outputItemList, outputBundle);
     }
 
-    private void assertEquals(List<SentBundle> list1, List<SentBundle> list2) {
-        if (list1 == null || list2 == null) {
-            return;
-        }
-
-        if (list1.size() != list2.size()) {
-            Assert.fail("Lists size doesn't equal");
-            return;
-        }
-
-        for (int i = 0; i < list1.size(); i++) {
-            assertElementEquals(list1.get(i), list2.get(i));
-        }
-    }
-
     private void assertElementEquals(SentBundle b1, SentBundle b2) {
         if (b1 == null && b2 == null) {
             return;
@@ -117,5 +96,20 @@ public class ListsTransformTest {
         Assert.assertEquals("lastOpenTime", b1.lastOpenTime, b2.lastOpenTime);
         Assert.assertEquals("sendMessage", b1.sendMessage, b2.sendMessage);
         Assert.assertEquals("status", b1.status, b2.status);
+    }
+
+    private void assertEquals(List<SentBundle> list1, List<SentBundle> list2) {
+        if (list1 == null || list2 == null) {
+            return;
+        }
+
+        if (list1.size() != list2.size()) {
+            Assert.fail("Lists size doesn't equal");
+            return;
+        }
+
+        for (int i = 0; i < list1.size(); i++) {
+            assertElementEquals(list1.get(i), list2.get(i));
+        }
     }
 }
