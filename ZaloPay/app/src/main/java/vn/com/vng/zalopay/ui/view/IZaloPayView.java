@@ -32,6 +32,8 @@ public interface IZaloPayView {
 
     void setBalance(long balance);
 
+    void showWarningDialog(String error);
+
     void showError(String error);
 
     void showErrorDialog(String error);

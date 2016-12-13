@@ -46,6 +46,7 @@ import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.ui.widget.SmoothViewPager;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
@@ -318,6 +319,11 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         mBalanceView.setText(span);
+    }
+
+    @Override
+    public void showWarningDialog(String error) {
+        DialogHelper.showWarningDialog(getActivity(), error, null);
     }
 
     @Override
