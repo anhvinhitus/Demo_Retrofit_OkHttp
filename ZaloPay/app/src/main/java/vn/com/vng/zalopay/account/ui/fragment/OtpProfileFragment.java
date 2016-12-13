@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,7 +27,9 @@ import vn.com.vng.zalopay.account.ui.presenter.OTPProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
 import vn.com.vng.zalopay.event.ReceiveOTPEvent;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.widget.validate.DigitsOnlyValidate;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 
@@ -38,7 +41,7 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
  * Use the {@link OtpProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OtpProfileFragment extends BaseFragment implements IOTPProfileView {
+public class OtpProfileFragment extends RuntimePermissionFragment implements IOTPProfileView, FragmentLifecycle {
 
     public static OtpProfileFragment newInstance() {
         return new OtpProfileFragment();
@@ -198,5 +201,21 @@ public class OtpProfileFragment extends BaseFragment implements IOTPProfileView 
 
     public interface OnOTPFragmentListener {
         void onConfirmOTPSuccess();
+    }
+
+    @Override
+    public void onStartFragment() {
+        Timber.d("onStartFragment");
+        isPermissionGrantedAndRequest(Manifest.permission.RECEIVE_SMS, PERMISSION_CODE.RECEIVE_SMS);
+    }
+
+    @Override
+    public void onStopFragment() {
+        Timber.d("onStopFragment");
+    }
+
+    @Override
+    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
+        Timber.d("permissionGranted: %s", permissionRequestCode);
     }
 }

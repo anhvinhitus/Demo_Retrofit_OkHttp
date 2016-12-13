@@ -123,18 +123,20 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
     }
 
     @Override
-    protected void permissionGranted(int permissionRequestCode) {
+    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
+        if (!isGranted) {
+            mImageName = null;
+            mPickImageRequestCode = 0;
+            mCaptureImageRequestCode = 0;
+            return;
+        }
+
         switch (permissionRequestCode) {
             case PERMISSION_CODE.READ_EXTERNAL_STORAGE:
                 onPickImagePermissionAllowed();
                 break;
             case PERMISSION_CODE.CAMERA:
                 onCapturePermissionAllowed();
-                break;
-            case PERMISSION_CODE.DENY_PERMISSION:
-                mImageName = null;
-                mPickImageRequestCode = 0;
-                mCaptureImageRequestCode = 0;
                 break;
         }
     }

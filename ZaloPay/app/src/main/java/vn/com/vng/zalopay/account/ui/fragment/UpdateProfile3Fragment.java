@@ -539,7 +539,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             return;
         }
 
-        if (!isPermissionGrantedAndRequest(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_READ_EXTERNAL_STORAGE)) {
+        if (!isPermissionGrantedAndRequest(Manifest.permission.READ_EXTERNAL_STORAGE, PERMISSION_READ_EXTERNAL_STORAGE)) {
             return;
         }
 
@@ -586,8 +586,12 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     @Override
-    protected void permissionGranted(int permissionRequestCode) {
-        super.permissionGranted(permissionRequestCode);
+    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
+        super.permissionGranted(permissionRequestCode, isGranted);
+
+        if (!isGranted) {
+            return;
+        }
 
         switch (permissionRequestCode) {
             case PERMISSION_READ_EXTERNAL_STORAGE:

@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.utils.PermissionUtil;
 
 public abstract class RuntimePermissionFragment extends BaseFragment {
 
-    protected abstract void permissionGranted(int permissionRequestCode);
+    protected abstract void permissionGranted(int permissionRequestCode, boolean isGranted);
 
     protected boolean isPermissionGrantedAndRequest(String[] permissions, int requestPermissionCode) {
         if (!PermissionUtil.checkAndroidMVersion()) {
@@ -30,6 +30,10 @@ public abstract class RuntimePermissionFragment extends BaseFragment {
         }
 
         return false;
+    }
+
+    protected boolean isPermissionGrantedAndRequest(String permissions, int requestPermissionCode) {
+        return isPermissionGrantedAndRequest(new String[]{permissions}, requestPermissionCode);
     }
 
     protected boolean isPermissionGranted(String[] permissions) {
@@ -50,12 +54,7 @@ public abstract class RuntimePermissionFragment extends BaseFragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Timber.d("Permissions result: requestCode [%s] permissions [%s] results[%s]", requestCode, Arrays.toString(permissions), Arrays.toString(grantResults));
-
-        if (PermissionUtil.verifyPermission(grantResults)) {
-            permissionGranted(requestCode);
-        } else {
-            permissionGranted(PERMISSION_CODE.DENY_PERMISSION);
-        }
+        permissionGranted(requestCode, PermissionUtil.verifyPermission(grantResults));
     }
 
     public interface PERMISSION_CODE {
@@ -70,5 +69,6 @@ public abstract class RuntimePermissionFragment extends BaseFragment {
         int READ_CONTACTS = 16;
         int NFC = 17;
         int ACCESS_FINE_LOCATION = 18;
+        int ACCESS_COARSE_LOCATION = 19;
     }
 }

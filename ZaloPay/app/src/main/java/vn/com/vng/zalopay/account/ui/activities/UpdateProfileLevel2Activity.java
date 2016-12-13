@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.account.ui.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 
@@ -13,6 +14,7 @@ import org.greenrobot.eventbus.EventBus;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnPageChange;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ProfileSlidePagerAdapter;
@@ -22,6 +24,7 @@ import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
 import vn.com.vng.zalopay.event.ReceiveOTPEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
@@ -36,7 +39,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
 
-    private ProfileSlidePagerAdapter adapter;
+
     private String walletTransId = null;
     private PaymentWrapper paymentWrapper;
     private SweetAlertDialog mProgressDialog;
@@ -46,7 +49,11 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
     PreProfilePresenter presenter;
 
     @BindView(R.id.viewPager)
-    NonSwipeableViewPager viewPager;
+    NonSwipeableViewPager mViewPager;
+
+    private ProfileSlidePagerAdapter mAdapter;
+
+    private int mCurrentPage;
 
     @Override
     protected void setupActivityComponent() {
@@ -87,37 +94,36 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
 
     @Override
     public void initPagerContent(int pageIndex) {
-        adapter = new ProfileSlidePagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+        mAdapter = new ProfileSlidePagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mAdapter);
 
-        if (pageIndex >= 0 && pageIndex < viewPager.getAdapter().getCount()) {
-            viewPager.setCurrentItem(pageIndex);
+        if (pageIndex >= 0 && pageIndex < mViewPager.getAdapter().getCount()) {
+            mViewPager.setCurrentItem(pageIndex);
         }
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 1) {
-                    checkAndRequestReadSMSPermission();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
     }
 
+    @OnPageChange(value = R.id.viewPager, callback = OnPageChange.Callback.PAGE_SELECTED)
+    public void onPageSelected(int newPosition) {
+
+        Fragment fragmentToShow = mAdapter.getPage(newPosition);
+        if (fragmentToShow instanceof FragmentLifecycle) {
+            ((FragmentLifecycle) fragmentToShow).onStartFragment();
+        }
+
+        Fragment fragmentToHide = mAdapter.getPage(mCurrentPage);
+        if (fragmentToHide instanceof FragmentLifecycle) {
+            ((FragmentLifecycle) fragmentToHide).onStopFragment();
+        }
+
+        mCurrentPage = newPosition;
+    }
+
+
     public void nextPager() {
-        if (viewPager == null)
+        if (mViewPager == null)
             return;
-        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
+        mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, true);
     }
 
     @Override
@@ -215,17 +221,27 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
 
     @Override
     public void onBackPressed() {
-        if (viewPager != null && adapter != null) {
-            if (viewPager.getCurrentItem() == 0) {
-                adapter.getItem(0).onBackPressed();
-            } else {
-                ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_INPUTNONE);
-                viewPager.setCurrentItem(0);
-                return;
-            }
+
+        if (mViewPager == null || mAdapter == null) {
+            setResult(RESULT_CANCELED);
+            super.onBackPressed();
+            return;
         }
-        setResult(RESULT_CANCELED);
-        super.onBackPressed();
+
+        if (mViewPager.getCurrentItem() == 0) {
+
+            Fragment fragment = mAdapter.getPage(0);
+            if (fragment instanceof BaseFragment) {
+                ((BaseFragment) fragment).onBackPressed();
+            }
+
+            setResult(RESULT_CANCELED);
+            super.onBackPressed();
+        } else {
+            ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_INPUTNONE);
+            mViewPager.setCurrentItem(0);
+        }
+
     }
 
     @Override

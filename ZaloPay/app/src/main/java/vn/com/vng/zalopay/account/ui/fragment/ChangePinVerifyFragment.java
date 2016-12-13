@@ -160,7 +160,7 @@ public class ChangePinVerifyFragment extends RuntimePermissionFragment implement
     }
 
     @Override
-    protected void permissionGranted(int permissionRequestCode) {
+    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
         Timber.d("permissionGranted: %s", permissionRequestCode);
     }
 }

@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -36,14 +35,14 @@ import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.widget.RippleBackground;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
-public class CounterBeaconFragment extends BaseFragment implements FragmentLifecycle {
+public class CounterBeaconFragment extends RuntimePermissionFragment implements FragmentLifecycle {
 
     private BeaconScanner beaconScanner;
     private CounterBeaconRecyclerViewAdapter mViewAdapter;
@@ -114,10 +113,6 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mViewAdapter = new CounterBeaconRecyclerViewAdapter(getContext(), new SelectDeviceListener());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkBluetoothPermission();
-        }
     }
 
     @Override
@@ -187,7 +182,9 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
         getAppComponent().threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                beaconScanner.startScan();
+                if (beaconScanner != null) {
+                    beaconScanner.startScan();
+                }
             }
         });
     }
@@ -212,7 +209,26 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
 
     public void startScanning() {
         starAnimation();
-        startBeaconScanner();
+        if (isPermissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            startBeaconScanner();
+        } else {
+            DialogHelper.showConfirmDialog(getActivity(),
+                    getString(R.string.request_permission_bluetooth),
+                    getString(R.string.accept),
+                    getString(R.string.cancel),
+                    new ZPWOnEventConfirmDialogListener() {
+                        @Override
+                        public void onCancelEvent() {
+                        }
+
+                        @Override
+                        public void onOKevent() {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                    PERMISSION_CODE.ACCESS_COARSE_LOCATION);
+                        }
+                    });
+        }
+
     }
 
     public void stopScanning() {
@@ -369,46 +385,24 @@ public class CounterBeaconFragment extends BaseFragment implements FragmentLifec
         stopScanning();
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    private void checkBluetoothPermission() {
-        // Android M Permission check 
-        if (ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            DialogHelper.showConfirmDialog(getActivity(),
-                    getString(R.string.request_permission_bluetooth),
-                    getString(R.string.accept),
-                    getString(R.string.cancel),
-                    new ZPWOnEventConfirmDialogListener() {
-                        @Override
-                        public void onCancelEvent() {
-                        }
-
-                        @Override
-                        public void onOKevent() {
-                            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                    Constants.Permission.REQUEST_COARSE_LOCATION);
-                        }
-                    });
+    @Override
+    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
+        switch (permissionRequestCode) {
+            case PERMISSION_CODE.ACCESS_COARSE_LOCATION:
+                handleGrantedAccessCoarseLocation(isGranted);
+                break;
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        Timber.d("onRequestPermissionsResult: requestCode %s grantResults %s permission %s", requestCode, grantResults.length, grantResults[0]);
-        switch (requestCode) {
-            case Constants.Permission.REQUEST_COARSE_LOCATION: {
-                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Timber.d("coarse location permission granted");
-                } else {
-                    DialogHelper.showConfirmDialog(getActivity(),
-                            getString(R.string.deny_permission_bluetooth),
-                            getString(R.string.accept),
-                            null,
-                            null);
-                }
-                break;
-            }
+    private void handleGrantedAccessCoarseLocation(boolean isGranted) {
+        if (isGranted) {
+            startBeaconScanner();
+        } else {
+            DialogHelper.showConfirmDialog(getActivity(),
+                    getString(R.string.deny_permission_bluetooth),
+                    getString(R.string.accept),
+                    null,
+                    null);
         }
     }
 

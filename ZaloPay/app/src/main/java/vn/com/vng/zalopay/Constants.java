@@ -1,18 +1,13 @@
 package vn.com.vng.zalopay;
 
-import com.zalopay.zcontacts.ZContactsModule;
-
 /**
  * Created by AnhHieu on 3/25/16.
- *
  */
 public interface Constants {
-    int PROFILE_LEVEL_MIN = 2;
     int CONNECTION_POOL_DOWNLOAD_COUNT = 1;
     int CONNECTION_KEEP_ALIVE_DOWNLOAD_DURATION = 5;
     int CONNECTION_POOL_COUNT = 5;
     long CONNECTION_KEEP_ALIVE_DURATION = 5;
-    long DEFAULT_CONNECTION_TIMEOUT_MINUTES = 2L;
     int MIN_DEPOSIT_MONEY = 20000;
     int MAX_DEPOSIT_MONEY = 10000000;
     int MIN_WITHDRAW_MONEY = 20000;
@@ -40,54 +35,30 @@ public interface Constants {
 
     //Using to transfer arg between fragment/activity
     String ARG_AMOUNT = "AMOUNT";
-    String ARG_PAYEE = "Payee";
     String ARG_ZALO_FRIEND = "zalofriend";
     String ARG_MESSAGE = "message";
     String ARG_TRANSFERRECENT = "TransferRecent";
-    String ARG_APPID = "appid";
-    String ARG_ZPTRANSTOKEN = "zptranstoken";
     String ARG_URL = "url";
     String ARG_AUTO_LOAD_DATA = "auto_load_data";
 
     //DMappedCard: model of zalo payment sdk
-    String CARDNAME = "cardname";
-    String FIRST6CARDNO = "first6cardno";
+
     String LAST4CARDNO = "last4cardno";
-    String BANKCODE = "bankcode";
-    String EXPIRETIME = "expiretime";
     String IMAGE_FILE_PATH = "image_file_path";
     String BANKNAME = "bankname";
 
-    String PROFILE_TYPE = "profile_type";
-    int PRE_PROFILE_TYPE = 1;
-    int PIN_PROFILE_TYPE = 2;
 
     String PREF_WAITING_APPROVE_PROFILE_LEVEL3 = "pref_waiting_approve_profile_level3";
 
-    int STATE_START_RECORDING = 4;
-    int STATE_STOP_RECORDING = 5;
-
-    String COMMANDTYPE = "commandType";
-    String RECORDNAME = "recordName";
-
     int ZALOPAY_APP_ID = BuildConfig.ZALOPAY_APP_ID;
     int REQUEST_CODE_TRANSFER = 124;
-//    int REQUEST_CODE_INTRO = 125;
+    //    int REQUEST_CODE_INTRO = 125;
     int REQUEST_CODE_CARD_SUPPORT = 126;
     int REQUEST_CODE_TRANSFER_VIA_ZALOPAYID = 127;
     int REQUEST_CODE_DEPOSIT = 128;
     int REQUEST_CODE_UPDATE_PROFILE_LEVEL_2 = 129;
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
     String ARG_SHOW_NOTIFICATION_LINK_CARD = "show_notification_link_card";
-
-    //Contain request code that request permission in Android 6
-    interface Permission {
-        int REQUEST_COARSE_LOCATION = 1;
-        int REQUEST_CAMERA = 100;
-        int REQUEST_READ_SMS = 101;
-        int REQUEST_READ_CONTACT = ZContactsModule.REQUEST_READ_CONTACT;
-        int REQUEST_READ_STORAGE = 103;
-    }
 
     interface MoneyTransfer {
         int MODE_DEFAULT = 0;

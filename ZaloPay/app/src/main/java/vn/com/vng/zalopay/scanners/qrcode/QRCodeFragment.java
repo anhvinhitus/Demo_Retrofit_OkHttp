@@ -160,29 +160,35 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     private void startAndCheckPermission() {
         Timber.d("start with check permission");
-        if (checkAndRequestPermission(Manifest.permission.CAMERA, Constants.Permission.REQUEST_CAMERA)) {
+        if (isPermissionGrantedAndRequest(Manifest.permission.CAMERA, PERMISSION_CODE.CAMERA)) {
             super.start();
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case Constants.Permission.REQUEST_CAMERA:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    super.start();
-                } else {
-                    showCameraError(R.string.exception_open_camera_not_allow);
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_ACCESSDENIED);
-                }
+    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
+        switch (permissionRequestCode) {
+            case PERMISSION_CODE.CAMERA:
+                handleGrantedCamera(isGranted);
                 break;
-            case Constants.Permission.REQUEST_READ_STORAGE:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
-                }
+            case PERMISSION_CODE.READ_EXTERNAL_STORAGE:
+                handleGrantedReadExternalStorage(isGranted);
                 break;
+        }
+    }
+
+    private void handleGrantedCamera(boolean isGranted) {
+        if (isGranted) {
+            super.start();
+        } else {
+            showCameraError(R.string.exception_open_camera_not_allow);
+            ZPAnalytics.trackEvent(ZPEvents.SCANQR_ACCESSDENIED);
+        }
+    }
+
+    private void handleGrantedReadExternalStorage(boolean isGranted) {
+        if (isGranted) {
+            startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
         }
     }
 
@@ -253,12 +259,12 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         int itemId = item.getItemId();
         if (itemId == R.id.action_scan_qr_from_image) {
             ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_TOUCHICON);
-            if (checkAndRequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Constants.Permission.REQUEST_READ_STORAGE)) {
+            if (isPermissionGrantedAndRequest(Manifest.permission.READ_EXTERNAL_STORAGE, PERMISSION_CODE.READ_EXTERNAL_STORAGE)) {
                 startPickImage(FOREGROUND_IMAGE_REQUEST_CODE);
             }
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

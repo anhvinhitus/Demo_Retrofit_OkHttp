@@ -363,7 +363,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     }
 
     @Override
-    protected void permissionGranted(int permissionRequestCode) {
+    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
 
     }
 

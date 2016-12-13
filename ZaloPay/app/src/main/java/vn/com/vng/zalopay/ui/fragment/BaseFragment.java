@@ -1,15 +1,10 @@
 package vn.com.vng.zalopay.ui.fragment;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +13,6 @@ import android.view.inputmethod.InputMethodManager;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -38,6 +31,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * *
  */
 public abstract class BaseFragment extends Fragment {
+
     protected abstract void setupFragmentComponent();
 
     protected abstract int getResLayoutId();
@@ -123,7 +117,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showWarningDialog(String message,
-                            ZPWOnEventDialogListener cancelListener) {
+                                  ZPWOnEventDialogListener cancelListener) {
         DialogHelper.showWarningDialog(getActivity(), message, cancelListener);
     }
 
@@ -185,46 +179,6 @@ public abstract class BaseFragment extends Fragment {
 
     public void showToast(int message) {
         ToastUtil.showToast(getActivity(), message);
-    }
-
-    public boolean checkAndRequestPermission(String permission, int requestCode) {
-        boolean hasPermission = true;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getActivity(), permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                hasPermission = false;
-                requestPermissions(new String[]{permission}, requestCode);
-            }
-        }
-        return hasPermission;
-    }
-
-    protected boolean isPermissionGranted(String permissions) {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
-                ContextCompat.checkSelfPermission(getContext(), permissions) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public void checkAndRequestReadSMSPermission() {
-        checkAndRequestPermission(Manifest.permission.READ_SMS, Constants.Permission.REQUEST_READ_SMS);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case Constants.Permission.REQUEST_READ_SMS: {
-                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (BuildConfig.DEBUG) {
-                        showToast("Read sms permission granted");
-                    }
-                } else {
-                    if (BuildConfig.DEBUG) {
-                        showToast("Read sms permission didn't grante");
-                    }
-                }
-                return;
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     public void hideKeyboard() {

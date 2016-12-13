@@ -2,13 +2,10 @@ package vn.com.vng.zalopay.scanners.qrcode;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -25,14 +22,14 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.qrcode.BuildConfig;
 import vn.com.vng.zalopay.qrcode.CustomViewfinderView;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 
 /**
  * Created by AnhHieu on 9/28/16.
  * *
  */
 
-abstract class AbsQrScanFragment extends BaseFragment implements CameraPreview.StateListener {
+abstract class AbsQrScanFragment extends RuntimePermissionFragment implements CameraPreview.StateListener {
 
     protected abstract void handleResult(String result);
 
