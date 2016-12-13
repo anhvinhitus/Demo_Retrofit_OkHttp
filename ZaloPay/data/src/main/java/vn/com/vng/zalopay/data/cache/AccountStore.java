@@ -47,6 +47,10 @@ public interface AccountStore {
         Map getProfileLevel2();
 
         void saveProfileInfo2(String phoneNumber, boolean receiveOtp);
+
+        Map getChangePinState();
+
+        void saveChangePinState(boolean receiveOtp);
     }
 
     interface RequestService {
@@ -109,9 +113,9 @@ public interface AccountStore {
 
         Observable<Boolean> verifyOTPProfile(String otp);
 
-        Observable<BaseResponse> recoveryPin(String pin, String oldPin);
+        Observable<Boolean> recoveryPin(String pin, String oldPin);
 
-        Observable<BaseResponse> verifyRecoveryPin(String otp);
+        Observable<Boolean> verifyRecoveryPin(String otp);
 
 
         Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin);
@@ -141,5 +145,11 @@ public interface AccountStore {
         Observable<Void> saveProfileInfo2(String phoneNumber, boolean receiveOtp);
 
         Observable<Void> clearProfileInfo2();
+
+        Observable<Boolean> getChangePinState();
+
+        Observable<Void> saveChangePinState(boolean receiveOtp);
+
+        Observable<Void> resetChangePinState();
     }
 }

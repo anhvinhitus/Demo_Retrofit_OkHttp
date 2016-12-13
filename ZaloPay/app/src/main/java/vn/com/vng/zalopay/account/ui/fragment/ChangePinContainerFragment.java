@@ -59,14 +59,12 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new ChangePinPagerAdapter(getChildFragmentManager());
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        mPager.setAdapter(mAdapter);
     }
 
     @OnPageChange(value = R.id.viewPager, callback = OnPageChange.Callback.PAGE_SELECTED)
@@ -143,9 +141,20 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
     }
 
     @Override
+    public void initPagerContent(int index) {
+        mAdapter = new ChangePinPagerAdapter(getChildFragmentManager());
+        mPager.setAdapter(mAdapter);
+        if (index >= 0 && index < mPager.getAdapter().getCount()) {
+            mPager.setCurrentItem(index);
+        }
+    }
+
+    @Override
     public boolean onBackPressed() {
         if (mPager.getCurrentItem() > 0) {
             ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_INPUTNONE);
+            mPager.setCurrentItem(0);
+            return true;
         }
 
         return super.onBackPressed();

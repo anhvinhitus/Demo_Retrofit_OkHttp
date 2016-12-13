@@ -107,16 +107,20 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<BaseResponse> recoveryPin(String oldPin, String newPin) {
+    public Observable<Boolean> recoveryPin(String oldPin, String newPin) {
         oldPin = sha256Base(oldPin);
         newPin = sha256Base(newPin);
 
-        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, oldPin, newPin, null);
+        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, oldPin, newPin, null)
+                .flatMap(baseResponse -> saveChangePinState(true))
+                .map(baseResponse -> Boolean.TRUE);
     }
 
     @Override
-    public Observable<BaseResponse> verifyRecoveryPin(String otp) {
-        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, null, null, otp);
+    public Observable<Boolean> verifyRecoveryPin(String otp) {
+        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, null, null, otp)
+                .flatMap(baseResponse -> resetChangePinState())
+                .map(baseResponse -> Boolean.TRUE);
     }
 
     @Override
@@ -292,6 +296,31 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
             localStorage.saveProfileInfo2("", false);
             return null;
         });
+    }
+
+    @Override
+    public Observable<Boolean> getChangePinState() {
+        return ObservableHelper.makeObservable(() -> {
+            Map map = localStorage.getChangePinState();
+            Object isReceivedOtp = map.get(Constants.ChangePin.RECEIVE_OTP_KEY);
+            if (isReceivedOtp != null) {
+                return Boolean.valueOf(isReceivedOtp.toString());
+            }
+            return Boolean.FALSE;
+        });
+    }
+
+    @Override
+    public Observable<Void> saveChangePinState(boolean receiveOtp) {
+        return ObservableHelper.makeObservable(() -> {
+            localStorage.saveChangePinState(receiveOtp);
+            return null;
+        });
+    }
+
+    @Override
+    public Observable<Void> resetChangePinState() {
+        return saveChangePinState(false);
     }
 
     @Override

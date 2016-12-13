@@ -125,4 +125,31 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
 
         insertDataManifest(Constants.ProfileLevel2.PROFILE_LEVEL2, jsonObject.toString());
     }
+
+    @Override
+    public Map getChangePinState() {
+        Map<String, String> map = new HashMap<>();
+        String changePin = getDataManifest(Constants.ChangePin.CHANGE_PIN);
+        if (!TextUtils.isEmpty(changePin)) {
+
+            Type type = new TypeToken<Map<String, String>>() {
+            }.getType();
+
+            try {
+                map = mGson.fromJson(changePin, type);
+            } catch (Exception e) {
+                Timber.d(e, "exception");
+            }
+
+        }
+        return map;
+    }
+
+    @Override
+    public void saveChangePinState(boolean receiveOtp) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(Constants.ChangePin.RECEIVE_OTP_KEY, receiveOtp);
+
+        insertDataManifest(Constants.ChangePin.CHANGE_PIN, jsonObject.toString());
+    }
 }

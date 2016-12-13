@@ -27,6 +27,7 @@ import static vn.com.vng.zalopay.data.NetworkError.OTP_CHANGE_PASSWORF_WRONG;
 
 /**
  * Created by AnhHieu on 8/25/16.
+ * *
  */
 public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
         implements IChangePinPresenter<IChangePinContainer, IChangePinView, IChangePinVerifyView> {
@@ -46,6 +47,29 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
     public ChangePinPresenter(Context context, AccountStore.Repository accountRepository) {
         mApplicationContext = context;
         mAccountRepository = accountRepository;
+    }
+
+    @Override
+    public void attachView(IChangePinContainer iChangePinContainer) {
+        super.attachView(iChangePinContainer);
+        initPagerContent();
+    }
+
+    private void initPagerContent() {
+        Subscription subscription = mAccountRepository.getChangePinState()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onNext(Boolean isReceivedOtp) {
+                        if (isReceivedOtp == null || !isReceivedOtp) {
+                            mView.initPagerContent(0);
+                        } else {
+                            mView.initPagerContent(1);
+                        }
+                    }
+                });
+        mSubscription.add(subscription);
     }
 
     @Override
@@ -100,7 +124,6 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
         mView.nextPage();
     }
 
-
     private void onChangePinError(Throwable e) {
         mChangePinView.hideLoading();
         String message = ErrorMessageFactory.create(mApplicationContext, e);
@@ -151,9 +174,9 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
         mView.onVerifySuccess();
     }
 
-    private class ChangePinSubscriber extends DefaultSubscriber<BaseResponse> {
+    private class ChangePinSubscriber extends DefaultSubscriber<Boolean> {
         @Override
-        public void onNext(BaseResponse baseResponse) {
+        public void onNext(Boolean aBoolean) {
             ChangePinPresenter.this.onChangePinSuccess();
         }
 
@@ -166,9 +189,9 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
         }
     }
 
-    private final class VerifySubscriber extends DefaultSubscriber<BaseResponse> {
+    private final class VerifySubscriber extends DefaultSubscriber<Boolean> {
         @Override
-        public void onNext(BaseResponse baseResponse) {
+        public void onNext(Boolean aBoolean) {
             ChangePinPresenter.this.onVerifyOTPSuccess();
         }
 

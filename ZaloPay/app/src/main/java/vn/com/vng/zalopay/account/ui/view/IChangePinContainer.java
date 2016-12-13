@@ -11,4 +11,6 @@ public interface IChangePinContainer {
     void onVerifySuccess();
 
     void onChangePinOverLimit();
+
+    void initPagerContent(int index);
 }

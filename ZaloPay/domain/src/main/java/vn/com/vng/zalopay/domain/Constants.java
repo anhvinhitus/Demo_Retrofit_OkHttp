@@ -30,4 +30,9 @@ public interface Constants {
         String PHONE_NUMBER = "phone_number";
         String RECEIVE_OTP = "receive_otp";
     }
+
+    interface ChangePin {
+        String CHANGE_PIN = "change_pin";
+        String RECEIVE_OTP_KEY = "receive_otp_key";
+    }
 }
