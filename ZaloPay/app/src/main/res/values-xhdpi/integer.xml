@@ -1,0 +1,4 @@
+<resources>
+    <integer name="banner_width">720</integer>
+    <integer name="banner_height">180</integer>
+</resources>

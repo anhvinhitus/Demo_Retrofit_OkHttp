@@ -15,8 +15,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
@@ -140,6 +142,23 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
                 getString(R.string.check_internet));
 
         hideTextAds();
+
+        measureBannerSize();
+    }
+
+    private void measureBannerSize() {
+        //If device is tablet then image style is center inside.
+        if (AndroidUtils.isTablet(getContext())) {
+            return;
+        }
+        //If device is mobile then calculate width & height of image and style is fitXY.
+        int screenWidth = AndroidUtils.getScreenWidth(getActivity());
+        int bannerHeight = Math.round(screenWidth * getResources().getInteger(R.integer.banner_height)
+                / getResources().getInteger(R.integer.banner_width));
+        Timber.d("measure banner size width[%s] height[%s]", screenWidth, bannerHeight);
+        LinearLayout.LayoutParams params = new LinearLayout
+                .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, bannerHeight);
+        mLayoutBannerFullScreen.setLayoutParams(params);
     }
 
     private void setInternetConnectionError(String message, String spannedMessage) {
