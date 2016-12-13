@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.model.User;
@@ -73,10 +74,10 @@ public class NotificationRepository implements NotificationStore.Repository {
             Timber.d("put notification rowId [%s] read [%s]", rowId, notify.notificationstate);
 
             if (rowId >= 0) {
-                mEventBus.post(new NotificationChangeEvent((int)notify.notificationstate));
+                mEventBus.post(new NotificationChangeEvent((int) notify.notificationstate));
 
                 if (mRxBus.hasObservers()) {
-                    mRxBus.send(new NotificationChangeEvent((int)notify.notificationstate));
+                    mRxBus.send(new NotificationChangeEvent((int) notify.notificationstate));
                 }
             }
 
@@ -138,16 +139,26 @@ public class NotificationRepository implements NotificationStore.Repository {
 
     @Override
     public Observable<Long> getOldestTimeNotification() {
-        return Observable.just(localStorage.getDataManifest(Constants.MANIFEST_RECOVERY_NOTIFICATION, 0L))
-                .filter(lastTime -> lastTime > 0L)
-                .map(lastTime -> localStorage.getOldestTimeNotification());
+        return Observable.just(localStorage.getOldestTimeNotification());
+    }
+
+    @Override
+    public Observable<Long> getOldestTimeRecoveryNotification() {
+        return Observable.just(localStorage.getDataManifest(Constants.MANIFEST_RECOVERY_NOTIFICATION, 0L));
     }
 
     @Override
     public Observable<Void> recoveryNotify(List<NotificationData> notify) {
         return putNotify(notify)
-                .doOnNext(aVoid -> localStorage.insertDataManifest(Constants.MANIFEST_RECOVERY_NOTIFICATION,
-                        String.valueOf(System.currentTimeMillis() / 1000)));
+                .doOnNext(aVoid -> saveTimeRecovery(notify));
+    }
+
+    private void saveTimeRecovery(List<NotificationData> notify) {
+        long time = getMinTimeStamp(notify);
+        Timber.d("Save time recovery [%s]", time);
+        if (time > 0) {
+            localStorage.insertDataManifest(Constants.MANIFEST_RECOVERY_NOTIFICATION, String.valueOf(time));
+        }
     }
 
     public Observable<Boolean> isNotificationExisted(long mtaid, long mtuid) {
@@ -177,5 +188,26 @@ public class NotificationRepository implements NotificationStore.Repository {
             localStorage.delete(mtuid, mtaid);
             return Boolean.TRUE;
         });
+    }
+
+    private long getMinTimeStamp(List<NotificationData> notifications) {
+        if (Lists.isEmptyOrNull(notifications)) {
+            return -1;
+        }
+
+        long minTime = 0;
+        for (NotificationData item : notifications) {
+
+            if (item.timestamp == 0) {
+                continue;
+            }
+            Timber.d("getMinTimeStamp: [%s] ", item.timestamp);
+
+            if (minTime == 0 || minTime > item.timestamp) {
+                minTime = item.timestamp;
+            }
+        }
+
+        return minTime;
     }
 }
