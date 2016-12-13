@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
@@ -20,6 +21,18 @@ import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 @Config(constants = BuildConfig.class, sdk = 16)
 public class ListsTransformTest {
 
+    private SentBundleGD inputItem;
+    private SentBundle bundle;
+
+    private List<SentBundleGD> inputItemList;
+    private List<SentBundle> outputItemList;
+
+    @Before
+    public void setUp() throws Exception {
+        inputItemList = new ArrayList<>();
+        outputItemList = new ArrayList<>();
+    }
+
     private SentBundle transform(SentBundleGD inputItem) {
         SentBundle bundle = null;
         if (inputItem != null) {
@@ -37,12 +50,8 @@ public class ListsTransformTest {
         return bundle;
     }
 
-    @Test
-    public void transform() {
-        List<SentBundleGD> inputItemList = new ArrayList<SentBundleGD>();
-        List<SentBundle> outputItemList = new ArrayList<SentBundle>();
-
-        SentBundleGD inputItem = new SentBundleGD();
+    private void initData() {
+        inputItem = new SentBundleGD();
         inputItem.numOfOpenedPakages = 10L;
         inputItem.numOfPackages = 20L;
         inputItem.totalLuck = 4L;
@@ -56,7 +65,7 @@ public class ListsTransformTest {
         inputItemList.add(inputItem);
         inputItemList.add(inputItem);
 
-        SentBundle bundle = new SentBundle();
+        bundle = new SentBundle();
         bundle.numOfOpenedPakages = 10;
         bundle.numOfPackages = 20;
         bundle.totalLuck = 4;
@@ -69,47 +78,59 @@ public class ListsTransformTest {
 
         outputItemList.add(bundle);
         outputItemList.add(bundle);
+    }
+
+    @Test
+    public void transform() {
+        initData();
 
         List<SentBundle> outputBundle = Lists.transform(inputItemList, this::transform);
-        assertEquals(outputItemList, outputBundle);
+        Assert.assertEquals(true, assertEquals(outputItemList, outputBundle));
+
+        inputItemList.add(inputItem);
+        outputBundle = Lists.transform(inputItemList, this::transform);
+        Assert.assertEquals(false, assertEquals(outputItemList, outputBundle));
+
+        inputItemList.clear();
+        outputBundle = Lists.transform(inputItemList, this::transform);
+        Assert.assertEquals(true, outputBundle.size() == 0);
+
+        inputItemList = null;
+        outputBundle = Lists.transform(inputItemList, this::transform);
+        Assert.assertEquals(true, outputBundle.size() == 0);
+
+        outputBundle = Lists.transform(null, null);
+        Assert.assertEquals(true, outputBundle.size() == 0);
     }
 
-    private void assertElementEquals(SentBundle b1, SentBundle b2) {
-        if (b1 == null && b2 == null) {
-            return;
-        }
-        if (b1 == null && b2 != null) {
-            Assert.fail("Compare null and non-null object");
-            return;
-        }
-        if (b1 != null && b2 == null) {
-            Assert.fail("Compare null and non-null object");
-            return;
-        }
+    private boolean assertElementEquals(SentBundle b1, SentBundle b2) {
+        if (b1 == null && b2 != null) { return false; }
+        if (b1 != null && b2 == null) { return false; }
 
-        Assert.assertEquals("numOfOpenedPakages", b1.numOfOpenedPakages, b2.numOfOpenedPakages);
-        Assert.assertEquals("numOfPackages", b1.numOfPackages, b2.numOfPackages);
-        Assert.assertEquals("totalLuck", b1.totalLuck, b2.totalLuck);
-        Assert.assertEquals("sendZaloPayID", b1.sendZaloPayID, b2.sendZaloPayID);
-        Assert.assertEquals("type", b1.type, b2.type);
-        Assert.assertEquals("createTime", b1.createTime, b2.createTime);
-        Assert.assertEquals("lastOpenTime", b1.lastOpenTime, b2.lastOpenTime);
-        Assert.assertEquals("sendMessage", b1.sendMessage, b2.sendMessage);
-        Assert.assertEquals("status", b1.status, b2.status);
+        if(b1.numOfOpenedPakages != b2.numOfOpenedPakages) { return false; }
+        if(b1.numOfPackages != b2.numOfPackages) { return false; }
+        if(b1.totalLuck != b2.totalLuck) { return false; }
+        if(b1.sendZaloPayID != b2.sendZaloPayID) { return false; }
+        if(b1.type != b2.type) { return false; }
+        if(b1.createTime != b2.createTime) { return false; }
+        if(b1.lastOpenTime != b2.lastOpenTime) { return false; }
+        if(b1.sendMessage != b2.sendMessage) { return false; }
+        if(b1.status != b2.status) { return false; }
+
+        return true;
     }
 
-    private void assertEquals(List<SentBundle> list1, List<SentBundle> list2) {
-        if (list1 == null || list2 == null) {
-            return;
-        }
-
+    private boolean assertEquals(List<SentBundle> list1, List<SentBundle> list2) {
         if (list1.size() != list2.size()) {
-            Assert.fail("Lists size doesn't equal");
-            return;
+            return false;
         }
 
         for (int i = 0; i < list1.size(); i++) {
-            assertElementEquals(list1.get(i), list2.get(i));
+            if(!assertElementEquals(list1.get(i), list2.get(i))) {
+                return false;
+            }
         }
+
+        return true;
     }
 }

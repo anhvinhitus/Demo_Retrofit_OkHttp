@@ -36,7 +36,7 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
             "      \"sign\": 1,\n" +
             "      \"username\": \"Mạnh Hiếu\",\n" +
             "      \"appusername\": \"Long Lê Văn\",\n" +
-            "      \"transstatus\": 1,\n" +
+            "      \"transstatus\": 0,\n" +
             "      \"isretry\": false,\n" +
             "      \"isrefundsucc\": 0\n" +
             "    }";
@@ -71,6 +71,7 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
             entity.transid = j;
             entity.appid = j;
             entity.userid = "user" + j;
+            entity.reqdate += j;
             entity.statustype = TRANSACTION_STATUS_SUCCESS;
             entities.add(entity);
         }
@@ -82,21 +83,52 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
 
 
     @Test
-    public void putTest() {
+    public void put() {
         insertTransaction();
         List<TransHistoryEntity> result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
-        assertTrue(result.containsAll(result));
+        assertTrue(result.containsAll(entities));
+    }
+
+
+    @Test
+    public void get() {
+        List<TransHistoryEntity> result;
+        insertTransaction();
+
+        result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
+        assertEquals(true, result.containsAll(entities));
+
+        result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_FAIL);
+        for(int i = 0; i < result.size(); i++) {
+            assertEquals(false, result.get(i).equals(entities.get(i)));
+        }
+
+        result = mLocalStorage.get(0, 0, TRANSACTION_STATUS_SUCCESS);
+        assertEquals(true, result.size() == 0);
     }
 
     @Test
     public void isHaveTransactionInDb() {
+        boolean result;
+
+        result = mLocalStorage.isHaveTransactionInDb();
+        assertEquals(result, false);
 
         insertTransaction();
 
-        boolean result = mLocalStorage.isHaveTransactionInDb();
+        result = mLocalStorage.isHaveTransactionInDb();
         assertEquals(result, true);
     }
 
+    @Test
+    public void getTransaction() {
+        insertTransaction();
+
+        for(int i = 0; i < entities.size(); i++) {
+            long transid = i + 1;
+            assertEquals(true, entities.get(i).equals(mLocalStorage.getTransaction(transid)));
+        }
+    }
 
     @Test
     public void updateStatusType() {
@@ -104,39 +136,59 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         long transid = 1;
 
         mLocalStorage.updateStatusType(transid, TRANSACTION_STATUS_SUCCESS);
-
         TransHistoryEntity result = mLocalStorage.getTransaction(transid);
         assertEquals(result.statustype, TRANSACTION_STATUS_SUCCESS);
 
         mLocalStorage.updateStatusType(transid, TRANSACTION_STATUS_FAIL);
-
         TransHistoryEntity resultFail = mLocalStorage.getTransaction(transid);
-
         assertEquals(resultFail.statustype, TRANSACTION_STATUS_FAIL);
     }
 
     @Test
     public void setLoadedTransactionSuccess() {
+        insertTransaction();
+
         mLocalStorage.setLoadedTransactionSuccess(true);
         boolean ret = mLocalStorage.isLoadedTransactionSuccess();
         assertEquals(ret, true);
 
+        mLocalStorage.setLoadedTransactionSuccess(false);
+        ret = mLocalStorage.isLoadedTransactionSuccess();
+        assertEquals(ret, false);
     }
 
     @Test
     public void setLoadedTransactionFail() {
+        insertTransaction();
+
         mLocalStorage.setLoadedTransactionFail(true);
         boolean ret = mLocalStorage.isLoadedTransactionFail();
         assertEquals(ret, true);
+
+        mLocalStorage.setLoadedTransactionFail(false);
+        ret = mLocalStorage.isLoadedTransactionFail();
+        assertEquals(ret, false);
     }
 
+    @Test
     public void getLatestTimeTransaction() {
-        long latestTime = mLocalStorage.getLatestTimeTransaction(TRANSACTION_STATUS_FAIL);
-        long oldestTime = mLocalStorage.getOldestTimeTransaction(TRANSACTION_STATUS_FAIL);
+        insertTransaction();
+
+        long latestTime = mLocalStorage.getLatestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
+        assertEquals(true, latestTime == entities.get(entities.size() - 1).reqdate);
+
+        latestTime = mLocalStorage.getLatestTimeTransaction(TRANSACTION_STATUS_FAIL);
+        assertEquals(true, latestTime == 0);
     }
 
+    @Test
     public void getOldestTimeTransaction() {
-        long latestTime = mLocalStorage.getLatestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
+        insertTransaction();
+
         long oldestTime = mLocalStorage.getOldestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
+        assertEquals(true, oldestTime == entities.get(0).reqdate);
+
+        oldestTime = mLocalStorage.getOldestTimeTransaction(TRANSACTION_STATUS_FAIL);
+        assertEquals(true, oldestTime == 0);
     }
 }
