@@ -13,7 +13,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -64,7 +66,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     Gson mGson;
 
     @Inject
-    NotificationHelper notificationHelper;
+    NotificationHelper mNotificationHelper;
 
     @Inject
     ThreadExecutor mExecutor;
@@ -72,6 +74,8 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     private final int NUMBER_NOTIFICATION = 30;
+
+    private long mLastTimeRecovery;
 
     @Inject
     ZPNotificationService() {
@@ -115,7 +119,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        notificationHelper = null;
+        mNotificationHelper = null;
         Timber.d("Finalize ZPNotificationService");
     }
 
@@ -181,52 +185,72 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
             }
         } else if (event instanceof NotificationData) {
-            if (notificationHelper == null) {
+            if (mNotificationHelper == null) {
                 return;
             }
 
-            notificationHelper.processNotification((NotificationData) event);
+            mNotificationHelper.processNotification((NotificationData) event);
         } else if (event instanceof RecoveryMessageEvent) {
-            List<NotificationData> listMessage = ((RecoveryMessageEvent) event).listNotify;
-            Timber.d("RecoveryMessageEvent %s", listMessage);
+            final List<NotificationData> listMessage = ((RecoveryMessageEvent) event).listNotify;
+            Timber.d("Receive notification %s", listMessage);
 
             if (Lists.isEmptyOrNull(listMessage)) {
                 this.recoveryTransaction();
                 return;
             }
 
-            if (notificationHelper != null) {
-                notificationHelper.recoveryNotification(listMessage);
+            if (mNotificationHelper != null) {
+                Subscription sub = mNotificationHelper.recoveryNotification(listMessage)
+                        .filter(new Func1<Void, Boolean>() {
+                            @Override
+                            public Boolean call(Void aVoid) {
+                                boolean filter = listMessage.size() >= NUMBER_NOTIFICATION;
+                                Timber.d("Filter [%s]", filter);
+                                return filter;
+                            }
+                        })
+                        .flatMap(new Func1<Void, Observable<Long>>() {
+                            @Override
+                            public Observable<Long> call(Void aVoid) {
+                                return mNotificationHelper.getOldestTimeRecoveryNotification(false);
+                            }
+                        })
+                        .observeOn(Schedulers.io())
+                        .subscribe(new DefaultSubscriber<Long>() {
+                            @Override
+                            public void onNext(Long time) {
+                                sendMessageRecovery(time);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.d(e, "onError: ");
+                            }
+                        });
+
+                mCompositeSubscription.add(sub);
             }
 
-            if (listMessage.size() >= NUMBER_NOTIFICATION) {
-                this.recoveryNotification(false);
-            } else {
-                //begin load transaction
+            if (listMessage.size() < NUMBER_NOTIFICATION) {
                 this.recoveryTransaction();
             }
-
         }
     }
 
 
     private void recoveryNotification(final boolean isFirst) {
-        if (notificationHelper == null) {
+        if (mNotificationHelper == null) {
             return;
         }
 
-        Subscription subscription = notificationHelper.getOldestTimeNotification()
+        Timber.d("Recovery notification: %s", isFirst);
+
+        Subscription subscription = mNotificationHelper.getOldestTimeRecoveryNotification(isFirst)
                 .observeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Long>() {
                     @Override
                     public void onNext(Long time) {
-                        if (isFirst) {
-                            if (time == 0) {
-                                sendMessageRecovery(0);
-                            }
-                        } else {
-                            sendMessageRecovery(time);
-                        }
+                        sendMessageRecovery(time);
                     }
                 });
 
@@ -234,11 +258,17 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     }
 
     private void recoveryTransaction() {
-        notificationHelper.recoveryTransaction();
+        mNotificationHelper.recoveryTransaction();
     }
 
-
     private void sendMessageRecovery(long timeStamp) {
+        Timber.d("send Message Recovery: %s", timeStamp);
+        if (mLastTimeRecovery > 0 && mLastTimeRecovery == timeStamp) {
+            Timber.d("ignore recovery [%s]", timeStamp);
+            return;
+        }
+
+        mLastTimeRecovery = timeStamp;
         if (mWsConnection != null) {
             NotificationApiMessage message = NotificationApiHelper.createMessageRecovery(NUMBER_NOTIFICATION, timeStamp);
             mWsConnection.send(message.messageCode, message.messageContent);
@@ -246,7 +276,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     }
 
     private void subscribeTopics(String token) throws IOException {
-        Timber.d("subscribeTopics mIsSubscribeGcm [%s] token [%s]", mIsSubscribeGcm, token);
+        Timber.d("subscribe Topics mIsSubscribeGcm [%s] token [%s]", mIsSubscribeGcm, token);
         if (mIsSubscribeGcm) {
             return;
         }
@@ -266,22 +296,22 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadNotify(ReadNotifyEvent event) {
-        if (notificationHelper == null) {
+        if (mNotificationHelper == null) {
             return;
         }
 
-        notificationHelper.closeNotificationSystem();
+        mNotificationHelper.closeNotificationSystem();
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationUpdated(NotificationChangeEvent event) {
         Timber.d("on Notification updated %s", event.isRead());
-        if (notificationHelper == null) {
+        if (mNotificationHelper == null) {
             return;
         }
 
         if (!event.isRead()) {
-            notificationHelper.showNotificationSystem();
+            mNotificationHelper.showNotificationSystem();
         }
     }
 

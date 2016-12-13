@@ -431,22 +431,20 @@ public class NotificationHelper {
         mEventBus.post(new RefreshPaymentSdkEvent());
     }
 
-    Observable<Long> getOldestTimeNotification() {
-        return mNotifyRepository.getOldestTimeNotification();
-    }
-
-
-    void recoveryNotification(List<NotificationData> listMessage) {
+    Observable<Void> recoveryNotification(List<NotificationData> listMessage) {
         Timber.d("Recovery notification size [%s]", listMessage.size());
-        Subscription subscription = mNotifyRepository.recoveryNotify(listMessage)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Void>());
-        compositeSubscription.add(subscription);
+        return mNotifyRepository.recoveryNotify(listMessage);
     }
 
-    void recoveryTransaction() {
+    protected void recoveryTransaction() {
         Timber.d("recovery Transaction");
-        Subscription subscription = getOldestTimeNotification()
+        Subscription subscription = mNotifyRepository.getOldestTimeNotification()
+                .filter(new Func1<Long, Boolean>() {
+                    @Override
+                    public Boolean call(Long time) {
+                        return time > 0;
+                    }
+                })
                 .flatMap(new Func1<Long, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Long oldest) {
@@ -457,6 +455,20 @@ public class NotificationHelper {
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
         compositeSubscription.add(subscription);
+    }
+
+    protected Observable<Long> getOldestTimeRecoveryNotification(final boolean isFirst) {
+        if (isFirst) {
+            return mNotifyRepository.getOldestTimeRecoveryNotification()
+                    .filter(new Func1<Long, Boolean>() {
+                        @Override
+                        public Boolean call(Long time) {
+                            return time <= 0;
+                        }
+                    });
+        } else {
+            return mNotifyRepository.getOldestTimeRecoveryNotification();
+        }
     }
 
 }
