@@ -331,6 +331,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                     @Override
                     public void call(Long aLong) {
                         Timber.d("call refresh platform info");
+                        loadGatewayInfoPaymentSDK();
                         mEventBus.post(new RefreshPlatformInfoEvent());
                     }
                 });
