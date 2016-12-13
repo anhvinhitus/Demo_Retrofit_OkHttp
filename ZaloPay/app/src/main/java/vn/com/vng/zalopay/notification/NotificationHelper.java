@@ -458,17 +458,13 @@ public class NotificationHelper {
     }
 
     protected Observable<Long> getOldestTimeRecoveryNotification(final boolean isFirst) {
-        if (isFirst) {
-            return mNotifyRepository.getOldestTimeRecoveryNotification()
-                    .filter(new Func1<Long, Boolean>() {
-                        @Override
-                        public Boolean call(Long time) {
-                            return time <= 0;
-                        }
-                    });
-        } else {
-            return mNotifyRepository.getOldestTimeRecoveryNotification();
-        }
+        return mNotifyRepository.getOldestTimeRecoveryNotification()
+                .filter(new Func1<Long, Boolean>() {
+                    @Override
+                    public Boolean call(Long time) {
+                        return !isFirst || time <= 0;
+                    }
+                });
     }
 
 }

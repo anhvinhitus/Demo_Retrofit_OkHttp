@@ -73,13 +73,12 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
-    private final int NUMBER_NOTIFICATION = 30;
+    private final int NUMBER_NOTIFICATION = BuildConfig.DEBUG ? 5 : 30;
 
     private long mLastTimeRecovery;
 
     @Inject
     ZPNotificationService() {
-
     }
 
     public void startNotificationService() {
@@ -258,12 +257,13 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     }
 
     private void recoveryTransaction() {
+        Timber.d("Begin recovery transaction");
         mNotificationHelper.recoveryTransaction();
     }
 
     private void sendMessageRecovery(long timeStamp) {
-        Timber.d("send Message Recovery: %s", timeStamp);
-        if (mLastTimeRecovery > 0 && mLastTimeRecovery == timeStamp) {
+        Timber.d("Send message recovery timeStamp [%s]", timeStamp);
+        if (mLastTimeRecovery > 0 && mLastTimeRecovery <= timeStamp) {
             Timber.d("ignore recovery [%s]", timeStamp);
             return;
         }
