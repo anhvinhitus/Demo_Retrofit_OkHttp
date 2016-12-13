@@ -57,24 +57,7 @@ public class AppResourceEntity {
 
         AppResourceEntity entity = (AppResourceEntity) o;
 
-        if (appid != entity.appid) return false;
-        if (needdownloadrs != entity.needdownloadrs) return false;
-        if (status != entity.status) return false;
-        if (apptype != entity.apptype) return false;
-        if (sortOrder != entity.sortOrder) return false;
-        if (stateDownload != entity.stateDownload) return false;
-        if (timeDownload != entity.timeDownload) return false;
-        if (numRetry != entity.numRetry) return false;
-        if (appname != null ? !appname.equals(entity.appname) : entity.appname != null)
-            return false;
-        if (imageurl != null ? !imageurl.equals(entity.imageurl) : entity.imageurl != null)
-            return false;
-        if (jsurl != null ? !jsurl.equals(entity.jsurl) : entity.jsurl != null) return false;
-        if (checksum != null ? !checksum.equals(entity.checksum) : entity.checksum != null)
-            return false;
-        if (weburl != null ? !weburl.equals(entity.weburl) : entity.weburl != null) return false;
-        return iconurl != null ? iconurl.equals(entity.iconurl) : entity.iconurl == null;
-
+        return (appid == entity.appid);
     }
 
     @Override

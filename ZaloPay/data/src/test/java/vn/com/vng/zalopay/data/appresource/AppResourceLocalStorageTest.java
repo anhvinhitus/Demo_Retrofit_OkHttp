@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.appresource;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,7 +74,7 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
 
         List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
 
-        assertTrue(resourceEntityList.equals(result));
+        Assert.assertArrayEquals(resourceEntityList.toArray(), result.toArray());
     }
 
     @Test
@@ -152,7 +153,8 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
         mLocalStorage.updateAppList(Arrays.asList(12L, 13L, 14L));
 
         List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
-        assertTrue(resourceEntityList.equals(result));
+
+        Assert.assertArrayEquals(resourceEntityList.toArray(), result.toArray());
     }
 
     private AppResourceEntity createAppResource(int index) {
@@ -179,7 +181,7 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
         mLocalStorage.put(appResourceEntities);
 
         //B2: Compare before sort
-        List<Integer> sortAppSource = Arrays.asList(0,1,2,3,4);
+        List<Long> sortAppSource = Arrays.asList(0L,1L,2L,3L,4L);
         List<AppResourceEntity> appResourceList = mLocalStorage.getAllAppResource();
         for (int i = 0; i< appResourceList.size(); i++) {
             AppResourceEntity entity = appResourceList.get(i);
