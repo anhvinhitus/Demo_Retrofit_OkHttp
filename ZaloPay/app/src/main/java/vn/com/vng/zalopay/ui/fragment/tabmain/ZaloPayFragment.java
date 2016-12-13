@@ -72,7 +72,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     private final static int SPAN_COUNT_APPLICATION = 3;
     private boolean isEnableShowShow;
-    
+
     @Inject
     ZaloPayPresenter presenter;
 

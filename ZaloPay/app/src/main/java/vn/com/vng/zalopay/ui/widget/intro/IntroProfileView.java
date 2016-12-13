@@ -276,7 +276,7 @@ public class IntroProfileView extends RelativeLayout {
         }
     }
 
-    boolean isDisplayed(String id) {
+    public boolean isDisplayed(String id) {
         return mPref.contains(id);
     }
 

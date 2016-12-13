@@ -196,15 +196,16 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     @Override
     public void showKeyboard() {
         Timber.d("showKeyboard");
-        if (getWindow() != null) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        }
         AndroidUtils.runOnUIThread(mKeyboardRunnable, 250);
     }
 
     private Runnable mKeyboardRunnable = new Runnable() {
         @Override
         public void run() {
+            if (getWindow() != null) {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            }
+
             if (mPassCodeInput != null) {
                 mPassCodeInput.forceInputViewGetFocus();
             }

@@ -68,7 +68,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
     View mBtnContinueView;
 
     @Inject
-    IChangePinPresenter presenter;
+    IChangePinPresenter mPresenter;
 
     TextWatcher mNewPassCodeWatcher = new TextWatcher() {
         @Override
@@ -113,7 +113,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        presenter.setChangePassView(this);
+        mPresenter.setChangePassView(this);
 
         mOldPassCodeView.addTextChangedListener(mOldPassCodeWatcher);
         mOldPassCodeView.setPassCodeFocusChanged(mOldPassCodeFocusChanged);
@@ -132,16 +132,33 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
                 });
 
         mBtnContinueView.setEnabled(isValid());
+        showKeyboard();
+    }
 
-        //   mOldPassCodeView.requestFocusView();
+    boolean isPaused = false;
+
+    @Override
+    public void onResume() {
+        isPaused = false;
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        isPaused = true;
+        mOldPassCodeView.clearFocusView();
+        mNewPassCodeView.clearFocusView();
+        hideKeyboard();
+        super.onPause();
     }
 
     @Override
     public void onDestroyView() {
+        AndroidUtils.cancelRunOnUIThread(mKeyboardRunnable);
         mOldPassCodeView.setPassCodeFocusChanged(null);
         mNewPassCodeView.setPassCodeFocusChanged(null);
 
-        presenter.destroyChangePassView();
+        mPresenter.destroyChangePassView();
         super.onDestroyView();
     }
 
@@ -192,7 +209,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
         mNewPassCodeView.setError(null);
 
         ZPAnalytics.trackEvent(ZPEvents.OTP_CHANGEPASSWORD_REQUEST);
-        presenter.changePin(mOldPassCodeView.getText(), mNewPassCodeView.getText());
+        mPresenter.changePin(mOldPassCodeView.getText(), mNewPassCodeView.getText());
 
     }
 
@@ -203,6 +220,10 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
     private IPassCodeFocusChanged mOldPassCodeFocusChanged = new IPassCodeFocusChanged() {
         @Override
         public void onFocusChangedPin(boolean isFocus) {
+            if (isPaused) {
+                return;
+            }
+
             Timber.d("old password view focus [%s]", isFocus);
             if (mBtnContinueView != null) {
                 mBtnContinueView.setEnabled(isValid());
@@ -215,6 +236,9 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
     private IPassCodeFocusChanged mNewPassCodeFocusChanged = new IPassCodeFocusChanged() {
         @Override
         public void onFocusChangedPin(boolean isFocus) {
+            if (isPaused) {
+                return;
+            }
 
             Timber.d("new password view focus [%s]", isFocus);
 
@@ -239,5 +263,21 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
     public void onStopFragment() {
 
     }
+
+    public void showKeyboard() {
+        Timber.d("showKeyboard");
+        AndroidUtils.runOnUIThread(mKeyboardRunnable, 250);
+    }
+
+    private Runnable mKeyboardRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mOldPassCodeView != null) {
+                mOldPassCodeView.requestFocusView();
+                AndroidUtils.showKeyboard(mOldPassCodeView.getEditText());
+            }
+
+        }
+    };
 }
 
