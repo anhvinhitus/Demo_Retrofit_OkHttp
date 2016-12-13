@@ -15,4 +15,6 @@ public interface IPinProfileView {
     void showLoading();
 
     void hideLoading();
+
+    void showKeyboard();
 }
