@@ -49,7 +49,7 @@ final class RequestSubscriber extends DefaultSubscriber<String> {
 
     @Override
     public void onNext(String s) {
-        Timber.d("onNext response %s", s);
+        Timber.d("received response");
         Promise promise = wrPromise.get();
         if (promise == null) {
             return;

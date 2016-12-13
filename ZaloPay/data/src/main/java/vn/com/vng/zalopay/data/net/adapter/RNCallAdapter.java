@@ -31,12 +31,14 @@ public class RNCallAdapter extends BaseCallAdapter {
     @NonNull
     @Override
     protected <R> Observable<? extends R> makeObservableFromResponse(Response<R> response) {
-        Timber.d("makeObservableFromResponse response [%s]", response);
         if (response == null) {
+            Timber.d("makeObservableFromResponse NULL response");
             return Observable.error(new HttpEmptyResponseException());
         }
 
         if (!response.isSuccessful()) {
+            Timber.d("makeObservableFromResponse UNSUCCESSFUL response");
+
             return Observable.error(new HttpException(response));
         }
 
