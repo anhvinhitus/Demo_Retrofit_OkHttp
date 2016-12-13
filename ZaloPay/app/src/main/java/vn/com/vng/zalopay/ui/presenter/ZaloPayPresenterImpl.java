@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -44,9 +45,11 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
 
@@ -76,7 +79,9 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
         }
     };
 
-    public ZaloPayPresenterImpl(MerchantStore.Repository mMerchantRepository,
+    private Context mContext;
+
+    public ZaloPayPresenterImpl(Context context, MerchantStore.Repository mMerchantRepository,
                                 EventBus eventBus,
                                 BalanceStore.Repository balanceRepository,
                                 AppResourceStore.Repository appResourceRepository,
@@ -88,6 +93,7 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
         this.mAppResourceRepository = appResourceRepository;
         this.mNotificationRepository = notificationRepository;
         this.mNavigator = navigator;
+        this.mContext = context;
     }
 
     @Override
@@ -453,7 +459,8 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
             if (result) {
                 mNavigator.startPaymentApplicationActivity(mView.getContext(), app);
             } else {
-                mView.showErrorDialog(mView.getContext().getString(R.string.application_downloading));
+                DialogHelper.showCustomDialog(mView.getActivity(), mContext.getString(R.string.application_downloading),
+                        mContext.getString(R.string.txt_close), SweetAlertDialog.NORMAL_TYPE, null);
             }
         }
     }

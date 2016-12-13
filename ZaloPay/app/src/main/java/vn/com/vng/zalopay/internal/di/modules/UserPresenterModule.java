@@ -29,13 +29,13 @@ public class UserPresenterModule {
 
     @UserScope
     @Provides
-    ZaloPayPresenter providerZaloPayPresenter(MerchantStore.Repository merchantRepository,
+    ZaloPayPresenter providerZaloPayPresenter(Context context, MerchantStore.Repository merchantRepository,
                                               EventBus eventBus,
                                               BalanceStore.Repository balanceRepository,
                                               AppResourceStore.Repository appResourceRepository,
                                               NotificationStore.Repository notificationRepository,
                                               Navigator navigator) {
-        return new ZaloPayPresenterImpl(merchantRepository,
+        return new ZaloPayPresenterImpl(context, merchantRepository,
                 eventBus,
                 balanceRepository,
                 appResourceRepository,
