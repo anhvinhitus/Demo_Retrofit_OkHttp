@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.data.zfriend;
 
 import android.database.Cursor;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -18,7 +19,6 @@ import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.domain.model.User;
 
 import static vn.com.vng.zalopay.data.Constants.MANIFEST_LASTTIME_SYNC_CONTACT;
 
@@ -34,26 +34,22 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         mDao = daoSession.getZaloFriendGDDao();
     }
 
-    @Override
-    public void put(List<ZaloFriendEntity> val) {
-        List<ZaloFriendGD> list = new ArrayList<>();
 
-        for (ZaloFriendEntity entity : val) {
-            ZaloFriendGD item = transform(entity);
-            if (item != null) {
-                list.add(item);
-            }
+    /**
+     * Trường hợp update từ zalo thì k được override displayName ~ shouldUpdateName = false;
+     * Ngược lại, update từ contact được override displayname ~ shouldUpdateName = true;
+     */
+
+    @Override
+    public void put(List<ZaloFriendEntity> val, boolean shouldUpdateName) {
+
+        List<ZaloFriendGD> list = transform(val, shouldUpdateName);
+
+        if (Lists.isEmptyOrNull(list)) {
+            return;
         }
 
         mDao.insertOrReplaceInTx(list);
-    }
-
-    @Override
-    public void put(ZaloFriendEntity val) {
-        ZaloFriendGD item = transform(val);
-        if (item != null) {
-            mDao.insertOrReplaceInTx(item);
-        }
     }
 
     @Override
@@ -90,8 +86,14 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         return transformEntity(list);
     }
 
-    private ZaloFriendGD transform(ZaloFriendEntity entity) {
+    private ZaloFriendGD transform(ZaloFriendEntity entity, boolean shouldUpdateName) {
+
+        if (entity == null || entity.userId <= 0) {
+            return null;
+        }
+
         ZaloFriendGD item = mDao.load(entity.userId);
+
         if (item == null) {
             item = new ZaloFriendGD();
             item.zaloId = (entity.userId);
@@ -101,10 +103,13 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
             item.zaloPayName = (entity.zaloPayName);
         }
 
+        if (shouldUpdateName || TextUtils.isEmpty(item.displayName)) {
+            item.displayName = (entity.displayName);
+            item.fulltextsearch = Strings.stripAccents(item.displayName);
+        }
+
         item.userName = (entity.userName);
-        item.displayName = (entity.displayName);
         item.avatar = (entity.avatar);
-        item.fulltextsearch = (entity.normalizeDisplayName);
         item.usingApp = (entity.usingApp);
 
         return item;
@@ -126,13 +131,13 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         return ret;
     }
 
-    private List<ZaloFriendGD> transform(List<ZaloFriendEntity> entities) {
+    private List<ZaloFriendGD> transform(List<ZaloFriendEntity> entities, boolean shouldUpdateName) {
         if (Lists.isEmptyOrNull(entities)) {
             return Collections.emptyList();
         }
         List<ZaloFriendGD> list = new ArrayList<>();
         for (ZaloFriendEntity entity : entities) {
-            ZaloFriendGD dao = transform(entity);
+            ZaloFriendGD dao = transform(entity, shouldUpdateName);
             if (dao != null) {
                 list.add(dao);
             }
