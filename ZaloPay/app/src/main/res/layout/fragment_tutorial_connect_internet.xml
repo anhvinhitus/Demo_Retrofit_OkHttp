@@ -72,4 +72,11 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@color/separate" />
+
+    <Button
+        android:id="@+id/btnOpenSettings"
+        style="@style/Button.Default.New"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button.height"
+        android:text="@string/btn_turn_on_network"/>
 </LinearLayout>

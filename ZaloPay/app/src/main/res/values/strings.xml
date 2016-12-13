@@ -75,6 +75,7 @@
     <string name="btn_exit">Thoát</string>
     <string name="btn_wait_loading">Đợi tải</string>
     <string name="btn_reload">Tải Lại</string>
+    <string name="btn_turn_on_network">Bật Kết Nối</string>
 
     <string name="txt_deposit">Nạp tiền</string>
     <string name="txt_withdraw">Rút tiền</string>

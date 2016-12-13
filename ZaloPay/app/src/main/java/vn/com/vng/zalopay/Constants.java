@@ -57,6 +57,8 @@ public interface Constants {
     int REQUEST_CODE_TRANSFER_VIA_ZALOPAYID = 127;
     int REQUEST_CODE_DEPOSIT = 128;
     int REQUEST_CODE_UPDATE_PROFILE_LEVEL_2 = 129;
+    int REQUEST_CODE_SYSTEM_SETTINGS = 130;
+
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
     String ARG_SHOW_NOTIFICATION_LINK_CARD = "show_notification_link_card";
 

@@ -620,4 +620,8 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startSystemSettingsActivity(Fragment fragment) {
+        Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_SYSTEM_SETTINGS);
+    }
 }
