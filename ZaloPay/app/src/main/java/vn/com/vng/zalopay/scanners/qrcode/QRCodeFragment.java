@@ -233,13 +233,9 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
                 ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOPHOTO);
             }
         } else if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
-            if (resultCode == Activity.RESULT_OK) {
-                qrCodePresenter.payPendingOrder();
-            }
+            qrCodePresenter.payPendingOrder();
         } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
-            if (resultCode == Activity.RESULT_OK) {
-                qrCodePresenter.payPendingOrder();
-            }
+            qrCodePresenter.payPendingOrder();
         }
     }
 
