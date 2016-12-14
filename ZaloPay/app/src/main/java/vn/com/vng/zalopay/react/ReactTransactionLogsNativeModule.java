@@ -230,6 +230,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         item.putDouble("sign", history.sign);
         item.putString("username", history.username);
         item.putString("appusername", history.appusername);
+        item.putString("appid", String.valueOf(history.appid));
         return item;
     }
 
