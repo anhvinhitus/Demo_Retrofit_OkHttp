@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**
  * Created by longlv on 25/05/2016.
@@ -161,17 +162,14 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     }
 
     private void requireUpdateProfileLevel2(String message) {
-        mView.showConfirmDialog(message,
-                new ZPWOnEventConfirmDialogListener() {
+        mView.showUpdateProfileDialog(message,
+                new ZPWOnSweetDialogListener() {
                     @Override
-                    public void onCancelEvent() {
-
-                    }
-
-                    @Override
-                    public void onOKevent() {
-                        if (mView != null) {
-                            mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
+                    public void onClickDiaLog(int i) {
+                        if (i == 1) {
+                            if (mView != null) {
+                                mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
+                            }
                         }
                     }
                 });
