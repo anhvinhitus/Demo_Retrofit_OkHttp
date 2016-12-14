@@ -26,9 +26,7 @@ public interface FriendStore {
 
         boolean isHaveZaloFriendDb();
 
-        void put(List<ZaloFriendEntity> val);
-
-        void put(ZaloFriendEntity val);
+        void put(List<ZaloFriendEntity> val, boolean shouldUpdateName);
 
         List<ZaloFriendEntity> get();
 

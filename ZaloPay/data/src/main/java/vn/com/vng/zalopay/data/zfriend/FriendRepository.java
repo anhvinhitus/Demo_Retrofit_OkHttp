@@ -7,14 +7,11 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
@@ -61,7 +58,7 @@ public class FriendRepository implements FriendStore.Repository {
     public Observable<Boolean> fetchZaloFriends() {
         Timber.d("fetchZaloFriends");
         return mZaloRequestService.fetchFriendList()
-                .doOnNext(entities -> mLocalStorage.put(entities))
+                .doOnNext(entities -> mLocalStorage.put(entities, false))
                 .doOnCompleted(this::updateTimeStamp)
                 .map(entities -> Boolean.TRUE);
     }
@@ -190,16 +187,10 @@ public class FriendRepository implements FriendStore.Repository {
                     List<ZaloFriendEntity> mList = mLocalStorage.getZaloFriendWithoutZpId();
                     Timber.d("list zalo need merge %s ", Lists.isEmptyOrNull(mList) ? 0 : mList.size());
                     String mNextZaloIdList = transformZpId(mList);
-                    if (TextUtils.isEmpty(mNextZaloIdList)) {
+                    if (TextUtils.isEmpty(mNextZaloIdList) || mNextZaloIdList.equals(mPreviousZaloId)) {
                         Timber.d("Check list zaloid or client on Complete");
                         subscriber.onCompleted();
                     } else {
-
-                        if (mNextZaloIdList.equals(mPreviousZaloId)) { // trường hợp k lấy đc user info từ server
-                            subscriber.onCompleted();
-                            return;
-                        }
-
                         mPreviousZaloId = mNextZaloIdList;
                         checklistzaloidforclient(mNextZaloIdList, subscriber, deep + 1);
                     }
@@ -303,7 +294,7 @@ public class FriendRepository implements FriendStore.Repository {
             }
             Timber.d("beginSync: sync number %s", numberPhoneChange);
             if (numberPhoneChange > 0) {
-                mLocalStorage.put(zEntities);
+                mLocalStorage.put(zEntities, true);
             }
 
             listContact.clear();
