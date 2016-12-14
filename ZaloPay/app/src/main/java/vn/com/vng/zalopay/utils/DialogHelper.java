@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.utils;
 import android.app.Activity;
 
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.react.Helpers;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;
@@ -83,25 +84,16 @@ public class DialogHelper {
                 cancelListener);
     }
 
-    public static void showInfoDialog(Activity activity,
-                                        String message,
-                                        ZPWOnEventDialogListener cancelListener) {
+    public static void showNotificationDialog(Activity activity,
+                                              String message,
+                                              ZPWOnEventDialogListener cancelListener) {
+        if (activity == null) {
+            return;
+        }
         DialogManager.showSweetDialogCustom(activity,
                 message,
                 activity.getString(R.string.txt_close),
-                SweetAlertDialog.INFO_TYPE,
-                cancelListener);
-    }
-
-    public static void showInfoDialog(Activity activity,
-                                        String title,
-                                        String message,
-                                        ZPWOnEventDialogListener cancelListener) {
-        DialogManager.showSweetDialogCustom(activity,
-                message,
-                activity.getString(R.string.txt_close),
-                title,
-                SweetAlertDialog.INFO_TYPE,
+                SweetAlertDialog.NORMAL_TYPE,
                 cancelListener);
     }
 

@@ -217,7 +217,7 @@ public class Helpers {
                     break;
 
                 case DialogType.NOTIFICATION_TYPE:
-                    sweetAlertType = SweetAlertDialog.INFO_TYPE;
+                    sweetAlertType = SweetAlertDialog.NORMAL_TYPE;
                     break;
 
                 default:

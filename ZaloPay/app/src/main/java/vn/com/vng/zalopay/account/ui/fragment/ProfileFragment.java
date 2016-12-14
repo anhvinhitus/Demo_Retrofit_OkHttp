@@ -159,8 +159,9 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         mAccountNameView.setText(zaloPayName);
     }
 
-    public void showDialogInfo(String message) {
-        DialogHelper.showInfoDialog(getActivity(), message, null);
+    @Override
+    public void showNotificationDialog(String message) {
+        DialogHelper.showNotificationDialog(getActivity(), message, null);
     }
 
     @Override

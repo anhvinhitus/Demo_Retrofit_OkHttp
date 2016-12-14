@@ -108,8 +108,7 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
     private void showDialogNotUsingApp(ZaloFriend zaloFriend) {
         if (mView != null) {
             String message = String.format(mContext.getString(R.string.account_not_use_zalopay), zaloFriend.displayName, zaloFriend.displayName);
-            DialogHelper.showInfoDialog((Activity) mView.getContext(),
-                    mContext.getString(R.string.notification),
+            DialogHelper.showNotificationDialog((Activity) mView.getContext(),
                     message,
                     null);
         }

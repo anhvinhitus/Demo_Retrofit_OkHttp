@@ -327,8 +327,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     }
 
     @Override
-    public void showWarningDialog(String error) {
-        DialogHelper.showWarningDialog(getActivity(), error, null);
+    public void showNotificationDialog(String msg) {
+        DialogHelper.showNotificationDialog(getActivity(), msg, null);
     }
 
     @Override

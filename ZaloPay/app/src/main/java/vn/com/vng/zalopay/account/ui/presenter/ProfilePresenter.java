@@ -139,7 +139,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
             requireUpdateProfileLevel2(mView.getContext().getString(R.string.alert_need_update_level_2));
         } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
             int message = isIdentity ? R.string.waiting_approve_identity : R.string.waiting_approve_email;
-            mView.showDialogInfo(mView.getContext().getString(message));
+            mView.showNotificationDialog(mView.getContext().getString(message));
         } else {
             mNavigator.startUpdateProfile3Activity(mView.getContext(), isIdentity);
         }

@@ -451,7 +451,7 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
             if (result) {
                 mNavigator.startPaymentApplicationActivity(mView.getContext(), app);
             } else {
-                mView.showWarningDialog(mView.getContext().getString(R.string.application_downloading));
+                mView.showNotificationDialog(mView.getContext().getString(R.string.application_downloading));
             }
         }
     }
