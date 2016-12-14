@@ -101,11 +101,15 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     }
 
     public void showLoading() {
-        mView.showLoading();
+        if (mView != null) {
+            mView.showLoading();
+        }
     }
 
     public void hideLoading() {
-        mView.hideLoading();
+        if (mView != null) {
+            mView.hideLoading();
+        }
     }
 
     private void getUserProfile() {

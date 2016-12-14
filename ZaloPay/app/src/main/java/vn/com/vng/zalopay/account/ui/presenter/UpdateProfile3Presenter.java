@@ -107,8 +107,10 @@ public class UpdateProfile3Presenter extends AbstractPresenter<IUpdateProfile3Vi
     }
 
     private void onUpdateSuccess() {
-        mView.hideLoading();
-        mView.updateSuccess();
+        if (mView != null) {
+            mView.hideLoading();
+            mView.updateSuccess();
+        }
     }
 
     private void onUpdateError(Throwable e) {

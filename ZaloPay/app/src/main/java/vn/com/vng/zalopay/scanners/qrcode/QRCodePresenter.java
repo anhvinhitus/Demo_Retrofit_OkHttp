@@ -102,11 +102,15 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
     }
 
     private void showLoadingView() {
-        mView.showLoading();
+        if (mView != null) {
+            mView.showLoading();
+        }
     }
 
     private void hideLoadingView() {
-        mView.hideLoading();
+        if (mView != null) {
+            mView.hideLoading();
+        }
     }
 
     public void pay(String jsonString) {
