@@ -152,7 +152,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                 if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
                     showErrorView("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
                 } else {
-                    showErrorView("Vui lòng kiểm tra kết nối mạng và thử lại.");
+                    showNetworkErrorDialog();
                 }
             } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
                 ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
