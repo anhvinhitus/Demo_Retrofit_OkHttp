@@ -24,6 +24,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
@@ -102,6 +103,11 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     IPassCodeFocusChanged mPassCodeFocusChanged = new IPassCodeFocusChanged() {
         @Override
         public void onFocusChangedPin(boolean isFocus) {
+
+            Timber.d("onFocusChangedPin: %s", isFocus);
+            if (isPaused) {
+                return;
+            }
 
             if (mBtnContinueView != null) {
                 mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
@@ -198,10 +204,22 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
         mListener = null;
     }
 
+    boolean isPaused = false;
+
     @Override
     public void onResume() {
+        isPaused = false;
         super.onResume();
         mPresenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        isPaused = true;
+        mPresenter.pause();
+        mPassCodeView.clearFocusView();
+        hideKeyboard();
+        super.onPause();
     }
 
     @Override
@@ -216,21 +234,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     public void onDestroy() {
         mPresenter.destroy();
         super.onDestroy();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.upd_profile2, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_intro) {
-            showIntro();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -251,8 +254,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
     private void showIntro() {
 
-        AndroidUtils.hideKeyboard(getActivity());
-
         mPassCodeView.setError(null);
 
         getActivity().getWindow().getDecorView().clearFocus();
@@ -263,7 +264,11 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
         intro.addShape(new CircleEraser(new ViewTarget(mPassCodeView.getButtonShow())));
         intro.addShape(new RectangleEraser(new ViewTarget(mEdtPhoneView), new Rect(-AndroidUtils.dp(12), -AndroidUtils.dp(12), -AndroidUtils.dp(12), 0)));
 
-        intro.show(getActivity());
+        boolean isDisplayed = intro.show(getActivity());
+
+        if (!isDisplayed) {
+            showKeyboard();
+        }
     }
 
 
@@ -301,4 +306,13 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
         mPresenter.updateProfile(mPassCodeView.getText(), mEdtPhoneView.getText().toString().toLowerCase());
         ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_REQUEST);
     }
+
+    public void showKeyboard() {
+        Timber.d("showKeyboard");
+        if (mPassCodeView != null) {
+            mPassCodeView.requestFocusView();
+            AndroidUtils.showKeyboard(mPassCodeView.getEditText());
+        }
+    }
+
 }

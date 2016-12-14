@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -237,9 +238,15 @@ public class PassCodeView extends FrameLayout {
     }
 
     public void requestFocusView() {
+        Timber.d("requestFocusView");
         if (!mEditText.hasFocus()) {
+            Timber.d("requestFocus");
             mEditText.requestFocus();
         }
+    }
+
+    public void clearFocusView() {
+        mEditText.clearFocus();
     }
 
     public void addTextChangedListener(TextWatcher textWatcher) {
@@ -268,5 +275,9 @@ public class PassCodeView extends FrameLayout {
             return mEditText.isFocused();
         }
         return super.isFocused();
+    }
+
+    public EditText getEditText() {
+        return mEditText;
     }
 }
