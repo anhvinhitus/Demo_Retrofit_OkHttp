@@ -106,7 +106,7 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
 
     @Override
     public void resume() {
-        startBannerCountDownTimer();
+        getBanners();
         if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
             mView.hideNetworkError();
         }
@@ -130,7 +130,6 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
 
         this.getListAppResource();
         this.getTotalNotification(2000);
-        this.getBanners();
         this.getBalance();
 
     }
@@ -317,19 +316,18 @@ public class ZaloPayPresenterImpl extends AbstractPresenter<IZaloPayView> implem
         }
     }
 
-
     int numberRefreshBanner;
 
     public void getBanners() {
         try {
             List<DBanner> banners = CShareData.getInstance().getBannerList();
+            mView.showBannerAds(banners);
             if (banners != null && banners.size() > 1) {
                 startBannerCountDownTimer();
             } else {
                 stopBannerCountDownTimer();
             }
             Timber.d("getBanners: %s", numberRefreshBanner++);
-            mView.showBannerAds(banners);
         } catch (Exception e) {
             Timber.w(e, "Get banners exception");
         }

@@ -43,6 +43,18 @@ public class BannerPagerAdapter extends PagerAdapter {
         mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
     }
 
+    public void setData(List<DBanner> banners) {
+        if (mResources.equals(banners)) {
+            Timber.d("not set data because the same.");
+            return;
+        }
+        mResources.clear();
+        if (banners != null && banners.size() >0) {
+            mResources.addAll(banners);
+        }
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return mResources.size();

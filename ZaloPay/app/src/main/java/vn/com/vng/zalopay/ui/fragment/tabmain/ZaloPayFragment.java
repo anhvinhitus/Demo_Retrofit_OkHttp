@@ -217,28 +217,33 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public void showBannerAds(List<DBanner> banners) {
-        Timber.d("showBannerAds banners [%s]", banners);
         if (banners == null || banners.size() <= 0) {
+            Timber.d("hide banner ads");
             if (mLayoutBannerFullScreen != null) {
                 mLayoutBannerFullScreen.setVisibility(View.GONE);
             }
         } else {
-            Timber.d("showBannerAds banners.size [%s]", banners.size());
-            mBannerPagerAdapter = new BannerPagerAdapter(getContext(), banners, this);
-            mBannerViewpager.setAdapter(mBannerPagerAdapter);
-            mBannerIndicator.setViewPager(mBannerViewpager);
-            mBannerViewpager.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    Timber.d("Banner viewpager onTouch action [%s]", event.getAction());
-                    if (presenter != null) {
-                        presenter.onTouchBanner(v, event);
+            Timber.d("show banner ads, size[%s]", banners.size());
+            if (mBannerPagerAdapter == null) {
+                mBannerPagerAdapter = new BannerPagerAdapter(getContext(), banners, this);
+                mBannerViewpager.setAdapter(mBannerPagerAdapter);
+                mBannerIndicator.setViewPager(mBannerViewpager);
+                mBannerViewpager.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+//                        Timber.d("Banner viewpager onTouch action [%s]", event.getAction());
+                        if (presenter != null) {
+                            presenter.onTouchBanner(v, event);
+                        }
+                        return false;
                     }
-                    return false;
+                });
+                if (mLayoutBannerFullScreen != null) {
+                    mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
                 }
-            });
-            if (mLayoutBannerFullScreen != null) {
-                mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
+            } else {
+                mBannerPagerAdapter.setData(banners);
+                mBannerIndicator.setViewPager(mBannerViewpager);
             }
         }
     }
