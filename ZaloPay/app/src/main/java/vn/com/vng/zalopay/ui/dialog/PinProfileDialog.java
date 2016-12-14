@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.ui.view.IPinProfileView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -43,7 +44,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     LinearLayout mRootView;
 
     @BindView(R.id.passCodeInput)
-    GridPasswordView passCodeInput;
+    GridPasswordView mPassCodeInput;
 
     @Inject
     PinProfilePresenter presenter;
@@ -86,8 +87,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
         setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-                passCodeInput.forceInputViewGetFocus();
+                showKeyboard();
             }
         });
         setOnDismissListener(new OnDismissListener() {
@@ -102,7 +102,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
             }
         });
 
-        passCodeInput.setOnPasswordChangedListener(new GridPasswordView.OnPasswordChangedListener() {
+        mPassCodeInput.setOnPasswordChangedListener(new GridPasswordView.OnPasswordChangedListener() {
             @Override
             public void onTextChanged(String s) {
 
@@ -128,6 +128,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     public void onDetachedFromWindow() {
         Timber.d("onDetachedFromWindow");
         hideLoading();
+        AndroidUtils.cancelRunOnUIThread(mKeyboardRunnable);
         setOnShowListener(null);
         presenter.detachView();
         listener = null;
@@ -141,7 +142,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
 
     @Override
     public void clearPin() {
-        passCodeInput.clearPassword();
+        mPassCodeInput.clearPassword();
     }
 
     @Override
@@ -191,4 +192,22 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
                             | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         }
     }
+
+    @Override
+    public void showKeyboard() {
+        Timber.d("showKeyboard");
+        if (getWindow() != null) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        }
+        AndroidUtils.runOnUIThread(mKeyboardRunnable, 250);
+    }
+
+    private Runnable mKeyboardRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mPassCodeInput != null) {
+                mPassCodeInput.forceInputViewGetFocus();
+            }
+        }
+    };
 }
