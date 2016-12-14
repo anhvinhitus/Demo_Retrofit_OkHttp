@@ -148,10 +148,14 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
     }
 
     public void showLoading() {
-        mView.showLoading();
+        if (mView != null) {
+            mView.showLoading();
+        }
     }
 
     public void hideLoading() {
-        mView.hideLoading();
+        if (mView != null) {
+            mView.hideLoading();
+        }
     }
 }
