@@ -437,3 +437,15 @@ native <methods>;
 
 #End Maps
 
+## To remove debug logs:
+-assumenosideeffects class android.util.Log {
+    public static *** i(...);
+    public static *** d(...);
+    public static *** v(...);
+}
+
+-assumenosideeffects class timber.log.Timber* {
+    public static *** i(...);
+    public static *** d(...);
+    public static *** v(...);
+}
