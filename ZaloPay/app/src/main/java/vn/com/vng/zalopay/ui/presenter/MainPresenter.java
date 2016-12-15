@@ -443,6 +443,12 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         }
     }
 
+    private void showNetworkError() {
+        if (mView != null) {
+            mView.showNetworkErrorDialog();
+        }
+    }
+
     private void responseToApp(Activity activity, long appId, int returnCode, String returnMessage) {
        /* // TODO: 12/1/16 kiem tra truong hop user khong du tien thanh toan
         String responseFormat = "zp-redirect-%s://result?returncode=%s&returnmessage=%s";
@@ -471,7 +477,11 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                         }
 
                         hideLoadingView();
-                        showErrorView(exception.getMessage());
+                        if (exception.getErrorCode() == PaymentError.ERR_CODE_INTERNET.value()) {
+                            showNetworkError();
+                        } else {
+                            showErrorView(exception.getMessage());
+                        }
 
                         if (isAppToApp) {
                             responseToApp(mView.getActivity(), appId, exception.getErrorCode(), exception.getMessage());

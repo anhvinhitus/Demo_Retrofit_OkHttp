@@ -42,6 +42,7 @@ import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -276,12 +277,23 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         paymentWrapper.payWithToken(getCurrentActivity(), appId, zptranstoken);
     }
 
-    private void showToast(final String message) {
+    private void showErrorDialog(final String message) {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
                 if (getCurrentActivity() != null) {
-                    Toast.makeText(getCurrentActivity(), message, Toast.LENGTH_SHORT).show();
+                    DialogHelper.showErrorDialog(getCurrentActivity(), message);
+                }
+            }
+        });
+    }
+
+    private void showNetworkErrorDialog() {
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                if (getCurrentActivity() != null) {
+                    DialogHelper.showNetworkErrorDialog(getCurrentActivity(), null);
                 }
             }
         });
@@ -296,7 +308,13 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                     @Override
                     public void onError(PaymentWrapperException exception) {
                         hideLoading();
-                        showToast(exception.getMessage());
+                        if (exception != null) {
+                            if (exception.getErrorCode() == PaymentError.ERR_CODE_INTERNET.value()) {
+                                showNetworkErrorDialog();
+                            } else {
+                                showErrorDialog(exception.getMessage());
+                            }
+                        }
                     }
 
                     @Override

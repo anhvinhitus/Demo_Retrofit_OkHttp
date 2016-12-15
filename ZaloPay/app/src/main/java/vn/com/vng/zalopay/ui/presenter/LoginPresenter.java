@@ -122,7 +122,7 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         Timber.d(" Authen Zalo Error message %s error %s", message, errorCode);
         if (mView != null) { // chua destroy view
             if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
-                showErrorView(mApplicationContext.getString(R.string.exception_no_connection_try_again));
+                showNetworkError();
                 ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_NONETWORK);
             } else if (errorCode == ZaloErrorCode.RESULTCODE_USER_CANCEL ||
                     errorCode == ZaloErrorCode.RESULTCODE_USER_BACK ||
