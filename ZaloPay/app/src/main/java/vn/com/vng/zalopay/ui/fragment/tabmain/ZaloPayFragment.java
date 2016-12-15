@@ -42,6 +42,8 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.zalopay.feedback.FeedbackCollector;
+import vn.zalopay.feedback.collectors.DeviceCollector;
 
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.Constants;
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
@@ -159,6 +161,14 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         int id = item.getItemId();
         if (id == R.id.action_showshow) {
             presenter.startPaymentApp(getAppResource(Constants.SHOW_SHOW));
+            return true;
+        }
+
+        if (id == R.id.action_feedback) {
+            FeedbackCollector collector = new FeedbackCollector();
+            collector.installCollector(new DeviceCollector());
+            collector.startCollectors();
+            collector.showFeedbackDialog();
             return true;
         }
 

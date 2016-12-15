@@ -412,6 +412,7 @@ dependencies {
     compile(project(':app-loader')) {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }
+    compile project(':zalopay.feedback')
 
     compile libs.fresco
 }
