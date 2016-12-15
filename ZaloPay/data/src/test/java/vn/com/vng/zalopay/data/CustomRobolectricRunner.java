@@ -22,7 +22,7 @@ public class CustomRobolectricRunner extends RobolectricGradleTestRunner {
         } else {
             String moduleRoot = getModuleRootPath(config);
             androidManifestFile = FileFsFile.from(moduleRoot, appManifest.getAndroidManifestFile().getPath().replace("full", "aapt"));
-            System.out.println("manifest path " + androidManifestFile.getPath());
+//            System.out.println("manifest path " + androidManifestFile.getPath());
             FsFile resDirectory = FileFsFile.from(moduleRoot, appManifest.getResDirectory().getPath().replace("/res", "").replace("bundles", "res"));
             FsFile assetsDirectory = FileFsFile.from(moduleRoot, appManifest.getAssetsDirectory().getPath().replace("/assets", "").replace("bundles", "assets"));
             return new AndroidManifest(androidManifestFile, resDirectory, assetsDirectory);
@@ -30,9 +30,9 @@ public class CustomRobolectricRunner extends RobolectricGradleTestRunner {
     }
 
     private String getModuleRootPath(Config config) {
-        System.out.println("Module root before replace file " + config.constants().getResource("").toString());
+//        System.out.println("Module root before replace file " + config.constants().getResource("").toString());
         String moduleRoot = config.constants().getResource("").toString().replace("file:", "");
-        System.out.println("Module root after replace file " + moduleRoot);
+//        System.out.println("Module root after replace file " + moduleRoot);
         return moduleRoot.substring(0, moduleRoot.indexOf("/build/"));
     }
 }
