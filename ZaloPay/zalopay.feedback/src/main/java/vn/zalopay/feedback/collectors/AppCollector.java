@@ -1,5 +1,7 @@
 package vn.zalopay.feedback.collectors;
 
+import org.json.JSONObject;
+
 import vn.zalopay.feedback.CollectorSetting;
 import vn.zalopay.feedback.IFeedbackCollector;
 
@@ -23,5 +25,15 @@ public class AppCollector implements IFeedbackCollector {
     @Override
     public CollectorSetting getSetting() {
         return sSetting;
+    }
+
+    /**
+     * Start collecting data. If data is collected, then return JSONObject of the encoded data
+     *
+     * @return JSONObject value, null if data is not collected
+     */
+    @Override
+    public JSONObject doInBackground() {
+        return null;
     }
 }
