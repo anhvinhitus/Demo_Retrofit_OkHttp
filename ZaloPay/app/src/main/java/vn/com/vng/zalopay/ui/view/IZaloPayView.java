@@ -6,7 +6,6 @@ import android.content.Context;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by AnhHieu on 5/9/16.
@@ -29,8 +28,6 @@ public interface IZaloPayView {
     void hideNetworkError();
 
     void setBalance(long balance);
-
-    void showNotificationDialog(String msg);
 
     void showError(String error);
 
