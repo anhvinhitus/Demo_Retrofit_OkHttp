@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.data.api.entity.mapper;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -31,46 +29,26 @@ public class AppConfigEntityDataMapper {
 
     public List<BankCard> transform(List<CardEntity> cards) {
         return Lists.transform(cards, this::transform);
-//        if (Lists.isEmptyOrNull(cards)) return Collections.emptyList();
-//        List<BankCard> list = new ArrayList<>();
-//        for (CardEntity dMappedCard : cards) {
-//            BankCard bCard = transform(dMappedCard);
-//            if (bCard != null) {
-//                list.add(bCard);
-//            }
-//        }
-//
-//        return list;
     }
 
-
-    public AppResource transform(AppResourceEntity appResourceEntity) {
+    public AppResource transform(AppResourceEntity entity) {
         AppResource appResource = null;
-        if (appResourceEntity != null) {
+        if (entity != null) {
             appResource = new AppResource();
-            appResource.checksum = appResourceEntity.checksum;
-            appResource.appname = appResourceEntity.appname;
-            appResource.status = appResourceEntity.status;
-            appResource.appid = appResourceEntity.appid;
-            appResource.appType = appResourceEntity.apptype;
-            appResource.webUrl = appResourceEntity.weburl;
-            appResource.urlImage = appResourceEntity.imageurl;
-            appResource.iconUrl = appResourceEntity.iconurl;
+            appResource.checksum = entity.checksum;
+            appResource.appname = entity.appname;
+            appResource.status = entity.status;
+            appResource.appid = entity.appid;
+            appResource.appType = entity.apptype;
+            appResource.webUrl = entity.weburl;
+            appResource.urlImage = entity.imageurl;
+            appResource.iconUrl = entity.iconurl;
         }
         return appResource;
     }
 
-    public List<AppResource> transformAppResourceEntity(List<AppResourceEntity> appResourceEntities) {
-        return Lists.transform(appResourceEntities, this::transform);
-//        if (Lists.isEmptyOrNull(appResourceEntities)) return Collections.emptyList();
-//        List<AppResource> list = new ArrayList<>();
-//        for (AppResourceEntity appResourceEntity : appResourceEntities) {
-//            AppResource appResource = transform(appResourceEntity);
-//            if (appResource != null) {
-//                list.add(appResource);
-//            }
-//        }
-//        return list;
+    public List<AppResource> transformAppResourceEntity(List<AppResourceEntity> entities) {
+        return Lists.transform(entities, this::transform);
     }
 
 }

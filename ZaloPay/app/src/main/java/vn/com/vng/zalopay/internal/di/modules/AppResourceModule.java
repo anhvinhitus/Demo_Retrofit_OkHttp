@@ -1,9 +1,12 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
+import android.content.Context;
+
 import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,6 +22,7 @@ import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.service.DownloadService;
 
 /**
  * Created by huuhoa on 6/17/16.
@@ -28,20 +32,26 @@ import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 public class AppResourceModule {
 
     @Provides
-    @UserScope
+    @Singleton
+    DownloadAppResourceTaskQueue providesDownloadAppResource(Context context) {
+        return DownloadAppResourceTaskQueue.create(context, DownloadService.class);
+    }
+
+    @Provides
+    @Singleton
     AppResourceStore.RequestService provideAppResourceRequestService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(AppResourceStore.RequestService.class);
     }
 
     @Provides
-    @UserScope
+    @Singleton
     AppResourceStore.LocalStorage provideAppResourceLocalStorage(@Named("daosession") DaoSession session,
                                                                  PlatformDaoMapper mapper) {
         return new AppResourceLocalStorage(session, mapper, BuildConfig.ZALOPAY_APP_ID);
     }
 
     @Provides
-    @UserScope
+    @Singleton
     AppResourceStore.Repository provideAppResourceRepository(AppConfigEntityDataMapper mapper,
                                                              AppResourceStore.RequestService requestService,
                                                              AppResourceStore.LocalStorage localStorage,

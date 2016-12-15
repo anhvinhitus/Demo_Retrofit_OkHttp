@@ -6,15 +6,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
 import rx.Observable;
+import rx.exceptions.Exceptions;
+import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.util.Lists;
-
 import vn.com.vng.zalopay.domain.model.AppResource;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
@@ -25,7 +28,7 @@ import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
  */
 public class AppResourceRepository implements AppResourceStore.Repository {
 
-    private AppConfigEntityDataMapper mAppConfigEntityDataMapper;
+    private AppConfigEntityDataMapper mDataMapper;
     private HashMap<String, String> mRequestParameters;
     private DownloadAppResourceTaskQueue mTaskQueue;
 
@@ -37,7 +40,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private final AppResourceStore.LocalStorage mLocalStorage;
     private String mAppVersion;
     //Retry 3 times, each time to download 2 file (js & image)
-    private final int RETRY_DOWNLOAD_NUMBER = 6;
+    private static final int RETRY_DOWNLOAD_NUMBER = 6;
     //List AppID that exclude download
     private final List<Long> mListAppIdExcludeDownload;
 
@@ -51,7 +54,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                                  String rootBundle,
                                  String appVersion,
                                  List<Long> excludeDownloadApps) {
-        this.mAppConfigEntityDataMapper = mapper;
+        this.mDataMapper = mapper;
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
         this.mRootBundle = rootBundle;
@@ -64,21 +67,36 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> initialize() {
+    public Observable<Boolean> ensureAppResourceAvailable() {
         return makeObservable(() -> {
-            ensureAppResourceAvailable();
+            List<AppResourceEntity> appLists = mLocalStorage.getAllAppResource();
+
+            if (Lists.isEmptyOrNull(appLists)) {
+                return Boolean.TRUE;
+            }
+
+            List<AppResourceEntity> listAppDownload = new ArrayList<>();
+            for (AppResourceEntity app : appLists) {
+                if (shouldDownloadApp(app)) {
+                    listAppDownload.add(app);
+                }
+            }
+
+            if (!listAppDownload.isEmpty()) {
+                startDownloadService(listAppDownload, null);
+            }
+
             return Boolean.TRUE;
         });
     }
 
     @Override
     public Observable<List<AppResource>> listInsideAppResource() {
-        return Observable.concat(
-                makeObservable(mLocalStorage::getAllAppResource),
+        return Observable.concat(getAppResourceEntityLocal(),
                 fetchInsideAppResource()
-                        .map(response -> mLocalStorage.getAllAppResource())
+                        .flatMap(response -> getAppResourceEntityLocal())
                         .onErrorResumeNext(throwable -> Observable.empty())
-        ).map(mAppConfigEntityDataMapper::transformAppResourceEntity);
+        ).map(mDataMapper::transformAppResourceEntity);
     }
 
     private Observable<AppResourceResponse> fetchInsideAppResource() {
@@ -96,20 +114,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         return mRequestService.getinsideappresource(appIds, checkSum, mRequestParameters, mAppVersion)
                 .doOnNext(this::processAppResourceResponse)
                 ;
-    }
-
-    private void ensureAppResourceAvailable() {
-        List<AppResourceEntity> list = mLocalStorage.getAllAppResource();
-        List<AppResourceEntity> listAppDownload = new ArrayList<>();
-        for (AppResourceEntity app : list) {
-            if (shouldDownloadApp(app)) {
-                listAppDownload.add(app);
-            }
-        }
-
-        if (!listAppDownload.isEmpty()) {
-            startDownloadService(listAppDownload, null);
-        }
     }
 
     private void resetStateDownloadApp(AppResourceEntity app) {
@@ -144,18 +148,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     private void listAppIdAndChecksum(List<String> listAppId, List<String> checksumlist) {
-        List<AppResourceEntity> appResources = mLocalStorage.getAllAppResource();
-
-        if (Lists.isEmptyOrNull(appResources)) {
-            return;
-        }
-
-        for (AppResourceEntity appResource : appResources) {
-            if (appResource != null) {
-                listAppId.add(String.valueOf(appResource.appid));
-                checksumlist.add(appResource.checksum);
-            }
-        }
+        listAppIdAndChecksum(listAppId, checksumlist, mLocalStorage.getAllAppResource());
     }
 
     private void processAppResourceResponse(AppResourceResponse resourceResponse) {
@@ -257,7 +250,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             boolean downloadSuccess = (entity.stateDownload >= DownloadState.STATE_SUCCESS);
             if (!downloadSuccess) {
                 startDownloadService(Arrays.asList(entity), null);
-
             }
             return downloadSuccess;
         });
@@ -268,4 +260,70 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         int STATE_DOWNLOADING = 1;
         int STATE_SUCCESS = 2;
     }
+
+    @Override
+    public Observable<List<AppResource>> fetchAppResource() {
+        return getAppResourceEntityLocal()
+                .flatMap(this::fetchAppResource)
+                .flatMap(response -> getAppResourceLocal())
+                ;
+    }
+
+    private Observable<AppResourceResponse> fetchAppResource(List<AppResourceEntity> entities) {
+        Timber.d("Fetch app resource");
+
+        List<String> appidlist = new ArrayList<>();
+        List<String> checksumlist = new ArrayList<>();
+        listAppIdAndChecksum(appidlist, checksumlist, entities);
+        return fetchAppResource(appidlist, checksumlist);
+    }
+
+    private Observable<AppResourceResponse> fetchAppResource(List<String> appidlist, List<String> checksumlist) {
+        String appIds = appidlist.toString().replaceAll("\\s", "");
+        String checkSum = checksumlist.toString();
+        Timber.d("Fetch application resource appId [%s] checkSum [%s] ", appIds, checkSum);
+        return fetchAppResource(appIds, checkSum);
+    }
+
+    private Observable<AppResourceResponse> fetchAppResource(String appIds, String checkSum) {
+        return mRequestService.getinsideappresource(appIds, checkSum, mRequestParameters, mAppVersion)
+                .doOnNext(this::processAppResourceResponse)
+                ;
+    }
+
+    private void listAppIdAndChecksum(List<String> listAppId, List<String> checksumlist, List<AppResourceEntity> appResources) {
+        if (Lists.isEmptyOrNull(appResources)) {
+            return;
+        }
+
+        for (AppResourceEntity appResource : appResources) {
+            if (appResource == null) {
+                continue;
+            }
+
+            listAppId.add(String.valueOf(appResource.appid));
+            checksumlist.add(appResource.checksum);
+        }
+    }
+
+    private Observable<List<AppResourceEntity>> getAppResourceEntityLocal() {
+        return makeObservable(mLocalStorage::getAllAppResource);
+    }
+
+    @Override
+    public Observable<List<AppResource>> getAppResourceLocal() {
+        return getAppResourceEntityLocal()
+                .map(mDataMapper::transformAppResourceEntity);
+    }
+
+    @Override
+    public Observable<List<AppResource>> getListAppHome() {
+
+        Observable<List<AppResource>> local = getAppResourceLocal();
+        Observable<List<AppResource>> cloud = fetchAppResource();
+
+        return Observable.concat(local, cloud)
+                .takeFirst(resources -> !Lists.isEmptyOrNull(resources) && resources.size() > 0);
+    }
+
 }

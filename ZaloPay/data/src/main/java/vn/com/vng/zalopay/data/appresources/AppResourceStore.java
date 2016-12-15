@@ -49,11 +49,18 @@ public interface AppResourceStore {
     }
 
     interface Repository {
-        Observable<Boolean> initialize();
+
+        Observable<Boolean> ensureAppResourceAvailable();
 
         Observable<List<AppResource>> listInsideAppResource();
 
         Observable<Boolean> existResource(long appId);
+
+        Observable<List<AppResource>> fetchAppResource();
+
+        Observable<List<AppResource>> getAppResourceLocal();
+
+        Observable<List<AppResource>> getListAppHome();
     }
 
 }

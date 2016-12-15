@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.internal.di.modules.AppApiModule;
 import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.AppMonitorModule;
 import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
+import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
@@ -41,9 +42,17 @@ import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 import vn.com.vng.zalopay.utils.ImageLoader;
 
 @Singleton
-@Component(modules = {ApplicationModule.class, NetworkModule.class, AppApiModule.class, AppControllerModule.class,
-        AppMonitorModule.class,
-        AppReactNativeModule.class})
+@Component(
+        modules = {
+                ApplicationModule.class,
+                NetworkModule.class,
+                AppApiModule.class,
+                AppControllerModule.class,
+                AppMonitorModule.class,
+                AppReactNativeModule.class,
+                AppResourceModule.class
+        }
+)
 public interface ApplicationComponent {
     //Exposed to sub-graphs.
     Context context();

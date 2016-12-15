@@ -1,18 +1,16 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.text.TextUtils;
-
-import org.greenrobot.eventbus.EventBus;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import rx.Subscription;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.ApplicationState;
+import vn.com.vng.zalopay.data.appresources.AppResourceRepository;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.event.PaymentDataEvent;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 import vn.com.vng.zalopay.utils.IntroAppUtils;
 import vn.com.vng.zalopay.utils.ZaloHelper;
@@ -23,13 +21,17 @@ import vn.com.vng.zalopay.utils.ZaloHelper;
  */
 @Singleton
 public class SplashScreenPresenter extends AbstractPresenter<ISplashScreenView> {
+
     private final UserConfig mUserConfig;
     private final ApplicationState mApplicationState;
+    private final AppResourceStore.Repository mAppResourceRepository;
+
 
     @Inject
-    SplashScreenPresenter(UserConfig userConfig, ApplicationState applicationState) {
+    SplashScreenPresenter(UserConfig userConfig, ApplicationState applicationState, AppResourceStore.Repository appResourceRepository) {
         mUserConfig = userConfig;
         mApplicationState = applicationState;
+        mAppResourceRepository = appResourceRepository;
     }
 
     public void verifyUser() {
@@ -45,5 +47,15 @@ public class SplashScreenPresenter extends AbstractPresenter<ISplashScreenView> 
             Timber.d("gotoOnBoardingScreen");
             mView.gotoOnBoardingScreen();
         }
+    }
+
+    public void fetchAppResource() {
+        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
+                .observeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+
+        Subscription fetchSubscription = mAppResourceRepository.fetchAppResource()
+                .observeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
     }
 }

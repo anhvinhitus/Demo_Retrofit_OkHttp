@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -107,7 +108,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     @Override
     public void initialize() {
 
-        this.getListAppResource();
+        this.getListAppResource(false);
         this.getTotalNotification(2000);
         this.getBalance();
     }
@@ -122,15 +123,20 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mSubscription.add(subscription);
     }
 
-    private void getListAppResource() {
-        Subscription subscription = mAppResourceRepository.listInsideAppResource()
+    private void getListAppResource(boolean isShouldUpdate) {
+
+        Observable<List<AppResource>> observable = isShouldUpdate ? mAppResourceRepository.fetchAppResource() :
+                mAppResourceRepository.getListAppHome();
+
+        Subscription subscription = observable
                 .doOnNext(new Action1<List<AppResource>>() {
                     @Override
                     public void call(List<AppResource> appResources) {
                         getListMerchantUser(appResources);
                     }
                 })
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
         mSubscription.add(subscription);
     }
@@ -317,6 +323,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent e) {
         Timber.d("onRefreshPlatformInfoEvent");
-        this.getListAppResource();
+       this.getListAppResource(true);
     }
 }

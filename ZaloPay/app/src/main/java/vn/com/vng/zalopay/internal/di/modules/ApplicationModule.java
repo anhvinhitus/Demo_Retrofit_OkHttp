@@ -88,12 +88,6 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    Navigator provideNavigator(UserConfig userConfig) {
-        return new Navigator(userConfig);
-    }
-
-    @Provides
-    @Singleton
     @Named("daosession")
     DaoSession provideDaoSession(Context context) {
         DaoMaster.OpenHelper helper = new DBOpenHelper(context, "zalopay.db");
@@ -102,28 +96,12 @@ public class ApplicationModule {
         return daoMaster.newSession();
     }
 
-
     @Provides
     @Singleton
     @Named("payAppId")
     int providesPayAppId() {
         return BuildConfig.ZALOPAY_APP_ID;
     }
-
-    @Provides
-    @Singleton
-    @Named("devicemodel")
-    String providesDeviceModel() {
-        return Build.MODEL;
-    }
-
-    @Provides
-    @Singleton
-    @Named("platformcode")
-    String providesPlatformcode() {
-        return "android";
-    }
-
 
     @Provides
     @Singleton
@@ -135,14 +113,6 @@ public class ApplicationModule {
         params.put("devicemodel", Build.MODEL);
         return params;
     }
-
-
-    @Provides
-    @Singleton
-    DownloadAppResourceTaskQueue providesDownloadAppResource(Context context) {
-        return DownloadAppResourceTaskQueue.create(context, DownloadService.class);
-    }
-
 
     @Provides
     @Singleton

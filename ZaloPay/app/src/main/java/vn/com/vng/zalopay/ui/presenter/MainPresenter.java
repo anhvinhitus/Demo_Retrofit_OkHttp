@@ -237,7 +237,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     public void initialize() {
         this.loadGatewayInfoPaymentSDK();
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
-        initializeAppConfig();
         getZaloFriend();
         warningRoot();
     }
@@ -263,8 +262,8 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         mSubscription.add(subscription);
     }
 
-    private void initializeAppConfig() {
-        Subscription subscription = mAppResourceRepository.initialize()
+    private void ensureAppResourceAvailable() {
+        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
@@ -349,7 +348,8 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (!isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
-        initializeAppConfig();
+        
+        ensureAppResourceAvailable();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)

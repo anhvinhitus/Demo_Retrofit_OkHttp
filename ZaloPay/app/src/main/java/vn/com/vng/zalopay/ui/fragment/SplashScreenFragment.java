@@ -65,8 +65,7 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
             return;
         }
 
-       /* Intent intent = getActivity().getIntent();
-        presenter.handleDeepLinks(intent);*/
+        presenter.fetchAppResource();
         presenter.verifyUser();
     }
 
