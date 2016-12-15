@@ -17,13 +17,9 @@ import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.banner.ui.fragment.BannerFragment;
-import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
-import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.transfer.TransferStore;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
@@ -43,7 +39,6 @@ import vn.com.vng.zalopay.linkcard.ui.CardSupportFragment;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardFragment;
 import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardFragment;
 import vn.com.vng.zalopay.notification.NotificationHelper;
-import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
@@ -68,8 +63,6 @@ import vn.com.vng.zalopay.withdraw.ui.fragment.CardSupportWithdrawFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
 
-//import vn.com.vng.zalopay.scanners.sound.ScanSoundFragment;
-
 @UserScope
 @Subcomponent(
         modules = {
@@ -91,8 +84,6 @@ public interface UserComponent {
 
     User currentUser();
 
-    AppResourceStore.Repository appResourceRepository();
-
     AccountStore.Repository accountRepository();
 
     ZaloPayRepository zaloPayRepository();
@@ -101,18 +92,9 @@ public interface UserComponent {
 
     TransactionStore.Repository transactionRepository();
 
-    NotificationStore.Repository notificationRepository();
-
     NotificationHelper notificationHelper();
 
-    ZPNotificationService notiZpNotificationService();
-
-    FriendStore.Repository friendRepository();
-
-    TransferStore.Repository transferRepository();
-
     ReactNativeHostable reactNativeInstanceManager();
- /*   ApplicationRepository applicationRepository();*/
 
     /* inject Fragment */
     void inject(ZaloPayFragment f);
@@ -156,8 +138,6 @@ public interface UserComponent {
     void inject(UpdateProfileLevel2Activity a);
 
     void inject(ChangePinActivity a);
-
-//    void inject(ScanSoundFragment fragment);
 
     void inject(QRCodeFragment f);
 
