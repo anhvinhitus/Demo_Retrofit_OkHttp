@@ -124,21 +124,26 @@ public class BannerFragment extends BaseFragment implements IBannerView,
             }
         } else {
             Timber.d("Show banner ads, banners size [%s]", banners.size());
-            mBannerPagerAdapter = new BannerPagerAdapter(getContext(), banners, this);
-            mBannerViewpager.setAdapter(mBannerPagerAdapter);
-            mBannerIndicator.setViewPager(mBannerViewpager);
-            mBannerViewpager.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    Timber.d("Touch banner, action [%s]", event.getAction());
-                    if (mBannerPresenter != null) {
-                        mBannerPresenter.onTouchBanner(event);
+            if (mBannerPagerAdapter == null) {
+                mBannerPagerAdapter = new BannerPagerAdapter(getContext(), banners, this);
+                mBannerViewpager.setAdapter(mBannerPagerAdapter);
+                mBannerIndicator.setViewPager(mBannerViewpager);
+                mBannerViewpager.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        Timber.d("Touch banner, action [%s]", event.getAction());
+                        if (mBannerPresenter != null) {
+                            mBannerPresenter.onTouchBanner(event);
+                        }
+                        return false;
                     }
-                    return false;
+                });
+                if (mLayoutBannerFullScreen != null) {
+                    mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
                 }
-            });
-            if (mLayoutBannerFullScreen != null) {
-                mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
+            } else {
+                mBannerPagerAdapter.setData(banners);
+                mBannerIndicator.setViewPager(mBannerViewpager);
             }
         }
     }
