@@ -181,13 +181,11 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
                 .build();
     }
 
-    void payPendingOrder() {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (paymentWrapper == null) {
             return;
         }
-        if (paymentWrapper.hasPendingOrder()) {
-            paymentWrapper.continuePayPendingOrder();
-        }
+        paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
     /**

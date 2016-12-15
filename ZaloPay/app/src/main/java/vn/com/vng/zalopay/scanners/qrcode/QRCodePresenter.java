@@ -382,13 +382,11 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
                 });
     }
 
-    void payPendingOrder() {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (paymentWrapper == null) {
             return;
         }
-        if (paymentWrapper.hasPendingOrder()) {
-            paymentWrapper.continuePayPendingOrder();
-        }
+        paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
     private void ensureResumeScannerInUIThread() {

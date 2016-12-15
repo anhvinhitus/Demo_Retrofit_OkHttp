@@ -3,10 +3,8 @@ package vn.com.vng.zalopay.scanners.qrcode;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
@@ -238,11 +236,8 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOPHOTO);
             }
-        } else if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
-            qrCodePresenter.payPendingOrder();
-        } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
-            qrCodePresenter.payPendingOrder();
         }
+        qrCodePresenter.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

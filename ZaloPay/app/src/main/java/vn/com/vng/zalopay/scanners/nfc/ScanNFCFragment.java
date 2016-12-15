@@ -196,13 +196,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.REQUEST_CODE_DEPOSIT) {
-            readerPresenter.payPendingOrder();
-            return;
-        } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
-            readerPresenter.payPendingOrder();
-            return;
-        }
+        readerPresenter.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

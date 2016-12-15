@@ -180,11 +180,11 @@ public class PaymentWrapper {
         WalletSDKApplication.saveCardMap(paymentInfo, listener);
     }
 
-    public boolean hasPendingOrder() {
+    private boolean hasPendingOrder() {
         return (mPendingOrder != null);
     }
 
-    public void continuePayPendingOrder() {
+    private void continuePayPendingOrder() {
         if (!hasPendingOrder()) {
             return;
         }
@@ -265,7 +265,7 @@ public class PaymentWrapper {
             return;
         }
 
-        paymentInfo.userInfo =  assignBaseUserInfo(paymentInfo.userInfo);
+        paymentInfo.userInfo = assignBaseUserInfo(paymentInfo.userInfo);
         if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
             mWalletListener.onError(new CError(EPayError.DATA_INVALID, "Vui lòng cập nhật thông tin tài khoản."));
             mActivity = null;
