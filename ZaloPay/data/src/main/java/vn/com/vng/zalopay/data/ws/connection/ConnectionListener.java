@@ -33,6 +33,14 @@ class ConnectionListener implements SocketChannelConnection.ConnectionListenable
             return;
         }
         if (messageLength > 0) {
+            if (messageLength > buffer.remaining()) {
+                Timber.e(new Exception("Message length is invalid"),
+                        "Message length %s is larger than remaining received data %s",
+                        messageLength,
+                        buffer.remaining());
+                return;
+            }
+
             byte[] dataBuffer = new byte[messageLength];
             buffer.get(dataBuffer);
 //            Timber.d("Read %s bytes as message body", messageLength);
@@ -41,7 +49,7 @@ class ConnectionListener implements SocketChannelConnection.ConnectionListenable
             }
 //                mListener.onMessage(dataBuffer);
         } else {
-            Timber.d("messageLength is negative!");
+            Timber.e(new Exception("Message length is negative"), "messageLength is negative!");
         }
     }
 
