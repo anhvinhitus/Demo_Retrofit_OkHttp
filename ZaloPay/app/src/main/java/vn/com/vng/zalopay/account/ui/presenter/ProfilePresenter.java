@@ -24,7 +24,6 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**
@@ -34,15 +33,17 @@ import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     private EventBus mEventBus;
     private UserConfig mUserConfig;
+    private User mUser;
     private AccountStore.Repository mAccountRepository;
     private Navigator mNavigator;
 
     @Inject
-    ProfilePresenter(EventBus eventBus, UserConfig userConfig, AccountStore.Repository accountRepository, Navigator navigator) {
+    ProfilePresenter(EventBus eventBus, UserConfig userConfig, AccountStore.Repository accountRepository, Navigator navigator, User user) {
         this.mEventBus = eventBus;
         this.mUserConfig = userConfig;
         this.mAccountRepository = accountRepository;
-        mNavigator = navigator;
+        this.mNavigator = navigator;
+        this.mUser = user;
     }
 
     @Override
@@ -62,14 +63,14 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
 
     @Override
     public void resume() {
-        User user = mUserConfig.getCurrentUser();
+        User user = mUser;
         if (user != null) {
             updateUserInfo(user);
         }
     }
 
     public void getProfile() {
-        User user = mUserConfig.getCurrentUser();
+        User user = mUser;
         if (user != null) {
             updateUserInfo(user);
             // Neu chua co ZaloPayName hoac Chua get profile level 3
@@ -82,7 +83,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
 
     public void checkShowOrHideChangePinView() {
         try {
-            boolean isShow = mUserConfig.getCurrentUser().profilelevel >= 2;
+            boolean isShow = mUser.profilelevel >= 2;
             mView.showHideChangePinView(isShow);
         } catch (Exception e) {
             Timber.d(e, "checkShowOrHideChangePinView");
@@ -90,14 +91,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     }
 
     private int getProfileLevel() {
-        User user = mUserConfig.getCurrentUser();
-        if (user == null) {
-            return 0;
-        } else if (mUserConfig.getCurrentUser() == null) {
-            return 0;
-        } else {
-            return mUserConfig.getCurrentUser().profilelevel;
-        }
+        return mUser.profilelevel;
     }
 
     public void showLoading() {
@@ -121,7 +115,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     }
 
     private void getProfileSuccess() {
-        User user = mUserConfig.getCurrentUser();
+        User user = mUser;
         if (user != null) {
             updateUserInfo(user);
         }
@@ -151,7 +145,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     }
 
     public void updateZaloPayID() {
-        if (!TextUtils.isEmpty(mUserConfig.getCurrentUser().zalopayname)) {
+        if (!TextUtils.isEmpty(mUser.zalopayname)) {
             return;
         }
         if (mView == null) {
@@ -197,7 +191,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true, priority = 1)
     public void onEventMainThread(ZaloProfileInfoEvent event) {
         Timber.d("onEventMainThread event %s", event);
-        updateUserInfo(mUserConfig.getCurrentUser());
+        updateUserInfo(mUser);
     }
 
     private void updateUserInfo(User user) {

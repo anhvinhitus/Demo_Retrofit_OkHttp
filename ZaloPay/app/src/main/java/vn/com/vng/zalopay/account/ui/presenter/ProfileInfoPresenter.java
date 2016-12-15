@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
-import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -20,13 +20,13 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 public class ProfileInfoPresenter extends AbstractPresenter<IProfileInfoView> {
 
     private EventBus mEventBus;
-    private UserConfig mUserConfig;
+    private User mUser;
 
 
     @Inject
-    public ProfileInfoPresenter(EventBus eventBus, UserConfig userConfig) {
+    public ProfileInfoPresenter(EventBus eventBus, User user) {
         this.mEventBus = eventBus;
-        this.mUserConfig = userConfig;
+        this.mUser = user;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ProfileInfoPresenter extends AbstractPresenter<IProfileInfoView> {
 
     @Override
     public void resume() {
-        mView.updateUserInfo(mUserConfig.getCurrentUser());
+        mView.updateUserInfo(mUser);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -53,7 +53,7 @@ public class ProfileInfoPresenter extends AbstractPresenter<IProfileInfoView> {
         Timber.d("onEventMainThread event %s", event);
         //UPDATE USERINFO
         if (mView != null) {
-            mView.updateUserInfo(mUserConfig.getCurrentUser());
+            mView.updateUserInfo(mUser);
         }
 
         mEventBus.removeStickyEvent(ZaloProfileInfoEvent.class);

@@ -32,6 +32,8 @@ import android.view.View;
 
 import com.zalopay.ui.widget.R;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +45,7 @@ public class ZPEditText extends AppCompatEditText {
 
     private static final String TAG = "ZPEditText";
 
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({FLOATING_LABEL_NONE, FLOATING_LABEL_NORMAL, FLOATING_LABEL_HIGHLIGHT})
     public @interface FloatingLabelType {
     }

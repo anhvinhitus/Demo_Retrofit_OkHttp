@@ -74,7 +74,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                                       FriendStore.Repository friendRepository,
                                       BalanceStore.Repository balanceRepository,
                                       IRedPacketPayService payService,
-                                      User userConfig,
+                                      User user,
                                       AlertDialogProvider sweetAlertDialog) {
         super(reactContext);
         this.mRedPackageRepository = redPackageRepository;
@@ -82,7 +82,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         this.mBalanceRepository = balanceRepository;
         this.mPaymentService = payService;
         this.mDialogProvider = sweetAlertDialog;
-        this.mUser = userConfig;
+        this.mUser = user;
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }

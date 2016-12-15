@@ -13,11 +13,9 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -35,7 +33,6 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  * *
  */
 public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IBalanceManagementView> {
-    private User mUser;
     private EventBus mEventBus;
     private BalanceStore.Repository mBalanceRepository;
     private Navigator mNavigator;
@@ -44,11 +41,9 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     BalanceManagementPresenter(User user,
                                EventBus eventBus,
                                BalanceStore.Repository balanceRepository,
-                               Navigator navigator,
-                               UserConfig userConfig) {
-        super(userConfig);
+                               Navigator navigator) {
+        super(user);
 
-        this.mUser = user;
         this.mEventBus = eventBus;
         this.mBalanceRepository = balanceRepository;
         this.mNavigator = navigator;
@@ -156,14 +151,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     }
 
     private int getProfileLevel() {
-        User user = mUserConfig.getCurrentUser();
-        if (user == null) {
-            return 0;
-        } else if (mUserConfig.getCurrentUser() == null) {
-            return 0;
-        } else {
-            return mUserConfig.getCurrentUser().profilelevel;
-        }
+        return mUser.profilelevel;
     }
 
     public void updateZaloPayID() {

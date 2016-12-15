@@ -6,9 +6,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -24,8 +23,8 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
     private IListenerValid mIListenerValid;
 
     @Inject
-    WithdrawConditionPresenter(UserConfig userConfig, Navigator navigator) {
-        super(userConfig);
+    WithdrawConditionPresenter(User user, Navigator navigator) {
+        super(user);
         mNavigator = navigator;
         mIListenerValid = new IListenerValid() {
             @Override

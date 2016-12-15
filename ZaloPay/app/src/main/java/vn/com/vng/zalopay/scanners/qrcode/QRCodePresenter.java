@@ -34,7 +34,6 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -43,6 +42,7 @@ import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -69,7 +69,7 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
 
     private final Context mApplicationContext;
     private final Navigator mNavigator;
-    private final UserConfig mUserConfig;
+    private final User mUser;
 
     private PaymentWrapper paymentWrapper;
     private ApplicationSession mApplicationSession;
@@ -80,13 +80,13 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
                     TransactionStore.Repository transactionRepository,
                     Context applicationContext,
                     Navigator navigator,
-                    UserConfig userConfig,
+                    User user,
                     ApplicationSession applicationSession) {
         Timber.d("New instance of QRCodePresenter");
         mApplicationSession = applicationSession;
         mApplicationContext = applicationContext;
         mNavigator = navigator;
-        mUserConfig = userConfig;
+        mUser = user;
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
@@ -192,7 +192,7 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
             return false;
         }
 
-        if (String.valueOf(zalopayId).equals(mUserConfig.getCurrentUser().zaloPayId)) {
+        if (String.valueOf(zalopayId).equals(mUser.zaloPayId)) {
             return false;
         }
 

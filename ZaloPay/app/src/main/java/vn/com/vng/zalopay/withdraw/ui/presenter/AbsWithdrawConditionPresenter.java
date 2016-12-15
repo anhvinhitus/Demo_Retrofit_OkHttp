@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import java.util.List;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -22,14 +21,14 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
 
     public abstract Activity getActivity();
 
-    protected UserConfig mUserConfig;
+    protected User mUser;
 
-    protected AbsWithdrawConditionPresenter(UserConfig userConfig) {
-        this.mUserConfig = userConfig;
+    protected AbsWithdrawConditionPresenter(User user) {
+        this.mUser = user;
     }
 
     protected boolean isValidProfile() {
-        User user = mUserConfig.getCurrentUser();
+        User user = mUser;
         return !(user == null || user.profilelevel < 2);
     }
 
@@ -56,7 +55,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
     }
 
     private boolean validLinkCard(List<BankConfig> listCardSupportWithdraw) {
-        User user = mUserConfig.getCurrentUser();
+        User user = mUser;
         try {
             if (listCardSupportWithdraw == null || listCardSupportWithdraw.isEmpty()) {
                 return false;
