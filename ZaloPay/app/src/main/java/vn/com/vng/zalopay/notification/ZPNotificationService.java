@@ -103,6 +103,11 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     public void destroy() {
         Timber.d("destroy");
         mIsSubscribeGcm = false;
+
+        if (mCompositeSubscription != null) {
+            mCompositeSubscription.clear();
+        }
+
         if (mEventBus.isRegistered(this)) {
             mEventBus.unregister(this);
         }
