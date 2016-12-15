@@ -280,8 +280,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
                     @Override
                     public void onError(Throwable e) {
-                        System.out.print("getTransactionsFail: got datas from cloud with count = 0 got error: " + e + "\n");
-                        return;
+                        System.out.println("getTransactionsFail: got datas from cloud with count = 0 got error: " + e);
                     }
 
                     @Override
@@ -304,8 +303,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
                     @Override
                     public void onError(Throwable e) {
-                        System.out.print("getTransactionsFail: test get datas from clound with count = -1 got error: " + e + "\n");
-                        return;
+                        System.out.println("getTransactionsFail: test get datas from clound with count = -1 got error: " + e);
                     }
 
                     @Override
