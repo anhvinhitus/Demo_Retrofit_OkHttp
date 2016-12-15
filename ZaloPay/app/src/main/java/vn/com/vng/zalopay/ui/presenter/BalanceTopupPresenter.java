@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import javax.inject.Inject;
@@ -43,22 +44,35 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
     private final PaymentWrapper paymentWrapper;
     private final ApplicationSession mApplicationSession;
 
+    private Navigator mNavigator;
     private User mUser;
 
     @Inject
     BalanceTopupPresenter(BalanceStore.Repository balanceRepository,
                           ZaloPayRepository zaloPayRepository,
                           TransactionStore.Repository transactionRepository,
-                          ApplicationSession applicationSession, User user) {
+                          ApplicationSession applicationSession,
+                          User user,
+                          Navigator navigator) {
         mZaloPayRepository = zaloPayRepository;
         mApplicationSession = applicationSession;
         mUser = user;
+        mNavigator = navigator;
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
+                .setRedirectListener(new PaymentRedirectListener())
                 .build();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (paymentWrapper == null) {
+            return;
+        }
+
+        paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
     private void hideLoading() {
@@ -170,5 +184,15 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
 //        @Override
 //        public void onNotEnoughMoney() {
 //        }
+    }
+
+    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
+        @Override
+        public void startUpdateProfileLevel(String walletTransId) {
+            if (mView == null || mView.getFragment() == null) {
+                return;
+            }
+            mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
+        }
     }
 }

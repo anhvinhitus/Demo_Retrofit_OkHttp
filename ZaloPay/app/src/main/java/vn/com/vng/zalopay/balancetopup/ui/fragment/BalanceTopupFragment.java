@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.balancetopup.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -144,4 +145,14 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         showToast(message);
     }
 
+    @Override
+    public Fragment getFragment() {
+        return this;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mPresenter.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
