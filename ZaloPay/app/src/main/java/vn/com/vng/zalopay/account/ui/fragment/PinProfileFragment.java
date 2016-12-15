@@ -28,7 +28,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
-import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.IPassCodeFocusChanged;
@@ -50,7 +49,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Use the {@link PinProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PinProfileFragment extends BaseFragment implements IPinProfileView, OnKeyboardStateChangeListener, FragmentLifecycle {
+public class PinProfileFragment extends BaseFragment implements IPinProfileView, OnKeyboardStateChangeListener {
 
     public interface OnPinProfileFragmentListener {
         void onUpdatePinSuccess(String phone);
@@ -306,14 +305,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
         mPresenter.updateProfile(mPassCodeView.getText(), mEdtPhoneView.getText().toString().toLowerCase());
         ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_REQUEST);
-    }
-
-    @Override
-    public void onStartFragment() {
-    }
-
-    @Override
-    public void onStopFragment() {
     }
 
     public void showKeyboard() {

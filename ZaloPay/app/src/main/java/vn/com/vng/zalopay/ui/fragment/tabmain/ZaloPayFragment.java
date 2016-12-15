@@ -34,12 +34,14 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
+import vn.com.vng.zalopay.ui.presenter.IZaloPayPresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -272,6 +274,11 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         mBalanceView.setText(span);
+    }
+
+    @Override
+    public void showNotificationDialog(String msg) {
+        DialogHelper.showNotificationDialog(getActivity(), msg, null);
     }
 
     @Override

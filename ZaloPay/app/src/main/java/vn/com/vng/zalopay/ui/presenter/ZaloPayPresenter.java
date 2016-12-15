@@ -33,13 +33,20 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.event.SignOutEvent;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
+import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
+import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
 
@@ -245,7 +252,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         Timber.d("onGetBalanceSuccess %s", balance);
         mView.setBalance(balance);
     }
-
 
     @Override
     public void startServiceWebViewActivity(long appId, String webViewUrl) {

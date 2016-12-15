@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**
  * Created by longlv on 25/05/2016.
@@ -100,11 +101,15 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     }
 
     public void showLoading() {
-        mView.showLoading();
+        if (mView != null) {
+            mView.showLoading();
+        }
     }
 
     public void hideLoading() {
-        mView.hideLoading();
+        if (mView != null) {
+            mView.hideLoading();
+        }
     }
 
     private void getUserProfile() {
@@ -139,7 +144,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
             requireUpdateProfileLevel2(mView.getContext().getString(R.string.alert_need_update_level_2));
         } else if (mUserConfig.isWaitingApproveProfileLevel3()) {
             int message = isIdentity ? R.string.waiting_approve_identity : R.string.waiting_approve_email;
-            mView.showDialogInfo(mView.getContext().getString(message));
+            mView.showNotificationDialog(mView.getContext().getString(message));
         } else {
             mNavigator.startUpdateProfile3Activity(mView.getContext(), isIdentity);
         }
@@ -161,17 +166,14 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
     }
 
     private void requireUpdateProfileLevel2(String message) {
-        mView.showConfirmDialog(message,
-                new ZPWOnEventConfirmDialogListener() {
+        mView.showUpdateProfileDialog(message,
+                new ZPWOnSweetDialogListener() {
                     @Override
-                    public void onCancelEvent() {
-
-                    }
-
-                    @Override
-                    public void onOKevent() {
-                        if (mView != null) {
-                            mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
+                    public void onClickDiaLog(int i) {
+                        if (i == 1) {
+                            if (mView != null) {
+                                mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
+                            }
                         }
                     }
                 });

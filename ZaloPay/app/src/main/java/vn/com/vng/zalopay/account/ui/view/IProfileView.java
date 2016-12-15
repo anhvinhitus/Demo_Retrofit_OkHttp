@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.account.ui.view;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**
  * Created by longlv on 19/05/2016.
@@ -16,8 +17,8 @@ public interface IProfileView extends ILoadDataView {
 
     void setZaloPayName(String zaloPayName);
 
-    void showDialogInfo(String content);
+    void showNotificationDialog(String content);
 
-    void showConfirmDialog(String message, ZPWOnEventConfirmDialogListener listener);
+    void showUpdateProfileDialog(String message, ZPWOnSweetDialogListener listener);
 }
 

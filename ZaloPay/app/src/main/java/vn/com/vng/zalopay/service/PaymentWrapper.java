@@ -189,6 +189,11 @@ public class PaymentWrapper {
             return;
         }
 
+        //Require reset forceChannelIds & mappedCreditCard before continue payment
+        if (mPendingOrder != null) {
+            mPendingOrder.forceChannelIds = null;
+            mPendingOrder.mappedCreditCard = null;
+        }
         callPayAPI(mActivity, mPendingOrder, mPendingChannel);
     }
 
