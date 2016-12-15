@@ -160,7 +160,12 @@ public static java.lang.String TABLENAME;
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
 -keepattributes Exceptions
-
+-keepclasseswithmembers interface * {
+    @retrofit2.http.* <methods>;
+}
+-keepclasseswithmembers class * {
+    @retrofit2.* <methods>;
+}
 
 # Gson specific classes
 -keep class sun.misc.Unsafe { *; }
@@ -449,3 +454,7 @@ native <methods>;
     public static *** d(...);
     public static *** v(...);
 }
+
+## Jackson
+-keepnames class com.fasterxml.jackson.** { *; }
+-dontwarn com.fasterxml.jackson.databind.**
