@@ -85,52 +85,50 @@ public class ListsTransformTest {
         initData();
 
         List<SentBundle> outputBundle = Lists.transform(inputItemList, this::transform);
-        Assert.assertEquals(true, assertEquals(outputItemList, outputBundle));
-
-        inputItemList.add(inputItem);
-        outputBundle = Lists.transform(inputItemList, this::transform);
-        Assert.assertEquals(false, assertEquals(outputItemList, outputBundle));
+        assertEquals(outputItemList, outputBundle);
 
         inputItemList.clear();
         outputBundle = Lists.transform(inputItemList, this::transform);
-        Assert.assertEquals(true, outputBundle.size() == 0);
+        Assert.assertEquals("transform list doesn't have data", 0, outputBundle.size());
 
         inputItemList = null;
         outputBundle = Lists.transform(inputItemList, this::transform);
-        Assert.assertEquals(true, outputBundle.size() == 0);
+        Assert.assertEquals("transform null list", 0, outputBundle.size());
 
         outputBundle = Lists.transform(null, null);
-        Assert.assertEquals(true, outputBundle.size() == 0);
+        Assert.assertEquals("transform with two params is null", 0, outputBundle.size());
     }
 
-    private boolean assertElementEquals(SentBundle b1, SentBundle b2) {
-        if (b1 == null && b2 != null) { return false; }
-        if (b1 != null && b2 == null) { return false; }
+    private void assertElementEquals(SentBundle b1, SentBundle b2) {
+        if (b1 == null && b2 != null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
 
-        if(b1.numOfOpenedPakages != b2.numOfOpenedPakages) { return false; }
-        if(b1.numOfPackages != b2.numOfPackages) { return false; }
-        if(b1.totalLuck != b2.totalLuck) { return false; }
-        if(b1.sendZaloPayID != b2.sendZaloPayID) { return false; }
-        if(b1.type != b2.type) { return false; }
-        if(b1.createTime != b2.createTime) { return false; }
-        if(b1.lastOpenTime != b2.lastOpenTime) { return false; }
-        if(b1.sendMessage != b2.sendMessage) { return false; }
-        if(b1.status != b2.status) { return false; }
+        if (b1 != null && b2 == null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
 
-        return true;
+        Assert.assertEquals("numOfOpenedPakages", b1.numOfOpenedPakages, b2.numOfOpenedPakages);
+        Assert.assertEquals("numOfPackages", b1.numOfPackages, b2.numOfPackages);
+        Assert.assertEquals("totalLuck", b1.totalLuck, b2.totalLuck);
+        Assert.assertEquals("sendZaloPayID", b1.sendZaloPayID, b2.sendZaloPayID);
+        Assert.assertEquals("type", b1.type, b2.type);
+        Assert.assertEquals("createTime", b1.createTime, b2.createTime);
+        Assert.assertEquals("lastOpenTime", b1.lastOpenTime, b2.lastOpenTime);
+        Assert.assertEquals("sendMessage", b1.sendMessage, b2.sendMessage);
+        Assert.assertEquals("status", b1.status, b2.status);
     }
 
-    private boolean assertEquals(List<SentBundle> list1, List<SentBundle> list2) {
+    private void assertEquals(List<SentBundle> list1, List<SentBundle> list2) {
         if (list1.size() != list2.size()) {
-            return false;
+            Assert.fail("Size doesn't equal");
+            return;
         }
 
         for (int i = 0; i < list1.size(); i++) {
-            if(!assertElementEquals(list1.get(i), list2.get(i))) {
-                return false;
-            }
+            assertElementEquals(list1.get(i), list2.get(i));
         }
-
-        return true;
     }
 }
