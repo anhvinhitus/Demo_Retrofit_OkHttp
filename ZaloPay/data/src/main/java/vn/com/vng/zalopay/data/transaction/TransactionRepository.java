@@ -65,7 +65,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
         return Observable.concat(_observableTransLocal, _observableTransCloud)
                 .first()
-                .map(entities -> zaloPayEntityDataMapper.transform(entities));
+                .map(entities -> Lists.transform(entities, zaloPayEntityDataMapper::transform));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
         return Observable.concat(_observableTransLocal, _observableTransCloud)
                 .first()
-                .map(entities -> zaloPayEntityDataMapper.transform(entities));
+                .map(entities -> Lists.transform(entities, zaloPayEntityDataMapper::transform));
     }
 
     private Observable<List<TransHistoryEntity>> fetchTransactionHistoryOldest(int statusType) {

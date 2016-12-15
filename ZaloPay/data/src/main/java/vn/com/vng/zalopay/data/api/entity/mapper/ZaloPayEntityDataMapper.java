@@ -27,44 +27,40 @@ public class ZaloPayEntityDataMapper {
     }
 
     public TransHistory transform(TransHistoryEntity val) {
-        TransHistory transHistory = null;
-        if (val != null) {
-            transHistory = new TransHistory(val.transid);
-            transHistory.appid = val.appid;
-            transHistory.appuser = val.appuser;
-            transHistory.description = val.description;
-            transHistory.userchargeamt = val.userchargeamt;
-            transHistory.userfeeamt = val.userfeeamt;
-            transHistory.amount = val.amount;
-            transHistory.platform = val.platform;
-            transHistory.pmcid = val.pmcid;
-            transHistory.type = val.type;
-            transHistory.reqdate = val.reqdate;
-            transHistory.userid = val.userid;
-            transHistory.sign = val.sign;
-            transHistory.username = val.username;
-            transHistory.appusername = val.appusername;
+        if (val == null) {
+            return null;
         }
 
-        return transHistory;
+        TransHistory item = new TransHistory(val.transid);
+        item.appid = val.appid;
+        item.appuser = val.appuser;
+        item.description = val.description;
+        item.userchargeamt = val.userchargeamt;
+        item.userfeeamt = val.userfeeamt;
+        item.amount = val.amount;
+        item.platform = val.platform;
+        item.pmcid = val.pmcid;
+        item.type = val.type;
+        item.reqdate = val.reqdate;
+        item.userid = val.userid;
+        item.sign = val.sign;
+        item.username = val.username;
+        item.appusername = val.appusername;
+
+        return item;
     }
-
-    public List<TransHistory> transform(Collection<TransHistoryEntity> transHistoryEntities) {
-        if (Lists.isEmptyOrNull(transHistoryEntities))
-            return emptyList();
-
-        List<TransHistory> transHistories = new ArrayList<>(transHistoryEntities.size());
-        for (TransHistoryEntity transHistoryEntity : transHistoryEntities) {
-            TransHistory transHistory = transform(transHistoryEntity);
-            if (transHistory != null) {
-                transHistories.add(transHistory);
-            }
-        }
-        return transHistories;
-    }
-
 
     public Order transform(GetOrderResponse getOrderResponse) {
-        return new Order(getOrderResponse.getAppid(), getOrderResponse.getZptranstoken(), getOrderResponse.apptransid, getOrderResponse.appuser, getOrderResponse.apptime, getOrderResponse.embeddata, getOrderResponse.item, getOrderResponse.amount, getOrderResponse.description, getOrderResponse.payoption, getOrderResponse.mac);
+        return new Order(getOrderResponse.getAppid(),
+                getOrderResponse.getZptranstoken(),
+                getOrderResponse.apptransid,
+                getOrderResponse.appuser,
+                getOrderResponse.apptime,
+                getOrderResponse.embeddata,
+                getOrderResponse.item,
+                getOrderResponse.amount,
+                getOrderResponse.description,
+                getOrderResponse.payoption,
+                getOrderResponse.mac);
     }
 }

@@ -41,13 +41,13 @@ public final class Lists {
         return list == null || list.length == 0;
     }
 
-    public static <T, R> List<R> transform(List<T> list, Func1<? super T, ? extends R> converter) {
-        if (list == null || list.isEmpty()) {
+    public static <T, R> List<R> transform(Collection<T> collection, Func1<? super T, ? extends R> converter) {
+        if (collection == null || collection.isEmpty()) {
             return Collections.emptyList();
         }
 
-        ArrayList<R> transformedList = new ArrayList<>(list.size());
-        for (T t : list) {
+        ArrayList<R> transformedList = new ArrayList<>(collection.size());
+        for (T t : collection) {
             R r = converter.call(t);
             if (r == null) {
                 continue;
