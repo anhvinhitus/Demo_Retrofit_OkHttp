@@ -8,6 +8,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+
+import timber.log.Timber;
 
 /**
  * Created by huuhoa on 12/15/16.
@@ -132,7 +135,13 @@ public class FeedbackCollector {
          */
         @Override
         protected void onPostExecute(JSONArray o) {
-            super.onPostExecute(o);
+            try {
+                JSONObject object = new JSONObject();
+                object.put("data", o);
+                Timber.d("Data collected: %s", object);
+            } catch (JSONException e) {
+
+            }
         }
 
         /**

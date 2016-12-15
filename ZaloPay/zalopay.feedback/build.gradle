@@ -22,8 +22,10 @@ android {
 }
 
 dependencies {
-    def libs = rootProject.ext.libraries
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    def libs = rootProject.ext.libraries
+    def tests = rootProject.ext.testingLibraries
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -32,7 +34,7 @@ dependencies {
     compile libs.support_appcompat_v7
     compile libs.support_recyclerview_v7
     compile libs.support_design
-    compile libs.support_cardview_v7
+    compile libs.timber
 
-    testCompile 'junit:junit:4.12'
+    testCompile tests.junit
 }

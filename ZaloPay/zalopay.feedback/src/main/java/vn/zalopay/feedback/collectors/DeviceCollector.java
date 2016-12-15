@@ -1,5 +1,8 @@
 package vn.zalopay.feedback.collectors;
 
+import android.os.Build;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.zalopay.feedback.CollectorSetting;
@@ -34,6 +37,20 @@ public class DeviceCollector implements IFeedbackCollector {
      */
     @Override
     public JSONObject doInBackground() {
-        return null;
+        try {
+            JSONObject retVal = new JSONObject();
+            retVal.put("product", Build.PRODUCT);
+            retVal.put("model", Build.MODEL);
+            retVal.put("serial", Build.SERIAL);
+            retVal.put("version", Build.VERSION.RELEASE);
+            retVal.put("sdk_version", Build.VERSION.SDK_INT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                retVal.put("abilist", Build.SUPPORTED_ABIS);
+            }
+
+            return retVal;
+        } catch (JSONException e) {
+            return null;
+        }
     }
 }
