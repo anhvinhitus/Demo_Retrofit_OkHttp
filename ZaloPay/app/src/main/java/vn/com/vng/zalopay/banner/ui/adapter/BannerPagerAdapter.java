@@ -21,6 +21,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by longlv on 12/05/2016.
+ * *
  */
 public class BannerPagerAdapter extends PagerAdapter {
 

@@ -1,10 +1,6 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.content.Context;
-import android.os.CountDownTimer;
-import android.os.Handler;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.zalopay.apploader.internal.ModuleName;
 
@@ -23,8 +19,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
+import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -37,20 +33,13 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.event.SignOutEvent;
-import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
-import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
-import vn.com.zalopay.wallet.merchant.CShareData;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
 
@@ -59,8 +48,6 @@ import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
  * *
  */
 public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements IZaloPayPresenter<IZaloPayView> {
-    private final int BANNER_COUNT_DOWN_INTERVAL = 3000;
-    private int BANNER_MILLIS_IN_FUTURE = 60 * 60 * 1000; //Finish countDownTimer after 1h (60*60*1000)
 
     private final MerchantStore.Repository mMerchantRepository;
     private EventBus mEventBus;
@@ -69,26 +56,15 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     private NotificationStore.Repository mNotificationRepository;
     private Navigator mNavigator;
 
-    //Banner variable
-    private CountDownTimer mBannerCountDownTimer;
-    //avoid case: new & release CountDownTimer continuously
-    private Handler mBannerHandle = new Handler();
-    private Runnable mBannerRunnable = new Runnable() {
-        @Override
-        public void run() {
-            startBannerCountDownTimer();
-        }
-    };
-
     private Context mContext;
 
     @Inject
-    public ZaloPayPresenter(Context context, MerchantStore.Repository mMerchantRepository,
-                            EventBus eventBus,
-                            BalanceStore.Repository balanceRepository,
-                            AppResourceStore.Repository appResourceRepository,
-                            NotificationStore.Repository notificationRepository,
-                            Navigator navigator) {
+    ZaloPayPresenter(Context context, MerchantStore.Repository mMerchantRepository,
+                     EventBus eventBus,
+                     BalanceStore.Repository balanceRepository,
+                     AppResourceStore.Repository appResourceRepository,
+                     NotificationStore.Repository notificationRepository,
+                     Navigator navigator) {
         this.mMerchantRepository = mMerchantRepository;
         this.mEventBus = eventBus;
         this.mBalanceRepository = balanceRepository;
@@ -114,7 +90,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     @Override
     public void resume() {
-        startBannerCountDownTimer();
         if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
             mView.hideNetworkError();
         }
@@ -122,15 +97,11 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     @Override
     public void pause() {
-        stopBannerCountDownTimer();
     }
 
     @Override
     public void destroy() {
         super.destroy();
-        mBannerCountDownTimer = null;
-        mBannerHandle = null;
-        mBannerRunnable = null;
     }
 
     @Override
@@ -138,9 +109,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
         this.getListAppResource();
         this.getTotalNotification(2000);
-        this.getBanners();
         this.getBalance();
-
     }
 
     @Override
@@ -171,7 +140,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         Subscription subscription = mAppResourceRepository.existResource(app.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new StartPaymentAppSubscriber(app));
+                .subscribe(new StartPaymentAppSubscriber(mNavigator, mView.getActivity(), app));
         mSubscription.add(subscription);
     }
 
@@ -277,78 +246,13 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mView.setBalance(balance);
     }
 
-    @Override
-    public void startBannerCountDownTimer() {
-        if (mBannerCountDownTimer != null) {
-            return;
-        }
-        mBannerCountDownTimer = new CountDownTimer(BANNER_MILLIS_IN_FUTURE, BANNER_COUNT_DOWN_INTERVAL) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-//                Timber.d("onTick currentTime [%s]", System.currentTimeMillis());
-                if (mView == null) {
-                    return;
-                }
-                mView.changeBanner();
-            }
-
-            @Override
-            public void onFinish() {
-                mBannerCountDownTimer = null;
-                startBannerCountDownTimer();
-            }
-        };
-        mBannerCountDownTimer.start();
-
-    }
-
-    @Override
-    public void stopBannerCountDownTimer() {
-        if (mBannerCountDownTimer == null) {
-            return;
-        }
-        mBannerCountDownTimer.cancel();
-        mBannerCountDownTimer = null;
-    }
-
-    @Override
-    public void onTouchBanner(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            stopBannerCountDownTimer();
-            if (mBannerHandle != null) {
-                mBannerHandle.removeCallbacks(mBannerRunnable);
-            }
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            if (mBannerHandle != null) {
-                mBannerHandle.postDelayed(mBannerRunnable, BANNER_COUNT_DOWN_INTERVAL);
-            }
-        }
-    }
-
-
-    int numberRefreshBanner;
-
-    public void getBanners() {
-        try {
-            List<DBanner> banners = CShareData.getInstance().getBannerList();
-            if (banners != null && banners.size() > 1) {
-                startBannerCountDownTimer();
-            } else {
-                stopBannerCountDownTimer();
-            }
-            Timber.d("getBanners: %s", numberRefreshBanner++);
-            mView.showBannerAds(banners);
-        } catch (Exception e) {
-            Timber.w(e, "Get banners exception");
-        }
-    }
 
     @Override
     public void startServiceWebViewActivity(long appId, String webViewUrl) {
         Subscription subscription = mMerchantRepository.getMerchantUserInfo(appId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MerchantUserInfoSubscribe(appId, webViewUrl));
+                .subscribe(new MerchantUserInfoSubscribe(mNavigator, mView.getActivity(), appId, webViewUrl));
         mSubscription.add(subscription);
     }
 
@@ -411,66 +315,9 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         }
     }
 
-    private class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInfo> {
-        private long mAppId;
-        private String mWebViewUrl;
-
-        private MerchantUserInfoSubscribe(long appId, String webViewUrl) {
-            this.mAppId = appId;
-            this.mWebViewUrl = webViewUrl;
-        }
-
-        @Override
-        public void onNext(MerchantUserInfo merchantUserInfo) {
-            Timber.d("onNext merchantInfo [%s]", merchantUserInfo);
-            if (merchantUserInfo == null) {
-                mView.showError("MerchantUserInfo invalid");
-                return;
-            }
-            WebViewPayInfo gamePayInfo = new WebViewPayInfo();
-            gamePayInfo.setUid(merchantUserInfo.muid);
-            gamePayInfo.setAccessToken(merchantUserInfo.maccesstoken);
-            gamePayInfo.setAppId(mAppId);
-            mNavigator.startServiceWebViewActivity(mView.getContext(), gamePayInfo, mWebViewUrl);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.d(e, "onError exception");
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                return;
-            }
-            mView.showErrorDialog(ErrorMessageFactory.create(mView.getContext(), e));
-        }
-    }
-
-
-    private class StartPaymentAppSubscriber extends DefaultSubscriber<Boolean> {
-        private AppResource app;
-
-        StartPaymentAppSubscriber(AppResource app) {
-            this.app = app;
-        }
-
-        @Override
-        public void onNext(Boolean result) {
-            if (mView == null) {
-                return;
-            }
-
-            if (result) {
-                mNavigator.startPaymentApplicationActivity(mView.getContext(), app);
-            } else {
-                DialogHelper.showCustomDialog(mView.getActivity(), mContext.getString(R.string.application_downloading),
-                        mContext.getString(R.string.txt_close), SweetAlertDialog.NORMAL_TYPE, null);
-            }
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent e) {
         Timber.d("onRefreshPlatformInfoEvent");
         this.getListAppResource();
-        this.getBanners();
     }
 }

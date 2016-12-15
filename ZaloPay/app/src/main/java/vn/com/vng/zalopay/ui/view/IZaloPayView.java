@@ -18,8 +18,6 @@ public interface IZaloPayView {
 
     Activity getActivity();
 
-    void showBannerAds(List<DBanner> banners);
-
     void refreshInsideApps(List<AppResource> list);
 
     void setTotalNotify(int total);
@@ -39,8 +37,6 @@ public interface IZaloPayView {
     void showLoading();
 
     void hideLoading();
-
-    void changeBanner();
 
     void enableShowShow(boolean isEnable);
 }

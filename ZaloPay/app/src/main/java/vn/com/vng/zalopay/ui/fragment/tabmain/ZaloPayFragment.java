@@ -13,15 +13,11 @@ import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
@@ -34,24 +30,18 @@ import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
-import vn.com.vng.zalopay.banner.model.BannerType;
-import vn.com.vng.zalopay.banner.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
-import vn.com.vng.zalopay.ui.presenter.IZaloPayPresenter;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
-import vn.com.vng.zalopay.ui.widget.SmoothViewPager;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.Constants;
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
@@ -61,7 +51,7 @@ import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
  * Display PaymentApps in Grid layout
  */
 public class ZaloPayFragment extends RuntimePermissionFragment implements ListAppRecyclerAdapter.OnClickAppListener,
-        IZaloPayView, BannerPagerAdapter.IBannerClick {
+        IZaloPayView {
 
     public static ZaloPayFragment newInstance() {
         Bundle args = new Bundle();
@@ -77,17 +67,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     ZaloPayPresenter presenter;
 
     /* Advertisement START */
-    @BindView(R.id.layoutBannerFullScreen)
-    View mLayoutBannerFullScreen;
-
-    @BindView(R.id.viewpager)
-    SmoothViewPager mBannerViewpager;
-
-    BannerPagerAdapter mBannerPagerAdapter;
-
-    @BindView(R.id.indicator)
-    SmartTabLayout mBannerIndicator;
-
     @BindView(R.id.tvAdsSubContent)
     TextView mTvAdsSubContent;
     /* Advertisement END */
@@ -143,23 +122,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
                 getString(R.string.check_internet));
 
         hideTextAds();
-
-        measureBannerSize();
-    }
-
-    private void measureBannerSize() {
-        //If device is tablet then image style is center inside.
-        if (AndroidUtils.isTablet(getContext())) {
-            return;
-        }
-        //If device is mobile then calculate width & height of image and style is fitXY.
-        int screenWidth = AndroidUtils.getScreenWidth(getActivity());
-        int bannerHeight = Math.round(screenWidth * getResources().getInteger(R.integer.banner_height)
-                / getResources().getInteger(R.integer.banner_width));
-        Timber.d("measure banner size width[%s] height[%s]", screenWidth, bannerHeight);
-        LinearLayout.LayoutParams params = new LinearLayout
-                .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, bannerHeight);
-        mLayoutBannerFullScreen.setLayoutParams(params);
     }
 
     private void setInternetConnectionError(String message, String spannedMessage) {
@@ -232,34 +194,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     public void onDestroy() {
         presenter.destroy();
         super.onDestroy();
-    }
-
-    @Override
-    public void showBannerAds(List<DBanner> banners) {
-        Timber.d("showBannerAds banners [%s]", banners);
-        if (banners == null || banners.size() <= 0) {
-            if (mLayoutBannerFullScreen != null) {
-                mLayoutBannerFullScreen.setVisibility(View.GONE);
-            }
-        } else {
-            Timber.d("showBannerAds banners.size [%s]", banners.size());
-            mBannerPagerAdapter = new BannerPagerAdapter(getContext(), banners, this);
-            mBannerViewpager.setAdapter(mBannerPagerAdapter);
-            mBannerIndicator.setViewPager(mBannerViewpager);
-            mBannerViewpager.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    Timber.d("Banner viewpager onTouch action [%s]", event.getAction());
-                    if (presenter != null) {
-                        presenter.onTouchBanner(v, event);
-                    }
-                    return false;
-                }
-            });
-            if (mLayoutBannerFullScreen != null) {
-                mLayoutBannerFullScreen.setVisibility(View.VISIBLE);
-            }
-        }
     }
 
     private void hideTextAds() {
@@ -364,56 +298,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     }
 
     @Override
-    public void changeBanner() {
-        if (mBannerViewpager == null || mBannerViewpager.getAdapter() == null) {
-            return;
-        }
-        int count = mBannerViewpager.getAdapter().getCount();
-        if (count <= 0) {
-            return;
-        }
-        int currentItem = mBannerViewpager.getCurrentItem();
-        if (currentItem >= count - 1) {
-            currentItem = 0;
-            mBannerViewpager.setCurrentItem(currentItem, false);
-        } else {
-            currentItem++;
-            mBannerViewpager.setCurrentItem(currentItem, true);
-        }
-    }
-
-    @Override
     protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
 
-    }
-
-    @Override
-    public void onBannerItemClick(DBanner banner, int position) {
-        if (banner == null) {
-            return;
-        }
-        if (banner.bannertype == BannerType.InternalFunction.getValue()) {
-            if (banner.function == BannerInternalFunction.Deposit.getValue()) {
-                navigator.startDepositActivity(getActivity());
-            } else if (banner.function == BannerInternalFunction.WithDraw.getValue()) {
-                navigator.startBalanceManagementActivity(getActivity());
-            } else if (banner.function == BannerInternalFunction.SaveCard.getValue()) {
-                navigator.startLinkCardActivity(getActivity());
-            } else if (banner.function == BannerInternalFunction.Pay.getValue()) {
-                navigator.startScanToPayActivity(getActivity());
-            } else if (banner.function == BannerInternalFunction.TransferMoney.getValue()) {
-                navigator.startTransferMoneyActivity(getActivity());
-            } else if (banner.function == BannerInternalFunction.RedPacket.getValue()) {
-                navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
-            }
-        } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
-            presenter.startPaymentApp(new AppResource(banner.appid));
-        } else if (banner.bannertype == BannerType.ServiceWebView.getValue()) {
-            presenter.startServiceWebViewActivity(banner.appid, banner.webviewurl);
-        } else if (banner.bannertype == BannerType.WebPromotion.getValue()) {
-            navigator.startWebViewActivity(getContext(), banner.webviewurl);
-        }
-        trackBannerEvent(position);
     }
 
     @Override
@@ -444,20 +330,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
             return;
         }
         mTvInternetConnection.setVisibility(View.GONE);
-    }
-
-    private void trackBannerEvent(int position) {
-        if (position == 0) {
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
-        } else if (position == 1) {
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
-        } else if (position == 2) {
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
-        } else if (position == 3) {
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
-        } else {
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
-        }
     }
 
     static SparseIntArray sActionMap;

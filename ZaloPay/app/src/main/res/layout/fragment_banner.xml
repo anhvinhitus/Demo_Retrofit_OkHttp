@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutBannerFullScreen"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <vn.com.vng.zalopay.ui.widget.SmoothViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/banner_height"/>
+
+    <com.ogaclejapan.smarttablayout.SmartTabLayout
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_gravity="bottom|center_horizontal"
+        app:stl_clickable="false"
+        app:stl_customTabTextLayoutId="@layout/custom_tab_circle"
+        app:stl_dividerColor="@color/transparent"
+        app:stl_dividerThickness="0dp"
+        app:stl_indicatorColor="@color/colorPrimary"
+        app:stl_indicatorCornerRadius="3dp"
+        app:stl_indicatorGravity="center"
+        app:stl_indicatorInterpolation="linear"
+        app:stl_indicatorThickness="6dp"
+        app:stl_underlineColor="@color/transparent"
+        app:stl_underlineThickness="0dp"/>
+</FrameLayout>
