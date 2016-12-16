@@ -59,7 +59,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
 
         Observable<List<TransHistoryEntity>> _observableTransLocal = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS)
-                .filter(entities -> entities != null && entities.size() >= TRANSACTION_LENGTH);
+                .filter(entities -> entities != null && entities.size() >= count);
 
         Observable<List<TransHistoryEntity>> _observableTransCloud = fetchTransactionHistoryOldest(TRANSACTION_STATUS_SUCCESS)
                 .flatMap(response -> getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS));
@@ -79,7 +79,7 @@ public class TransactionRepository implements TransactionStore.Repository {
         }
 
         Observable<List<TransHistoryEntity>> _observableTransLocal = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL)
-                .filter(entities -> entities != null && entities.size() >= TRANSACTION_LENGTH);
+                .filter(entities -> entities != null && entities.size() >= count);
 
         Observable<List<TransHistoryEntity>> _observableTransCloud = fetchTransactionHistoryOldest(TRANSACTION_STATUS_FAIL)
                 .flatMap(response -> getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL));
