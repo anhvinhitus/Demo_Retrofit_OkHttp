@@ -13,6 +13,5 @@ public class AndroidApplicationTest extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        System.out.println("android application test created");
     }
 }

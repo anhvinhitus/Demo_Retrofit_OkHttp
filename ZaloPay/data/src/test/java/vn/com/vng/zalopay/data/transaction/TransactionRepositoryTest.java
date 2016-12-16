@@ -84,6 +84,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         DaoSession daoSession = new DaoMaster(db).newSession();
         mLocalStorage = new TransactionLocalStorage(daoSession);
         //mLocalStorage.put(entities);
+        mRequestService = new RequestServiceImpl();
 
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 mRequestService, EventBus.getDefault());
@@ -210,34 +211,27 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 //        Assert.assertEquals("getTransactions: with pageIndex = -1", 0, result.size());
 //    }
 
-
     @Test
-    public void getTransactionsFail() {
+    public void testTransactionStoreEmpty() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
         Subscription subscription;
         int pageIndex, count;
 
         pageIndex = 2;
         count = 5;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
+        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
+        Assert.assertEquals("getTransactionsFail: when not having data (both from local and cloud)", 0, result.size());
+    }
 
-                    }
+    @Test
+    public void testGetTransactionFailFromCloud() {
+        final List<TransHistory> result = new ArrayList<TransHistory>();
+        Subscription subscription;
+        int pageIndex, count;
 
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("getTransactionsFail: not having datas got error: " + e + "\n");
-                        return;
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        pageIndex = 2;
+        count = 5;
+        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail: when not having data (both from local and cloud)", 0, result.size());
 
         //// Get datas from cloud
@@ -247,200 +241,149 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
                 mRequestService, EventBus.getDefault());
         pageIndex = 2;
         count = 5;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("getTransactionsFail: got datas from cloud got error: " + e + "\n");
-                        return;
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         assertEquals(result, transactionHistoryResponse.data.subList(
                 TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count));
 
+    }
+
+    @Test
+    public void testTransactionsFailWithCountIsZero() {
+        final List<TransHistory> result = new ArrayList<TransHistory>();
+        Subscription subscription;
+        int pageIndex, count;
+
+        //// Get datas from cloud
+        transactionHistoryResponse.data = entities;
+        mRequestService = new RequestServiceImpl();
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+                mRequestService, EventBus.getDefault());
+
         pageIndex = 0;
         count = 0;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.println("getTransactionsFail: got datas from cloud with count = 0 got error: " + e);
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        result.clear();
+        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail: test get datas from clound with count = 0", 0, result.size());
+    }
+
+    @Test
+    public void testTransactionsFailWithCountIsMinusOne() {
+        final List<TransHistory> result = new ArrayList<TransHistory>();
+        Subscription subscription;
+        int pageIndex, count;
+
+        //// Get datas from cloud
+        transactionHistoryResponse.data = entities;
+        mRequestService = new RequestServiceImpl();
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         pageIndex = 0;
         count = -1;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.println("getTransactionsFail: test get datas from clound with count = -1 got error: " + e);
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        result.clear();
+        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail: test get datas from clound with count = -1", 0, result.size());
+    }
+
+    @Test
+    public void testTransactionsFailWithPageIndexIsMinusOne() {
+        final List<TransHistory> result = new ArrayList<TransHistory>();
+        Subscription subscription;
+        int pageIndex, count;
+
+        //// Get datas from cloud
+        transactionHistoryResponse.data = entities;
+        mRequestService = new RequestServiceImpl();
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+                mRequestService, EventBus.getDefault());
 
         pageIndex = -1;
         count = 10;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
+        result.clear();
+        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
+        Assert.assertEquals("getTransactionsFail: test get datas from clound with pageIndex = -1", 0, result.size());
+    }
 
-                    }
+    @Test
+    public void testTransactionsFailWithLocalStorage() {
+        final List<TransHistory> result = new ArrayList<TransHistory>();
+        Subscription subscription;
+        int pageIndex, count;
 
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("getTransactionsFail: test get datas from clound with pageIndex = -1 got error: " + e + "\n");
-                        return;
-                    }
+        //// Get datas from cloud
+        transactionHistoryResponse.data = entities;
+        mRequestService = new RequestServiceImpl();
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+                mRequestService, EventBus.getDefault());
 
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        pageIndex = -1;
+        count = 10;
+        result.clear();
+        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail: test get datas from clound with pageIndex = -1", 0, result.size());
 
         //// Get datas from local storage
         mLocalStorage.put(entities);
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 null, EventBus.getDefault());
-        pageIndex = 2;
+        pageIndex = 1;
         count = 5;
         subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("getTransactionsFail: got datas from local got error: " + e + "\n");
-                        return;
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+                new DefaultObserver<>(result));
         assertEquals(result, entities.subList(
                 TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count));
+    }
 
+    @Test
+    public void testTransactionsFailFromLocalWithCountIsZero() {
+        final List<TransHistory> result = new ArrayList<TransHistory>();
+        Subscription subscription;
+        int pageIndex, count;
+
+        //// Get datas from local storage
+        mLocalStorage.put(entities);
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+                null, EventBus.getDefault());
         pageIndex = 0;
         count = 0;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("getTransactionsFail: got datas from local with count = 0 got error: " + e + "\n");
-                        return;
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        result.clear();
+        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail: test get datas from local with count = 0", 0, result.size());
+    }
 
+    @Test
+    public void testTransactionsFailFromLocalWithCountIsMinusOne() {
+        final List<TransHistory> result = new ArrayList<TransHistory>();
+        Subscription subscription;
+        int pageIndex, count;
+
+        //// Get datas from local storage
+        mLocalStorage.put(entities);
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+                null, EventBus.getDefault());
         pageIndex = 0;
         count = -1;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("getTransactionsFail: test get datas from local with count = -1 got error: " + e + "\n");
-                        return;
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        result.clear();
+        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail: test get datas from local with count = -1", 0, result.size());
+    }
+
+    @Test
+    public void testTransactionsFailFromLocalWithPageIndexIsMinusOne() {
+        final List<TransHistory> result = new ArrayList<TransHistory>();
+        Subscription subscription;
+        int pageIndex, count;
+
+        //// Get datas from local storage
+        mLocalStorage.put(entities);
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
+                null, EventBus.getDefault());
 
         pageIndex = -1;
         count = 10;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("getTransactionsFail: test get datas from local with pageIndex = -1 got error: " + e + "\n");
-                        return;
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        result.clear();
+        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail: test get datas from local with pageIndex = -1", 0, result.size());
-
-        //// Get datas from local and cloud
-        //// ...
     }
 
 //    @Test
