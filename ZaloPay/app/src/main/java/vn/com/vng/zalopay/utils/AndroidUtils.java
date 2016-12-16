@@ -1080,7 +1080,7 @@ public class AndroidUtils {
         return strCampaign.toString();
     }
 
-    private static String getUrlPlayStore(String campaign, String trackingContent) {
+    public static String getUrlPlayStore(String campaign, String trackingContent) {
         StringBuilder urlPlayStore = new StringBuilder();
         urlPlayStore.append("market://details?id=");
         urlPlayStore.append(BuildConfig.APPLICATION_ID);

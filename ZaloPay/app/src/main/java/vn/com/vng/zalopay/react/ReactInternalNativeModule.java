@@ -169,7 +169,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         Map<String, Object> map = new HashMap<>();
         map.put("termsOfUseUrl", BuildConfig.TERMS_HOST);
         map.put("faqUrl", BuildConfig.FAQ_HOST);
-        map.put("storeUrl", AndroidUtils.getPlayStoreUrl("React Native", "Internal"));
+        map.put("storeUrl", AndroidUtils.getUrlPlayStore("React Native", "Internal"));
         return map;
     }
 
