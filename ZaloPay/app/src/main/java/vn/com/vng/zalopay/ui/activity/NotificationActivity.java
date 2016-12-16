@@ -6,7 +6,6 @@ import android.os.Bundle;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
-import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
  * Created by AnhHieu on 7/29/16.

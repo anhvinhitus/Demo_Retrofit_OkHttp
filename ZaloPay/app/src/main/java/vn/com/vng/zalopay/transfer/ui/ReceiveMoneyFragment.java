@@ -18,6 +18,7 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -35,6 +36,9 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
     RecyclerView mListView;
 
     PersonTransferAdapter mAdapter;
+
+    @Inject
+    User mUser;
 
     public static ReceiveMoneyFragment newInstance() {
 
@@ -59,13 +63,13 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAdapter = new PersonTransferAdapter(getContext(), userConfig.getCurrentUser());
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated");
+        mAdapter = new PersonTransferAdapter(getContext(), mUser);
         mListView.setLayoutManager(new LinearLayoutManager(getContext()));
         mListView.setAdapter(mAdapter);
         mPresenter.attachView(this);

@@ -15,15 +15,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
@@ -32,6 +25,7 @@ import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
+import vn.com.vng.zalopay.utils.ZaloHelper;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -39,10 +33,10 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  * *
  */
 public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
-    private User user;
+    private User mUser;
 
     private EventBus mEventBus;
-    
+
     private UserConfig mUserConfig;
     private Context context;
 
@@ -53,7 +47,7 @@ public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
         this.mEventBus = mEventBus;
         this.mUserConfig = userConfig;
         this.context = context;
-        this.user = user;
+        this.mUser = user;
         Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 
@@ -73,14 +67,14 @@ public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
 
     public void initialize() {
         listMenuItem();
-        mView.setUserInfo(user);
+        mView.setUserInfo(mUser);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEventMainThread(ZaloProfileInfoEvent event) {
         //UPDATE USERINFO
-        user.avatar = event.avatar;
-        user.displayName = event.displayName;
+        mUser.avatar = event.avatar;
+        mUser.displayName = event.displayName;
 
         if (mView != null) {
             mView.setAvatar(event.avatar);
@@ -96,18 +90,9 @@ public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
             return;
         }
 
-        if (TextUtils.isEmpty(mUserConfig.getCurrentUser().displayName) ||
-                TextUtils.isEmpty(mUserConfig.getCurrentUser().avatar)) {
-            ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
-                @Override
-                public void onResult(JSONObject profile) {
-                    try {
-                        mUserConfig.saveZaloUserInfo(profile);
-                    } catch (Exception ex) {
-                        Timber.w(ex, " Exception :");
-                    }
-                }
-            });
+        if (TextUtils.isEmpty(mUser.displayName) ||
+                TextUtils.isEmpty(mUser.avatar)) {
+            ZaloHelper.getZaloProfileInfo(context, mUserConfig);
         }
     }
 
