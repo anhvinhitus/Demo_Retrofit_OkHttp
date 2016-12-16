@@ -238,7 +238,9 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
     @Override
     public boolean onBackPressed() {
-        mPresenter.saveProfileInfo2Cache(mEdtPhoneView.getText().toString());
+        if (mPresenter != null && mEdtPhoneView != null) {
+            mPresenter.saveProfileInfo2Cache(mEdtPhoneView.getText().toString());
+        }
         return super.onBackPressed();
     }
 
