@@ -64,6 +64,9 @@ public class AppResourceModule {
                 BuildConfig.DOWNLOAD_APP_RESOURCE,
                 rootBundle,
                 BuildConfig.VERSION_NAME,
-                Arrays.asList(PaymentAppConfig.Constants.RED_PACKET));
+                Arrays.asList(PaymentAppConfig.Constants.RED_PACKET),
+                PaymentAppConfig.APP_RESOURCE_LIST,
+                PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST
+        );
     }
 }

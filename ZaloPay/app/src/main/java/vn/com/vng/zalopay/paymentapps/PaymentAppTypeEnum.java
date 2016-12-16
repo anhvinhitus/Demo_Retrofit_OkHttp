@@ -5,7 +5,7 @@ package vn.com.vng.zalopay.paymentapps;
  * Application type of app in home page
  */
 public enum PaymentAppTypeEnum {
-    NATIVE(1), WEBVIEW(2);
+    REACT_NATIVE(1), WEBVIEW(2), INTERNAL_APP(-1);
     int value;
 
     PaymentAppTypeEnum(int value) {

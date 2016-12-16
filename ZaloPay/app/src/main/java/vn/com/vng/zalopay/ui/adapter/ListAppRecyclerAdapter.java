@@ -13,7 +13,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -125,10 +124,11 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         private void setImage(SimpleDraweeView image, AppResource appResource) {
             //  Timber.d("set image appType [%s] url: [%s]", appResource.appType, appResource.iconUrl);
             if (TextUtils.isEmpty(appResource.iconUrl) &&
-                    appResource.appType == PaymentAppTypeEnum.NATIVE.getValue() &&
+                    appResource.appType == PaymentAppTypeEnum.REACT_NATIVE.getValue() &&
                     PaymentAppConfig.getAppResource(appResource.appid) != null) {
                 appResource.iconUrl = PaymentAppConfig.getAppResource(appResource.appid).iconUrl;
             }
+
             if (!TextUtils.isEmpty(appResource.iconUrl)) {
                 try {
                     loadImage(image, Integer.parseInt(appResource.iconUrl));

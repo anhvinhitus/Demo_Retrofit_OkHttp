@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import rx.Observable;
@@ -44,6 +45,10 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     //List AppID that exclude download
     private final List<Long> mListAppIdExcludeDownload;
 
+    private final List<AppResource> mListDefaultApp;
+
+    private final List<AppResource> mListExcludeApp;
+
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
                                  AppResourceStore.LocalStorage localStorage,
@@ -53,7 +58,10 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                                  boolean download,
                                  String rootBundle,
                                  String appVersion,
-                                 List<Long> excludeDownloadApps) {
+                                 List<Long> excludeDownloadApps,
+                                 List<AppResource> listDefaultApp,
+                                 List<AppResource> listExcludeApp
+    ) {
         this.mDataMapper = mapper;
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
@@ -64,6 +72,9 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         this.mDownloadAppResource = download;
         this.mAppVersion = appVersion;
         this.mListAppIdExcludeDownload = excludeDownloadApps;
+
+        this.mListDefaultApp = listDefaultApp;
+        this.mListExcludeApp = listExcludeApp;
     }
 
     @Override
@@ -320,10 +331,31 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     public Observable<List<AppResource>> getListAppHome() {
 
         Observable<List<AppResource>> local = getAppResourceLocal();
-        Observable<List<AppResource>> cloud = fetchAppResource();
+        Observable<List<AppResource>> cloud = fetchAppResource()
+                .onErrorResumeNext(throwable -> Observable.just(new ArrayList<>(mListDefaultApp)));
 
         return Observable.concat(local, cloud)
-                .takeFirst(resources -> !Lists.isEmptyOrNull(resources) && resources.size() > 0);
+                // .throttleLast(200, TimeUnit.MILLISECONDS);
+                .takeFirst(resources -> !Lists.isEmptyOrNull(resources) && resources.size() > 0)
+                .map(this::transform);
+    }
+
+    @Override
+    public Observable<List<AppResource>> fetchListAppHome() {
+        return fetchAppResource()
+                .map(this::transform);
+    }
+
+    private List<AppResource> transform(List<AppResource> resources) {
+        ArrayList<AppResource> listApp = new ArrayList<>(mListDefaultApp);
+        Timber.d("app default size [%s]", listApp.size());
+        if (resources.containsAll(listApp)) {
+            resources.removeAll(listApp);
+        }
+        listApp.addAll(resources);
+        listApp.removeAll(mListExcludeApp);
+        Timber.d("app show in home page: %s", listApp.size());
+        return listApp;
     }
 
 }

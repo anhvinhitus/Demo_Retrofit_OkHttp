@@ -29,10 +29,6 @@ public final class User extends Person {
         this.zaloPayId = uid;
     }
 
-    public void setPermissions(String jsonArray) {
-        profilePermissions = jsonArray;
-    }
-
     @Override
     public String toString() {
         return "{" +

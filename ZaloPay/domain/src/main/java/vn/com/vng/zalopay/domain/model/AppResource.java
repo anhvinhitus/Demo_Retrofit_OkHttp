@@ -29,7 +29,6 @@ public class AppResource implements Parcelable {
         this(appid, appType, appname, "");
     }
 
-
     public AppResource(long appid, long appType, String appname, String urlImage) {
         this.appid = appid;
         this.appType = appType;
@@ -47,7 +46,7 @@ public class AppResource implements Parcelable {
 
         AppResource that = (AppResource) o;
 
-        return appid == that.appid;
+        return appid == that.appid && appType == that.appType;
 
     }
 

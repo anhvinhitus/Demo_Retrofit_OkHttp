@@ -28,7 +28,6 @@ import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -43,6 +42,8 @@ import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 
 import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
+import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.Constants;
+import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /**
  * Created by AnhHieu on 5/9/16.
@@ -125,7 +126,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     private void getListAppResource(boolean isShouldUpdate) {
 
-        Observable<List<AppResource>> observable = isShouldUpdate ? mAppResourceRepository.fetchAppResource() :
+        Observable<List<AppResource>> observable = isShouldUpdate ? mAppResourceRepository.fetchListAppHome() :
                 mAppResourceRepository.getListAppHome();
 
         Subscription subscription = observable
@@ -135,8 +136,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                         getListMerchantUser(appResources);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(this.<List<AppResource>>applySchedulers())
                 .subscribe(new AppResourceSubscriber());
         mSubscription.add(subscription);
     }
@@ -153,15 +153,11 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     @Override
     public void handleLaunchApp(AppResource app) {
         Timber.d("onclick app %s %s %s ", app.appType, app.appid, app.appname);
-        if (app.appType == PaymentAppTypeEnum.NATIVE.getValue()) {
-            if (app.appid == PaymentAppConfig.Constants.TRANSFER_MONEY) {
-                mNavigator.startTransferMoneyActivity(mView.getActivity());
-            } else if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
+        if (app.appType == PaymentAppTypeEnum.REACT_NATIVE.getValue()) {
+            if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
                 mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.RED_PACKET);
-            } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
-                mNavigator.startReceiveMoneyActivity(mView.getContext());
             } else {
-                AppResource appResource = PaymentAppConfig.getAppResource(app.appid);
+                AppResource appResource = getAppResource(app.appid);
                 if (appResource == null) {
                     appResource = new AppResource(app.appid);
                 }
@@ -169,6 +165,12 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             }
         } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
             startServiceWebViewActivity(app.appid, app.webUrl);
+        } else if (app.appType == PaymentAppTypeEnum.INTERNAL_APP.getValue()) {
+            if (app.appid == PaymentAppConfig.Constants.TRANSFER_MONEY) {
+                mNavigator.startTransferMoneyActivity(mView.getActivity());
+            } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
+                mNavigator.startReceiveMoneyActivity(mView.getContext());
+            }
         }
     }
 
@@ -216,19 +218,16 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         numberCallAppResource++;
         Timber.d("get app resource call : " + numberCallAppResource);
 
-        boolean isEnableShowShow = resources.contains(
-                PaymentAppConfig.getAppResource(PaymentAppConfig.Constants.SHOW_SHOW));
-        mView.enableShowShow(isEnableShowShow);
+        AppResource showhow = getAppResource(Constants.SHOW_SHOW);
 
-        resources.removeAll(PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST);
+        boolean isEnableShowShow = resources.contains(showhow);
 
-        List<AppResource> listApps = new ArrayList<>(PaymentAppConfig.APP_RESOURCE_LIST);
-
-        if (!Lists.isEmptyOrNull(resources)) {
-            listApps.addAll(resources);
+        if (isEnableShowShow) {
+            resources.remove(showhow);
         }
 
-        mView.refreshInsideApps(listApps);
+        mView.enableShowShow(isEnableShowShow);
+        mView.refreshInsideApps(resources);
     }
 
     private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
@@ -237,6 +236,11 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         public void onNext(List<AppResource> appResources) {
             ZaloPayPresenter.this.onGetAppResourceSuccess(appResources);
             Timber.d(" AppResource %s", appResources.size());
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d(e, "Get application resource error");
         }
     }
 
@@ -323,6 +327,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent e) {
         Timber.d("onRefreshPlatformInfoEvent");
-       this.getListAppResource(true);
+        this.getListAppResource(true);
     }
 }

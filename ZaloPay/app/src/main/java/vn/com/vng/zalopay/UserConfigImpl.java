@@ -132,9 +132,7 @@ public class UserConfigImpl implements UserConfig {
     public void loadConfig() {
         if (preferences.contains(Constants.PREF_USER_SESSION)) {
             String session = preferences.getString(Constants.PREF_USER_SESSION, "");
-            //   long zaloPayId = preferences.getLong(Constants.PREF_USER_ID, 0);
             if (TextUtils.isEmpty(session)) return;
-
 
             currentUser = new User();
             currentUser.accesstoken = session;
@@ -147,7 +145,7 @@ public class UserConfigImpl implements UserConfig {
             currentUser.birthDate = preferences.getLong(Constants.PREF_USER_BIRTHDAY, 0);
             currentUser.profilelevel = preferences.getInt(Constants.PREF_PROFILE_LEVEL, 0);
             currentUser.phonenumber = preferences.getLong(Constants.PREF_USER_PHONE, 0L);
-            currentUser.setPermissions(preferences.getString(Constants.PREF_PROFILE_PERMISSIONS, ""));
+            currentUser.profilePermissions = preferences.getString(Constants.PREF_PROFILE_PERMISSIONS, "");
             currentUser.identityNumber = preferences.getString(Constants.PREF_USER_IDENTITY_NUMBER, "");
             currentUser.zalopayname = preferences.getString(Constants.PREF_USER_ZALOPAY_NAME, "");
         }

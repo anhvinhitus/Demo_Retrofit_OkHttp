@@ -61,6 +61,8 @@ public interface AppResourceStore {
         Observable<List<AppResource>> getAppResourceLocal();
 
         Observable<List<AppResource>> getListAppHome();
+
+        Observable<List<AppResource>> fetchListAppHome();
     }
 
 }
