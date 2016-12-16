@@ -133,7 +133,7 @@ public class AppVersionUtils {
                         if (forceUpdate) {
                             clearSession();
                         }
-                        AndroidUtils.openPlayStoreForUpdate(activity);
+                        AndroidUtils.openPlayStoreForUpdate(activity, "force-app-update", "home-page");
                     }
 
                     @Override

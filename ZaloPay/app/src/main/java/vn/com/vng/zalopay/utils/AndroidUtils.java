@@ -46,7 +46,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -184,6 +183,7 @@ public class AndroidUtils {
 
     private static final String PREF_NAME = "PREF_UTILS";
     private static final String PREF_UNIQUE_ID = "PREF_UNIQUE_ID";
+
     public static String getUUID() {
         SharedPreferences sharedPrefs = AndroidApplication.instance().getSharedPreferences(
                 PREF_NAME, Context.MODE_PRIVATE);
@@ -194,6 +194,7 @@ public class AndroidUtils {
         }
         return uniqueID;
     }
+
     public static String getDeviceId() {
         final TelephonyManager tm = (TelephonyManager) AndroidApplication.instance()
                 .getSystemService(Context.TELEPHONY_SERVICE);
@@ -1058,45 +1059,74 @@ public class AndroidUtils {
     }
 
     /**
-     * Zalo Pay url in google play store.
+     * Measure campaigns and traffic sources with the Google Analytics.
+     * https://developers.google.com/analytics/devguides/collection/android/v4/campaigns
      *
      * @param campaign        title use to analytic
      * @param trackingContent detail use to analytic
      */
-    public static String getPlayStoreUrl(String campaign, String trackingContent) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("market://details?id=");
-        stringBuilder.append(BuildConfig.APPLICATION_ID);
-        stringBuilder.append("&referrer=utm_source%3D");
-        stringBuilder.append(AndroidApplication.instance().getResources().getString(R.string.app_name));
-        stringBuilder.append("%26utm_medium%3Dandroid-app");
-        stringBuilder.append("%26utm_content%3D");
-        stringBuilder.append(trackingContent);
-        stringBuilder.append("%26utm_campaign%3D");
-        stringBuilder.append(campaign);
-        return stringBuilder.toString();
+    private static String getGooglePlayCampaign(String campaign, String trackingContent, String appName) {
+        StringBuilder strCampaign = new StringBuilder();
+        strCampaign.append("&referrer=utm_source%3D");
+        strCampaign.append(AndroidApplication.instance().getResources().getString(R.string.app_name));
+        strCampaign.append("%26utm_medium%3D");
+        strCampaign.append("android-app");
+        strCampaign.append("%26utm_content%3D");
+        strCampaign.append(trackingContent);
+        strCampaign.append("%26utm_campaign%3D");
+        strCampaign.append(campaign);
+        strCampaign.append("%26utm_term%3D");
+        strCampaign.append(appName);
+        return strCampaign.toString();
     }
 
-    public static void openPlayStoreForUpdate(Context context) {
-        if (context == null)
+    private static String getUrlPlayStore(String campaign, String trackingContent) {
+        StringBuilder urlPlayStore = new StringBuilder();
+        urlPlayStore.append("market://details?id=");
+        urlPlayStore.append(BuildConfig.APPLICATION_ID);
+        urlPlayStore.append(getGooglePlayCampaign(campaign, trackingContent, "play-store"));
+        return urlPlayStore.toString();
+    }
+
+    private static String getUrlWebPlayStore(String campaign, String trackingContent) {
+        StringBuilder webUrl = new StringBuilder();
+        webUrl.append("https://play.google.com/store/apps/details?id=");
+        webUrl.append(BuildConfig.APPLICATION_ID);
+        webUrl.append(getGooglePlayCampaign(campaign, trackingContent, "web"));
+        return webUrl.toString();
+    }
+
+    private static void openWebPlayStore(Context context, String campaign, String trackingContent) {
+        if (context == null) {
             return;
+        }
+        context.startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse(getUrlWebPlayStore(campaign, trackingContent))));
+    }
+
+    private static void openPlayStore(Context context, String campaign, String trackingContent)
+            throws Exception {
+        if (context == null) {
+            return;
+        }
+        Uri uriUrl = Uri.parse(getUrlPlayStore(campaign, trackingContent));
+        Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } else {
+            Timber.w(context.getResources().getString(R.string.miss_playstore));
+            openWebPlayStore(context, campaign, trackingContent);
+        }
+    }
+
+    public static void openPlayStoreForUpdate(Context context, String campaign, String trackingContent) {
         try {
-            Uri uriUrl = Uri.parse(getPlayStoreUrl("force-app-update", "home-page"));
-            Intent intent = new Intent(Intent.ACTION_VIEW, uriUrl);
-            if (intent.resolveActivity(context.getPackageManager()) != null) {
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            } else {
-                ToastUtil.showToast(context,
-                        context.getResources().getString(
-                                R.string.miss_playstore), Toast.LENGTH_SHORT);
-            }
+            openPlayStore(context, campaign, trackingContent);
         } catch (Exception ex) {
-            Timber.w(ex, "openPlayStoreForUpdate exception [%s]", ex.getMessage());
-            ToastUtil.showToast(context,
-                    context.getResources().getString(R.string.miss_playstore),
-                    Toast.LENGTH_SHORT);
+            Timber.w(ex, "open PlayStore for update exception [%s]", ex.getMessage());
+            openWebPlayStore(context, campaign, trackingContent);
         }
     }
 
