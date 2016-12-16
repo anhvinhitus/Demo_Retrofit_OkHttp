@@ -56,8 +56,6 @@ public class LoginListener extends OAuthCompleteListener {
 
     @Override
     public void onAuthenError(int errorCode, String message) {
-        Timber.w("Authen Zalo error, code: %s message: %s", errorCode, message);
-
         if (mListener != null) {
             mListener.onAuthError(errorCode, message);
         }

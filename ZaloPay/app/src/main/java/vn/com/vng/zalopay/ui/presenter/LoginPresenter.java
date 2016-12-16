@@ -133,6 +133,7 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
 //                if (TextUtils.isEmpty(message)) {
 //                    message = mApplicationContext.getString(R.string.exception_login_zalo_error);
 //                }
+                Timber.w("Authen Zalo error, code: %s message: %s", errorCode, message);
                 message = mApplicationContext.getString(R.string.exception_login_zalo_error);
                 showErrorView(message);
                 ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_USERDENIED);
