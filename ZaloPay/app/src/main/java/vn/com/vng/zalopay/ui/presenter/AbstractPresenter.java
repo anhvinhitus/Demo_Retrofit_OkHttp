@@ -1,7 +1,11 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 
 /**
  * Created by huuhoa on 12/11/16.
@@ -59,5 +63,9 @@ public abstract class AbstractPresenter<View> implements IPresenter<View> {
      */
     @Override
     public void pause() {
+    }
+
+    protected <T> Observable.Transformer<T, T> applySchedulers() {
+        return ObservableHelper.applySchedulers();
     }
 }
