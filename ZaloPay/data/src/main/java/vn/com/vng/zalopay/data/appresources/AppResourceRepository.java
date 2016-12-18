@@ -49,6 +49,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     private final List<AppResource> mListExcludeApp;
 
+    private long mLastTimeFetchApplication;
+
     public AppResourceRepository(AppConfigEntityDataMapper mapper,
                                  AppResourceStore.RequestService requestService,
                                  AppResourceStore.LocalStorage localStorage,
@@ -190,6 +192,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
         List<Long> listAppId = resourceResponse.appidlist;
         mLocalStorage.updateAppList(listAppId);
+        mLastTimeFetchApplication = System.currentTimeMillis() / 1000;
     }
 
     private void updateInsideAppIndex(List<Long> orderedInsideApps) {
@@ -329,15 +332,20 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     @Override
     public Observable<List<AppResource>> getListAppHome() {
-
         Observable<List<AppResource>> local = getAppResourceLocal();
         Observable<List<AppResource>> cloud = fetchAppResource()
                 .onErrorResumeNext(throwable -> Observable.just(new ArrayList<>(mListDefaultApp)));
+        Observable<List<AppResource>> source = Observable.concat(local, cloud);
+        if (isUpToDate()) {
+            return source
+                    .takeFirst(resources -> !Lists.isEmptyOrNull(resources) && resources.size() > 0)
+                    .map(this::transform);
+        } else {
+            return source
+                    .throttleLast(200, TimeUnit.MILLISECONDS)
+                    .map(this::transform);
+        }
 
-        return Observable.concat(local, cloud)
-                // .throttleLast(200, TimeUnit.MILLISECONDS);
-                .takeFirst(resources -> !Lists.isEmptyOrNull(resources) && resources.size() > 0)
-                .map(this::transform);
     }
 
     @Override
@@ -356,6 +364,19 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         listApp.removeAll(mListExcludeApp);
         Timber.d("app show in home page: %s", listApp.size());
         return listApp;
+    }
+
+
+    private boolean isUpToDate() {
+        boolean isUpToDate = false;
+        if (mLastTimeFetchApplication > 0) {
+            long time = Math.abs(System.currentTimeMillis() / 1000 - mLastTimeFetchApplication);
+            if (time < 3 * 60) { // 3min
+                isUpToDate = true;
+            }
+        }
+        Timber.d("isUpToDate: [%s]", isUpToDate);
+        return isUpToDate;
     }
 
 }
