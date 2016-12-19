@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data;
+package vn.com.vng.zalopay.data.redpacket;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -21,6 +21,8 @@ import retrofit2.http.Field;
 import retrofit2.http.Query;
 import rx.Observable;
 import rx.Observer;
+import vn.com.vng.zalopay.data.BuildConfig;
+import vn.com.vng.zalopay.data.CustomRobolectricRunner;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
