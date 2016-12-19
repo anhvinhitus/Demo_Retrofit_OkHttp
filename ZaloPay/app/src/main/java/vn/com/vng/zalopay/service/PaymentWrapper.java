@@ -275,7 +275,7 @@ public class PaymentWrapper {
             paymentInfo.userInfo.balance = balanceRepository.currentBalance();
         }
 
-        if (!validPaymentInfo(paymentInfo)) {
+        if (paymentChannel != EPaymentChannel.LINK_CARD && !validPaymentInfo(paymentInfo)) {
             String messageError = getMessageError(paymentInfo);
             responseListener.onAppError(messageError);
             Timber.e(new Exception(
