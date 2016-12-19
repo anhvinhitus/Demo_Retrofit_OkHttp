@@ -61,4 +61,5 @@ dependencies {
 
     compile project(':data')
     compile libs.zalopay_analytics
+    compile 'vn.com.vng.zalopay:rnmodules:1.14'
 }
