@@ -275,15 +275,9 @@ public class PaymentWrapper {
             paymentInfo.userInfo.balance = balanceRepository.currentBalance();
         }
 
-        Timber.d("Call Pay to sdk activity [%s] paymentChannel [%s] paymentInfo [%s]",
-                owner, paymentChannel, paymentInfo);
-        mPendingOrder = paymentInfo;
-        mPendingChannel = paymentChannel;
-        if (paymentInfo.appID <= 0
-                || TextUtils.isEmpty(paymentInfo.appTransID)
-                || paymentInfo.amount <= 0
-                || paymentInfo.appTime <= 0
-                || TextUtils.isEmpty(paymentInfo.mac)) {
+        if (!validPaymentInfo(paymentInfo)) {
+            String messageError = getMessageError(paymentInfo);
+            responseListener.onAppError(messageError);
             Timber.e(new Exception(
                     String.format("PaymentInfo is invalid, appId[%s] transId[%s] amount[%s] appTime[%s]  mac[%s]",
                             paymentInfo.appID,
@@ -291,8 +285,47 @@ public class PaymentWrapper {
                             paymentInfo.amount,
                             paymentInfo.appTime,
                             paymentInfo.mac)));
+            return;
         }
+
+        Timber.d("Call Pay to sdk activity [%s] paymentChannel [%s] paymentInfo [%s]",
+                owner, paymentChannel, paymentInfo);
+        mPendingOrder = paymentInfo;
+        mPendingChannel = paymentChannel;
         WalletSDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener);
+    }
+
+    private boolean validPaymentInfo(ZPWPaymentInfo paymentInfo) {
+        if (paymentInfo.amount <= 0){
+            return false;
+        } else if (paymentInfo.appID <= 0) {
+            return false;
+        } else if (TextUtils.isEmpty(paymentInfo.appTransID)){
+            return false;
+        } else if (paymentInfo.appTime <= 0){
+            return false;
+        } else if (TextUtils.isEmpty(paymentInfo.mac)){
+            return false;
+        }
+        return true;
+    }
+
+    private String getMessageError(ZPWPaymentInfo paymentInfo) {
+        String messageError;
+        if (paymentInfo.amount <= 0){
+            messageError = "Số tiền không hợp lệ.";
+        } else if (paymentInfo.appID <= 0) {
+            messageError = "Thông tin ứng dụng không hợp lệ.";
+        } else if (TextUtils.isEmpty(paymentInfo.appTransID)){
+            messageError = "Mã giao dịch không hợp lệ.";
+        } else if (paymentInfo.appTime <= 0){
+            messageError = "Thông tin thời gian của đơn hàng hợp lệ.";
+        } else if (TextUtils.isEmpty(paymentInfo.mac)){
+            messageError = "Thông tin đơn hàng không hợp lệ.";
+        } else {
+            messageError = "Đơn hàng không hợp lệ.";
+        }
+        return messageError;
     }
 
     private int getUserProfileLevel() {
