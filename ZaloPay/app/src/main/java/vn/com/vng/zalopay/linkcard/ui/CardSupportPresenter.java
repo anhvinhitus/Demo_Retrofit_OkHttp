@@ -2,12 +2,14 @@ package vn.com.vng.zalopay.linkcard.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import javax.inject.Inject;
 
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -24,8 +26,13 @@ class CardSupportPresenter extends AbstractLinkCardPresenter<ICardSupportView> {
     CardSupportPresenter(ZaloPayRepository zaloPayRepository,
                          Navigator navigator,
                          BalanceStore.Repository balanceRepository,
-                         TransactionStore.Repository transactionRepository) {
-        super(zaloPayRepository, navigator, balanceRepository, transactionRepository);
+                         TransactionStore.Repository transactionRepository,
+                         ApplicationSession applicationSession,
+                         User user,
+                         SharedPreferences sharedPreferences
+                         ) {
+        super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
+                applicationSession, user, sharedPreferences);
     }
 
     @Override

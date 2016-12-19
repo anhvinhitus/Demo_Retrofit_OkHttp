@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.linkcard.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -51,8 +52,13 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     LinkCardPresenter(ZaloPayRepository zaloPayRepository,
                       Navigator navigator,
                       BalanceStore.Repository balanceRepository,
-                      TransactionStore.Repository transactionRepository) {
-        super(zaloPayRepository, navigator, balanceRepository, transactionRepository);
+                      TransactionStore.Repository transactionRepository,
+                      ApplicationSession applicationSession,
+                      User user,
+                      SharedPreferences sharedPreferences
+                      ) {
+        super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
+                applicationSession, user, sharedPreferences);
     }
 
     private void getListCard() {

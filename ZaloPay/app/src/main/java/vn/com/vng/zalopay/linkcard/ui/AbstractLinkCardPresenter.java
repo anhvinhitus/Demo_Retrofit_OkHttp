@@ -35,13 +35,8 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     private PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
 
-    @Inject
     ApplicationSession mApplicationSession;
-
-    @Inject
     User user;
-
-    @Inject
     SharedPreferences mSharedPreferences;
 
     abstract Activity getActivity();
@@ -65,8 +60,14 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     AbstractLinkCardPresenter(ZaloPayRepository zaloPayRepository,
                               Navigator navigator,
                               BalanceStore.Repository balanceRepository,
-                              TransactionStore.Repository transactionRepository) {
+                              TransactionStore.Repository transactionRepository,
+                              ApplicationSession applicationSession,
+                              User user,
+                              SharedPreferences sharedPreferences) {
         mNavigator = navigator;
+        mApplicationSession = applicationSession;
+        this.user = user;
+        mSharedPreferences = sharedPreferences;
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
