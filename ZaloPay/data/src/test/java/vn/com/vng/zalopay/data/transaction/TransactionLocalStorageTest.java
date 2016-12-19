@@ -64,8 +64,6 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoSession daoSession = new DaoMaster(db).newSession();
         mLocalStorage = new TransactionLocalStorage(daoSession);
-
-        initData();
     }
 
     private void initData() {
@@ -87,82 +85,147 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         mLocalStorage.put(entities);
     }
 
+    @Test
+    public void putNullParam() {
+        mLocalStorage.put(null);
+        List<TransHistoryEntity> result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
+        assertEquals("putNullParam", 0, result.size());
+    }
+
+    @Test
+    public void putEmptyList() {
+        insertTransaction();
+        List<TransHistoryEntity> result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
+        assertEquals("putEmptyList", 0, result.size());
+    }
 
     @Test
     public void put() {
-        List<TransHistoryEntity> result;
-
-        mLocalStorage.put(null);
-        result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("put: test null data", 0, result.size());
-
-        entities.clear();
-        insertTransaction();
-        result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("put: test empty list", 0, result.size());
-
         initData();
         insertTransaction();
-        result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
-        assertTrue("put: test list of datas", result.containsAll(entities));
+        List<TransHistoryEntity> result = mLocalStorage.get(0, TRANSACTION_SIZE, TRANSACTION_STATUS_SUCCESS);
+        assertTrue("put", result.containsAll(entities));
     }
 
-
     @Test
-    public void get() {
+    public void getTransactionsWithEmptyDB() {
+        initData();
         List<TransHistoryEntity> result;
         int pageIndex, limit;
 
         pageIndex = 0;
         limit = TRANSACTION_SIZE;
         result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("get: test transaction when DB doesn't have datas", 0, result.size());
+        assertEquals("get transactions with empty DB", 0, result.size());
+    }
 
+    @Test
+    public void getAllTransactions() {
+        initData();
         insertTransaction();
+
+        List<TransHistoryEntity> result;
+        int pageIndex, limit;
+
         pageIndex = 0;
         limit = TRANSACTION_SIZE;
         result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_FAIL);
         for(int i = 0; i < result.size(); i++) {
             compare2Elements(result.get(i), entities.get(i));
         }
+    }
+
+    @Test
+    public void get0Transaction() {
+        initData();
+        insertTransaction();
+
+        List<TransHistoryEntity> result;
+        int pageIndex, limit;
 
         pageIndex = 0;
         limit = 0;
         result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("get: test transaction with limit is zero", 0, result.size());
+        assertEquals("get 0 transaction", 0, result.size());
+    }
+
+    @Test
+    public void get() {
+        initData();
+        insertTransaction();
+
+        initData();
+        List<TransHistoryEntity> result;
+        int pageIndex, limit;
 
         pageIndex = 0;
         limit = 5;
         result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("get: test transaction with pageIndex and limit", true, result.containsAll(entities.subList(
+        assertEquals("get", true, result.containsAll(entities.subList(
                 TRANSACTION_SIZE - (pageIndex + 1) * limit, TRANSACTION_SIZE - (pageIndex + 1) * limit + limit)
         ));
+    }
+
+    @Test
+    public void getOversizedList() {
+        initData();
+        insertTransaction();
+
+        List<TransHistoryEntity> result;
+        int pageIndex, limit;
 
         pageIndex = 5;
         limit = 5;
         result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
-        assertEquals("get: test transaction with oversize data", 0, result.size());
+        assertEquals("get oversized list", 0, result.size());
+    }
+
+    @Test
+    public void getWithWrongFormatOfStatusType() {
+        initData();
+        insertTransaction();
+
+        List<TransHistoryEntity> result;
+        int pageIndex, limit;
 
         pageIndex = 0;
         limit = TRANSACTION_SIZE;
         result = mLocalStorage.get(pageIndex, limit, -3);
-        assertEquals("get: test transaction with wrong format status", 0, result.size());
+        assertEquals("get with wrong format of status type", 0, result.size());
+    }
+
+    @Test
+    public void getTransactionWhenLimitIsANegativeNumber() {
+        initData();
+        insertTransaction();
+
+        List<TransHistoryEntity> result;
+        int pageIndex, limit;
 
         pageIndex = 0;
         limit = -1;
         result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
         System.out.print(result.size() + " - " + result);
-        assertEquals("get: test transaction with limit is a negative number", 0, result.size());
+        assertEquals("get transaction with limit is a negative number", 0, result.size());
+    }
+
+    @Test
+    public void getTransactionWhenPageIndexIsANegativeNumber() {
+        initData();
+        insertTransaction();
+
+        List<TransHistoryEntity> result;
+        int pageIndex, limit;
 
         pageIndex = -1;
         limit = 4;
         result = mLocalStorage.get(pageIndex, limit, TRANSACTION_STATUS_SUCCESS);
         System.out.print(result.size() + " - " + result);
-        assertEquals("get: test transaction with pageIndex is a negative number", 0, result.size());
+        assertEquals("get transaction with pageIndex is a negative number", 0, result.size());
     }
 
     @Test
-    public void isHaveTransactionInDb() {
+    public void isHaveTransactionInDbWhenDBHasntInitialized() {
         boolean result;
 
         DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, null, null);
@@ -170,68 +233,129 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
         DaoSession daoSession = new DaoMaster(db).newSession();
         mLocalStorage = new TransactionLocalStorage(daoSession);
         result = mLocalStorage.isHaveTransactionInDb();
-        assertEquals("isHaveTransactionInDb: test DB hasn't initialized", false, result);
+        assertEquals("isHaveTransactionInDb when DB hasn't initialized", false, result);
+    }
 
-        openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, "zalopaytest.db", null);
-        db = openHelper.getWritableDatabase();
-        daoSession = new DaoMaster(db).newSession();
+    @Test
+    public void isHaveTransactionInDbWhenDBInitialized() {
+        boolean result;
+
+        DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, "zalopaytest.db", null);
+        SQLiteDatabase db = openHelper.getWritableDatabase();
+        DaoSession daoSession = new DaoMaster(db).newSession();
         mLocalStorage = new TransactionLocalStorage(daoSession);
         result = mLocalStorage.isHaveTransactionInDb();
-        assertEquals("isHaveTransactionInDb: test DB initialized", false, result);
+        assertEquals("isHaveTransactionInDb when DB initialized", false, result);
 
+    }
+
+    @Test
+    public void isHaveTransactionInDb() {
+        initData();
+        insertTransaction();
+
+        boolean result;
+
+        DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, "zalopaytest.db", null);
+        SQLiteDatabase db = openHelper.getWritableDatabase();
+        DaoSession daoSession = new DaoMaster(db).newSession();
         daoSession.getTransactionLogDao().insertOrReplaceInTx(transform(entities));
         mLocalStorage = new TransactionLocalStorage(daoSession);
         result = mLocalStorage.isHaveTransactionInDb();
-        assertEquals("isHaveTransactionInDb: test DB had datas", true, result);
+        assertEquals("isHaveTransactionInDb when DB had datas", true, result);
+    }
 
-        daoSession.getTransactionLogDao().delete(transform(entity));
-        mLocalStorage = new TransactionLocalStorage(daoSession);
-        result = mLocalStorage.isHaveTransactionInDb();
-        assertEquals("isHaveTransactionInDb: test DB has deleted 1 data", true, result);
+    @Test
+    public void isHaveTransactionInDbWithEmptyDB() {
+        initData();
+        insertTransaction();
 
+        boolean result;
+
+        DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, "zalopaytest.db", null);
+        SQLiteDatabase db = openHelper.getWritableDatabase();
+        DaoSession daoSession = new DaoMaster(db).newSession();
+        daoSession.getTransactionLogDao().insertOrReplaceInTx(transform(entities));
         daoSession.getTransactionLogDao().deleteAll();
         mLocalStorage = new TransactionLocalStorage(daoSession);
         result = mLocalStorage.isHaveTransactionInDb();
-        assertEquals("isHaveTransactionInDb: test DB has deleted all datas", false, result);
+        assertEquals("isHaveTransactionInDb when DB has deleted all datas", false, result);
+    }
+
+    @Test
+    public void getTransactionWithEmptyDB() {
+        assertEquals("getTransaction with empty DB",
+                null, mLocalStorage.getTransaction(0));
     }
 
     @Test
     public void getTransaction() {
-        assertEquals("getTransaction: test transaction when DB doesn't have datas",
-                null, mLocalStorage.getTransaction(0));
-
+        initData();
         insertTransaction();
 
         compare2Elements(entities.get(1), mLocalStorage.getTransaction(2));
+    }
 
-        assertEquals("getTransaction: test transaction with transid doesn't exist",
+    @Test
+    public void getTransactionWithWrongFormatTransId() {
+        initData();
+        insertTransaction();
+        assertEquals("getTransaction with wrong format transId",
                 null, mLocalStorage.getTransaction(-1));
     }
 
     @Test
-    public void updateStatusType() {
+    public void getTransactionWithOversizedTransId() {
+        initData();
+        insertTransaction();
+        assertEquals("getTransaction with oversized transId",
+                null, mLocalStorage.getTransaction(21));
+    }
+
+    @Test
+    public void updateStatusTypeWithSuccessType() {
+        initData();
+        insertTransaction();
+
         long transid = 1;
         TransHistoryEntity result;
-
-        insertTransaction();
 
         mLocalStorage.updateStatusType(transid, TRANSACTION_STATUS_SUCCESS);
         result = mLocalStorage.getTransaction(transid);
         assertEquals("updateStatusType: test with success type", TRANSACTION_STATUS_SUCCESS, result.statustype);
-
-        mLocalStorage.updateStatusType(transid, TRANSACTION_STATUS_FAIL);
-        TransHistoryEntity resultFail = mLocalStorage.getTransaction(transid);
-        assertEquals("getTransaction: test with fail type", TRANSACTION_STATUS_FAIL, resultFail.statustype);
     }
 
     @Test
-    public void setLoadedTransactionSuccess() {
-        boolean ret;
+    public void updateStatusTypeWithFailType() {
+        initData();
         insertTransaction();
+
+        long transid = 1;
+        TransHistoryEntity result;
+
+        mLocalStorage.updateStatusType(transid, TRANSACTION_STATUS_FAIL);
+        result = mLocalStorage.getTransaction(transid);
+        assertEquals("getTransaction: test with fail type", TRANSACTION_STATUS_FAIL, result.statustype);
+    }
+
+    @Test
+    public void setLoadedTransactionSuccessWithTrueParam() {
+        initData();
+        insertTransaction();
+
+        boolean ret;
 
         mLocalStorage.setLoadedTransactionSuccess(true);
         ret = mLocalStorage.isLoadedTransactionSuccess();
         assertEquals("setLoadedTransactionSuccess: test with param is true", true, ret);
+    }
+
+    @Test
+    public void setLoadedTransactionSuccessWithFailParam() {
+        initData();
+        insertTransaction();
+
+        boolean ret;
 
         mLocalStorage.setLoadedTransactionSuccess(false);
         ret = mLocalStorage.isLoadedTransactionSuccess();
@@ -239,13 +363,23 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
     }
 
     @Test
-    public void setLoadedTransactionFail() {
-        boolean ret;
+    public void setLoadedTransactionFailWithTrueParam() {
+        initData();
         insertTransaction();
+
+        boolean ret;
 
         mLocalStorage.setLoadedTransactionFail(true);
         ret = mLocalStorage.isLoadedTransactionFail();
         assertEquals("setLoadedTransactionFail with param is true", true, ret);
+    }
+
+    @Test
+    public void setLoadedTransactionFailWithFailParam() {
+        initData();
+        insertTransaction();
+
+        boolean ret;
 
         mLocalStorage.setLoadedTransactionFail(false);
         ret = mLocalStorage.isLoadedTransactionFail();
@@ -253,90 +387,176 @@ public class TransactionLocalStorageTest extends ApplicationTestCase {
     }
 
     @Test
-    public void isLoadedTransactionSuccess() {
+    public void isLoadedTransactionSuccessWithEmptyDB() {
         boolean ret;
 
         ret = mLocalStorage.isLoadedTransactionSuccess();
-        assertEquals("isLoadedTransactionSuccess: test when DB doesn't have datas", false, ret);
-
-        insertTransaction();
-
-        mLocalStorage.setLoadedTransactionSuccess(true);
-        ret = mLocalStorage.isLoadedTransactionSuccess();
-        assertEquals("isLoadedTransactionSuccess: setLoadedTransactionSuccess is true", true, ret);
-
-        mLocalStorage.setLoadedTransactionFail(true);
-        ret = mLocalStorage.isLoadedTransactionSuccess();
-        assertEquals("isLoadedTransactionSuccess: setLoadedTransactionFail is true", true, ret);
-
-        mLocalStorage.setLoadedTransactionFail(false);
-        ret = mLocalStorage.isLoadedTransactionSuccess();
-        assertEquals("isLoadedTransactionSuccess: setLoadedTransactionFail is false", true, ret);
-
-        mLocalStorage.setLoadedTransactionSuccess(false);
-        ret = mLocalStorage.isLoadedTransactionSuccess();
-        assertEquals("isLoadedTransactionSuccess: setLoadedTransactionSuccess is false", false, ret);
+        assertEquals("isLoadedTransactionSuccess when DB doesn't have datas", false, ret);
     }
 
     @Test
-    public void isLoadedTransactionFail() {
+    public void isLoadedTransactionSuccessWhenSetLoadedTransactionSuccessIsTrue() {
+        initData();
+        insertTransaction();
+        boolean ret;
+
+        mLocalStorage.setLoadedTransactionSuccess(true);
+        ret = mLocalStorage.isLoadedTransactionSuccess();
+        assertEquals("isLoadedTransactionSuccess when setLoadedTransactionSuccess is true", true, ret);
+    }
+
+    @Test
+    public void isLoadedTransactionSuccessWhenSetLoadedTransactionSuccessIsFalse() {
+        initData();
+        insertTransaction();
+        boolean ret;
+
+        mLocalStorage.setLoadedTransactionSuccess(false);
+        ret = mLocalStorage.isLoadedTransactionSuccess();
+        assertEquals("isLoadedTransactionSuccess when setLoadedTransactionSuccess is false", false, ret);
+    }
+
+    @Test
+    public void isLoadedTransactionSuccessWhenSetLoadedTransactionFailIsFalse() {
+        initData();
+        insertTransaction();
+        boolean ret;
+
+        mLocalStorage.setLoadedTransactionFail(false);
+        ret = mLocalStorage.isLoadedTransactionSuccess();
+        assertEquals("isLoadedTransactionSuccess when setLoadedTransactionFail is false", false, ret);
+    }
+
+    @Test
+    public void isLoadedTransactionSuccessWhenSetLoadedTransactionFailIsTrue() {
+        initData();
+        insertTransaction();
+        boolean ret;
+
+        mLocalStorage.setLoadedTransactionFail(true);
+        ret = mLocalStorage.isLoadedTransactionSuccess();
+        assertEquals("isLoadedTransactionSuccess when setLoadedTransactionFail is true", false, ret);
+    }
+
+    @Test
+    public void isLoadedTransactionFailWithEmptyDB() {
         boolean ret;
 
         ret = mLocalStorage.isLoadedTransactionFail();
         assertEquals("isLoadedTransactionSuccess: test when DB doesn't have datas", false, ret);
-
-        insertTransaction();
-
-        mLocalStorage.setLoadedTransactionFail(true);
-        ret = mLocalStorage.isLoadedTransactionFail();
-        assertEquals("isLoadedTransactionSuccess: setLoadedTransactionFail is true", true, ret);
-
-        mLocalStorage.setLoadedTransactionSuccess(true);
-        ret = mLocalStorage.isLoadedTransactionFail();
-        assertEquals("isLoadedTransactionSuccess: setLoadedTransactionSuccess is true", true, ret);
-
-        mLocalStorage.setLoadedTransactionSuccess(false);
-        ret = mLocalStorage.isLoadedTransactionFail();
-        assertEquals("isLoadedTransactionSuccess: setLoadedTransactionSuccess is false", true, ret);
-
-        mLocalStorage.setLoadedTransactionFail(false);
-        ret = mLocalStorage.isLoadedTransactionFail();
-        assertEquals("isLoadedTransactionSuccess: setLoadedTransactionFail is false", false, ret);
     }
 
     @Test
-    public void getLatestTimeTransaction() {
+    public void isLoadedTransactionFailWhenSetLoadedTransactionSuccessIsTrue() {
+        initData();
+        insertTransaction();
+        boolean ret;
+
+        mLocalStorage.setLoadedTransactionSuccess(true);
+        ret = mLocalStorage.isLoadedTransactionFail();
+        assertEquals("isLoadedTransactionSuccess when setLoadedTransactionSuccess is true", false, ret);
+    }
+
+    @Test
+    public void isLoadedTransactionFailWhenSetLoadedTransactionSuccessIsFalse() {
+        initData();
+        insertTransaction();
+        boolean ret;
+
+        mLocalStorage.setLoadedTransactionSuccess(false);
+        ret = mLocalStorage.isLoadedTransactionFail();
+        assertEquals("isLoadedTransactionSuccess when setLoadedTransactionSuccess is false", false, ret);
+    }
+
+    @Test
+    public void isLoadedTransactionFailWhenSetLoadedTransactionFailIsFalse() {
+        initData();
+        insertTransaction();
+        boolean ret;
+
+        mLocalStorage.setLoadedTransactionFail(false);
+        ret = mLocalStorage.isLoadedTransactionFail();
+        assertEquals("isLoadedTransactionSuccess when setLoadedTransactionFail is false", false, ret);
+    }
+
+    @Test
+    public void isLoadedTransactionSFailWhenSetLoadedTransactionFailIsTrue() {
+        initData();
+        insertTransaction();
+        boolean ret;
+
+        mLocalStorage.setLoadedTransactionFail(true);
+        ret = mLocalStorage.isLoadedTransactionFail();
+        assertEquals("isLoadedTransactionSuccess when setLoadedTransactionFail is true", true, ret);
+    }
+
+    @Test
+    public void getLatestTimeTransactionWithEmptyDBAndSuccessType() {
         long latestTime;
 
         latestTime = mLocalStorage.getLatestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
-        assertEquals("getLatestTimeFailTransaction: test get success time when DB doesn't have datas", 0, latestTime);
+        assertEquals("getLatestTimeFailTransaction get success time when DB doesn't have datas", 0, latestTime);
+    }
+
+    @Test
+    public void getLatestTimeTransactionWithEmptyDBAndFailType() {
+        long latestTime;
 
         latestTime = mLocalStorage.getLatestTimeTransaction(TRANSACTION_STATUS_FAIL);
-        assertEquals("getLatestTimeFailTransaction: test get fail time when DB doesn't have datas", 0, latestTime);
+        assertEquals("getLatestTimeFailTransaction get fail time when DB doesn't have datas", 0, latestTime);
+    }
 
+    @Test
+    public void getLatestTimeTransactionWithSuccessType() {
+        initData();
         insertTransaction();
+        long latestTime;
 
         latestTime = mLocalStorage.getLatestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
         assertEquals("getLatestTimeSuccessTransaction", true, latestTime == entities.get(entities.size() - 1).reqdate);
+    }
+
+    @Test
+    public void getLatestTimeTransactionWithFailType() {
+        initData();
+        insertTransaction();
+        long latestTime;
 
         latestTime = mLocalStorage.getLatestTimeTransaction(TRANSACTION_STATUS_FAIL);
         assertEquals("getLatestTimeFailTransaction", true, latestTime == 0);
     }
 
     @Test
-    public void getOldestTimeTransaction() {
+    public void getOldestTimeTransactionWithEmptyDBAndSuccessType() {
         long oldestTime;
 
         oldestTime = mLocalStorage.getOldestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
         assertEquals("getOldestTimeTransaction: test get success time when DB doesn't have datas", 0, oldestTime);
+    }
+
+    @Test
+    public void getOldestTimeTransactionWithEmptyDBAndFailType() {
+        long oldestTime;
 
         oldestTime = mLocalStorage.getOldestTimeTransaction(TRANSACTION_STATUS_FAIL);
         assertEquals("getOldestTimeTransaction: test get fail time when DB doesn't have datas", 0, oldestTime);
+    }
 
+    @Test
+    public void getOldestTimeTransactionWithSuccessType() {
+        initData();
         insertTransaction();
+        long oldestTime;
 
         oldestTime = mLocalStorage.getOldestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
         assertEquals("getOldestTimeSuccessTransaction", entities.get(0).reqdate, oldestTime);
+    }
+
+    @Test
+    public void getOldestTimeTransactionWithFailType() {
+        initData();
+        insertTransaction();
+        long oldestTime;
 
         oldestTime = mLocalStorage.getOldestTimeTransaction(TRANSACTION_STATUS_FAIL);
         assertEquals("getOldestTimeFailTransaction", 0, oldestTime);

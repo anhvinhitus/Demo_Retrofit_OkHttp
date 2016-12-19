@@ -86,17 +86,27 @@ public class ListsTransformTest {
 
         List<SentBundle> outputBundle = Lists.transform(inputItemList, this::transform);
         assertEquals(outputItemList, outputBundle);
+    }
+
+    @Test
+    public void transformWithEmptyInput() {
+        initData();
 
         inputItemList.clear();
-        outputBundle = Lists.transform(inputItemList, this::transform);
+        List<SentBundle> outputBundle = Lists.transform(inputItemList, this::transform);
         Assert.assertEquals("transform list doesn't have data", 0, outputBundle.size());
+    }
 
-        inputItemList = null;
-        outputBundle = Lists.transform(inputItemList, this::transform);
+    @Test
+    public void transformWithNullList() {
+        List<SentBundle> outputBundle = Lists.transform(inputItemList, this::transform);
         Assert.assertEquals("transform null list", 0, outputBundle.size());
+    }
 
-        outputBundle = Lists.transform(null, null);
-        Assert.assertEquals("transform with two params is null", 0, outputBundle.size());
+    @Test
+    public void transformWithNullParams() {
+        List<SentBundle> outputBundle = Lists.transform(null, null);
+        Assert.assertEquals("transform null list", 0, outputBundle.size());
     }
 
     private void assertElementEquals(SentBundle b1, SentBundle b2) {
