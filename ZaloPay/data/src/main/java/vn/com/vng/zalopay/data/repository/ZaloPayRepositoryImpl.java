@@ -43,6 +43,13 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
 
     @Override
     public Observable<Order> createwalletorder(long appId, long amount, String transtype, String appUser, String description, String embeddata) {
+        if (appId <= 0 || amount <= 0 || TextUtils.isEmpty(transtype)) {
+            Timber.e(new Exception(
+                    String.format("Create wallet order with data is invalid, appId[%s] amount[%s] transType[%s]",
+                            appId,
+                            amount,
+                            transtype)));
+        }
         return zaloPayService.createwalletorder(user.zaloPayId, user.accesstoken, appId, amount, transtype, appUser, description, embeddata)
                 .map(getOrderResponse -> {
                     getOrderResponse.setAppid(appId);

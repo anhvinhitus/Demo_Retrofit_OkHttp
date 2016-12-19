@@ -279,6 +279,19 @@ public class PaymentWrapper {
                 owner, paymentChannel, paymentInfo);
         mPendingOrder = paymentInfo;
         mPendingChannel = paymentChannel;
+        if (paymentInfo.appID <= 0
+                || TextUtils.isEmpty(paymentInfo.appTransID)
+                || paymentInfo.amount <= 0
+                || paymentInfo.appTime <= 0
+                || TextUtils.isEmpty(paymentInfo.mac)) {
+            Timber.e(new Exception(
+                    String.format("PaymentInfo is invalid, appId[%s] transId[%s] amount[%s] appTime[%s]  mac[%s]",
+                            paymentInfo.appID,
+                            paymentInfo.appTransID,
+                            paymentInfo.amount,
+                            paymentInfo.appTime,
+                            paymentInfo.mac)));
+        }
         WalletSDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener);
     }
 
