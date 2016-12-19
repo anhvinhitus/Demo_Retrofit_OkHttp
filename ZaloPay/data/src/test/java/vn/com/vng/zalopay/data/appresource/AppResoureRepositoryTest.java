@@ -64,6 +64,10 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
                 return Observable.just(resourceResponse);
             }
         };
+
+        List<AppResource> appResourceList = new ArrayList<>();
+        List<AppResource> excludeAppResourceList = new ArrayList<>();
+
         mRepository = new AppResourceRepository(new AppConfigEntityDataMapper(),
                 mRequestService, mAppResourceLocalStorage, new HashMap<>(),
                 new DownloadAppResourceTaskQueue(RuntimeEnvironment.application, AbsDownloadService.class),
@@ -71,7 +75,7 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
                 true,
                 "rootBundle",
                 "2.4.0",
-                Arrays.asList(6L));
+                Arrays.asList(6L), appResourceList, excludeAppResourceList);
     }
 
     private AppResourceEntity createAppResource(int index) {
@@ -116,6 +120,7 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
     //AppId [0-1], [3-4]
     private List<Long> mAppList = Arrays.asList(0L, 1L, 3L, 4L);
     private List<Long> mSortAppSource = Arrays.asList(0L, 1L, 3L, 4L);
+
     private List<AppResourceEntity> listUpgradeData() {
         List<AppResourceEntity> appResourceEntities = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
