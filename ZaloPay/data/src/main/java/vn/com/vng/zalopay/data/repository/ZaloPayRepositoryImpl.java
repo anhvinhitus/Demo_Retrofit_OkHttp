@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.repository;
 
+import android.text.TextUtils;
+
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
@@ -10,6 +12,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 
 /**
  * Created by AnhHieu on 5/4/16.
+ * *
  */
 public class ZaloPayRepositoryImpl implements ZaloPayRepository {
 
@@ -51,10 +54,22 @@ public class ZaloPayRepositoryImpl implements ZaloPayRepository {
                             transtype)));
         }
         return zaloPayService.createwalletorder(user.zaloPayId, user.accesstoken, appId, amount, transtype, appUser, description, embeddata)
-                .map(getOrderResponse -> {
-                    getOrderResponse.setAppid(appId);
-                    getOrderResponse.amount = amount;
-                    return zaloPayEntityDataMapper.transform(getOrderResponse);
+                .map(orderResponse -> {
+                    orderResponse.setAppid(appId);
+                    if (orderResponse.appid <= 0
+                            || TextUtils.isEmpty(orderResponse.apptransid)
+                            || orderResponse.amount <= 0
+                            || orderResponse.apptime <= 0
+                            || TextUtils.isEmpty(orderResponse.mac)) {
+                        Timber.e(new Exception(
+                                String.format("GetOrderResponse is invalid, appId[%s] transId[%s] amount[%s] appTime[%s]  mac[%s]",
+                                        orderResponse.appid,
+                                        orderResponse.apptransid,
+                                        orderResponse.amount,
+                                        orderResponse.apptime,
+                                        orderResponse.mac)));
+                    }
+                    return zaloPayEntityDataMapper.transform(orderResponse);
                 });
     }
 }
