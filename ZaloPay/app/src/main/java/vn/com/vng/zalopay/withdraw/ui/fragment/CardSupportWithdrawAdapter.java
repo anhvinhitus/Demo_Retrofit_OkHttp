@@ -52,7 +52,7 @@ class CardSupportWithdrawAdapter extends AbsRecyclerAdapter<CardSupportWithdraw,
     }
 
     @Override
-    public void insertItems(Collection<CardSupportWithdraw> items) {
+    public void insertItems(List<CardSupportWithdraw> items) {
         if (items == null || items.isEmpty()) return;
         synchronized (_lock) {
             for (CardSupportWithdraw item : items) {

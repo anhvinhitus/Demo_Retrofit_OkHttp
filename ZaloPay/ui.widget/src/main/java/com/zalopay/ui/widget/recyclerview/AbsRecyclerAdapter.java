@@ -46,7 +46,7 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
         return mItems;
     }
 
-    public void setData(Collection<T> items) {
+    public void setData(List<T> items) {
         if (items == null) {
             return;
         }
@@ -65,7 +65,7 @@ public abstract class AbsRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
 
-    public void insertItems(Collection<T> items) {
+    public void insertItems(List<T> items) {
         if (items == null || items.isEmpty()) {
             return;
         }

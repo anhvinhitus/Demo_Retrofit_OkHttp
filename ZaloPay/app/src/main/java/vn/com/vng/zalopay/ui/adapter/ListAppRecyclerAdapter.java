@@ -13,8 +13,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.functions.Func2;
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
@@ -74,7 +77,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
     }
 
     @Override
-    public void insertItems(Collection<AppResource> items) {
+    public void insertItems(List<AppResource> items) {
         if (items == null || items.isEmpty()) return;
         synchronized (_lock) {
             for (AppResource item : items) {
@@ -84,6 +87,20 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
             }
         }
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void setData(List<AppResource> items) {
+        if (Lists.elementsEqual(items, getItems(), new Func2<AppResource, AppResource, Boolean>() {
+            @Override
+            public Boolean call(AppResource app, AppResource app2) {
+                return app.equals(app2);
+            }
+        })) {
+            Timber.d("application data not change");
+            return;
+        }
+        super.setData(items);
     }
 
     private boolean exist(AppResource item) {

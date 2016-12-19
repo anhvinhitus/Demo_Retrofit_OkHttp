@@ -104,7 +104,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mAdapter = new ListAppRecyclerAdapter(getContext(), this);
-
     }
 
     @Override

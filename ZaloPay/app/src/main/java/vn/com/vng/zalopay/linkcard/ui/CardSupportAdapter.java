@@ -51,7 +51,7 @@ class CardSupportAdapter extends AbsRecyclerAdapter<ZPCard, CardSupportAdapter.V
     }
 
     @Override
-    public void insertItems(Collection<ZPCard> items) {
+    public void insertItems(List<ZPCard> items) {
         if (items == null || items.isEmpty()) return;
         synchronized (_lock) {
             for (ZPCard item : items) {
