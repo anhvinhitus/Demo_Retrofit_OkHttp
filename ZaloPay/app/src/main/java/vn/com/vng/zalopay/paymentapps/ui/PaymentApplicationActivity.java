@@ -60,6 +60,8 @@ import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
+import static vn.com.vng.zalopay.R.style.AppTheme;
+
 /**
  * Created by huuhoa on 5/16/16.
  * Activity for hosting payment app
@@ -106,6 +108,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
+            getWindow().setBackgroundDrawable(null);
             super.onCreate(savedInstanceState);
         } catch (Exception e) {
             Timber.e(e, "Caught exception while initializing Payment App");

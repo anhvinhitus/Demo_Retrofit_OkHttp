@@ -174,7 +174,7 @@
 
         <activity
             android:name=".paymentapps.ui.PaymentApplicationActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.Payment"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
