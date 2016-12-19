@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.data.transaction;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
@@ -39,6 +40,9 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
 
     @Override
     public List<TransHistoryEntity> get(int pageIndex, int limit, int status) {
+        if (pageIndex < 0 || limit <= 0) {
+            return Collections.emptyList();
+        }
         List<TransHistoryEntity> ret = queryList(pageIndex, limit, status);
         Timber.d("get list transaction size %s", ret.size());
         return ret;

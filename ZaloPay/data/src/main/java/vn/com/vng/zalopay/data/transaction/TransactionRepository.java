@@ -13,6 +13,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
+import vn.com.vng.zalopay.data.exception.ArgumentException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -55,8 +56,19 @@ public class TransactionRepository implements TransactionStore.Repository {
         mEventBus = eventBus;
     }
 
+    /**
+     * pageIndex bắt đầu từ 0
+     */
     @Override
     public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
+
+        if (pageIndex < 0 || count < 0) {
+            return Observable.error(new ArgumentException());
+        }
+
+        if (count == 0) {
+            return Observable.just(new ArrayList<>());
+        }
 
         Observable<List<TransHistoryEntity>> _observableTransLocal = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS)
                 .filter(entities -> entities != null && entities.size() >= count);
