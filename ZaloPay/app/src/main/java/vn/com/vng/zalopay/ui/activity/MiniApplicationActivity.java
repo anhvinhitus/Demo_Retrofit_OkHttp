@@ -15,6 +15,7 @@ import com.zalopay.apploader.internal.ModuleName;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -190,6 +191,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         return Arrays.asList(
                 new MainReactPackage(),
                 reactInternalPackage(),
+                new SQLitePluginPackage(),
                 // new ReactReceiveMoneyPackage(mUser, eventBus),
                 new RNDeviceInfo());
     }

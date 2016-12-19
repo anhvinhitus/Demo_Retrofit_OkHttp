@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 
-import org.pgsqlite.SQLitePluginPackage;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +46,6 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
         ReactInstanceManager.Builder builder = ReactInstanceManager.builder()
                 .setApplication(activity.getApplication())
                 .setJSMainModuleName(activity.getJSMainModuleName())
-                .addPackage(new SQLitePluginPackage())
                 .setUseDeveloperSupport(activity.getUseDeveloperSupport())
                 .setInitialLifecycleState(activity.mLifecycleState)
                 .setNativeModuleCallExceptionHandler(new HandleReactNativeException(this, activity));
