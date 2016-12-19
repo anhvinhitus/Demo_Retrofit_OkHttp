@@ -64,8 +64,4 @@ public abstract class AbstractPresenter<View> implements IPresenter<View> {
     @Override
     public void pause() {
     }
-
-    protected <T> Observable.Transformer<T, T> applySchedulers() {
-        return ObservableHelper.applySchedulers();
-    }
 }

@@ -38,4 +38,6 @@ public interface IZaloPayView {
     void hideLoading();
 
     void enableShowShow(boolean isEnable);
+
+    int getAppCount();
 }

@@ -142,6 +142,7 @@ public class BannerPresenter extends AbstractPresenter<IBannerView> {
     }
 
     private void getBanners() {
+        Timber.d("getBanners");
         try {
             List<DBanner> banners = CShareData.getInstance().getBannerList();
             if (banners != null && banners.size() > 1) {

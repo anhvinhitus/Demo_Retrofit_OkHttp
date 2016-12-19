@@ -298,6 +298,11 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     }
 
     @Override
+    public int getAppCount() {
+        return mAdapter.getItemCount();
+    }
+
+    @Override
     public void showLoading() {
         super.showProgressDialog();
     }

@@ -18,6 +18,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
@@ -130,13 +131,21 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                 mAppResourceRepository.getListAppHome();
 
         Subscription subscription = observable
+                .filter(new Func1<List<AppResource>, Boolean>() {
+                    @Override
+                    public Boolean call(List<AppResource> appResources) {
+                        return Math.abs(System.currentTimeMillis() / 1000 - mLastTimeRefreshApp) > 30 ||
+                                mView.getAppCount() <= PaymentAppConfig.APP_RESOURCE_LIST.size();
+                    }
+                })
                 .doOnNext(new Action1<List<AppResource>>() {
                     @Override
                     public void call(List<AppResource> appResources) {
                         getListMerchantUser(appResources);
                     }
                 })
-                .compose(this.<List<AppResource>>applySchedulers())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
         mSubscription.add(subscription);
     }
@@ -230,12 +239,15 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mView.refreshInsideApps(resources);
     }
 
+    private long mLastTimeRefreshApp;
+
     private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
 
         @Override
         public void onNext(List<AppResource> appResources) {
             ZaloPayPresenter.this.onGetAppResourceSuccess(appResources);
             Timber.d(" AppResource %s", appResources.size());
+            mLastTimeRefreshApp = System.currentTimeMillis() / 1000;
         }
 
         @Override
