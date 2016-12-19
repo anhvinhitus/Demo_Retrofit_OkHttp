@@ -415,8 +415,8 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
 
             if ("token".equalsIgnoreCase(param)) {
                 ZPAnalytics.trackEvent(ZPEvents.SCANQR_NOORDER);
-                ensureResumeScannerInUIThread();
             }
+            ensureResumeScannerInUIThread();
         }
 
         @Override
