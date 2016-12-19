@@ -220,15 +220,26 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
     @Override
     public void onResume() {
         super.onResume();
+
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.onResume();
+        }
+
     }
 
     @Override
     public void onPause() {
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.onPause();
+        }
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
+        if (mWebViewProcessor != null) {
+            mWebViewProcessor.onDestroyView();
+        }
         super.onDestroyView();
     }
 
@@ -345,4 +356,6 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
     public void setPageValid(boolean valid) {
         mIsPageValid = valid;
     }
+
+
 }

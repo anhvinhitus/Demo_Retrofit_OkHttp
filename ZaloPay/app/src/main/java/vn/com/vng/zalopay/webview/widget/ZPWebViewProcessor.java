@@ -5,6 +5,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -197,7 +198,7 @@ public class ZPWebViewProcessor extends WebViewClient {
     }
 
     public void onDestroy() {
-        mTimeOutListener = null;
+
     }
 
     public interface IWebViewListener {
@@ -216,5 +217,45 @@ public class ZPWebViewProcessor extends WebViewClient {
         boolean isPageValid();
 
         void setPageValid(boolean valid);
+    }
+
+    public void onPause() {
+        if (mWebView == null) {
+            return;
+        }
+        mWebView.pauseTimers(); //pause layout, js
+        mWebView.onPause();
+    }
+
+    public void onResume() {
+        if (mWebView == null) {
+            return;
+        }
+        mWebView.onResume();
+        mWebView.resumeTimers(); //resume layout, js
+    }
+
+    public void onDestroyView() {
+        if (mWebView == null) {
+            return;
+        }
+
+        try {
+            ((ViewGroup) mWebView.getParent()).removeView(mWebView);
+        } catch (Exception ex) {
+            //empty
+        }
+
+        try {
+            mWebView.removeAllViews();
+        } catch (Exception ex) {
+            //empty
+        }
+
+        mWebView.destroy();
+
+        mWebViewListener = null;
+        mTimeOutListener = null;
+
     }
 }
