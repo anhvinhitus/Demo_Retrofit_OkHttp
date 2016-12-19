@@ -9,6 +9,7 @@ package vn.com.vng.zalopay.account.network.listener;
 public interface ZaloErrorCode {
 
     int RESULTCODE_PERMISSION_DENIED = -201;
+    int RESULTCODE_NETWORK_ERROR = 502;
     int RESULTCODE_USER_CANCEL = -1011;
     int RESULTCODE_USER_BACK = -1111;
     int RESULTCODE_USER_REJECT = -1114;
