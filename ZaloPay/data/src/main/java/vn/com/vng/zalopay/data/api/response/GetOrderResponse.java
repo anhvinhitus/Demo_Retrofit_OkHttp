@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.data.api.response;
 
 /**
  * Created by Longlv on 5/8/16.
+ * *
  */
 public class GetOrderResponse extends BaseResponse {
     public long appid;

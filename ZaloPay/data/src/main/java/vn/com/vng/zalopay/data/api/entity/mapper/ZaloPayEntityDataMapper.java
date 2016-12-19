@@ -17,6 +17,7 @@ import static java.util.Collections.emptyList;
 
 /**
  * Created by AnhHieu on 5/9/16.
+ * *
  */
 
 @Singleton
@@ -50,17 +51,17 @@ public class ZaloPayEntityDataMapper {
         return item;
     }
 
-    public Order transform(GetOrderResponse getOrderResponse) {
-        return new Order(getOrderResponse.getAppid(),
-                getOrderResponse.getZptranstoken(),
-                getOrderResponse.apptransid,
-                getOrderResponse.appuser,
-                getOrderResponse.apptime,
-                getOrderResponse.embeddata,
-                getOrderResponse.item,
-                getOrderResponse.amount,
-                getOrderResponse.description,
-                getOrderResponse.payoption,
-                getOrderResponse.mac);
+    public Order transform(GetOrderResponse order) {
+        return new Order(order.getAppid(),
+                order.getZptranstoken(),
+                order.apptransid,
+                order.appuser,
+                order.apptime,
+                order.embeddata,
+                order.item,
+                order.amount,
+                order.description,
+                order.payoption,
+                order.mac);
     }
 }
