@@ -13,6 +13,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
@@ -260,14 +261,14 @@ public class PaymentWrapper {
 
     private void callPayAPI(Activity owner, ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {
         mActivity = owner;
-        if (paymentInfo == null) {
+        if (paymentInfo == null || owner == null) {
             mActivity = null;
             return;
         }
 
         paymentInfo.userInfo = assignBaseUserInfo(paymentInfo.userInfo);
         if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
-            mWalletListener.onError(new CError(EPayError.DATA_INVALID, "Vui lòng cập nhật thông tin tài khoản."));
+            mWalletListener.onError(new CError(EPayError.DATA_INVALID, owner.getString(R.string.please_update_profile)));
             mActivity = null;
             return;
         }
@@ -276,8 +277,7 @@ public class PaymentWrapper {
         }
 
         if (paymentChannel != EPaymentChannel.LINK_CARD && !validPaymentInfo(paymentInfo)) {
-            String messageError = getMessageError(paymentInfo);
-            responseListener.onAppError(messageError);
+            responseListener.onAppError(owner.getString(R.string.data_invalid_try_again));
             Timber.e(new Exception(
                     String.format("PaymentInfo is invalid, appId[%s] transId[%s] amount[%s] appTime[%s]  mac[%s]",
                             paymentInfo.appID,
@@ -308,24 +308,6 @@ public class PaymentWrapper {
             return false;
         }
         return true;
-    }
-
-    private String getMessageError(ZPWPaymentInfo paymentInfo) {
-        String messageError;
-        if (paymentInfo.amount <= 0){
-            messageError = "Số tiền không hợp lệ.";
-        } else if (paymentInfo.appID <= 0) {
-            messageError = "Thông tin ứng dụng không hợp lệ.";
-        } else if (TextUtils.isEmpty(paymentInfo.appTransID)){
-            messageError = "Mã giao dịch không hợp lệ.";
-        } else if (paymentInfo.appTime <= 0){
-            messageError = "Thông tin thời gian của đơn hàng hợp lệ.";
-        } else if (TextUtils.isEmpty(paymentInfo.mac)){
-            messageError = "Thông tin đơn hàng không hợp lệ.";
-        } else {
-            messageError = "Đơn hàng không hợp lệ.";
-        }
-        return messageError;
     }
 
     private int getUserProfileLevel() {
