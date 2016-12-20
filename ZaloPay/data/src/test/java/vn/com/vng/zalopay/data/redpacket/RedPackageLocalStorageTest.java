@@ -19,14 +19,19 @@ import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
+import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
+import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
+import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
+import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 
 public class RedPackageLocalStorageTest extends ApplicationTestCase {
@@ -46,14 +51,14 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     }
 
     @Test
-    public void putEmptyList() {
+    public void putBundleEmptyList() {
         List<BundleGD> bundles = new ArrayList<>();
 
         assertEquals("put empty list", null, mLocalStorage.getBundle(1));
     }
 
     @Test
-    public void put() {
+    public void putBundle() {
         List<BundleGD> bundles = new ArrayList<>();
 
         for (int i = 0; i < TRANSACTION_SIZE; i++) {
@@ -106,13 +111,13 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     }
 
     @Test
-    public void getTransactionWithEmptyDB() {
+    public void getBundleWithEmptyDB() {
         assertEquals("getBundle with empty DB",
                 null, mLocalStorage.getBundle(0));
     }
 
     @Test
-    public void getTransaction() {
+    public void getBundle() {
         List<BundleGD> bundles = new ArrayList<>();
 
         for (int i = 0; i < TRANSACTION_SIZE; i++) {
@@ -131,7 +136,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     }
 
     @Test
-    public void getTransactionWithWrongFormatBundleId() {
+    public void getBundleWithWrongFormatBundleId() {
         List<BundleGD> bundles = new ArrayList<>();
 
         for (int i = 0; i < TRANSACTION_SIZE; i++) {
@@ -151,7 +156,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     }
 
     @Test
-    public void getTransactionWithOversizedBundleId() {
+    public void getBundleWithOversizedBundleId() {
         List<BundleGD> bundles = new ArrayList<>();
 
         for (int i = 0; i < TRANSACTION_SIZE; i++) {
@@ -560,172 +565,648 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         compare2Elements(receivePacket, result.get(0));
     }
 
-//    @Test
-//    public void putSentBundleWithNullParam() {
-//        final List<GetReceivePacket> result = new ArrayList<GetReceivePacket>();
-//
-//        mLocalStorage.putSentBundle(null);
-//        mLocalStorage.getSentBundle().subscribe(new Observer<GetReceivePacket>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                System.out.print("Got error: " + e + "\n");
-//            }
-//
-//            @Override
-//            public void onNext(GetReceivePacket getReceivePacket) {
-//                result.add(getReceivePacket);
-//            }
-//        });
-//
-//        assertEquals("putReceivePacketSummary with null param", null, result.get(0));
-//    }
-//
-//    @Test
-//    public void putSentBundle() {
-//        final List<GetReceivePacket> result = new ArrayList<GetReceivePacket>();
-//
-//        ReceivePacketSummaryDB receivePacket = new ReceivePacketSummaryDB();
-//        receivePacket.id = 1L;
-//        receivePacket.timeCreate = 12334543L;
-//        receivePacket.totalOfLuckiestDraw = 3L;
-//        receivePacket.totalOfRevamount = 2L;
-//        receivePacket.totalOfRevPackage = 2L;
-//
-//        mLocalStorage.putReceivePacketSummary(receivePacket);
-//        mLocalStorage.getReceivePacketSummary().subscribe(new Observer<GetReceivePacket>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(GetReceivePacket getReceivePacket) {
-//                result.add(getReceivePacket);
-//            }
-//        });
-//
-//        compare2Elements(receivePacket, result.get(0));
-//    }
-//
-//    @Test
-//    public void putSentBundleWithLuckiestDrawIsANegativeNumber() {
-//        final List<GetReceivePacket> result = new ArrayList<GetReceivePacket>();
-//
-//        ReceivePacketSummaryDB receivePacket = new ReceivePacketSummaryDB();
-//        receivePacket.id = 1L;
-//        receivePacket.timeCreate = 12334543L;
-//        receivePacket.totalOfLuckiestDraw = -3L;
-//        receivePacket.totalOfRevamount = 2L;
-//        receivePacket.totalOfRevPackage = 2L;
-//
-//        mLocalStorage.putReceivePacketSummary(receivePacket);
-//        mLocalStorage.getReceivePacketSummary().subscribe(new Observer<GetReceivePacket>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(GetReceivePacket getReceivePacket) {
-//                result.add(getReceivePacket);
-//            }
-//        });
-//
-//        assertEquals("putReceivePacketSummary with luckiest draw is a negative number", null, result.get(0));
-//    }
-//
-//    @Test
-//    public void putSentBundleWithRevmountIsANegativeNumber() {
-//        final List<GetReceivePacket> result = new ArrayList<GetReceivePacket>();
-//
-//        ReceivePacketSummaryDB receivePacket = new ReceivePacketSummaryDB();
-//        receivePacket.id = 1L;
-//        receivePacket.timeCreate = 12334543L;
-//        receivePacket.totalOfLuckiestDraw = 3L;
-//        receivePacket.totalOfRevamount = -2L;
-//        receivePacket.totalOfRevPackage = 2L;
-//
-//        mLocalStorage.putReceivePacketSummary(receivePacket);
-//        mLocalStorage.getReceivePacketSummary().subscribe(new Observer<GetReceivePacket>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(GetReceivePacket getReceivePacket) {
-//                result.add(getReceivePacket);
-//            }
-//        });
-//
-//        assertEquals("putReceivePacketSummary with revamount is a negative number", null, result.get(0));
-//    }
+    @Test
+    public void putSentBundleWithNullParam() {
+        final List<SentBundle> result = new ArrayList<SentBundle>();
 
-//    @Test
-//    public void isHaveSentBundleInDbWhenDBHasntInitialized() {
-//        boolean result;
-//
-//        DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, null, null);
-//        SQLiteDatabase db = openHelper.getWritableDatabase();
-//        DaoSession daoSession = new DaoMaster(db).newSession();
-//        RedPacketDataMapper mapper = new RedPacketDataMapper();
-//        mLocalStorage = new RedPacketLocalStorage(daoSession, mapper);
-//        result = mLocalStorage.isHaveSentBundleInDb();
-//        assertEquals("isHaveTransactionInDb when DB hasn't initialized", false, result);
-//    }
-//
-//    @Test
-//    public void isHaveSentBundleInDb() {
-//        initData();
-//        insertTransaction();
-//
-//        boolean result;
-//
-//        DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, "zalopaytest.db", null);
-//        SQLiteDatabase db = openHelper.getWritableDatabase();
-//        DaoSession daoSession = new DaoMaster(db).newSession();
-//        daoSession.getTransactionLogDao().insertOrReplaceInTx(transform(entities));
-//        mLocalStorage = new TransactionLocalStorage(daoSession);
-//        result = mLocalStorage.isHaveTransactionInDb();
-//        assertEquals("isHaveTransactionInDb when DB had datas", true, result);
-//    }
-//
-//    @Test
-//    public void isHaveSentBundleInDbWithEmptyDB() {
-//        initData();
-//        insertTransaction();
-//
-//        boolean result;
-//
-//        DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, "zalopaytest.db", null);
-//        SQLiteDatabase db = openHelper.getWritableDatabase();
-//        DaoSession daoSession = new DaoMaster(db).newSession();
-//        daoSession.getTransactionLogDao().insertOrReplaceInTx(transform(entities));
-//        daoSession.getTransactionLogDao().deleteAll();
-//        mLocalStorage = new TransactionLocalStorage(daoSession);
-//        result = mLocalStorage.isHaveTransactionInDb();
-//        assertEquals("isHaveTransactionInDb when DB has deleted all datas", false, result);
-//    }
+        mLocalStorage.putSentBundle(null);
+        mLocalStorage.getSentBundle(0, 5).subscribe(new Observer<List<SentBundle>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<SentBundle> sentBundles) {
+                result.addAll(sentBundles);
+            }
+        });
+
+        assertEquals("putReceivePacketSummary with null param", 0, result.size());
+    }
+
+    @Test
+    public void putSentBundle() {
+        final List<SentBundle> result = new ArrayList<SentBundle>();
+        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+
+        int limit = 5;
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            SentBundleGD sentBundleGD = new SentBundleGD();
+            sentBundleGD.id = 1L + 1;
+            sentBundleGD.senderZaloPayID = "sender";
+            sentBundleGD.type = 5L;
+            sentBundleGD.createTime = 100L + Long.valueOf(i);
+            sentBundleGD.lastOpenTime = 150L;
+            sentBundleGD.totalLuck = 20000L;
+            sentBundleGD.numOfOpenedPakages = 2L;
+            sentBundleGD.numOfPackages = 5L;
+            sentBundleGD.sendMessage = "message";
+            sentBundleGD.status = 1L;
+            sendBundleGDs.add(sentBundleGD);
+        }
+
+        mLocalStorage.putSentBundle(sendBundleGDs);
+        mLocalStorage.getSentBundle(111, limit).subscribe(new Observer<List<SentBundle>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<SentBundle> sentBundles) {
+                result.addAll(sentBundles);
+            }
+        });
+
+        for(int i = 0; i < limit; i++) {
+            compare2Elements(sendBundleGDs.get(10 - i), result.get(i));
+        }
+    }
+
+    @Test
+    public void getSentBundleWithCreateTimeEqualsZero() {
+        final List<SentBundle> result = new ArrayList<SentBundle>();
+        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+
+        int limit = 5;
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            SentBundleGD sentBundleGD = new SentBundleGD();
+            sentBundleGD.id = 1L;
+            sentBundleGD.senderZaloPayID = "sender";
+            sentBundleGD.type = 5L;
+            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.lastOpenTime = 150L;
+            sentBundleGD.totalLuck = 20000L;
+            sentBundleGD.numOfOpenedPakages = 2L;
+            sentBundleGD.numOfPackages = 5L;
+            sentBundleGD.sendMessage = "message";
+            sentBundleGD.status = 1L;
+            sendBundleGDs.add(sentBundleGD);
+        }
+
+        mLocalStorage.putSentBundle(sendBundleGDs);
+        mLocalStorage.getSentBundle(0, limit).subscribe(new Observer<List<SentBundle>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<SentBundle> sentBundles) {
+                result.addAll(sentBundles);
+            }
+        });
+
+        for(int i = 0; i < limit; i++) {
+            compare2Elements(sendBundleGDs.get(inputSize - 1 - i), result.get(i));
+        }
+    }
+
+    @Test
+    public void getSentBundleWithLimitEqualsZero() {
+        final List<SentBundle> result = new ArrayList<SentBundle>();
+        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+
+        int limit = 5;
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            SentBundleGD sentBundleGD = new SentBundleGD();
+            sentBundleGD.id = 1L;
+            sentBundleGD.senderZaloPayID = "sender";
+            sentBundleGD.type = 5L;
+            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.lastOpenTime = 150L;
+            sentBundleGD.totalLuck = 20000L;
+            sentBundleGD.numOfOpenedPakages = 2L;
+            sentBundleGD.numOfPackages = 5L;
+            sentBundleGD.sendMessage = "message";
+            sentBundleGD.status = 1L;
+            sendBundleGDs.add(sentBundleGD);
+        }
+
+        mLocalStorage.putSentBundle(sendBundleGDs);
+        mLocalStorage.getSentBundle(110L, 0).subscribe(new Observer<List<SentBundle>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<SentBundle> sentBundles) {
+                result.addAll(sentBundles);
+            }
+        });
+
+        assertEquals("getSentBundle with limit = 0", 0, result.size());
+    }
+
+    @Test
+    public void getSentBundleWithCreateTimeIsANegativeNumber() {
+        final List<SentBundle> result = new ArrayList<SentBundle>();
+        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+
+        int limit = 5;
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            SentBundleGD sentBundleGD = new SentBundleGD();
+            sentBundleGD.id = 1L;
+            sentBundleGD.senderZaloPayID = "sender";
+            sentBundleGD.type = 5L;
+            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.lastOpenTime = 150L;
+            sentBundleGD.totalLuck = 20000L;
+            sentBundleGD.numOfOpenedPakages = 2L;
+            sentBundleGD.numOfPackages = 5L;
+            sentBundleGD.sendMessage = "message";
+            sentBundleGD.status = 1L;
+            sendBundleGDs.add(sentBundleGD);
+        }
+
+        mLocalStorage.putSentBundle(sendBundleGDs);
+        mLocalStorage.getSentBundle(-100L, limit).subscribe(new Observer<List<SentBundle>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<SentBundle> sentBundles) {
+                result.addAll(sentBundles);
+            }
+        });
+
+        assertEquals("getSentBundle with creatime < 0", 0, result.size());
+    }
+
+    @Test
+    public void getSentBundleWithLimitIsANegativeNumber() {
+        final List<SentBundle> result = new ArrayList<SentBundle>();
+        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            SentBundleGD sentBundleGD = new SentBundleGD();
+            sentBundleGD.id = 1L;
+            sentBundleGD.senderZaloPayID = "sender";
+            sentBundleGD.type = 5L;
+            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.lastOpenTime = 150L;
+            sentBundleGD.totalLuck = 20000L;
+            sentBundleGD.numOfOpenedPakages = 2L;
+            sentBundleGD.numOfPackages = 5L;
+            sentBundleGD.sendMessage = "message";
+            sentBundleGD.status = 1L;
+            sendBundleGDs.add(sentBundleGD);
+        }
+
+        mLocalStorage.putSentBundle(sendBundleGDs);
+        mLocalStorage.getSentBundle(0, -1).subscribe(new Observer<List<SentBundle>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<SentBundle> sentBundles) {
+                result.addAll(sentBundles);
+            }
+        });
+
+        assertEquals("getSentBundle with limit < 0", 0, result.size());
+    }
+
+    @Test
+    public void isHaveSentBundleInDbWithEmptyDB() {
+        boolean result;
+
+        result = mLocalStorage.isHaveSentBundleInDb(0, 1);
+        assertEquals("isHaveSentBundleInDb with empty DB", false, result);
+    }
+
+    @Test
+    public void isHaveSentBundleInDb() {
+        boolean result;
+        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            SentBundleGD sentBundleGD = new SentBundleGD();
+            sentBundleGD.id = 1L + 1;
+            sentBundleGD.senderZaloPayID = "sender";
+            sentBundleGD.type = 5L;
+            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.lastOpenTime = 150L;
+            sentBundleGD.totalLuck = 20000L;
+            sentBundleGD.numOfOpenedPakages = 2L;
+            sentBundleGD.numOfPackages = 5L;
+            sentBundleGD.sendMessage = "message";
+            sentBundleGD.status = 1L;
+            sendBundleGDs.add(sentBundleGD);
+        }
+
+        mLocalStorage.putSentBundle(sendBundleGDs);
+
+        result = mLocalStorage.isHaveSentBundleInDb(110L, 5);
+        assertEquals("isHaveSentBundleInDb when DB had datas", true, result);
+    }
+
+    @Test
+    public void setBundleStatusWhenNotHavingAnyBundles() {
+        assertEquals("setBundleStatus when not having any bundles", null, mLocalStorage.setBundleStatus(1, 1));
+    }
+
+    @Test
+    public void setBundleStatusWithUndefinedBundleId() {
+        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            SentBundleGD sentBundleGD = new SentBundleGD();
+            sentBundleGD.id = 1L + 1;
+            sentBundleGD.senderZaloPayID = "sender";
+            sentBundleGD.type = 5L;
+            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.lastOpenTime = 150L;
+            sentBundleGD.totalLuck = 20000L;
+            sentBundleGD.numOfOpenedPakages = 2L;
+            sentBundleGD.numOfPackages = 5L;
+            sentBundleGD.sendMessage = "message";
+            sentBundleGD.status = 1L;
+            sendBundleGDs.add(sentBundleGD);
+        }
+
+        mLocalStorage.putSentBundle(sendBundleGDs);
+        assertEquals("setBundleStatus with bundleId doesn't exist", null, mLocalStorage.setBundleStatus(2, 1));
+    }
+
+    @Test
+    public void setBundleStatus() {
+        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            SentBundleGD sentBundleGD = new SentBundleGD();
+            sentBundleGD.id = 1L + i;
+            sentBundleGD.senderZaloPayID = "sender";
+            sentBundleGD.type = 5L;
+            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.lastOpenTime = 150L;
+            sentBundleGD.totalLuck = 20000L;
+            sentBundleGD.numOfOpenedPakages = 2L;
+            sentBundleGD.numOfPackages = 5L;
+            sentBundleGD.sendMessage = "message";
+            sentBundleGD.status = 1L;
+            sendBundleGDs.add(sentBundleGD);
+        }
+
+        mLocalStorage.putSentBundle(sendBundleGDs);
+        assertNotNull("setBundleStatus", mLocalStorage.setBundleStatus(3, 1));
+    }
+
+    @Test
+    public void putReceivePackagesWithNullParam() {
+        final List<ReceivePackage> result = new ArrayList<ReceivePackage>();
+
+        mLocalStorage.putReceivePackages(null);
+        mLocalStorage.getReceiveBundle(0, 5).subscribe(new Observer<List<ReceivePackage>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<ReceivePackage> receivePackages) {
+                result.addAll(receivePackages);
+            }
+        });
+
+        assertEquals("putReceivePacketSummary with null param", 0, result.size());
+    }
+
+    @Test
+    public void putReceivePackages() {
+        final List<ReceivePackage> result = new ArrayList<ReceivePackage>();
+        List<ReceivePackageGD> receivePackageGDs = new ArrayList<ReceivePackageGD>();
+
+        int limit = 5;
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            ReceivePackageGD receivePackageGD = new ReceivePackageGD();
+            receivePackageGD.id = 1L + 1;
+            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.receiverZaloPayID = "receiver";
+            receivePackageGD.senderZaloPayID = "id";
+            receivePackageGD.senderFullName = "name";
+            receivePackageGD.senderAvatar = "ava";
+            receivePackageGD.amount = 10000L;
+            receivePackageGD.openedTime = 200L + i;
+            receivePackageGD.status = 1L;
+            receivePackageGD.messageStatus = "messStt";
+            receivePackageGD.message = "mess";
+            receivePackageGD.isLuckiest = 1L;
+            receivePackageGD.createTime = 100L + i;
+            receivePackageGDs.add(receivePackageGD);
+        }
+
+        mLocalStorage.putReceivePackages(receivePackageGDs);
+        mLocalStorage.getReceiveBundle(110L, limit).subscribe(new Observer<List<ReceivePackage>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<ReceivePackage> receivePackages) {
+                result.addAll(receivePackages);
+            }
+        });
+
+        for(int i = 0; i < limit; i++) {
+            compare2Elements(receivePackageGDs.get(10 + i), result.get(i));
+        }
+    }
+
+    @Test
+    public void getReceiveBundleWithCreateTimeEqualsZero() {
+        final List<ReceivePackage> result = new ArrayList<ReceivePackage>();
+        List<ReceivePackageGD> receivePackageGDs = new ArrayList<ReceivePackageGD>();
+
+        int limit = 5;
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            ReceivePackageGD receivePackageGD = new ReceivePackageGD();
+            receivePackageGD.id = 1L + 1;
+            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.receiverZaloPayID = "receiver";
+            receivePackageGD.senderZaloPayID = "id";
+            receivePackageGD.senderFullName = "name";
+            receivePackageGD.senderAvatar = "ava";
+            receivePackageGD.amount = 10000L;
+            receivePackageGD.openedTime = 200L + i;
+            receivePackageGD.status = 1L;
+            receivePackageGD.messageStatus = "messStt";
+            receivePackageGD.message = "mess";
+            receivePackageGD.isLuckiest = 1L;
+            receivePackageGD.createTime = 100L + i;
+            receivePackageGDs.add(receivePackageGD);
+        }
+
+        mLocalStorage.putReceivePackages(receivePackageGDs);
+        mLocalStorage.getReceiveBundle(0, limit).subscribe(new Observer<List<ReceivePackage>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<ReceivePackage> receivePackages) {
+                result.addAll(receivePackages);
+            }
+        });
+
+        for(int i = 0; i < limit; i++) {
+            compare2Elements(receivePackageGDs.get(inputSize - 1 - i), result.get(i));
+        }
+    }
+
+    @Test
+    public void getReceiveBundleWithLimitEqualsZero() {
+        final List<ReceivePackage> result = new ArrayList<ReceivePackage>();
+        List<ReceivePackageGD> receivePackageGDs = new ArrayList<ReceivePackageGD>();
+
+        int limit = 5;
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            ReceivePackageGD receivePackageGD = new ReceivePackageGD();
+            receivePackageGD.id = 1L + 1;
+            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.receiverZaloPayID = "receiver";
+            receivePackageGD.senderZaloPayID = "id";
+            receivePackageGD.senderFullName = "name";
+            receivePackageGD.senderAvatar = "ava";
+            receivePackageGD.amount = 10000L;
+            receivePackageGD.openedTime = 200L + i;
+            receivePackageGD.status = 1L;
+            receivePackageGD.messageStatus = "messStt";
+            receivePackageGD.message = "mess";
+            receivePackageGD.isLuckiest = 1L;
+            receivePackageGD.createTime = 100L + i;
+            receivePackageGDs.add(receivePackageGD);
+        }
+
+        mLocalStorage.putReceivePackages(receivePackageGDs);
+        mLocalStorage.getReceiveBundle(110L, 0).subscribe(new Observer<List<ReceivePackage>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<ReceivePackage> receivePackages) {
+                result.addAll(receivePackages);
+            }
+        });
+
+        assertEquals("getReceiveBundle with limit = 0", 0, result.size());
+    }
+
+    @Test
+    public void getReceiveBundleWithCreateTimeIsANegativeNumber() {
+        final List<ReceivePackage> result = new ArrayList<ReceivePackage>();
+        List<ReceivePackageGD> receivePackageGDs = new ArrayList<ReceivePackageGD>();
+
+        int limit = 5;
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            ReceivePackageGD receivePackageGD = new ReceivePackageGD();
+            receivePackageGD.id = 1L + 1;
+            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.receiverZaloPayID = "receiver";
+            receivePackageGD.senderZaloPayID = "id";
+            receivePackageGD.senderFullName = "name";
+            receivePackageGD.senderAvatar = "ava";
+            receivePackageGD.amount = 10000L;
+            receivePackageGD.openedTime = 200L + i;
+            receivePackageGD.status = 1L;
+            receivePackageGD.messageStatus = "messStt";
+            receivePackageGD.message = "mess";
+            receivePackageGD.isLuckiest = 1L;
+            receivePackageGD.createTime = 100L + i;
+            receivePackageGDs.add(receivePackageGD);
+        }
+
+        mLocalStorage.putReceivePackages(receivePackageGDs);
+        mLocalStorage.getReceiveBundle(-110L, 1).subscribe(new Observer<List<ReceivePackage>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<ReceivePackage> receivePackages) {
+                result.addAll(receivePackages);
+            }
+        });
+
+        assertEquals("getReceiveBundle with creatime < 0", 0, result.size());
+    }
+
+    @Test
+    public void getReceiveBundleWithLimitIsANegativeNumber() {
+        final List<ReceivePackage> result = new ArrayList<ReceivePackage>();
+        List<ReceivePackageGD> receivePackageGDs = new ArrayList<ReceivePackageGD>();
+
+        int limit = 5;
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            ReceivePackageGD receivePackageGD = new ReceivePackageGD();
+            receivePackageGD.id = 1L + 1;
+            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.receiverZaloPayID = "receiver";
+            receivePackageGD.senderZaloPayID = "id";
+            receivePackageGD.senderFullName = "name";
+            receivePackageGD.senderAvatar = "ava";
+            receivePackageGD.amount = 10000L;
+            receivePackageGD.openedTime = 200L + i;
+            receivePackageGD.status = 1L;
+            receivePackageGD.messageStatus = "messStt";
+            receivePackageGD.message = "mess";
+            receivePackageGD.isLuckiest = 1L;
+            receivePackageGD.createTime = 100L + i;
+            receivePackageGDs.add(receivePackageGD);
+        }
+
+        mLocalStorage.putReceivePackages(receivePackageGDs);
+        mLocalStorage.getReceiveBundle(0, -1).subscribe(new Observer<List<ReceivePackage>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.print("Got error: " + e + "\n");
+            }
+
+            @Override
+            public void onNext(List<ReceivePackage> receivePackages) {
+                result.addAll(receivePackages);
+            }
+        });
+
+        assertEquals("getReceiveBundle with limit < 0", 0, result.size());
+    }
+
+    @Test
+    public void isHaveReceivePacketInDbWithEmptyDB() {
+        boolean result;
+
+        result = mLocalStorage.isHaveReceivePacketInDb(0, 1);
+        assertEquals("isHaveReceivePacketInDb with empty DB", false, result);
+    }
+
+    @Test
+    public void isHaveReceivePacketInDb() {
+        boolean result;
+        List<ReceivePackageGD> receivePackageGDs = new ArrayList<ReceivePackageGD>();
+
+        int limit = 5;
+        int inputSize = 25;
+
+        for(int i = 0; i < inputSize; i++) {
+            ReceivePackageGD receivePackageGD = new ReceivePackageGD();
+            receivePackageGD.id = 1L + 1;
+            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.receiverZaloPayID = "receiver";
+            receivePackageGD.senderZaloPayID = "id";
+            receivePackageGD.senderFullName = "name";
+            receivePackageGD.senderAvatar = "ava";
+            receivePackageGD.amount = 10000L;
+            receivePackageGD.openedTime = 200L + i;
+            receivePackageGD.status = 1L;
+            receivePackageGD.messageStatus = "messStt";
+            receivePackageGD.message = "mess";
+            receivePackageGD.isLuckiest = 1L;
+            receivePackageGD.createTime = 100L + i;
+            receivePackageGDs.add(receivePackageGD);
+        }
+
+        mLocalStorage.putReceivePackages(receivePackageGDs);
+
+        result = mLocalStorage.isHaveReceivePacketInDb(100L, 1);
+        assertEquals("isHaveReceivePacketInDb when DB had datas", true, result);
+    }
 
     @Test
     public void putPackageInBundleWithNullParam() {
@@ -785,30 +1266,24 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         List<PackageInBundleGD> packageInBundleList = new ArrayList<PackageInBundleGD>();
 
-        PackageInBundleGD packageInBundleGD = new PackageInBundleGD();
-        packageInBundleGD.id = 1L;
-        packageInBundleGD.bundleID = 1L;
-        packageInBundleGD.amount = 2L;
-        packageInBundleGD.isLuckiest = 1L;
-        packageInBundleGD.openTime = 1241235L;
-        packageInBundleGD.revAvatarURL = "Ava";
-        packageInBundleGD.revFullName = "Full name";
-        packageInBundleGD.revZaloID = 1L;
-        packageInBundleGD.revZaloPayID = "ZaloPayID";
-        packageInBundleGD.sendMessage = "Message";
+        for(int i = 0; i < 25; i++) {
+            PackageInBundleGD packageInBundleGD = new PackageInBundleGD();
+            packageInBundleGD.id = 1L + i;
+            packageInBundleGD.bundleID = 1L + i;
+            packageInBundleGD.amount = 2L;
+            packageInBundleGD.isLuckiest = 1L;
+            packageInBundleGD.openTime = 1241235L;
+            packageInBundleGD.revAvatarURL = "Ava";
+            packageInBundleGD.revFullName = "Full name";
+            packageInBundleGD.revZaloID = 1L;
+            packageInBundleGD.revZaloPayID = "ZaloPayID";
+            packageInBundleGD.sendMessage = "Message";
 
-        packageInBundleList.add(packageInBundleGD);
-
-        packageInBundleGD.bundleID = 2L;
-        packageInBundleList.add(packageInBundleGD);
-
-        packageInBundleGD.bundleID = 3L;
-        packageInBundleList.add(packageInBundleGD);
-
-        packageInBundleGD.bundleID = 1L;
+            packageInBundleList.add(packageInBundleGD);
+        }
 
         mLocalStorage.putPackageInBundle(packageInBundleList);
-        mLocalStorage.getPackageInBundle(1).subscribe(new Observer<List<PackageInBundle>>() {
+        mLocalStorage.getPackageInBundle(2).subscribe(new Observer<List<PackageInBundle>>() {
             @Override
             public void onCompleted() {
 
@@ -825,7 +1300,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
             }
         });
 
-        compare2Elements(packageInBundleGD, result.get(0));
+        compare2Elements(packageInBundleList.get(1), result.get(0));
     }
 
     @Test
@@ -864,6 +1339,76 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         RedPacketAppInfo result = mLocalStorage.getRedPacketAppInfo();
         assertEquals("getRedPacketAppInfo with null app config", null, result);
+    }
+
+    @Test
+    public void setPacketStatusWhenNotHavingPacket() {
+        mLocalStorage.setPacketStatus(1, 3, 1, "message");
+        ReceivePackageGD result = mLocalStorage.getPacketStatus(1);
+
+        assertEquals("setPacketStatus when not having packet", null, result);
+    }
+
+    @Test
+    public void setPacketStatus() {
+        mLocalStorage.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        mLocalStorage.setPacketStatus(1, 3, 1, "message");
+        ReceivePackageGD result = mLocalStorage.getPacketStatus(1);
+
+        assertEquals("id", 1, result.id);
+        assertEquals("amount", (Long) 3L, result.amount);
+        assertEquals("status", (Long) 1L, result.status);
+        assertEquals("message", "message", result.messageStatus);
+    }
+
+    @Test
+    public void getPacketStatusWhenNotHavingPacket() {
+        ReceivePackageGD result = mLocalStorage.getPacketStatus(1);
+
+        assertEquals("getPacketStatus when not having packet", null, result);
+    }
+
+    @Test
+    public void getPacketStatusWhenNotSetting() {
+        mLocalStorage.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        ReceivePackageGD result = mLocalStorage.getPacketStatus(1);
+
+        assertEquals("id", 1, result.id);
+        assertEquals("amount", null, result.amount);
+        assertEquals("status", (Long) 1L, result.status);
+        assertEquals("message", null, result.messageStatus);
+    }
+
+    @Test
+    public void addReceivedRedPacket() {
+        mLocalStorage.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        ReceivePackage result = mLocalStorage.getReceivedPacket(1);
+
+        assertEquals("packageID", 1, result.packageID);
+        assertEquals("bundleID", 1, result.bundleID);
+        assertEquals("senderFullName", "name", result.senderFullName);
+        assertEquals("senderAvatar", "ava", result.senderAvatar);
+        assertEquals("message", "mess", result.message);
+    }
+
+    @Test
+    public void addReceivedRedPacketWhenAlreadyHave() {
+        mLocalStorage.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        mLocalStorage.addReceivedRedPacket(1, 3, "name1", "ava1", "mess1");
+        ReceivePackage result = mLocalStorage.getReceivedPacket(1);
+
+        assertEquals("packageID", 1, result.packageID);
+        assertEquals("bundleID", 3, result.bundleID);
+        assertEquals("senderFullName", "name1", result.senderFullName);
+        assertEquals("senderAvatar", "ava1", result.senderAvatar);
+        assertEquals("message", "mess1", result.message);
+    }
+
+    @Test
+    public void getReceivedPacketWhenNotHavingPacket() {
+        ReceivePackage result = mLocalStorage.getReceivedPacket(1);
+
+        assertEquals("getReceivedPacket when not having packet", null, result);
     }
 
     private void compare2Elements(BundleGD b1, BundleGD b2) {
@@ -911,6 +1456,54 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         assertEquals("totalOfLuckiestDraw", (long) b1.totalOfLuckiestDraw, b2.numofluckiestdraw);
         assertEquals("totalOfRevamount", (long) b1.totalOfRevamount, b2.totalofrevamount);
         assertEquals("totalOfRevPackage", (long) b1.totalOfRevPackage, b2.totalofrevpackage);
+    }
+
+    private void compare2Elements(SentBundleGD b1, SentBundle b2) {
+        if (b1 == null && b2 != null) {
+            fail("Compare null and non-null object");
+            return;
+        }
+
+        if (b1 != null && b2 == null) {
+            fail("Compare null and non-null object");
+            return;
+        }
+
+        assertEquals("id", b1.id, b2.bundleID);
+        assertEquals("senderZaloPayID", b1.senderZaloPayID, b2.sendZaloPayID);
+        assertEquals("type", (long) b1.type, b2.type);
+        assertEquals("createTime", (long) b1.createTime, b2.createTime);
+        assertEquals("lastOpenTime", (long) b1.lastOpenTime, b2.lastOpenTime);
+        assertEquals("totalLuck", (long) b1.totalLuck, b2.totalLuck);
+        assertEquals("numOfOpenedPakages", (long) b1.numOfOpenedPakages, b2.numOfOpenedPakages);
+        assertEquals("numOfPackages", (long) b1.numOfPackages, b2.numOfPackages);
+        assertEquals("sendMessage", b1.sendMessage, b2.sendMessage);
+        assertEquals("status", (long) b1.status, b2.status);
+    }
+
+    private void compare2Elements(ReceivePackageGD b1, ReceivePackage b2) {
+        if (b1 == null && b2 != null) {
+            fail("Compare null and non-null object");
+            return;
+        }
+
+        if (b1 != null && b2 == null) {
+            fail("Compare null and non-null object");
+            return;
+        }
+
+        assertEquals("id", b1.id, b2.packageID);
+        assertEquals("bundleID", (long) b1.bundleID, b2.bundleID);
+        assertEquals("receiverZaloPayID", b1.receiverZaloPayID, b2.revZaloPayID);
+        assertEquals("senderZaloPayID", b1.senderZaloPayID, b2.senderZaloPayID);
+        assertEquals("senderFullName", b1.senderFullName, b2.senderFullName);
+        assertEquals("senderAvatar", b1.senderAvatar, b2.senderAvatar);
+        assertEquals("amount", (long) b1.amount, b2.amount);
+        assertEquals("openedTime", (long) b1.openedTime, b2.openedTime);
+        assertEquals("status", (long) b1.status, b2.status);
+        assertEquals("message", b1.message, b2.message);
+        assertEquals("isLuckiest", (long) b1.isLuckiest, b2.isLuckiest);
+        assertEquals("createTime", (long) b1.createTime, b2.createTime);
     }
 
     private void compare2Elements(PackageInBundleGD b1, PackageInBundle b2) {
