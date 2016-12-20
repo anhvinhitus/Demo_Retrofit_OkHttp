@@ -42,25 +42,11 @@ class SocketChannelConnection {
         handleDisconnected(ConnectionErrorCode.TRIGGER_DISCONNECT);
     }
 
-    private enum ConnectionState {
-        NOT_CONNECTED,
-        CONNECTING,
-        CONNECTED,
-        DISCONNECTING,
-        DISCONNECTED
-    }
-
     private ConnectionState mConnectionState;
     private Selector mSelector;
     private SocketChannel mChannel;
     private String mAddress;
     private int mPort;
-
-    interface ConnectionListenable {
-        void onConnected();
-        void onReceived(byte[] data);
-        void onDisconnected(ConnectionErrorCode reason);
-    }
 
     SocketChannelConnection(String address, int port, ConnectionListenable listenable) {
         mListenable = listenable;

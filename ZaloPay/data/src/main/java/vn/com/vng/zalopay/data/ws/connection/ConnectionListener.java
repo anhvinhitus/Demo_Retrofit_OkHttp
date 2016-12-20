@@ -9,7 +9,7 @@ import timber.log.Timber;
  * Created by huuhoa on 8/12/16.
  * Implementation for connection events
  */
-class ConnectionListener implements SocketChannelConnection.ConnectionListenable {
+class ConnectionListener implements ConnectionListenable {
     private WeakReference<TCPClient> mTcpClient;
 
     ConnectionListener(TCPClient tcpClient) {
