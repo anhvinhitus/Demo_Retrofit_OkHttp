@@ -101,8 +101,13 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
                 }
                 titleSectionUsingApp.put("notuse", true);
             }
+            String firstLetter;
+            String fullTextSearch = c.getString(ColumnIndex.Fulltextsearch);
+            if (TextUtils.isEmpty(fullTextSearch)) {
+                fullTextSearch = "#";
+            }
 
-            String firstLetter = c.getString(ColumnIndex.Fulltextsearch).substring(0, 1);
+            firstLetter = fullTextSearch.substring(0, 1);
 
             SectionObject section = new SectionObject(firstLetter, isUseApp);
             if (!sections.containsValue(section)) {

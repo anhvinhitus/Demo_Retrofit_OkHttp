@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
+import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
 import static vn.com.vng.zalopay.data.Constants.MANIFEST_LASTTIME_SYNC_CONTACT;
 
@@ -92,7 +93,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
             return null;
         }
 
-        ZaloFriendGD item = mDao.load(entity.userId);
+        ZaloFriendGD item = getZFriendDb(entity.userId);
 
         if (item == null) {
             item = new ZaloFriendGD();
@@ -180,15 +181,27 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         mDao.insertOrReplaceInTx(listUserDb);
     }
 
+    @Nullable
     private ZaloFriendGD getZFriendDb(String zId) {
         long zaloId = -1;
         try {
             zaloId = Long.valueOf(zId);
         } catch (NumberFormatException e) {
-            //empty
+            return null;
         }
-        return mDao.load(zaloId);
+
+        return getZFriendDb(zaloId);
     }
+    
+    @Nullable
+    private ZaloFriendGD getZFriendDb(long zId) {
+        List<ZaloFriendGD> item = listZFriendCondition(ZaloFriendGDDao.Properties.ZaloId.eq(zId));
+        if (Lists.isEmptyOrNull(item)) {
+            return null;
+        }
+        return item.get(0);
+    }
+
 
     @Override
     public List<ZaloFriendEntity> getZaloFriendWithoutZpId() {
