@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import timber.log.Timber;
+
 /**
  * Created by AnhHieu on 10/4/15.
  * *
@@ -38,6 +40,7 @@ public abstract class CursorSectionAdapter extends CursorAdapter {
         this.dataSetObserver = new DataSetObserver() {
             @Override
             public void onChanged() {
+
                 sections = initializeSections(getCursor());
             }
 
@@ -134,10 +137,13 @@ public abstract class CursorSectionAdapter extends CursorAdapter {
             getCursor().unregisterDataSetObserver(dataSetObserver);
         }
 
+        if (newCursor != null) {
+            this.sections = initializeSections(newCursor);
+        }
+
         Cursor oldCursor = super.swapCursor(newCursor);
 
         if (newCursor != null) {
-            this.sections = initializeSections(newCursor);
             newCursor.registerDataSetObserver(dataSetObserver);
         }
 
