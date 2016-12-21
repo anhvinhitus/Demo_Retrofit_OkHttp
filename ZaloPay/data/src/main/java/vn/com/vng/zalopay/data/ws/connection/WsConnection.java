@@ -105,7 +105,7 @@ public class WsConnection extends Connection {
                         .subscribe((value) -> {
                             Timber.d("Check for reconnect");
                             connect();
-                        });
+                        }, throwable -> Timber.e(throwable, "Subscribe retry connection error"));
         compositeSubscription.add(subscription);
     }
 
@@ -120,7 +120,7 @@ public class WsConnection extends Connection {
                         .subscribe((value) -> {
                             Timber.d("Begin send heart beat [%s]", value);
                             ping();
-                        });
+                        }, throwable -> Timber.e(throwable, "Subscribe keep client HeartBeat error"));
         compositeSubscription.add(subscription);
     }
 
@@ -143,7 +143,7 @@ public class WsConnection extends Connection {
                         .subscribe((obj) -> {
                             Timber.d("Server is not responding ...");
                             reconnect();
-                        });
+                        }, throwable -> Timber.e(throwable, "subscribeServerPongEvent"));
         compositeSubscription.add(subscription);
     }
 
