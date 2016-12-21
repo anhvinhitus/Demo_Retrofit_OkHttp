@@ -136,17 +136,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
             @Override
             public void onResponseError(PaymentError paymentError) {
                 Timber.d("pay onResponseError status [%s]", paymentError.value());
-                if (getCurrentActivity() != null && !NetworkHelper.isNetworkAvailable(getCurrentActivity())) {
+                if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                     Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INTERNET.value(),
                             PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
-                } else if (paymentError == PaymentError.ERR_CODE_FAIL) {
+                } else {
                     //PaymentSDK đã hiển thị lỗi -> ko care lỗi này nữa
                     Helpers.promiseResolveError(promise, paymentError.value(), null);
-                } else if (paymentError == PaymentError.ERR_CODE_USER_CANCEL) {
-                    //User ấn back -> ko care lỗi này nữa
-                    Helpers.promiseResolveError(promise, paymentError.value(), null);
-                } else {
-                    Helpers.promiseResolveError(promise, paymentError.value(), PaymentError.getErrorMessage(paymentError));
                 }
             }
 

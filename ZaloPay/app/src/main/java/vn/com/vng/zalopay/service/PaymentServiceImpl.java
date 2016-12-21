@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import com.facebook.react.bridge.Promise;
 
-import java.lang.ref.WeakReference;
 import java.util.Locale;
 
 import rx.Subscription;
@@ -17,7 +16,6 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.Helpers;
@@ -33,7 +31,6 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private final MerchantStore.Repository mMerchantRepository;
     private final BalanceStore.Repository mBalanceRepository;
-    private final User mUser;
     private final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper mPaymentWrapper;
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
@@ -42,18 +39,14 @@ public class PaymentServiceImpl implements IPaymentService {
 
     public PaymentServiceImpl(MerchantStore.Repository zaloPayIAPRepository,
                               BalanceStore.Repository balanceRepository,
-                              User user,
                               TransactionStore.Repository transactionRepository) {
         this.mMerchantRepository = zaloPayIAPRepository;
         this.mBalanceRepository = balanceRepository;
-        this.mUser = user;
         this.mTransactionRepository = transactionRepository;
     }
 
     @Override
     public void pay(Activity activity, final Promise promise, Order order) {
-
-        final WeakReference<Activity> mWeakReference = new WeakReference<>(activity);
 
         this.mPaymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(mBalanceRepository)

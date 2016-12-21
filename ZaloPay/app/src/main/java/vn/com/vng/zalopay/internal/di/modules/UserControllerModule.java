@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
-import javax.inject.Named;
-
 import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
@@ -32,8 +30,7 @@ public class UserControllerModule {
     @Provides
     IPaymentService providesIPaymentService(MerchantStore.Repository merchantRepository,
                                             BalanceStore.Repository balanceRepository,
-                                            User user,
                                             TransactionStore.Repository transactionRepository) {
-        return new PaymentServiceImpl(merchantRepository, balanceRepository, user, transactionRepository);
+        return new PaymentServiceImpl(merchantRepository, balanceRepository, transactionRepository);
     }
 }
