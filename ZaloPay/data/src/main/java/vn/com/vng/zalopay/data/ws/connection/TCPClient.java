@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.ws.connection;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 
@@ -23,7 +24,7 @@ class TCPClient implements SocketClient {
 
     private final SocketChannelConnection mConnection;
 
-    TCPClient(String hostname, int port, Listener listener) {
+    TCPClient(Context context, String hostname, int port, Listener listener) {
         mListener = listener;
 
         // event handler thread - all socket events are processed in that thread

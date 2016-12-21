@@ -69,7 +69,7 @@ public class WsConnection extends Connection {
         this.context = context;
         this.parser = parser;
         this.mUser = user;
-        mSocketClient = new TCPClient(host, port, new ConnectionListener());
+        mSocketClient = new TCPClient(context, host, port, new ConnectionListener());
         HandlerThread thread = new HandlerThread("wsconnection");
         thread.start();
         mConnectionHandler = new Handler(thread.getLooper());
@@ -86,6 +86,7 @@ public class WsConnection extends Connection {
      * + next connection state is RETRY_CONNECT or RETRY_AFTER_KICKEDOUT
      * + network connection is still available
      * + timer is ticked
+     *
      * @param context Application context
      */
     private void subscribeRetryConnectionEvent(Context context) {
@@ -94,11 +95,11 @@ public class WsConnection extends Connection {
                         .map((value) -> mCheckCountDown--)
                         .filter((value) ->
                                 !mSocketClient.isConnected() &&
-                                !mSocketClient.isConnecting() &&
-                                (mNextConnectionState == NextState.RETRY_CONNECT ||
-                                        mNextConnectionState == NextState.RETRY_AFTER_KICKEDOUT) &&
-                                NetworkHelper.isNetworkAvailable(context) &&
-                                mCheckCountDown <= 0
+                                        !mSocketClient.isConnecting() &&
+                                        (mNextConnectionState == NextState.RETRY_CONNECT ||
+                                                mNextConnectionState == NextState.RETRY_AFTER_KICKEDOUT) &&
+                                        NetworkHelper.isNetworkAvailable(context) &&
+                                        mCheckCountDown <= 0
                         )
                         .subscribe((value) -> {
                             Timber.d("Check for reconnect");
@@ -125,7 +126,7 @@ public class WsConnection extends Connection {
     /**
      * Handle server does not response PONG message on time:
      * + Only when socket is connected and user is logged in
-     *
+     * <p>
      * Trigger reconnect if:
      * + timeout: client does not receive PONG from server after SERVER_TIMEOUT seconds
      * + next connection state is RETRY_CONNECT
