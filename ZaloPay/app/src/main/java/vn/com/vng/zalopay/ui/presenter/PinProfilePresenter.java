@@ -47,7 +47,6 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
     }
 
     public void validatePin(String pin) {
-        showLoadingView();
         Subscription subscription = mAccountRepository.validatePin(pin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -56,6 +55,11 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
     }
 
     private class ValidatePinSubscriber extends DefaultSubscriber<Boolean> {
+
+        @Override
+        public void onStart() {
+            showLoadingView();
+        }
 
         @Override
         public void onError(Throwable e) {
@@ -67,6 +71,7 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
             if (mView == null) {
                 return;
             }
+
             hideLoadingView();
             mView.setError(ErrorMessageFactory.create(mApplicationContext, e));
             mView.clearPin();

@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -60,6 +61,8 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
 
     private boolean pinSuccess = false;
 
+    private Unbinder mUnbinder;
+
     public PinProfileDialog(Context context, Intent pendingIntent) {
         super(context, R.style.alert_dialog);
         this.setCancelable(true);
@@ -80,7 +83,7 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
         super.onCreate(savedInstanceState);
         AndroidApplication.instance().getUserComponent().inject(this);
         setContentView(R.layout.dialog_pin_profile);
-        ButterKnife.bind(this, this);
+        mUnbinder = ButterKnife.bind(this, this);
         setWidthDialog();
         presenter.attachView(this);
 
@@ -127,11 +130,13 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
     @Override
     public void onDetachedFromWindow() {
         Timber.d("onDetachedFromWindow");
+        mPassCodeInput.setOnPasswordChangedListener(null);
         hideLoading();
         AndroidUtils.cancelRunOnUIThread(mKeyboardRunnable);
         setOnShowListener(null);
         presenter.detachView();
         listener = null;
+        mUnbinder.unbind();
         super.onDetachedFromWindow();
     }
 
