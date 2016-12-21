@@ -187,29 +187,12 @@
             android:name=".webview.ui.WebViewActivity"
             android:configChanges="orientation|screenSize" />
 
-        <!-- ##########################Tich hop ZaloSDK START ########################## -->
-        <activity
-            android:name="com.zing.zalo.zalosdk.oauth.WebLoginActivity"
-            android:launchMode="singleTask"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:windowSoftInputMode="stateHidden|stateAlwaysHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="oauthcode"
-                    android:scheme="@string/zalo_appid" />
-            </intent-filter>
-        </activity>
-
         <!-- Tích hợp Crashlytics -->
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="fe266ca5fd2a6add9c78c8c4d3dc9a539e4f44ff" />
 
+        <!-- ##########################Tich hop ZaloSDK START ########################## -->
         <!-- Bắt buộc -->
         <!-- App ID của app đã đăng ký với bên server ZaloPayment -->
         <meta-data
