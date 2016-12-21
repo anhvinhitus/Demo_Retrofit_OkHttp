@@ -258,13 +258,19 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
 
         @Override
         public void shouldRequestEnableBluetooth() {
+            if (!isAdded()) {
+                return;
+            }
+
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-
         }
 
         @Override
         public void onDiscoverDevice(String deviceName, int rssi, PaymentRecord data) {
+            if (!isAdded()) {
+                return;
+            }
 
             Timber.d(" threadName %s", Thread.currentThread().getName());
 
@@ -315,6 +321,9 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
 
         @Override
         public void onResponseSuccess(Order order) {
+            if (!isAdded()) {
+                return;
+            }
 
             Timber.d("threadName %s", Thread.currentThread().getName());
 
@@ -334,6 +343,10 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
 
         @Override
         public void onResponseError(int status) {
+            if (!isAdded()) {
+                return;
+            }
+            
             Timber.i("Error in getting order information for transaction %s", device.paymentRecord.transactionToken);
             OrderCache cache = mTransactionCache.get(device.paymentRecord.transactionToken);
             cache.status = OrderCache.STATUS_ERROR;
@@ -460,6 +473,12 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
     }
 
     private void checkIfEmpty() {
+        if (mViewAdapter == null ||
+                mWareWaveView == null
+                || mLableView == null) {
+            return;
+        }
+
         if (mViewAdapter.getItemCount() == 0) {
             mWareWaveView.setVisibility(View.VISIBLE);
             mLableView.setVisibility(View.VISIBLE);

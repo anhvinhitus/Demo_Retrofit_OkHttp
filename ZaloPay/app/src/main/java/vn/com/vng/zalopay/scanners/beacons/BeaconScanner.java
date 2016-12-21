@@ -13,7 +13,6 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.SparseArray;
 
@@ -43,8 +42,6 @@ public class BeaconScanner {
 
     private BluetoothAdapter mBluetoothAdapter;
 
-    private Handler mHandler;
-    private static final long SCAN_PERIOD = 10000;
     private BluetoothLeScanner mLEScanner;
     private ScanSettings settings;
     private List<ScanFilter> filters;
@@ -57,7 +54,6 @@ public class BeaconScanner {
     }
 
     public boolean initialize(Context context) {
-        mHandler = new Handler();
         if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Timber.w("BLE Not Supported");
             return false;
@@ -94,7 +90,7 @@ public class BeaconScanner {
                 settings = new ScanSettings.Builder()
                         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                         .build();
-                filters = new ArrayList<ScanFilter>();
+                filters = new ArrayList<>();
                 mLEScanner.startScan(filters, settings, getScanCallback());
             }
 
