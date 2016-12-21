@@ -26,8 +26,10 @@ import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.PackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.ReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleResponse;
@@ -35,12 +37,17 @@ import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleRespons
 import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
+import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
+import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
+import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 
@@ -63,6 +70,10 @@ public class RedPackageRepositoryTest {
     SubmitOpenPackageResponse submitOpenPackageResponse;
     PackageStatusResponse packageStatusResponse;
     SentBundleListResponse sentBundleListResponse;
+    RedPacketAppInfo redPacketAppInfo;
+    GetReceivePacket getReceivePacket;
+    GetReceivePackageResponse getReceivePackageResponse;
+    SentPackageInBundleResponse sentPackageInBundleResponse;
 
     DaoSession mDaoSession;
 
@@ -100,7 +111,7 @@ public class RedPackageRepositoryTest {
         sentBundleListResponse.totalOfSentAmount = 1000000L;
         sentBundleListResponse.totalOfSentBundle = 5L;
         sentBundleListResponse.bundleResponseList = new ArrayList<>();
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < 20; i++) {
             SentBundleResponse sentBundleResponse = new SentBundleResponse();
             sentBundleResponse.bundleid = 123;
             sentBundleResponse.createtime = 100L + Long.valueOf(i);
@@ -112,6 +123,80 @@ public class RedPackageRepositoryTest {
             sentBundleResponse.totalluck = 5L;
             sentBundleResponse.type = 1;
             sentBundleListResponse.bundleResponseList.add(sentBundleResponse);
+        }
+
+        redPacketAppInfo = new RedPacketAppInfo();
+        redPacketAppInfo.isUpdateAppInfo = false;
+        redPacketAppInfo.expiredTime = 12421352L;
+        redPacketAppInfo.checksum = "abc";
+        redPacketAppInfo.appConfigEntity = new AppConfigEntity();
+        redPacketAppInfo.appConfigEntity.bundleExpiredTime = 12348613L;
+        redPacketAppInfo.appConfigEntity.maxAmountPerPackage = 10000L;
+        redPacketAppInfo.appConfigEntity.maxCountHist = 3;
+        redPacketAppInfo.appConfigEntity.maxMessageLength = 51513576L;
+        redPacketAppInfo.appConfigEntity.maxPackageQuantity = 10L;
+        redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle = 2000000L;
+        redPacketAppInfo.appConfigEntity.minAmountEach = 10000L;
+        redPacketAppInfo.appConfigEntity.minDivideAmount = 10000L;
+
+        getReceivePacket = new GetReceivePacket();
+        getReceivePacket.numofluckiestdraw = 10L;
+        getReceivePacket.totalofrevamount = 300000L;
+        getReceivePacket.totalofrevpackage = 3L;
+        getReceivePacket.revpackageList = new ArrayList<>();
+        for(int i = 0; i < 20; i++) {
+            ReceivePackage receivePackage = new ReceivePackage();
+            receivePackage.amount = 100000;
+            receivePackage.bundleID = 123 + i;
+            receivePackage.createTime = 100L + Long.valueOf(i);
+            receivePackage.isLuckiest = 0;
+            receivePackage.message = "message";
+            receivePackage.openedTime = 14351235L;
+            receivePackage.packageID = 100 + i;
+            receivePackage.revZaloPayID = "receiver";
+            receivePackage.senderAvatar = "avaSender";
+            receivePackage.senderFullName = "nameSender";
+            receivePackage.senderZaloPayID = "sender";
+            receivePackage.status = 1;
+            getReceivePacket.revpackageList.add(receivePackage);
+        }
+
+        getReceivePackageResponse = new GetReceivePackageResponse();
+        getReceivePackageResponse.totalOfRevAmount = 300000L;
+        getReceivePackageResponse.totalOfRevPackage = 3L;
+        getReceivePackageResponse.numOfLuckiestDraw = 2L;
+        getReceivePackageResponse.receivePackageResponses = new ArrayList<>();
+        for(int i = 0; i < 20; i++) {
+            ReceivePackageResponse receivePackageResponse = new ReceivePackageResponse();
+            receivePackageResponse.amount = 100000;
+            receivePackageResponse.bundleid = 123 + i;
+            receivePackageResponse.createtime = 100L + Long.valueOf(i);
+            receivePackageResponse.isluckiest = 0;
+            receivePackageResponse.message = "message";
+            receivePackageResponse.openedtime = 14351235L;
+            receivePackageResponse.packageid = 100 + i;
+            receivePackageResponse.revzalopayid = "receiver";
+            receivePackageResponse.avatarofsender = "avaSender";
+            receivePackageResponse.sendfullname = "nameSender";
+            receivePackageResponse.sendzalopayid = "sender";
+            getReceivePackageResponse.receivePackageResponses.add(receivePackageResponse);
+        }
+
+        sentPackageInBundleResponse = new SentPackageInBundleResponse();
+        sentPackageInBundleResponse.packageResponses = new ArrayList<>();
+        for(int i = 0; i < 20; i++) {
+            PackageInBundleResponse packageInBundleResponse = new PackageInBundleResponse();
+            packageInBundleResponse.amount = 100000;
+            packageInBundleResponse.bundleid = 123 + i;
+            packageInBundleResponse.isluckiest = false;
+            packageInBundleResponse.message = "message";
+            packageInBundleResponse.opentime = 14351235L;
+            packageInBundleResponse.packageid = 100 + i;
+            packageInBundleResponse.revzalopayid = "receiver";
+            packageInBundleResponse.revavatarurl = "avaSender";
+            packageInBundleResponse.revfullname = "nameSender";
+            packageInBundleResponse.sendmessage = "sendmessage";
+            sentPackageInBundleResponse.packageResponses.add(packageInBundleResponse);
         }
     }
 
@@ -163,12 +248,12 @@ public class RedPackageRepositoryTest {
 
         @Override
         public Observable<GetReceivePackageResponse> getReceivedPackageList(@Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zalopayid") String zalopayid, @Field("accesstoken") String accesstoken) {
-            return null;
+            return Observable.just(getReceivePackageResponse);
         }
 
         @Override
         public Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
-            return null;
+            return Observable.just(sentPackageInBundleResponse);
         }
 
         @Override
@@ -396,35 +481,7 @@ public class RedPackageRepositoryTest {
         assertEquals(packageStatusResponse, result.get(0));
     }
 
-//    @Test
-//    public void setBundleStatus() throws InterruptedException {
-//        CountDownLatch countDownLatch = new CountDownLatch(2);
-//        final List<PackageStatus> result = new ArrayList<>();
-//
-//        mRepository.getpackagestatus(1L, 2L, "abcd").subscribe(new Observer<PackageStatus>() {
-//            @Override
-//            public void onCompleted() {
-//                System.out.println("Got completed");
-//                countDownLatch.countDown();
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                System.out.println("Got error: " + e);
-//                countDownLatch.countDown();
-//            }
-//
-//            @Override
-//            public void onNext(PackageStatus packageStatus) {
-//                System.out.println("Got onNext");
-//                result.add(packageStatus);
-//                countDownLatch.countDown();
-//            }
-//        });
-//
-//        Assert.assertTrue(countDownLatch.await(2, TimeUnit.SECONDS));
-//        assertEquals(packageStatusResponse, result.get(0));
-//    }
+    // setBundleStatus
 
     @Test
     public void getSentBundleListServer() throws InterruptedException {
@@ -453,19 +510,460 @@ public class RedPackageRepositoryTest {
         });
 
         Assert.assertTrue("getSentBundleListServer", countDownLatch.await(2, TimeUnit.SECONDS));
-        Assert.assertEquals("getSentBundleListServer", sentBundleListResponse, getSentBundles.get(0));
+        assertEquals(sentBundleListResponse, getSentBundles.get(0), 10);
     }
 
-    // getSentBundleList
-    // getReceivedPackagesServer
-    // getReceivePacketList
-    // getReceivedPacket
-    // getAllPacketInBundleServer
+    @Test
+    public void getSentBundleList() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<GetSentBundle> getSentBundles = new ArrayList<>();
+
+        mRepository.getSentBundleList(110, 3).subscribe(new Observer<GetSentBundle>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(GetSentBundle getSentBundle) {
+                System.out.println("Got onNext");
+                getSentBundles.add(getSentBundle);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getSentBundleListServer", countDownLatch.await(2, TimeUnit.SECONDS));
+        assertEquals(sentBundleListResponse, getSentBundles.get(0), 10);
+    }
+
+    @Test
+    public void getReceivedPackagesServer() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<GetReceivePacket> getReceivePackets = new ArrayList<>();
+
+        mRepository.getReceivedPackagesServer(110, 3, -1).subscribe(new Observer<GetReceivePacket>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(GetReceivePacket getReceivePacket) {
+                System.out.println("Got onNext");
+                getReceivePackets.add(getReceivePacket);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getSentBundleListServer", countDownLatch.await(2, TimeUnit.SECONDS));
+        Assert.assertEquals("getSentBundleListServer", getReceivePacket, getReceivePackets.get(0));
+    }
+
+    @Test
+    public void getReceivePacketList() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<GetReceivePacket> getReceivePackets = new ArrayList<>();
+
+        mRepository.getReceivePacketList(110, 3).subscribe(new Observer<GetReceivePacket>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(GetReceivePacket getReceivePacket) {
+                System.out.println("Got onNext");
+                getReceivePackets.add(getReceivePacket);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getSentBundleListServer", countDownLatch.await(2, TimeUnit.SECONDS));
+        assertEquals(getReceivePackageResponse, getReceivePackets.get(0), 10);
+    }
+
+    @Test
+    public void addReceivedRedPacket() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<ReceivePackage> receivePackages = new ArrayList<>();
+
+        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        mRepository.getReceivedPacket(1).subscribe(new Observer<ReceivePackage>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(ReceivePackage receivePackage) {
+                System.out.println("Got onNext");
+                receivePackages.add(receivePackage);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getReceivedPacket", countDownLatch.await(2, TimeUnit.SECONDS));
+
+        Assert.assertEquals("packageID", 1, receivePackages.get(0).packageID);
+        Assert.assertEquals("bundleID", 3L, receivePackages.get(0).bundleID);
+        Assert.assertEquals("senderFullName", "name", receivePackages.get(0).senderFullName);
+        Assert.assertEquals("senderAvatar", "ava", receivePackages.get(0).senderAvatar);
+        Assert.assertEquals("message", "mess", receivePackages.get(0).message);
+    }
+
+    @Test
+    public void addReceivedRedPacketWhenAlreadyHave() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<ReceivePackage> receivePackages = new ArrayList<>();
+
+        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        mRepository.addReceivedRedPacket(1, 3, "name1", "ava1", "mess1");
+        mRepository.getReceivedPacket(1).subscribe(new Observer<ReceivePackage>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(ReceivePackage receivePackage) {
+                System.out.println("Got onNext");
+                receivePackages.add(receivePackage);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getReceivedPacket", countDownLatch.await(2, TimeUnit.SECONDS));
+
+        Assert.assertEquals("packageID", 1, receivePackages.get(0).packageID);
+        Assert.assertEquals("bundleID", 3L, receivePackages.get(0).bundleID);
+        Assert.assertEquals("senderFullName", "name1", receivePackages.get(0).senderFullName);
+        Assert.assertEquals("senderAvatar", "ava1", receivePackages.get(0).senderAvatar);
+        Assert.assertEquals("message", "mess1", receivePackages.get(0).message);
+    }
+
+    @Test
+    public void getReceivedPacketWhenNotHavingDatas() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<ReceivePackage> receivePackages = new ArrayList<>();
+
+        mRepository.getReceivedPacket(1).subscribe(new Observer<ReceivePackage>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(ReceivePackage receivePackage) {
+                System.out.println("Got onNext");
+                receivePackages.add(receivePackage);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getReceivedPacket when not having datas", countDownLatch.await(2, TimeUnit.SECONDS));
+        Assert.assertEquals("getReceivedPacket when not having datas", 0, receivePackages.size());
+    }
+
+    @Test
+    public void getReceivedPacket() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<ReceivePackage> receivePackages = new ArrayList<>();
+
+        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        mRepository.getReceivedPacket(1).subscribe(new Observer<ReceivePackage>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(ReceivePackage receivePackage) {
+                System.out.println("Got onNext");
+                receivePackages.add(receivePackage);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getReceivedPacket", countDownLatch.await(2, TimeUnit.SECONDS));
+
+        Assert.assertEquals("packageID", 1, receivePackages.get(0).packageID);
+        Assert.assertEquals("bundleID", 1, receivePackages.get(0).bundleID);
+        Assert.assertEquals("senderFullName", "name", receivePackages.get(0).senderFullName);
+        Assert.assertEquals("senderAvatar", "ava", receivePackages.get(0).senderAvatar);
+        Assert.assertEquals("message", "mess", receivePackages.get(0).message);
+    }
+
+    @Test
+    public void getAllPacketInBundleServer() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<Boolean> results = new ArrayList<>();
+
+        mRepository.getAllPacketInBundleServer(125).subscribe(new Observer<Boolean>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                System.out.println("Got onNext");
+                results.add(aBoolean);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getAllPacketInBundleServer", countDownLatch.await(2, TimeUnit.SECONDS));
+        Assert.assertEquals("getAllPacketInBundleServer", true, results.get(0));
+    }
+
+    @Test
+    public void getAllPacketInBundleServer1() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<Boolean> results = new ArrayList<>();
+
+        mRepository.getAllPacketInBundleServer(100).subscribe(new Observer<Boolean>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                System.out.println("Got onNext");
+                results.add(aBoolean);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getAllPacketInBundleServer", countDownLatch.await(2, TimeUnit.SECONDS));
+        Assert.assertEquals("getAllPacketInBundleServer", false, results.get(0));
+    }
+
     // getPacketsInBundle
-    // getPacketStatus
-    // setPacketStatus
-    // addReceivedRedPacket
-    // getAppInfoServer
+
+    @Test
+    public void setPacketStatusWhenNotHavingPacket() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
+
+        mRepository.setPacketStatus(1, 3, 1, "message");
+        mRepository.getPacketStatus("1").subscribe(new Observer<ReceivePackageGD>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(ReceivePackageGD receivePackageGD) {
+                System.out.println("Got onNext");
+                receivePackageGDs.add(receivePackageGD);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("setPacketStatus when not having datas", countDownLatch.await(2, TimeUnit.SECONDS));
+        Assert.assertEquals("setPacketStatus when not having packet", null, receivePackageGDs.get(0));
+    }
+
+    @Test
+    public void setPacketStatus() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
+
+        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        mRepository.setPacketStatus(1, 3, 1, "message");
+        mRepository.getPacketStatus("1").subscribe(new Observer<ReceivePackageGD>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(ReceivePackageGD receivePackageGD) {
+                System.out.println("Got onNext");
+                receivePackageGDs.add(receivePackageGD);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getReceivedPacket", countDownLatch.await(2, TimeUnit.SECONDS));
+
+        Assert.assertEquals("id", 1, receivePackageGDs.get(0).id);
+        Assert.assertEquals("amount", (Long) 3L, receivePackageGDs.get(0).amount);
+        Assert.assertEquals("status", (Long) 1L, receivePackageGDs.get(0).status);
+        Assert.assertEquals("message", "message", receivePackageGDs.get(0).messageStatus);
+    }
+
+    @Test
+    public void getPacketStatusWhenNotHavingPacket() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
+
+        mRepository.getPacketStatus("1").subscribe(new Observer<ReceivePackageGD>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(ReceivePackageGD receivePackageGD) {
+                System.out.println("Got onNext");
+                receivePackageGDs.add(receivePackageGD);
+                countDownLatch.countDown();
+            }
+        });
+        Assert.assertEquals("getPacketStatus when not having packet", null, receivePackageGDs.get(0));
+    }
+
+    @Test
+    public void getPacketStatusWhenNotSetting() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
+
+        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        mRepository.getPacketStatus("1").subscribe(new Observer<ReceivePackageGD>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(ReceivePackageGD receivePackageGD) {
+                System.out.println("Got onNext");
+                receivePackageGDs.add(receivePackageGD);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getReceivedPacket", countDownLatch.await(2, TimeUnit.SECONDS));
+
+        Assert.assertEquals("id", 1, receivePackageGDs.get(0).id);
+        Assert.assertEquals("amount", null, receivePackageGDs.get(0).amount);
+        Assert.assertEquals("status", (Long) 1L, receivePackageGDs.get(0).status);
+        Assert.assertEquals("message", null, receivePackageGDs.get(0).messageStatus);
+    }
+
+    @Test
+    public void getAppInfoServer() throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
+
+        mRepository.getAppInfoServer("abc").subscribe(new Observer<RedPacketAppInfo>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("Got completed");
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("Got error: " + e);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onNext(RedPacketAppInfo redPacketAppInfo) {
+                System.out.println("Got onNext");
+                redPacketAppInfos.add(redPacketAppInfo);
+                countDownLatch.countDown();
+            }
+        });
+
+        Assert.assertTrue("getSentBundleListServer", countDownLatch.await(2, TimeUnit.SECONDS));
+        Assert.assertEquals("getSentBundleListServer", redPacketAppInfo, redPacketAppInfos.get(0));
+    }
+
     // getRedPacketAppInfo
 
     @Test
@@ -655,7 +1153,7 @@ public class RedPackageRepositoryTest {
         Assert.assertEquals("reqdate", p1.reqdate, p2.reqdate);
     }
 
-    private void assertEquals(SentBundleListResponse p1, GetSentBundle p2) {
+    private void assertEquals(SentBundleListResponse p1, GetSentBundle p2, int indexOfp1) {
         if (p1 == null && p2 != null) {
             Assert.fail("Compare null and non-null object");
             return;
@@ -668,25 +1166,87 @@ public class RedPackageRepositoryTest {
 
         Assert.assertEquals("totalOfSentAmount", p1.totalOfSentAmount, p2.totalofsentamount);
         Assert.assertEquals("totalOfSentBundle", p1.totalOfSentBundle, p2.totalofsentbundle);
+        if (p1.bundleResponseList.size() == 0 && p2.sentbundlelist.size()!= 0) {
+            Assert.fail("Compare null and non-null bundleResponseList");
+            return;
+        }
+
+        if (p1.bundleResponseList.size() != 0 && p2.sentbundlelist.size() == 0) {
+            Assert.fail("Compare null and non-null bundleResponseList");
+            return;
+        }
         for(int i = 0; i < p2.sentbundlelist.size(); i++) {
-            Assert.assertEquals("bundleid", p1.bundleResponseList.get(i).bundleid,
+            System.out.print(p1.bundleResponseList.get(indexOfp1).createtime + " - " + p2.sentbundlelist.get(i).createTime + "\n");
+            Assert.assertEquals("bundleid", p1.bundleResponseList.get(indexOfp1).bundleid,
                     p2.sentbundlelist.get(i).bundleID);
-            Assert.assertEquals("createtime", p1.bundleResponseList.get(i).createtime,
+            Assert.assertEquals("createtime", p1.bundleResponseList.get(indexOfp1).createtime,
                     p2.sentbundlelist.get(i).createTime);
-            Assert.assertEquals("lastopentime", p1.bundleResponseList.get(i).lastopentime,
+            Assert.assertEquals("lastopentime", p1.bundleResponseList.get(indexOfp1).lastopentime,
                     p2.sentbundlelist.get(i).lastOpenTime);
-            Assert.assertEquals("numofopenedpakages", p1.bundleResponseList.get(i).numofopenedpakages,
+            Assert.assertEquals("numofopenedpakages", p1.bundleResponseList.get(indexOfp1).numofopenedpakages,
                     p2.sentbundlelist.get(i).numOfOpenedPakages);
-            Assert.assertEquals("numofpackages", p1.bundleResponseList.get(i).numofpackages,
+            Assert.assertEquals("numofpackages", p1.bundleResponseList.get(indexOfp1).numofpackages,
                     p2.sentbundlelist.get(i).numOfPackages);
-            Assert.assertEquals("sendmessage", p1.bundleResponseList.get(i).sendmessage,
+            Assert.assertEquals("sendmessage", p1.bundleResponseList.get(indexOfp1).sendmessage,
                     p2.sentbundlelist.get(i).sendMessage);
-            Assert.assertEquals("sendzalopayid", p1.bundleResponseList.get(i).sendzalopayid,
+            Assert.assertEquals("sendzalopayid", p1.bundleResponseList.get(indexOfp1).sendzalopayid,
                     p2.sentbundlelist.get(i).sendZaloPayID);
-            Assert.assertEquals("totalluck", p1.bundleResponseList.get(i).totalluck,
+            Assert.assertEquals("totalluck", p1.bundleResponseList.get(indexOfp1).totalluck,
                     p2.sentbundlelist.get(i).totalLuck);
-            Assert.assertEquals("type", p1.bundleResponseList.get(i).type,
+            Assert.assertEquals("type", p1.bundleResponseList.get(indexOfp1).type,
                     p2.sentbundlelist.get(i).type);
+            indexOfp1++;
+        }
+    }
+
+    private void assertEquals(GetReceivePackageResponse p1, GetReceivePacket p2, int indexOfp1) {
+        if (p1 == null && p2 != null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        if (p1 != null && p2 == null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        Assert.assertEquals("totalOfSentAmount", p1.numOfLuckiestDraw, p2.numofluckiestdraw);
+        Assert.assertEquals("totalOfSentBundle", p1.totalOfRevAmount, p2.totalofrevamount);
+        Assert.assertEquals("totalOfSentBundle", p1.totalOfRevPackage, p2.totalofrevpackage);
+        if (p1.receivePackageResponses.size() == 0 && p2.revpackageList.size()!= 0) {
+            Assert.fail("Compare null and non-null bundleResponseList");
+            return;
+        }
+
+        if (p1.receivePackageResponses.size() != 0 && p2.revpackageList.size() == 0) {
+            Assert.fail("Compare null and non-null bundleResponseList");
+            return;
+        }
+        for(int i = 0; i < p2.revpackageList.size(); i++) {
+            System.out.print(p1.receivePackageResponses.get(indexOfp1).createtime + " - " + p2.revpackageList.get(i).createTime + "\n");
+            Assert.assertEquals("amount", p1.receivePackageResponses.get(indexOfp1).amount,
+                    p2.revpackageList.get(i).amount);
+            Assert.assertEquals("bundleid", p1.receivePackageResponses.get(indexOfp1).bundleid,
+                    p2.revpackageList.get(i).bundleID);
+            Assert.assertEquals("createtime", p1.receivePackageResponses.get(indexOfp1).createtime,
+                    p2.revpackageList.get(i).createTime);
+            Assert.assertEquals("isluckiest", p1.receivePackageResponses.get(indexOfp1).isluckiest,
+                    p2.revpackageList.get(i).isLuckiest);
+            Assert.assertEquals("message", p1.receivePackageResponses.get(indexOfp1).message,
+                    p2.revpackageList.get(i).message);
+            Assert.assertEquals("openedtime", p1.receivePackageResponses.get(indexOfp1).openedtime,
+                    p2.revpackageList.get(i).openedTime);
+            Assert.assertEquals("packageid", p1.receivePackageResponses.get(indexOfp1).packageid,
+                    p2.revpackageList.get(i).packageID);
+            Assert.assertEquals("revzalopayid", p1.receivePackageResponses.get(indexOfp1).revzalopayid,
+                    p2.revpackageList.get(i).revZaloPayID);
+            Assert.assertEquals("avatarofsender", p1.receivePackageResponses.get(indexOfp1).avatarofsender,
+                    p2.revpackageList.get(i).senderAvatar);
+            Assert.assertEquals("sendfullname", p1.receivePackageResponses.get(indexOfp1).sendfullname,
+                    p2.revpackageList.get(i).senderFullName);
+            Assert.assertEquals("revzalopayid", p1.receivePackageResponses.get(indexOfp1).revzalopayid,
+                    p2.revpackageList.get(i).senderZaloPayID);
+            indexOfp1++;
         }
     }
 }
