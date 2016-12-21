@@ -69,7 +69,8 @@ public class WsConnection extends Connection {
         this.context = context;
         this.parser = parser;
         this.mUser = user;
-        mSocketClient = new TCPClient(context, host, port, new ConnectionListener());
+        // mSocketClient = new TCPClient(host, port, new ConnectionListener());
+        mSocketClient = new SSLClient(host, port, new ConnectionListener());
         HandlerThread thread = new HandlerThread("wsconnection");
         thread.start();
         mConnectionHandler = new Handler(thread.getLooper());
