@@ -117,12 +117,13 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
             } else {
                 viewSeparate.setVisibility(View.INVISIBLE);
             }
-            if (menuItem.getSubIconResource() != null) {
+
+          /*  if (menuItem.getSubIconResource() != null) {
                 mImageSubIcon.setImageResource(menuItem.getSubIconResource());
                 mImageSubIcon.setVisibility(View.VISIBLE);
             } else {
                 mImageSubIcon.setVisibility(View.GONE);
-            }
+            }*/
         }
     }
 }
