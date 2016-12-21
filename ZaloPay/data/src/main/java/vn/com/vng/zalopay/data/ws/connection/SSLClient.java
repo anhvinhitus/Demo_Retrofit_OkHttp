@@ -147,8 +147,9 @@ class SSLClient implements SocketClient {
                 mSslSocket.close();
             } catch (IOException e) {
                 Timber.w("Exception while disconnect socket");
-                mSslSocket = null;
             }
+
+            mSslSocket = null;
 
             if (mListener != null) {
                 mListener.onDisconnected(ConnectionErrorCode.DISCONNECT_FINALIZE, "");
