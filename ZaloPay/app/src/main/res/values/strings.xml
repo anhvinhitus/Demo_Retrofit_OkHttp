@@ -162,8 +162,8 @@
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
     <string name="link_card_other">Thêm Thẻ</string>
-    <string name="add_card">Liên Kết Thẻ</string>
-
+    <string name="add.card">Thêm thẻ</string>
+    <string name="link.card">Liên Kết Thẻ</string>
     <string name="alert_processing">Đang xử lý</string>
 
     <string name="hint_birthday">Năm sinh</string>

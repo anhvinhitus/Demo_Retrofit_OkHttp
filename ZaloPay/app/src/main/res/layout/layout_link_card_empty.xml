@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/spacing.small"
-                    android:text="@string/add_card"
+                    android:text="@string/link.card"
                     android:textColor="@color/white"/>
             </LinearLayout>
         </LinearLayout>
