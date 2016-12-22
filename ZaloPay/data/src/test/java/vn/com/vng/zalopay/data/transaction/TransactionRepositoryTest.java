@@ -107,7 +107,6 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     @Test
     public void getTransactionsWithEmptyData() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         mRepository = new TransactionRepository(mMapper, mUser, null,
@@ -115,31 +114,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 2;
         count = 5;
-        subscription = mRepository.getTransactions(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactions when not having data (both from local and cloud)", 0, result.size());
     }
 
     @Test
     public void getTransactionsWithCountIsANegativeNumber() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -150,32 +131,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = -1;
-        subscription = mRepository.getTransactions(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactions with data from clound and count = -1", 0, result.size());
     }
 
     @Test
     public void getTransactionsWithPageIndexIsANegativeNumber() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -186,32 +148,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = -1;
         count = 10;
-        subscription = mRepository.getTransactions(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactions with datas from cloud and pageIndex = -1", 0, result.size());
     }
 
     @Test
     public void getTransactionsWithDataFromCloud() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -221,24 +164,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 2;
         count = 5;
-        subscription = mRepository.getTransactions(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
         assertEquals(result, transactionHistoryResponse.data.subList(
                 TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count));
     }
@@ -246,7 +172,6 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     @Test
     public void getNoneOfTransactionsWithDataFromCloud() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -256,32 +181,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = 0;
-        subscription = mRepository.getTransactions(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactions: get 0 data from clound", 0, result.size());
     }
 
     @Test
     public void getTransactionsWithDataFromLocal() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         mLocalStorage.put(entities);
@@ -290,31 +196,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 2;
         count = 5;
-        subscription = mRepository.getTransactions(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactions from local when not having any datas with success type", 0, result.size());
     }
 
     @Test
     public void getNoneOfTransactionsWithDataFromLocal() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         mLocalStorage.put(entities);
@@ -323,32 +211,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = 0;
-        subscription = mRepository.getTransactions(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactions get 0 datas from local", 0, result.size());
     }
 
     @Test
     public void getTransactionsWithDataFromCloudAndStorage() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -359,24 +228,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 2;
         count = 5;
-        subscription = mRepository.getTransactions(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
+        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
         List<TransHistoryEntity> getDataFromCloudList = transactionHistoryResponse.data.subList(
                 TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count);
         List<TransHistoryEntity> getDataFromLocalList = entities.subList(
@@ -388,7 +241,6 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     @Test
     public void getNoneOfTransactionsWithDataFromCloudAndStorage() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -399,32 +251,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = 0;
-        subscription = mRepository.getTransactions(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactions(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactions: get 0 data from clound and local", 0, result.size());
     }
 
     @Test
     public void getTransactionsFailWithEmptyData() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         mRepository = new TransactionRepository(mMapper, mUser, null,
@@ -432,32 +265,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 2;
         count = 5;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                        return;
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail when not having data (both from local and cloud)", 0, result.size());
     }
 
     @Test
     public void getTransactionsFailWithCountIsANegativeNumber() {
-        final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
+        final List<TransHistory> result = new ArrayList<>();
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -468,32 +282,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = -1;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail with data from clound and count = -1", 0, result.size());
     }
 
     @Test
     public void getTransactionsFailWithPageIndexIsANegativeNumber() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -504,32 +299,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = -1;
         count = 10;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail with datas from clound and pageIndex = -1", 0, result.size());
     }
 
     @Test
     public void getTransactionsFailWithDataFromCloud() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -539,24 +315,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 2;
         count = 5;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         assertEquals(result, transactionHistoryResponse.data.subList(
                 TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count));
     }
@@ -564,7 +323,6 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     @Test
     public void getNoneOfTransactionsFailWithDataFromCloud() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -574,32 +332,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = 0;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail: get 0 data from clound", 0, result.size());
     }
 
     @Test
     public void getTransactionsFailWithDataFromLocal() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         mLocalStorage.put(entities);
@@ -608,24 +347,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 2;
         count = 5;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         assertEquals(result, entities.subList(
                 TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count));
     }
@@ -633,7 +355,6 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     @Test
     public void getNoneOfTransactionsFailWithDataFromLocal() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         mLocalStorage.put(entities);
@@ -642,32 +363,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = 0;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail get 0 datas from local", 0, result.size());
     }
 
     @Test
     public void getTransactionsFailWithDataFromCloudAndStorage() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -678,24 +380,8 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 2;
         count = 5;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
+        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.addAll(transHistories);
-                    }
-                }
-        );
         List<TransHistoryEntity> getDataFromCloudList = transactionHistoryResponse.data.subList(
                 TRANSACTION_SIZE - (pageIndex + 1) * count, TRANSACTION_SIZE - (pageIndex + 1) * count + count);
         List<TransHistoryEntity> getDataFromLocalList = entities.subList(
@@ -707,7 +393,6 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     @Test
     public void getNoneOfTransactionsFailWithDataFromCloudAndStorage() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
-        Subscription subscription;
         int pageIndex, count;
 
         transactionHistoryResponse.data = entities;
@@ -718,25 +403,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         pageIndex = 0;
         count = 0;
-        subscription = mRepository.getTransactionsFail(pageIndex, count).subscribe(
-                new Observer<List<TransHistory>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.print("Got error: " + e + "\n");
-                    }
-
-                    @Override
-                    public void onNext(List<TransHistory> transHistories) {
-                        result.clear();
-                        result.addAll(transHistories);
-                    }
-                }
-        );
+        mRepository.getTransactionsFail(pageIndex, count).subscribe(new DefaultObserver<>(result));
         Assert.assertEquals("getTransactionsFail: get 0 data from clound and local", 0, result.size());
     }
 
@@ -748,22 +415,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, null,
                 null, EventBus.getDefault());
 
-        Subscription subscription = mRepository.getTransaction(id).subscribe(new Observer<TransHistory>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(TransHistory transHistory) {
-                result.add(transHistory);
-            }
-        });
+        mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("getTransactionByID: when not having data", 0, result.size());
     }
 
@@ -771,28 +423,12 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void getTransactionFromLocal() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
         long id = 1;
-        Subscription subscription;
 
         mLocalStorage.put(entities);
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 null, EventBus.getDefault());
 
-        subscription = mRepository.getTransaction(id).subscribe(new Observer<TransHistory>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(TransHistory transHistory) {
-                result.add(transHistory);
-            }
-        });
+        mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
         assertElementEquals(result.get(0), entities.get((int)id - 1));
     }
 
@@ -800,28 +436,12 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void getTransactionFromLocalWithWrongFormatTransId() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
         long id = -1;
-        Subscription subscription;
 
         mLocalStorage.put(entities);
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 null, EventBus.getDefault());
 
-        subscription = mRepository.getTransaction(id).subscribe(new Observer<TransHistory>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(TransHistory transHistory) {
-                result.add(transHistory);
-            }
-        });
+        mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("getTransactionByID from local with id = -1", null, result.get(0));
     }
 
@@ -829,28 +449,12 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void getTransactionFromLocalWithOversizedTransId() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
         long id = 21;
-        Subscription subscription;
 
         mLocalStorage.put(entities);
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 null, EventBus.getDefault());
 
-        subscription = mRepository.getTransaction(id).subscribe(new Observer<TransHistory>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(TransHistory transHistory) {
-                result.add(transHistory);
-            }
-        });
+        mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("getTransactionByID from local id = 21", null, result.get(0));
     }
 
@@ -858,30 +462,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void getTransactionFromCloud() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
         long id = 1;
-        Subscription subscription;
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
         mRepository = new TransactionRepository(mMapper, mUser, null,
                 mRequestService, EventBus.getDefault());
 
-        subscription = mRepository.getTransaction(id).subscribe(new Observer<TransHistory>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-                return;
-            }
-
-            @Override
-            public void onNext(TransHistory transHistory) {
-                result.add(transHistory);
-            }
-        });
+        mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("getTransactionByID from cloud", 0, result.size());
     }
 
@@ -889,7 +476,6 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     public void getTransactionFromLocalCloud() {
         final List<TransHistory> result = new ArrayList<TransHistory>();
         long id = 1;
-        Subscription subscription;
 
         mLocalStorage.put(entities);
         transactionHistoryResponse.data = entities;
@@ -897,22 +483,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        subscription = mRepository.getTransaction(id).subscribe(new Observer<TransHistory>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(TransHistory transHistory) {
-                result.add(transHistory);
-            }
-        });
+        mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
         assertElementEquals(result.get(0), entities.get((int)id - 1));
     }
 
@@ -1031,22 +602,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, null,
                 null, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistorySuccessLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistorySuccessLatest with empty DB", 0, result.size());
     }
 
@@ -1058,22 +614,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 null, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistorySuccessLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistorySuccessLatest with only data from local", 0, result.size());
     }
 
@@ -1086,22 +627,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, null,
                 mRequestService, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistorySuccessLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistorySuccessLatest with only data from cloud", 0, result.size());
     }
 
@@ -1115,22 +641,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistorySuccessLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistorySuccessLatest", true, result.get(0));
     }
 
@@ -1141,22 +652,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, null,
                 null, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistoryFailLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryFailLatest with empty DB", 0, result.size());
     }
 
@@ -1168,22 +664,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 null, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistoryFailLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryFailLatest with only data from local", 0, result.size());
     }
 
@@ -1196,22 +677,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, null,
                 mRequestService, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistoryFailLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryFailLatest with only data from cloud", 0, result.size());
     }
 
@@ -1225,22 +691,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistoryFailLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryFailLatest", true, result.get(0));
     }
 
@@ -1251,22 +702,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, null,
                 null, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistoryLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryLatest with empty DB", 0, result.size());
     }
 
@@ -1278,22 +714,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 null, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistoryLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryLatest with only data from local", 0, result.size());
     }
 
@@ -1306,22 +727,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, null,
                 mRequestService, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistoryLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryLatest with only data from cloud", 0, result.size());
     }
 
@@ -1335,22 +741,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        Subscription subscription = mRepository.fetchTransactionHistoryLatest().subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryLatest", true, result.get(0));
     }
 
@@ -1365,22 +756,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         final List<Boolean> result = new ArrayList<Boolean>();
         long time = transactionHistoryResponse.data.get(3).reqdate;
 
-        Subscription subscription = mRepository.fetchTransactionHistoryOldest(time).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryOldest(time).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryOldestWithThresholdTime" , true, result.get(0));
     }
 
@@ -1395,22 +771,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         final List<Boolean> result = new ArrayList<Boolean>();
         long time = 0;
 
-        Subscription subscription = mRepository.fetchTransactionHistoryOldest(time).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryOldest(time).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryOldest with time equal 0" , 0, result.size());
     }
 
@@ -1425,22 +786,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         final List<Boolean> result = new ArrayList<Boolean>();
         long time = transactionHistoryResponse.data.get(3).reqdate;
 
-        Subscription subscription = mRepository.fetchTransactionHistoryLatest(time).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryLatest(time).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryLatestWithThresholdTime", true, result.get(0));
     }
 
@@ -1455,22 +801,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         final List<Boolean> result = new ArrayList<Boolean>();
         long time = 0;
 
-        Subscription subscription = mRepository.fetchTransactionHistoryLatest(time).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.fetchTransactionHistoryLatest(time).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("fetchTransactionHistoryLatestWithThresholdTime", 0, result.size());
     }
 
@@ -1485,22 +816,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         final List<Boolean> result = new ArrayList<Boolean>();
         long time = transactionHistoryResponse.data.get(19).reqdate;
 
-        Subscription subscription = mRepository.reloadTransactionHistory(time).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                result.add(aBoolean);
-            }
-        });
+        mRepository.reloadTransactionHistory(time).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("reloadTransactionHistoryWithTime", true, result.get(0));
     }
 
