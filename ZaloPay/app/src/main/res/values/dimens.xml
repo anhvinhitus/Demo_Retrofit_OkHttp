@@ -1,4 +1,6 @@
 <resources>
+    <dimen name="font_size_home_function">52sp</dimen>
+
     <dimen name="textsize.card.number">18sp</dimen>
     <dimen name="textsize.text.main">15sp</dimen>
     <dimen name="textsize.text.sub">12sp</dimen>

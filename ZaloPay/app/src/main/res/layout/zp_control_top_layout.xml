@@ -1,64 +1,102 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="112dp">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <TextView
+        <LinearLayout
             android:id="@+id/btn_scan_to_pay"
-            style="@style/TextView.Default"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1.0"
             android:background="?selector"
-            android:drawablePadding="@dimen/spacing.small"
-            android:drawableTop="@drawable/ic_tratien"
-            android:paddingBottom="24dp"
-            android:paddingTop="10dp"
-            android:gravity="center"
-            android:text="@string/txt_home_scantopay"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_size_normal" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-        <TextView
+            <com.zalopay.ui.widget.textview.TextViewWithFont
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ic_pay"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_home_function"
+                app:typefaceAsset="@string/font_name"/>
+
+            <TextView
+                style="@style/TextView.Default"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.small"
+                android:gravity="center"
+                android:text="@string/txt_home_scantopay"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_normal"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/btn_balance"
-            style="@style/TextView.Default"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1.0"
-            android:paddingBottom="24dp"
-            android:paddingTop="8dp"
             android:background="?selector"
-            android:drawablePadding="@dimen/spacing.small"
-            android:drawableTop="@drawable/ic_balance"
-            android:gravity="center"
-            android:text="@string/overbalance"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_size_normal" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-        <TextView
+            <com.zalopay.ui.widget.textview.TextViewWithFont
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ic_balance"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_home_function"
+                app:typefaceAsset="@string/font_name"/>
+
+            <TextView
+                style="@style/TextView.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.small"
+                android:gravity="center"
+                android:text="@string/overbalance"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_normal"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/btn_link_card"
-            style="@style/TextView.Default"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1.0"
             android:background="?selector"
-            android:drawablePadding="@dimen/spacing.small"
-            android:drawableTop="@drawable/ic_lienketthe"
-            android:paddingBottom="24dp"
-            android:paddingTop="10dp"
-            android:gravity="center"
-            android:text="@string/txt_home_link_card"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_size_normal" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.zalopay.ui.widget.textview.TextViewWithFont
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ic_link_card"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_home_function"
+                app:typefaceAsset="@string/font_name"/>
+
+            <TextView
+                style="@style/TextView.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.small"
+                android:gravity="center"
+                android:text="@string/txt_home_link_card"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_normal"/>
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
@@ -71,5 +109,5 @@
         android:gravity="center"
         android:text="0 VND"
         android:textColor="@color/txt_item_sub_2"
-        android:textSize="@dimen/font_size_normal" />
+        android:textSize="@dimen/font_size_normal"/>
 </FrameLayout>
