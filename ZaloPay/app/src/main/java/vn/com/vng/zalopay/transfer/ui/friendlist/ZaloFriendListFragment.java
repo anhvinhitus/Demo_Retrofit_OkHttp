@@ -204,7 +204,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     @Override
     public void checkIfEmpty() {
         if (mAdapter.getCount() == 0) {
-            mEmptyView.setText(R.string.no_data);
+            mEmptyView.setText(R.string.friend_list_empty);
         } else {
             mEmptyView.setText(null);
         }
