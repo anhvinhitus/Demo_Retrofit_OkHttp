@@ -37,13 +37,13 @@ public class IconFont extends TextView {
             return;
         }
         String fontAsset = typedArray.getString(R.styleable.IconFont_typefaceAsset);
+        typedArray.recycle();
 
         if (TextUtils.isEmpty(fontAsset)) {
             return;
         }
         Typeface typeface = FontHelper.getmInstance().getFont(fontAsset);
         int style = Typeface.NORMAL;
-        float size = getTextSize();
 
         if (getTypeface() != null)
             style = getTypeface().getStyle();
