@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.data.util;
 
-import android.text.TextUtils;
-
 import java.text.Normalizer;
 import java.util.List;
 

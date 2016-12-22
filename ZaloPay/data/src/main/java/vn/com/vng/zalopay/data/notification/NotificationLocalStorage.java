@@ -40,7 +40,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             try {
                 getDaoSession().getNotificationGDDao().insertInTx(list);
             } catch (Exception ex) {
-                //empty
+                Timber.d(ex, "Insert notify error");
             }
         }
     }
@@ -53,7 +53,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             try {
                 getDaoSession().getNotificationGDDao().insertInTx(item);
             } catch (Exception e) {
-                //empty
+                Timber.d(e, "Insert notify error");
             }
         }
     }
@@ -64,7 +64,8 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (item != null) {
             try {
                 return getDaoSession().getNotificationGDDao().insert(item);
-            } catch (Exception ignore) {
+            } catch (Exception e) {
+                Timber.d(e, "Insert notify error");
             }
         }
         return -1;

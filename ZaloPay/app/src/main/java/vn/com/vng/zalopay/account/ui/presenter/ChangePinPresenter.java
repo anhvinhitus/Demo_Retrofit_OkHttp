@@ -111,6 +111,7 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
         if (mChangePinVerifyView != null) {
             mChangePinVerifyView.showLoading();
         }
+
         Subscription subscription = mAccountRepository.verifyRecoveryPin(otp)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
