@@ -16,6 +16,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
@@ -126,19 +127,27 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
         @Override
         public void onNext(Cursor cursor) {
             Timber.d("onNext:  %s %s", next++, cursor);
+            if (mView == null) {
+                return;
+            }
+
             if (cursor != null) {
                 mView.swapCursor(cursor);
                 mView.hideLoading();
                 mView.setRefreshing(false);
+                mView.checkIfEmpty();
             }
         }
 
         @Override
         public void onError(Throwable e) {
             Timber.d(e, "Get friend zalo error");
-            String message = ErrorMessageFactory.create(mContext, e);
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
             if (mView != null) {
-                mView.showError(message);
+                mView.showError(ErrorMessageFactory.create(mContext, e));
                 mView.setRefreshing(false);
             }
         }

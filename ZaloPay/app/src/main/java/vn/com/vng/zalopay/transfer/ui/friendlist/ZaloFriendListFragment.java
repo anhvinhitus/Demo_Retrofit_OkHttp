@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 
@@ -64,6 +65,9 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
 
     @Inject
     ZaloFriendListPresenter mPresenter;
+
+    @BindView(R.id.tv_empty)
+    TextView mEmptyView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -195,5 +199,14 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
                 break;
         }
 
+    }
+
+    @Override
+    public void checkIfEmpty() {
+        if (mAdapter.getCount() == 0) {
+            mEmptyView.setText(R.string.no_data);
+        } else {
+            mEmptyView.setText(null);
+        }
     }
 }

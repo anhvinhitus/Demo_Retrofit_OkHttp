@@ -1,46 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:visibility="visible">
+        android:background="@color/white">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/spacing.medium.t"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_seach" />
 
-        <vn.com.vng.zalopay.ui.widget.ClearableEditText
+        <com.zalopay.ui.widget.edittext.ZPEditText
             android:id="@+id/edtSearch"
+            style="@style/ZaloPayEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:ellipsize="end"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
             android:hint="@string/hint_zalo_contact"
-            android:lines="1"
-            android:paddingBottom="@dimen/spacing.medium"
-            android:paddingLeft="@dimen/spacing.medium.t"
-            android:paddingRight="@dimen/spacing.medium"
-            android:paddingTop="@dimen/spacing.medium"
-            android:singleLine="true"
-            android:textColorHint="@color/hint"
-            android:textSize="@dimen/textsize.small" />
-    </LinearLayout>
+            android:paddingLeft="50dp"
+            app:zlp_floatingLabel="none" />
 
-    <View
-        android:id="@+id/edtSeparate"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/txt_bottom_default_style" />
+    </FrameLayout>
 
     <include
         layout="@layout/fragment_pull_listview"

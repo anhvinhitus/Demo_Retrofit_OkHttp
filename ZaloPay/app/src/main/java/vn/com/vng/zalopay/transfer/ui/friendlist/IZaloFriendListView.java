@@ -13,4 +13,6 @@ interface IZaloFriendListView extends ILoadDataView {
     void swapCursor(Cursor cursor);
 
     void setRefreshing(boolean var);
+
+    void checkIfEmpty();
 }
