@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.data.redpacket;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.RuntimeEnvironment;
@@ -11,8 +9,9 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observer;
 import vn.com.vng.zalopay.data.ApplicationTestCase;
+import vn.com.vng.zalopay.data.CustomObserver;
+import vn.com.vng.zalopay.data.DefaultObserver;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.cache.model.BundleGD;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
@@ -31,7 +30,6 @@ import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 
 public class RedPackageLocalStorageTest extends ApplicationTestCase {
@@ -180,22 +178,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         final List<GetSentBundle> result = new ArrayList<GetSentBundle>();
 
         mLocalStorage.putSentBundleSummary(null);
-        mLocalStorage.getSentBundleSummary().subscribe(new Observer<GetSentBundle>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(GetSentBundle getSentBundle) {
-                result.add(getSentBundle);
-            }
-        });
+        mLocalStorage.getSentBundleSummary().subscribe(new CustomObserver<>(result));
 
         assertEquals("putSentBundleSummary with null param", null, result.get(0));
     }
@@ -211,22 +194,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         sentBundle.totalOfSentBundle = 2L;
 
         mLocalStorage.putSentBundleSummary(sentBundle);
-        mLocalStorage.getSentBundleSummary().subscribe(new Observer<GetSentBundle>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(GetSentBundle getSentBundle) {
-                result.add(getSentBundle);
-            }
-        });
+        mLocalStorage.getSentBundleSummary().subscribe(new CustomObserver<>(result));
 
         compare2Elements(sentBundle, result.get(0));
     }
@@ -242,22 +210,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         sentBundle.totalOfSentBundle = 1L;
 
         mLocalStorage.putSentBundleSummary(sentBundle);
-        mLocalStorage.getSentBundleSummary().subscribe(new Observer<GetSentBundle>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(GetSentBundle getSentBundle) {
-                result.add(getSentBundle);
-            }
-        });
+        mLocalStorage.getSentBundleSummary().subscribe(new CustomObserver<>(result));
 
         assertEquals("putSentBundleSummary with sent amount is a negative number", null, result.get(0));
     }
@@ -273,22 +226,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         sentBundle.totalOfSentBundle = -1L;
 
         mLocalStorage.putSentBundleSummary(sentBundle);
-        mLocalStorage.getSentBundleSummary().subscribe(new Observer<GetSentBundle>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(GetSentBundle getSentBundle) {
-                result.add(getSentBundle);
-            }
-        });
+        mLocalStorage.getSentBundleSummary().subscribe(new CustomObserver<>(result));
 
         assertEquals("putSentBundleSummary with sent bundle is a negative number", null, result.get(0));
     }
@@ -297,22 +235,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     public void getSentBundleSummaryWithEmptyDB() {
         final List<GetSentBundle> result = new ArrayList<GetSentBundle>();
 
-        mLocalStorage.getSentBundleSummary().subscribe(new Observer<GetSentBundle>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(GetSentBundle getSentBundle) {
-                result.add(getSentBundle);
-            }
-        });
+        mLocalStorage.getSentBundleSummary().subscribe(new CustomObserver<>(result));
 
         assertEquals("getSentBundleSummary with did't send bundle summary", null, result.get(0));
     }
@@ -332,22 +255,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
             mLocalStorage.putSentBundleSummary(sentBundle);
         }
 
-        mLocalStorage.getSentBundleSummary().subscribe(new Observer<GetSentBundle>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(GetSentBundle getSentBundle) {
-                result.add(getSentBundle);
-            }
-        });
+        mLocalStorage.getSentBundleSummary().subscribe(new CustomObserver<>(result));
 
         compare2Elements(sentBundle, result.get(0));
     }
@@ -357,22 +265,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         final List<GetReceivePacket> result = new ArrayList<GetReceivePacket>();
 
         mLocalStorage.putReceivePacketSummary(null);
-        mLocalStorage.getReceivePacketSummary().subscribe(new Observer<GetReceivePacket>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(GetReceivePacket getReceivePacket) {
-                result.add(getReceivePacket);
-            }
-        });
+        mLocalStorage.getReceivePacketSummary().subscribe(new CustomObserver<>(result));
 
         assertEquals("putReceivePacketSummary with null param", null, result.get(0));
     }
@@ -389,22 +282,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         receivePacket.totalOfRevPackage = 2L;
 
         mLocalStorage.putReceivePacketSummary(receivePacket);
-        mLocalStorage.getReceivePacketSummary().subscribe(new Observer<GetReceivePacket>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GetReceivePacket getReceivePacket) {
-                result.add(getReceivePacket);
-            }
-        });
+        mLocalStorage.getReceivePacketSummary().subscribe(new CustomObserver<>(result));
 
         compare2Elements(receivePacket, result.get(0));
     }
@@ -421,22 +299,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         receivePacket.totalOfRevPackage = 2L;
 
         mLocalStorage.putReceivePacketSummary(receivePacket);
-        mLocalStorage.getReceivePacketSummary().subscribe(new Observer<GetReceivePacket>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GetReceivePacket getReceivePacket) {
-                result.add(getReceivePacket);
-            }
-        });
+        mLocalStorage.getReceivePacketSummary().subscribe(new CustomObserver<>(result));
 
         assertEquals("putReceivePacketSummary with luckiest draw is a negative number", null, result.get(0));
     }
@@ -453,22 +316,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         receivePacket.totalOfRevPackage = 2L;
 
         mLocalStorage.putReceivePacketSummary(receivePacket);
-        mLocalStorage.getReceivePacketSummary().subscribe(new Observer<GetReceivePacket>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GetReceivePacket getReceivePacket) {
-                result.add(getReceivePacket);
-            }
-        });
+        mLocalStorage.getReceivePacketSummary().subscribe(new CustomObserver<>(result));
 
         assertEquals("putReceivePacketSummary with revamount is a negative number", null, result.get(0));
     }
@@ -485,22 +333,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         receivePacket.totalOfRevPackage = 2L;
 
         mLocalStorage.putReceivePacketSummary(receivePacket);
-        mLocalStorage.getReceivePacketSummary().subscribe(new Observer<GetReceivePacket>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GetReceivePacket getReceivePacket) {
-                result.add(getReceivePacket);
-            }
-        });
+        mLocalStorage.getReceivePacketSummary().subscribe(new CustomObserver<>(result));
 
         assertEquals("putReceivePacketSummary with revpackage is a negative number", null, result.get(0));
     }
@@ -509,22 +342,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     public void getReceivePacketSummaryWithNullParam() {
         final List<GetReceivePacket> result = new ArrayList<GetReceivePacket>();
 
-        mLocalStorage.getReceivePacketSummary().subscribe(new Observer<GetReceivePacket>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(GetReceivePacket getReceivePacket) {
-                result.add(getReceivePacket);
-            }
-        });
+        mLocalStorage.getReceivePacketSummary().subscribe(new CustomObserver<>(result));
 
         assertEquals("getReceivePacketSummary when didn't put receive packet summary", null, result.get(0));
     }
@@ -545,22 +363,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
             mLocalStorage.putReceivePacketSummary(receivePacket);
         }
 
-        mLocalStorage.getReceivePacketSummary().subscribe(new Observer<GetReceivePacket>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GetReceivePacket getReceivePacket) {
-                result.add(getReceivePacket);
-            }
-        });
+        mLocalStorage.getReceivePacketSummary().subscribe(new CustomObserver<>(result));
 
         compare2Elements(receivePacket, result.get(0));
     }
@@ -570,33 +373,18 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         final List<SentBundle> result = new ArrayList<SentBundle>();
 
         mLocalStorage.putSentBundle(null);
-        mLocalStorage.getSentBundle(0, 5).subscribe(new Observer<List<SentBundle>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(List<SentBundle> sentBundles) {
-                result.addAll(sentBundles);
-            }
-        });
+        mLocalStorage.getSentBundle(0, 5).subscribe(new DefaultObserver<>(result));
 
         assertEquals("putReceivePacketSummary with null param", 0, result.size());
     }
 
     @Test
     public void putSentBundle() {
-        final List<SentBundle> result = new ArrayList<SentBundle>();
-        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+        final List<SentBundle> result = new ArrayList<>();
+        List<SentBundleGD> sendBundleGDs = new ArrayList<>();
 
         int limit = 5;
-        int inputSize = 25;
+        int inputSize = 20;
 
         for(int i = 0; i < inputSize; i++) {
             SentBundleGD sentBundleGD = new SentBundleGD();
@@ -614,32 +402,17 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putSentBundle(sendBundleGDs);
-        mLocalStorage.getSentBundle(111, limit).subscribe(new Observer<List<SentBundle>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<SentBundle> sentBundles) {
-                result.addAll(sentBundles);
-            }
-        });
+        mLocalStorage.getSentBundle(111, limit).subscribe(new DefaultObserver<>(result));
 
         for(int i = 0; i < limit; i++) {
-            compare2Elements(sendBundleGDs.get(10 - i), result.get(i));
+            compare2Elements(sendBundleGDs.get(11 - i), result.get(i));
         }
     }
 
     @Test
     public void getSentBundleWithCreateTimeEqualsZero() {
-        final List<SentBundle> result = new ArrayList<SentBundle>();
-        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+        final List<SentBundle> result = new ArrayList<>();
+        List<SentBundleGD> sendBundleGDs = new ArrayList<>();
 
         int limit = 5;
         int inputSize = 25;
@@ -660,22 +433,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putSentBundle(sendBundleGDs);
-        mLocalStorage.getSentBundle(0, limit).subscribe(new Observer<List<SentBundle>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<SentBundle> sentBundles) {
-                result.addAll(sentBundles);
-            }
-        });
+        mLocalStorage.getSentBundle(0, limit).subscribe(new DefaultObserver<>(result));
 
         for(int i = 0; i < limit; i++) {
             compare2Elements(sendBundleGDs.get(inputSize - 1 - i), result.get(i));
@@ -706,22 +464,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putSentBundle(sendBundleGDs);
-        mLocalStorage.getSentBundle(110L, 0).subscribe(new Observer<List<SentBundle>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<SentBundle> sentBundles) {
-                result.addAll(sentBundles);
-            }
-        });
+        mLocalStorage.getSentBundle(110L, 0).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getSentBundle with limit = 0", 0, result.size());
     }
@@ -750,22 +493,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putSentBundle(sendBundleGDs);
-        mLocalStorage.getSentBundle(-100L, limit).subscribe(new Observer<List<SentBundle>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<SentBundle> sentBundles) {
-                result.addAll(sentBundles);
-            }
-        });
+        mLocalStorage.getSentBundle(-100L, limit).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getSentBundle with creatime < 0", 0, result.size());
     }
@@ -793,22 +521,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putSentBundle(sendBundleGDs);
-        mLocalStorage.getSentBundle(0, -1).subscribe(new Observer<List<SentBundle>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<SentBundle> sentBundles) {
-                result.addAll(sentBundles);
-            }
-        });
+        mLocalStorage.getSentBundle(0, -2).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getSentBundle with limit < 0", 0, result.size());
     }
@@ -824,9 +537,9 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     @Test
     public void isHaveSentBundleInDb() {
         boolean result;
-        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+        List<SentBundleGD> sentBundleGDs = new ArrayList<SentBundleGD>();
 
-        int inputSize = 25;
+        int inputSize = 20;
 
         for(int i = 0; i < inputSize; i++) {
             SentBundleGD sentBundleGD = new SentBundleGD();
@@ -840,68 +553,74 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
             sentBundleGD.numOfPackages = 5L;
             sentBundleGD.sendMessage = "message";
             sentBundleGD.status = 1L;
-            sendBundleGDs.add(sentBundleGD);
+            sentBundleGDs.add(sentBundleGD);
         }
 
-        mLocalStorage.putSentBundle(sendBundleGDs);
+        mLocalStorage.putSentBundle(sentBundleGDs);
 
-        result = mLocalStorage.isHaveSentBundleInDb(110L, 5);
+        result = mLocalStorage.isHaveSentBundleInDb(110L, 1);
         assertEquals("isHaveSentBundleInDb when DB had datas", true, result);
     }
 
     @Test
     public void setBundleStatusWhenNotHavingAnyBundles() {
-        assertEquals("setBundleStatus when not having any bundles", null, mLocalStorage.setBundleStatus(1, 1));
+        List<SentBundle> result = new ArrayList<>();
+
+        mLocalStorage.setBundleStatus(1, 1);
+        mLocalStorage.getSentBundle(0, 1).subscribe(new DefaultObserver<>(result));
+        assertEquals("setBundleStatus when not having any bundles", 0, result.size());
     }
 
     @Test
     public void setBundleStatusWithUndefinedBundleId() {
+        List<SentBundle> result = new ArrayList<>();
         List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
 
-        int inputSize = 25;
-
-        for(int i = 0; i < inputSize; i++) {
+        for(int i = 0; i < 1; i++) {
             SentBundleGD sentBundleGD = new SentBundleGD();
-            sentBundleGD.id = 1L + 1;
+            sentBundleGD.id = 1L;
             sentBundleGD.senderZaloPayID = "sender";
             sentBundleGD.type = 5L;
-            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.createTime = 100L;
             sentBundleGD.lastOpenTime = 150L;
             sentBundleGD.totalLuck = 20000L;
             sentBundleGD.numOfOpenedPakages = 2L;
             sentBundleGD.numOfPackages = 5L;
             sentBundleGD.sendMessage = "message";
-            sentBundleGD.status = 1L;
+            sentBundleGD.status = 2L;
             sendBundleGDs.add(sentBundleGD);
         }
 
         mLocalStorage.putSentBundle(sendBundleGDs);
-        assertEquals("setBundleStatus with bundleId doesn't exist", null, mLocalStorage.setBundleStatus(2, 1));
+        mLocalStorage.setBundleStatus(2, 1);
+        mLocalStorage.getSentBundle(0, 1).subscribe(new DefaultObserver<>(result));
+        assertEquals("setBundleStatus with undefined bundle id", 2, result.get(0).status);
     }
 
     @Test
     public void setBundleStatus() {
-        List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
+        List<SentBundle> result = new ArrayList<>();
+        List<SentBundleGD> sentBundleGDs = new ArrayList<SentBundleGD>();
 
-        int inputSize = 25;
-
-        for(int i = 0; i < inputSize; i++) {
+        for(int i = 0; i < 1; i++) {
             SentBundleGD sentBundleGD = new SentBundleGD();
-            sentBundleGD.id = 1L + i;
+            sentBundleGD.id = 3L;
             sentBundleGD.senderZaloPayID = "sender";
             sentBundleGD.type = 5L;
-            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.createTime = 100L;
             sentBundleGD.lastOpenTime = 150L;
             sentBundleGD.totalLuck = 20000L;
             sentBundleGD.numOfOpenedPakages = 2L;
             sentBundleGD.numOfPackages = 5L;
             sentBundleGD.sendMessage = "message";
-            sentBundleGD.status = 1L;
-            sendBundleGDs.add(sentBundleGD);
+            sentBundleGD.status = 2L;
+            sentBundleGDs.add(sentBundleGD);
         }
 
-        mLocalStorage.putSentBundle(sendBundleGDs);
-        assertNotNull("setBundleStatus", mLocalStorage.setBundleStatus(3, 1));
+        mLocalStorage.putSentBundle(sentBundleGDs);
+        mLocalStorage.setBundleStatus(3, 1);
+        mLocalStorage.getSentBundle(0, 1).subscribe(new DefaultObserver<>(result));
+        assertEquals("setBundleStatus", 1, result.get(0).status);
     }
 
     @Test
@@ -909,22 +628,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         final List<ReceivePackage> result = new ArrayList<ReceivePackage>();
 
         mLocalStorage.putReceivePackages(null);
-        mLocalStorage.getReceiveBundle(0, 5).subscribe(new Observer<List<ReceivePackage>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<ReceivePackage> receivePackages) {
-                result.addAll(receivePackages);
-            }
-        });
+        mLocalStorage.getReceiveBundle(0, 5).subscribe(new DefaultObserver<>(result));
 
         assertEquals("putReceivePacketSummary with null param", 0, result.size());
     }
@@ -956,22 +660,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putReceivePackages(receivePackageGDs);
-        mLocalStorage.getReceiveBundle(110L, limit).subscribe(new Observer<List<ReceivePackage>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<ReceivePackage> receivePackages) {
-                result.addAll(receivePackages);
-            }
-        });
+        mLocalStorage.getReceiveBundle(110L, limit).subscribe(new DefaultObserver<>(result));
 
         for(int i = 0; i < limit; i++) {
             compare2Elements(receivePackageGDs.get(10 + i), result.get(i));
@@ -1005,22 +694,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putReceivePackages(receivePackageGDs);
-        mLocalStorage.getReceiveBundle(0, limit).subscribe(new Observer<List<ReceivePackage>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<ReceivePackage> receivePackages) {
-                result.addAll(receivePackages);
-            }
-        });
+        mLocalStorage.getReceiveBundle(0, limit).subscribe(new DefaultObserver<>(result));
 
         for(int i = 0; i < limit; i++) {
             compare2Elements(receivePackageGDs.get(inputSize - 1 - i), result.get(i));
@@ -1054,22 +728,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putReceivePackages(receivePackageGDs);
-        mLocalStorage.getReceiveBundle(110L, 0).subscribe(new Observer<List<ReceivePackage>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<ReceivePackage> receivePackages) {
-                result.addAll(receivePackages);
-            }
-        });
+        mLocalStorage.getReceiveBundle(110L, 0).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getReceiveBundle with limit = 0", 0, result.size());
     }
@@ -1101,22 +760,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putReceivePackages(receivePackageGDs);
-        mLocalStorage.getReceiveBundle(-110L, 1).subscribe(new Observer<List<ReceivePackage>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<ReceivePackage> receivePackages) {
-                result.addAll(receivePackages);
-            }
-        });
+        mLocalStorage.getReceiveBundle(-110L, 1).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getReceiveBundle with creatime < 0", 0, result.size());
     }
@@ -1148,22 +792,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putReceivePackages(receivePackageGDs);
-        mLocalStorage.getReceiveBundle(0, -1).subscribe(new Observer<List<ReceivePackage>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<ReceivePackage> receivePackages) {
-                result.addAll(receivePackages);
-            }
-        });
+        mLocalStorage.getReceiveBundle(0, -1).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getReceiveBundle with limit < 0", 0, result.size());
     }
@@ -1213,22 +842,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         final List<PackageInBundle> result = new ArrayList<PackageInBundle>();
 
         mLocalStorage.putPackageInBundle(null);
-        mLocalStorage.getPackageInBundle(0).subscribe(new Observer<List<PackageInBundle>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<PackageInBundle> packageInBundles) {
-                result.addAll(packageInBundles);
-            }
-        });
+        mLocalStorage.getPackageInBundle(0).subscribe(new DefaultObserver<>(result));
 
         assertEquals("putPackageInBundle with null param", 0, result.size());
     }
@@ -1240,22 +854,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         List<PackageInBundleGD> packageInBundleGD = new ArrayList<PackageInBundleGD>();
 
         mLocalStorage.putPackageInBundle(packageInBundleGD);
-        mLocalStorage.getPackageInBundle(0).subscribe(new Observer<List<PackageInBundle>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.print("Got error: " + e + "\n");
-            }
-
-            @Override
-            public void onNext(List<PackageInBundle> packageInBundles) {
-                result.addAll(packageInBundles);
-            }
-        });
+        mLocalStorage.getPackageInBundle(0).subscribe(new DefaultObserver<>(result));
 
         assertEquals("putPackageInBundle with empty list", 0, result.size());
     }
@@ -1269,10 +868,10 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         for(int i = 0; i < 25; i++) {
             PackageInBundleGD packageInBundleGD = new PackageInBundleGD();
             packageInBundleGD.id = 1L + i;
-            packageInBundleGD.bundleID = 1L + i;
+            packageInBundleGD.bundleID = 2L;
             packageInBundleGD.amount = 2L;
             packageInBundleGD.isLuckiest = 1L;
-            packageInBundleGD.openTime = 1241235L;
+            packageInBundleGD.openTime = 1241235L + i;
             packageInBundleGD.revAvatarURL = "Ava";
             packageInBundleGD.revFullName = "Full name";
             packageInBundleGD.revZaloID = 1L;
@@ -1283,24 +882,11 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putPackageInBundle(packageInBundleList);
-        mLocalStorage.getPackageInBundle(2).subscribe(new Observer<List<PackageInBundle>>() {
-            @Override
-            public void onCompleted() {
+        mLocalStorage.getPackageInBundle(2).subscribe(new DefaultObserver<>(result));
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(List<PackageInBundle> packageInBundles) {
-                result.addAll(packageInBundles);
-            }
-        });
-
-        compare2Elements(packageInBundleList.get(1), result.get(0));
+        for(int i = 0; i < result.size(); i++) {
+            compare2Elements(packageInBundleList.get(i), result.get(i));
+        }
     }
 
     @Test

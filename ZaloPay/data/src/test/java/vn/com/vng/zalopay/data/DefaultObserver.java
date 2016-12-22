@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.transaction;
+package vn.com.vng.zalopay.data;
 
 import org.junit.Assert;
 
@@ -11,7 +11,7 @@ import rx.Observer;
  * Default observer for getting list of result
  */
 
-class DefaultObserver<T> implements Observer<List<T>> {
+public class DefaultObserver<T> implements Observer<List<T>> {
     private List<T> mResultHolder;
     public DefaultObserver(List<T> resultHolder) {
         mResultHolder = resultHolder;

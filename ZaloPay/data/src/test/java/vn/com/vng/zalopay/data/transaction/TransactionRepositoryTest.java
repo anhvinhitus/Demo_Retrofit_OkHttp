@@ -15,10 +15,10 @@ import java.util.List;
 
 import retrofit2.http.Query;
 import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
 
 import vn.com.vng.zalopay.data.ApplicationTestCase;
+import vn.com.vng.zalopay.data.CustomObserver;
+import vn.com.vng.zalopay.data.DefaultObserver;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;

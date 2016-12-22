@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.transaction;
+package vn.com.vng.zalopay.data;
 
 import org.junit.Assert;
 
@@ -10,7 +10,7 @@ import rx.Observer;
  * Created by cpu11759-local on 22/12/2016.
  */
 
-class CustomObserver<T> implements Observer<T> {
+public class CustomObserver<T> implements Observer<T> {
     private List<T> mResultHolder;
     public CustomObserver(List<T> resultHolder) {
         mResultHolder = resultHolder;
