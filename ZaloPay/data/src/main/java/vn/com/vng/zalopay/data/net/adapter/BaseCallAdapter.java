@@ -56,6 +56,10 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
         mRestRetryCount = NUMBER_RETRY_REST;
         Observable<R> observable = Observable.create(new CallOnSubscribe<>(mContext, call))
                 .retryWhen(errors -> errors.flatMap(error -> {
+                    if (!call.request().method().equalsIgnoreCase("GET")) {
+                        return Observable.error(error);
+                    }
+
                     Timber.d("adapt mRestRetryCount [%s] error [%s]", mRestRetryCount, error);
                     boolean needRetry = false;
                     if (mRestRetryCount >= 1) {
