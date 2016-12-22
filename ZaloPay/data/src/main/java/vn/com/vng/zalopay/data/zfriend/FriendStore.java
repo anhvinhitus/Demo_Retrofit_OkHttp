@@ -38,7 +38,7 @@ public interface FriendStore {
 
         List<ZaloFriendEntity> getZaloFriendWithoutZpId();
 
-        List<ZaloFriendEntity> listZaloFriend(List<Long> list);
+        List<ZaloFriendEntity> listZaloFriend(List<Long> listZaloId);
 
         List<ZaloFriendEntity> listZaloFriendWithPhoneNumber(); // list zalo friend co so dien thoai
 
@@ -88,7 +88,7 @@ public interface FriendStore {
 
         Observable<List<UserExistEntity>> checkListZaloIdForClient();
 
-        Observable<List<UserRPEntity>> listZaloPayUser(List<Long> listZaloId);
+        Observable<List<UserRPEntity>> getListUserZaloPay(List<Long> listZaloId);
 
         Observable<Boolean> syncContact();
     }

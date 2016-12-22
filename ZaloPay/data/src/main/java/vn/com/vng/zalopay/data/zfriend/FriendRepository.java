@@ -1,8 +1,11 @@
 package vn.com.vng.zalopay.data.zfriend;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +24,7 @@ import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
 import vn.com.vng.zalopay.domain.model.User;
@@ -199,6 +203,7 @@ public class FriendRepository implements FriendStore.Repository {
                 .subscribe(subscriber::onNext, subscriber::onError);
     }
 
+
     private String transformZpId(List<ZaloFriendEntity> list) {
         if (Lists.isEmptyOrNull(list)) {
             return null;
@@ -224,28 +229,59 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Override
-    public Observable<List<UserRPEntity>> listZaloPayUser(List<Long> listZaloId) {
-        return ObservableHelper.makeObservable(() -> listZaloFriend(listZaloId));
+    public Observable<List<UserRPEntity>> getListUserZaloPay(List<Long> listZaloId) {
+        return getListUserZaloPayLocal(listZaloId)
+                .map(entities -> listUserWithoutZaloPayId(entities, listZaloId))
+                .flatMap(listUserWithoutId -> {
+                    if (listUserWithoutId.size() == 1) {
+                        return getListUserZaloPayLocal(listZaloId);
+                    } else {
+                        return fetchListUserZaloPay(listUserWithoutId, listZaloId);
+                    }
+                });
     }
 
-    private List<UserRPEntity> listZaloFriend(List<Long> listZaloId) {
+    @NonNull
+    private List<Long> listUserWithoutZaloPayId(List<UserRPEntity> listUser, List<Long> listZaloId) {
+        if (Lists.isEmptyOrNull(listUser)) {
+            return listZaloId;
+        }
+
         if (Lists.isEmptyOrNull(listZaloId)) {
             return Collections.emptyList();
         }
-        List<ZaloFriendEntity> list = mLocalStorage.listZaloFriend(listZaloId);
-        if (Lists.isEmptyOrNull(list)) {
-            return Collections.emptyList();
-        }
-        List<UserRPEntity> ret = new ArrayList<>();
 
-        for (ZaloFriendEntity entity : list) {
-            UserRPEntity item = transformUserRedPackage(entity);
-            if (item != null) {
-                ret.add(item);
+        List<Long> listUserWithZaloPayId = new ArrayList<>();
+        for (UserRPEntity entity : listUser) {
+            if (TextUtils.isEmpty(entity.zaloPayID)) {
+                continue;
+            }
+
+            try {
+                listUserWithZaloPayId.add(Long.valueOf(entity.zaloID));
+            } catch (NumberFormatException e) {
+                Timber.e(e, "error pasre zaloId [%s]", entity.zaloID);
             }
         }
 
-        return ret;
+        List<Long> listUserWithoutZaloPayId = new ArrayList<>();
+
+        listUserWithoutZaloPayId.addAll(listZaloId);
+        listUserWithoutZaloPayId.removeAll(listUserWithZaloPayId);
+        Timber.d("list User Without ZaloPayId: [%s]", listUserWithoutZaloPayId.size());
+        return listUserWithoutZaloPayId;
+    }
+
+    private Observable<List<UserRPEntity>> getListUserZaloPayLocal(List<Long> listZaloId) {
+        return makeObservable(() -> mLocalStorage.listZaloFriend(listZaloId))
+                .map(this::transformUserRedPackage);
+    }
+
+    private Observable<List<UserRPEntity>> fetchListUserZaloPay(List<Long> listUserWithoutId, List<Long> listZaloId) {
+        Timber.d("fetchListUserZaloPay [%s]", listUserWithoutId.size());
+        return fetchZaloPayId(Strings.joinWithDelimiter(",", listUserWithoutId))
+                .onErrorResumeNext(throwable -> Observable.just(new ArrayList<>()))
+                .flatMap(entities -> getListUserZaloPayLocal(listZaloId));
     }
 
     private UserRPEntity transformUserRedPackage(ZaloFriendEntity entity) {
@@ -259,6 +295,10 @@ public class FriendRepository implements FriendStore.Repository {
         }
 
         return ret;
+    }
+
+    private List<UserRPEntity> transformUserRedPackage(List<ZaloFriendEntity> entities) {
+        return Lists.transform(entities, this::transformUserRedPackage);
     }
 
     @Override
