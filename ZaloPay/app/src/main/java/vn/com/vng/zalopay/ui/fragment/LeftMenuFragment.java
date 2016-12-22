@@ -170,8 +170,8 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
             return;
         }
 
-        if (mMenuListener != null && item.getItemType() == MenuItemType.ITEM) {
-            mMenuListener.onMenuItemClick(item.getId());
+        if (mMenuListener != null && item.itemType == MenuItemType.ITEM) {
+            mMenuListener.onMenuItemClick(item.id);
         }
 
     }

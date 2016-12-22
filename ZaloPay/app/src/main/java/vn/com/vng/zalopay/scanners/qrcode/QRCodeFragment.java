@@ -17,7 +17,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;

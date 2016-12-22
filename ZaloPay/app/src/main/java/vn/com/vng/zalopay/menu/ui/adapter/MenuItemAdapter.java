@@ -37,7 +37,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
     @Override
     public int getItemViewType(int position) {
         MenuItem menuItem = getItem(position);
-        if (menuItem != null && menuItem.getItemType() == MenuItemType.HEADER) {
+        if (menuItem != null && menuItem.itemType == MenuItemType.HEADER) {
             return MenuItemType.HEADER.getValue();
         }
         return MenuItemType.ITEM.getValue();
@@ -93,7 +93,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         }
 
         void bindView(MenuItem menuItem) {
-            mTvTitle.setText(menuItem.getTitle());
+            mTvTitle.setText(menuItem.title);
         }
     }
 
@@ -113,11 +113,11 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         }
 
         void bindView(MenuItem menuItem) {
-            mTvTitle.setText(menuItem.getTitle());
-            mIconFont.setText(menuItem.getIconResource());
+            mTvTitle.setText(menuItem.title);
+            mIconFont.setText(menuItem.iconResource);
             mIconFont.setTextColor(ResourcesCompat.getColor(AndroidApplication.instance().getResources(),
-                    menuItem.getIconColor(), null));
-            if (menuItem.isShowDivider()) {
+                    menuItem.iconColor, null));
+            if (menuItem.showDivider) {
                 viewSeparate.setVisibility(View.VISIBLE);
             } else {
                 viewSeparate.setVisibility(View.INVISIBLE);
