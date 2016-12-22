@@ -1,17 +1,22 @@
 package vn.com.vng.zalopay.menu.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.zalopay.ui.widget.textview.TextViewWithFont;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
@@ -33,14 +38,15 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
     @Override
     public int getItemViewType(int position) {
         MenuItem menuItem = getItem(position);
-        if (menuItem.getItemType() == MenuItemType.HEADER) {
+        if (menuItem != null && menuItem.getItemType() == MenuItemType.HEADER) {
             return MenuItemType.HEADER.getValue();
         }
         return MenuItemType.ITEM.getValue();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         int viewType = getItemViewType(position);
 
         if (viewType == MenuItemType.HEADER.getValue()) {
@@ -94,9 +100,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
     static class ItemViewHolder {
         @BindView(R.id.imgIcon)
-        ImageView mImageView;
-        @BindView(R.id.imgArrowRight)
-        ImageView mImageSubIcon;
+        TextViewWithFont mIconFont;
 
         @BindView(R.id.viewSeparate)
         View viewSeparate;
@@ -111,7 +115,9 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
         void bindView(MenuItem menuItem) {
             mTvTitle.setText(menuItem.getTitle());
-            mImageView.setImageResource(menuItem.getIconResource());
+            mIconFont.setText(menuItem.getIconResource());
+            mIconFont.setTextColor(ResourcesCompat.getColor(AndroidApplication.instance().getResources(),
+                    menuItem.getIconColor(), null));
             if (menuItem.isShowDivider()) {
                 viewSeparate.setVisibility(View.VISIBLE);
             } else {

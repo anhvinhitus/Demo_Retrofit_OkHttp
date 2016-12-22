@@ -4,53 +4,55 @@ import vn.com.vng.zalopay.domain.model.AbstractData;
 
 /**
  * Created by longlv on 04/05/2016.
+ * *
  */
 public class MenuItem extends AbstractData {
 
     private int id;
     private MenuItemType itemType;
     private Integer iconResource;
+    private Integer iconColor;
     private String title;
-    private Integer subIconResource;
     private boolean showDivider;
 
     public MenuItem(int id) {
         this.id = id;
     }
 
-    public MenuItem(int id, MenuItemType itemType, Integer iconResource, Integer subIconResource, String title, boolean showDivider) {
+    public MenuItem(int id,
+                    MenuItemType itemType,
+                    String title) {
+        this.id = id;
+        this.itemType = itemType;
+        this.title = title;
+        this.iconResource = null;
+        this.iconColor = null;
+    }
+
+    public MenuItem(int id,
+                    MenuItemType itemType,
+                    String title,
+                    Integer iconResource,
+                    Integer iconColor,
+                    boolean showDivider) {
         this.id = id;
         this.itemType = itemType;
         this.title = title;
         this.iconResource = iconResource;
-        this.subIconResource = subIconResource;
+        this.iconColor = iconColor;
         this.showDivider = showDivider;
     }
 
-    public MenuItem(int id, MenuItemType itemType, Integer iconResource, Integer iconSubResource, String title) {
+    public MenuItem(int id,
+                    MenuItemType itemType,
+                    String title,
+                    Integer iconResource,
+                    Integer iconColor) {
         this.id = id;
         this.itemType = itemType;
         this.title = title;
         this.iconResource = iconResource;
-        this.subIconResource = iconSubResource;
-        this.showDivider = true;
-    }
-
-    public MenuItem(int id, MenuItemType itemType, Integer iconResource, String title, boolean showDivider) {
-        this.id = id;
-        this.itemType = itemType;
-        this.title = title;
-        this.iconResource = iconResource;
-        this.subIconResource = null;
-        this.showDivider = showDivider;
-    }
-
-    public MenuItem(int id, MenuItemType itemType, Integer iconResource, String title) {
-        this.id = id;
-        this.itemType = itemType;
-        this.title = title;
-        this.iconResource = iconResource;
-        this.subIconResource = null;
+        this.iconColor = iconColor;
         this.showDivider = true;
     }
 
@@ -78,10 +80,6 @@ public class MenuItem extends AbstractData {
         return title;
     }
 
-    public Integer getSubIconResource() {
-        return subIconResource;
-    }
-
     public boolean isShowDivider() {
         return showDivider;
     }
@@ -92,5 +90,13 @@ public class MenuItem extends AbstractData {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Integer getIconColor() {
+        return iconColor;
+    }
+
+    public void setIconColor(Integer iconColor) {
+        this.iconColor = iconColor;
     }
 }

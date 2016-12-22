@@ -117,4 +117,12 @@
     <color name="bg_checkbox_uncheck">#c7c7cc</color>
     <color name="bg_checkbox_checked">#06be04</color>
     <color name="green">#06be04</color>
+
+    <!--Menu icon color START-->
+    <color name="menu_font_ic_blue">#4387f6</color>
+    <color name="menu_font_ic_red">#de4438</color>
+    <color name="menu_font_ic_green">#129d5a</color>
+    <color name="menu_font_ic_yellow">#f6b501</color>
+    <color name="menu_font_ic_gray">#53718b</color>
+    <!--Menu icon color END-->
 </resources>

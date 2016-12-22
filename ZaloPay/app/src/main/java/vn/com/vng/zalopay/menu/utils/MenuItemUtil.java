@@ -38,24 +38,24 @@ public class MenuItemUtil {
     static {
         mMenuItems = new ArrayList<>();
 
-        mMenuItems.add(new MenuItem(HOME_ID, MenuItemType.ITEM, R.drawable.ic_trangchu_menu, "Trang Chủ"));
-        mMenuItems.add(new MenuItem(NOTIFICATION_ID, MenuItemType.ITEM, R.drawable.ic_thongbao_menu, R.drawable.ic_arrow_right, "Thông Báo", false));
-        mMenuItems.add(new MenuItem(TRANSACTION_ID, MenuItemType.HEADER, null, "GIAO DỊCH"));
-        mMenuItems.add(new MenuItem(SCAN_QR_ID, MenuItemType.ITEM, R.drawable.ic_thanhtoan_menu, "Trả Tiền"));
-        mMenuItems.add(new MenuItem(DEPOSIT_ID, MenuItemType.ITEM, R.drawable.ic_naptien_menu, "Nạp Tiền"));
+        mMenuItems.add(new MenuItem(HOME_ID, MenuItemType.ITEM, "Trang Chủ", R.string.ic_home, R.color.menu_font_ic_blue));
+        mMenuItems.add(new MenuItem(NOTIFICATION_ID, MenuItemType.ITEM, "Thông Báo", R.string.ic_notification, R.color.menu_font_ic_red, false));
+        mMenuItems.add(new MenuItem(TRANSACTION_ID, MenuItemType.HEADER, "GIAO DỊCH"));
+        mMenuItems.add(new MenuItem(SCAN_QR_ID, MenuItemType.ITEM, "Trả Tiền", R.string.ic_pay, R.color.menu_font_ic_green));
+        mMenuItems.add(new MenuItem(DEPOSIT_ID, MenuItemType.ITEM, "Nạp Tiền", R.string.ic_deposit, R.color.menu_font_ic_green));
 
-        mMenuItems.add(new MenuItem(TRANSFER_ID, MenuItemType.ITEM, R.drawable.ic_chuyentien_menu, "Chuyển Tiền"));
+        mMenuItems.add(new MenuItem(TRANSFER_ID, MenuItemType.ITEM, "Chuyển Tiền", R.string.ic_transfer, R.color.menu_font_ic_blue));
 
-        mMenuItems.add(new MenuItem(SAVE_CARD_ID, MenuItemType.ITEM, R.drawable.ic_luuthe, "Liên Kết Thẻ"));
-        mMenuItems.add(new MenuItem(TRANSACTION_HISTORY_ID, MenuItemType.ITEM, R.drawable.ic_lichsu_menu, R.drawable.ic_arrow_right, "Lịch Sử Thanh Toán", false));
+        mMenuItems.add(new MenuItem(SAVE_CARD_ID, MenuItemType.ITEM, "Liên Kết Thẻ", R.string.ic_link_card, R.color.menu_font_ic_yellow));
+        mMenuItems.add(new MenuItem(TRANSACTION_HISTORY_ID, MenuItemType.ITEM, "Lịch Sử Thanh Toán", R.string.ic_trans_history, R.color.menu_font_ic_red, false));
 
-        mMenuItems.add(new MenuItem(APPLICATION_ID, MenuItemType.HEADER, null, "ỨNG DỤNG"));
-        mMenuItems.add(new MenuItem(FAQ_ID, MenuItemType.ITEM, R.drawable.ic_faq_menu, "FAQ"));
-        mMenuItems.add(new MenuItem(TERM_OF_USE, MenuItemType.ITEM, R.drawable.ic_thoathuan_menu, "Thỏa Thuận Sử Dụng"));
-        mMenuItems.add(new MenuItem(CONTACT_SUPPORT_ID, MenuItemType.ITEM, R.drawable.ic_lienhe_menu, "Liên Hệ Hỗ Trợ"));
-        mMenuItems.add(new MenuItem(APPLICATION_INFO_ID, MenuItemType.ITEM, R.drawable.ic_thongtin_menu, "Thông Tin Ứng Dụng"));
+        mMenuItems.add(new MenuItem(APPLICATION_ID, MenuItemType.HEADER, "ỨNG DỤNG"));
+        mMenuItems.add(new MenuItem(FAQ_ID, MenuItemType.ITEM, "FAQ", R.string.ic_faq, R.color.menu_font_ic_gray));
+        mMenuItems.add(new MenuItem(TERM_OF_USE, MenuItemType.ITEM, "Thỏa Thuận Sử Dụng", R.string.ic_term_of_user, R.color.menu_font_ic_gray));
+        mMenuItems.add(new MenuItem(CONTACT_SUPPORT_ID, MenuItemType.ITEM, "Liên Hệ Hỗ Trợ", R.string.ic_contact_support, R.color.menu_font_ic_gray));
+        mMenuItems.add(new MenuItem(APPLICATION_INFO_ID, MenuItemType.ITEM, "Thông Tin Ứng Dụng", R.string.ic_app_info, R.color.menu_font_ic_gray));
 
 //        mMenuItems.add(new MenuItem(ACCOUNT_ID, MenuItemType.HEADER, null, "TÀI KHOẢN"));
-        mMenuItems.add(new MenuItem(SIGN_OUT_ID, MenuItemType.ITEM, R.drawable.ic_dangxuat, "Đăng Xuất", false));
+        mMenuItems.add(new MenuItem(SIGN_OUT_ID, MenuItemType.ITEM, "Đăng Xuất", R.string.ic_sign_out, R.color.menu_font_ic_gray, false));
     }
 }
