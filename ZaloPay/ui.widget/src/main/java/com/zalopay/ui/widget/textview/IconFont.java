@@ -16,27 +16,27 @@ import com.zalopay.ui.widget.util.FontHelper;
  * TextView subclass which allows the user to define a truetype font file to use as the view's typeface.
  */
 
-public class TextViewWithFont extends TextView {
-    public TextViewWithFont(Context context) {
+public class IconFont extends TextView {
+    public IconFont(Context context) {
         this(context, null);
     }
 
-    public TextViewWithFont(Context context, AttributeSet attrs) {
+    public IconFont(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TextViewWithFont(Context context, AttributeSet attrs, int defStyle) {
+    public IconFont(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         if (isInEditMode()) {
             return;
         }
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.TextViewWithFont);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.IconFont);
 
         if (typedArray == null) {
             return;
         }
-        String fontAsset = typedArray.getString(R.styleable.TextViewWithFont_typefaceAsset);
+        String fontAsset = typedArray.getString(R.styleable.IconFont_typefaceAsset);
 
         if (TextUtils.isEmpty(fontAsset)) {
             return;
@@ -51,7 +51,7 @@ public class TextViewWithFont extends TextView {
         if (typeface != null) {
             setTypeface(typeface, style);
         } else {
-            Log.d("TextViewWithFont", String.format("Could not create a font from asset: %s", fontAsset));
+            Log.d("IconFont", String.format("Could not create a font from asset: %s", fontAsset));
         }
     }
 }

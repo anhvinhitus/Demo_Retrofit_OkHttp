@@ -32,7 +32,7 @@
             android:layout_marginTop="18dp"
             android:src="@drawable/ic_visa" />
 
-        <com.zalopay.ui.widget.textview.TextViewWithFont
+        <com.zalopay.ui.widget.textview.IconFont
             android:id="@+id/tv_num_acc"
             style="@style/TextView.Default"
             android:layout_width="wrap_content"

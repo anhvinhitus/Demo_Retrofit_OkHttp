@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.menu.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
@@ -10,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.textview.TextViewWithFont;
+import com.zalopay.ui.widget.textview.IconFont;
 
 import java.util.List;
 
@@ -100,7 +99,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
     static class ItemViewHolder {
         @BindView(R.id.imgIcon)
-        TextViewWithFont mIconFont;
+        IconFont mIconFont;
 
         @BindView(R.id.viewSeparate)
         View viewSeparate;

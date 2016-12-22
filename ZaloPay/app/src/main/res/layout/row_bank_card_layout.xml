@@ -42,7 +42,7 @@
             android:visibility="gone"/>
     </FrameLayout>
 
-    <com.zalopay.ui.widget.textview.TextViewWithFont
+    <com.zalopay.ui.widget.textview.IconFont
         android:id="@+id/tv_num_acc"
         style="@style/TextView.Default"
         android:layout_width="wrap_content"
