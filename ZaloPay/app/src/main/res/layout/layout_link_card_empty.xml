@@ -107,7 +107,7 @@
         <fragment
             android:id="@+id/cardSupportFragment"
             android:name="vn.com.vng.zalopay.linkcard.ui.CardSupportFragment"
-            android:layout_marginTop="@dimen/spacing.small"
+            android:layout_marginTop="14dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
