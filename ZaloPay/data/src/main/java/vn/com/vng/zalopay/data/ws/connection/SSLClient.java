@@ -167,6 +167,10 @@ class SSLClient implements SocketClient {
         }
 
         int szBody = ByteBuffer.wrap(header).getInt();
+        if (szBody <= 0 || szBody > 20000) {
+            return null;
+        }
+
         byte[] body = new byte[szBody];
 
         retByte = mSslSocket.getInputStream().read(body);
