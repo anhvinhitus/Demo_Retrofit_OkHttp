@@ -13,15 +13,14 @@ import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.http.Field;
 import retrofit2.http.Query;
 import rx.Observable;
-import rx.Observer;
 import vn.com.vng.zalopay.data.BuildConfig;
+import vn.com.vng.zalopay.data.CustomObserver;
 import vn.com.vng.zalopay.data.CustomRobolectricRunner;
+import vn.com.vng.zalopay.data.DefaultObserver;
 import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
@@ -38,13 +37,14 @@ import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
+import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
+import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
@@ -63,6 +63,7 @@ public class RedPackageRepositoryTest {
     RedPacketStore.RequestService mRequestService;
     RedPacketStore.RequestTPEService mRequestTPEService;
     RedPacketDataMapper dataMapper;
+    User user;
 
     //declare Variable
     BundleOrderResponse bundleOrderResponse;
@@ -74,6 +75,7 @@ public class RedPackageRepositoryTest {
     GetReceivePacket getReceivePacket;
     GetReceivePackageResponse getReceivePackageResponse;
     SentPackageInBundleResponse sentPackageInBundleResponse;
+    RedPacketAppInfoResponse redPacketAppInfoResponse;
 
     DaoSession mDaoSession;
 
@@ -93,7 +95,7 @@ public class RedPackageRepositoryTest {
         bundleOrderResponse.mac = "mac";
 
         baseResponse = new BaseResponse();
-        baseResponse.err = 0;
+        baseResponse.err = 1;
         baseResponse.message="";
 
         submitOpenPackageResponse = new SubmitOpenPackageResponse();
@@ -198,6 +200,20 @@ public class RedPackageRepositoryTest {
             packageInBundleResponse.sendmessage = "sendmessage";
             sentPackageInBundleResponse.packageResponses.add(packageInBundleResponse);
         }
+
+        redPacketAppInfoResponse = new RedPacketAppInfoResponse();
+        redPacketAppInfoResponse.isUpdateAppInfo = false;
+        redPacketAppInfoResponse.expiredTime = 12421352L;
+        redPacketAppInfoResponse.checksum = "abc";
+        redPacketAppInfoResponse.appConfigResponse = redPacketAppInfoResponse.new AppConfigResponse();
+        redPacketAppInfoResponse.appConfigResponse.bundleExpiredTime = 12348613L;
+        redPacketAppInfoResponse.appConfigResponse.maxAmountPerPackage = 10000L;
+        redPacketAppInfoResponse.appConfigResponse.maxCountHist = 3;
+        redPacketAppInfoResponse.appConfigResponse.maxMessageLength = 51513576L;
+        redPacketAppInfoResponse.appConfigResponse.maxPackageQuantity = 10L;
+        redPacketAppInfoResponse.appConfigResponse.maxTotalAmountPerBundle = 2000000L;
+        redPacketAppInfoResponse.appConfigResponse.minAmountEach = 10000L;
+        redPacketAppInfoResponse.appConfigResponse.minDivideAmount = 10000L;
     }
 
     @Before
@@ -213,7 +229,13 @@ public class RedPackageRepositoryTest {
         dataMapper = new RedPacketDataMapper();
         mLocalStorage = new RedPacketLocalStorage(mDaoSession, dataMapper);
 
-        mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1, new Gson());
+        user = new User();
+        user.zaloPayId = "zaloPayID";
+        user.zaloId = 123;
+        user.displayName = "name";
+        user.avatar = "avatar";
+
+        mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, user, 1, new Gson());
     }
 
     public class RequestTPEServiceImpl implements RedPacketStore.RequestTPEService {
@@ -258,7 +280,7 @@ public class RedPackageRepositoryTest {
 
         @Override
         public Observable<RedPacketAppInfoResponse> getAppInfo(@Query("checksum") String checksum, @Query("userid") String zalopayid, @Query("accesstoken") String accesstoken) {
-            return null;
+            return Observable.just(redPacketAppInfoResponse);
         }
 
         @Override
@@ -268,8 +290,7 @@ public class RedPackageRepositoryTest {
     }
 
     @Test
-    public void createBundleOrder() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void createBundleOrder() {
         final List<BundleOrder> bundleOrderSource = new ArrayList<>();
         final List<BundleOrder> bundleOrders = new ArrayList<>();
 
@@ -279,26 +300,8 @@ public class RedPackageRepositoryTest {
         int type = 1;
         String message = "Chuc may man lan sau";
 
-        mRepository.createBundleOrder(quantity, totalLuck, amountEach, type, message).subscribe(new Observer<BundleOrder>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(BundleOrder bundleOrder) {
-                System.out.println("Got onNext");
-                bundleOrders.add(bundleOrder);
-                countDownLatch.countDown();
-            }
-        });
+        mRepository.createBundleOrder(quantity, totalLuck, amountEach, type, message)
+                .subscribe(new CustomObserver<>(bundleOrders));
 
         BundleOrder bundleOrder = new BundleOrder(bundleOrderResponse.getAppid(), bundleOrderResponse.getZptranstoken(),
                 bundleOrderResponse.apptransid, bundleOrderResponse.appuser, bundleOrderResponse.apptime,
@@ -307,330 +310,244 @@ public class RedPackageRepositoryTest {
                 bundleOrderResponse.bundleID);
         bundleOrderSource.add(bundleOrder);
 
-        Assert.assertTrue("createBundleOrder", countDownLatch.await(2, TimeUnit.SECONDS));
         Assert.assertEquals("createBundleOrder", bundleOrderSource, bundleOrders);
     }
 
     @Test
-    public void sendBundle() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void sendBundle() {
         final List<Boolean> result = new ArrayList<>();
-        List<UserRPEntity> entities = new ArrayList<UserRPEntity>();
 
+        long bundleId = 123321L;
+        List<UserRPEntity> entities = new ArrayList<>();
         UserRPEntity entity = new UserRPEntity();
         entity.avatar = "ava";
         entity.zaloID = "zaloId";
         entity.zaloName = "name";
         entity.zaloPayID = "id";
-
         for(int i = 0; i < 5; i++) {
             entities.add(entity);
         }
 
-        mRepository.sendBundle(123321L, entities).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.sendBundle(bundleId, entities).subscribe(new CustomObserver<>(result));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                System.out.println("Got onNext");
-                result.add(aBoolean);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("sendBundle", countDownLatch.await(2, TimeUnit.SECONDS));
         Assert.assertEquals("sendBundle", true, result.get(0));
     }
 
     @Test
-    public void sendBundleWithUndefinedBundleId() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
-        final List<Boolean> result = new ArrayList<>();
-        List<UserRPEntity> entities = new ArrayList<UserRPEntity>();
-
-        UserRPEntity entity = new UserRPEntity();
-        entity.avatar = "ava";
-        entity.zaloID = "zaloId";
-        entity.zaloName = "name";
-        entity.zaloPayID = "id";
-
-        for(int i = 0; i < 5; i++) {
-            entities.add(entity);
-        }
-
-        mRepository.sendBundle(1L, entities).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                System.out.println("Got onNext");
-                result.add(aBoolean);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertFalse("sendBundle with undefined bundleId", countDownLatch.await(2, TimeUnit.SECONDS));
-    }
-
-    @Test
-    public void sendBundleWithNullEntities() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
-        final List<Boolean> result = new ArrayList<>();
-
-        mRepository.sendBundle(123321L, null).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                System.out.println("Got onNext");
-                result.add(aBoolean);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertFalse("sendBundle with null entities", countDownLatch.await(2, TimeUnit.SECONDS));
-    }
-
-    @Test
-    public void submitOpenPackage() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void submitOpenPackage() {
         final List<SubmitOpenPackage> result = new ArrayList<>();
 
-        mRepository.submitOpenPackage(1L, 2L).subscribe(new Observer<SubmitOpenPackage>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.submitOpenPackage(1L, 2L).subscribe(new CustomObserver<>(result));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(SubmitOpenPackage submitOpenPackage) {
-                System.out.println("Got onNext");
-                result.add(submitOpenPackage);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("submitOpenPackage", countDownLatch.await(2, TimeUnit.SECONDS));
         Assert.assertEquals("submitOpenPackage", submitOpenPackageResponse.zptransid, result.get(0).zpTransID);
     }
 
     @Test
-    public void getpackagestatus() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getpackagestatus() {
         final List<PackageStatus> result = new ArrayList<>();
 
-        mRepository.getpackagestatus(1L, 2L, "abcd").subscribe(new Observer<PackageStatus>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getpackagestatus(1L, 2L, "abcd").subscribe(new CustomObserver<>(result));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(PackageStatus packageStatus) {
-                System.out.println("Got onNext");
-                result.add(packageStatus);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue(countDownLatch.await(2, TimeUnit.SECONDS));
         assertEquals(packageStatusResponse, result.get(0));
     }
 
-    // setBundleStatus
+    @Test
+    public void setBundleStatusWhenNotHavingAnyBundles() {
+        List<GetSentBundle> result = new ArrayList<>();
+
+        mRepository = new RedPacketRepository(null, mRequestTPEService, mLocalStorage, dataMapper, user, 1, new Gson());
+
+        mRepository.setBundleStatus(1, 1);
+        mRepository.getSentBundleList(0, 1).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("setBundleStatus when not having any bundles", 0, result.get(0).sentbundlelist.get(0).status);
+    }
 
     @Test
-    public void getSentBundleListServer() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void setBundleStatusWithUndefinedBundleId() {
+        List<GetSentBundle> result = new ArrayList<>();
+
+        List<SentBundleGD> sendBundleGDs = new ArrayList<>();
+        SentBundleGD sentBundleGD = new SentBundleGD();
+        sentBundleGD.id = 1L;
+        sentBundleGD.senderZaloPayID = "sender";
+        sentBundleGD.type = 5L;
+        sentBundleGD.createTime = 100L;
+        sentBundleGD.lastOpenTime = 150L;
+        sentBundleGD.totalLuck = 20000L;
+        sentBundleGD.numOfOpenedPakages = 2L;
+        sentBundleGD.numOfPackages = 5L;
+        sentBundleGD.sendMessage = "message";
+        sentBundleGD.status = 2L;
+        sendBundleGDs.add(sentBundleGD);
+
+        mLocalStorage.putSentBundle(sendBundleGDs);
+        mRepository = new RedPacketRepository(null, mRequestTPEService, mLocalStorage, dataMapper, user, 1, new Gson());
+
+        mRepository.setBundleStatus(2, 1);
+        mRepository.getSentBundleList(0, 1).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("setBundleStatus with undefined bundle id", 2, result.get(0).sentbundlelist.get(0).status);
+    }
+
+    @Test
+    public void setBundleStatus() {
+        List<GetSentBundle> result = new ArrayList<>();
+
+        List<SentBundleGD> sentBundleGDs = new ArrayList<>();
+        SentBundleGD sentBundleGD = new SentBundleGD();
+        sentBundleGD.id = 3L;
+        sentBundleGD.senderZaloPayID = "sender";
+        sentBundleGD.type = 5L;
+        sentBundleGD.createTime = 100L;
+        sentBundleGD.lastOpenTime = 150L;
+        sentBundleGD.totalLuck = 20000L;
+        sentBundleGD.numOfOpenedPakages = 2L;
+        sentBundleGD.numOfPackages = 5L;
+        sentBundleGD.sendMessage = "message";
+        sentBundleGD.status = 2L;
+        sentBundleGDs.add(sentBundleGD);
+
+        mLocalStorage.putSentBundle(sentBundleGDs);
+        mRepository = new RedPacketRepository(null, mRequestTPEService, mLocalStorage, dataMapper, user, 1, new Gson());
+
+        mRepository.setBundleStatus(3, 1);
+        mRepository.getSentBundleList(0, 1).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("setBundleStatus with undefined bundle id", 1, result.get(0).sentbundlelist.get(0).status);
+    }
+
+    @Test
+    public void getSentBundleListServer() {
         final List<GetSentBundle> getSentBundles = new ArrayList<>();
 
-        mRepository.getSentBundleListServer(110, 3, -1).subscribe(new Observer<GetSentBundle>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getSentBundleListServer(110, 3, -1).subscribe(new CustomObserver<>(getSentBundles));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(GetSentBundle getSentBundle) {
-                System.out.println("Got onNext");
-                getSentBundles.add(getSentBundle);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getSentBundleListServer", countDownLatch.await(2, TimeUnit.SECONDS));
         assertEquals(sentBundleListResponse, getSentBundles.get(0), 10);
     }
 
     @Test
-    public void getSentBundleList() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getSentBundleListServerWithWrongFormatOrder() {
         final List<GetSentBundle> getSentBundles = new ArrayList<>();
 
-        mRepository.getSentBundleList(110, 3).subscribe(new Observer<GetSentBundle>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getSentBundleListServer(110, 3, 0).subscribe(new CustomObserver<>(getSentBundles));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(GetSentBundle getSentBundle) {
-                System.out.println("Got onNext");
-                getSentBundles.add(getSentBundle);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getSentBundleListServer", countDownLatch.await(2, TimeUnit.SECONDS));
-        assertEquals(sentBundleListResponse, getSentBundles.get(0), 10);
+        Assert.assertEquals("getSentBundleListServer with order = 0", 0, getSentBundles.size());
     }
 
     @Test
-    public void getReceivedPackagesServer() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getSentBundleListServerWithTimeEqualsZero() {
+        final List<GetSentBundle> getSentBundles = new ArrayList<>();
+
+        mRepository.getSentBundleListServer(0, 3, -1).subscribe(new CustomObserver<>(getSentBundles));
+
+        Assert.assertEquals("getSentBundleListServer with time = 0", 0, getSentBundles.size());
+    }
+
+    @Test
+    public void getSentBundleListServerWithCountEqualsZero() {
+        final List<GetSentBundle> getSentBundles = new ArrayList<>();
+
+        mRepository.getSentBundleListServer(110, 0, -1).subscribe(new CustomObserver<>(getSentBundles));
+
+        Assert.assertEquals("getSentBundleListServer with count = 0", 0, getSentBundles.size());
+    }
+
+    @Test
+    public void getSentBundleListServerWithTimeIsANegativeNumber() {
+        final List<GetSentBundle> getSentBundles = new ArrayList<>();
+
+        mRepository.getSentBundleListServer(-110, 5, -1).subscribe(new CustomObserver<>(getSentBundles));
+
+        Assert.assertEquals("getSentBundleListServer with time = -110", 0, getSentBundles.size());
+    }
+
+    @Test
+    public void getSentBundleListServerWithCountIsANegativeNumber() {
+        final List<GetSentBundle> getSentBundles = new ArrayList<>();
+
+        mRepository.getSentBundleListServer(110, -5, -1).subscribe(new CustomObserver<>(getSentBundles));
+
+        Assert.assertEquals("getSentBundleListServer with time = -110", 0, getSentBundles.size());
+    }
+
+    @Test
+    public void getSentBundleListWithHavingLocal() {
+
+    }
+
+    @Test
+    public void getSentBundleList() {
+
+    }
+
+    @Test
+    public void getReceivedPackagesServer() {
         final List<GetReceivePacket> getReceivePackets = new ArrayList<>();
 
-        mRepository.getReceivedPackagesServer(110, 3, -1).subscribe(new Observer<GetReceivePacket>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getReceivedPackagesServer(110, 3, -1).subscribe(new CustomObserver<>(getReceivePackets));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(GetReceivePacket getReceivePacket) {
-                System.out.println("Got onNext");
-                getReceivePackets.add(getReceivePacket);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getSentBundleListServer", countDownLatch.await(2, TimeUnit.SECONDS));
         Assert.assertEquals("getSentBundleListServer", getReceivePacket, getReceivePackets.get(0));
     }
 
     @Test
-    public void getReceivePacketList() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getReceivedPackagesServerWithWrongFormatOrder() {
         final List<GetReceivePacket> getReceivePackets = new ArrayList<>();
 
-        mRepository.getReceivePacketList(110, 3).subscribe(new Observer<GetReceivePacket>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getReceivedPackagesServer(110, 3, 0).subscribe(new CustomObserver<>(getReceivePackets));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(GetReceivePacket getReceivePacket) {
-                System.out.println("Got onNext");
-                getReceivePackets.add(getReceivePacket);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getSentBundleListServer", countDownLatch.await(2, TimeUnit.SECONDS));
-        assertEquals(getReceivePackageResponse, getReceivePackets.get(0), 10);
+        Assert.assertEquals("getReceivedPackagesServer with order = 0", 0, getReceivePackets.size());
     }
 
     @Test
-    public void addReceivedRedPacket() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getReceivedPackagesServerWithTimeEqualsZero() {
+        final List<GetReceivePacket> getReceivePackets = new ArrayList<>();
+
+        mRepository.getReceivedPackagesServer(0, 3, -1).subscribe(new CustomObserver<>(getReceivePackets));
+
+        Assert.assertEquals("getReceivedPackagesServer with time = 0", 0, getReceivePackets.size());
+    }
+
+    @Test
+    public void getReceivedPackagesServerWithCountEqualsZero() {
+        final List<GetReceivePacket> getReceivePackets = new ArrayList<>();
+
+        mRepository.getReceivedPackagesServer(110, 0, -1).subscribe(new CustomObserver<>(getReceivePackets));
+
+        Assert.assertEquals("getReceivedPackagesServer with time = 0", 0, getReceivePackets.size());
+    }
+
+    @Test
+    public void getReceivedPackagesServerWithTimeIsANegativeNumber() {
+        final List<GetReceivePacket> getReceivePackets = new ArrayList<>();
+
+        mRepository.getReceivedPackagesServer(-110, 5, -1).subscribe(new CustomObserver<>(getReceivePackets));
+
+        Assert.assertEquals("getReceivedPackagesServer with time = -110", 0, getReceivePackets.size());
+    }
+
+    @Test
+    public void getReceivedPackagesServerWithCountIsANegativeNumber() {
+        final List<GetReceivePacket> getReceivePackets = new ArrayList<>();
+
+        mRepository.getReceivedPackagesServer(110, -5, -1).subscribe(new CustomObserver<>(getReceivePackets));
+
+        Assert.assertEquals("getReceivedPackagesServer with time = -110", 0, getReceivePackets.size());
+    }
+
+    @Test
+    public void getReceivePacketListWithHavingLocal() {
+
+    }
+
+    @Test
+    public void getReceivePacketList() {
+
+    }
+
+    @Test
+    public void addReceivedRedPacket() {
         final List<ReceivePackage> receivePackages = new ArrayList<>();
 
         mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
-        mRepository.getReceivedPacket(1).subscribe(new Observer<ReceivePackage>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(ReceivePackage receivePackage) {
-                System.out.println("Got onNext");
-                receivePackages.add(receivePackage);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getReceivedPacket", countDownLatch.await(2, TimeUnit.SECONDS));
+        mRepository.getReceivedPacket(1).subscribe(new CustomObserver<>(receivePackages));
 
         Assert.assertEquals("packageID", 1, receivePackages.get(0).packageID);
         Assert.assertEquals("bundleID", 3L, receivePackages.get(0).bundleID);
@@ -640,34 +557,12 @@ public class RedPackageRepositoryTest {
     }
 
     @Test
-    public void addReceivedRedPacketWhenAlreadyHave() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void addReceivedRedPacketWhenAlreadyHave() {
         final List<ReceivePackage> receivePackages = new ArrayList<>();
 
         mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
         mRepository.addReceivedRedPacket(1, 3, "name1", "ava1", "mess1");
-        mRepository.getReceivedPacket(1).subscribe(new Observer<ReceivePackage>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(ReceivePackage receivePackage) {
-                System.out.println("Got onNext");
-                receivePackages.add(receivePackage);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getReceivedPacket", countDownLatch.await(2, TimeUnit.SECONDS));
+        mRepository.getReceivedPacket(1).subscribe(new CustomObserver<>(receivePackages));
 
         Assert.assertEquals("packageID", 1, receivePackages.get(0).packageID);
         Assert.assertEquals("bundleID", 3L, receivePackages.get(0).bundleID);
@@ -677,193 +572,88 @@ public class RedPackageRepositoryTest {
     }
 
     @Test
-    public void getReceivedPacketWhenNotHavingDatas() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getReceivedPacketWhenNotHavingDatas() {
         final List<ReceivePackage> receivePackages = new ArrayList<>();
 
-        mRepository.getReceivedPacket(1).subscribe(new Observer<ReceivePackage>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getReceivedPacket(1).subscribe(new CustomObserver<>(receivePackages));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(ReceivePackage receivePackage) {
-                System.out.println("Got onNext");
-                receivePackages.add(receivePackage);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getReceivedPacket when not having datas", countDownLatch.await(2, TimeUnit.SECONDS));
-        Assert.assertEquals("getReceivedPacket when not having datas", 0, receivePackages.size());
+        Assert.assertEquals("getReceivedPacket when not having datas", null, receivePackages.get(0));
     }
 
     @Test
-    public void getReceivedPacket() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
-        final List<ReceivePackage> receivePackages = new ArrayList<>();
-
-        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
-        mRepository.getReceivedPacket(1).subscribe(new Observer<ReceivePackage>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(ReceivePackage receivePackage) {
-                System.out.println("Got onNext");
-                receivePackages.add(receivePackage);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getReceivedPacket", countDownLatch.await(2, TimeUnit.SECONDS));
-
-        Assert.assertEquals("packageID", 1, receivePackages.get(0).packageID);
-        Assert.assertEquals("bundleID", 1, receivePackages.get(0).bundleID);
-        Assert.assertEquals("senderFullName", "name", receivePackages.get(0).senderFullName);
-        Assert.assertEquals("senderAvatar", "ava", receivePackages.get(0).senderAvatar);
-        Assert.assertEquals("message", "mess", receivePackages.get(0).message);
-    }
-
-    @Test
-    public void getAllPacketInBundleServer() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getAllPacketInBundleServer() {
         final List<Boolean> results = new ArrayList<>();
 
-        mRepository.getAllPacketInBundleServer(125).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getAllPacketInBundleServer(125).subscribe(new CustomObserver<>(results));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                System.out.println("Got onNext");
-                results.add(aBoolean);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getAllPacketInBundleServer", countDownLatch.await(2, TimeUnit.SECONDS));
         Assert.assertEquals("getAllPacketInBundleServer", true, results.get(0));
     }
 
     @Test
-    public void getAllPacketInBundleServer1() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getAllPacketInBundleServer1() {
         final List<Boolean> results = new ArrayList<>();
 
-        mRepository.getAllPacketInBundleServer(100).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getAllPacketInBundleServer(100).subscribe(new CustomObserver<>(results));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                System.out.println("Got onNext");
-                results.add(aBoolean);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getAllPacketInBundleServer", countDownLatch.await(2, TimeUnit.SECONDS));
         Assert.assertEquals("getAllPacketInBundleServer", false, results.get(0));
     }
 
-    // getPacketsInBundle
+    @Test
+    public void getPacketsInBundle() {
+        final List<PackageInBundle> results = new ArrayList<>();
+        List<PackageInBundleGD> packageInBundleList = new ArrayList<PackageInBundleGD>();
+
+        for(int i = 0; i < 25; i++) {
+            PackageInBundleGD packageInBundleGD = new PackageInBundleGD();
+            packageInBundleGD.id = 1L + i;
+            packageInBundleGD.bundleID = 1L;
+            packageInBundleGD.amount = 2L;
+            packageInBundleGD.isLuckiest = 1L;
+            packageInBundleGD.openTime = 1241235L + i;
+            packageInBundleGD.revAvatarURL = "Ava";
+            packageInBundleGD.revFullName = "Full name";
+            packageInBundleGD.revZaloID = 1L;
+            packageInBundleGD.revZaloPayID = "ZaloPayID";
+            packageInBundleGD.sendMessage = "Message";
+
+            packageInBundleList.add(packageInBundleGD);
+        }
+        mLocalStorage.putPackageInBundle(packageInBundleList);
+        mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1, new Gson());
+
+        mRepository.getPacketsInBundle(100).subscribe(new DefaultObserver<>(results));
+
+        for(int i = 0; i < results.size(); i++) {
+            assertEquals(packageInBundleList.get(i), results.get(i));
+        }
+    }
 
     @Test
-    public void setPacketStatusWhenNotHavingPacket() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getPacketsInBundleWhenNotHavingDatas() {
+        final List<PackageInBundle> results = new ArrayList<>();
+
+        mRepository.getPacketsInBundle(100).subscribe(new DefaultObserver<>(results));
+
+        Assert.assertEquals("getPacketsInBundle when not having datas", 0, results.size());
+    }
+
+    @Test
+    public void setPacketStatusWhenNotHavingPacket() {
         final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
 
         mRepository.setPacketStatus(1, 3, 1, "message");
-        mRepository.getPacketStatus("1").subscribe(new Observer<ReceivePackageGD>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getPacketStatus("1").subscribe(new CustomObserver<>(receivePackageGDs));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(ReceivePackageGD receivePackageGD) {
-                System.out.println("Got onNext");
-                receivePackageGDs.add(receivePackageGD);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("setPacketStatus when not having datas", countDownLatch.await(2, TimeUnit.SECONDS));
         Assert.assertEquals("setPacketStatus when not having packet", null, receivePackageGDs.get(0));
     }
 
     @Test
-    public void setPacketStatus() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void setPacketStatus() {
         final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
 
         mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
         mRepository.setPacketStatus(1, 3, 1, "message");
-        mRepository.getPacketStatus("1").subscribe(new Observer<ReceivePackageGD>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(ReceivePackageGD receivePackageGD) {
-                System.out.println("Got onNext");
-                receivePackageGDs.add(receivePackageGD);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getReceivedPacket", countDownLatch.await(2, TimeUnit.SECONDS));
+        mRepository.getPacketStatus("1").subscribe(new CustomObserver<>(receivePackageGDs));
 
         Assert.assertEquals("id", 1, receivePackageGDs.get(0).id);
         Assert.assertEquals("amount", (Long) 3L, receivePackageGDs.get(0).amount);
@@ -872,61 +662,20 @@ public class RedPackageRepositoryTest {
     }
 
     @Test
-    public void getPacketStatusWhenNotHavingPacket() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getPacketStatusWhenNotHavingPacket() {
         final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
 
-        mRepository.getPacketStatus("1").subscribe(new Observer<ReceivePackageGD>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getPacketStatus("1").subscribe(new CustomObserver<>(receivePackageGDs));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(ReceivePackageGD receivePackageGD) {
-                System.out.println("Got onNext");
-                receivePackageGDs.add(receivePackageGD);
-                countDownLatch.countDown();
-            }
-        });
         Assert.assertEquals("getPacketStatus when not having packet", null, receivePackageGDs.get(0));
     }
 
     @Test
-    public void getPacketStatusWhenNotSetting() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getPacketStatusWhenNotSetting() {
         final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
 
         mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
-        mRepository.getPacketStatus("1").subscribe(new Observer<ReceivePackageGD>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(ReceivePackageGD receivePackageGD) {
-                System.out.println("Got onNext");
-                receivePackageGDs.add(receivePackageGD);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getReceivedPacket", countDownLatch.await(2, TimeUnit.SECONDS));
+        mRepository.getPacketStatus("1").subscribe(new CustomObserver<>(receivePackageGDs));
 
         Assert.assertEquals("id", 1, receivePackageGDs.get(0).id);
         Assert.assertEquals("amount", null, receivePackageGDs.get(0).amount);
@@ -935,36 +684,30 @@ public class RedPackageRepositoryTest {
     }
 
     @Test
-    public void getAppInfoServer() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(2);
+    public void getAppInfoServer() {
         final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
 
-        mRepository.getAppInfoServer("abc").subscribe(new Observer<RedPacketAppInfo>() {
-            @Override
-            public void onCompleted() {
-                System.out.println("Got completed");
-                countDownLatch.countDown();
-            }
+        mRepository.getAppInfoServer("abc").subscribe(new CustomObserver<>(redPacketAppInfos));
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println("Got error: " + e);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onNext(RedPacketAppInfo redPacketAppInfo) {
-                System.out.println("Got onNext");
-                redPacketAppInfos.add(redPacketAppInfo);
-                countDownLatch.countDown();
-            }
-        });
-
-        Assert.assertTrue("getSentBundleListServer", countDownLatch.await(2, TimeUnit.SECONDS));
-        Assert.assertEquals("getSentBundleListServer", redPacketAppInfo, redPacketAppInfos.get(0));
+        assertEquals(redPacketAppInfoResponse, redPacketAppInfos.get(0));
     }
 
-    // getRedPacketAppInfo
+    @Test
+    public void getRedPacketAppInfo() {
+        final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
+
+        RedPacketAppInfo redPacketAppInfo = new RedPacketAppInfo();
+        redPacketAppInfo.checksum = "checksum";
+        redPacketAppInfo.expiredTime = 12334543L;
+        redPacketAppInfo.isUpdateAppInfo = true;
+        redPacketAppInfo.appConfigEntity = new AppConfigEntity();
+        mLocalStorage.putRedPacketAppInfo(redPacketAppInfo);
+        mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1, new Gson());
+
+        mRepository.getRedPacketAppInfo().subscribe(new CustomObserver<>(redPacketAppInfos));
+
+        Assert.assertEquals("getRedPacketAppInfo", redPacketAppInfo, redPacketAppInfos.get(0));
+    }
 
     @Test
     public void testRedPackage() throws Exception {
@@ -1083,57 +826,6 @@ public class RedPackageRepositoryTest {
         Assert.assertEquals("status", b1.status, b2.status);
     }
 
-    @Test
-    public void testGetSentBundleSummary() throws Exception {
-//        CountDownLatch countDownLatch = new CountDownLatch(1);
-        SentBundleGD inputItem = new SentBundleGD();
-        inputItem.numOfOpenedPakages = 10L;
-        inputItem.numOfPackages = 20L;
-        inputItem.totalLuck = 4L;
-        inputItem.senderZaloPayID = "1611100000";
-        inputItem.type = 1L;
-        inputItem.createTime = 1L;
-        inputItem.lastOpenTime = 2L;
-        inputItem.sendMessage = "message";
-        inputItem.status = 1L;
-
-        List<SentBundleGD> list = new ArrayList<>();
-        list.add(inputItem);
-        mLocalStorage.putSentBundle(list);
-        List<SentBundle> inputList = new ArrayList<>();
-        RedPacketDataMapper mapper = new RedPacketDataMapper();
-        inputList.add(mapper.transform(inputItem));
-
-        System.out.println("Begin to get sent bundle");
-        mLocalStorage.getSentBundle(0L, 2).subscribe(new DefaultSubscriber<List<SentBundle>>() {
-            @Override
-            public void onNext(List<SentBundle> sentBundles) {
-                super.onNext(sentBundles);
-                System.out.println("Got onNext");
-                System.out.println(String.format("Got %d item: ", sentBundles.size()));
-//                Assert.assertArrayEquals(sentBundles.toArray(), inputList.toArray());
-                SentBundle bundle = sentBundles.get(0);
-                Assert.assertEquals(bundle.sendMessage, "message");
-                assertEquals(mapper.transform(inputItem), bundle);
-                System.out.println("Completed onNext");
-
-//                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                System.out.println(e.getMessage());
-                e.printStackTrace();
-
-                Assert.fail(e.getMessage());
-            }
-        });
-
-        System.out.println("Wait for completion");
-//        Assert.assertTrue(countDownLatch.await(10, TimeUnit.SECONDS));
-    }
-
     private void assertEquals(PackageStatusResponse p2, PackageStatus p1) {
         if (p1 == null && p2 != null) {
             Assert.fail("Compare null and non-null object");
@@ -1248,5 +940,57 @@ public class RedPackageRepositoryTest {
                     p2.revpackageList.get(i).senderZaloPayID);
             indexOfp1++;
         }
+    }
+
+    private void assertEquals(PackageInBundleGD b1, PackageInBundle b2) {
+        if (b1 == null && b2 != null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        if (b1 != null && b2 == null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        Assert.assertEquals("amount", (long) b1.amount, b2.amount);
+        Assert.assertEquals("sendMessage", b1.sendMessage, b2.sendMessage);
+        Assert.assertEquals("revZaloPayID", b1.revZaloPayID, b2.revZaloPayID);
+        Assert.assertEquals("revZaloID", (long) b1.revZaloID, b2.revZaloID);
+        if(b1.isLuckiest == 1) {
+            Assert.assertEquals("isLuckiest", true, b2.isLuckiest);
+        }
+        else if(b1.isLuckiest == 0) {
+            Assert.assertEquals("isLuckiest", false, b2.isLuckiest);
+        }
+        Assert.assertEquals("revFullName", b1.revFullName, b2.revFullName);
+        Assert.assertEquals("revAvatarURL", b1.revAvatarURL, b2.revAvatarURL);
+        Assert.assertEquals("bundleID", (long) b1.bundleID, b2.bundleID);
+        Assert.assertEquals("openTime", (long) b1.openTime, b2.openTime);
+        Assert.assertEquals("id", (long) b1.id, b2.packageID);
+    }
+
+    private void assertEquals(RedPacketAppInfoResponse b1, RedPacketAppInfo b2) {
+        if (b1 == null && b2 != null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        if (b1 != null && b2 == null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        Assert.assertEquals("checksum", b1.checksum, b2.checksum);
+        Assert.assertEquals("expiredTime", b1.expiredTime, b2.expiredTime);
+        Assert.assertEquals("isUpdateAppInfo", b1.isUpdateAppInfo, b2.isUpdateAppInfo);
+        Assert.assertEquals("bundleExpiredTime", b1.appConfigResponse.bundleExpiredTime, b2.appConfigEntity.bundleExpiredTime);
+        Assert.assertEquals("maxAmountPerPackage", b1.appConfigResponse.maxAmountPerPackage, b2.appConfigEntity.maxAmountPerPackage);
+        Assert.assertEquals("maxCountHist", b1.appConfigResponse.maxCountHist, b2.appConfigEntity.maxCountHist);
+        Assert.assertEquals("maxMessageLength", b1.appConfigResponse.maxMessageLength, b2.appConfigEntity.maxMessageLength);
+        Assert.assertEquals("maxPackageQuantity", b1.appConfigResponse.maxPackageQuantity, b2.appConfigEntity.maxPackageQuantity);
+        Assert.assertEquals("maxTotalAmountPerBundle", b1.appConfigResponse.maxTotalAmountPerBundle, b2.appConfigEntity.maxTotalAmountPerBundle);
+        Assert.assertEquals("minAmountEach", b1.appConfigResponse.minAmountEach, b2.appConfigEntity.minAmountEach);
+        Assert.assertEquals("minDivideAmount", b1.appConfigResponse.minDivideAmount, b2.appConfigEntity.minDivideAmount);
     }
 }
