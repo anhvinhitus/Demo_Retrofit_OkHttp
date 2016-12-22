@@ -48,61 +48,8 @@ public class NotificationData extends Event {
     @Expose(deserialize = false, serialize = false)
     public long notificationId;
 
-
-    public long getTransid() {
-        return transid;
-    }
-
-    public void setTransid(long transid) {
-        this.transid = transid;
-    }
-
-    public long getAppid() {
-        return appid;
-    }
-
-    public void setAppid(long appid) {
-        this.appid = appid;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
-    }
-
-    public String getDestuserid() {
-        return destuserid;
-    }
-
-    public void setDestuserid(String destuserid) {
-        this.destuserid = destuserid;
-    }
-
     public boolean isRead() {
         return notificationstate == Enums.NotificationState.READ.getId();
-    }
-
-    public void setNotificationState(long state) {
-        this.notificationstate = state;
     }
 
     public JsonObject getEmbeddata() {
@@ -116,65 +63,5 @@ public class NotificationData extends Event {
     public void setEmbeddata(JsonObject embeddata) {
         this.embeddata = new NotificationEmbedData(embeddata);
     }
-
-    public void setNotificationId(long notificationId) {
-        this.notificationId = notificationId;
-    }
-
-    public long getNotificationType() {
-        return notificationtype;
-    }
-
-    public void setNotificationtype(long notificationtype) {
-        this.notificationtype = notificationtype;
-    }
-
-    public long getPackageid() {
-        return getLongValue("packageid");
-    }
-
-    public long getBundleid() {
-        return getLongValue("bundleid");
-    }
-
-    public String getAvatar() {
-        return getStringValue("avatar");
-    }
-
-    public String getName() {
-        return getStringValue("name");
-    }
-
-    public String getLiximessage() {
-        return getStringValue("liximessage");
-    }
-
-    private String getStringValue(String propertyName) {
-        String value = "";
-        try {
-            if (embeddata != null
-                    && embeddata.object != null
-                    && embeddata.object.has(propertyName)) {
-
-                value = embeddata.object.get(propertyName).getAsString();
-            }
-        } catch (Exception e) {
-            Timber.w(e, "exception while getting value for property: %s", propertyName);
-        }
-        return value;
-    }
-
-    private long getLongValue(String propertyName) {
-        long value = -1;
-        try {
-            if (embeddata.object.has(propertyName)) {
-                value = embeddata.object.get(propertyName).getAsLong();
-            }
-        } catch (Exception e) {
-            Timber.w(e, "exception while getting value for property: %s", propertyName);
-        }
-        return value;
-    }
-
 
 }

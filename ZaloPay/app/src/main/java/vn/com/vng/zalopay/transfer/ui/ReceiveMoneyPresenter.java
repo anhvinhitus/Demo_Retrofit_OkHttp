@@ -218,7 +218,7 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
             transId = embedData.get("transid").getAsString();
         }
 
-        final String zaloPayId = notify.getUserid();
+        final String zaloPayId = notify.userid;
 
         final long amount;
         if (embedData.has("amount")) {

@@ -62,7 +62,10 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
     public long putSync(NotificationData val) {
         NotificationGD item = transform(val);
         if (item != null) {
-            return getDaoSession().getNotificationGDDao().insert(item);
+            try {
+                return getDaoSession().getNotificationGDDao().insert(item);
+            } catch (Exception ignore) {
+            }
         }
         return -1;
     }
@@ -110,11 +113,11 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         }
 
         NotificationGD _notification = new NotificationGD();
-        _notification.appid = (entity.getAppid());
-        _notification.destuserid = (entity.getDestuserid());
-        _notification.message = (entity.getMessage());
-        _notification.timestamp = (entity.getTimestamp());
-        _notification.notificationtype = (entity.getNotificationType());
+        _notification.appid = (entity.appid);
+        _notification.destuserid = (entity.destuserid);
+        _notification.message = (entity.message);
+        _notification.timestamp = (entity.timestamp);
+        _notification.notificationtype = (entity.notificationtype);
         JsonObject embeddataJson = entity.getEmbeddata();
 
 
@@ -127,8 +130,8 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         _notification.embeddata = (embeddata);
         _notification.area = (entity.area);
-        _notification.userid = (entity.getUserid());
-        _notification.transid = (entity.getTransid());
+        _notification.userid = (entity.userid);
+        _notification.transid = (entity.transid);
         _notification.notificationstate = (entity.notificationstate);
 
         if (entity.notificationId > 0) {
@@ -150,13 +153,13 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         NotificationData _notification = new NotificationData();
 
-        _notification.setNotificationId(notificationGD.id);
+        _notification.notificationId = (notificationGD.id);
 
-        _notification.setAppid(notificationGD.appid);
-        _notification.setDestuserid(notificationGD.destuserid);
-        _notification.setMessage(notificationGD.message);
-        _notification.setTimestamp(notificationGD.timestamp);
-        _notification.setNotificationtype(notificationGD.notificationtype);
+        _notification.appid = (notificationGD.appid);
+        _notification.destuserid = (notificationGD.destuserid);
+        _notification.message = (notificationGD.message);
+        _notification.timestamp = (notificationGD.timestamp);
+        _notification.notificationtype = (notificationGD.notificationtype);
 
         String embeddata = notificationGD.embeddata;
 
@@ -171,10 +174,10 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             }
         }
 
-        _notification.setUserid(notificationGD.userid);
-        _notification.setTransid(notificationGD.transid);
+        _notification.userid = (notificationGD.userid);
+        _notification.transid = (notificationGD.transid);
         _notification.area = notificationGD.area == null ? 0L : notificationGD.area;
-        _notification.setNotificationState(notificationGD.notificationstate);
+        _notification.notificationstate = (notificationGD.notificationstate);
 
         return _notification;
     }

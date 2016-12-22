@@ -137,7 +137,7 @@ public class NotificationHelper {
 
         boolean skipStorage = false;
 
-        int notificationType = (int) notify.getNotificationType();
+        int notificationType = (int) notify.notificationtype;
 
         switch (notificationType) {
             case NotificationType.UPDATE_PROFILE_LEVEL_OK:
@@ -197,15 +197,15 @@ public class NotificationHelper {
 
     private void shouldMarkRead(NotificationData notify) {
 
-        notify.setNotificationState(Enums.NotificationState.UNREAD.getId());
+        notify.notificationstate = (Enums.NotificationState.UNREAD.getId());
 
         if (NotificationType.shouldMarkRead(notify.notificationtype)) {
-            notify.setNotificationState(Enums.NotificationState.READ.getId());
+            notify.notificationstate = (Enums.NotificationState.READ.getId());
         }
 
         if (notify.notificationtype == NotificationType.MONEY_TRANSFER
                 && mUser.zaloPayId.equals(notify.userid)) {
-            notify.setNotificationState(Enums.NotificationState.READ.getId());
+            notify.notificationstate = (Enums.NotificationState.READ.getId());
         }
     }
 

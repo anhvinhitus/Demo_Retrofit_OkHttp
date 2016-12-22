@@ -147,10 +147,10 @@ public class MessageParser implements Parser {
                 event.mtuid = message.mtuid;
             }
 
-            notificationData.setNotificationState(Enums.NotificationState.UNREAD.getId());
+            notificationData.notificationstate = (Enums.NotificationState.UNREAD.getId());
 
             if (message.status == MessageStatus.READED.getValue()) {
-                notificationData.setNotificationState(Enums.NotificationState.READ.getId());
+                notificationData.notificationstate = (Enums.NotificationState.READ.getId());
             }
             return notificationData;
         }

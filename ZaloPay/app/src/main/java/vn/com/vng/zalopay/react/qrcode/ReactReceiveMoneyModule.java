@@ -177,7 +177,7 @@ final class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implement
         int progress = embedData.get("mt_progress").getAsInt();
         String transId = embedData.has("transid") ? embedData.get("transid").getAsString() : null;
 
-        String zaloPayId = notify.getUserid();
+        String zaloPayId = notify.userid;
 
         long amount = embedData.has("amount") ? embedData.get("amount").getAsLong() : 0;
 
