@@ -2,24 +2,24 @@
     <string name="font_name">zalopay</string>
 
     <!--HomePage START-->
-    <string name="ic_pay">&#59712;</string>
-    <string name="ic_balance">&#59720;</string>
-    <string name="ic_link_card">&#59713;</string>
+    <string name="icon_pay">&#59712;</string>
+    <string name="icon_balance">&#59720;</string>
+    <string name="icon_link_card">&#59713;</string>
     <!--HomePage END-->
 
     <!--Menu START-->
-    <string name="ic_home">&#59710;</string>
-    <string name="ic_notification">&#59711;</string>
-    <!--<string name="ic_pay">&#59712;</string>-->
-    <string name="ic_deposit">&#59701;</string>
-    <string name="ic_transfer">&#59700;</string>
-    <!--<string name="ic_link_card">&#59713;</string>-->
-    <string name="ic_trans_history">&#59714;</string>
-    <string name="ic_faq">&#59716;</string>
-    <string name="ic_term_of_user">&#59717;</string>
-    <string name="ic_contact_support">&#59718;</string>
-    <string name="ic_app_info">&#59721;</string>
-    <string name="ic_sign_out">&#59715;</string>
+    <string name="icon_home">&#59710;</string>
+    <string name="icon_notification">&#59711;</string>
+    <!--<string name="icon_pay">&#59712;</string>-->
+    <string name="icon_deposit">&#59701;</string>
+    <string name="icon_transfer">&#59700;</string>
+    <!--<string name="icon_link_card">&#59713;</string>-->
+    <string name="icon_trans_history">&#59714;</string>
+    <string name="icon_faq">&#59716;</string>
+    <string name="icon_term_of_user">&#59717;</string>
+    <string name="icon_contact_support">&#59718;</string>
+    <string name="icon_app_info">&#59721;</string>
+    <string name="icon_sign_out">&#59715;</string>
     <!--Menu END-->
 
 </resources>
