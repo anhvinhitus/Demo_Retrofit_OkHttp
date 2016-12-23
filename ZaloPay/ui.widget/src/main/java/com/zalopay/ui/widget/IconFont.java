@@ -1,4 +1,4 @@
-package com.zalopay.ui.widget.textview;
+package com.zalopay.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

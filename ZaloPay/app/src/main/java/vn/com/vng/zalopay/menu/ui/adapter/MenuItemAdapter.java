@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.textview.IconFont;
+import com.zalopay.ui.widget.IconFont;
 
 import java.util.List;
 
