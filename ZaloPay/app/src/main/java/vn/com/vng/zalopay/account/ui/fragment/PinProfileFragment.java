@@ -130,7 +130,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
         }
     };
 
