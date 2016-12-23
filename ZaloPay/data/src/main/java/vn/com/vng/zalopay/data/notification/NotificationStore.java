@@ -23,8 +23,6 @@ public interface NotificationStore {
 
         long putSync(NotificationData val);
 
-        void putSync(List<NotificationData> val);
-
         void markAsRead(long nId);
 
         void markAsReadAll();

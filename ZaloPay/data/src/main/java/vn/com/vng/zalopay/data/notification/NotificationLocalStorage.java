@@ -34,14 +34,21 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         jsonParser = new JsonParser();
     }
 
+    /**
+     * Phải Insert từng item. Vì : Có trường hợp item đầu tiền mà lỗi (trùng mtuid),
+     * GreenDao sẽ bỏ qua các item sau.
+     */
+
     @Override
     public void put(List<NotificationData> val) {
         List<NotificationGD> list = transform(val);
         if (!Lists.isEmptyOrNull(list)) {
-            try {
-                getDaoSession().getNotificationGDDao().insertInTx(list);
-            } catch (Exception ex) {
-                Timber.d(ex, "Insert notify error");
+            for (NotificationGD item : list) {
+                try {
+                    getDaoSession().getNotificationGDDao().insertInTx(item);
+                } catch (Exception e) {
+                    Timber.d(e, "Insert notify error");
+                }
             }
         }
     }
@@ -70,15 +77,6 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             }
         }
         return -1;
-    }
-
-    @Override
-    public void putSync(List<NotificationData> val) {
-        List<NotificationGD> list = transform(val);
-        if (Lists.isEmptyOrNull(list)) {
-            return;
-        }
-        getDaoSession().getNotificationGDDao().insertInTx(list);
     }
 
     @Override
