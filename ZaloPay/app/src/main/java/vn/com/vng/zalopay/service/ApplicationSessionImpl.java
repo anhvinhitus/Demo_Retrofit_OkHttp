@@ -16,12 +16,15 @@ import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -40,7 +43,6 @@ public class ApplicationSessionImpl implements ApplicationSession {
     private final EventBus eventBus;
 
     private String mLoginMessage;
-
 
     public ApplicationSessionImpl(Context applicationContext, DaoSession daoSession,
                                   Navigator navigator, EventBus eventBus) {
@@ -61,17 +63,8 @@ public class ApplicationSessionImpl implements ApplicationSession {
         NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
         nm.cancelAll();
 
-        try {
-            InstanceID.getInstance(applicationContext).deleteInstanceID();
-        } catch (IOException e) {
-            Timber.d("unsubscriber gcm exception %s", e);
-        } catch (Exception ex) {
-            Timber.d(ex, "clearUserSession");
-        }
-
-        clearMerchantSession();
-
-        navigator.setLastTimeCheckPin(0);
+        taskLogout().subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
 
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
 
@@ -98,9 +91,38 @@ public class ApplicationSessionImpl implements ApplicationSession {
         }
     }
 
+    private void resetRecovery() {
+        daoSession.getDataManifestDao().deleteByKey(Constants.MANIFEST_RECOVERY_NOTIFY);
+        daoSession.getDataManifestDao().deleteByKey(Constants.MANIFEST_RECOVERY_TIME_NOTIFICATION);
+    }
 
     private void clearMerchantSession() {
         daoSession.getMerchantUserDao().deleteAll();
+    }
+
+    private void deleteInstanceID() {
+        try {
+            InstanceID.getInstance(applicationContext).deleteInstanceID();
+        } catch (IOException e) {
+            Timber.d("deleteInstanceID gcm exception %s", e);
+        } catch (Exception ex) {
+            Timber.d(ex, "deleteInstanceID error");
+        }
+    }
+
+    private Observable<Boolean> taskLogout() {
+        return ObservableHelper.makeObservable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                clearMerchantSession();
+                deleteInstanceID();
+                resetRecovery();
+
+                navigator.setLastTimeCheckPin(0);
+
+                return Boolean.TRUE;
+            }
+        });
     }
 
     @Override

@@ -26,8 +26,9 @@ public class Constants {
     public static final String MANIF_LASTTIME_UPDATE_ZALO_FRIEND = "manif_lt_zalo_friend";
     public static final String MANIFEST_LOADED_TRANSACTION_SUCCESS = "manifest_loaded_transaction_success";
     public static final String MANIFEST_LOADED_TRANSACTION_FAIL = "manifest_loaded_transaction_fail";
-    public static final String MANIFEST_RECOVERY_NOTIFICATION = "manifest_recovery_notification";
+    public static final String MANIFEST_RECOVERY_TIME_NOTIFICATION = "manifest_recovery_notification";
     public static final String MANIFEST_LASTTIME_SYNC_CONTACT = "manifest_lt_sync_contact";
+    public static final String MANIFEST_RECOVERY_NOTIFY = "manifest_notify_recovery";
 
     public interface TPE_API {
         String CREATEWALLETORDER = "v001/tpe/createwalletorder";

@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -67,6 +68,9 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
     @Inject
     NotificationHelper mNotificationHelper;
+
+    @Inject
+    ApplicationSession mApplicationSession;
 
     @Inject
     ThreadExecutor mExecutor;
@@ -132,10 +136,8 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         try {
             token = GcmHelper.getTokenGcm(mContext);
             subscribeTopics(token);
-            // sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, true).apply();
         } catch (Exception ex) {
             Timber.d(ex, "exception in working with GCM");
-            //  sharedPreferences.edit().putBoolean(Constants.SENT_TOKEN_TO_SERVER, false).apply();
         }
 
         this.connect(token);
@@ -180,8 +182,8 @@ public class ZPNotificationService implements OnReceiverMessageListener {
                     Timber.d("Session is expired");
                     // clear user session and logout
 
-                    getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_token_expired_message);
-                    getAppComponent().applicationSession().clearUserSession();
+                    mApplicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
+                    mApplicationSession.clearUserSession();
                 }
             } else {
                 Timber.d("Socket authentication succeeded");
@@ -204,6 +206,8 @@ public class ZPNotificationService implements OnReceiverMessageListener {
             }
 
             if (mNotificationHelper != null) {
+                //Cần recoveryNotification xong để set lasttime recovery xong,
+                // mới tiếp tục sendmessage recovery.
                 Subscription sub = mNotificationHelper.recoveryNotification(listMessage)
                         .filter(new Func1<Void, Boolean>() {
                             @Override

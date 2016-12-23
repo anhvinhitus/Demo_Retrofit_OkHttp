@@ -24,7 +24,7 @@ import vn.com.vng.zalopay.domain.model.User;
  */
 public class NotificationRepository implements NotificationStore.Repository {
 
-    private final NotificationStore.LocalStorage localStorage;
+    private final NotificationStore.LocalStorage mLocalStorage;
     private final EventBus mEventBus;
     private final RxBus mRxBus;
     private final NotificationStore.RequestService mRequestService;
@@ -35,7 +35,7 @@ public class NotificationRepository implements NotificationStore.Repository {
                                   RxBus rxBus,
                                   NotificationStore.RequestService requestService,
                                   User currentUser) {
-        this.localStorage = localStorage;
+        this.mLocalStorage = localStorage;
         this.mEventBus = eventBus;
         this.mRxBus = rxBus;
         mRequestService = requestService;
@@ -45,18 +45,18 @@ public class NotificationRepository implements NotificationStore.Repository {
 
     @Override
     public Observable<List<NotificationData>> getNotification(int pageIndex, int count) {
-        return ObservableHelper.makeObservable(() -> localStorage.get(pageIndex, count));
+        return ObservableHelper.makeObservable(() -> mLocalStorage.get(pageIndex, count));
     }
 
     @Override
     public Observable<Integer> totalNotificationUnRead() {
-        return ObservableHelper.makeObservable(localStorage::totalNotificationUnRead);
+        return ObservableHelper.makeObservable(mLocalStorage::totalNotificationUnRead);
     }
 
     @Override
     public Observable<Boolean> markAsRead(long nId) {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.markAsRead(nId);
+            mLocalStorage.markAsRead(nId);
             return Boolean.TRUE;
         });
     }
@@ -69,7 +69,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     public Observable<Long> putNotify(NotificationData notify) {
         return ObservableHelper.makeObservable(() -> {
 
-            long rowId = localStorage.putSync(notify);
+            long rowId = mLocalStorage.putSync(notify);
 
             Timber.d("put notification rowId [%s] read [%s]", rowId, notify.notificationstate);
 
@@ -88,20 +88,20 @@ public class NotificationRepository implements NotificationStore.Repository {
     @Override
     public Observable<Void> putNotify(List<NotificationData> notify) {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.put(notify);
+            mLocalStorage.put(notify);
             return null;
         });
     }
 
     @Override
     public Observable<NotificationData> getNotify(long id) {
-        return ObservableHelper.makeObservable(() -> localStorage.get(id));
+        return ObservableHelper.makeObservable(() -> mLocalStorage.get(id));
     }
 
     @Override
     public Observable<Boolean> markViewAllNotify() {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.markViewAllNotify();
+            mLocalStorage.markViewAllNotify();
             mEventBus.post(new ReadNotifyEvent());
             return Boolean.TRUE;
         });
@@ -110,7 +110,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     @Override
     public Observable<Boolean> removeNotification(long id) {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.delete(id);
+            mLocalStorage.delete(id);
             return Boolean.TRUE;
         });
     }
@@ -118,7 +118,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     @Override
     public Observable<Boolean> removeAllNotification() {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.deleteAll();
+            mLocalStorage.deleteAll();
             return Boolean.TRUE;
         });
     }
@@ -139,36 +139,39 @@ public class NotificationRepository implements NotificationStore.Repository {
 
     @Override
     public Observable<Long> getOldestTimeNotification() {
-        return Observable.just(localStorage.getOldestTimeNotification());
+        return Observable.just(mLocalStorage.getOldestTimeNotification());
     }
 
     @Override
     public Observable<Long> getOldestTimeRecoveryNotification() {
-        return Observable.just(localStorage.getDataManifest(Constants.MANIFEST_RECOVERY_NOTIFICATION, 0L));
+        return Observable.just(mLocalStorage.getDataManifest(Constants.MANIFEST_RECOVERY_TIME_NOTIFICATION, 0L));
     }
 
     @Override
     public Observable<Void> recoveryNotify(List<NotificationData> notify) {
         return putNotify(notify)
-                .doOnNext(aVoid -> saveTimeRecovery(notify));
+                .doOnNext(aVoid -> {
+                    mLocalStorage.setRecovery(true);
+                    saveTimeRecovery(notify);
+                });
     }
 
     private void saveTimeRecovery(List<NotificationData> notify) {
         long time = getMinTimeStamp(notify);
         Timber.d("Save time recovery [%s]", time);
         if (time > 0) {
-            localStorage.insertDataManifest(Constants.MANIFEST_RECOVERY_NOTIFICATION, String.valueOf(time));
+            mLocalStorage.insertDataManifest(Constants.MANIFEST_RECOVERY_TIME_NOTIFICATION, String.valueOf(time));
         }
     }
 
     public Observable<Boolean> isNotificationExisted(long mtaid, long mtuid) {
-        return ObservableHelper.makeObservable(() -> localStorage.isNotificationExisted(mtaid, mtuid));
+        return ObservableHelper.makeObservable(() -> mLocalStorage.isNotificationExisted(mtaid, mtuid));
     }
 
     @Override
     public Observable<Boolean> removeNotify(long notificationId) {
         return ObservableHelper.makeObservable(() -> {
-                    localStorage.delete(notificationId);
+                    mLocalStorage.delete(notificationId);
                     return Boolean.TRUE;
                 }
         );
@@ -177,7 +180,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     @Override
     public Observable<Boolean> removeNotifyByType(long notifyType, long appId, long transid) {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.delete(notifyType, appId, transid);
+            mLocalStorage.delete(notifyType, appId, transid);
             return Boolean.TRUE;
         });
     }
@@ -185,7 +188,7 @@ public class NotificationRepository implements NotificationStore.Repository {
     @Override
     public Observable<Boolean> removeNotifyByMsgId(int mtuid, int mtaid) {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.delete(mtuid, mtaid);
+            mLocalStorage.delete(mtuid, mtaid);
             return Boolean.TRUE;
         });
     }
@@ -209,5 +212,10 @@ public class NotificationRepository implements NotificationStore.Repository {
         }
 
         return minTime;
+    }
+
+    @Override
+    public Boolean isRecovery() {
+        return mLocalStorage.isRecovery();
     }
 }

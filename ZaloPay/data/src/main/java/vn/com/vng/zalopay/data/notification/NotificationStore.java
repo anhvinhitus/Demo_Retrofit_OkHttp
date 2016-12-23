@@ -54,10 +54,13 @@ public interface NotificationStore {
          */
         boolean isNotificationExisted(long mtaid, long mtuid);
 
-
         void delete(long notifyType, long appId, long transid);
 
         void delete(int mtuid, int mtaid);
+
+        void setRecovery(boolean recovery);
+
+        boolean isRecovery();
     }
 
     interface RequestService {
@@ -111,5 +114,7 @@ public interface NotificationStore {
         Observable<Boolean> removeNotifyByType(long notifyType, long appId, long transid);
 
         Observable<Boolean> removeNotifyByMsgId(int mtuid, int mtaid);
+
+        Boolean isRecovery();
     }
 }

@@ -455,7 +455,7 @@ public class NotificationHelper {
         return mNotifyRepository.recoveryNotify(listMessage);
     }
 
-    protected void recoveryTransaction() {
+    void recoveryTransaction() {
         Timber.d("recovery Transaction");
         Subscription subscription = mNotifyRepository.getOldestTimeNotification()
                 .filter(new Func1<Long, Boolean>() {
@@ -476,12 +476,15 @@ public class NotificationHelper {
         compositeSubscription.add(subscription);
     }
 
-    protected Observable<Long> getOldestTimeRecoveryNotification(final boolean isFirst) {
+    Observable<Long> getOldestTimeRecoveryNotification(final boolean isFirst) {
         return mNotifyRepository.getOldestTimeRecoveryNotification()
                 .filter(new Func1<Long, Boolean>() {
                     @Override
                     public Boolean call(Long time) {
-                        return !isFirst || time <= 0;
+                        boolean filter = !(isFirst && mNotifyRepository.isRecovery()) && (!isFirst || time <= 0);
+                        Timber.d("Recovery isFirst [%s] Cần recovery [%s] với time [%s]", isFirst, filter, time);
+
+                        return filter;
                     }
                 });
     }

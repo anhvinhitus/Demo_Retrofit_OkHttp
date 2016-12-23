@@ -60,7 +60,7 @@ public class SqlBaseScopeImpl {
         return def;
     }
 
-    void deleteByKey(String key) {
+    protected void deleteByKey(String key) {
         daoSession.getDataManifestDao().deleteByKey(key);
     }
 

@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.Enums;
 
 import static java.util.Collections.emptyList;
+import static vn.com.vng.zalopay.data.Constants.MANIFEST_RECOVERY_NOTIFY;
 
 /**
  * Created by AnhHieu on 6/20/16.
@@ -357,5 +358,19 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             return;
         }
         mDao.delete(notifications.get(0));
+    }
+
+    @Override
+    public void setRecovery(boolean recovery) {
+        if (recovery) {
+            insertDataManifest(MANIFEST_RECOVERY_NOTIFY, "recovery");
+        } else {
+            deleteByKey(MANIFEST_RECOVERY_NOTIFY);
+        }
+    }
+
+    @Override
+    public boolean isRecovery() {
+        return !TextUtils.isEmpty(getDataManifest(MANIFEST_RECOVERY_NOTIFY));
     }
 }
