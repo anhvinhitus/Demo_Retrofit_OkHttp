@@ -37,6 +37,7 @@ public class IconFont extends TextView {
             return;
         }
         String fontAsset = typedArray.getString(R.styleable.IconFont_typefaceAsset);
+        String iconName = typedArray.getString(R.styleable.IconFont_iconName);
         typedArray.recycle();
 
         if (TextUtils.isEmpty(fontAsset)) {
@@ -53,5 +54,6 @@ public class IconFont extends TextView {
         } else {
             Log.d("IconFont", String.format("Could not create a font from asset: %s", fontAsset));
         }
+        setText(iconName);
     }
 }

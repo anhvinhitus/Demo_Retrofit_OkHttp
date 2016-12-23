@@ -23,9 +23,9 @@
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/icon_pay"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_size_home_function"
+                app:iconName="@string/icon_pay"
                 app:typefaceAsset="@string/font_name"/>
 
             <TextView
@@ -52,9 +52,9 @@
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/icon_balance"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_size_home_function"
+                app:iconName="@string/icon_balance"
                 app:typefaceAsset="@string/font_name"/>
 
             <TextView
@@ -81,9 +81,9 @@
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/icon_link_card"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_size_home_function"
+                app:iconName="@string/icon_link_card"
                 app:typefaceAsset="@string/font_name"/>
 
             <TextView

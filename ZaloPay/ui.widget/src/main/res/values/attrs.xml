@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="IconFont">
         <attr name="typefaceAsset" format="string"/>
+        <attr name="iconName" format="string"/>
     </declare-styleable>
 
     <!--ATTR DEFAULT APPLICATION-->

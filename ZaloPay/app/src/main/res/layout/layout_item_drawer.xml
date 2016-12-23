@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/app_padding"
             android:textSize="@dimen/font_size_menu"
-            app:text="@string/icon_pay"
             app:typefaceAsset="@string/font_name"/>
 
         <TextView
