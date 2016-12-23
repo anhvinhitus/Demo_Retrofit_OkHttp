@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -102,7 +103,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
      */
     private List<UserRPEntity> filterUserWithZaloPayId(List<UserRPEntity> entities) {
         if (Lists.isEmptyOrNull(entities)) {
-            return entities;
+            return Collections.emptyList();
         }
 
         List<UserRPEntity> ret = new ArrayList<>();
@@ -117,11 +118,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         }
 
         if (userWithoutZPId.size() > 0) {
-            Timber.d("User without zalopayId size [%s]", ret.size());
-        }
-
-        if (ret.size() == 0) {
-            return entities;
+            Timber.d("User without zalopayId size [%s]", userWithoutZPId.size());
         }
 
         return ret;
