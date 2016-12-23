@@ -407,4 +407,5 @@
     <string name="please_update_profile">Vui lòng cập nhật thông tin tài khoản.</string>
     <string name="data_invalid_try_again">Dữ liệu không hợp lệ, vui lòng thử lại.</string>
     <string name="friend.list.empty">Bạn chưa có bạn bè trên Zalo</string>
+    <string name="no.result.your.search">Không có kết quả nào phù hợp với tìm kiếm của bạn</string>
 </resources>

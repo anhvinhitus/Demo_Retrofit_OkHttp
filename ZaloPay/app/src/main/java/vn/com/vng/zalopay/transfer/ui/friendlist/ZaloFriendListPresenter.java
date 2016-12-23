@@ -85,7 +85,8 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
 
     void doSearch(String s) {
         Subscription subscription = mFriendRepository.searchZaloFriend(s)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FriendListSubscriber());
 
         mSubscription.add(subscription);
@@ -116,7 +117,6 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
     }
 
     private class FriendListSubscriber extends DefaultSubscriber<Cursor> {
-
         int next;
 
         @Override

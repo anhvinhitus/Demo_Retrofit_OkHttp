@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/spacing.medium.t"
-            android:src="@drawable/ic_seach" />
+            android:src="@drawable/ic_search" />
 
         <vn.com.vng.zalopay.ui.widget.ClearableEditText
             android:id="@+id/edtSearch"

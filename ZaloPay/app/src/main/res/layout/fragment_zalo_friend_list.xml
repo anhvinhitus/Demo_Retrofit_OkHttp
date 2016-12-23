@@ -8,7 +8,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:background="@color/white">
 
         <ImageView
@@ -16,23 +16,63 @@
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_seach" />
+            android:src="@drawable/ic_search" />
 
         <com.zalopay.ui.widget.edittext.ZPEditText
             android:id="@+id/edtSearch"
             style="@style/ZaloPayEditText"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:hint="@string/hint_zalo_contact"
+            android:inputType="text|textCapWords"
+            android:paddingBottom="13dp"
             android:paddingLeft="50dp"
             app:zlp_floatingLabel="none" />
 
     </FrameLayout>
 
-    <include
-        layout="@layout/fragment_pull_listview"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <com.zalopay.ui.widget.MultiSwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/listview"
+                style="@style/ListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.zalopay.ui.widget.MultiSwipeRefreshLayout>
+
+        <include layout="@layout/progress_layout" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_nocontact"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_empty"
+                style="@style/TextViewEmpty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
 
 </LinearLayout>

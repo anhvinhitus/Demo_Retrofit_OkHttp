@@ -67,7 +67,13 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     ZaloFriendListPresenter mPresenter;
 
     @BindView(R.id.tv_empty)
-    TextView mEmptyView;
+    TextView mTvEmptyView;
+
+    @BindView(R.id.iv_empty)
+    View mEmtpyView;
+
+    @BindView(R.id.edtSearch)
+    TextView mEdtSearchView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -142,7 +148,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     public void afterTextChanged(Editable editable) {
         String keySearch = Strings.trim(editable.toString());
         Timber.d("afterTextChanged keySearch %s", keySearch);
-
+        mSwipeRefreshView.setEnabled(keySearch.length() == 0);
         mPresenter.doSearch(keySearch);
     }
 
@@ -203,10 +209,18 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
 
     @Override
     public void checkIfEmpty() {
-        if (mAdapter.getCount() == 0) {
-            mEmptyView.setText(R.string.friend_list_empty);
+        if (mAdapter.getCount() != 0) {
+            mTvEmptyView.setText(null);
+            mEmtpyView.setVisibility(View.GONE);
+            return;
+        }
+
+        if (mEdtSearchView.length() == 0) {
+            mTvEmptyView.setText(R.string.friend_list_empty);
+            mEmtpyView.setVisibility(View.VISIBLE);
         } else {
-            mEmptyView.setText(null);
+            mTvEmptyView.setText(R.string.no_result_your_search);
+            mEmtpyView.setVisibility(View.GONE);
         }
     }
 }
