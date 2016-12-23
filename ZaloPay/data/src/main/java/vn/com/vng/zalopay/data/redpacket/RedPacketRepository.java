@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -92,8 +93,38 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     public Observable<Boolean> sendBundle(long bundleID, List<UserRPEntity> entities) {
         Timber.d("sendBundle: bundleId %s friend %s", bundleID, entities);
         return makeObservable(this::getSenderInfo)
-                .flatMap(s -> mRequestService.submittosendbundlebyzalopayinfo(bundleID, mGson.toJson(entities), mGson.toJson(s), user.accesstoken))
+                .flatMap(s -> mRequestService.submittosendbundlebyzalopayinfo(bundleID, mGson.toJson(filterUserWithZaloPayId(entities)), mGson.toJson(s), user.accesstoken))
                 .map(BaseResponse::isSuccessfulResponse);
+    }
+
+    /**
+     * Chỉ send bundle cho nhưng user có zalopayid
+     */
+    private List<UserRPEntity> filterUserWithZaloPayId(List<UserRPEntity> entities) {
+        if (Lists.isEmptyOrNull(entities)) {
+            return entities;
+        }
+
+        List<UserRPEntity> ret = new ArrayList<>();
+        List<UserRPEntity> userWithoutZPId = new ArrayList<>();
+        for (UserRPEntity entity : entities) {
+            if (TextUtils.isEmpty(entity.zaloPayID)) {
+                userWithoutZPId.add(entity);
+                continue;
+            }
+
+            ret.add(entity);
+        }
+
+        if (userWithoutZPId.size() > 0) {
+            Timber.d("User without zalopayId size [%s]", ret.size());
+        }
+
+        if (ret.size() == 0) {
+            return entities;
+        }
+
+        return ret;
     }
 
     private UserRPEntity getSenderInfo() {
