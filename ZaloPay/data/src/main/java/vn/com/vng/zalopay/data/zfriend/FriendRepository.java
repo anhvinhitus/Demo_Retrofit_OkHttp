@@ -233,7 +233,7 @@ public class FriendRepository implements FriendStore.Repository {
         return getListUserZaloPayLocal(listZaloId)
                 .map(entities -> listUserWithoutZaloPayId(entities, listZaloId))
                 .flatMap(listUserWithoutId -> {
-                    if (listUserWithoutId.size() == 1) {
+                    if (Lists.isEmptyOrNull(listUserWithoutId)) {
                         return getListUserZaloPayLocal(listZaloId);
                     } else {
                         return fetchListUserZaloPay(listUserWithoutId, listZaloId);

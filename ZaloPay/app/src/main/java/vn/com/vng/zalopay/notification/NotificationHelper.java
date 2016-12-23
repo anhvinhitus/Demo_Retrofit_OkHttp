@@ -38,6 +38,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -237,9 +238,10 @@ public class NotificationHelper {
             String senderName = embeddata.get("name").getAsString();
             String message = embeddata.get("liximessage").getAsString();
 
-            mRedPacketRepository.addReceivedRedPacket(packageid, bundleid, senderName, senderAvatar, message)
+            Subscription subscription = mRedPacketRepository.addReceivedRedPacket(packageid, bundleid, senderName, senderAvatar, message)
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<>());
+            compositeSubscription.add(subscription);
         } catch (Exception ex) {
             Timber.e(ex, "Extract RedPacket error");
         }
@@ -432,10 +434,11 @@ public class NotificationHelper {
     }
 
     private void processRecoveryNotification(List<NotificationData> listMessage) {
-        if (listMessage == null || listMessage.size() <= 0) {
+        if (Lists.isEmptyOrNull(listMessage)) {
             return;
         }
-        for (NotificationData notify: listMessage) {
+        
+        for (NotificationData notify : listMessage) {
             if (notify == null) {
                 continue;
             }
