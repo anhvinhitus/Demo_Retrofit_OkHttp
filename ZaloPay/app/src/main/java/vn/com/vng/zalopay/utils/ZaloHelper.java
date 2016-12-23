@@ -16,8 +16,15 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
  */
 
 public class ZaloHelper {
+    private static ZaloOpenAPICallback mCallback = null;
     public static void getZaloProfileInfo(Context context, final UserConfig userConfig) {
-        ZaloSDK.Instance.getProfile(context, new ZaloOpenAPICallback() {
+        Timber.d("request Zalo Profile");
+        if (mCallback != null) {
+            Timber.w("Get Zalo Profile is already in progress");
+            return;
+        }
+
+        mCallback = new ZaloOpenAPICallback() {
             @Override
             public void onResult(JSONObject profile) {
                 try {
@@ -26,7 +33,11 @@ public class ZaloHelper {
                 } catch (Exception ex) {
                     Timber.w(ex, " Exception :");
                 }
+
+                mCallback = null;
             }
-        });
+        };
+
+        ZaloSDK.Instance.getProfile(context, mCallback);
     }
 }
