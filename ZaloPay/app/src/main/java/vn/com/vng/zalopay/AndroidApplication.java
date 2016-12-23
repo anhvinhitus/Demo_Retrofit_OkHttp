@@ -17,6 +17,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.squareup.leakcanary.LeakCanary;
 import com.zalopay.apploader.logging.ReactNativeAppLoaderLogger;
 import com.zalopay.ui.widget.util.FontHelper;
+import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import io.fabric.sdk.android.Fabric;
@@ -86,6 +87,10 @@ public class AndroidApplication extends Application {
 
         Timber.d(" onCreate " + appComponent);
         ZaloSDKApplication.wrap(this);
+        if (!BuildConfig.DEBUG) {
+            // Disable Zalo log on RELEASE
+            ZaloSDK.Instance.setLogLevel(Log.WARN);
+        }
 
         initPaymentSdk();
 
