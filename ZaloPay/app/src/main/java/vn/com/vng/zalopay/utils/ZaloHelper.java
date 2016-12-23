@@ -21,6 +21,7 @@ public class ZaloHelper {
             @Override
             public void onResult(JSONObject profile) {
                 try {
+                    Timber.d("Got Zalo Profile: %s", profile);
                     userConfig.saveZaloUserInfo(profile);
                 } catch (Exception ex) {
                     Timber.w(ex, " Exception :");
