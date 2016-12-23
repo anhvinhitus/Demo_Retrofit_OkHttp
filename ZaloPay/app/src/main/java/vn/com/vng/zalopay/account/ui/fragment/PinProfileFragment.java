@@ -172,6 +172,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
             mScrollView.smoothScrollTo(0, txtTitle.getHeight());
         } else if (mEdtPhoneView.isFocused()) {
             mScrollView.fullScroll(View.FOCUS_DOWN);
+            mEdtPhoneView.requestFocusFromTouch();
         }
     }
 
