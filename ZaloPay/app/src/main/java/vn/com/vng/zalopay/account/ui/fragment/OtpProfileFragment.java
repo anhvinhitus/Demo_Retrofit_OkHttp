@@ -217,5 +217,10 @@ public class OtpProfileFragment extends RuntimePermissionFragment implements IOT
     @Override
     protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
         Timber.d("permissionGranted: %s", permissionRequestCode);
+	}
+
+    public boolean onBackPressed() {
+        hideKeyboard();
+        return super.onBackPressed();
     }
 }

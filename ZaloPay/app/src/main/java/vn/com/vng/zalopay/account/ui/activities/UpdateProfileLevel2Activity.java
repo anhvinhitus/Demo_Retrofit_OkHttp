@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
@@ -39,21 +38,18 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
 
-
     private String walletTransId = null;
     private PaymentWrapper paymentWrapper;
     private SweetAlertDialog mProgressDialog;
     private String mCurrentPhone = null;
+    private ProfileSlidePagerAdapter mAdapter;
+    private int mCurrentPage;
 
     @Inject
     PreProfilePresenter presenter;
 
     @BindView(R.id.viewPager)
     NonSwipeableViewPager mViewPager;
-
-    private ProfileSlidePagerAdapter mAdapter;
-
-    private int mCurrentPage;
 
     @Override
     protected void setupActivityComponent() {
@@ -221,7 +217,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
 
     @Override
     public void onBackPressed() {
-
         if (mViewPager == null || mAdapter == null) {
             setResult(RESULT_CANCELED);
             super.onBackPressed();
@@ -229,7 +224,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
         }
 
         if (mViewPager.getCurrentItem() == 0) {
-
             Fragment fragment = mAdapter.getPage(0);
             if (fragment instanceof BaseFragment) {
                 ((BaseFragment) fragment).onBackPressed();
@@ -238,6 +232,13 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
             setResult(RESULT_CANCELED);
             super.onBackPressed();
         } else {
+            if (mViewPager.getCurrentItem() > 0
+                    && mViewPager.getCurrentItem() < mAdapter.getCount()) {
+                Fragment fragment = mAdapter.getPage(mViewPager.getCurrentItem());
+                if (fragment instanceof BaseFragment) {
+                    ((BaseFragment) fragment).onBackPressed();
+                }
+            }
             ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_INPUTNONE);
             mViewPager.setCurrentItem(0);
         }
