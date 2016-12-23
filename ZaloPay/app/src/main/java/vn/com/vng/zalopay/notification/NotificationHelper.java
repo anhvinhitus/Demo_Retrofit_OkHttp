@@ -431,8 +431,27 @@ public class NotificationHelper {
         mEventBus.post(new RefreshPaymentSdkEvent());
     }
 
+    private void processRecoveryNotification(List<NotificationData> listMessage) {
+        if (listMessage == null || listMessage.size() <= 0) {
+            return;
+        }
+        for (NotificationData notify: listMessage) {
+            if (notify == null) {
+                continue;
+            }
+            int notificationType = (int) notify.notificationtype;
+
+            switch (notificationType) {
+                case NotificationType.SEND_RED_PACKET:
+                    extractRedPacketFromNotification(notify);
+                    break;
+            }
+        }
+    }
+
     Observable<Void> recoveryNotification(List<NotificationData> listMessage) {
         Timber.d("Recovery notification size [%s]", listMessage.size());
+        processRecoveryNotification(listMessage);
         return mNotifyRepository.recoveryNotify(listMessage);
     }
 
