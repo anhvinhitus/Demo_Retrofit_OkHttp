@@ -18,6 +18,7 @@ import retrofit2.adapter.rxjava.HttpException;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.GenericException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
@@ -64,6 +65,8 @@ public class ErrorMessageFactory {
             message = context.getString(R.string.exception_no_connection);
         } else if (exception instanceof ServerMaintainException) {
             message = null;
+        } else if (exception instanceof GenericException) {
+            message = exception.getMessage();
         }
 
         return message;

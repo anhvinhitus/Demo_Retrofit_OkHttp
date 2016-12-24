@@ -3,24 +3,20 @@ package vn.com.vng.zalopay.withdraw.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.vng.zalopay.utils.VNDCurrencyTextWatcher;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -34,11 +30,8 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  */
 public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
-    private long mAmount = 0;
     private long minWithdrawAmount;
     private long maxWithdrawAmount;
-    private String mValidMinAmount = "";
-    private String mValidMaxAmount = "";
 
     @Inject
     WithdrawPresenter mPresenter;
@@ -46,61 +39,15 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     @BindView(R.id.tvResourceMoney)
     TextView tvResourceMoney;
 
-    @BindView(R.id.textInputAmount)
-    TextInputLayout textInputAmount;
-
     @BindView(R.id.edtAmount)
-    EditText edtAmount;
+    MoneyEditText mEdtMoneyView;
 
     @BindView(R.id.btnContinue)
-    View btnContinue;
+    View mBtnContinueView;
 
     @OnClick(R.id.btnContinue)
-    public void setOnClickContinue(){
-        if (!isValidAmount()) {
-            return;
-        }
-        mPresenter.continueWithdraw(mAmount);
-    }
-
-    @Override
-    public void showAmountError(String error) {
-        if (!TextUtils.isEmpty(error)) {
-            textInputAmount.setErrorEnabled(true);
-            textInputAmount.setError(error);
-        } else {
-            hideAmountError();
-        }
-    }
-
-    private void hideAmountError() {
-        textInputAmount.setErrorEnabled(false);
-        textInputAmount.setError(null);
-    }
-
-    public boolean isValidMinAmount() {
-        if (mAmount < minWithdrawAmount) {
-            showAmountError(mValidMinAmount);
-            return false;
-        }
-        return true;
-    }
-
-    public boolean isValidMaxAmount() {
-        if (mAmount > maxWithdrawAmount) {
-            showAmountError(mValidMaxAmount);
-            return false;
-        }
-        return true;
-    }
-
-    public boolean isValidAmount() {
-        if (!isValidMinAmount()) {
-            return false;
-        }
-
-        return isValidMaxAmount();
-
+    public void setOnClickContinue() {
+        mPresenter.withdraw(mEdtMoneyView.getAmount());
     }
 
     public WithdrawFragment() {
@@ -141,43 +88,18 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
         } catch (Exception e) {
             Timber.w(e, "Get min/max withdraw from paymentSDK exception: [%s]", e.getMessage());
         }
-        if (minWithdrawAmount <= 0) {
-            minWithdrawAmount = Constants.MIN_WITHDRAW_MONEY;
-        }
-        if (maxWithdrawAmount <= 0) {
-            maxWithdrawAmount = Constants.MAX_WITHDRAW_MONEY;
-        }
-        mValidMinAmount = String.format(getResources().getString(R.string.min_money),
-                CurrencyUtil.formatCurrency(minWithdrawAmount, true));
-        mValidMaxAmount = String.format(getResources().getString(R.string.max_money),
-                CurrencyUtil.formatCurrency(maxWithdrawAmount, true));
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
-        edtAmount.requestFocus();
-        edtAmount.addTextChangedListener(new VNDCurrencyTextWatcher(edtAmount) {
-            @Override
-            public void onValueUpdate(long value) {
-                mAmount = value;
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                super.afterTextChanged(s);
-                hideAmountError();
-                isValidMaxAmount();
-                checkShowBtnContinue();
-            }
-        });
         tvResourceMoney.setText(String.format(getResources().getString(R.string.title_min_money),
                 CurrencyUtil.formatCurrency(minWithdrawAmount, false)));
-    }
 
-    private void checkShowBtnContinue() {
-        btnContinue.setEnabled(mAmount > 0);
+        mEdtMoneyView.setMinMaxMoney(minWithdrawAmount, maxWithdrawAmount);
+
+        mBtnContinueView.setEnabled(mEdtMoneyView.isValid());
     }
 
     @Override
@@ -211,6 +133,11 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @OnTextChanged(value = R.id.edtAmount, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    public void onAmountChanged(CharSequence s) {
+        mBtnContinueView.setEnabled(mEdtMoneyView.isValid());
+    }
+
     @Override
     public void showLoading() {
         super.showProgressDialog();
@@ -232,7 +159,9 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     }
 
     @Override
-    public void onTokenInvalid() {
-
+    public void showAmountError(String error) {
+        if (mEdtMoneyView != null) {
+            mEdtMoneyView.setError(error);
+        }
     }
 }

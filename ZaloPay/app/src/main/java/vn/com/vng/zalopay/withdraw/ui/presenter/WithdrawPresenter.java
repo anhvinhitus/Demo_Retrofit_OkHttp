@@ -1,18 +1,22 @@
 package vn.com.vng.zalopay.withdraw.ui.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
+import vn.com.vng.zalopay.data.exception.GenericException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -47,15 +51,20 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     @Inject
     User mUser;
 
+    private Context mContext;
+
     @Inject
-    public WithdrawPresenter(BalanceStore.Repository balanceRepository,
+    public WithdrawPresenter(Context context, BalanceStore.Repository balanceRepository,
                              ZaloPayRepository zaloPayRepository,
                              TransactionStore.Repository transactionRepository,
-                             Navigator navigator, ApplicationSession applicationSession) {
+                             Navigator navigator, ApplicationSession applicationSession
+    ) {
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mNavigator = navigator;
-        mApplicationSession = applicationSession;
+        this.mApplicationSession = applicationSession;
+        this.mContext = context;
+
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
@@ -65,22 +74,22 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 .build();
     }
 
-    public void continueWithdraw(long amount) {
-        withdraw(amount);
-    }
-
-    private void withdraw(long amount) {
+    public void withdraw(final long amount) {
         if (amount <= 0 || mView == null) {
             return;
         }
 
-        if (amount > mBalanceRepository.currentBalance()) {
-            mView.showAmountError(mView.getContext().getString(R.string.withdraw_exceed_balance));
-            return;
-        }
-        mView.showLoading();
-        String description = mView.getContext().getString(R.string.withdraw_description);
-        Subscription subscription = mZaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WITHDRAW.toString(), mUser.zaloPayId, description)
+        Subscription subscription = mBalanceRepository.balanceLocal()
+                .flatMap(new Func1<Long, Observable<Order>>() {
+                    @Override
+                    public Observable<Order> call(Long balance) {
+                        if (amount > balance) {
+                            return Observable.error(new GenericException(mContext.getString(R.string.withdraw_exceed_balance)));
+                        } else {
+                            return mZaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WITHDRAW.toString(), mUser.zaloPayId, mContext.getString(R.string.withdraw_description));
+                        }
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CreateWalletOrderSubscriber());
@@ -97,6 +106,13 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
+
+        @Override
+        public void onStart() {
+            if (mView != null) {
+                mView.showLoading();
+            }
+        }
 
         @Override
         public void onNext(Order order) {
@@ -118,15 +134,17 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     }
 
     private void onCreateWalletOrderError(Throwable e) {
-        if (mView == null || mView.getContext() == null) {
+        if (mView == null) {
             return;
         }
 
         mView.hideLoading();
         if (e instanceof NetworkConnectionException) {
             mView.showNetworkErrorDialog();
+        } else if (e instanceof GenericException) {
+            mView.showAmountError(e.getMessage());
         } else {
-            String message = ErrorMessageFactory.create(mView.getContext(), e);
+            String message = ErrorMessageFactory.create(mContext, e);
             mView.showError(message);
         }
     }
@@ -178,7 +196,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
             if (mView == null) {
                 return;
             }
-            mView.onTokenInvalid();
             mApplicationSession.clearUserSession();
         }
 
