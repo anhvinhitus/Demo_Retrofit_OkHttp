@@ -64,9 +64,10 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @OnClick(R.id.btnDeposit)
     public void onClickBtnDeposit() {
-        if (!mEdtAmountView.isValid()) {
+        if (!mEdtAmountView.validate()) {
             return;
         }
+
         mPresenter.deposit(mEdtAmountView.getAmount());
     }
 

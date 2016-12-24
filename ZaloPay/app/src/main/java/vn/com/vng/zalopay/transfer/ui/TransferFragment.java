@@ -58,7 +58,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     ImageLoader mImageLoader;
 
     @BindView(R.id.rootView)
-    KeyboardFrameLayout rootView;
+    KeyboardFrameLayout mRootView;
 
     @BindView(R.id.ScrollView)
     ScrollView mScrollView;
@@ -73,10 +73,10 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     TextView mTextViewZaloPayName;
 
     @BindView(R.id.edtAmount)
-    MoneyEditText edtAmount;
+    MoneyEditText mAmountView;
 
     @BindView(R.id.edtTransferMsg)
-    ZPEditText edtTransferMsg;
+    ZPEditText mEdtMessageView;
 
     @BindView(R.id.btnContinue)
     View btnContinue;
@@ -114,16 +114,16 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
         mPresenter.setTransferMode(argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT));
 
-        rootView.setOnKeyboardStateListener(new OnKeyboardStateChangeListener() {
+        mRootView.setOnKeyboardStateListener(new OnKeyboardStateChangeListener() {
             @Override
             public void onKeyBoardShow(int height) {
-                if (edtTransferMsg == null || mScrollView == null) {
+                if (mEdtMessageView == null || mScrollView == null) {
                     return;
                 }
-                Timber.d("onKeyBoardShow: edtTransferMsg.isFocused() %s", edtTransferMsg.isFocused());
-                if (edtTransferMsg.isFocused()) {
+                Timber.d("onKeyBoardShow: mEdtMessageView.isFocused() %s", mEdtMessageView.isFocused());
+                if (mEdtMessageView.isFocused()) {
                     mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                    edtTransferMsg.requestFocusFromTouch();
+                    mEdtMessageView.requestFocusFromTouch();
                 } else {
                     //Scroll down 24dp (height of error text)
                     mScrollView.scrollBy(0, AndroidUtils.dp(24));
@@ -160,6 +160,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @Override
     public void onDestroyView() {
+        mRootView.setOnKeyboardStateListener(null);
+        mAmountView.clearValidators();
         mPresenter.detachView();
         super.onDestroyView();
     }
@@ -172,8 +174,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = R.id.edtAmount)
     public void OnAfterAmountChanged(Editable s) {
-        Timber.d("OnTextChangedAmount %s", edtAmount.isValid());
-        setEnableBtnContinue(edtAmount.isValid() && !TextUtils.isEmpty(mPresenter.getZaloPayId()));
+        Timber.d("OnTextChangedAmount %s", mAmountView.isValid());
+        setEnableBtnContinue(mAmountView.isValid() && !TextUtils.isEmpty(mPresenter.getZaloPayId()));
     }
 
     @OnTextChanged(R.id.edtTransferMsg)
@@ -183,9 +185,13 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
-        if (edtAmount.isValid() && !TextUtils.isEmpty(mPresenter.getZaloPayId())) {
-            mPresenter.doTransfer(edtAmount.getAmount());
-            ZPAnalytics.trackEvent(edtTransferMsg.length() == 0 ? ZPEvents.MONEYTRANSFER_INPUTNODESCRIPTION : ZPEvents.MONEYTRANSFER_INPUTDESCRIPTION);
+        if (!mAmountView.validate()) {
+            return;
+        }
+
+        if (!TextUtils.isEmpty(mPresenter.getZaloPayId())) {
+            mPresenter.doTransfer(mAmountView.getAmount());
+            ZPAnalytics.trackEvent(mEdtMessageView.length() == 0 ? ZPEvents.MONEYTRANSFER_INPUTNODESCRIPTION : ZPEvents.MONEYTRANSFER_INPUTDESCRIPTION);
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TAPCONTINUE);
         }
     }
@@ -193,11 +199,11 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Override
     public void setInitialValue(long currentAmount, String currentMessage) {
         if (!TextUtils.isEmpty(currentMessage)) {
-            edtTransferMsg.setText(currentMessage);
+            mEdtMessageView.setText(currentMessage);
         }
         if (currentAmount > 0) {
-            edtAmount.setText(String.valueOf(currentAmount));
-            edtAmount.setSelection(edtAmount.length());
+            mAmountView.setText(String.valueOf(currentAmount));
+            mAmountView.setSelection(mAmountView.length());
         }
     }
 
@@ -289,8 +295,8 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @Override
     public void setMinMaxMoney(long min, long max) {
-        if (edtAmount != null) {
-            edtAmount.setMinMaxMoney(min, max);
+        if (mAmountView != null) {
+            mAmountView.setMinMaxMoney(min, max);
         }
     }
 

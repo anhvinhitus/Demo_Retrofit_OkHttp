@@ -62,6 +62,10 @@ public class SetAmountFragment extends BaseFragment {
     public void onClickUpdate() {
         trackEventSetAmount();
 
+        if (!mAmountView.validate()) {
+            return;
+        }
+
         Intent data = new Intent();
         data.putExtra("amount", mAmountView.getAmount());
         data.putExtra("message", mNoteView.getText().toString());

@@ -188,6 +188,8 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void onDestroyView() {
+        mEdtIdentityView.clearValidators();
+        mEdtEmailView.clearValidators();
         presenter.detachView();
         super.onDestroyView();
     }

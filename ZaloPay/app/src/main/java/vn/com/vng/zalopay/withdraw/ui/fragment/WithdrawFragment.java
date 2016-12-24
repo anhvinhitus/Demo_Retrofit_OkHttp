@@ -30,6 +30,23 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  */
 public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
+    public static WithdrawFragment newInstance() {
+        return new WithdrawFragment();
+    }
+
+    public WithdrawFragment() {
+    }
+
+    @Override
+    protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
+    }
+
+    @Override
+    protected int getResLayoutId() {
+        return R.layout.fragment_withdraw;
+    }
+
     private long minWithdrawAmount;
     private long maxWithdrawAmount;
 
@@ -44,36 +61,6 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     @BindView(R.id.btnContinue)
     View mBtnContinueView;
-
-    @OnClick(R.id.btnContinue)
-    public void setOnClickContinue() {
-        mPresenter.withdraw(mEdtMoneyView.getAmount());
-    }
-
-    public WithdrawFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment WithdrawFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static WithdrawFragment newInstance() {
-        return new WithdrawFragment();
-    }
-
-    @Override
-    protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
-    }
-
-    @Override
-    protected int getResLayoutId() {
-        return R.layout.fragment_withdraw;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -116,6 +103,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     @Override
     public void onDestroyView() {
+        mEdtMoneyView.clearValidators();
         mPresenter.detachView();
         super.onDestroyView();
     }
@@ -136,6 +124,15 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     @OnTextChanged(value = R.id.edtAmount, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void onAmountChanged(CharSequence s) {
         mBtnContinueView.setEnabled(mEdtMoneyView.isValid());
+    }
+
+    @OnClick(R.id.btnContinue)
+    public void setOnClickContinue() {
+        if (!mEdtMoneyView.validate()) {
+            return;
+        }
+
+        mPresenter.withdraw(mEdtMoneyView.getAmount());
     }
 
     @Override

@@ -231,7 +231,7 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingRight">8dp</item>
-        <item name="zlp_autoValidate">true</item>
+        <item name="zlp_autoValidate">false</item>
         <item name="zlp_checkCharactersCountAtBeginning">false</item>
         <item name="zlp_clearButton">true</item>
         <item name="zlp_floatingLabel">highlight</item>
