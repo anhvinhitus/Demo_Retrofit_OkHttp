@@ -58,7 +58,7 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
     User user;
 
     @BindView(R.id.btnContinue)
-    View btnContinue;
+    View mBtnContinue;
 
     @BindView(R.id.edtAccountName)
     ZPEditText mEdtAccountNameView;
@@ -80,7 +80,7 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
             }
         });
         mEdtAccountNameView.addValidator(new SpecialCharactersValidate(getString(R.string.exception_account_name_special_char)));
-        btnContinue.setEnabled(false);
+        mBtnContinue.setEnabled(mEdtAccountNameView.isValid());
     }
 
     @Override
@@ -137,11 +137,15 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
+        if (!mEdtAccountNameView.validate()) {
+            return;
+        }
+
         presenter.getUserInfo(mEdtAccountNameView.getText().toString().trim());
     }
 
     @OnTextChanged(value = R.id.edtAccountName, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void onTextChanged(CharSequence s) {
-        btnContinue.setEnabled(mEdtAccountNameView.isValid());
+        mBtnContinue.setEnabled(mEdtAccountNameView.isValid());
     }
 }

@@ -42,6 +42,10 @@ import java.util.List;
  */
 
 public class ZPEditText extends AppCompatEditText {
+    
+    public interface OnClearTextListener {
+        void onClearTextSuccess();
+    }
 
     private static final String TAG = "ZPEditText";
 
@@ -155,7 +159,7 @@ public class ZPEditText extends AppCompatEditText {
     OnFocusChangeListener outerFocusChangeListener;
     private List<ZPEditTextValidate> validators;
     private ZPEditTextLengthChecker lengthChecker;
-    private ZPEditTextClearText clearTextListener;
+    private OnClearTextListener clearTextListener;
     private int paddingLeftLine;
     private int paddingRightLine;
 
@@ -851,7 +855,7 @@ public class ZPEditText extends AppCompatEditText {
         this.lengthChecker = lengthChecker;
     }
 
-    public void setClearTextListener(ZPEditTextClearText listener) {
+    public void setClearTextListener(OnClearTextListener listener) {
         this.clearTextListener = listener;
     }
 
@@ -1089,4 +1093,5 @@ public class ZPEditText extends AppCompatEditText {
         if (lengthChecker == null) return text.length();
         return lengthChecker.getLength(text);
     }
+
 }

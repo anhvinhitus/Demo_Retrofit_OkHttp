@@ -28,7 +28,6 @@ import vn.com.vng.zalopay.account.ui.view.IOTPProfileView;
 import vn.com.vng.zalopay.event.ReceiveOTPEvent;
 import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.widget.validate.DigitsOnlyValidate;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
@@ -68,6 +67,9 @@ public class OtpProfileFragment extends RuntimePermissionFragment implements IOT
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
+        if (!mEdtOTPView.validate()) {
+            return;
+        }
         presenter.verifyOtp(mEdtOTPView.getText().toString());
     }
 
@@ -217,7 +219,7 @@ public class OtpProfileFragment extends RuntimePermissionFragment implements IOT
     @Override
     protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
         Timber.d("permissionGranted: %s", permissionRequestCode);
-	}
+    }
 
     public boolean onBackPressed() {
         hideKeyboard();

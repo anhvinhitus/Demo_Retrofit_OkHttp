@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.zalopay.ui.widget.edittext.ZPEditText;
-import com.zalopay.ui.widget.edittext.ZPEditTextClearText;
 
 import javax.inject.Inject;
 
@@ -69,7 +68,7 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
 
         mAccountNameView.addValidator(new MinCharactersValidate(getString(R.string.exception_account_name_length), 4));
         mAccountNameView.addValidator(new SpecialCharactersValidate(getString(R.string.exception_account_name_special_char)));
-        mAccountNameView.setClearTextListener(new ZPEditTextClearText() {
+        mAccountNameView.setClearTextListener(new ZPEditText.OnClearTextListener() {
             @Override
             public void onClearTextSuccess() {
                 ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_EDIT_DELETE);
@@ -106,9 +105,10 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
 
     @OnClick(R.id.btnCheck)
     public void onClickCheck(Button v) {
-        if (!mAccountNameView.isValid()) {
+        if (!mAccountNameView.validate()) {
             return;
         }
+
         String btnText = v.getText().toString();
         final String accountName = mAccountNameView.getText().toString();
         if (btnText.equals(getString(R.string.check))) {

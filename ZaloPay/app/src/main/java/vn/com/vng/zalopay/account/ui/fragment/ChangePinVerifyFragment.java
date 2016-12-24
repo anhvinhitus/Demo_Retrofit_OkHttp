@@ -66,11 +66,6 @@ public class ChangePinVerifyFragment extends RuntimePermissionFragment implement
     @BindView(R.id.btnConfirm)
     View mBtnConfirmView;
 
-    @OnClick(R.id.btnConfirm)
-    public void onClickContinue() {
-        presenter.verify(mEdtOTPView.getText().toString());
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -97,6 +92,16 @@ public class ChangePinVerifyFragment extends RuntimePermissionFragment implement
     public void onDestroyView() {
         presenter.destroyVerifyView();
         super.onDestroyView();
+    }
+
+    @OnClick(R.id.btnConfirm)
+    public void onClickContinue() {
+
+        if (!mEdtOTPView.validate()) {
+            return;
+        }
+
+        presenter.verify(mEdtOTPView.getText().toString());
     }
 
     @OnTextChanged(value = R.id.edtOTP, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
