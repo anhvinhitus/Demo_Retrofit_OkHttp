@@ -29,7 +29,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
     private final LayoutInflater mLayoutInflater;
 
     public MenuItemAdapter(Context context, List<MenuItem> items) {
-        super(context, R.layout.layout_item_drawer, items);
+        super(context, R.layout.row_left_menu, items);
 
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -51,7 +51,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         if (viewType == MenuItemType.HEADER.getValue()) {
             ViewHeaderHolder viewHolder;
             if (convertView == null || convertView.getTag() instanceof ItemViewHolder) {
-                convertView = mLayoutInflater.inflate(R.layout.layout_item_drawer_header, parent, false);
+                convertView = mLayoutInflater.inflate(R.layout.row_section_left_menu, parent, false);
                 viewHolder = new ViewHeaderHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {
@@ -67,7 +67,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         } else if (viewType == MenuItemType.ITEM.getValue()) {
             ItemViewHolder viewHolder;
             if (convertView == null || !(convertView.getTag() instanceof ItemViewHolder)) {
-                convertView = mLayoutInflater.inflate(R.layout.layout_item_drawer, parent, false);
+                convertView = mLayoutInflater.inflate(R.layout.row_left_menu, parent, false);
                 viewHolder = new ItemViewHolder(convertView);
                 convertView.setTag(viewHolder);
             } else {
