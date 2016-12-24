@@ -223,7 +223,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
                                 return mNotificationHelper.getOldestTimeRecoveryNotification(false);
                             }
                         })
-                        .observeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.io())
                         .subscribe(new DefaultSubscriber<Long>() {
                             @Override
                             public void onNext(Long time) {
@@ -254,7 +254,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         Timber.d("Recovery notification: %s", isFirst);
 
         Subscription subscription = mNotificationHelper.getOldestTimeRecoveryNotification(isFirst)
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Long>() {
                     @Override
                     public void onNext(Long time) {
