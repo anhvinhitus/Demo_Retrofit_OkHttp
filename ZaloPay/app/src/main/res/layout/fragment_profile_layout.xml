@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="48dp"
             android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -33,7 +33,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/spacing.medium.l"
                 android:layout_weight="1.0"
-                android:text="@string/reset_pin"
+                android:text="@string/establish.and.protect.account"
                 android:textColor="@color/black" />
 
             <ImageView

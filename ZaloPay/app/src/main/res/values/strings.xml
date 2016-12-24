@@ -108,6 +108,7 @@
     <string name="title.activity.card.support">Quản lý thẻ</string>
     <string name="title.activity.tutorial.link.card">Thông Báo</string>
     <string name="title.activity.warning.root">Cảnh báo</string>
+    <string name="title.activity.protect.account">Thiết lập bảo vệ tài khoản</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Hướng camera vào mã QR để thanh toán</string>
@@ -408,4 +409,5 @@
     <string name="data_invalid_try_again">Dữ liệu không hợp lệ, vui lòng thử lại.</string>
     <string name="friend.list.empty">Bạn chưa có bạn bè trên Zalo.\nHãy kết bạn để tiếp tục</string>
     <string name="no.result.your.search">Không có kết quả nào phù hợp với tìm kiếm của bạn</string>
+    <string name="establish.and.protect.account">Thiết lập bảo vệ tài khoản</string>
 </resources>

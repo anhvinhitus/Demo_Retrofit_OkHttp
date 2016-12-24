@@ -262,7 +262,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @OnClick(R.id.layoutChangePin)
     public void onClickChangePin() {
-        navigator.startChangePinActivity(getActivity());
+        navigator.startProtectAccount(getActivity());
     }
 
     @Override

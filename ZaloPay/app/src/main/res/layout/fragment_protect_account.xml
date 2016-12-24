@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:id="@+id/vgTouchId">
+
+        <TextView
+            style="@style/TextView.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left"
+            android:text="Sử dụng Touch ID" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:id="@+id/swcTouchId" />
+
+    </FrameLayout>
+
+    <TextView
+        style="@style/TextView.Item.Sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:singleLine="false"
+        android:text="Xác thực bằng vâng tay thay vi sử dụng mật khẩu thanh toán.\nLưu ý: Bất cứ vân tay nào đã đăng ký trong hệ thống đều xác thực được bằng thành toán."
+        android:textSize="14dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:id="@+id/vgProtectAccount">
+
+        <TextView
+            style="@style/TextView.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left"
+            android:text="Bảo vệ thông tin cá nhân" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:id="@+id/swcProtectAccount" />
+
+    </FrameLayout>
+
+    <TextView
+        style="@style/TextView.Item.Sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:singleLine="false"
+        android:textSize="14dp"
+        android:text="Hỏi mật khẩu hoặc xác thực vân tay mỗi khi truy xuất: Danh sách liên kết thẻ, Thông tin cá nhân, Lịch sử thanh toán." />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:id="@+id/vgChangePass">
+
+        <TextView
+            style="@style/TextView.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left"
+            android:text="Đổi mật khẩu thanh toán" />
+
+        <ImageView
+            android:src="@drawable/ic_arrow_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right" />
+
+    </FrameLayout>
+
+    <TextView
+        style="@style/TextView.Item.Sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:singleLine="false"
+        android:textSize="14dp"
+        android:text="Mật khẩu thanh toán dùng để xác thực mỗi khi thực hiện thanh toán" />
+
+</LinearLayout>

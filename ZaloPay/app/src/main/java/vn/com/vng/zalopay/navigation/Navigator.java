@@ -34,6 +34,7 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.fingerprint.ProtectAccountActivity;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
 import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardActivity;
@@ -621,7 +622,15 @@ public class Navigator implements INavigator {
     }
 
     public void startSystemSettingsActivity(Fragment fragment) {
-        Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
-        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_SYSTEM_SETTINGS);
+        try {
+            Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
+            fragment.startActivityForResult(intent, Constants.REQUEST_CODE_SYSTEM_SETTINGS);
+        } catch (Exception ignore) {
+        }
+    }
+
+    public void startProtectAccount(Context context) {
+        Intent intent = new Intent(context, ProtectAccountActivity.class);
+        context.startActivity(intent);
     }
 }

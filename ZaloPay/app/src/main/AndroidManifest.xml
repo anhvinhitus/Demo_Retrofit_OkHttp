@@ -218,6 +218,13 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
+            android:name=".fingerprint.ProtectAccountActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:label="@string/title.activity.protect.account"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
             android:name=".account.ui.activities.UpdateProfileLevel2Activity"
             android:label="@string/title.activity.profile"
             android:launchMode="singleTask"
