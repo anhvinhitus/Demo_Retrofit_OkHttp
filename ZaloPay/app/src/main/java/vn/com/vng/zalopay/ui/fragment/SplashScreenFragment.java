@@ -65,7 +65,6 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
             return;
         }
 
-        presenter.fetchAppResource();
         presenter.verifyUser();
     }
 

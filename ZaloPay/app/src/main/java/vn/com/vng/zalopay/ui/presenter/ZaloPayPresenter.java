@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -109,10 +110,10 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     @Override
     public void initialize() {
-
         this.getListAppResource(false);
         this.getTotalNotification(2000);
         this.getBalance();
+        this.ensureAppResourceAvailable();
     }
 
     @Override
@@ -296,8 +297,8 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             return;
         }
         getBalance();
+        ensureAppResourceAvailable();
         mView.hideNetworkError();
-
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -340,5 +341,12 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent e) {
         Timber.d("onRefreshPlatformInfoEvent");
         this.getListAppResource(true);
+    }
+
+    void ensureAppResourceAvailable() {
+        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
     }
 }

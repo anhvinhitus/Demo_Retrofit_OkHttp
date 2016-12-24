@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.network.listener.LoginListener;
 import vn.com.vng.zalopay.account.network.listener.ZaloErrorCode;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
@@ -51,18 +52,23 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     private GlobalEventHandlingService mGlobalEventService;
     private Uri mData;
 
+    private final AppResourceStore.Repository mAppResourceRepository;
+
     @Inject
     LoginPresenter(Context applicationContext,
                    UserConfig userConfig,
                    PassportRepository passportRepository,
                    ApplicationSession applicationSession,
-                   GlobalEventHandlingService globalEventHandlingService) {
+                   GlobalEventHandlingService globalEventHandlingService,
+                   AppResourceStore.Repository appResourceRepository) {
 
         this.mApplicationContext = applicationContext;
         this.mUserConfig = userConfig;
         this.mPassportRepository = passportRepository;
         this.mApplicationSession = applicationSession;
         this.mGlobalEventService = globalEventHandlingService;
+        this.mAppResourceRepository = appResourceRepository;
+
     }
 
     @Override
@@ -263,5 +269,17 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
         mSubscription.add(subscription);
+    }
+
+    public void fetchAppResource() {
+        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
+
+        Subscription fetchSubscription = mAppResourceRepository.fetchAppResource()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(fetchSubscription);
     }
 }

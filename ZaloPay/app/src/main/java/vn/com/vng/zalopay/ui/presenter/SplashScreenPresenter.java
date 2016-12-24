@@ -24,14 +24,12 @@ public class SplashScreenPresenter extends AbstractPresenter<ISplashScreenView> 
 
     private final UserConfig mUserConfig;
     private final ApplicationState mApplicationState;
-    private final AppResourceStore.Repository mAppResourceRepository;
 
 
     @Inject
-    SplashScreenPresenter(UserConfig userConfig, ApplicationState applicationState, AppResourceStore.Repository appResourceRepository) {
+    SplashScreenPresenter(UserConfig userConfig, ApplicationState applicationState) {
         mUserConfig = userConfig;
         mApplicationState = applicationState;
-        mAppResourceRepository = appResourceRepository;
     }
 
     public void verifyUser() {
@@ -47,15 +45,5 @@ public class SplashScreenPresenter extends AbstractPresenter<ISplashScreenView> 
             Timber.d("gotoOnBoardingScreen");
             mView.gotoOnBoardingScreen();
         }
-    }
-
-    public void fetchAppResource() {
-        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
-                .observeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
-
-        Subscription fetchSubscription = mAppResourceRepository.fetchAppResource()
-                .observeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
     }
 }
