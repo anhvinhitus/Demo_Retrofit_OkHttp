@@ -6,18 +6,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import rx.Observable;
-import rx.exceptions.Exceptions;
-import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.AppConfigEntityDataMapper;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
-import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 
@@ -334,16 +330,16 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     public Observable<List<AppResource>> getListAppHome() {
         Observable<List<AppResource>> local = getAppResourceLocal();
         Observable<List<AppResource>> cloud = fetchAppResource()
-                .onErrorResumeNext(throwable -> Observable.just(new ArrayList<>(mListDefaultApp)));
+                .onErrorResumeNext(throwable -> getAppResourceLocal());
         Observable<List<AppResource>> source = Observable.concat(local, cloud);
         if (isUpToDate()) {
             return source
                     .takeFirst(resources -> !Lists.isEmptyOrNull(resources) && resources.size() > 0)
-                    .map(this::transform);
+                    .map(this::listAppInHomePage);
         } else {
             return source
                     .throttleLast(200, TimeUnit.MILLISECONDS)
-                    .map(this::transform);
+                    .map(this::listAppInHomePage);
         }
 
     }
@@ -351,10 +347,10 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     @Override
     public Observable<List<AppResource>> fetchListAppHome() {
         return fetchAppResource()
-                .map(this::transform);
+                .map(this::listAppInHomePage);
     }
 
-    private List<AppResource> transform(List<AppResource> resources) {
+    private List<AppResource> listAppInHomePage(List<AppResource> resources) {
         ArrayList<AppResource> listApp = new ArrayList<>(mListDefaultApp);
         Timber.d("app default size [%s]", listApp.size());
         if (resources.containsAll(listApp)) {
