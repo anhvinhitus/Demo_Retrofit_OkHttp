@@ -15,11 +15,12 @@ import vn.zalopay.feedback.CollectorSetting;
 import vn.zalopay.feedback.IFeedbackCollector;
 
 /**
- * Created by cpu11759-local on 26/12/2016.
+ * Created by khattn on 26/12/2016.
  */
 
 public class ScreenshotCollector implements IFeedbackCollector {
-    private Context _context;
+    private Activity mActivity;
+    private View mView;
     private static CollectorSetting sSetting;
     static {
         sSetting = new CollectorSetting();
@@ -28,8 +29,9 @@ public class ScreenshotCollector implements IFeedbackCollector {
         sSetting.dataKeyName = "screenshotinfo";
     }
 
-    public ScreenshotCollector(Context context) {
-        _context = context;
+    public ScreenshotCollector(Activity activity) {
+        mActivity = activity;
+        mView = mActivity.getWindow().getDecorView().getRootView();
     }
 
     /**
@@ -62,9 +64,8 @@ public class ScreenshotCollector implements IFeedbackCollector {
     }
 
     private Bitmap takeScreenshot() {
-        View view = ((Activity)_context).getWindow().getDecorView().getRootView();
-        view.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        mView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(mView.getDrawingCache());
 
         return bitmap;
     }
