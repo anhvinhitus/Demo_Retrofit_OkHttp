@@ -138,6 +138,9 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                     Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INTERNET.value(),
                             PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
+                } else if (paymentError == PaymentError.ERR_CODE_MONEY_NOT_ENOUGH
+                        || paymentError == PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL) {
+                    //not return error to react
                 } else {
                     //PaymentSDK đã hiển thị lỗi -> ko care lỗi này nữa
                     Helpers.promiseResolveError(promise, paymentError.value(), null);
