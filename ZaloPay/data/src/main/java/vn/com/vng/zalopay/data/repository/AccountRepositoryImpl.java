@@ -86,8 +86,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
             String finalZaloPayName = zaloPayName;
             return mRequestService.getUserInfoByZaloPayName(zaloPayName, mUser.zaloPayId, mUser.accesstoken)
                     .map(response -> {
-                        Person item = new Person();
-                        item.zaloPayId = response.userid;
+                        Person item = new Person(response.userid);
                         item.avatar = response.avatar;
                         item.displayName = response.displayName;
                         item.phonenumber = response.phoneNumber;
@@ -126,22 +125,21 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin) {
         return mRequestService.getuserinfo(mUser.zaloPayId, mUser.accesstoken, zaloId, systemLogin)
-                .map(mappingZaloAndZaloPayResponse -> {
+                .map(response -> {
                     //If person exist in cache then update cache
-                    Person person = localStorage.getById(mappingZaloAndZaloPayResponse.userid);
+                    Person person = localStorage.getById(response.userid);
                     if (person != null) {
                         person.zaloId = zaloId;
-                        person.zaloPayId = mappingZaloAndZaloPayResponse.userid;
-                        person.phonenumber = mappingZaloAndZaloPayResponse.phonenumber;
-                        person.zalopayname = mappingZaloAndZaloPayResponse.zalopayname;
+                        person.phonenumber = response.phonenumber;
+                        person.zalopayname = response.zalopayname;
                         localStorage.put(person);
                     }
 
                     MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
                     mappingZaloAndZaloPay.zaloId = zaloId;
-                    mappingZaloAndZaloPay.zaloPayId = mappingZaloAndZaloPayResponse.userid;
-                    mappingZaloAndZaloPay.phonenumber = mappingZaloAndZaloPayResponse.phonenumber;
-                    mappingZaloAndZaloPay.zaloPayName = mappingZaloAndZaloPayResponse.zalopayname;
+                    mappingZaloAndZaloPay.zaloPayId = response.userid;
+                    mappingZaloAndZaloPay.phonenumber = response.phonenumber;
+                    mappingZaloAndZaloPay.zaloPayName = response.zalopayname;
                     return mappingZaloAndZaloPay;
                 });
     }
@@ -155,8 +153,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         } else {
             return mRequestService.getUserInfoByZaloPayId(zaloPayId, mUser.zaloPayId, mUser.accesstoken)
                     .map(response -> {
-                        Person item = new Person();
-                        item.zaloPayId = zaloPayId;
+                        Person item = new Person(zaloPayId);
                         item.avatar = response.avatar;
                         item.displayName = response.displayName;
                         item.phonenumber = response.phoneNumber;

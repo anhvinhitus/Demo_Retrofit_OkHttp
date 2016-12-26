@@ -77,7 +77,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         initData();
 
         mMapper = new ZaloPayEntityDataMapper();
-        mUser = new User();
+        mUser = new User("");
         mUser.accesstoken = "";
 
         DaoMaster.DevOpenHelper openHelper = new DaoMaster.DevOpenHelper(RuntimeEnvironment.application, null, null);

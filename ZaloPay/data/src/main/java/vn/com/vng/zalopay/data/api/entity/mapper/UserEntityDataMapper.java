@@ -16,10 +16,9 @@ public class UserEntityDataMapper {
     public User transform(LoginResponse response) {
         User user = null;
         if (response != null) {
-            user = new User();
+            user = new User(response.userid);
             user.accesstoken = response.accesstoken;
             user.expirein = response.expirein;
-            user.zaloPayId = response.userid;
             user.profilelevel = response.profilelevel;
             user.profilePermissions = response.permission.toString();
             user.phonenumber = response.phonenumber;

@@ -8,7 +8,8 @@ import android.text.TextUtils;
  */
 public class Person {
 
-    public String zaloPayId;
+    public final String zaloPayId;
+
     public String zalopayname;
     public long zaloId;
 
@@ -18,7 +19,8 @@ public class Person {
     public int userGender = 1;
     public long phonenumber;
 
-    public Person() {
+    public Person(String zaloPayId) {
+        this.zaloPayId = zaloPayId;
     }
 
     public Person(String zaloPayId, String displayName, String avatar) {

@@ -230,8 +230,7 @@ public class RedPackageRepositoryTest {
         dataMapper = new RedPacketDataMapper();
         mLocalStorage = new RedPacketLocalStorage(mDaoSession, dataMapper);
 
-        user = new User();
-        user.zaloPayId = "zaloPayID";
+        user = new User("zaloPayID");
         user.zaloId = 123;
         user.displayName = "name";
         user.avatar = "avatar";

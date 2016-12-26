@@ -134,10 +134,9 @@ public class UserConfigImpl implements UserConfig {
             String session = preferences.getString(Constants.PREF_USER_SESSION, "");
             if (TextUtils.isEmpty(session)) return;
 
-            currentUser = new User();
+            currentUser = new User(preferences.getString(Constants.PREF_USER_ID, ""));
             currentUser.accesstoken = session;
             currentUser.expirein = preferences.getLong(Constants.PREF_USER_EXPIREIN, -1);
-            currentUser.zaloPayId = preferences.getString(Constants.PREF_USER_ID, "");
             currentUser.zaloId = preferences.getLong(Constants.PREF_ZALO_ID, -1);
             currentUser.email = preferences.getString(Constants.PREF_USER_EMAIL, "");
             currentUser.displayName = preferences.getString(Constants.PREF_USER_NAME, "");

@@ -18,15 +18,12 @@ public final class User extends Person {
 
     public String profilePermissions;
 
-    public User() {
-    }
-
     public String getSession() {
         return accesstoken;
     }
 
     public User(String uid) {
-        this.zaloPayId = uid;
+        super(uid);
     }
 
     @Override

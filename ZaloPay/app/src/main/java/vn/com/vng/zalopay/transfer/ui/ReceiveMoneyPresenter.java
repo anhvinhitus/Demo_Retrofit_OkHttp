@@ -375,9 +375,8 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
 
 
     private PersonTransfer transform(String uid, String displayName, String avatar, int state, long amount, String transId) {
-        PersonTransfer item = new PersonTransfer();
+        PersonTransfer item = new PersonTransfer(uid);
         item.avatar = avatar;
-        item.zaloPayId = uid;
         item.state = state;
         item.displayName = displayName;
         item.amount = amount;

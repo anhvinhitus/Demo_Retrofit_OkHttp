@@ -95,8 +95,7 @@ public class MerchantRepositoryTest {
             }
         };
 
-        User user = new User();
-        user.zaloPayId = "1";
+        User user = new User("1");
 
         MerchantRepository repository = new MerchantRepository(localStorage, requestService, user);
         repository.getMerchantUserInfo(10).subscribe(new Subscriber<MerchantUserInfo>() {
@@ -183,8 +182,7 @@ public class MerchantRepositoryTest {
             }
         };
 
-        User user = new User();
-        user.zaloPayId = "1";
+        User user = new User("1");
         MerchantUser merchantUser = new MerchantUser();
         merchantUser.appid = 10;
         merchantUser.mUid = ("110");
@@ -282,8 +280,7 @@ public class MerchantRepositoryTest {
             }
         };
 
-        User user = new User();
-        user.zaloPayId = "1";
+        User user = new User("1");
 
         MerchantRepository repository = new MerchantRepository(localStorage, requestService, user);
         Subscriber<MerchantUserInfo> subscriber = new Subscriber<MerchantUserInfo>() {

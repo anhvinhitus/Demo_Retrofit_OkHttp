@@ -11,4 +11,8 @@ public class PersonTransfer extends Person {
     public String transId;
 
     public long timeTransfer;
+
+    public PersonTransfer(String zalopayId) {
+        super(zalopayId);
+    }
 }
