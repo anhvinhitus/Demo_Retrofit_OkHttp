@@ -240,6 +240,10 @@ public class WsConnection extends Connection {
 
     @Override
     public boolean send(int msgType, byte[] data) {
+        if (mSocketClient == null) {
+            return false;
+        }
+
         ByteBuffer bufTemp = ByteBuffer.allocate(HEADER_LENGTH + data.length);
         bufTemp.putInt(data.length + TYPE_FIELD_LENGTH);
         bufTemp.put((byte) msgType);
