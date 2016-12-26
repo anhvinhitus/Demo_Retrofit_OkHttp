@@ -60,6 +60,8 @@ import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 
+import static org.junit.Assert.assertEquals;
+
 public class NotificationRepositoryTest extends ApplicationTestCase {
     NotificationStore.Repository mRepository;
     NotificationStore.LocalStorage mLocalStorage;
@@ -86,7 +88,7 @@ public class NotificationRepositoryTest extends ApplicationTestCase {
         SQLiteDatabase db = openHelper.getWritableDatabase();
         DaoSession daoSession = new DaoMaster(db).newSession();
         mLocalStorage = new NotificationLocalStorage(daoSession);
-
+        mUser = new User("uid");
         mRepository = new NotificationRepository(mLocalStorage, EventBus.getDefault(), new RxBus(), mRequestService, mUser);
     }
 
@@ -115,5 +117,10 @@ public class NotificationRepositoryTest extends ApplicationTestCase {
         baseResponse = new BaseResponse();
         baseResponse.accesstoken = "";
         baseResponse.err = 1;
+    }
+
+    @Test
+    public void testIt() {
+        assertEquals(true, true);
     }
 }

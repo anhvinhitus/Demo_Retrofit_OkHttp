@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
@@ -81,6 +82,10 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
     @Override
     public List<NotificationData> get(int pageIndex, int limit) {
+        if (pageIndex < 0 || limit <= 0) {
+            return Collections.emptyList();
+        }
+        
         return queryList(pageIndex, limit);
     }
 

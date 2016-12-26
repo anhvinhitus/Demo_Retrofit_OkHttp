@@ -133,19 +133,6 @@ public class NotificationLocalStorageTest extends ApplicationTestCase {
     }
 
     @Test
-    public void putSyncEmptyList() {
-        mLocalStorage.putSync(entities);
-        Assert.assertEquals("putSync empty list", 0, mLocalStorage.get(0, TRANSACTION_SIZE).size());
-    }
-
-    @Test
-    public void putSync() {
-        initData();
-        mLocalStorage.putSync(entities);
-        assertEquals(entities, mLocalStorage.get(0, TRANSACTION_SIZE));
-    }
-
-    @Test
     public void putSyncNullObject() {
         NotificationData notificationData = new NotificationData();
         Assert.assertEquals("putSync null object", -1, mLocalStorage.putSync(notificationData));
