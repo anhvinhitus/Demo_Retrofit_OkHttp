@@ -40,6 +40,8 @@ import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.PackageInBundleGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
+import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
@@ -72,7 +74,6 @@ public class RedPackageRepositoryTest {
     PackageStatusResponse packageStatusResponse;
     SentBundleListResponse sentBundleListResponse;
     RedPacketAppInfo redPacketAppInfo;
-    GetReceivePacket getReceivePacket;
     GetReceivePackageResponse getReceivePackageResponse;
     SentPackageInBundleResponse sentPackageInBundleResponse;
     RedPacketAppInfoResponse redPacketAppInfoResponse;
@@ -115,7 +116,7 @@ public class RedPackageRepositoryTest {
         sentBundleListResponse.bundleResponseList = new ArrayList<>();
         for(int i = 0; i < 20; i++) {
             SentBundleResponse sentBundleResponse = new SentBundleResponse();
-            sentBundleResponse.bundleid = 123;
+            sentBundleResponse.bundleid = 123 + i;
             sentBundleResponse.createtime = 100L + Long.valueOf(i);
             sentBundleResponse.lastopentime = 14351235L + Long.valueOf(i);
             sentBundleResponse.numofopenedpakages = 3;
@@ -141,27 +142,27 @@ public class RedPackageRepositoryTest {
         redPacketAppInfo.appConfigEntity.minAmountEach = 10000L;
         redPacketAppInfo.appConfigEntity.minDivideAmount = 10000L;
 
-        getReceivePacket = new GetReceivePacket();
-        getReceivePacket.numofluckiestdraw = 10L;
-        getReceivePacket.totalofrevamount = 300000L;
-        getReceivePacket.totalofrevpackage = 3L;
-        getReceivePacket.revpackageList = new ArrayList<>();
-        for(int i = 0; i < 20; i++) {
-            ReceivePackage receivePackage = new ReceivePackage();
-            receivePackage.amount = 100000;
-            receivePackage.bundleID = 123 + i;
-            receivePackage.createTime = 100L + Long.valueOf(i);
-            receivePackage.isLuckiest = 0;
-            receivePackage.message = "message";
-            receivePackage.openedTime = 14351235L;
-            receivePackage.packageID = 100 + i;
-            receivePackage.revZaloPayID = "receiver";
-            receivePackage.senderAvatar = "avaSender";
-            receivePackage.senderFullName = "nameSender";
-            receivePackage.senderZaloPayID = "sender";
-            receivePackage.status = 1;
-            getReceivePacket.revpackageList.add(receivePackage);
-        }
+//        getReceivePacket = new GetReceivePacket();
+//        getReceivePacket.numofluckiestdraw = 10L;
+//        getReceivePacket.totalofrevamount = 300000L;
+//        getReceivePacket.totalofrevpackage = 3L;
+//        getReceivePacket.revpackageList = new ArrayList<>();
+//        for(int i = 0; i < 20; i++) {
+//            ReceivePackage receivePackage = new ReceivePackage();
+//            receivePackage.amount = 100000;
+//            receivePackage.bundleID = 123 + i;
+//            receivePackage.createTime = 100L + Long.valueOf(i);
+//            receivePackage.isLuckiest = 0;
+//            receivePackage.message = "message";
+//            receivePackage.openedTime = 14351235L;
+//            receivePackage.packageID = 100 + i;
+//            receivePackage.revZaloPayID = "receiver";
+//            receivePackage.senderAvatar = "avaSender";
+//            receivePackage.senderFullName = "nameSender";
+//            receivePackage.senderZaloPayID = "sender";
+//            receivePackage.status = 1;
+//            getReceivePacket.revpackageList.add(receivePackage);
+//        }
 
         getReceivePackageResponse = new GetReceivePackageResponse();
         getReceivePackageResponse.totalOfRevAmount = 300000L;
@@ -192,7 +193,7 @@ public class RedPackageRepositoryTest {
             packageInBundleResponse.bundleid = 123 + i;
             packageInBundleResponse.isluckiest = false;
             packageInBundleResponse.message = "message";
-            packageInBundleResponse.opentime = 14351235L;
+            packageInBundleResponse.opentime = 23152432L;
             packageInBundleResponse.packageid = 100 + i;
             packageInBundleResponse.revzalopayid = "receiver";
             packageInBundleResponse.revavatarurl = "avaSender";
@@ -203,8 +204,8 @@ public class RedPackageRepositoryTest {
 
         redPacketAppInfoResponse = new RedPacketAppInfoResponse();
         redPacketAppInfoResponse.isUpdateAppInfo = false;
-        redPacketAppInfoResponse.expiredTime = 12421352L;
-        redPacketAppInfoResponse.checksum = "abc";
+        redPacketAppInfoResponse.expiredTime = 23152432L;
+        redPacketAppInfoResponse.checksum = "checksum";
         redPacketAppInfoResponse.appConfigResponse = redPacketAppInfoResponse.new AppConfigResponse();
         redPacketAppInfoResponse.appConfigResponse.bundleExpiredTime = 12348613L;
         redPacketAppInfoResponse.appConfigResponse.maxAmountPerPackage = 10000L;
@@ -352,17 +353,6 @@ public class RedPackageRepositoryTest {
     }
 
     @Test
-    public void setBundleStatusWhenNotHavingAnyBundles() {
-        List<GetSentBundle> result = new ArrayList<>();
-
-        mRepository = new RedPacketRepository(null, mRequestTPEService, mLocalStorage, dataMapper, user, 1, new Gson());
-
-        mRepository.setBundleStatus(1, 1);
-        mRepository.getSentBundleList(0, 1).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("setBundleStatus when not having any bundles", 0, result.get(0).sentbundlelist.get(0).status);
-    }
-
-    @Test
     public void setBundleStatusWithUndefinedBundleId() {
         List<GetSentBundle> result = new ArrayList<>();
 
@@ -379,48 +369,66 @@ public class RedPackageRepositoryTest {
         sentBundleGD.sendMessage = "message";
         sentBundleGD.status = 2L;
         sendBundleGDs.add(sentBundleGD);
-
         mLocalStorage.putSentBundle(sendBundleGDs);
+
+        SentBundleSummaryDB sentBundle = new SentBundleSummaryDB();
+        sentBundle.id = 1L;
+        sentBundle.timeCreate = 1482716479L;
+        sentBundle.totalOfSentAmount = 3L;
+        sentBundle.totalOfSentBundle = 2L;
+        mLocalStorage.putSentBundleSummary(sentBundle);
+
         mRepository = new RedPacketRepository(null, mRequestTPEService, mLocalStorage, dataMapper, user, 1, new Gson());
 
-        mRepository.setBundleStatus(2, 1);
-        mRepository.getSentBundleList(0, 1).subscribe(new CustomObserver<>(result));
+        mRepository.setBundleStatus(2, 1).subscribe();
+        mRepository.getSentBundleList(101L, 1).subscribe(new CustomObserver<>(result));
         Assert.assertEquals("setBundleStatus with undefined bundle id", 2, result.get(0).sentbundlelist.get(0).status);
     }
 
     @Test
     public void setBundleStatus() {
         List<GetSentBundle> result = new ArrayList<>();
-
         List<SentBundleGD> sentBundleGDs = new ArrayList<>();
-        SentBundleGD sentBundleGD = new SentBundleGD();
-        sentBundleGD.id = 3L;
-        sentBundleGD.senderZaloPayID = "sender";
-        sentBundleGD.type = 5L;
-        sentBundleGD.createTime = 100L;
-        sentBundleGD.lastOpenTime = 150L;
-        sentBundleGD.totalLuck = 20000L;
-        sentBundleGD.numOfOpenedPakages = 2L;
-        sentBundleGD.numOfPackages = 5L;
-        sentBundleGD.sendMessage = "message";
-        sentBundleGD.status = 2L;
-        sentBundleGDs.add(sentBundleGD);
 
+        SentBundleSummaryDB sentBundle = new SentBundleSummaryDB();
+        sentBundle.id = 1L;
+        sentBundle.timeCreate = 1482716479L;
+        sentBundle.totalOfSentAmount = 3L;
+        sentBundle.totalOfSentBundle = 2L;
+        mLocalStorage.putSentBundleSummary(sentBundle);
+
+        int inputSize = 20;
+        for(int i = 0; i < inputSize; i++) {
+            int j = i + 1;
+            SentBundleGD sentBundleGD = new SentBundleGD();
+            sentBundleGD.id = 1L + j;
+            sentBundleGD.senderZaloPayID = "sender";
+            sentBundleGD.type = 5L;
+            sentBundleGD.createTime = 100L + j;
+            sentBundleGD.lastOpenTime = 150L;
+            sentBundleGD.totalLuck = 20000L;
+            sentBundleGD.numOfOpenedPakages = 2L;
+            sentBundleGD.numOfPackages = 5L;
+            sentBundleGD.sendMessage = "message";
+            sentBundleGD.status = 2L;
+            sentBundleGDs.add(sentBundleGD);
+        }
         mLocalStorage.putSentBundle(sentBundleGDs);
+
         mRepository = new RedPacketRepository(null, mRequestTPEService, mLocalStorage, dataMapper, user, 1, new Gson());
 
-        mRepository.setBundleStatus(3, 1);
-        mRepository.getSentBundleList(0, 1).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("setBundleStatus with undefined bundle id", 1, result.get(0).sentbundlelist.get(0).status);
+        mRepository.setBundleStatus(17, 1).subscribe();
+        mRepository.getSentBundleList(121L, 5).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("setBundleStatus", 1, result.get(0).sentbundlelist.get(4).status);
     }
 
     @Test
     public void getSentBundleListServer() {
         final List<GetSentBundle> getSentBundles = new ArrayList<>();
 
-        mRepository.getSentBundleListServer(110, 3, -1).subscribe(new CustomObserver<>(getSentBundles));
+        mRepository.getSentBundleListServer(111, 3, -1).subscribe(new CustomObserver<>(getSentBundles));
 
-        assertEquals(sentBundleListResponse, getSentBundles.get(0), 10);
+        assertEquals(sentBundleListResponse, getSentBundles.get(0));
     }
 
     @Test
@@ -465,7 +473,7 @@ public class RedPackageRepositoryTest {
 
         mRepository.getSentBundleListServer(110, -5, -1).subscribe(new CustomObserver<>(getSentBundles));
 
-        Assert.assertEquals("getSentBundleListServer with time = -110", 0, getSentBundles.size());
+        Assert.assertEquals("getSentBundleListServer with count = -5", 0, getSentBundles.size());
     }
 
     @Test
@@ -484,7 +492,7 @@ public class RedPackageRepositoryTest {
 
         mRepository.getReceivedPackagesServer(110, 3, -1).subscribe(new CustomObserver<>(getReceivePackets));
 
-        Assert.assertEquals("getSentBundleListServer", getReceivePacket, getReceivePackets.get(0));
+        assertEquals(getReceivePackageResponse, getReceivePackets.get(0));
     }
 
     @Test
@@ -511,7 +519,7 @@ public class RedPackageRepositoryTest {
 
         mRepository.getReceivedPackagesServer(110, 0, -1).subscribe(new CustomObserver<>(getReceivePackets));
 
-        Assert.assertEquals("getReceivedPackagesServer with time = 0", 0, getReceivePackets.size());
+        Assert.assertEquals("getReceivedPackagesServer with count = 0", 0, getReceivePackets.size());
     }
 
     @Test
@@ -529,7 +537,7 @@ public class RedPackageRepositoryTest {
 
         mRepository.getReceivedPackagesServer(110, -5, -1).subscribe(new CustomObserver<>(getReceivePackets));
 
-        Assert.assertEquals("getReceivedPackagesServer with time = -110", 0, getReceivePackets.size());
+        Assert.assertEquals("getReceivedPackagesServer with count = -5", 0, getReceivePackets.size());
     }
 
     @Test
@@ -546,11 +554,11 @@ public class RedPackageRepositoryTest {
     public void addReceivedRedPacket() {
         final List<ReceivePackage> receivePackages = new ArrayList<>();
 
-        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess").subscribe();
         mRepository.getReceivedPacket(1).subscribe(new CustomObserver<>(receivePackages));
 
         Assert.assertEquals("packageID", 1, receivePackages.get(0).packageID);
-        Assert.assertEquals("bundleID", 3L, receivePackages.get(0).bundleID);
+        Assert.assertEquals("bundleID", 1L, receivePackages.get(0).bundleID);
         Assert.assertEquals("senderFullName", "name", receivePackages.get(0).senderFullName);
         Assert.assertEquals("senderAvatar", "ava", receivePackages.get(0).senderAvatar);
         Assert.assertEquals("message", "mess", receivePackages.get(0).message);
@@ -560,8 +568,8 @@ public class RedPackageRepositoryTest {
     public void addReceivedRedPacketWhenAlreadyHave() {
         final List<ReceivePackage> receivePackages = new ArrayList<>();
 
-        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
-        mRepository.addReceivedRedPacket(1, 3, "name1", "ava1", "mess1");
+        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess").subscribe();
+        mRepository.addReceivedRedPacket(1, 3, "name1", "ava1", "mess1").subscribe();
         mRepository.getReceivedPacket(1).subscribe(new CustomObserver<>(receivePackages));
 
         Assert.assertEquals("packageID", 1, receivePackages.get(0).packageID);
@@ -587,15 +595,6 @@ public class RedPackageRepositoryTest {
         mRepository.getAllPacketInBundleServer(125).subscribe(new CustomObserver<>(results));
 
         Assert.assertEquals("getAllPacketInBundleServer", true, results.get(0));
-    }
-
-    @Test
-    public void getAllPacketInBundleServer1() {
-        final List<Boolean> results = new ArrayList<>();
-
-        mRepository.getAllPacketInBundleServer(100).subscribe(new CustomObserver<>(results));
-
-        Assert.assertEquals("getAllPacketInBundleServer", false, results.get(0));
     }
 
     @Test
@@ -641,7 +640,7 @@ public class RedPackageRepositoryTest {
     public void setPacketStatusWhenNotHavingPacket() {
         final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
 
-        mRepository.setPacketStatus(1, 3, 1, "message");
+        mRepository.setPacketStatus(1, 3, 1, "message").subscribe();
         mRepository.getPacketStatus("1").subscribe(new CustomObserver<>(receivePackageGDs));
 
         Assert.assertEquals("setPacketStatus when not having packet", null, receivePackageGDs.get(0));
@@ -651,8 +650,8 @@ public class RedPackageRepositoryTest {
     public void setPacketStatus() {
         final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
 
-        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
-        mRepository.setPacketStatus(1, 3, 1, "message");
+        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess").subscribe();
+        mRepository.setPacketStatus(1, 3, 1, "message").subscribe();
         mRepository.getPacketStatus("1").subscribe(new CustomObserver<>(receivePackageGDs));
 
         Assert.assertEquals("id", 1, receivePackageGDs.get(0).id);
@@ -674,7 +673,7 @@ public class RedPackageRepositoryTest {
     public void getPacketStatusWhenNotSetting() {
         final List<ReceivePackageGD> receivePackageGDs = new ArrayList<>();
 
-        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess");
+        mRepository.addReceivedRedPacket(1, 1, "name", "ava", "mess").subscribe();
         mRepository.getPacketStatus("1").subscribe(new CustomObserver<>(receivePackageGDs));
 
         Assert.assertEquals("id", 1, receivePackageGDs.get(0).id);
@@ -687,18 +686,35 @@ public class RedPackageRepositoryTest {
     public void getAppInfoServer() {
         final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
 
-        mRepository.getAppInfoServer("abc").subscribe(new CustomObserver<>(redPacketAppInfos));
+        mRepository.getAppInfoServer("checksum").subscribe(new CustomObserver<>(redPacketAppInfos));
 
         assertEquals(redPacketAppInfoResponse, redPacketAppInfos.get(0));
     }
 
     @Test
-    public void getRedPacketAppInfo() {
+    public void getRedPacketAppInfoWithNonUpdate() {
         final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
 
         RedPacketAppInfo redPacketAppInfo = new RedPacketAppInfo();
         redPacketAppInfo.checksum = "checksum";
-        redPacketAppInfo.expiredTime = 12334543L;
+        redPacketAppInfo.expiredTime = System.currentTimeMillis() + 10000L;
+        redPacketAppInfo.isUpdateAppInfo = true;
+        redPacketAppInfo.appConfigEntity = new AppConfigEntity();
+        mLocalStorage.putRedPacketAppInfo(redPacketAppInfo);
+        mRepository = new RedPacketRepository(null, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1, new Gson());
+
+        mRepository.getRedPacketAppInfo().subscribe(new CustomObserver<>(redPacketAppInfos));
+
+        assertEquals(redPacketAppInfo, redPacketAppInfos.get(0));
+    }
+
+    @Test
+    public void getRedPacketAppInfoWithUpdateAndNotHavingChecksum() {
+        final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
+
+        RedPacketAppInfo redPacketAppInfo = new RedPacketAppInfo();
+        redPacketAppInfo.checksum = "abc";
+        redPacketAppInfo.expiredTime = 1232156L;
         redPacketAppInfo.isUpdateAppInfo = true;
         redPacketAppInfo.appConfigEntity = new AppConfigEntity();
         mLocalStorage.putRedPacketAppInfo(redPacketAppInfo);
@@ -706,7 +722,24 @@ public class RedPackageRepositoryTest {
 
         mRepository.getRedPacketAppInfo().subscribe(new CustomObserver<>(redPacketAppInfos));
 
-        Assert.assertEquals("getRedPacketAppInfo", redPacketAppInfo, redPacketAppInfos.get(0));
+        Assert.assertEquals("getRedPacketAppInfo with update and not having checksum", 0, redPacketAppInfos.size());
+    }
+
+    @Test
+    public void getRedPacketAppInfoWithUpdate() {
+//        final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
+//
+//        RedPacketAppInfo redPacketAppInfo = new RedPacketAppInfo();
+//        redPacketAppInfo.checksum = "checksum";
+//        redPacketAppInfo.expiredTime = 1232156L;
+//        redPacketAppInfo.isUpdateAppInfo = true;
+//        redPacketAppInfo.appConfigEntity = new AppConfigEntity();
+//        mLocalStorage.putRedPacketAppInfo(redPacketAppInfo);
+//        mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1, new Gson());
+//
+//        mRepository.getRedPacketAppInfo().subscribe(new CustomObserver<>(redPacketAppInfos));
+//
+//        assertEquals(redPacketAppInfo, redPacketAppInfos.get(0));
     }
 
     @Test
@@ -845,7 +878,7 @@ public class RedPackageRepositoryTest {
         Assert.assertEquals("reqdate", p1.reqdate, p2.reqdate);
     }
 
-    private void assertEquals(SentBundleListResponse p1, GetSentBundle p2, int indexOfp1) {
+    private void assertEquals(SentBundleListResponse p1, GetSentBundle p2) {
         if (p1 == null && p2 != null) {
             Assert.fail("Compare null and non-null object");
             return;
@@ -868,26 +901,24 @@ public class RedPackageRepositoryTest {
             return;
         }
         for(int i = 0; i < p2.sentbundlelist.size(); i++) {
-            System.out.print(p1.bundleResponseList.get(indexOfp1).createtime + " - " + p2.sentbundlelist.get(i).createTime + "\n");
-            Assert.assertEquals("bundleid", p1.bundleResponseList.get(indexOfp1).bundleid,
+            Assert.assertEquals("bundleid", p1.bundleResponseList.get(i).bundleid,
                     p2.sentbundlelist.get(i).bundleID);
-            Assert.assertEquals("createtime", p1.bundleResponseList.get(indexOfp1).createtime,
+            Assert.assertEquals("createtime", p1.bundleResponseList.get(i).createtime,
                     p2.sentbundlelist.get(i).createTime);
-            Assert.assertEquals("lastopentime", p1.bundleResponseList.get(indexOfp1).lastopentime,
+            Assert.assertEquals("lastopentime", p1.bundleResponseList.get(i).lastopentime,
                     p2.sentbundlelist.get(i).lastOpenTime);
-            Assert.assertEquals("numofopenedpakages", p1.bundleResponseList.get(indexOfp1).numofopenedpakages,
+            Assert.assertEquals("numofopenedpakages", p1.bundleResponseList.get(i).numofopenedpakages,
                     p2.sentbundlelist.get(i).numOfOpenedPakages);
-            Assert.assertEquals("numofpackages", p1.bundleResponseList.get(indexOfp1).numofpackages,
+            Assert.assertEquals("numofpackages", p1.bundleResponseList.get(i).numofpackages,
                     p2.sentbundlelist.get(i).numOfPackages);
-            Assert.assertEquals("sendmessage", p1.bundleResponseList.get(indexOfp1).sendmessage,
+            Assert.assertEquals("sendmessage", p1.bundleResponseList.get(i).sendmessage,
                     p2.sentbundlelist.get(i).sendMessage);
-            Assert.assertEquals("sendzalopayid", p1.bundleResponseList.get(indexOfp1).sendzalopayid,
+            Assert.assertEquals("sendzalopayid", p1.bundleResponseList.get(i).sendzalopayid,
                     p2.sentbundlelist.get(i).sendZaloPayID);
-            Assert.assertEquals("totalluck", p1.bundleResponseList.get(indexOfp1).totalluck,
+            Assert.assertEquals("totalluck", p1.bundleResponseList.get(i).totalluck,
                     p2.sentbundlelist.get(i).totalLuck);
-            Assert.assertEquals("type", p1.bundleResponseList.get(indexOfp1).type,
+            Assert.assertEquals("type", p1.bundleResponseList.get(i).type,
                     p2.sentbundlelist.get(i).type);
-            indexOfp1++;
         }
     }
 
@@ -992,5 +1023,78 @@ public class RedPackageRepositoryTest {
         Assert.assertEquals("maxTotalAmountPerBundle", b1.appConfigResponse.maxTotalAmountPerBundle, b2.appConfigEntity.maxTotalAmountPerBundle);
         Assert.assertEquals("minAmountEach", b1.appConfigResponse.minAmountEach, b2.appConfigEntity.minAmountEach);
         Assert.assertEquals("minDivideAmount", b1.appConfigResponse.minDivideAmount, b2.appConfigEntity.minDivideAmount);
+    }
+
+    private void assertEquals(GetReceivePackageResponse b1, GetReceivePacket b2) {
+        if (b1 == null && b2 != null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        if (b1 != null && b2 == null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        Assert.assertEquals("numofluckiestdraw", b1.numOfLuckiestDraw, b2.numofluckiestdraw);
+        Assert.assertEquals("totalofrevamount", b1.totalOfRevAmount, b2.totalofrevamount);
+        Assert.assertEquals("totalofrevpackage", b1.totalOfRevPackage, b2.totalofrevpackage);
+        if (b1.receivePackageResponses.size() == 0 && b2.revpackageList.size() != 0) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        if (b1.receivePackageResponses.size() != 0 && b2.revpackageList.size() == 0) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+        for(int i = 0; i < b2.revpackageList.size(); i++) {
+            Assert.assertEquals("amount", b1.receivePackageResponses.get(i).amount,
+                    b2.revpackageList.get(i).amount);
+            Assert.assertEquals("bundleID", b1.receivePackageResponses.get(i).bundleid,
+                    b2.revpackageList.get(i).bundleID);
+            Assert.assertEquals("createTime", b1.receivePackageResponses.get(i).createtime,
+                    b2.revpackageList.get(i).createTime);
+            Assert.assertEquals("isLuckiest", b1.receivePackageResponses.get(i).isluckiest,
+                    b2.revpackageList.get(i).isLuckiest);
+            Assert.assertEquals("openedTime", b1.receivePackageResponses.get(i).openedtime,
+                    b2.revpackageList.get(i).openedTime);
+            Assert.assertEquals("packageID", b1.receivePackageResponses.get(i).packageid,
+                    b2.revpackageList.get(i).packageID);
+//            Assert.assertEquals("message", b1.receivePackageResponses.get(i).message,
+//                    b2.revpackageList.get(i).message);
+            Assert.assertEquals("senderAvatar", b1.receivePackageResponses.get(i).avatarofsender,
+                    b2.revpackageList.get(i).senderAvatar);
+            Assert.assertEquals("revZaloPayID", b1.receivePackageResponses.get(i).revzalopayid,
+                    b2.revpackageList.get(i).revZaloPayID);
+            Assert.assertEquals("senderFullName", b1.receivePackageResponses.get(i).sendfullname,
+                    b2.revpackageList.get(i).senderFullName);
+            Assert.assertEquals("senderZaloPayID", b1.receivePackageResponses.get(i).sendzalopayid,
+                    b2.revpackageList.get(i).senderZaloPayID);
+        }
+    }
+
+    private void assertEquals(RedPacketAppInfo b1, RedPacketAppInfo b2) {
+        if (b1 == null && b2 != null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        if (b1 != null && b2 == null) {
+            Assert.fail("Compare null and non-null object");
+            return;
+        }
+
+        Assert.assertEquals("checksum", b1.checksum, b2.checksum);
+        Assert.assertEquals("expiredTime", b1.expiredTime, b2.expiredTime);
+        Assert.assertEquals("isUpdateAppInfo", false, b2.isUpdateAppInfo);
+        Assert.assertEquals("bundleExpiredTime", b1.appConfigEntity.bundleExpiredTime, b2.appConfigEntity.bundleExpiredTime);
+        Assert.assertEquals("maxAmountPerPackage", b1.appConfigEntity.maxAmountPerPackage, b2.appConfigEntity.maxAmountPerPackage);
+        Assert.assertEquals("maxCountHist", b1.appConfigEntity.maxCountHist, b2.appConfigEntity.maxCountHist);
+        Assert.assertEquals("maxMessageLength", b1.appConfigEntity.maxMessageLength, b2.appConfigEntity.maxMessageLength);
+        Assert.assertEquals("maxPackageQuantity", b1.appConfigEntity.maxPackageQuantity, b2.appConfigEntity.maxPackageQuantity);
+        Assert.assertEquals("maxTotalAmountPerBundle", b1.appConfigEntity.maxTotalAmountPerBundle, b2.appConfigEntity.maxTotalAmountPerBundle);
+        Assert.assertEquals("minAmountEach", b1.appConfigEntity.minAmountEach, b2.appConfigEntity.minAmountEach);
+        Assert.assertEquals("minDivideAmount", b1.appConfigEntity.minDivideAmount, b2.appConfigEntity.minDivideAmount);
     }
 }
