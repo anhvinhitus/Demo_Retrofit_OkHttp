@@ -126,7 +126,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     private UserRPEntity getSenderInfo() {
         UserRPEntity entity = new UserRPEntity();
-        entity.zaloPayID = TextUtils.isEmpty(user.zaloPayId) ? "" : user.zaloPayId;
+        entity.zaloPayID = user.hasZaloPayId() ? user.zaloPayId : "";
         entity.zaloID = String.valueOf(user.zaloId);
         entity.zaloName = TextUtils.isEmpty(user.displayName) ? "" : user.displayName;
         entity.avatar = TextUtils.isDigitsOnly(user.avatar) ? "" : user.avatar;

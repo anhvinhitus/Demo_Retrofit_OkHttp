@@ -7,6 +7,7 @@ import android.text.TextUtils;
  * Person model
  */
 public class Person {
+    private boolean mHasValidZaloPayId = false;
 
     public final String zaloPayId;
 
@@ -21,12 +22,14 @@ public class Person {
 
     public Person(String zaloPayId) {
         this.zaloPayId = zaloPayId;
+        validateZaloPayId();
     }
 
     public Person(String zaloPayId, String displayName, String avatar) {
         this.zaloPayId = zaloPayId;
         this.displayName = displayName;
         this.avatar = avatar;
+        validateZaloPayId();
     }
 
     public Person(String zaloPayId, String displayName, String avatar, long birthDate, int userGender) {
@@ -35,10 +38,19 @@ public class Person {
         this.avatar = avatar;
         this.birthDate = birthDate;
         this.userGender = userGender;
+        validateZaloPayId();
     }
 
     public String getGender() {
         return userGender == 1 ? "Nam" : "Nữ";
+    }
+
+    /**
+     *
+     * @return true if has valid zaloPayId, i.e. non-empty, is number, and larger than zero
+     */
+    public boolean hasZaloPayId() {
+        return mHasValidZaloPayId;
     }
 
     @Override
@@ -55,5 +67,18 @@ public class Person {
                 ", avatar='" + avatar + '\'' +
                 ", phonenumber=" + phonenumber +
                 '}';
+    }
+
+    private void validateZaloPayId() {
+        mHasValidZaloPayId = !TextUtils.isEmpty(this.zaloPayId);
+
+        if (mHasValidZaloPayId) {
+            try {
+                long value = Long.parseLong(this.zaloPayId);
+                mHasValidZaloPayId = value > 0;
+            } catch (NumberFormatException e) {
+                mHasValidZaloPayId = false;
+            }
+        }
     }
 }

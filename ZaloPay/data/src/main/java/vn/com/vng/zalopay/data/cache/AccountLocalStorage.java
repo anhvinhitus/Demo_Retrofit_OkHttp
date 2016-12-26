@@ -54,7 +54,7 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
             mCachePersonName.put(person.zalopayname, person);
         }
 
-        if (!TextUtils.isEmpty(person.zaloPayId)) {
+        if (person.hasZaloPayId()) {
             mCachePersonId.put(person.zaloPayId, person);
         }
     }

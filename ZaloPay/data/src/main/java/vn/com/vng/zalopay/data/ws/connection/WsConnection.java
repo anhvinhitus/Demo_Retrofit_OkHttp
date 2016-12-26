@@ -148,7 +148,7 @@ public class WsConnection extends Connection {
     }
 
     private boolean isUserLoggedIn() {
-        return mUser != null && !TextUtils.isEmpty(mUser.zaloPayId);
+        return mUser != null && mUser.hasZaloPayId();
     }
 
     public void setGCMToken(String token) {
@@ -266,7 +266,7 @@ public class WsConnection extends Connection {
 
     private boolean sendAuthentication() {
         if (mUser == null ||
-                TextUtils.isEmpty(mUser.zaloPayId) ||
+                !mUser.hasZaloPayId() ||
                 TextUtils.isEmpty(mUser.accesstoken)) {
             // User or accesstoken is NULL
             // remove current user
@@ -280,7 +280,7 @@ public class WsConnection extends Connection {
     private long getCurrentUserId() {
         long uid = -1;
 
-        if (mUser == null || TextUtils.isEmpty(mUser.zaloPayId)) {
+        if (mUser == null || !mUser.hasZaloPayId()) {
             return uid;
         }
         try {
@@ -413,7 +413,7 @@ public class WsConnection extends Connection {
 
 
     private void scheduleReconnect() {
-        if (mUser == null || TextUtils.isEmpty(mUser.zaloPayId)) {
+        if (mUser == null || !mUser.hasZaloPayId()) {
             Timber.d("Don't have signed in user. Skip reconnect.");
             return;
         }
