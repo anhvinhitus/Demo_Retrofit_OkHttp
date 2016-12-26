@@ -44,17 +44,11 @@ public class DownloadAppResourceTaskQueue {
     }
 
     void dequeue() {
-        if (!isEmpty()) {
-            mTasklist.removeFirst();
-        }
+        mTasklist.poll();
     }
 
     DownloadAppResourceTask peek() {
-        if (!isEmpty()) {
-            return mTasklist.getFirst();
-        }
-
-        return null;
+        return mTasklist.peek();
     }
 
     public static DownloadAppResourceTaskQueue create(Context context, Class<?> serviceClass) {
