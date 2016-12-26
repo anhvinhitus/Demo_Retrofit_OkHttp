@@ -189,7 +189,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         SentBundleSummaryDB sentBundle = new SentBundleSummaryDB();
         sentBundle.id = 1L;
-        sentBundle.timeCreate = 12334543L;
+        sentBundle.timeCreate = 1482716479L;
         sentBundle.totalOfSentAmount = 3L;
         sentBundle.totalOfSentBundle = 2L;
 
@@ -205,7 +205,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         SentBundleSummaryDB sentBundle = new SentBundleSummaryDB();
         sentBundle.id = 1L;
-        sentBundle.timeCreate = 0L;
+        sentBundle.timeCreate = 1482716479L;
         sentBundle.totalOfSentAmount = -1L;
         sentBundle.totalOfSentBundle = 1L;
 
@@ -221,7 +221,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         SentBundleSummaryDB sentBundle = new SentBundleSummaryDB();
         sentBundle.id = 1L;
-        sentBundle.timeCreate = 0L;
+        sentBundle.timeCreate = 1482716479L;
         sentBundle.totalOfSentAmount = 1L;
         sentBundle.totalOfSentBundle = -1L;
 
@@ -244,20 +244,26 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     public void getSentBundleSummary() {
         final List<GetSentBundle> result = new ArrayList<GetSentBundle>();
 
-        SentBundleSummaryDB sentBundle = new SentBundleSummaryDB();
-        sentBundle.id = 1L;
-        sentBundle.timeCreate = 12334543L;
-        sentBundle.totalOfSentAmount = 3L;
-        sentBundle.totalOfSentBundle = 2L;
-
         for(int i = 0; i < 5; i++) {
-            sentBundle.timeCreate += 1;
+            int j = i + 1;
+
+            SentBundleSummaryDB sentBundle = new SentBundleSummaryDB();
+            sentBundle.id = 1L + j;
+            sentBundle.timeCreate = 1482716479L + j;
+            sentBundle.totalOfSentAmount = 3L;
+            sentBundle.totalOfSentBundle = 2L;
             mLocalStorage.putSentBundleSummary(sentBundle);
         }
 
         mLocalStorage.getSentBundleSummary().subscribe(new CustomObserver<>(result));
 
-        compare2Elements(sentBundle, result.get(0));
+        SentBundleSummaryDB tmp = new SentBundleSummaryDB();
+        tmp.id = 1L;
+        tmp.timeCreate = 1482716479L;
+        tmp.totalOfSentAmount = 3L;
+        tmp.totalOfSentBundle = 2L;
+
+        compare2Elements(tmp, result.get(0));
     }
 
     @Test
@@ -276,7 +282,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         ReceivePacketSummaryDB receivePacket = new ReceivePacketSummaryDB();
         receivePacket.id = 1L;
-        receivePacket.timeCreate = 12334543L;
+        receivePacket.timeCreate = 1482716479L;
         receivePacket.totalOfLuckiestDraw = 3L;
         receivePacket.totalOfRevamount = 2L;
         receivePacket.totalOfRevPackage = 2L;
@@ -293,7 +299,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         ReceivePacketSummaryDB receivePacket = new ReceivePacketSummaryDB();
         receivePacket.id = 1L;
-        receivePacket.timeCreate = 12334543L;
+        receivePacket.timeCreate = 1482716479L;
         receivePacket.totalOfLuckiestDraw = -3L;
         receivePacket.totalOfRevamount = 2L;
         receivePacket.totalOfRevPackage = 2L;
@@ -310,7 +316,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         ReceivePacketSummaryDB receivePacket = new ReceivePacketSummaryDB();
         receivePacket.id = 1L;
-        receivePacket.timeCreate = 12334543L;
+        receivePacket.timeCreate = 1482716479L;
         receivePacket.totalOfLuckiestDraw = 3L;
         receivePacket.totalOfRevamount = -2L;
         receivePacket.totalOfRevPackage = 2L;
@@ -327,7 +333,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         ReceivePacketSummaryDB receivePacket = new ReceivePacketSummaryDB();
         receivePacket.id = 1L;
-        receivePacket.timeCreate = 12334543L;
+        receivePacket.timeCreate = 1482716479L;
         receivePacket.totalOfLuckiestDraw = -3L;
         receivePacket.totalOfRevamount = 2L;
         receivePacket.totalOfRevPackage = 2L;
@@ -351,21 +357,28 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     public void getReceivePacketSummary() {
         final List<GetReceivePacket> result = new ArrayList<GetReceivePacket>();
 
-        ReceivePacketSummaryDB receivePacket = new ReceivePacketSummaryDB();
-        receivePacket.id = 1L;
-        receivePacket.timeCreate = 12334543L;
-        receivePacket.totalOfLuckiestDraw = 3L;
-        receivePacket.totalOfRevamount = 2L;
-        receivePacket.totalOfRevPackage = 2L;
-
         for(int i = 0; i < 5; i++) {
-            receivePacket.timeCreate += 1;
+            int j = i + 1;
+
+            ReceivePacketSummaryDB receivePacket = new ReceivePacketSummaryDB();
+            receivePacket.id = 1L;
+            receivePacket.timeCreate = 1482716479L;
+            receivePacket.totalOfLuckiestDraw = 3L;
+            receivePacket.totalOfRevamount = 2L;
+            receivePacket.totalOfRevPackage = 2L;
             mLocalStorage.putReceivePacketSummary(receivePacket);
         }
 
         mLocalStorage.getReceivePacketSummary().subscribe(new CustomObserver<>(result));
 
-        compare2Elements(receivePacket, result.get(0));
+        ReceivePacketSummaryDB tmp = new ReceivePacketSummaryDB();
+        tmp.id = 1L;
+        tmp.timeCreate = 1482716479L;
+        tmp.totalOfLuckiestDraw = 3L;
+        tmp.totalOfRevamount = 2L;
+        tmp.totalOfRevPackage = 2L;
+
+        compare2Elements(tmp, result.get(0));
     }
 
     @Test
@@ -388,10 +401,10 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         for(int i = 0; i < inputSize; i++) {
             SentBundleGD sentBundleGD = new SentBundleGD();
-            sentBundleGD.id = 1L + 1;
+            sentBundleGD.id = 1L + i;
             sentBundleGD.senderZaloPayID = "sender";
             sentBundleGD.type = 5L;
-            sentBundleGD.createTime = 100L + Long.valueOf(i);
+            sentBundleGD.createTime = 1482716479L + Long.valueOf(i);
             sentBundleGD.lastOpenTime = 150L;
             sentBundleGD.totalLuck = 20000L;
             sentBundleGD.numOfOpenedPakages = 2L;
@@ -402,10 +415,10 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putSentBundle(sendBundleGDs);
-        mLocalStorage.getSentBundle(111, limit).subscribe(new DefaultObserver<>(result));
+        mLocalStorage.getSentBundle(1482716485L, limit).subscribe(new DefaultObserver<>(result));
 
         for(int i = 0; i < limit; i++) {
-            compare2Elements(sendBundleGDs.get(11 - i), result.get(i));
+            compare2Elements(sendBundleGDs.get(5 - i), result.get(i));
         }
     }
 
@@ -415,14 +428,16 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         List<SentBundleGD> sendBundleGDs = new ArrayList<>();
 
         int limit = 5;
-        int inputSize = 25;
+        int inputSize = 20;
 
         for(int i = 0; i < inputSize; i++) {
+            int j = i + 1;
+
             SentBundleGD sentBundleGD = new SentBundleGD();
-            sentBundleGD.id = 1L;
+            sentBundleGD.id = 1L + j;
             sentBundleGD.senderZaloPayID = "sender";
             sentBundleGD.type = 5L;
-            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.createTime = 1482716479L + i;
             sentBundleGD.lastOpenTime = 150L;
             sentBundleGD.totalLuck = 20000L;
             sentBundleGD.numOfOpenedPakages = 2L;
@@ -449,11 +464,13 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int inputSize = 25;
 
         for(int i = 0; i < inputSize; i++) {
+            int j = i + 1;
+
             SentBundleGD sentBundleGD = new SentBundleGD();
-            sentBundleGD.id = 1L;
+            sentBundleGD.id = 1L + j;
             sentBundleGD.senderZaloPayID = "sender";
             sentBundleGD.type = 5L;
-            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.createTime = 1482716479L + j;
             sentBundleGD.lastOpenTime = 150L;
             sentBundleGD.totalLuck = 20000L;
             sentBundleGD.numOfOpenedPakages = 2L;
@@ -464,7 +481,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putSentBundle(sendBundleGDs);
-        mLocalStorage.getSentBundle(110L, 0).subscribe(new DefaultObserver<>(result));
+        mLocalStorage.getSentBundle(1482716489L, 0).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getSentBundle with limit = 0", 0, result.size());
     }
@@ -478,11 +495,13 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int inputSize = 25;
 
         for(int i = 0; i < inputSize; i++) {
+            int j = i + 1;
+
             SentBundleGD sentBundleGD = new SentBundleGD();
-            sentBundleGD.id = 1L;
+            sentBundleGD.id = 1L + j;
             sentBundleGD.senderZaloPayID = "sender";
             sentBundleGD.type = 5L;
-            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.createTime = 1482716479L + j;
             sentBundleGD.lastOpenTime = 150L;
             sentBundleGD.totalLuck = 20000L;
             sentBundleGD.numOfOpenedPakages = 2L;
@@ -493,7 +512,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putSentBundle(sendBundleGDs);
-        mLocalStorage.getSentBundle(-100L, limit).subscribe(new DefaultObserver<>(result));
+        mLocalStorage.getSentBundle(-1482716489L, limit).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getSentBundle with creatime < 0", 0, result.size());
     }
@@ -506,11 +525,13 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int inputSize = 25;
 
         for(int i = 0; i < inputSize; i++) {
+            int j = i + 1;
+
             SentBundleGD sentBundleGD = new SentBundleGD();
-            sentBundleGD.id = 1L;
+            sentBundleGD.id = 1L + j;
             sentBundleGD.senderZaloPayID = "sender";
             sentBundleGD.type = 5L;
-            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.createTime = 1482716479L + j;
             sentBundleGD.lastOpenTime = 150L;
             sentBundleGD.totalLuck = 20000L;
             sentBundleGD.numOfOpenedPakages = 2L;
@@ -542,11 +563,13 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int inputSize = 20;
 
         for(int i = 0; i < inputSize; i++) {
+            int j = i + 1;
+
             SentBundleGD sentBundleGD = new SentBundleGD();
-            sentBundleGD.id = 1L + 1;
+            sentBundleGD.id = 1L + j;
             sentBundleGD.senderZaloPayID = "sender";
             sentBundleGD.type = 5L;
-            sentBundleGD.createTime = 100L + i;
+            sentBundleGD.createTime = 1482716479L + j;
             sentBundleGD.lastOpenTime = 150L;
             sentBundleGD.totalLuck = 20000L;
             sentBundleGD.numOfOpenedPakages = 2L;
@@ -558,7 +581,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         mLocalStorage.putSentBundle(sentBundleGDs);
 
-        result = mLocalStorage.isHaveSentBundleInDb(110L, 1);
+        result = mLocalStorage.isHaveSentBundleInDb(1482716489L, 1);
         assertEquals("isHaveSentBundleInDb when DB had datas", true, result);
     }
 
@@ -576,12 +599,16 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         List<SentBundle> result = new ArrayList<>();
         List<SentBundleGD> sendBundleGDs = new ArrayList<SentBundleGD>();
 
-        for(int i = 0; i < 1; i++) {
+        int inputSize = 20;
+
+        for(int i = 0; i < inputSize; i++) {
+            int j = i + 1;
+
             SentBundleGD sentBundleGD = new SentBundleGD();
-            sentBundleGD.id = 1L;
+            sentBundleGD.id = 1L + j;
             sentBundleGD.senderZaloPayID = "sender";
             sentBundleGD.type = 5L;
-            sentBundleGD.createTime = 100L;
+            sentBundleGD.createTime = 1482716480L + j;
             sentBundleGD.lastOpenTime = 150L;
             sentBundleGD.totalLuck = 20000L;
             sentBundleGD.numOfOpenedPakages = 2L;
@@ -592,7 +619,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putSentBundle(sendBundleGDs);
-        mLocalStorage.setBundleStatus(2, 1);
+        mLocalStorage.setBundleStatus(22, 1);
         mLocalStorage.getSentBundle(0, 1).subscribe(new DefaultObserver<>(result));
         assertEquals("setBundleStatus with undefined bundle id", 2, result.get(0).status);
     }
@@ -602,12 +629,16 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         List<SentBundle> result = new ArrayList<>();
         List<SentBundleGD> sentBundleGDs = new ArrayList<SentBundleGD>();
 
-        for(int i = 0; i < 1; i++) {
+        int inputSize = 20;
+
+        for(int i = 0; i < inputSize; i++) {
+            int j = i + 1;
+
             SentBundleGD sentBundleGD = new SentBundleGD();
-            sentBundleGD.id = 3L;
+            sentBundleGD.id = 1L + j;
             sentBundleGD.senderZaloPayID = "sender";
             sentBundleGD.type = 5L;
-            sentBundleGD.createTime = 100L;
+            sentBundleGD.createTime = 1482716480L + j;
             sentBundleGD.lastOpenTime = 150L;
             sentBundleGD.totalLuck = 20000L;
             sentBundleGD.numOfOpenedPakages = 2L;
@@ -618,9 +649,9 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
 
         mLocalStorage.putSentBundle(sentBundleGDs);
-        mLocalStorage.setBundleStatus(3, 1);
-        mLocalStorage.getSentBundle(0, 1).subscribe(new DefaultObserver<>(result));
-        assertEquals("setBundleStatus", 1, result.get(0).status);
+        mLocalStorage.setBundleStatus(17, 1);
+        mLocalStorage.getSentBundle(0, 5).subscribe(new DefaultObserver<>(result));
+        assertEquals("setBundleStatus", 1, result.get(4).status);
     }
 
     @Test
@@ -639,31 +670,31 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         List<ReceivePackageGD> receivePackageGDs = new ArrayList<ReceivePackageGD>();
 
         int limit = 5;
-        int inputSize = 25;
+        int inputSize = 20;
 
         for(int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
-            receivePackageGD.id = 1L + 1;
-            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.id = 1L + i;
+            receivePackageGD.bundleID = 1L + i;
             receivePackageGD.receiverZaloPayID = "receiver";
             receivePackageGD.senderZaloPayID = "id";
             receivePackageGD.senderFullName = "name";
             receivePackageGD.senderAvatar = "ava";
             receivePackageGD.amount = 10000L;
-            receivePackageGD.openedTime = 200L + i;
+            receivePackageGD.openedTime = 200L;
             receivePackageGD.status = 1L;
             receivePackageGD.messageStatus = "messStt";
             receivePackageGD.message = "mess";
             receivePackageGD.isLuckiest = 1L;
-            receivePackageGD.createTime = 100L + i;
+            receivePackageGD.createTime = 1482716480L + i;
             receivePackageGDs.add(receivePackageGD);
         }
 
         mLocalStorage.putReceivePackages(receivePackageGDs);
-        mLocalStorage.getReceiveBundle(110L, limit).subscribe(new DefaultObserver<>(result));
+        mLocalStorage.getReceiveBundle(1482716490L, limit).subscribe(new DefaultObserver<>(result));
 
         for(int i = 0; i < limit; i++) {
-            compare2Elements(receivePackageGDs.get(10 + i), result.get(i));
+            compare2Elements(receivePackageGDs.get(i), result.get(i));
         }
     }
 
@@ -677,8 +708,8 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         for(int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
-            receivePackageGD.id = 1L + 1;
-            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.id = 1L + i;
+            receivePackageGD.bundleID = 1L + i;
             receivePackageGD.receiverZaloPayID = "receiver";
             receivePackageGD.senderZaloPayID = "id";
             receivePackageGD.senderFullName = "name";
@@ -689,7 +720,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
             receivePackageGD.messageStatus = "messStt";
             receivePackageGD.message = "mess";
             receivePackageGD.isLuckiest = 1L;
-            receivePackageGD.createTime = 100L + i;
+            receivePackageGD.createTime = 1482716480L + i;
             receivePackageGDs.add(receivePackageGD);
         }
 
@@ -711,8 +742,8 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         for(int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
-            receivePackageGD.id = 1L + 1;
-            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.id = 1L + i;
+            receivePackageGD.bundleID = 1L + i;
             receivePackageGD.receiverZaloPayID = "receiver";
             receivePackageGD.senderZaloPayID = "id";
             receivePackageGD.senderFullName = "name";
@@ -723,12 +754,12 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
             receivePackageGD.messageStatus = "messStt";
             receivePackageGD.message = "mess";
             receivePackageGD.isLuckiest = 1L;
-            receivePackageGD.createTime = 100L + i;
+            receivePackageGD.createTime = 1482716480L + i;
             receivePackageGDs.add(receivePackageGD);
         }
 
         mLocalStorage.putReceivePackages(receivePackageGDs);
-        mLocalStorage.getReceiveBundle(110L, 0).subscribe(new DefaultObserver<>(result));
+        mLocalStorage.getReceiveBundle(1482716490L, 0).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getReceiveBundle with limit = 0", 0, result.size());
     }
@@ -738,13 +769,12 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         final List<ReceivePackage> result = new ArrayList<ReceivePackage>();
         List<ReceivePackageGD> receivePackageGDs = new ArrayList<ReceivePackageGD>();
 
-        int limit = 5;
         int inputSize = 25;
 
         for(int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
-            receivePackageGD.id = 1L + 1;
-            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.id = 1L + i;
+            receivePackageGD.bundleID = 1L + i;
             receivePackageGD.receiverZaloPayID = "receiver";
             receivePackageGD.senderZaloPayID = "id";
             receivePackageGD.senderFullName = "name";
@@ -755,12 +785,12 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
             receivePackageGD.messageStatus = "messStt";
             receivePackageGD.message = "mess";
             receivePackageGD.isLuckiest = 1L;
-            receivePackageGD.createTime = 100L + i;
+            receivePackageGD.createTime = 1482716480L + i;
             receivePackageGDs.add(receivePackageGD);
         }
 
         mLocalStorage.putReceivePackages(receivePackageGDs);
-        mLocalStorage.getReceiveBundle(-110L, 1).subscribe(new DefaultObserver<>(result));
+        mLocalStorage.getReceiveBundle(-1482716480L, 1).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getReceiveBundle with creatime < 0", 0, result.size());
     }
@@ -770,13 +800,12 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         final List<ReceivePackage> result = new ArrayList<ReceivePackage>();
         List<ReceivePackageGD> receivePackageGDs = new ArrayList<ReceivePackageGD>();
 
-        int limit = 5;
         int inputSize = 25;
 
         for(int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
-            receivePackageGD.id = 1L + 1;
-            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.id = 1L + i;
+            receivePackageGD.bundleID = 1L + i;
             receivePackageGD.receiverZaloPayID = "receiver";
             receivePackageGD.senderZaloPayID = "id";
             receivePackageGD.senderFullName = "name";
@@ -787,12 +816,12 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
             receivePackageGD.messageStatus = "messStt";
             receivePackageGD.message = "mess";
             receivePackageGD.isLuckiest = 1L;
-            receivePackageGD.createTime = 100L + i;
+            receivePackageGD.createTime = 1482716480L + i;
             receivePackageGDs.add(receivePackageGD);
         }
 
         mLocalStorage.putReceivePackages(receivePackageGDs);
-        mLocalStorage.getReceiveBundle(0, -1).subscribe(new DefaultObserver<>(result));
+        mLocalStorage.getReceiveBundle(0, -5).subscribe(new DefaultObserver<>(result));
 
         assertEquals("getReceiveBundle with limit < 0", 0, result.size());
     }
@@ -810,13 +839,12 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         boolean result;
         List<ReceivePackageGD> receivePackageGDs = new ArrayList<ReceivePackageGD>();
 
-        int limit = 5;
         int inputSize = 25;
 
         for(int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
-            receivePackageGD.id = 1L + 1;
-            receivePackageGD.bundleID = 1L + 1;
+            receivePackageGD.id = 1L + i;
+            receivePackageGD.bundleID = 1L + i;
             receivePackageGD.receiverZaloPayID = "receiver";
             receivePackageGD.senderZaloPayID = "id";
             receivePackageGD.senderFullName = "name";
@@ -827,13 +855,13 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
             receivePackageGD.messageStatus = "messStt";
             receivePackageGD.message = "mess";
             receivePackageGD.isLuckiest = 1L;
-            receivePackageGD.createTime = 100L + i;
+            receivePackageGD.createTime = 1482716480L + i;
             receivePackageGDs.add(receivePackageGD);
         }
 
         mLocalStorage.putReceivePackages(receivePackageGDs);
 
-        result = mLocalStorage.isHaveReceivePacketInDb(100L, 1);
+        result = mLocalStorage.isHaveReceivePacketInDb(1482716490L, 1);
         assertEquals("isHaveReceivePacketInDb when DB had datas", true, result);
     }
 
