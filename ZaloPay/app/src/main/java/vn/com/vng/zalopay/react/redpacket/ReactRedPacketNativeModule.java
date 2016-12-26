@@ -146,7 +146,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
             @Override
             public void onResponseSuccess(Bundle bundle) {
-                Timber.d("pay onResponseSuccess bundle [%s]", bundle);
+                Timber.d("pay onResponseSuccess bundleid [%s]", bundleOrder.bundleId);
                 WritableMap data = Arguments.createMap();
                 data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
 
