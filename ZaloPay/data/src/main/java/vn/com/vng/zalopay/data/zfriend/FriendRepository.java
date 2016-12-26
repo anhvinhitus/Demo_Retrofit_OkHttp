@@ -137,6 +137,19 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<List<ZaloFriend>> getZaloFriendList() {
+
+        Observable<List<ZaloFriend>> observableFriendLocal = getFriendLocal()
+                .filter(zaloFriends -> !Lists.isEmptyOrNull(zaloFriends));
+        Observable<List<ZaloFriend>> observableZaloApi = fetchZaloFriends()
+                .last()
+                .flatMap(aBoolean -> getFriendLocal());
+
+        return Observable.concat(observableFriendLocal, observableZaloApi)
+                .first();
+    }
+
+    private Observable<List<ZaloFriend>> getFriendLocal() {
+        Timber.d("get friend zalo local");
         return ObservableHelper.makeObservable(() -> mLocalStorage.get())
                 .map(this::transform);
     }
