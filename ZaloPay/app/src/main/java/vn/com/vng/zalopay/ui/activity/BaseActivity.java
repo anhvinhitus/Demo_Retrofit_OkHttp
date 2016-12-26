@@ -301,4 +301,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                 message,
                 cancelListener);
     }
+
+    public void showErrorDialog(String message) {
+        DialogHelper.showNotificationDialog(getActivity(), message, null);
+    }
 }

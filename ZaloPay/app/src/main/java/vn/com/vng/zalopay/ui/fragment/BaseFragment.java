@@ -147,7 +147,7 @@ public abstract class BaseFragment extends Fragment {
     public void showErrorDialog(String message,
                                 String cancelText,
                                 final ZPWOnEventDialogListener cancelListener) {
-        DialogHelper.showErrorDialog(getActivity(),
+        DialogHelper.showNotificationDialog(getActivity(),
                 message,
                 cancelText,
                 cancelListener);

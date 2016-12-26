@@ -32,7 +32,7 @@ public class DialogHelper {
                 activity.getString(R.string.txt_close));
     }
 
-    public static void showErrorDialog(Activity activity, String message) {
+    /*public static void showErrorDialog(Activity activity, String message) {
         DialogManager.showSweetDialogCustom(activity,
                 message,
                 activity.getString(R.string.txt_close),
@@ -49,7 +49,7 @@ public class DialogHelper {
                 cancelText,
                 SweetAlertDialog.ERROR_TYPE,
                 cancelListener);
-    }
+    }*/
 
     public static void showErrorDialog(Activity activity,
                                        String title,
@@ -87,12 +87,22 @@ public class DialogHelper {
     public static void showNotificationDialog(Activity activity,
                                               String message,
                                               ZPWOnEventDialogListener cancelListener) {
+        showNotificationDialog(activity,
+                message,
+                activity.getString(R.string.txt_close),
+                cancelListener);
+    }
+
+    public static void showNotificationDialog(Activity activity,
+                                              String message,
+                                              String btnCancel,
+                                              ZPWOnEventDialogListener cancelListener) {
         if (activity == null) {
             return;
         }
         DialogManager.showSweetDialogCustom(activity,
                 message,
-                activity.getString(R.string.txt_close),
+                btnCancel,
                 SweetAlertDialog.NORMAL_TYPE,
                 cancelListener);
     }
