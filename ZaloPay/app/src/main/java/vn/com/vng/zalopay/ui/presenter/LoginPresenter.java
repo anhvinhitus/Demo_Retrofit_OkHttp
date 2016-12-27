@@ -117,7 +117,11 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
 
     public void loginZalo(Activity activity) {
         if (NetworkHelper.isNetworkAvailable(mApplicationContext)) {
-            ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, mLoginListener);
+            try {
+                ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, mLoginListener);
+            } catch (Exception e) {
+                Timber.w(e, "Authenticate to login zalo throw exception.");
+            }
         } else {
             showNetworkError();
         }
