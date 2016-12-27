@@ -8,7 +8,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Func2;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
@@ -16,7 +15,6 @@ import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.exception.ArgumentException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -28,9 +26,9 @@ import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
  */
 public class TransactionRepository implements TransactionStore.Repository {
 
-    private ZaloPayEntityDataMapper zaloPayEntityDataMapper;
-    private TransactionStore.LocalStorage mTransactionLocalStorage;
-    private TransactionStore.RequestService mTransactionRequestService;
+    private ZaloPayEntityDataMapper mDataMapper;
+    private TransactionStore.LocalStorage mLocalStorage;
+    private TransactionStore.RequestService mRequestService;
     private User mUser;
     private final EventBus mEventBus;
 
@@ -49,10 +47,10 @@ public class TransactionRepository implements TransactionStore.Repository {
             TransactionStore.RequestService transactionRequestService,
             EventBus eventBus) {
 
-        this.zaloPayEntityDataMapper = zaloPayEntityDataMapper;
+        this.mDataMapper = zaloPayEntityDataMapper;
         mUser = user;
-        mTransactionLocalStorage = transactionLocalStorage;
-        mTransactionRequestService = transactionRequestService;
+        mLocalStorage = transactionLocalStorage;
+        mRequestService = transactionRequestService;
         mEventBus = eventBus;
     }
 
@@ -78,7 +76,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
         return Observable.concat(_observableTransLocal, _observableTransCloud)
                 .first()
-                .map(entities -> Lists.transform(entities, zaloPayEntityDataMapper::transform));
+                .map(entities -> Lists.transform(entities, mDataMapper::transform));
     }
 
     @Override
@@ -98,7 +96,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
         return Observable.concat(_observableTransLocal, _observableTransCloud)
                 .first()
-                .map(entities -> Lists.transform(entities, zaloPayEntityDataMapper::transform));
+                .map(entities -> Lists.transform(entities, mDataMapper::transform));
     }
 
     private Observable<List<TransHistoryEntity>> fetchTransactionHistoryOldest(int statusType) {
@@ -136,30 +134,30 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<TransHistory> getTransaction(long id) {
-        return ObservableHelper.makeObservable(() -> mTransactionLocalStorage.getTransaction(id))
-                .map(entity -> zaloPayEntityDataMapper.transform(entity));
+        return ObservableHelper.makeObservable(() -> mLocalStorage.getTransaction(id))
+                .map(entity -> mDataMapper.transform(entity));
     }
 
     @Override
     public Observable<Boolean> updateTransactionStatusSuccess(final long transId) {
         return ObservableHelper.makeObservable(() -> {
-            mTransactionLocalStorage.updateStatusType(transId, TRANSACTION_STATUS_SUCCESS);
+            mLocalStorage.updateStatusType(transId, TRANSACTION_STATUS_SUCCESS);
             return Boolean.TRUE;
         });
     }
 
     @Override
     public Boolean isLoadedTransactionSuccess() {
-        return mTransactionLocalStorage.isLoadedTransactionSuccess();
+        return mLocalStorage.isLoadedTransactionSuccess();
     }
 
     @Override
     public Boolean isLoadedTransactionFail() {
-        return mTransactionLocalStorage.isLoadedTransactionFail();
+        return mLocalStorage.isLoadedTransactionFail();
     }
 
     private Observable<List<TransHistoryEntity>> getTransactionHistoryLocal(int pageIndex, int count, int statusType) {
-        return makeObservable(() -> mTransactionLocalStorage.get(pageIndex, count, statusType));
+        return makeObservable(() -> mLocalStorage.get(pageIndex, count, statusType));
     }
 
     private Observable<List<TransHistoryEntity>> fetchTransactionHistory(long timestamp, int sortOrder, int statusType) {
@@ -206,9 +204,9 @@ public class TransactionRepository implements TransactionStore.Repository {
     private long getNextTimestamp(int sortOrder, int statusType) {
         long ret = -1;
         if (sortOrder == TRANSACTION_ORDER_LATEST) {
-            ret = mTransactionLocalStorage.getLatestTimeTransaction(statusType);
+            ret = mLocalStorage.getLatestTimeTransaction(statusType);
         } else if (sortOrder == TRANSACTION_ORDER_OLDEST) {
-            ret = mTransactionLocalStorage.getOldestTimeTransaction(statusType);
+            ret = mLocalStorage.getOldestTimeTransaction(statusType);
         }
 
         return ret;
@@ -251,7 +249,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private Observable<List<TransHistoryEntity>> fetchTransactionHistoryCloud(long timestamp, int sortOrder, int statusType) {
-        return mTransactionRequestService.getTransactionHistories(mUser.zaloPayId, mUser.accesstoken, timestamp, TRANSACTION_LENGTH, sortOrder, statusType)
+        return mRequestService.getTransactionHistories(mUser.zaloPayId, mUser.accesstoken, timestamp, TRANSACTION_LENGTH, sortOrder, statusType)
                 .map(response -> response.data)
                 .doOnNext(data -> {
                     this.writeTransactionEntity(data, sortOrder, statusType);
@@ -268,9 +266,9 @@ public class TransactionRepository implements TransactionStore.Repository {
 
         boolean typeSuccess = statusType == TRANSACTION_STATUS_SUCCESS;
         if (typeSuccess) {
-            mTransactionLocalStorage.setLoadedTransactionSuccess(true);
+            mLocalStorage.setLoadedTransactionSuccess(true);
         } else {
-            mTransactionLocalStorage.setLoadedTransactionFail(true);
+            mLocalStorage.setLoadedTransactionFail(true);
         }
 
         if (hasData) {
@@ -284,7 +282,7 @@ public class TransactionRepository implements TransactionStore.Repository {
             for (TransHistoryEntity transHistoryEntity : data) {
                 transHistoryEntity.statustype = statusType;
             }
-            mTransactionLocalStorage.put(data);
+            mLocalStorage.put(data);
         }
     }
 
@@ -337,11 +335,11 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private Observable<Long> getLatestTimeTransaction(int statusType) {
-        return makeObservable(() -> mTransactionLocalStorage.getLatestTimeTransaction(statusType));
+        return makeObservable(() -> mLocalStorage.getLatestTimeTransaction(statusType));
     }
 
     private Observable<Long> getOldestTimeTransaction(int statusType) {
-        return makeObservable(() -> mTransactionLocalStorage.getOldestTimeTransaction(statusType));
+        return makeObservable(() -> mLocalStorage.getOldestTimeTransaction(statusType));
     }
 
     private Observable<Boolean> fetchTransactionHistoryOldestSuccess(long thresholdTime) {
@@ -375,12 +373,12 @@ public class TransactionRepository implements TransactionStore.Repository {
     @Override
     public Observable<List<TransHistory>> getTransactionsLocal(int pageIndex, int count) {
         return getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS)
-                .map(zaloPayEntityDataMapper::transform);
+                .map(entities -> Lists.transform(entities, mDataMapper::transform));
     }
 
     @Override
     public Observable<List<TransHistory>> getTransactionsFailLocal(int pageIndex, int count) {
         return getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL)
-                .map(zaloPayEntityDataMapper::transform);
+                .map(entities -> Lists.transform(entities, mDataMapper::transform));
     }
 }
