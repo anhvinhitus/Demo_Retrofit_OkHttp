@@ -32,7 +32,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     private final AccountStore.RequestService mRequestService;
     private final AccountStore.UploadPhotoService mUploadPhotoService;
-    private final AccountStore.LocalStorage localStorage;
+    private final AccountStore.LocalStorage mLocalStore;
     private final User mUser;
     private final UserConfig mUserConfig;
 
@@ -41,7 +41,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                                  AccountStore.UploadPhotoService photoService,
                                  UserConfig userConfig,
                                  User user) {
-        this.localStorage = localStorage;
+        this.mLocalStore = localStorage;
         this.mRequestService = accountService;
         this.mUploadPhotoService = photoService;
         this.mUser = user;
@@ -79,7 +79,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Person> getUserInfoByZaloPayName(String zaloPayName) {
         zaloPayName = zaloPayName.toLowerCase();
-        Person cachedItem = localStorage.get(zaloPayName);
+        Person cachedItem = mLocalStore.get(zaloPayName);
         if (cachedItem != null) {
             return Observable.just(cachedItem);
         } else {
@@ -92,7 +92,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                         item.phonenumber = response.phoneNumber;
                         item.zalopayname = finalZaloPayName;
 
-                        localStorage.put(item);
+                        mLocalStore.put(item);
                         return item;
                     });
         }
@@ -127,12 +127,12 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         return mRequestService.getuserinfo(mUser.zaloPayId, mUser.accesstoken, zaloId, systemLogin)
                 .map(response -> {
                     //If person exist in cache then update cache
-                    Person person = localStorage.getById(response.userid);
+                    Person person = mLocalStore.getById(response.userid);
                     if (person != null) {
                         person.zaloId = zaloId;
                         person.phonenumber = response.phonenumber;
                         person.zalopayname = response.zalopayname;
-                        localStorage.put(person);
+                        mLocalStore.put(person);
                     }
 
                     MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
@@ -146,7 +146,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     @Override
     public Observable<Person> getUserInfoByZaloPayId(String zaloPayId) {
-        Person cachedItem = localStorage.getById(zaloPayId);
+        Person cachedItem = mLocalStore.getById(zaloPayId);
         Timber.d("getUserInfoByZaloPayId, cachedItem [%s]", cachedItem);
         if (cachedItem != null) {
             return Observable.just(cachedItem);
@@ -159,7 +159,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                         item.phonenumber = response.phoneNumber;
                         item.zalopayname = response.zalopayname;
 
-                        localStorage.put(item);
+                        mLocalStore.put(item);
                         return item;
                     });
         }
@@ -192,14 +192,14 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 backImageBodyRequest,
                 avatarBodyRequest)
                 .doOnNext(response -> {
-                    localStorage.clearProfileInfo3();
+                    mLocalStore.saveProfileInfo3(email, identityNumber, null, null, null);
                     mUserConfig.setWaitingApproveProfileLevel3(true);
                 })
                 .doOnError(throwable -> {
                     Timber.d("throwable update profile 3");
                     if (throwable instanceof BodyException) {
                         if (((BodyException) throwable).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
-                            localStorage.clearProfileInfo3();
+                            mLocalStore.saveProfileInfo3(email, identityNumber, null, null, null);
                             mUserConfig.setWaitingApproveProfileLevel3(true);
                         }
                     }
@@ -241,7 +241,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<ProfileInfo3> getProfileInfo3Cache() {
         return ObservableHelper.makeObservable(() -> {
-            Map<String, String> map = localStorage.getProfileInfo3();
+            Map<String, String> map = mLocalStore.getProfileInfo3();
             ProfileInfo3 info = new ProfileInfo3();
             info.email = map.get("email");
             info.identity = map.get("identity");
@@ -255,7 +255,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Boolean> saveProfileInfo3(String email, String identity, @Nullable String foregroundImg, @Nullable String backgroundImg, @Nullable String avatarImg) {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.saveProfileInfo3(email, identity, foregroundImg, backgroundImg, avatarImg);
+            mLocalStore.saveProfileInfo3(email, identity, foregroundImg, backgroundImg, avatarImg);
             return Boolean.TRUE;
         });
     }
@@ -263,7 +263,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<ProfileLevel2> getProfileLevel2Cache() {
         return ObservableHelper.makeObservable(() -> {
-            Map map = localStorage.getProfileLevel2();
+            Map map = mLocalStore.getProfileLevel2();
             Object phoneNumber = map.get(Constants.ProfileLevel2.PHONE_NUMBER);
             Object isReceivedOtp = map.get(Constants.ProfileLevel2.RECEIVE_OTP);
             ProfileLevel2 profileLevel2 = new ProfileLevel2();
@@ -282,7 +282,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
         Timber.d("saveProfileInfo2 phone [%s] receiveOtp [%s]",
                 phoneNumber, receiveOtp);
         return ObservableHelper.makeObservable(() -> {
-            localStorage.saveProfileInfo2(phoneNumber, receiveOtp);
+            mLocalStore.saveProfileInfo2(phoneNumber, receiveOtp);
             return null;
         });
     }
@@ -290,7 +290,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Void> clearProfileInfo2() {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.saveProfileInfo2("", false);
+            mLocalStore.saveProfileInfo2("", false);
             return null;
         });
     }
@@ -298,7 +298,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Boolean> getChangePinState() {
         return ObservableHelper.makeObservable(() -> {
-            Map map = localStorage.getChangePinState();
+            Map map = mLocalStore.getChangePinState();
             Object isReceivedOtp = map.get(Constants.ChangePin.RECEIVE_OTP_KEY);
             if (isReceivedOtp != null) {
                 return Boolean.valueOf(isReceivedOtp.toString());
@@ -310,7 +310,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Void> saveChangePinState(boolean receiveOtp) {
         return ObservableHelper.makeObservable(() -> {
-            localStorage.saveChangePinState(receiveOtp);
+            mLocalStore.saveChangePinState(receiveOtp);
             return null;
         });
     }

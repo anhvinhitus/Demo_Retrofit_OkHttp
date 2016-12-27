@@ -73,13 +73,6 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
     }
 
     @Override
-    public void clearProfileInfo3() {
-        // Chỉ xóa Image. Khi update success. Yêu cầu của QC
-        Map<String, String> profile = getProfileInfo3();
-        saveProfileInfo3(profile.get("email"), profile.get("identity"), null, null, null);
-    }
-
-    @Override
     public Map<String, String> getProfileInfo3() {
         Map<String, String> map = new HashMap<>();
         String temp = getDataManifest("profile3info");

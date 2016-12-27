@@ -40,8 +40,6 @@ public interface AccountStore {
 
         void saveProfileInfo3(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg);
 
-        void clearProfileInfo3();
-
         Map getProfileInfo3();
 
         Map getProfileLevel2();
