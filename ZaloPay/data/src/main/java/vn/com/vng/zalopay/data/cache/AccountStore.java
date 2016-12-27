@@ -40,13 +40,13 @@ public interface AccountStore {
 
         void saveProfileInfo3(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg);
 
-        Map getProfileInfo3();
+        Map<String,String> getProfileInfo3();
 
-        Map getProfileLevel2();
+        Map<String,String> getProfileLevel2();
 
         void saveProfileInfo2(String phoneNumber, boolean receiveOtp);
 
-        Map getChangePinState();
+        Map<String,String> getChangePinState();
 
         void saveChangePinState(boolean receiveOtp);
     }

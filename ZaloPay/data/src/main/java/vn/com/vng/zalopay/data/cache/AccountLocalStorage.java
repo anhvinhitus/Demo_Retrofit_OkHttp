@@ -92,7 +92,7 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
     }
 
     @Override
-    public Map getProfileLevel2() {
+    public Map<String, String> getProfileLevel2() {
         Map<String, String> map = new HashMap<>();
         String temp = getDataManifest(Constants.ProfileLevel2.PROFILE_LEVEL2);
         if (!TextUtils.isEmpty(temp)) {
@@ -120,7 +120,7 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
     }
 
     @Override
-    public Map getChangePinState() {
+    public Map<String, String> getChangePinState() {
         Map<String, String> map = new HashMap<>();
         String changePin = getDataManifest(Constants.ChangePin.CHANGE_PIN);
         if (!TextUtils.isEmpty(changePin)) {
