@@ -1,22 +1,33 @@
 package vn.zalopay.feedback.collectors;
 
+import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.zalopay.feedback.CollectorSetting;
 import vn.zalopay.feedback.IFeedbackCollector;
 
 /**
- * Created by huuhoa on 12/15/16.
+ * Created by khattn on 12/27/16.
  * Collect app information
  */
 
 public class AppCollector implements IFeedbackCollector {
+    private Activity mActivity;
+
     private static CollectorSetting sSetting;
     static {
         sSetting = new CollectorSetting();
         sSetting.userVisibility = true;
         sSetting.displayName = "Application Information";
         sSetting.dataKeyName = "appinfo";
+    }
+
+    public AppCollector(Activity activity) {
+        mActivity = activity;
     }
 
     /**
@@ -34,6 +45,17 @@ public class AppCollector implements IFeedbackCollector {
      */
     @Override
     public JSONObject doInBackground() {
-        return null;
+        try {
+            PackageInfo pInfo = mActivity.getPackageManager().getPackageInfo(mActivity.getPackageName(), 0);
+            JSONObject retVal = new JSONObject();
+            retVal.put("version", pInfo.versionName);
+            retVal.put("build_number", pInfo.versionCode);
+
+            return retVal;
+        } catch (JSONException e) {
+            return null;
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
     }
 }

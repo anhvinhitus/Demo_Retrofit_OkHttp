@@ -26,7 +26,7 @@ public class ScreenshotCollector implements IFeedbackCollector {
         sSetting = new CollectorSetting();
         sSetting.userVisibility = true;
         sSetting.displayName = "Screenshot Information";
-        sSetting.dataKeyName = "screenshotinfo";
+        sSetting.dataKeyName = "screenshot";
     }
 
     public ScreenshotCollector(Activity activity) {

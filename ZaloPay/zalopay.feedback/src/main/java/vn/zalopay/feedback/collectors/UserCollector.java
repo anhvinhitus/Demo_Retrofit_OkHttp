@@ -1,22 +1,32 @@
 package vn.zalopay.feedback.collectors;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.zalopay.feedback.CollectorSetting;
 import vn.zalopay.feedback.IFeedbackCollector;
 
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.domain.model.User;
+
 /**
- * Created by huuhoa on 12/15/16.
+ * Created by khattn on 12/27/16.
  * User collector
  */
 
 public class UserCollector implements IFeedbackCollector {
+    private UserConfig mUserConfig;
+
     private static CollectorSetting sSetting;
     static {
         sSetting = new CollectorSetting();
         sSetting.userVisibility = true;
         sSetting.displayName = "User Information";
         sSetting.dataKeyName = "userinfo";
+    }
+
+    public UserCollector(UserConfig userConfig) {
+        mUserConfig = userConfig;
     }
 
     /**
@@ -34,6 +44,19 @@ public class UserCollector implements IFeedbackCollector {
      */
     @Override
     public JSONObject doInBackground() {
-        return null;
+        try {
+            User user = mUserConfig.getCurrentUser();
+
+            JSONObject retVal = new JSONObject();
+            retVal.put("zpid", user.zaloPayId);
+            retVal.put("zaloid", user.zaloId);
+            retVal.put("display_name", user.displayName);
+            retVal.put("avatar", user.avatar);
+            retVal.put("zalopayid", user.zalopayname);
+
+            return retVal;
+        } catch (JSONException e) {
+            return null;
+        }
     }
 }
