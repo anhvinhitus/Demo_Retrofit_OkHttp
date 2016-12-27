@@ -58,6 +58,6 @@ public class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInf
         if (mActivity == null || mActivity.get() == null) {
             return;
         }
-        DialogHelper.showErrorDialog(mActivity.get(), ErrorMessageFactory.create(mActivity.get(), e));
+        DialogHelper.showNotificationDialog(mActivity.get(), ErrorMessageFactory.create(mActivity.get(), e));
     }
 }

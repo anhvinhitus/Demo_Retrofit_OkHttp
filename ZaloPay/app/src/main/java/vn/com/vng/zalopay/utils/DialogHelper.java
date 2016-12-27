@@ -85,6 +85,13 @@ public class DialogHelper {
     }
 
     public static void showNotificationDialog(Activity activity,
+                                              String message) {
+        showNotificationDialog(activity,
+                message,
+                null);
+    }
+
+    public static void showNotificationDialog(Activity activity,
                                               String message,
                                               ZPWOnEventDialogListener cancelListener) {
         showNotificationDialog(activity,

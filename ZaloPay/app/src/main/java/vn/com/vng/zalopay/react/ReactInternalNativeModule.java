@@ -282,7 +282,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 if (getCurrentActivity() != null) {
-                    DialogHelper.showErrorDialog(getCurrentActivity(), message);
+                    DialogHelper.showNotificationDialog(getCurrentActivity(), message);
                 }
             }
         });
