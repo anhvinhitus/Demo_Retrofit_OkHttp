@@ -88,7 +88,9 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
 
     private void onUpdateProfileSuccess(String phone) {
         hideLoading();
-        mView.updateProfileSuccess(phone);
+        if (mView != null) {
+            mView.updateProfileSuccess(phone);
+        }
         saveProfileInfo2Cache(phone, true);
     }
 
