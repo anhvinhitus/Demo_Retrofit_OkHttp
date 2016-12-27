@@ -371,4 +371,16 @@ public class TransactionRepository implements TransactionStore.Repository {
                 .flatMap(latestTime -> fetchTransactionHistoryRecurse(latestTime, TRANSACTION_ORDER_LATEST, TRANSACTION_STATUS_FAIL, thresholdTime, true))
                 .map(entities -> Boolean.TRUE);
     }
+
+    @Override
+    public Observable<List<TransHistory>> getTransactionsLocal(int pageIndex, int count) {
+        return getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS)
+                .map(zaloPayEntityDataMapper::transform);
+    }
+
+    @Override
+    public Observable<List<TransHistory>> getTransactionsFailLocal(int pageIndex, int count) {
+        return getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL)
+                .map(zaloPayEntityDataMapper::transform);
+    }
 }

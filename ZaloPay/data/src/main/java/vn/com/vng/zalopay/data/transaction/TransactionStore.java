@@ -52,6 +52,10 @@ public interface TransactionStore {
 
         Observable<List<TransHistory>> getTransactionsFail(int pageIndex, int count);
 
+        Observable<List<TransHistory>> getTransactionsLocal(int pageIndex, int count);
+
+        Observable<List<TransHistory>> getTransactionsFailLocal(int pageIndex, int count);
+
         Observable<TransHistory> getTransaction(long id);
 
         Observable<Boolean> updateTransactionStatusSuccess(long transId);

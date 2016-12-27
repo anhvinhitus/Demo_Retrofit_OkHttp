@@ -28,14 +28,16 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
-import vn.com.vng.zalopay.data.notification.NotificationRepository;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
-import vn.com.vng.zalopay.react.error.PaymentError;
+
+import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_FAIL;
+import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_SUCCESS;
+import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED;
 
 /**
  * Created by huuhoa on 5/8/16.
@@ -66,7 +68,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
     @ReactMethod
-    public void getTransactionsSuccess(final int pageIndex, int count, final Promise promise) {
+    public void getTransactionsSuccess(final int pageIndex, final int count, final Promise promise) {
 
         Timber.d("get transaction success index %s count %s", pageIndex, count);
 
@@ -74,14 +76,20 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                 .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
                     @Override
                     public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {
-                        int code = PaymentError.ERR_CODE_SUCCESS.value();
+                        int code = ERR_CODE_SUCCESS.value();
                         if (Lists.isEmptyOrNull(transactions) && pageIndex == 0) {
                             boolean isLoad = mTransactionRepository.isLoadedTransactionSuccess();
                             if (!isLoad) {
-                                code = PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value();
+                                code = ERR_CODE_TRANSACTION_NOT_LOADED.value();
                             }
                         }
                         return new Pair<>(code, transform(transactions));
+                    }
+                })
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Pair<Integer, WritableArray>>>() {
+                    @Override
+                    public Observable<? extends Pair<Integer, WritableArray>> call(Throwable throwable) {
+                        return resolveTransactionSuccess(pageIndex, count, ERR_CODE_FAIL.value());
                     }
                 })
                 .subscribe(new TransactionLogSubscriber(promise));
@@ -89,7 +97,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     }
 
     @ReactMethod
-    public void getTransactionsFail(final int pageIndex, int count, Promise promise) {
+    public void getTransactionsFail(final int pageIndex, final int count, Promise promise) {
 
         Timber.d("get transaction fail index %s count %s", pageIndex, count);
 
@@ -97,15 +105,21 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                 .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
                     @Override
                     public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {
-                        int code = PaymentError.ERR_CODE_SUCCESS.value();
+                        int code = ERR_CODE_SUCCESS.value();
                         if (Lists.isEmptyOrNull(transactions) && pageIndex == 0) {
                             boolean isLoad = mTransactionRepository.isLoadedTransactionFail();
                             if (!isLoad) {
-                                code = PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value();
+                                code = ERR_CODE_TRANSACTION_NOT_LOADED.value();
                             }
                         }
 
                         return new Pair<>(code, transform(transactions));
+                    }
+                })
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Pair<Integer, WritableArray>>>() {
+                    @Override
+                    public Observable<? extends Pair<Integer, WritableArray>> call(Throwable throwable) {
+                        return resolveTransactionFail(pageIndex, count, ERR_CODE_FAIL.value());
                     }
                 })
                 .subscribe(new TransactionLogSubscriber(promise));
@@ -123,7 +137,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
             value = Long.parseLong(id);
         } catch (NumberFormatException e) {
             Timber.i("Invalid format for number: %s", id);
-            Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_FAIL.value(), "Invalid input");
+            Helpers.promiseResolveError(promise, ERR_CODE_FAIL.value(), "Invalid input");
             return;
         }
 
@@ -131,7 +145,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                 .map(new Func1<TransHistory, Pair<Integer, WritableArray>>() {
                     @Override
                     public Pair<Integer, WritableArray> call(TransHistory transactions) {
-                        int code = PaymentError.ERR_CODE_SUCCESS.value();
+                        int code = ERR_CODE_SUCCESS.value();
                         return new Pair<>(code, transform(Collections.singletonList(transactions)));
                     }
                 })
@@ -142,10 +156,10 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
     private class TransactionLogSubscriber extends DefaultSubscriber<Pair<Integer, WritableArray>> {
 
-        WeakReference<Promise> promiseWeakReference;
+        WeakReference<Promise> mPromise;
 
         TransactionLogSubscriber(Promise promise) {
-            promiseWeakReference = new WeakReference<>(promise);
+            mPromise = new WeakReference<>(promise);
         }
 
         @Override
@@ -155,15 +169,16 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         @Override
         public void onError(Throwable e) {
             Timber.w(e, "error on getting transaction logs");
-            Helpers.promiseResolveError(promiseWeakReference.get(), PaymentError.ERR_CODE_FAIL.value(), "get transaction error");
+            Helpers.promiseResolveError(mPromise.get(), ERR_CODE_FAIL.value(), "get transaction error");
         }
 
         @Override
         public void onNext(Pair<Integer, WritableArray> resp) {
-            if (resp.first == PaymentError.ERR_CODE_TRANSACTION_NOT_LOADED.value()) {
-                Helpers.promiseResolveError(promiseWeakReference.get(), resp.first, "transaction has not been loaded");
+            Timber.d(" transactions  code [%s] size [%s] ", resp.first, resp.second.size());
+            if (resp.first == ERR_CODE_TRANSACTION_NOT_LOADED.value()) {
+                Helpers.promiseResolveError(mPromise.get(), resp.first, "transaction has not been loaded");
             } else {
-                Helpers.promiseResolveSuccess(promiseWeakReference.get(), resp.second);
+                Helpers.promiseResolveSuccess(mPromise.get(), resp.second);
             }
         }
     }
@@ -306,5 +321,25 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                     }
                 });
         mCompositeSubscription.add(subscription);
+    }
+
+    private Observable<Pair<Integer, WritableArray>> resolveTransactionFail(int pageIndex, int count, final int error) {
+        return mTransactionRepository.getTransactionsFailLocal(pageIndex, count)
+                .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
+                    @Override
+                    public Pair<Integer, WritableArray> call(List<TransHistory> histories) {
+                        return new Pair<>(error, transform(histories));
+                    }
+                });
+    }
+
+    private Observable<Pair<Integer, WritableArray>> resolveTransactionSuccess(int pageIndex, int count, final int error) {
+        return mTransactionRepository.getTransactionsLocal(pageIndex, count)
+                .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
+                    @Override
+                    public Pair<Integer, WritableArray> call(List<TransHistory> histories) {
+                        return new Pair<>(error, transform(histories));
+                    }
+                });
     }
 }
