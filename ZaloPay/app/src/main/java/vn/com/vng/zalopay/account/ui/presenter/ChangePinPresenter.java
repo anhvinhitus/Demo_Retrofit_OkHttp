@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 import static vn.com.vng.zalopay.data.NetworkError.OTP_CHANGE_PASSWORF_WRONG;
 
@@ -130,17 +131,30 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
         if (e instanceof NetworkConnectionException) {
             mChangePinView.showNetworkErrorDialog();
         } else if (e instanceof BodyException) {
-            mChangePinView.showError(message);
-            int code = ((BodyException) e).errorCode;
-            if (code == NetworkError.OLD_PIN_NOT_MATCH) {
-                if (numberError == LIMIT_CHANGE_PASSWORD_ERROR) {
-                    mView.onChangePinOverLimit();
-                } else {
-                    mChangePinView.requestFocusOldPin();
+            final int code = ((BodyException) e).errorCode;
+            mChangePinView.showError(message, new ZPWOnEventConfirmDialogListener() {
+                @Override
+                public void onCancelEvent() {
+                    onDialogDismiss();
                 }
 
-                numberError++;
-            }
+                @Override
+                public void onOKevent() {
+                    onDialogDismiss();
+                }
+
+                private void onDialogDismiss() {
+                    if (code == NetworkError.OLD_PIN_NOT_MATCH) {
+                        if (numberError == LIMIT_CHANGE_PASSWORD_ERROR) {
+                            mView.onChangePinOverLimit();
+                        } else {
+                            mChangePinView.requestFocusOldPin();
+                        }
+
+                        numberError++;
+                    }
+                }
+            });
         } else {
             mChangePinView.showError(message);
         }

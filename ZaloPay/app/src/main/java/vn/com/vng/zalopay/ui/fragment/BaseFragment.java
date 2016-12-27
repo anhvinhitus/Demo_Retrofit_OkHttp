@@ -137,6 +137,14 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showErrorDialog(String message,
+                                final ZPWOnEventDialogListener cancelListener) {
+        DialogHelper.showNotificationDialog(getActivity(),
+                message,
+                getString(R.string.txt_close),
+                cancelListener);
+    }
+
+    public void showErrorDialog(String message,
                                 String cancelText,
                                 final ZPWOnEventDialogListener cancelListener) {
         DialogHelper.showErrorDialog(getActivity(),
@@ -187,5 +195,13 @@ public abstract class BaseFragment extends Fragment {
         }
         final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+    }
+
+    public void hideKeyboard(View view) {
+        if (view == null) {
+            return;
+        }
+        final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

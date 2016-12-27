@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -166,7 +167,13 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
     public void requestFocusOldPin() {
         Timber.d("requestFocusOldPin");
         if (mOldPassCodeView != null) {
-            mOldPassCodeView.requestFocusView();
+            mOldPassCodeView.getEditText().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mOldPassCodeView.requestFocusView();
+                    AndroidUtils.showKeyboard(mOldPassCodeView.getEditText());
+                }
+            }, 250);
         }
     }
 
@@ -182,7 +189,12 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        super.showErrorDialog(message);
+    }
+
+    @Override
+    public void showError(String message, ZPWOnEventDialogListener listener) {
+        super.showErrorDialog(message, listener);
     }
 
     @OnClick(R.id.btnContinue)
@@ -204,6 +216,16 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
             mNewPassCodeView.setError(getString(R.string.pin_not_change));
             return;
         }
+
+        if (mOldPassCodeView.isFocused()) {
+            hideKeyboard(mOldPassCodeView.getEditText());
+        }
+        if (mNewPassCodeView.isFocused()) {
+            hideKeyboard(mNewPassCodeView.getEditText());
+        }
+
+        mOldPassCodeView.clearFocusView();
+        mNewPassCodeView.clearFocusView();
 
         mOldPassCodeView.setError(null);
         mNewPassCodeView.setError(null);
