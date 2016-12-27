@@ -1,4 +1,4 @@
-package vn.zalopay.feedback.collectors;
+package vn.com.vng.zalopay.data;
 
 import org.json.JSONException;
 import org.json.JSONObject;

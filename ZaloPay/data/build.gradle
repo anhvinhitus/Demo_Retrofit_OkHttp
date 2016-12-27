@@ -90,6 +90,7 @@ dependencies {
     compile libs.wire_runtime
 
     compile project(':domain')
+    compile project(':zalopay.feedback')
 
     // compile 'io.netty:netty-all:4.1.0.CR4'
 //    compile libs.netty_codec

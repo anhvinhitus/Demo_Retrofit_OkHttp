@@ -37,5 +37,4 @@ dependencies {
     compile libs.timber
 
     testCompile tests.junit
-    compile project(path: ':data')
 }
