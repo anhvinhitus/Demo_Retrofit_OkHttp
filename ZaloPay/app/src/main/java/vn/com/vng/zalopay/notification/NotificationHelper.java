@@ -380,6 +380,7 @@ public class NotificationHelper {
                             NotificationData notificationData = new NotificationData();
                             notificationData.mtaid = embedDataGcm.mtaid;
                             notificationData.mtuid = embedDataGcm.mtuid;
+                            shouldMarkRead(notificationData);
                             putNotification(notificationData);
                             throwNotification(mContext,
                                     NOTIFICATION_ID,

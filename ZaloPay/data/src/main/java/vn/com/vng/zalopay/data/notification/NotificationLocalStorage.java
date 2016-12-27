@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.notification;
 
+import android.database.sqlite.SQLiteConstraintException;
 import android.text.TextUtils;
 
 import com.google.gson.JsonObject;
@@ -45,39 +46,86 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         List<NotificationGD> list = transform(val);
         if (!Lists.isEmptyOrNull(list)) {
             for (NotificationGD item : list) {
-                try {
-                    getDaoSession().getNotificationGDDao().insertInTx(item);
-                } catch (Exception e) {
-                    Timber.d(e, "Insert notify error");
-                }
+                insertOrUpgrade(item);
             }
         }
     }
 
     @Override
     public void put(NotificationData val) {
-        NotificationGD item = transform(val);
-        if (item != null) {
-            Timber.d("Put item %s", item.message);
-            try {
-                getDaoSession().getNotificationGDDao().insertInTx(item);
-            } catch (Exception e) {
-                Timber.d(e, "Insert notify error");
-            }
-        }
+        insertOrUpgrade(transform(val));
     }
 
     @Override
     public long putSync(NotificationData val) {
-        NotificationGD item = transform(val);
-        if (item != null) {
-            try {
-                return getDaoSession().getNotificationGDDao().insert(item);
-            } catch (Exception e) {
+        insertOrUpgrade(transform(val));
+        return -1;
+    }
+
+    private NotificationGD getNotification(long mtaid, long mtuid) {
+        List<NotificationGD> list = null;
+        if (mtaid > 0) {
+            list = getDaoSession().getNotificationGDDao()
+                    .queryBuilder()
+                    .where(NotificationGDDao.Properties.Mtaid.eq(mtaid))
+                    .list();
+        } else if (mtuid > 0) {
+            list = getDaoSession().getNotificationGDDao()
+                    .queryBuilder()
+                    .where(NotificationGDDao.Properties.Mtuid.eq(mtuid))
+                    .list();
+        }
+        if (list == null || list.size() <= 0) {
+            return null;
+        } else {
+            return list.get(0);
+        }
+    }
+
+    private boolean shouldUpgrade(NotificationGD oldNotify, NotificationGD newNotify) {
+        if (newNotify == null) {
+            return false;
+        }
+        if (TextUtils.isEmpty(newNotify.message)) {
+            return false;
+        }
+        if (oldNotify.notificationtype != null
+                && oldNotify.message != null) {
+            return false;
+        }
+        return true;
+    }
+
+    private void upgrade(NotificationGD newNotify) {
+        if (newNotify == null) {
+            return;
+        }
+        NotificationGD oldNotify = getNotification(newNotify.mtaid, newNotify.mtuid);
+        if (!shouldUpgrade(oldNotify, newNotify)) {
+            return;
+        }
+        if (oldNotify != null) {
+            newNotify.notificationstate = oldNotify.notificationstate;
+        }
+        getDaoSession().getNotificationGDDao().insertOrReplace(newNotify);
+        Timber.d("upgrade notification success, type[%s] message[%s] state[%s]",
+                newNotify.notificationtype, newNotify.message, newNotify.notificationstate);
+    }
+
+    private void insertOrUpgrade(NotificationGD val) {
+        if (val == null) {
+            return;
+        }
+        try {
+            getDaoSession().getNotificationGDDao().insertInTx(val);
+            Timber.d("Put item success, message [%s]", val.message);
+        } catch (Exception e) {
+            if (e instanceof SQLiteConstraintException) {
+                upgrade(val);
+            } else {
                 Timber.d(e, "Insert notify error");
             }
         }
-        return -1;
     }
 
     @Override
