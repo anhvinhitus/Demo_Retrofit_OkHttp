@@ -93,6 +93,14 @@
 -keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactProp <methods>; }
 -keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactPropGroup <methods>; }
 
+-keep class com.facebook.react.cxxbridge.** { *; }
+-keep class com.facebook.react.bridge.** { *; }
+
+# SoLoader
+-keep class com.facebook.soloader.** { *; }
+-keepclassmembers class com.facebook.soloader.SoLoader {
+   static <fields>;
+}
 
 -dontwarn com.facebook.react.**
 
