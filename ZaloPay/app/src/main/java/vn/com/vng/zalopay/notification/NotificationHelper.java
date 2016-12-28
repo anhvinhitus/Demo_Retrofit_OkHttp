@@ -438,11 +438,11 @@ public class NotificationHelper {
         if (Lists.isEmptyOrNull(listMessage)) {
             return;
         }
-        
         for (NotificationData notify : listMessage) {
             if (notify == null) {
                 continue;
             }
+            this.shouldMarkRead(notify);
             int notificationType = (int) notify.notificationtype;
 
             switch (notificationType) {

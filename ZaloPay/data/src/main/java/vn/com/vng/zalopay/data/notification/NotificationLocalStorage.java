@@ -58,8 +58,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
     @Override
     public long putSync(NotificationData val) {
-        insertOrUpgrade(transform(val));
-        return -1;
+        return insertOrUpgrade(transform(val));
     }
 
     private NotificationGD getNotification(long mtaid, long mtuid) {
@@ -96,34 +95,35 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         return true;
     }
 
-    private void upgrade(NotificationGD newNotify) {
+    private long upgrade(NotificationGD newNotify) {
         if (newNotify == null) {
-            return;
+            return -1;
         }
         NotificationGD oldNotify = getNotification(newNotify.mtaid, newNotify.mtuid);
         if (!shouldUpgrade(oldNotify, newNotify)) {
-            return;
+            return -1;
         }
         if (oldNotify != null) {
             newNotify.notificationstate = oldNotify.notificationstate;
         }
-        getDaoSession().getNotificationGDDao().insertOrReplace(newNotify);
         Timber.d("upgrade notification success, type[%s] message[%s] state[%s]",
                 newNotify.notificationtype, newNotify.message, newNotify.notificationstate);
+        return getDaoSession().getNotificationGDDao().insertOrReplace(newNotify);
     }
 
-    private void insertOrUpgrade(NotificationGD val) {
+    private long insertOrUpgrade(NotificationGD val) {
         if (val == null) {
-            return;
+            return -1;
         }
         try {
-            getDaoSession().getNotificationGDDao().insertInTx(val);
-            Timber.d("Put item success, message [%s]", val.message);
+            Timber.d("Put item message [%s]", val.message);
+            return getDaoSession().getNotificationGDDao().insert(val);
         } catch (Exception e) {
             if (e instanceof SQLiteConstraintException) {
-                upgrade(val);
+                return upgrade(val);
             } else {
                 Timber.d(e, "Insert notify error");
+                return -1;
             }
         }
     }
