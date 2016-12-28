@@ -237,6 +237,7 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
 
     @Override
     public void onDestroyView() {
+        hideLoading();
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onDestroyView();
         }
