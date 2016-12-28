@@ -186,7 +186,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
     // when received notification
-    private void getTotalNotification(long delay) {
+    public void getTotalNotification(long delay) {
         Subscription subscription = mNotificationRepository.totalNotificationUnRead()
                 .delaySubscription(delay, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())

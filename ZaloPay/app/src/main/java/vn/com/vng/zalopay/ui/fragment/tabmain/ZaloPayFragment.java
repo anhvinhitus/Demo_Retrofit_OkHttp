@@ -153,6 +153,9 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
                 ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
             }
         });
+        if (presenter != null) {
+            presenter.getTotalNotification(0);
+        }
     }
 
     @Override
@@ -268,6 +271,10 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public void enableShowShow(boolean isEnableShowShow) {
+        if (this.isEnableShowShow == isEnableShowShow) {
+            Timber.d("Enable ShowShow not change.");
+            return;
+        }
         this.isEnableShowShow = isEnableShowShow;
         getActivity().invalidateOptionsMenu();
     }
