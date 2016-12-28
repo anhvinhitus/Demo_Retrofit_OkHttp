@@ -16,6 +16,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.TransHistory;
+import vn.com.vng.zalopay.react.model.TransactionResult;
 
 import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_FAIL;
 import static vn.com.vng.zalopay.react.error.PaymentError.ERR_CODE_SUCCESS;
@@ -73,9 +75,9 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         Timber.d("get transaction success index %s count %s", pageIndex, count);
 
         Subscription subscription = mTransactionRepository.getTransactions(pageIndex, count)
-                .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
+                .map(new Func1<List<TransHistory>, TransactionResult>() {
                     @Override
-                    public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {
+                    public TransactionResult call(List<TransHistory> transactions) {
                         int code = ERR_CODE_SUCCESS.value();
                         if (Lists.isEmptyOrNull(transactions) && pageIndex == 0) {
                             boolean isLoad = mTransactionRepository.isLoadedTransactionSuccess();
@@ -83,13 +85,14 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                                 code = ERR_CODE_TRANSACTION_NOT_LOADED.value();
                             }
                         }
-                        return new Pair<>(code, transform(transactions));
+
+                        return new TransactionResult(code, "", transactions);
                     }
                 })
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Pair<Integer, WritableArray>>>() {
+                .onErrorResumeNext(new Func1<Throwable, Observable<TransactionResult>>() {
                     @Override
-                    public Observable<? extends Pair<Integer, WritableArray>> call(Throwable throwable) {
-                        return resolveTransactionSuccess(pageIndex, count, ERR_CODE_FAIL.value());
+                    public Observable<TransactionResult> call(Throwable throwable) {
+                        return resolveTransactionSuccess(pageIndex, count, throwable);
                     }
                 })
                 .subscribe(new TransactionLogSubscriber(promise));
@@ -102,9 +105,9 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         Timber.d("get transaction fail index %s count %s", pageIndex, count);
 
         Subscription subscription = mTransactionRepository.getTransactionsFail(pageIndex, count)
-                .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
+                .map(new Func1<List<TransHistory>, TransactionResult>() {
                     @Override
-                    public Pair<Integer, WritableArray> call(List<TransHistory> transactions) {
+                    public TransactionResult call(List<TransHistory> transactions) {
                         int code = ERR_CODE_SUCCESS.value();
                         if (Lists.isEmptyOrNull(transactions) && pageIndex == 0) {
                             boolean isLoad = mTransactionRepository.isLoadedTransactionFail();
@@ -112,14 +115,13 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                                 code = ERR_CODE_TRANSACTION_NOT_LOADED.value();
                             }
                         }
-
-                        return new Pair<>(code, transform(transactions));
+                        return new TransactionResult(code, "", transactions);
                     }
                 })
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Pair<Integer, WritableArray>>>() {
+                .onErrorResumeNext(new Func1<Throwable, Observable<TransactionResult>>() {
                     @Override
-                    public Observable<? extends Pair<Integer, WritableArray>> call(Throwable throwable) {
-                        return resolveTransactionFail(pageIndex, count, ERR_CODE_FAIL.value());
+                    public Observable<TransactionResult> call(Throwable throwable) {
+                        return resolveTransactionFail(pageIndex, count, throwable);
                     }
                 })
                 .subscribe(new TransactionLogSubscriber(promise));
@@ -142,11 +144,10 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         }
 
         Subscription subscription = mTransactionRepository.getTransaction(value)
-                .map(new Func1<TransHistory, Pair<Integer, WritableArray>>() {
+                .map(new Func1<TransHistory, TransactionResult>() {
                     @Override
-                    public Pair<Integer, WritableArray> call(TransHistory transactions) {
-                        int code = ERR_CODE_SUCCESS.value();
-                        return new Pair<>(code, transform(Collections.singletonList(transactions)));
+                    public TransactionResult call(TransHistory transactions) {
+                        return new TransactionResult(ERR_CODE_SUCCESS.value(), "", Collections.singletonList(transactions));
                     }
                 })
                 .subscribe(new TransactionLogSubscriber(promise));
@@ -154,7 +155,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         mCompositeSubscription.add(subscription);
     }
 
-    private class TransactionLogSubscriber extends DefaultSubscriber<Pair<Integer, WritableArray>> {
+    private class TransactionLogSubscriber extends DefaultSubscriber<TransactionResult> {
 
         WeakReference<Promise> mPromise;
 
@@ -173,12 +174,12 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         }
 
         @Override
-        public void onNext(Pair<Integer, WritableArray> resp) {
-            Timber.d(" transactions  code [%s] size [%s] ", resp.first, resp.second.size());
-            if (resp.first == ERR_CODE_TRANSACTION_NOT_LOADED.value()) {
-                Helpers.promiseResolveError(mPromise.get(), resp.first, "transaction has not been loaded");
+        public void onNext(TransactionResult result) {
+            Timber.d(" transactions code [%s] message [%s] data [%s]", result.code, result.message, result.data);
+            if (result.code == ERR_CODE_TRANSACTION_NOT_LOADED.value()) {
+                Helpers.promiseResolveError(mPromise.get(), result.code, "Transaction has not been loaded");
             } else {
-                Helpers.promiseResolveSuccess(mPromise.get(), resp.second);
+                Helpers.promiseResolveSuccess(mPromise.get(), result.code, result.message, transform(result.data));
             }
         }
     }
@@ -271,8 +272,9 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, param);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onGetTransactionComplete(TransactionChangeEvent event) {
+        Timber.d("send event zalopayTransactionsUpdated");
         WritableMap item = Arguments.createMap();
         item.putInt("statusType", event.typeSuccess);
         sendEvent("zalopayTransactionsUpdated", item);
@@ -280,7 +282,8 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
 
     private void updateTransactionLatest() {
         Subscription subscription = mTransactionRepository.fetchTransactionHistoryLatest()
-                .subscribeOn(Schedulers.io()).subscribe(new DefaultSubscriber<Boolean>());
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
         mCompositeSubscription.add(subscription);
     }
 
@@ -308,7 +311,6 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
                         return mTransactionRepository.reloadTransactionHistory(notify.timestamp);
                     }
                 })
-                .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
@@ -323,23 +325,26 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         mCompositeSubscription.add(subscription);
     }
 
-    private Observable<Pair<Integer, WritableArray>> resolveTransactionFail(int pageIndex, int count, final int error) {
+    private Observable<TransactionResult> resolveTransactionFail(int pageIndex, int count, final Throwable error) {
         return mTransactionRepository.getTransactionsFailLocal(pageIndex, count)
-                .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
+                .map(new Func1<List<TransHistory>, TransactionResult>() {
                     @Override
-                    public Pair<Integer, WritableArray> call(List<TransHistory> histories) {
-                        return new Pair<>(error, transform(histories));
+                    public TransactionResult call(List<TransHistory> histories) {
+                        Pair<Integer, String> pairError = Helpers.createReactError(getReactApplicationContext(), error);
+                        return new TransactionResult(pairError.first, pairError.second, histories);
                     }
                 });
     }
 
-    private Observable<Pair<Integer, WritableArray>> resolveTransactionSuccess(int pageIndex, int count, final int error) {
+    private Observable<TransactionResult> resolveTransactionSuccess(int pageIndex, int count, final Throwable error) {
         return mTransactionRepository.getTransactionsLocal(pageIndex, count)
-                .map(new Func1<List<TransHistory>, Pair<Integer, WritableArray>>() {
+                .map(new Func1<List<TransHistory>, TransactionResult>() {
                     @Override
-                    public Pair<Integer, WritableArray> call(List<TransHistory> histories) {
-                        return new Pair<>(error, transform(histories));
+                    public TransactionResult call(List<TransHistory> histories) {
+                        Pair<Integer, String> pairError = Helpers.createReactError(getReactApplicationContext(), error);
+                        return new TransactionResult(pairError.first, pairError.second, histories);
                     }
                 });
     }
+
 }

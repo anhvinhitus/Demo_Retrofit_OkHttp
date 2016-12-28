@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -14,8 +16,12 @@ import com.facebook.react.bridge.WritableMap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.listener.DialogSimpleEventListener;
 import vn.com.vng.zalopay.react.listener.SweetDialogSimpleEventListener;
@@ -60,13 +66,18 @@ public class Helpers {
         promise.resolve(item);
     }
 
-    public static void promiseResolveSuccess(Promise promise, Object object) {
+    public static void promiseResolveSuccess(Promise promise, int code, String message, Object object) {
         Timber.d("promiseResolveSuccess promise [%s]", promise);
         if (promise == null) {
             return;
         }
         WritableMap item = Arguments.createMap();
-        item.putInt("code", PaymentError.ERR_CODE_SUCCESS.value());
+        item.putInt("code", code);
+
+        if (!TextUtils.isEmpty(message)) {
+            item.putString("message", message);
+        }
+
         if (object != null) {
             if (object instanceof WritableMap) {
                 item.putMap("data", (WritableMap) object);
@@ -83,6 +94,10 @@ public class Helpers {
             }
         }
         promise.resolve(item);
+    }
+
+    public static void promiseResolveSuccess(Promise promise, Object object) {
+        promiseResolveSuccess(promise, PaymentError.ERR_CODE_SUCCESS.value(), "", object);
     }
 
     public static String readableMapToString(ReadableMap param) {
@@ -255,5 +270,20 @@ public class Helpers {
         String[] buttonArr = new String[buttons.size()];
         buttonArr = buttons.toArray(buttonArr);
         return buttonArr;
+    }
+
+    public static Pair<Integer, String> createReactError(Context context, Throwable exception) {
+        String message = ErrorMessageFactory.create(context, exception);
+        int code = -1;
+
+        if (exception instanceof BodyException) {
+            code = ((BodyException) exception).errorCode;
+        } else if (exception instanceof TimeoutException) {
+            code = -1001;
+        } else if (exception instanceof NetworkConnectionException) {
+            code = -1005;
+        }
+
+        return new Pair<>(code, message);
     }
 }

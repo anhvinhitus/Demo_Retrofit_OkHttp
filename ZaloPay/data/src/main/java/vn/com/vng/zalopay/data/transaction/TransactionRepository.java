@@ -257,12 +257,12 @@ public class TransactionRepository implements TransactionStore.Repository {
                     if (size < TRANSACTION_LENGTH) {
                         boolean hasData = (size == 0 && timestamp == 0) // Update Ui cho lần đâu tiên.
                                 || size > 0;
-                        this.onLoadedTransactionComplete(statusType, hasData);
+                        this.onLoadedTransactionComplete(statusType, hasData, sortOrder);
                     }
                 });
     }
 
-    private void onLoadedTransactionComplete(int statusType, boolean hasData) {
+    private void onLoadedTransactionComplete(int statusType, boolean hasData, int sortOrder) {
 
         boolean typeSuccess = statusType == TRANSACTION_STATUS_SUCCESS;
         if (typeSuccess) {
@@ -271,7 +271,7 @@ public class TransactionRepository implements TransactionStore.Repository {
             mLocalStorage.setLoadedTransactionFail(true);
         }
 
-        if (hasData) {
+        if (hasData && sortOrder == TRANSACTION_ORDER_LATEST) {
             mEventBus.post(new TransactionChangeEvent(statusType));
         }
     }
