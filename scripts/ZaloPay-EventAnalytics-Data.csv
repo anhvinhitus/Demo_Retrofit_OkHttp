@@ -58,6 +58,7 @@ EventId,Category,Action
 1412,Left Menu,TapLeftMenuLogout
 1413,Left Menu,TapLeftMenuReceiveMoney
 1414,Left Menu,TapLeftMenuTermOfUse
+1415,Left Menu,TapLeftMenuFeedBack
 1500,Scan QR,ScanQR_Launch
 1501,Scan QR,ScanQR_AccessDenied
 1502,Scan QR,ScanQR_NavigateBack

@@ -63,6 +63,7 @@ public class ZPEvents {
     public static final int TAPLEFTMENULOGOUT = 1412;
     public static final int TAPLEFTMENURECEIVEMONEY = 1413;
     public static final int TAPLEFTMENUTERMOFUSE = 1414;
+    public static final int TAPLEFTMENUFEEDBACK = 1415;
     public static final int SCANQR_LAUNCH = 1500;
     public static final int SCANQR_ACCESSDENIED = 1501;
     public static final int SCANQR_NAVIGATEBACK = 1502;
@@ -267,6 +268,8 @@ public class ZPEvents {
                 return "TapLeftMenuReceiveMoney";
             case TAPLEFTMENUTERMOFUSE:
                 return "TapLeftMenuTermOfUse";
+            case TAPLEFTMENUFEEDBACK:
+                return "TapLeftMenuFeedBack";
             case SCANQR_LAUNCH:
                 return "ScanQR_Launch";
             case SCANQR_ACCESSDENIED:
@@ -557,6 +560,8 @@ public class ZPEvents {
             case TAPLEFTMENURECEIVEMONEY:
                 return "Left Menu";
             case TAPLEFTMENUTERMOFUSE:
+                return "Left Menu";
+            case TAPLEFTMENUFEEDBACK:
                 return "Left Menu";
             case SCANQR_LAUNCH:
                 return "Scan QR";
