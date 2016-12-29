@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scroll1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/container1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtTitle"
+            style="@style/TextView.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:singleLine="false"
+            android:text="@string/lbl.send.feedback"
+            android:textSize="@dimen/font_size_medium" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
+
+                <TextView
+                    android:id="@+id/tvTransactionType"
+                    style="@style/TextView.Profile.Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:layout_marginLeft="@dimen/spacing.medium"
+                android:background="@color/separate" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:layout_marginLeft="@dimen/spacing.medium"
+                android:background="@color/separate" />
+
+            <com.zalopay.ui.widget.edittext.ZPEditText
+                android:id="@+id/edtTransactionId"
+                style="@style/ZaloPayEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/transaction_id"
+                app:zlp_paddingLeftLine="16dp" />
+
+            <com.zalopay.ui.widget.edittext.ZPEditText
+                android:id="@+id/edtEmail"
+                style="@style/ZaloPayEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email_to_feedback"
+                android:inputType="textEmailAddress"
+                android:maxLength="@integer/max_length_email"
+                app:zlp_floatingLabelText="@string/compulsory_email"
+                app:zlp_autoValidate="false"
+                app:zlp_paddingLeftLine="16dp" />
+
+            <com.zalopay.ui.widget.edittext.ZPEditText
+                android:id="@+id/edtDescribe"
+                style="@style/ZaloPayEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/describe_error"
+                android:inputType="textMultiLine|textNoSuggestions"
+                android:maxLength="@integer/max_length_describe_error"
+                app:zlp_floatingLabelText="@string/describe_error_count"
+                app:zlp_autoValidate="false"
+                app:zlp_hideUnderline="true" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:layout_marginTop="@dimen/spacing.medium"
+            android:background="@color/separate" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
+
+                <TextView
+                    style="@style/TextView.Item.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl.send.user.information" />
+
+               <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/swSendUserInfor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:layout_marginLeft="@dimen/spacing.medium"
+                android:background="@color/separate" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
+
+                <TextView
+                    style="@style/TextView.Item.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl.send.device.information" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/swSendDeviceInfor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
+
+                <TextView
+                    style="@style/TextView.Item.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl.send.app.information" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/swSendAppInfor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:checked="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtTitleImage"
+            style="@style/TextView.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/lbl.attach.screen"
+            android:textSize="@dimen/font_size_medium" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white" >
+
+            <FrameLayout
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:padding="5dp" >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:background="@color/silver" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|top"
+                    android:src="@drawable/ic_remove_circle" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:padding="5dp" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:background="@drawable/border_layout" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_camera" />
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSennd"
+            style="@style/Button.Default.New"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button.height"
+            android:layout_marginBottom="@dimen/spacing.medium"
+            android:enabled="false"
+            android:text="@string/btn_continue" />
+    </LinearLayout>
+</ScrollView>

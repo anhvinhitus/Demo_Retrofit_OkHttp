@@ -73,6 +73,7 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:replace="android:label,android:theme,android:icon,android:allowBackup">
+
         <activity
             android:name=".ui.activity.SplashScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
@@ -333,6 +334,9 @@
         <activity
             android:name=".warningrooted.WarningRootedActivity"
             android:label="@string/title.activity.warning.root" />
+
+        <activity android:name=".feedback.FeedbackActivity"
+            android:label="@string/title.activity.feedback" />
 
         <receiver
             android:name=".receivers.BootCompletedReceiver"

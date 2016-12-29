@@ -109,6 +109,7 @@
     <string name="title.activity.tutorial.link.card">Thông Báo</string>
     <string name="title.activity.warning.root">Cảnh báo</string>
     <string name="title.activity.protect.account">Thiết lập bảo vệ tài khoản</string>
+    <string name="title.activity.feedback">Gửi báo lỗi</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Hướng camera vào mã QR để thanh toán</string>
@@ -279,6 +280,17 @@
     <string name="lbl.update.profile.3.page.2">Cung cấp ảnh CMND/Hộ chiếu của bạn để giao dịch được thực hiện theo luật ngân hàng</string>
     <string name="lbl.nfc.fragment">Đặt điện thoại của bạn\nlên máy giao dịch để thanh toán</string>
     <string name="lbl.recommend.upload.avatar">Đăng ảnh của bạn để hoàn tất thủ tục xác minh</string>
+
+    <string name="lbl.send.feedback">Vui lòng nhập thông tin để gửi đến bộ phận CSKH</string>
+    <string name="lbl.send.user.information">Gửi kèm thông tin người dùng</string>
+    <string name="lbl.send.device.information">Gửi kèm thông tin thiết bị</string>
+    <string name="lbl.send.app.information">Gửi kèm thông tin ứng dụng</string>
+    <string name="lbl.attach.screen">Đính kèm màn hình (0/4)</string>
+    <string name="email_to_feedback">Nhập email để nhận phản hồi <font color='red'>*</font></string>
+    <string name="compulsory_email">Email <font color='red'>*</font></string>
+    <string name="describe_error_count">Mô tả lỗi (0/64)</string>
+    <string name="describe_error">Mô tả lỗi</string>
+    <string name="transaction_id">Mã giao dịch</string>
 
     <!-- Link CARDS START-->
     <string name="intro.title.step1">BƯỚC 1</string>
