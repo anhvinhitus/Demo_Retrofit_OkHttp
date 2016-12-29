@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by AnhHieu on 5/18/16.
- *
  */
 public class AppResourceEntity {
 
@@ -52,30 +51,18 @@ public class AppResourceEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof AppResourceEntity)) {
+            return false;
+        }
 
-        AppResourceEntity entity = (AppResourceEntity) o;
+        if (((AppResourceEntity) o).appid != appid) {
+            return false;
+        }
 
-        return (appid == entity.appid);
-    }
+        if (((AppResourceEntity) o).apptype != apptype) {
+            return false;
+        }
 
-    @Override
-    public int hashCode() {
-        int result = (int) (appid ^ (appid >>> 32));
-        result = 31 * result + (appname != null ? appname.hashCode() : 0);
-        result = 31 * result + (int) (needdownloadrs ^ (needdownloadrs >>> 32));
-        result = 31 * result + (imageurl != null ? imageurl.hashCode() : 0);
-        result = 31 * result + (jsurl != null ? jsurl.hashCode() : 0);
-        result = 31 * result + (int) (status ^ (status >>> 32));
-        result = 31 * result + (checksum != null ? checksum.hashCode() : 0);
-        result = 31 * result + (int) (apptype ^ (apptype >>> 32));
-        result = 31 * result + (weburl != null ? weburl.hashCode() : 0);
-        result = 31 * result + (iconurl != null ? iconurl.hashCode() : 0);
-        result = 31 * result + (int) (sortOrder ^ (sortOrder >>> 32));
-        result = 31 * result + (int) (stateDownload ^ (stateDownload >>> 32));
-        result = 31 * result + (int) (timeDownload ^ (timeDownload >>> 32));
-        result = 31 * result + (int) (numRetry ^ (numRetry >>> 32));
-        return result;
+        return true;
     }
 }
