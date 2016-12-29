@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.transaction;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -60,12 +61,8 @@ public class TransactionRepository implements TransactionStore.Repository {
     @Override
     public Observable<List<TransHistory>> getTransactions(int pageIndex, int count) {
 
-        if (pageIndex < 0 || count < 0) {
-            return Observable.error(new ArgumentException());
-        }
-
-        if (count == 0) {
-            return Observable.just(new ArrayList<>());
+        if (pageIndex < 0 || count <= 0) {
+            return Observable.just(Collections.emptyList());
         }
 
         Observable<List<TransHistoryEntity>> _observableTransLocal = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_SUCCESS)
