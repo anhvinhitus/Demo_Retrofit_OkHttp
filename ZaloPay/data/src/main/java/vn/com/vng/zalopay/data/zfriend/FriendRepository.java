@@ -70,14 +70,10 @@ public class FriendRepository implements FriendStore.Repository {
     @Override
     public Observable<Cursor> fetchZaloFriendList() {
         return fetchZaloFriends()
-                .map(new Func1<Boolean, Cursor>() { //convert to cursor
-                    @Override
-                    public Cursor call(Boolean aBoolean) {
-                        return null;
-                    }
-                })
+                .last()
+                .flatMap(aBoolean -> getZaloFriendsCursorLocal())
                 .timeout(TIMEOUT_REQUEST_FRIEND, TimeUnit.SECONDS)
-                .concatWith(this.zaloFriendList());
+                ;
     }
 
     @Override
@@ -126,8 +122,19 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Override
-    public Observable<Cursor> zaloFriendList() {
+    public Observable<Cursor> getZaloFriendsCursorLocal() {
         return ObservableHelper.makeObservable(() -> mLocalStorage.zaloFriendList());
+    }
+
+    @Override
+    public Observable<Cursor> getZaloFriendsCursor() {
+        Observable<Cursor> observableFriendLocal = getZaloFriendsCursorLocal()
+                .filter(cursor -> cursor != null && !cursor.isClosed() && cursor.getCount() > 0);
+
+        Observable<Cursor> observableZaloApi = fetchZaloFriendList();
+
+        return Observable.concat(observableFriendLocal, observableZaloApi)
+                .first();
     }
 
     @Override

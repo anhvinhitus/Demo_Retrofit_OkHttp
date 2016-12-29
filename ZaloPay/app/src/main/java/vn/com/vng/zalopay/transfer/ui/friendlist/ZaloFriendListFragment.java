@@ -180,7 +180,13 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
 
     @Override
     public void showError(String message) {
-        showToast(message);
+
+        if (mAdapter.getCount() > 0) {
+            showToast(message);
+        } else {
+            mTvEmptyView.setText(message);
+            mEmtpyView.setVisibility(View.GONE);
+        }
     }
 
     @Override

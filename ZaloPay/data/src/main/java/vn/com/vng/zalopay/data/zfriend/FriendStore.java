@@ -77,7 +77,9 @@ public interface FriendStore {
 
         Observable<Cursor> fetchZaloFriendList();
 
-        Observable<Cursor> zaloFriendList();
+        Observable<Cursor> getZaloFriendsCursor();
+
+        Observable<Cursor> getZaloFriendsCursorLocal();
 
         Observable<Cursor> searchZaloFriend(String s);
 

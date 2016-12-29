@@ -53,7 +53,7 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
     }
 
     void getFriendList() {
-        Subscription subscription = mFriendRepository.zaloFriendList()
+        Subscription subscription = mFriendRepository.getZaloFriendsCursor()
                 .concatWith(retrieveZaloFriendsAsNeeded())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -149,6 +149,7 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
             if (mView != null) {
                 mView.showError(ErrorMessageFactory.create(mContext, e));
                 mView.setRefreshing(false);
+                mView.hideLoading();
             }
         }
     }
