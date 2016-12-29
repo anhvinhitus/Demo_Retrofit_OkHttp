@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.react;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -37,11 +39,16 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Internal helpers
  */
 public class Helpers {
+
     public static void promiseReject(Promise promise, String code, String message) {
         promise.reject(code, message);
     }
 
-    public static void promiseResolveError(Promise promise, int errorCode, String message) {
+    public static void promiseResolveError(@Nullable Promise promise, @NonNull Pair<Integer, String> error) {
+        promiseResolveError(promise, error.first, error.second);
+    }
+
+    public static void promiseResolveError(@Nullable Promise promise, int errorCode, String message) {
         Timber.d("promiseResolveError start errorCode [%s] message [%s]", errorCode, message);
         if (promise == null) {
             Timber.i("Null promise. Doing nothing");

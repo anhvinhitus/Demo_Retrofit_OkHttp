@@ -403,7 +403,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                     }
                 })
 
-                .subscribe(new GetAllFriendSubscriber(promise));
+                .subscribe(new GetAllFriendSubscriber(promise, getReactApplicationContext()));
         compositeSubscription.add(subscription);
     }
 

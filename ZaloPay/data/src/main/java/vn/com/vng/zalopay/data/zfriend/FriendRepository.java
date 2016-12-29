@@ -140,9 +140,11 @@ public class FriendRepository implements FriendStore.Repository {
 
         Observable<List<ZaloFriend>> observableFriendLocal = getFriendLocal()
                 .filter(zaloFriends -> !Lists.isEmptyOrNull(zaloFriends));
+
         Observable<List<ZaloFriend>> observableZaloApi = fetchZaloFriends()
                 .last()
-                .flatMap(aBoolean -> getFriendLocal());
+                .flatMap(aBoolean -> getFriendLocal())
+                .timeout(TIMEOUT_REQUEST_FRIEND, TimeUnit.SECONDS);
 
         return Observable.concat(observableFriendLocal, observableZaloApi)
                 .first();
