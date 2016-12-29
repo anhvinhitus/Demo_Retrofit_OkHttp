@@ -109,10 +109,11 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         try {
             getWindow().setBackgroundDrawable(null);
-            super.onCreate(savedInstanceState);
         } catch (Exception e) {
             Timber.e(e, "Caught exception while initializing Payment App");
         }
+
+        super.onCreate(savedInstanceState);
     }
 
     protected void initArgs(Bundle savedInstanceState) {
