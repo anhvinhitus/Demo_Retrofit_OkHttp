@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_size_home_function"
-                app:iconName="@string/icon_pay"
+                app:iconName="@string/header_payqrcode"
                 app:typefaceAsset="@string/font_name"/>
 
             <TextView
@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_size_home_function"
-                app:iconName="@string/icon_balance"
+                app:iconName="@string/header_overbalance"
                 app:typefaceAsset="@string/font_name"/>
 
             <TextView
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_size_home_function"
-                app:iconName="@string/icon_link_card"
+                app:iconName="@string/header_linkcard"
                 app:typefaceAsset="@string/font_name"/>
 
             <TextView

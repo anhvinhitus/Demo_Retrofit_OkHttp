@@ -62,7 +62,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     @Inject
     MainPresenter presenter;
 
-    private int mCurrentMenuId;
     private long back_pressed;
 
     private ActionBarDrawerToggle toggle;
@@ -74,22 +73,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         presenter.attachView(this);
         presenter.initialize();
 
-        if (getIntent() != null) {
-            this.mCurrentMenuId = getIntent().getIntExtra("menuId", MenuItemUtil.HOME_ID);
-        } else {
-            this.mCurrentMenuId = MenuItemUtil.HOME_ID;
-        }
-
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.menu, LeftMenuFragment.newInstance(), "MenuFragment");
-            switch (this.mCurrentMenuId) {
-                case MenuItemUtil.HOME_ID:
-                    fragmentTransaction.add(R.id.container, ZaloPayFragment.newInstance(), "ZaloPayFragment");
-                    break;
-                case MenuItemUtil.ACCOUNT_ID:
-                    break;
-            }
+            fragmentTransaction.add(R.id.container, ZaloPayFragment.newInstance(), "ZaloPayFragment");
             fragmentTransaction.commit();
         }
 
@@ -144,7 +131,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     }
 
     protected void onSaveInstanceState(Bundle bundle) {
-        bundle.putInt("menuId", this.mCurrentMenuId);
         super.onSaveInstanceState(bundle);
     }
 
@@ -169,60 +155,51 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         Timber.d(TAG, "replaceFragmentImmediate  ", id);
 
         switch (id) {
-            case MenuItemUtil.ACCOUNT_ID:
-                if (id != mCurrentMenuId) {
-                    mCurrentMenuId = id;
-                    // getSupportFragmentManager().beginTransaction().replace(R.id.container, new uy(), "AccountFragment").commit();
-                }
+            case MenuItemUtil.SAVE_CARD_ID:
+                navigator.startLinkCardActivity(this);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCARD);
                 break;
-            case MenuItemUtil.APPLICATION_INFO_ID:
-                navigator.startMiniAppActivity(this, ModuleName.ABOUT);
-                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUABOUT);
+            case MenuItemUtil.TRANSACTION_HISTORY_ID:
+                navigator.startTransactionHistoryList(getContext());
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
                 break;
-            case MenuItemUtil.CONTACT_SUPPORT_ID:
-                navigator.startMiniAppActivity(this, ModuleName.HELP);
-                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHELP);
-                break;
+
             case MenuItemUtil.DEPOSIT_ID:
                 navigator.startDepositActivity(this);
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCASH);
-                break;
-            case MenuItemUtil.FAQ_ID:
-                navigator.startMiniAppActivity(this, ModuleName.FAQ);
-                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUFAQ);
-                break;
-            case MenuItemUtil.HOME_ID:
-                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHOME);
-                break;
-            case MenuItemUtil.NOTIFICATION_ID:
-                navigator.startMiniAppActivity(this, ModuleName.NOTIFICATIONS);
-                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUNOTIFICATION);
                 break;
             case MenuItemUtil.SCAN_QR_ID:
                 // startQRCodeActivity();
                 navigator.startScanToPayActivity(getActivity());
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUSCANQR);
                 break;
-            case MenuItemUtil.SIGN_OUT_ID:
-                showConfirmSignOut();
-                break;
-            case MenuItemUtil.TRANSACTION_HISTORY_ID:
-                navigator.startTransactionHistoryList(getContext());
-                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSACTIONLOGS);
-                break;
             case MenuItemUtil.TRANSFER_ID:
                 navigator.startTransferMoneyActivity(this);
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTRANSFERMONEY);
                 break;
-            case MenuItemUtil.SAVE_CARD_ID:
-                navigator.startLinkCardActivity(this);
-                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUADDCARD);
-                break;
-            case MenuItemUtil.TERM_OF_USE:
-                navigator.startTermActivity(getActivity());
-                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUTERMOFUSE);
-                break;
 
+            case MenuItemUtil.SUPPORT_CENTER:
+                //navigator.startMiniAppActivity(this, ModuleName.HELP);
+                showCustomDialog("Tính năng sẽ sớm được ra mắt.",
+                        getString(R.string.txt_close),
+                        SweetAlertDialog.INFO_TYPE,
+                        null);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHELP);
+                break;
+            case MenuItemUtil.FEED_BACK:
+                showCustomDialog("Tính năng sẽ sớm được ra mắt.",
+                        getString(R.string.txt_close),
+                        SweetAlertDialog.INFO_TYPE,
+                        null);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUFEEDBACK);
+                break;
+            case MenuItemUtil.APPLICATION_INFO_ID:
+                navigator.startMiniAppActivity(this, ModuleName.ABOUT);
+                ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUABOUT);
+                break;
+            case MenuItemUtil.SIGN_OUT_ID:
+                showConfirmSignOut();
+                break;
         }
     }
 
