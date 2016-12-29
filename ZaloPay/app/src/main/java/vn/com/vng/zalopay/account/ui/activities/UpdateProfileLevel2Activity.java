@@ -242,7 +242,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
             ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_INPUTNONE);
             mViewPager.setCurrentItem(0);
         }
-
     }
 
     @Override

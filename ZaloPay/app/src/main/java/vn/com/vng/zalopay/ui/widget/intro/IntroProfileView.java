@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
@@ -37,18 +38,17 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 
 public class IntroProfileView extends RelativeLayout {
 
+    private static String INTRO_PROFILE_KEY = "profileId";
     public static int DEFAULT_MASK_COLOR = 1879048192;
     public static long DEFAULT_DELAY_MILLIS = 0L;
     public static long DEFAULT_FADE_DURATION = 700L;
     public static int DEFAULT_TARGET_PADDING = 10;
 
-    SharedPreferences mPref;
     private int maskColor;
     private long delayMillis;
     private boolean isReady;
     private boolean isFadeAnimationEnabled;
     private long fadeAnimationDuration;
-    private String mIntroId = "profileId";
     private Handler handler;
     private int width;
     private int height;
@@ -69,7 +69,6 @@ public class IntroProfileView extends RelativeLayout {
     }
 
     private void init(Context context) {
-        mPref = PreferenceManager.getDefaultSharedPreferences(context);
         mErasers = new ArrayList<>();
         this.handler = new Handler();
         this.setWillNotDraw(false);
@@ -224,32 +223,28 @@ public class IntroProfileView extends RelativeLayout {
         addView(view);
     }
 
-    public boolean show(Activity activity) {
-        boolean isDisplayed = !isDisplayed(mIntroId);
-        if (isDisplayed) {
-            ((ViewGroup) activity.getWindow().getDecorView()).addView(this);
+    public void show(Activity activity) {
+        ((ViewGroup) activity.getWindow().getDecorView()).addView(this);
 
-            addContent();
-            addContent2();
-            addContent3();
+        addContent();
+        addContent2();
+        addContent3();
 
-            this.setReady(true);
-            this.handler.postDelayed(new Runnable() {
-                public void run() {
-                    if (IntroProfileView.this.isFadeAnimationEnabled) {
-                        animateFadeIn(IntroProfileView.this, IntroProfileView.this.fadeAnimationDuration, new DefaultAnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                                IntroProfileView.this.setVisibility(VISIBLE);
-                            }
-                        });
-                    } else {
-                        IntroProfileView.this.setVisibility(VISIBLE);
-                    }
+        this.setReady(true);
+        this.handler.postDelayed(new Runnable() {
+            public void run() {
+                if (IntroProfileView.this.isFadeAnimationEnabled) {
+                    animateFadeIn(IntroProfileView.this, IntroProfileView.this.fadeAnimationDuration, new DefaultAnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            IntroProfileView.this.setVisibility(VISIBLE);
+                        }
+                    });
+                } else {
+                    IntroProfileView.this.setVisibility(VISIBLE);
                 }
-            }, this.delayMillis);
-        }
-        return isDisplayed;
+            }
+        }, this.delayMillis);
     }
 
     void setReady(boolean ready) {
@@ -257,7 +252,7 @@ public class IntroProfileView extends RelativeLayout {
     }
 
     public void dismiss() {
-        this.setDisplayed(mIntroId);
+        this.setDisplayed();
         animateFadeOut(this, this.fadeAnimationDuration, new DefaultAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -276,12 +271,16 @@ public class IntroProfileView extends RelativeLayout {
         }
     }
 
-    public boolean isDisplayed(String id) {
-        return mPref.contains(id);
+    public static boolean isDisplayed() {
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(AndroidApplication.instance());
+        return preferences.contains(INTRO_PROFILE_KEY);
     }
 
-    void setDisplayed(String id) {
-        mPref.edit().putBoolean(id, true).apply();
+    public static void setDisplayed() {
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(AndroidApplication.instance());
+        preferences.edit().putBoolean(INTRO_PROFILE_KEY, true).apply();
     }
 
     @Override

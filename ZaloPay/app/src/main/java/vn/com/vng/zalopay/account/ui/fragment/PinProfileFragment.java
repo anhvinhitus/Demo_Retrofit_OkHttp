@@ -7,9 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -28,6 +25,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.PinProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPinProfileView;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.IPassCodeFocusChanged;
@@ -49,7 +47,21 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Use the {@link PinProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PinProfileFragment extends BaseFragment implements IPinProfileView, OnKeyboardStateChangeListener {
+public class PinProfileFragment extends BaseFragment implements IPinProfileView,
+        OnKeyboardStateChangeListener, FragmentLifecycle {
+
+    @Override
+    public void onStartFragment() {
+        if (mPassCodeView == null || mPassCodeView.isValid()) {
+            return;
+        }
+        showKeyboardPassCode();
+    }
+
+    @Override
+    public void onStopFragment() {
+
+    }
 
     public interface OnPinProfileFragmentListener {
         void onUpdatePinSuccess(String phone);
@@ -70,6 +82,8 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     }
 
     private OnPinProfileFragmentListener mListener;
+    private Runnable mIntroRunnable;
+    private Runnable mShowKeyboardRunnable;
 
     @Inject
     PinProfilePresenter mPresenter;
@@ -103,7 +117,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     IPassCodeFocusChanged mPassCodeFocusChanged = new IPassCodeFocusChanged() {
         @Override
         public void onFocusChangedPin(boolean isFocus) {
-
             Timber.d("onFocusChangedPin: %s", isFocus);
             if (isPaused) {
                 return;
@@ -163,14 +176,19 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
         mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
 
-        AndroidUtils.runOnUIThread(mIntroRunnable, 300);
+        if (!IntroProfileView.isDisplayed()) {
+            showIntro();
+        } else {
+            showKeyboardPassCode();
+        }
     }
 
     @Override
     public void onKeyBoardShow(int height) {
-        if (mPassCodeView.isFocused()) {
+        /*if (mPassCodeView.isFocused()) {
             mScrollView.smoothScrollTo(0, txtTitle.getHeight());
-        } else if (mEdtPhoneView.isFocused()) {
+        } else */
+        if (mEdtPhoneView.isFocused()) {
             mScrollView.fullScroll(View.FOCUS_DOWN);
             mEdtPhoneView.requestFocusFromTouch();
         }
@@ -180,15 +198,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     public void onKeyBoardHide() {
         //empty
     }
-
-    private Runnable mIntroRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (getActivity() != null) {
-                showIntro();
-            }
-        }
-    };
 
     @Override
     public void onAttach(Context context) {
@@ -200,9 +209,16 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
     @Override
     public void onDetach() {
-        AndroidUtils.cancelRunOnUIThread(mIntroRunnable);
+        if (mIntroRunnable != null) {
+            AndroidUtils.cancelRunOnUIThread(mIntroRunnable);
+        }
+        if (mShowKeyboardRunnable != null) {
+            AndroidUtils.cancelRunOnUIThread(mShowKeyboardRunnable);
+        }
         super.onDetach();
         mListener = null;
+        mIntroRunnable = null;
+        mShowKeyboardRunnable = null;
     }
 
     boolean isPaused = false;
@@ -256,24 +272,28 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     }
 
     private void showIntro() {
+        if (mIntroRunnable == null) {
+            mIntroRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (getActivity() == null) {
+                        return;
+                    }
+                    mPassCodeView.setError(null);
 
-        mPassCodeView.setError(null);
+                    getActivity().getWindow().getDecorView().clearFocus();
 
-        getActivity().getWindow().getDecorView().clearFocus();
+                    IntroProfileView intro = new IntroProfileView(getActivity(), null);
 
-        IntroProfileView intro = new IntroProfileView(getActivity(), null);
-
-        intro.addShape(new RectangleEraser(new ViewTarget(mPassCodeView.getPassCodeView()), AndroidUtils.dp(4f)));
-        intro.addShape(new CircleEraser(new ViewTarget(mPassCodeView.getButtonShow())));
-        intro.addShape(new RectangleEraser(new ViewTarget(mEdtPhoneView), new Rect(-AndroidUtils.dp(12), -AndroidUtils.dp(12), -AndroidUtils.dp(12), 0)));
-
-        boolean isDisplayed = intro.show(getActivity());
-
-        if (!isDisplayed) {
-            showKeyboard();
+                    intro.addShape(new RectangleEraser(new ViewTarget(mPassCodeView.getPassCodeView()), AndroidUtils.dp(4f)));
+                    intro.addShape(new CircleEraser(new ViewTarget(mPassCodeView.getButtonShow())));
+                    intro.addShape(new RectangleEraser(new ViewTarget(mEdtPhoneView), new Rect(-AndroidUtils.dp(12), -AndroidUtils.dp(12), -AndroidUtils.dp(12), 0)));
+                    intro.show(getActivity());
+                }
+            };
         }
+        AndroidUtils.runOnUIThread(mIntroRunnable, 300);
     }
-
 
     @Override
     public void showError(String message) {
@@ -288,7 +308,11 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     }
 
     @OnFocusChange(R.id.edtPhone)
-    public void onFocusChange(View v, boolean hasFocus) {
+    public void onFocusChange(boolean hasFocus) {
+        Timber.d("onFocus phone changed, focus[%s]", hasFocus);
+        if (hasFocus && mScrollView != null) {
+            mScrollView.scrollTo(0, mScrollView.getHeight());
+        }
         if (mBtnContinueView != null) {
             mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
         }
@@ -310,12 +334,21 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
         ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_REQUEST);
     }
 
-    public void showKeyboard() {
-        Timber.d("showKeyboard");
-        if (mPassCodeView != null) {
-            mPassCodeView.requestFocusView();
-            AndroidUtils.showKeyboard(mPassCodeView.getEditText());
+    public void showKeyboardPassCode() {
+        if (mPassCodeView == null || mPassCodeView.getEditText() == null) {
+            return;
         }
+        if (mShowKeyboardRunnable == null) {
+            mShowKeyboardRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    Timber.d("show Keyboard of PassCode");
+                    mPassCodeView.requestFocusView();
+                    AndroidUtils.showKeyboard(mPassCodeView.getEditText());
+                }
+            };
+        }
+        mPassCodeView.getEditText().postDelayed(mShowKeyboardRunnable, 300);
     }
 
 }
