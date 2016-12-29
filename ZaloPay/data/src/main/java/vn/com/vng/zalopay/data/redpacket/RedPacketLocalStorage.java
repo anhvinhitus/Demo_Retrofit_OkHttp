@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.redpacket;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -175,6 +176,9 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
 
     @Override
     public Observable<List<SentBundle>> getSentBundle(long timeCreate, int limit) {
+        if (limit <= 0) {
+            return ObservableHelper.makeObservable(() -> Collections.emptyList());
+        }
         return ObservableHelper.makeObservable(() -> querySentBundleList(timeCreate, limit))
                 .doOnNext(redPackageList -> Timber.d("getSentBundle timeCreate [%s] limit [%s] size [%s]",
                         timeCreate, limit, redPackageList.size()));
@@ -336,6 +340,9 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
 
     @Override
     public Observable<List<ReceivePackage>> getReceiveBundle(long openTime, int limit) {
+        if (limit <= 0) {
+            return ObservableHelper.makeObservable(() -> Collections.emptyList());
+        }
         return ObservableHelper.makeObservable(() -> queryReceivePackageList(openTime, limit))
                 .doOnNext(receivePackageList -> Timber.d("getReceiveBundle openTime [%s] limit [%s] size [%s]",
                         openTime, limit, receivePackageList.size()));
