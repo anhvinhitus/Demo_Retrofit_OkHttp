@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
-            android:text="Sử dụng Touch ID" />
+            android:text="@string/use.fingerprint" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/swcTouchId"
@@ -43,7 +43,7 @@
         android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:singleLine="false"
-        android:text="Xác thực bằng vâng tay thay vi sử dụng mật khẩu thanh toán.\nLưu ý: Bất cứ vân tay nào đã đăng ký trong hệ thống đều xác thực được bằng thành toán."
+        android:text="@string/use.fingerprint.description"
         android:textSize="14dp" />
 
 
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
-            android:text="Bảo vệ thông tin cá nhân" />
+            android:text="@string/protection.information" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/swcProtectAccount"
@@ -83,7 +83,7 @@
         android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:singleLine="false"
-        android:text="Hỏi mật khẩu hoặc xác thực vân tay mỗi khi truy xuất: Danh sách liên kết thẻ, Thông tin cá nhân, Lịch sử thanh toán."
+        android:text="@string/protection.information.description"
         android:textSize="14dp" />
 
 
@@ -101,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
-            android:text="Đổi mật khẩu thanh toán" />
+            android:text="@string/change.password" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -120,7 +120,7 @@
         android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:singleLine="false"
-        android:text="Mật khẩu thanh toán dùng để xác thực mỗi khi thực hiện thanh toán"
+        android:text="@string/change.password.description"
         android:textSize="14dp" />
 
     <Button

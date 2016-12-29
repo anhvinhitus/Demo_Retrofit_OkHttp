@@ -10,8 +10,6 @@ interface IFingerprintAuthenticationView extends ILoadDataView {
 
     void clearPassword();
 
-    void onPinSuccess(String password);
-
     void showKeyboard();
 
     void updateStage(Stage stage);
@@ -23,4 +21,6 @@ interface IFingerprintAuthenticationView extends ILoadDataView {
     void onAuthenticationFailure();
 
     FingerprintUiHelper getFingerprintUiHelper(Stage stage);
+
+    void setErrorVerifyPassword(String error);
 }

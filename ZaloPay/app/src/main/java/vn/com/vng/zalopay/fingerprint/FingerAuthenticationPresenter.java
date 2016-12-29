@@ -244,8 +244,6 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
 
         mView.clearPassword();
         mView.onAuthenticated();
-        mView.dismiss();
-
     }
 
     @Override
@@ -282,7 +280,7 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
             }
 
             hideLoadingView();
-            mView.onPinSuccess(password);
+            mView.onAuthenticated();
         }
 
     }
@@ -312,7 +310,7 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
             }
 
             hideLoadingView();
-            mView.showError(ErrorMessageFactory.create(mApplicationContext, e));
+            mView.setErrorVerifyPassword(ErrorMessageFactory.create(mApplicationContext, e));
             if (e instanceof BodyException) {
                 if (((BodyException) e).errorCode == INCORRECT_PIN) {
                     mView.showKeyboard();

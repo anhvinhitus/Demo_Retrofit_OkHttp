@@ -16,11 +16,10 @@
 
 package vn.com.vng.zalopay.fingerprint;
 
-import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,9 +48,7 @@ import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
 public class FingerprintAuthenticationDialogFragment extends DialogFragment implements IFingerprintAuthenticationView {
 
-
     public static final String TAG = "FingerprintDialog";
-
 
     @BindView(R.id.rootView)
     View mRootView;
@@ -73,6 +70,9 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
 
     @BindView(R.id.password)
     GridPasswordViewFitWidth mPassword;
+
+    @BindView(R.id.hintPassword)
+    TextView mHintPassword;
 
     @BindView(R.id.fingerprint_icon_decrypt)
     ImageView mIconDecryptView;
@@ -98,6 +98,8 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
 
     @Inject
     FingerprintUiHelper.FingerprintUiHelperBuilder mFingerprintUiHelperBuilder;
+
+    private Intent pendingIntent;
 
     @Inject
     public FingerprintAuthenticationDialogFragment() {
@@ -254,20 +256,9 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
         }
     }
 
-
     @Override
     public void clearPassword() {
         mPassword.clearPassword();
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    public void onPinSuccess(String password) {
-        if (mCallback != null) {
-            mCallback.onAuthenticated();
-        }
-
-        dismiss();
     }
 
     @Override
@@ -293,6 +284,13 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
     }
 
     @Override
+    public void setErrorVerifyPassword(String error) {
+        if (mHintPassword != null) {
+            mHintPassword.setText(error);
+        }
+    }
+
+    @Override
     public void showNetworkErrorDialog() {
     }
 
@@ -313,6 +311,7 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
         if (mCallback != null) {
             mCallback.onAuthenticated();
         }
+        dismiss();
     }
 
     @Override
@@ -321,6 +320,8 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
         if (mCallback != null) {
             mCallback.onAuthenticationFailure();
         }
+
+        dismiss();
     }
 
     public void setAuthenticationCallback(AuthenticationCallback callback) {
