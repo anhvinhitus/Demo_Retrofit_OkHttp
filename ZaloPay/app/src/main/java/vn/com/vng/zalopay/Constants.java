@@ -47,6 +47,11 @@ public interface Constants {
     String IMAGE_FILE_PATH = "image_file_path";
     String BANKNAME = "bankname";
 
+    String KEY_ALIAS_NAME = "@zalopay";
+    String PREF_KEY_PASSWORD = "EncryptedPassword";
+    String PREF_KEY_PASSWORD_IV = "EncryptedPasswordIV";
+    String PREF_USE_FINGERPRINT = "pref_use_fingerprint_to_authenticate_key";
+    String PREF_USE_PROTECT_PROFILE = "pref_use_protect_profile";
 
     String PREF_WAITING_APPROVE_PROFILE_LEVEL3 = "pref_waiting_approve_profile_level3";
 

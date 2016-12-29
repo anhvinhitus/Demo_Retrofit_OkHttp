@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.fingerprint.FingerprintModule;
 import vn.com.vng.zalopay.fingerprint.ProtectAccountFragment;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
@@ -78,7 +79,8 @@ import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
                 UserNotificationModule.class,
                 UserAccountModule.class,
                 UserFriendModule.class,
-                UserRedPacketModule.class
+                UserRedPacketModule.class,
+                FingerprintModule.class
 
         }
 )
@@ -182,6 +184,6 @@ public interface UserComponent {
     void inject(CardSupportWithdrawFragment f);
 
     void inject(BannerFragment f);
-    
+
     void inject(ProtectAccountFragment f);
 }

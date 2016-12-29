@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -142,4 +143,11 @@ public class ApplicationModule {
     ImageLoader providesImageLoader() {
         return new FrescoImageLoader(application);
     }
+
+    @Singleton
+    @Provides
+    public InputMethodManager providesInputMethodManager(Context context) {
+        return (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+    }
+
 }

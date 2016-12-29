@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fingerprint_encrypt_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/fingerprint_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_touch" />
+
+    <TextView
+        android:id="@+id/fingerprint_description"
+        style="?attr/titleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fingerprint_icon"
+        android:layout_marginTop="24dp"
+        android:text="@string/fingerprint_description"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/fingerprint_status"
+        style="?attr/titleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fingerprint_description"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/fingerprint_hint"
+        android:textColor="@color/c_text_black" />
+
+</RelativeLayout>

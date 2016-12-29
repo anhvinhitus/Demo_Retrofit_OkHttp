@@ -2,16 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp">
 
     <FrameLayout
+        android:id="@+id/vgTouchId"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/white"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_line_top_and_bottom"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:id="@+id/vgTouchId">
+        android:paddingRight="16dp">
 
         <TextView
             style="@style/TextView.Title"
@@ -21,14 +23,18 @@
             android:text="Sử dụng Touch ID" />
 
         <android.support.v7.widget.SwitchCompat
+            android:id="@+id/swcTouchId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
-            android:id="@+id/swcTouchId" />
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
 
     </FrameLayout>
 
     <TextView
+        android:id="@+id/lblTouchId"
         style="@style/TextView.Item.Sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,14 +46,15 @@
         android:text="Xác thực bằng vâng tay thay vi sử dụng mật khẩu thanh toán.\nLưu ý: Bất cứ vân tay nào đã đăng ký trong hệ thống đều xác thực được bằng thành toán."
         android:textSize="14dp" />
 
+
     <FrameLayout
+        android:id="@+id/vgProtectAccount"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="10dp"
-        android:background="@color/white"
+        android:background="@drawable/bg_line_top_and_bottom"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:id="@+id/vgProtectAccount">
+        android:paddingRight="16dp">
 
         <TextView
             style="@style/TextView.Title"
@@ -57,10 +64,13 @@
             android:text="Bảo vệ thông tin cá nhân" />
 
         <android.support.v7.widget.SwitchCompat
+            android:id="@+id/swcProtectAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
-            android:id="@+id/swcProtectAccount" />
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
 
     </FrameLayout>
 
@@ -73,17 +83,18 @@
         android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:singleLine="false"
-        android:textSize="14dp"
-        android:text="Hỏi mật khẩu hoặc xác thực vân tay mỗi khi truy xuất: Danh sách liên kết thẻ, Thông tin cá nhân, Lịch sử thanh toán." />
+        android:text="Hỏi mật khẩu hoặc xác thực vân tay mỗi khi truy xuất: Danh sách liên kết thẻ, Thông tin cá nhân, Lịch sử thanh toán."
+        android:textSize="14dp" />
+
 
     <FrameLayout
+        android:id="@+id/vgChangePass"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="10dp"
-        android:background="@color/white"
+        android:background="@drawable/bg_line_top_and_bottom"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:id="@+id/vgChangePass">
+        android:paddingRight="16dp">
 
         <TextView
             style="@style/TextView.Title"
@@ -93,10 +104,10 @@
             android:text="Đổi mật khẩu thanh toán" />
 
         <ImageView
-            android:src="@drawable/ic_arrow_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right" />
+            android:layout_gravity="center_vertical|right"
+            android:src="@drawable/ic_arrow_right" />
 
     </FrameLayout>
 
@@ -109,7 +120,15 @@
         android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:singleLine="false"
-        android:textSize="14dp"
-        android:text="Mật khẩu thanh toán dùng để xác thực mỗi khi thực hiện thanh toán" />
+        android:text="Mật khẩu thanh toán dùng để xác thực mỗi khi thực hiện thanh toán"
+        android:textSize="14dp" />
+
+    <Button
+        android:id="@+id/btnFingerprint"
+        style="@style/Button.Default.New"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="Sign in"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -422,4 +422,24 @@
     <string name="friend.list.empty">Bạn chưa có bạn bè trên Zalo.\nHãy kết bạn để tiếp tục</string>
     <string name="no.result.your.search">Không có kết quả nào phù hợp với tìm kiếm của bạn</string>
     <string name="establish.and.protect.account">Thiết lập bảo vệ tài khoản</string>
+
+
+    <!-- Start Fingerprint-->
+    <string name="use_password">Nhập mật khẩu</string>
+    <string name="password">Mật khẩu</string>
+    <string name="fingerprint_description">Quyét vân tay để quá trình hoàn tất</string>
+    <string name="fingerprint_decrypt_title">Fingerprint cho ZaloPay</string>
+    <string name="fingerprint_status_decrypt">Quyét dấu vân tay để truy cập thông tin</string>
+    <string name="fingerprint_description1">Xác nhận vân tay để tiếp tục</string>
+    <!--Confirm your fingerprint now-->
+    <string name="fingerprint_hint">Xác nhận fingerprint của bạn ngay</string>
+    <string name="password_description">Nhập mật khẩu thanh toán để tiếp tục</string>
+    <string name="fingerprint_not_recognized">Không nhận diện được dấu vân tay</string>
+    <string name="fingerprint_success">Xác thực thành công</string>
+    <string name="use_fingerprint_to_authenticate_title">Sử dụng vân tay để xác thực</string>
+    <string name="confirm.off.fingerprint.message">Bạn chắc chắn muốn hủy thanh toán bằng vân tay?</string>
+    <string name="confirm.off.protect.message">Bạn chắc chắn muốn bỏ bảo vệ thông tin cá nhân?</string>
+
+    <!-- End Fingerprint-->
+
 </resources>
