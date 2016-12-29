@@ -555,27 +555,27 @@ public class NotificationLocalStorageTest extends ApplicationTestCase {
 
         mLocalStorage.delete(1, 0);
 
-        Assert.assertEquals("delete3Params same id", 19, mLocalStorage.get(0, TRANSACTION_SIZE).size());
+        Assert.assertEquals("delete2Params", 19, mLocalStorage.get(0, TRANSACTION_SIZE).size());
     }
 
     @Test
-    public void delete2ParamsWithUndfinedMtaid() {
+    public void delete2ParamsWithUndefinedMtaid() {
         initData();
         mLocalStorage.put(entities);
 
         mLocalStorage.delete(1, 1);
 
-        Assert.assertEquals("delete3Params same id", TRANSACTION_SIZE, mLocalStorage.get(0, TRANSACTION_SIZE).size());
+        Assert.assertEquals("delete2Params with undefined mtaid", TRANSACTION_SIZE, mLocalStorage.get(0, TRANSACTION_SIZE).size());
     }
 
     @Test
-    public void delete2ParamsWithUndfinedMtuid() {
+    public void delete2ParamsWithUndefinedMtuid() {
         initData();
         mLocalStorage.put(entities);
 
         mLocalStorage.delete(0, 0);
 
-        Assert.assertEquals("delete3Params same id", TRANSACTION_SIZE, mLocalStorage.get(0, TRANSACTION_SIZE).size());
+        Assert.assertEquals("delete2Params with undefined mtuid", TRANSACTION_SIZE, mLocalStorage.get(0, TRANSACTION_SIZE).size());
     }
 
     @Test
@@ -585,7 +585,26 @@ public class NotificationLocalStorageTest extends ApplicationTestCase {
 
         mLocalStorage.delete(2, 3);
 
-        Assert.assertEquals("delete3Params same id", TRANSACTION_SIZE, mLocalStorage.get(0, TRANSACTION_SIZE).size());
+        Assert.assertEquals("delete2Params with undefined 2 params", TRANSACTION_SIZE, mLocalStorage.get(0, TRANSACTION_SIZE).size());
+    }
+
+    @Test
+    public void setRecoveryWithTrue() {
+        mLocalStorage.setRecovery(true);
+
+        Assert.assertEquals("setRecovery with true param", true, mLocalStorage.isRecovery());
+    }
+
+    @Test
+    public void setRecoveryWithFalse() {
+        mLocalStorage.setRecovery(false);
+
+        Assert.assertEquals("setRecovery with false param", false, mLocalStorage.isRecovery());
+    }
+
+    @Test
+    public void isRecoveryWhenNotSetting() {
+        Assert.assertEquals("isRecovery when not setting", false, mLocalStorage.isRecovery());
     }
 
     private void assertEquals(List<NotificationData> list1, List<NotificationData> list2) {
