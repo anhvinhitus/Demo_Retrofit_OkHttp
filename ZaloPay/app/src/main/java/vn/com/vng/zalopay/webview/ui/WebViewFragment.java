@@ -17,11 +17,9 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
 
 /**
  * Created by chucvv on 8/28/16.
@@ -29,7 +27,6 @@ import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
  */
 public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.IWebViewListener {
 
-    protected ITimeoutLoadingListener mTimeOutListener;
     protected ZPWebViewProcessor mWebViewProcessor;
 
     private View layoutRetry;
@@ -56,33 +53,6 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mTimeOutListener = new ITimeoutLoadingListener() {
-            @Override
-            public void onTimeoutLoading() {
-                Timber.d("onTimeoutLoading");
-                //load website timeout, show confirm dialog: continue to load or exit.
-                showConfirmExitDialog();
-            }
-        };
-    }
-
-    private void showConfirmExitDialog() {
-        DialogHelper.showConfirmDialog(getActivity(),
-                getActivity().getResources().getString(R.string.appgame_waiting_loading),
-                getActivity().getResources().getString(R.string.btn_exit),
-                getActivity().getResources().getString(R.string.btn_wait_loading),
-                new ZPWOnEventConfirmDialogListener() {
-                    @Override
-                    public void onCancelEvent() {
-                        if (getActivity() != null && !getActivity().isFinishing()) {
-                            getActivity().finish();
-                        }
-                    }
-
-                    @Override
-                    public void onOKevent() {
-                    }
-                });
     }
 
     @Override
@@ -179,19 +149,39 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         hideLoading();
     }
 
+    @Override
+    protected void onTimeoutLoading(long timeout) {
+        super.onTimeoutLoading(timeout);
+        showConfirmExitDialog(timeout);
+    }
+
+    private void showConfirmExitDialog(final long timeout) {
+        DialogHelper.showConfirmDialog(getActivity(),
+                getActivity().getResources().getString(R.string.appgame_waiting_loading),
+                getActivity().getResources().getString(R.string.btn_wait_loading),
+                getActivity().getResources().getString(R.string.btn_exit),
+                new ZPWOnEventConfirmDialogListener
+                        () {
+                    @Override
+                    public void onCancelEvent() {
+                        if (getActivity() != null && !getActivity().isFinishing()) {
+                            getActivity().finish();
+                        }
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        showProgressDialog(timeout);
+                    }
+                });
+    }
+
     public void hideLoading() {
-        DialogHelper.hideLoading();
+        super.hideProgressDialog();
     }
 
     public void showLoading() {
-        DialogHelper.showLoading(getActivity(), new ZPWOnProgressDialogTimeoutListener() {
-            @Override
-            public void onProgressTimeout() {
-                if (mTimeOutListener != null) {
-                    mTimeOutListener.onTimeoutLoading();
-                }
-            }
-        });
+        super.showProgressDialogWithTimeout();
     }
 
     public void showError(String message) {
@@ -226,8 +216,6 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
 
     @Override
     public void onDestroyView() {
-        mTimeOutListener = null;
-        hideLoading();
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onDestroyView();
         }
