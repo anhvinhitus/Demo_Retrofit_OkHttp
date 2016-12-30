@@ -185,7 +185,7 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
 
         GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
         gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);
-        float radius = getContext().getResources().getDimension(R.dimen.border);
+        float radius = getContext().getResources().getDimension(R.dimen.border_link_card);
         if (borderTopOnly) {
             gradientDrawable.setCornerRadii(new float[]{radius, radius,
                     radius, radius,

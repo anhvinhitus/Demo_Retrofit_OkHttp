@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,20 +10,21 @@
 
     <FrameLayout
         android:id="@+id/layoutLinkCard"
-        android:layout_width="wrap_content"
-        android:layout_height="212dp"
+        android:layout_width="match_parent"
+        android:layout_height="192dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginLeft="@dimen/spacing.medium.t"
+        android:layout_marginRight="@dimen/spacing.medium.t"
         android:background="@drawable/bg_link_card_detail"
         android:baselineAligned="false">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
             android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_map" />
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_map"/>
 
         <ImageView
             android:id="@+id/iv_logo"
@@ -30,7 +32,7 @@
             android:layout_height="30dp"
             android:layout_marginLeft="18dp"
             android:layout_marginTop="18dp"
-            android:src="@drawable/ic_visa" />
+            android:src="@drawable/ic_visa"/>
 
         <com.zalopay.ui.widget.IconFont
             android:id="@+id/tv_num_acc"
@@ -46,8 +48,8 @@
             android:textColor="@color/white"
             android:textSize="@dimen/textsize.card.number"
             android:textStyle="normal"
-            tools:text="*** 0014"
-            app:typefaceAsset="ocr-a-tribute" />
+            app:typefaceAsset="ocr-a-tribute"
+            tools:text="*** 0014"/>
     </FrameLayout>
 
     <LinearLayout
@@ -69,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:padding="@dimen/spacing.medium"
-                android:src="@drawable/ic_nguontienchinh" />
+                android:src="@drawable/ic_nguontienchinh"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -78,7 +80,7 @@
                 android:paddingRight="@dimen/spacing.medium"
                 android:text="@string/txt_link_card_money_source"
                 android:textColor="#dd000000"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -94,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:padding="@dimen/spacing.medium"
-                android:src="@drawable/ic_xemchitiet" />
+                android:src="@drawable/ic_xemchitiet"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -103,7 +105,7 @@
                 android:paddingRight="@dimen/spacing.medium"
                 android:text="@string/txt_link_card_view_detail"
                 android:textColor="#dd000000"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -118,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:padding="@dimen/spacing.medium"
-                android:src="@drawable/ic_huylienket" />
+                android:src="@drawable/ic_huylienket"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -127,7 +129,7 @@
                 android:paddingRight="@dimen/spacing.medium"
                 android:text="@string/txt_link_card_remove_link"
                 android:textColor="#dd000000"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
