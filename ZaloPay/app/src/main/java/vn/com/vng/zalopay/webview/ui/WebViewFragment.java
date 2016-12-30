@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.webview.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,23 +21,20 @@ import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
 
 /**
  * Created by chucvv on 8/28/16.
  * Fragment
  */
-public class WebViewFragment extends BaseFragment implements IWebView, ZPWebViewProcessor.IWebViewListener {
-    protected ITimeoutLoadingListener mTimeOutListener;
+public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.IWebViewListener {
 
+    protected ITimeoutLoadingListener mTimeOutListener;
     protected ZPWebViewProcessor mWebViewProcessor;
+
     private View layoutRetry;
     private ImageView imgError;
     private TextView tvError;
-
-    protected String mCurrentUrl = "";
-    private boolean mIsPageValid = false;
 
     public static WebViewFragment newInstance(Bundle bundle) {
         WebViewFragment fragment = new WebViewFragment();
@@ -65,25 +61,28 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
             public void onTimeoutLoading() {
                 Timber.d("onTimeoutLoading");
                 //load website timeout, show confirm dialog: continue to load or exit.
-                if (getActivity() == null) {
-                    return;
-                }
-                DialogHelper.showConfirmDialog(getActivity(),
-                        getActivity().getResources().getString(R.string.appgame_waiting_loading),
-                        getActivity().getResources().getString(R.string.btn_exit),
-                        getActivity().getResources().getString(R.string.btn_wait_loading),
-                        new ZPWOnEventConfirmDialogListener() {
-                            @Override
-                            public void onCancelEvent() {
-                                getActivity().finish();
-                            }
-
-                            @Override
-                            public void onOKevent() {
-                            }
-                        });
+                showConfirmExitDialog();
             }
         };
+    }
+
+    private void showConfirmExitDialog() {
+        DialogHelper.showConfirmDialog(getActivity(),
+                getActivity().getResources().getString(R.string.appgame_waiting_loading),
+                getActivity().getResources().getString(R.string.btn_exit),
+                getActivity().getResources().getString(R.string.btn_wait_loading),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+                        if (getActivity() != null && !getActivity().isFinishing()) {
+                            getActivity().finish();
+                        }
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                    }
+                });
     }
 
     @Override
@@ -93,14 +92,14 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
         initPresenter(view);
         initRetryView(view);
         initWebView(view);
-        loadWebView();
+        loadDefaultWebView();
     }
 
     protected void initPresenter(View view) {
 
     }
 
-    protected void loadWebView() {
+    protected void loadDefaultWebView() {
         Bundle bundle = getArguments();
         if (bundle == null) {
             return;
@@ -109,34 +108,23 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
         loadUrl(originalUrl);
     }
 
+    protected String getCurrentUrl() {
+        if (mWebViewProcessor == null) {
+            return null;
+        }
+        return mWebViewProcessor.getCurrentUrl();
+    }
+
     private void initWebView(View rootView) {
         ZPWebView webView = (ZPWebView) rootView.findViewById(R.id.webview);
-        mWebViewProcessor = new ZPWebViewProcessor(webView, mTimeOutListener, this);
-    }
-
-    @Override
-    public Fragment getFragment() {
-        return this;
-    }
-
-    @Override
-    public void showInputErrorDialog() {
-        DialogHelper.showWarningDialog(getActivity(),
-                getContext().getString(R.string.appgame_alert_input_error),
-                new ZPWOnEventDialogListener() {
-                    @Override
-                    public void onOKevent() {
-                        getActivity().finish();
-                    }
-                });
+        mWebViewProcessor = new ZPWebViewProcessor(webView, this);
     }
 
     public void loadUrl(final String pUrl) {
         if (mWebViewProcessor == null) {
             return;
         }
-        mCurrentUrl = pUrl;
-        mWebViewProcessor.start(mCurrentUrl, getActivity());
+        mWebViewProcessor.start(pUrl, getActivity());
     }
 
     protected void onClickRetryWebView() {
@@ -176,6 +164,7 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
         layoutRetry.setVisibility(View.VISIBLE);
     }
 
+    @Override
     public void showError(int errorCode) {
         Timber.d("showError errorCode [%s]", errorCode);
         if (errorCode == WebViewClient.ERROR_CONNECT) {
@@ -237,6 +226,7 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
 
     @Override
     public void onDestroyView() {
+        mTimeOutListener = null;
         hideLoading();
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onDestroyView();
@@ -294,33 +284,7 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
     protected void refreshWeb() {
         Timber.d("Request to reload web view");
         hideError();
-        loadUrl(mCurrentUrl);
-    }
-
-    private void hideWebView() {
-        if (mWebViewProcessor != null) {
-            mWebViewProcessor.hideWebView();
-        }
-    }
-
-    private void showWebView() {
-        if (mWebViewProcessor != null) {
-            mWebViewProcessor.showWebView();
-        }
-    }
-
-    @Override
-    public void onReceivedError(int errorCode, CharSequence description) {
-        Timber.d("onReceivedError errorCode [%s] description [%s]", errorCode, description);
-        hideWebView();
-        showError(errorCode);
-    }
-
-    @Override
-    public void onPageFinished(String url) {
-        Timber.d("onPageFinished url [%s]", url);
-        mCurrentUrl = url;
-        showWebView();
+        mWebViewProcessor.refreshWeb(getActivity());
     }
 
     @Override
@@ -347,16 +311,4 @@ public class WebViewFragment extends BaseFragment implements IWebView, ZPWebView
             ((WebViewActivity) getActivity()).setTitleAndLogo(title, url);
         }
     }
-
-    @Override
-    public boolean isPageValid() {
-        return mIsPageValid;
-    }
-
-    @Override
-    public void setPageValid(boolean valid) {
-        mIsPageValid = valid;
-    }
-
-
 }

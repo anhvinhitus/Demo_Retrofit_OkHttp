@@ -14,10 +14,10 @@ import timber.log.Timber;
  * Callback for utils.getNav()
  */
 class GetNavigationCallback implements ValueCallback<String> {
-    private ZPWebViewProcessor.IWebViewListener mWebViewListener;
+    private INavigationListener mNavigationListener;
 
-    GetNavigationCallback(ZPWebViewProcessor.IWebViewListener webViewListener) {
-        mWebViewListener = webViewListener;
+    GetNavigationCallback(INavigationListener listener) {
+        mNavigationListener = listener;
     }
 
     @Override
@@ -43,8 +43,8 @@ class GetNavigationCallback implements ValueCallback<String> {
                 String title = nav.get("title").getAsString();
                 String thumb = nav.get("thumb").getAsString();
 
-                if (mWebViewListener != null) {
-                    mWebViewListener.setTitleAndLogo(title, thumb);
+                if (mNavigationListener != null) {
+                    mNavigationListener.setTitleAndLogo(title, thumb);
 
                     if (code == 1) {
                         appState = true;
@@ -61,10 +61,14 @@ class GetNavigationCallback implements ValueCallback<String> {
     }
 
     private void setWebAppState(boolean status) {
-        if (mWebViewListener != null) {
-            mWebViewListener.setPageValid(status);
+        if (mNavigationListener != null) {
+            mNavigationListener.onWebAppStateChanged(status);
         }
     }
 
+    interface INavigationListener {
+        void setTitleAndLogo(String title, String thumb);
 
+        void onWebAppStateChanged(boolean valid);
+    }
 }

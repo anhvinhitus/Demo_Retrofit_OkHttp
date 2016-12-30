@@ -16,25 +16,21 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
-import vn.com.vng.zalopay.webview.interfaces.ITimeoutLoadingListener;
-import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
 
-public class ZPWebViewProcessor extends WebViewClient {
+public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCallback.INavigationListener {
 
-    private boolean hasError = false;
+    private String mCurrentUrl = "";
+    private boolean mIsPageValid = false;
+    private boolean mHasError = false;
 
     private ZPWebView mWebView = null;
-    private ITimeoutLoadingListener mTimeOutListener;
     private IWebViewListener mWebViewListener;
 
     public ZPWebViewProcessor(ZPWebView pWebView,
-                              ITimeoutLoadingListener timeoutLoadingListener,
                               IWebViewListener webViewListener) {
         mWebView = pWebView;
         mWebViewListener = webViewListener;
-        mTimeOutListener = timeoutLoadingListener;
         mWebView.setWebViewClient(this);
     }
 
@@ -42,29 +38,24 @@ public class ZPWebViewProcessor extends WebViewClient {
         if (pActivity == null || TextUtils.isEmpty(pUrl) || mWebView == null) {
             return;
         }
-        DialogHelper.showLoading(pActivity, new ZPWOnProgressDialogTimeoutListener() {
-            @Override
-            public void onProgressTimeout() {
-                if (mTimeOutListener != null)
-                    mTimeOutListener.onTimeoutLoading();
-            }
-        });
-        hasError = false;
+        showLoading();
+        mHasError = false;
+        mCurrentUrl = pUrl;
         mWebView.loadUrl(pUrl);
     }
 
     public boolean hasError() {
-        return hasError;
+        return mHasError;
     }
 
     @Override
     public void onPageFinished(WebView view, String url) {
         Timber.d("onPageFinished url [%s]", url);
-        if (hasError || mWebView == null) {
+        if (mHasError || mWebView == null) {
             return;
         }
 
-        DialogHelper.hideLoading();
+        hideLoading();
         injectScriptFile("webapp.js");
 
         mWebView.runScript("webapp_hideHeaderZalo()", new ValueCallback<String>() {
@@ -73,13 +64,12 @@ public class ZPWebViewProcessor extends WebViewClient {
                 Timber.d("hideHeaderZalo [%s]", s);
             }
         });
-        mWebView.runScript("webapp_getNavigation()", new GetNavigationCallback(mWebViewListener));
+        mWebView.runScript("webapp_getNavigation()", new GetNavigationCallback(this));
 
         super.onPageFinished(view, url);
 
-        if (mWebViewListener != null) {
-            mWebViewListener.onPageFinished(url);
-        }
+        mCurrentUrl = url;
+        showWebView();
     }
 
     private void injectScriptFile(String scriptFile) {
@@ -107,8 +97,10 @@ public class ZPWebViewProcessor extends WebViewClient {
     }
 
     private void onReceivedError(int errorCode, CharSequence description) {
+        Timber.d("onReceivedError errorCode [%s] description [%s]", errorCode, description);
+        hideWebView();
         if (mWebViewListener != null) {
-            mWebViewListener.onReceivedError(errorCode, description);
+            mWebViewListener.showError(errorCode);
         }
     }
 
@@ -119,20 +111,20 @@ public class ZPWebViewProcessor extends WebViewClient {
         mWebView.runScript(script, callback);
     }
 
-    public void hideWebView() {
+    private void hideWebView() {
         if (mWebView != null) {
             mWebView.setVisibility(View.GONE);
         }
     }
 
-    public void showWebView() {
+    private void showWebView() {
         if (mWebView != null) {
             mWebView.setVisibility(View.VISIBLE);
         }
     }
 
     public boolean canBack() {
-        return mWebViewListener.isPageValid();
+        return mIsPageValid;
     }
 
     @Override
@@ -141,7 +133,7 @@ public class ZPWebViewProcessor extends WebViewClient {
             return;
         }
 
-        hasError = true;
+        mHasError = true;
         Timber.w("Webview errorCode [%s] description [%s] failingUrl [%s]", errorCode, description, failingUrl);
         onReceivedError(errorCode, description);
 
@@ -154,7 +146,7 @@ public class ZPWebViewProcessor extends WebViewClient {
             return;
         }
 
-        hasError = true;
+        mHasError = true;
         int errorCode = error != null ? error.getErrorCode() : WebViewClient.ERROR_UNKNOWN;
         CharSequence description = error != null ? error.getDescription() : null;
         Timber.w("Webview errorCode [%s] errorMessage [%s]", errorCode, description);
@@ -201,10 +193,39 @@ public class ZPWebViewProcessor extends WebViewClient {
 
     }
 
-    public interface IWebViewListener {
-        void onReceivedError(int errorCode, CharSequence description);
+    private void showLoading() {
+        if (mWebViewListener != null) {
+            mWebViewListener.showLoading();
+        }
+    }
 
-        void onPageFinished(String url);
+    private void hideLoading() {
+        if (mWebViewListener != null) {
+            mWebViewListener.hideLoading();
+        }
+    }
+
+    public void refreshWeb(Activity activity) {
+        start(mCurrentUrl, activity);
+    }
+
+    public String getCurrentUrl() {
+        return mCurrentUrl;
+    }
+
+    @Override
+    public void setTitleAndLogo(String title, String thumb) {
+        if (mWebViewListener != null) {
+            mWebViewListener.setTitleAndLogo(title, thumb);
+        }
+    }
+
+    @Override
+    public void onWebAppStateChanged(boolean valid) {
+        mIsPageValid = valid;
+    }
+
+    public interface IWebViewListener {
 
         void payOrder(String url);
 
@@ -214,9 +235,11 @@ public class ZPWebViewProcessor extends WebViewClient {
 
         void setTitleAndLogo(String title, String url);
 
-        boolean isPageValid();
+        void showError(int errorCode);
 
-        void setPageValid(boolean valid);
+        void showLoading();
+
+        void hideLoading();
     }
 
     public void onPause() {
@@ -255,7 +278,5 @@ public class ZPWebViewProcessor extends WebViewClient {
         mWebView.destroy();
 
         mWebViewListener = null;
-        mTimeOutListener = null;
-
     }
 }
