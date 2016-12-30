@@ -26,7 +26,8 @@
             style="@style/Button.Default.New"
             android:layout_width="match_parent"
             android:layout_height="@dimen/button.height"
-            android:layout_marginBottom="@dimen/spacing.medium.s"
+            android:layout_marginBottom="@dimen/button.margin.bottom"
+            android:layout_marginTop="@dimen/button.margin.top.min"
             android:layout_weight="0.0"
             android:orientation="horizontal">
 

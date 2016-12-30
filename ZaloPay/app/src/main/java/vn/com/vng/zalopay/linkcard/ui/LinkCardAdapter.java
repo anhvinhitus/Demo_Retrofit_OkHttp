@@ -8,6 +8,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 
@@ -81,8 +83,9 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder) {
             BankCard bankCard = getItem(position);
+            boolean isLastItem = (position == getItemCount() - 1);
             if (bankCard != null) {
-                ((ViewHolder) holder).bindView(bankCard);
+                ((ViewHolder) holder).bindView(bankCard, isLastItem);
             }
         }
     }
@@ -117,11 +120,25 @@ public class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.V
             }
         }
 
-        public void bindView(final BankCard bankCard) {
+        public void bindView(final BankCard bankCard, boolean isLastItem) {
             Timber.d("bindView bankCard.type:%s", bankCard.type);
             bindBankCard(mRoot, imgLogo, bankCard, true);
             String bankCardNumber = BankCardUtil.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno);
             mCardNumber.setText(Html.fromHtml(bankCardNumber));
+            setMargin(isLastItem);
+        }
+
+        private void setMargin(boolean isLastItem) {
+            FrameLayout.LayoutParams params= new FrameLayout
+                    .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int margin = getContext().getResources().getDimensionPixelSize(R.dimen.spacing_medium_s);
+            int marginBottom = 0;
+            if (isLastItem) {
+                marginBottom = getContext().getResources()
+                        .getDimensionPixelSize(R.dimen.linkcard_margin_bottom_lastitem);
+            }
+            params.setMargins(margin, margin, margin, marginBottom);
+            mRoot.setLayoutParams(params);
         }
     }
 

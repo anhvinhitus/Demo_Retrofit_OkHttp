@@ -89,4 +89,6 @@
     <dimen name="button.width.min">180dp</dimen>
     <dimen name="button.text.padding.left">24sp</dimen>
     <dimen name="button.text.padding.right">24sp</dimen>
+
+    <dimen name="linkcard.margin.bottom.lastitem">35dp</dimen>
 </resources>
