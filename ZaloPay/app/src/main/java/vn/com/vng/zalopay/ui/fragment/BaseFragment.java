@@ -1,10 +1,13 @@
 package vn.com.vng.zalopay.ui.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +100,19 @@ public abstract class BaseFragment extends Fragment {
             mProgressDialog = new SweetAlertDialog(getContext(),
                     SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
             mProgressDialog.setCancelable(false);
+            mProgressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        Activity activity = getActivity();
+                        if (activity != null && !activity.isFinishing()) {
+                            activity.onBackPressed();
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
         }
         mProgressDialog.show();
     }
