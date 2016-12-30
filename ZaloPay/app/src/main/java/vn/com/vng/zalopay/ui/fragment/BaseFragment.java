@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -44,6 +46,8 @@ public abstract class BaseFragment extends Fragment {
     private Snackbar mSnackBar;
     private SweetAlertDialog mProgressDialog;
     private Unbinder unbinder;
+    private Handler mShowLoadingTimeoutHandler;
+    private Runnable mShowLoadingTimeoutRunnable;
 
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
     protected final UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
@@ -65,8 +69,11 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroyView() {
         hideKeyboard();
-        super.onDestroyView();
+        cancelShowLoadingTimeoutRunnable();
         hideProgressDialog();
+        super.onDestroyView();
+        mShowLoadingTimeoutHandler = null;
+        mShowLoadingTimeoutRunnable = null;
         mProgressDialog = null;
         unbinder.unbind();
     }
@@ -95,7 +102,19 @@ public abstract class BaseFragment extends Fragment {
         if (mSnackBar != null) mSnackBar.dismiss();
     }
 
+    public boolean isShowingLoading() {
+        return mProgressDialog != null && mProgressDialog.isShowing();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
+            return;
+        }
+        mProgressDialog.dismiss();
+    }
+
     public void showProgressDialog() {
+        cancelShowLoadingTimeoutRunnable();
         if (mProgressDialog == null) {
             mProgressDialog = new SweetAlertDialog(getContext(),
                     SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
@@ -114,14 +133,48 @@ public abstract class BaseFragment extends Fragment {
                 }
             });
         }
-        mProgressDialog.show();
+        if (!isShowingLoading()) {
+            mProgressDialog.show();
+        }
     }
 
-    public void hideProgressDialog() {
-        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
+    public void showProgressDialog(final long timeout) {
+        showProgressDialog();
+        startShowLoadingTimeoutRunnable(timeout);
+    }
+
+    public void showProgressDialogWithTimeout() {
+        showProgressDialog(35000);
+    }
+
+    private void startShowLoadingTimeoutRunnable(final long timeout) {
+        if (timeout <= 0) {
             return;
         }
-        mProgressDialog.dismiss();
+        if (mShowLoadingTimeoutHandler == null) {
+            mShowLoadingTimeoutHandler = new Handler();
+        }
+        if (mShowLoadingTimeoutRunnable == null) {
+            mShowLoadingTimeoutRunnable = new Runnable() {
+                public void run() {
+                    onTimeoutLoading(timeout);
+                }
+            };
+        }
+        mShowLoadingTimeoutHandler.postDelayed(mShowLoadingTimeoutRunnable, timeout);
+    }
+
+    private void cancelShowLoadingTimeoutRunnable() {
+        if (mShowLoadingTimeoutHandler != null && mShowLoadingTimeoutRunnable != null) {
+            mShowLoadingTimeoutHandler.removeCallbacks(mShowLoadingTimeoutRunnable);
+        }
+    }
+
+    protected void onTimeoutLoading(long timeout) {
+        Timber.d("time out show loading");
+        if (isShowingLoading()) {
+            hideProgressDialog();
+        }
     }
 
     public void showNetworkErrorDialog() {
@@ -220,4 +273,5 @@ public abstract class BaseFragment extends Fragment {
         final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
 }
