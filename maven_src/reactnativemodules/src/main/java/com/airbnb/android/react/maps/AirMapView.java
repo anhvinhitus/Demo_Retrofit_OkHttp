@@ -239,7 +239,9 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
                 Timber.d("onHostResume");
                 if (hasPermissions()) {
                     //noinspection MissingPermission
-                    map.setMyLocationEnabled(showUserLocation);
+                    if (map != null) {
+                        map.setMyLocationEnabled(showUserLocation);
+                    }
                 }
                 synchronized (AirMapView.this) {
                     AirMapView.this.onResume();
@@ -252,7 +254,9 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
                 Timber.d("onHostPause");
                 if (hasPermissions()) {
                     //noinspection MissingPermission
-                    map.setMyLocationEnabled(false);
+                    if (map != null) {
+                        map.setMyLocationEnabled(false);
+                    }
                 }
                 paused = true;
             }
@@ -287,10 +291,14 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
             // variable, and make a guess of zoomLevel 10. Not to worry, though: as soon as layout
             // occurs, we will move the camera to the saved bounds. Note that if we tried to move
             // to the bounds now, it would trigger an exception.
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 10));
+            if (map != null) {
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 10));
+            }
             boundsToMove = bounds;
         } else {
-            map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
+            if (map != null) {
+                map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
+            }
             boundsToMove = null;
         }
     }
@@ -299,19 +307,25 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
         this.showUserLocation = showUserLocation; // hold onto this for lifecycle handling
         if (hasPermissions()) {
             //noinspection MissingPermission
-            map.setMyLocationEnabled(showUserLocation);
+            if (map != null) {
+                map.setMyLocationEnabled(showUserLocation);
+            }
         }
     }
 
     public void setShowsMyLocationButton(boolean showMyLocationButton) {
         if (hasPermissions()) {
-            map.getUiSettings().setMyLocationButtonEnabled(showMyLocationButton);
+            if (map != null) {
+                map.getUiSettings().setMyLocationButtonEnabled(showMyLocationButton);
+            }
         }
     }
 
     public void setToolbarEnabled(boolean toolbarEnabled) {
         if (hasPermissions()) {
-            map.getUiSettings().setMapToolbarEnabled(toolbarEnabled);
+            if (map != null) {
+                map.getUiSettings().setMapToolbarEnabled(toolbarEnabled);
+            }
         }
     }
 
@@ -378,6 +392,11 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     public void addFeature(View child, int index) {
         // Our desired API is to pass up annotations/overlays as children to the mapview component.
         // This is where we intercept them and do the appropriate underlying mapview action.
+
+        if (map == null) {
+            return;
+        }
+
         if (child instanceof AirMapMarker) {
             AirMapMarker annotation = (AirMapMarker) child;
             annotation.addToMap(map);
@@ -414,10 +433,16 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     }
 
     public void removeFeatureAt(int index) {
+
         AirMapFeature feature = features.remove(index);
         if (feature instanceof AirMapMarker) {
             markerMap.remove(feature.getFeature());
         }
+
+        if (map == null) {
+            return;
+        }
+
         feature.removeFromMap(map);
     }
 
@@ -429,6 +454,9 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
         coordinate.putDouble("longitude", point.longitude);
         event.putMap("coordinate", coordinate);
 
+        if (map == null) {
+            return event;
+        }
         Projection projection = map.getProjection();
         Point screenPoint = projection.toScreenLocation(point);
 
@@ -447,14 +475,16 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
             HashMap<String, Float> data = (HashMap<String, Float>) extraData;
             float width = data.get("width");
             float height = data.get("height");
-            map.moveCamera(
-                    CameraUpdateFactory.newLatLngBounds(
-                            boundsToMove,
-                            (int) width,
-                            (int) height,
-                            0
-                    )
-            );
+            if (map != null) {
+                map.moveCamera(
+                        CameraUpdateFactory.newLatLngBounds(
+                                boundsToMove,
+                                (int) width,
+                                (int) height,
+                                0
+                        )
+                );
+            }
             boundsToMove = null;
         }
     }
@@ -493,6 +523,9 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
         if (addedPosition) {
             LatLngBounds bounds = builder.build();
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, baseMapPadding);
+            if (map == null) {
+                return;
+            }
             if (animated) {
                 startMonitoringRegion();
                 map.animateCamera(cu);
@@ -528,6 +561,9 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
         if (addedPosition) {
             LatLngBounds bounds = builder.build();
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, baseMapPadding);
+            if (map == null) {
+                return;
+            }
             if (animated) {
                 startMonitoringRegion();
                 map.animateCamera(cu);
@@ -549,6 +585,10 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
 
         LatLngBounds bounds = builder.build();
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, baseMapPadding);
+
+        if (map == null) {
+            return;
+        }
 
         if (edgePadding != null) {
             map.setPadding(edgePadding.getInt("left"), edgePadding.getInt("top"), edgePadding.getInt("right"), edgePadding.getInt("bottom"));
@@ -624,6 +664,9 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
 
         @Override
         public void run() {
+            if (map == null) {
+                return;
+            }
 
             LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
             if (lastBoundsEmitted == null ||
@@ -736,6 +779,10 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
             cacheImageView.setVisibility(View.INVISIBLE);
             mapLoadingLayout.setVisibility(View.VISIBLE);
             if (this.isMapLoaded) {
+                if (map == null) {
+                    return;
+                }
+
                 this.map.snapshot(new GoogleMap.SnapshotReadyCallback() {
                     @Override
                     public void onSnapshotReady(Bitmap bitmap) {
@@ -754,6 +801,10 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     }
 
     public void onPanDrag(MotionEvent ev) {
+        if (map == null) {
+            return;
+        }
+
         Point point = new Point((int) ev.getX(), (int) ev.getY());
         LatLng coords = this.map.getProjection().fromScreenLocation(point);
         WritableMap event = makeClickEventData(coords);
