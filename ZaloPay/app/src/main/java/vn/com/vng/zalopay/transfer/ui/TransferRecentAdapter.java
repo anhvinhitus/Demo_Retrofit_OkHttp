@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
@@ -80,7 +82,7 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
         ImageView mImgAvatar;
 
         @BindView(R.id.imgTransferType)
-        ImageView mImgTransferType;
+        TextView mImgTransferType;
 
         ImageLoader mImageLoader;
 
@@ -103,13 +105,16 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
 
             if (!TextUtils.isEmpty(zaloPayName)) {
                 mTvPhone.setText(String.format(context.getString(R.string.account_format), zaloPayName));
-                mImgTransferType.setImageResource(R.drawable.ic_transfer_acc_zp_small);
+                mImgTransferType.setText(R.string.sendmoney_zalopayid);
+                mImgTransferType.setTextColor(ContextCompat.getColor(context, R.color.menu_font_ic_green));
             } else if (!TextUtils.isEmpty(phone)) {
                 mTvPhone.setText(String.format(context.getString(R.string.phone_format), phone));
-                mImgTransferType.setImageResource(R.drawable.ic_transfer_fr_zalo_small);
+                mImgTransferType.setText(R.string.sendmoney_friend);
+                mImgTransferType.setTextColor(ContextCompat.getColor(context, R.color.menu_font_ic_blue));
             } else {
                 mTvPhone.setText(R.string.not_update_zalopay_id);
-                mImgTransferType.setImageResource(R.drawable.ic_transfer_fr_zalo_small);
+                mImgTransferType.setText(R.string.sendmoney_friend);
+                mImgTransferType.setTextColor(ContextCompat.getColor(context, R.color.menu_font_ic_blue));
             }
         }
 

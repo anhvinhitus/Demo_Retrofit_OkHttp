@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemLayout"
     android:layout_width="match_parent"
@@ -9,10 +11,10 @@
     android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="center_vertical"
+                  android:orientation="horizontal">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imgAvatar"
@@ -21,7 +23,7 @@
             android:layout_height="@dimen/transfer.avatar"
             android:layout_marginBottom="@dimen/spacing.medium.t"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="@dimen/spacing.medium.t" />
+            android:layout_marginTop="@dimen/spacing.medium.t"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,24 +40,23 @@
                 style="@style/TextView.Item.Main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="A.Hoanh" />
+                tools:text="A.Hoanh"/>
 
             <TextView
                 android:id="@+id/tvPhone"
                 style="@style/TextView.Item.Sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="0988888888" />
+                tools:text="0988888888"/>
         </LinearLayout>
 
-        <ImageView
+        <com.zalopay.ui.widget.IconFont
             android:id="@+id/imgTransferType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_transfer_fr_zalo_small" />
+            android:layout_marginRight="@dimen/spacing.medium"
+            app:iconSize="@dimen/font_size_transfer_item"
+            app:typefaceAsset="@string/font_name"/>
     </LinearLayout>
 
     <View
@@ -63,5 +64,5 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate_stroke"
         android:layout_marginLeft="60dp"
-        android:background="@color/separate" />
+        android:background="@color/separate"/>
 </LinearLayout>
