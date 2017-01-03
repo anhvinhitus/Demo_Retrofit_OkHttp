@@ -19,4 +19,8 @@
     <string name="menu_logout">&#59736;</string>
     <!--Menu END-->
 
+    <string name="notify_1_receivemoney">&#59712;</string>
+    <string name="notify_1_withdraw">&#59714;</string>
+
+    <string name="general_question">&#59748;</string>
 </resources>

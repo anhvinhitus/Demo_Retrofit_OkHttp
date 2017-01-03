@@ -1,6 +1,10 @@
 <resources>
     <dimen name="font_size_home_function">52dp</dimen>
     <dimen name="font_size_menu">26dp</dimen>
+    <dimen name="font_size_balance_manager_header">60dp</dimen>
+    <dimen name="font_size_balance_manager_deposit">28dp</dimen>
+    <dimen name="font_size_balance_manager_withdraw">28dp</dimen>
+    <dimen name="font_size_balance_manager_question">16dp</dimen>
 
     <dimen name="textsize.card.number">18sp</dimen>
     <dimen name="textsize.text.main">15sp</dimen>
