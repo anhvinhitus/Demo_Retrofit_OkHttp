@@ -81,6 +81,20 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
             enterPassword();
         } else if (mStage == PASSWORD_SETTING) {
             enterPassword(mStage);
+        } else {
+
+            String password = mPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
+            Timber.d("show password [%s]", password);
+            if (!TextUtils.isEmpty(password)) {
+                if (initDecryptCipher()) {
+                    // Show the fingerprint dialog to unlock the password
+                    setStage(FINGERPRINT_DECRYPT);
+                    return;
+                }
+            }
+
+            setStage(PASSWORD);
+            enterPassword();
         }
     }
 
@@ -421,7 +435,7 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
     }
 
 
-    public void show() {
+   /* public void show() {
         if (mStage == PASSWORD_SETTING) {
             return;
         }
@@ -438,6 +452,6 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
 
         setStage(PASSWORD);
     }
-
+*/
 
 }

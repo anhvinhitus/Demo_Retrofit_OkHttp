@@ -1,3 +1,4 @@
+/*
 package vn.com.vng.zalopay.ui.dialog;
 
 import android.content.Context;
@@ -26,10 +27,12 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
+*/
 /**
  * Created by AnhHieu on 9/9/16.
  * *
- */
+ *//*
+
 public class PinProfileDialog extends AlertDialog implements IPinProfileView {
 
     public interface PinProfileListener {
@@ -217,3 +220,4 @@ public class PinProfileDialog extends AlertDialog implements IPinProfileView {
         }
     };
 }
+*/

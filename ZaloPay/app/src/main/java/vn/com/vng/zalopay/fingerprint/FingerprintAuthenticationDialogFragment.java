@@ -38,7 +38,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.widget.GridPasswordViewFitWidth;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -48,7 +50,36 @@ import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
 public class FingerprintAuthenticationDialogFragment extends DialogFragment implements IFingerprintAuthenticationView {
 
+
+    public static FingerprintAuthenticationDialogFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        FingerprintAuthenticationDialogFragment fragment = new FingerprintAuthenticationDialogFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static final String TAG = "FingerprintDialog";
+
+    public void setPendingIntent(Intent intent) {
+        this.pendingIntent = intent;
+    }
+
+    public void setStage(Stage stage) {
+        mStage = stage;
+    }
+
+    public void setAuthenticationCallback(AuthenticationCallback callback) {
+        this.mCallback = callback;
+    }
+
+    /**
+     * Finish Activity sau khi XÁC THỰC THÀNH CÔNG
+     */
+    public void setFinishActivity(boolean isFinish) {
+        this.isFinish = isFinish;
+    }
 
     @BindView(R.id.rootView)
     View mRootView;
@@ -94,14 +125,17 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
     FingerAuthenticationPresenter mPresenter;
 
     @Inject
-    InputMethodManager mInputMethodManager;
-
-    @Inject
     FingerprintUiHelper.FingerprintUiHelperBuilder mFingerprintUiHelperBuilder;
 
     private Intent pendingIntent;
 
+    private Stage mStage = Stage.FINGERPRINT_DECRYPT;
+
+    private boolean isFinish = false; //
+
     @Inject
+    Navigator mNavigator;
+
     public FingerprintAuthenticationDialogFragment() {
     }
 
@@ -118,7 +152,12 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
         getDialog().setTitle(getString(R.string.confirm));
         View v = inflater.inflate(R.layout.fingerprint_dialog_container, container, false);
         mUnbinder = ButterKnife.bind(this, v);
+        setupFragmentComponent();
         return v;
+    }
+
+    private void setupFragmentComponent() {
+        AndroidApplication.instance().getUserComponent().inject(this);
     }
 
     @Override
@@ -148,6 +187,7 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
+        mPresenter.setStage(mStage);
         mPresenter.onViewCreated();
         mPassword.setOnPasswordChangedListener(new GridPasswordView.OnPasswordChangedListener() {
             @Override
@@ -162,6 +202,7 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
                 mPassword.clearPassword();
             }
         });
+
     }
 
     @OnClick(R.id.second_dialog_button)
@@ -292,25 +333,26 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
 
     @Override
     public void showNetworkErrorDialog() {
+        //empty
     }
 
     @Override
     public void showNetworkErrorDialog(ZPWOnSweetDialogListener listener) {
-    }
-
-
-    @Override
-    public void show(FragmentManager manager, String tag) {
-        mPresenter.show();
-        super.show(manager, tag);
+        //empty
     }
 
     @Override
     public void onAuthenticated() {
         Timber.d("onAuthenticated");
-        if (mCallback != null) {
+        if (pendingIntent != null) {
+            startActivity(pendingIntent);
+            if (isFinish) {
+                getActivity().finish();
+            }
+        } else if (mCallback != null) {
             mCallback.onAuthenticated();
         }
+        mNavigator.setLastTimeCheckPin(System.currentTimeMillis());
         dismiss();
     }
 
@@ -324,13 +366,8 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
         dismiss();
     }
 
-    public void setAuthenticationCallback(AuthenticationCallback callback) {
-        this.mCallback = callback;
-    }
-
     @Override
     public FingerprintUiHelper getFingerprintUiHelper(Stage stage) {
-
         switch (stage) {
             case FINGERPRINT_ENCRYPT:
                 return mFingerprintUiHelperBuilder.build(mIconFingerprintView, mStatusFingerprint, mPresenter);
@@ -342,8 +379,4 @@ public class FingerprintAuthenticationDialogFragment extends DialogFragment impl
 
     }
 
-    public void setStage(Stage stage) {
-        Timber.d("set stage %s presenter %s", stage, mPresenter);
-        mPresenter.setStage(stage);
-    }
 }

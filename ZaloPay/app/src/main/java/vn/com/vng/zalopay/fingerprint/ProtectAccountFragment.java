@@ -60,9 +60,6 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
     @Inject
     ProtectAccountPresenter mPresenter;
 
-    @Inject
-    FingerprintAuthenticationDialogFragment fragment;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +118,8 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
     public void showFingerAuthentication() {
         Timber.d("show finger authentication");
+
+        FingerprintAuthenticationDialogFragment fragment = FingerprintAuthenticationDialogFragment.newInstance();
         fragment.setStage(Stage.PASSWORD_SETTING);
         fragment.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
@@ -135,6 +134,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
             }
         });
+
         fragment.show(getActivity().getFragmentManager(), FingerprintAuthenticationDialogFragment.TAG);
     }
 
@@ -174,6 +174,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
     @OnClick(R.id.btnFingerprint)
     public void onClickFingerprint() {
+        FingerprintAuthenticationDialogFragment fragment = FingerprintAuthenticationDialogFragment.newInstance();
         fragment.setStage(Stage.FINGERPRINT_DECRYPT);
         fragment.setAuthenticationCallback(null);
         fragment.show(getActivity().getFragmentManager(), FingerprintAuthenticationDialogFragment.TAG);

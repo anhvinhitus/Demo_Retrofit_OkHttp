@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.fingerprint.FingerprintAuthenticationDialogFragment;
 import vn.com.vng.zalopay.fingerprint.FingerprintModule;
 import vn.com.vng.zalopay.fingerprint.ProtectAccountFragment;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
@@ -54,7 +55,6 @@ import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloFriendListFragment;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
-import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
@@ -159,8 +159,6 @@ public interface UserComponent {
 
     void inject(ReceiveMoneyFragment f);
 
-    void inject(PinProfileDialog dialog);
-
     void inject(TransferViaZaloPayNameFragment f);
 
     void inject(WebViewFragment f);
@@ -186,4 +184,6 @@ public interface UserComponent {
     void inject(BannerFragment f);
 
     void inject(ProtectAccountFragment f);
+
+    void inject(FingerprintAuthenticationDialogFragment f);
 }

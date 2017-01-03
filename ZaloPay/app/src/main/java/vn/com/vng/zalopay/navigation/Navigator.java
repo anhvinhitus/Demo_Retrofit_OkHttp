@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.navigation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -34,11 +35,12 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.fingerprint.AuthenticationCallback;
+import vn.com.vng.zalopay.fingerprint.FingerprintAuthenticationDialogFragment;
 import vn.com.vng.zalopay.fingerprint.ProtectAccountActivity;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
 import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardActivity;
-import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardFragment;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
@@ -55,7 +57,6 @@ import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
-import vn.com.vng.zalopay.ui.dialog.PinProfileDialog;
 import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
@@ -80,6 +81,9 @@ public class Navigator implements INavigator {
     private long lastTimeCheckPassword = 0;
 
     private final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
+
+    @Inject
+    SharedPreferences mPreferences;
 
     @Inject
     public Navigator(UserConfig userConfig) {
@@ -206,16 +210,11 @@ public class Navigator implements INavigator {
         activity.startActivity(intent);
     }
 
-    public void startLinkCardActivity(Context context, NotificationLinkCardFragment.ILinkCardListener listener) {
-        startLinkCardActivity(context, null, listener);
-    }
-
     public void startLinkCardActivity(Context context) {
-        startLinkCardActivity(context, null, null);
+        startLinkCardActivity(context, null, false);
     }
 
-    public void startLinkCardActivity(Context context, Bundle bundle,
-                                      final NotificationLinkCardFragment.ILinkCardListener listener) {
+    public void startLinkCardActivity(Context context, Bundle bundle, boolean isFinishActivity) {
         if (!userConfig.hasCurrentUser()) {
             return;
         }
@@ -238,15 +237,15 @@ public class Navigator implements INavigator {
             }
             if (numberCard <= 0) {
                 context.startActivity(intentLinkCard(context));
-                if (listener != null) {
-                    listener.onStartedLinkCardActivity();
+                if (isFinishActivity) {
+                    ((Activity) context).finish();
                 }
             } else if (shouldShowPinDialog()) {
-                showPinDialog(context, intentLinkCard(context), listener);
+                showPinDialog(context, intentLinkCard(context), isFinishActivity);
             } else {
                 context.startActivity(intentLinkCard(context));
-                if (listener != null) {
-                    listener.onStartedLinkCardActivity();
+                if (isFinishActivity) {
+                    ((Activity) context).finish();
                 }
             }
         }
@@ -504,6 +503,11 @@ public class Navigator implements INavigator {
     }
 
     private boolean shouldShowPinDialog() {
+        boolean useProtect = mPreferences.getBoolean(Constants.PREF_USE_PROTECT_PROFILE, true);
+        if (!useProtect) {
+            return false;
+        }
+
         int profileLevel = userConfig.getCurrentUser().profilelevel;
         long now = System.currentTimeMillis();
         return (now - lastTimeCheckPassword >= INTERVAL_CHECK_PASSWORD
@@ -511,46 +515,36 @@ public class Navigator implements INavigator {
     }
 
     private void showPinDialog(Context context, Intent pendingIntent) {
-        showPinDialog(context, pendingIntent, null);
+        showPinDialog(context, pendingIntent, false);
     }
 
-    private void showPinDialog(Context context, Intent pendingIntent,
-                               final NotificationLinkCardFragment.ILinkCardListener listener) {
-        PinProfileDialog pinProfileDialog = new PinProfileDialog(context, pendingIntent);
-        pinProfileDialog.setListener(new PinProfileDialog.PinProfileListener() {
-            @Override
-            public void onPinSuccess() {
-                Timber.d("onPinSuccess resolve true");
-                if (listener != null) {
-                    listener.onStartedLinkCardActivity();
-                }
-            }
-
-            @Override
-            public void onPinError() {
-            }
-        });
-
-        pinProfileDialog.show();
+    private void showPinDialog(Context context, Intent pendingIntent, boolean isFinish) {
+        FingerprintAuthenticationDialogFragment dialog = FingerprintAuthenticationDialogFragment.newInstance();
+        dialog.setPendingIntent(pendingIntent);
+        dialog.setFinishActivity(isFinish);
+        dialog.show(((Activity) context).getFragmentManager(), FingerprintAuthenticationDialogFragment.TAG);
     }
 
     private void showPinDialog(Context context, final Promise promise) {
-        PinProfileDialog pinProfileDialog = new PinProfileDialog(context);
-        pinProfileDialog.setListener(new PinProfileDialog.PinProfileListener() {
+        FingerprintAuthenticationDialogFragment dialog = FingerprintAuthenticationDialogFragment.newInstance();
+        dialog.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
-            public void onPinSuccess() {
+            public void onAuthenticated() {
                 Timber.d("onPinSuccess resolve true");
                 Helpers.promiseResolveSuccess(promise, null);
             }
 
             @Override
-            public void onPinError() {
+            public void onAuthenticationFailure() {
                 Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
             }
         });
-        pinProfileDialog.show();
+        dialog.show(((Activity) context).getFragmentManager(), FingerprintAuthenticationDialogFragment.TAG);
     }
 
+    /**
+     * Set thời gian cuối cùng authen thành công, time là milliseconds
+     */
     public void setLastTimeCheckPin(long time) {
         lastTimeCheckPassword = time;
     }
