@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.zfriend;
 
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
+import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGDDao;
 
 /**
  * Created by AnhHieu on 10/12/16.
@@ -8,12 +9,13 @@ import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
  */
 
 public interface ColumnIndex {
-    int Id = ZaloFriendGDDao.Properties.ZaloId.ordinal;
-    int UserName = ZaloFriendGDDao.Properties.UserName.ordinal;
-    int DisplayName = ZaloFriendGDDao.Properties.DisplayName.ordinal;
-    int Avatar = ZaloFriendGDDao.Properties.Avatar.ordinal;
-    int UserGender = ZaloFriendGDDao.Properties.UserGender.ordinal;
-    int Birthday = ZaloFriendGDDao.Properties.Birthday.ordinal;
-    int UsingApp = ZaloFriendGDDao.Properties.UsingApp.ordinal;
-    int Fulltextsearch = ZaloFriendGDDao.Properties.Fulltextsearch.ordinal;
+    int ID = ZaloFriendGDDao.Properties.ZaloId.ordinal;
+    int USER_NAME = ZaloFriendGDDao.Properties.UserName.ordinal;
+    int DISPLAY_NAME = ZaloFriendGDDao.Properties.DisplayName.ordinal;
+    int AVATAR = ZaloFriendGDDao.Properties.Avatar.ordinal;
+    int USING_APP = ZaloFriendGDDao.Properties.UsingApp.ordinal;
+    String ALIAS_DISPLAY_NAME = "ALIAS_DISPLAY_NAME";
+    String ALIAS_FULL_TEXT_SEARCH = "ALIAS_FULLTEXTSEARCH";
+    String ZALOPAY_ID = ZaloPayProfileGDDao.Properties.ZaloPayId.columnName;
+    String STATUS = ZaloPayProfileGDDao.Properties.Status.columnName;
 }

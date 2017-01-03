@@ -27,7 +27,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
+import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
@@ -224,9 +224,9 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
         List<Long> friendList = DataMapper.transform(friends);
         Subscription subscription = mFriendRepository.getListUserZaloPay(friendList)
-                .flatMap(new Func1<List<UserRPEntity>, Observable<Boolean>>() {
+                .flatMap(new Func1<List<RedPacketUserEntity>, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(List<UserRPEntity> entities) {
+                    public Observable<Boolean> call(List<RedPacketUserEntity> entities) {
                         Timber.d("User red package [%s]", entities.size());
                         return mRedPacketRepository.sendBundle(bundleID, entities);
                     }

@@ -12,7 +12,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
+import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.model.BundleGD;
@@ -91,7 +91,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> sendBundle(long bundleID, List<UserRPEntity> entities) {
+    public Observable<Boolean> sendBundle(long bundleID, List<RedPacketUserEntity> entities) {
         Timber.d("sendBundle: bundleId %s friend %s", bundleID, entities);
         return makeObservable(this::getSenderInfo)
                 .flatMap(s -> mRequestService.submittosendbundlebyzalopayinfo(bundleID, mGson.toJson(filterUserWithZaloPayId(entities)), mGson.toJson(s), user.accesstoken))
@@ -101,14 +101,14 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     /**
      * Chỉ send bundle cho nhưng user có zalopayid
      */
-    private List<UserRPEntity> filterUserWithZaloPayId(List<UserRPEntity> entities) {
+    private List<RedPacketUserEntity> filterUserWithZaloPayId(List<RedPacketUserEntity> entities) {
         if (Lists.isEmptyOrNull(entities)) {
             return Collections.emptyList();
         }
 
-        List<UserRPEntity> ret = new ArrayList<>();
-        List<UserRPEntity> userWithoutZPId = new ArrayList<>();
-        for (UserRPEntity entity : entities) {
+        List<RedPacketUserEntity> ret = new ArrayList<>();
+        List<RedPacketUserEntity> userWithoutZPId = new ArrayList<>();
+        for (RedPacketUserEntity entity : entities) {
             if (TextUtils.isEmpty(entity.zaloPayID)) {
                 userWithoutZPId.add(entity);
                 continue;
@@ -124,8 +124,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
         return ret;
     }
 
-    private UserRPEntity getSenderInfo() {
-        UserRPEntity entity = new UserRPEntity();
+    private RedPacketUserEntity getSenderInfo() {
+        RedPacketUserEntity entity = new RedPacketUserEntity();
         entity.zaloPayID = user.hasZaloPayId() ? user.zaloPayId : "";
         entity.zaloID = String.valueOf(user.zaloId);
         entity.zaloName = TextUtils.isEmpty(user.displayName) ? "" : user.displayName;

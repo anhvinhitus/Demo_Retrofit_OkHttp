@@ -1,25 +1,32 @@
 package vn.com.vng.zalopay.data.zfriend;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import org.greenrobot.greendao.query.WhereCondition;
+import org.greenrobot.greendao.internal.SqlUtils;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
-import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
+import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
+import vn.com.vng.zalopay.data.api.entity.mapper.FriendEntityDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
+import vn.com.vng.zalopay.data.cache.model.ContactGD;
+import vn.com.vng.zalopay.data.cache.model.ContactGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
+import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGD;
+import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGDDao;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 
 import static vn.com.vng.zalopay.data.Constants.MANIFEST_LASTTIME_SYNC_CONTACT;
 
@@ -27,195 +34,184 @@ import static vn.com.vng.zalopay.data.Constants.MANIFEST_LASTTIME_SYNC_CONTACT;
  * Created by huuhoa on 7/4/16.
  * Implementation for FriendStore.LocalStorage
  */
+
 public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.LocalStorage {
-    private final ZaloFriendGDDao mDao;
+
+    private ZaloFriendGDDao mZaloUserDao;
+    private ZaloPayProfileGDDao mZaloPayUserDao;
+    private ContactGDDao mContactDao;
+
+    private FriendEntityDataMapper mDataMapper;
 
     public FriendLocalStorage(DaoSession daoSession) {
         super(daoSession);
-        mDao = daoSession.getZaloFriendGDDao();
+        this.mZaloUserDao = getDaoSession().getZaloFriendGDDao();
+        this.mZaloPayUserDao = getDaoSession().getZaloPayProfileGDDao();
+        this.mContactDao = getDaoSession().getContactGDDao();
+        this.mDataMapper = new FriendEntityDataMapper();
     }
 
+    @Override
+    public void putZaloUser(List<ZaloUserEntity> val) {
+        Timber.d("put zalo user [%s]", val.size());
+        List<ZaloFriendGD> list = mDataMapper.transformZaloUser(val);
+        if (!Lists.isEmptyOrNull(list)) {
+            mZaloUserDao.insertOrReplaceInTx(list);
+        }
+    }
+
+    @NonNull
+    @Override
+    public List<ZaloUserEntity> getZaloUsers() {
+        List<ZaloFriendGD> list = mZaloUserDao.queryBuilder()
+                .list();
+        Timber.d("get zalo users: [%s]", list.size());
+        return mDataMapper.transformZaloUserEntity(list);
+    }
+
+    @NonNull
+    @Override
+    public List<ZaloUserEntity> getZaloUsers(List<Long> zaloids) {
+        Timber.d("get zalo users zaloids : [%s]", zaloids.toArray());
+        List<ZaloFriendGD> list = mZaloUserDao.queryBuilder()
+                .where(ZaloFriendGDDao.Properties.ZaloId.in(zaloids))
+                .list();
+        Timber.d("get zalo users: [%s]", list.size());
+        return mDataMapper.transformZaloUserEntity(list);
+    }
+
+    @Override
+    public ZaloUserEntity getZaloUser(long zaloid) {
+
+        if (zaloid <= 0) {
+            return null;
+        }
+
+        List<ZaloUserEntity> list = getZaloUsers(Arrays.asList(zaloid));
+        if (Lists.isEmptyOrNull(list)) {
+            return null;
+        }
+        return list.get(0);
+    }
+
+    @Override
+    public void putZaloUser(ZaloUserEntity entity) {
+        Timber.d("put zalo user : %s", entity);
+        ZaloFriendGD item = mDataMapper.transform(entity);
+        if (item != null) {
+            mZaloUserDao.insertOrReplaceInTx(item);
+        }
+    }
+
+    @Override
+    public void putZaloPayUser(@Nullable List<ZaloPayUserEntity> entities) {
+        Timber.d("put zaloPay user : [%s]", entities);
+        List<ZaloPayProfileGD> list = mDataMapper.transformZaloPayUser(entities);
+        if (!Lists.isEmptyOrNull(list)) {
+            mZaloPayUserDao.insertOrReplaceInTx(list);
+        }
+    }
+
+    @Override
+    public void putZaloPayUser(ZaloPayUserEntity entity) {
+        Timber.d("put zaloPay User: %s", entity);
+        ZaloPayProfileGD item = mDataMapper.transform(entity);
+        if (entity != null) {
+            mZaloPayUserDao.insertOrReplaceInTx(item);
+        }
+    }
+
+    @Override
+    public void putContacts(List<Contact> contacts) {
+        Timber.d("putContacts: %s", contacts);
+        List<ContactGD> list = mDataMapper.transformContact(contacts);
+        if (!Lists.isEmptyOrNull(list)) {
+            mContactDao.insertOrReplaceInTx(list);
+        }
+    }
+
+    @NonNull
+    @Override
+    public List<ZaloPayUserEntity> getZaloPayUsers() {
+        List<ZaloPayProfileGD> list = mZaloPayUserDao.queryBuilder().list();
+        Timber.d("get zaloPay users: %s", list.size());
+        return mDataMapper.transformZaloPayUserEntity(list);
+    }
+
+    @NonNull
+    @Override
+    public List<ZaloPayUserEntity> getZaloPayUsers(List<String> zalopayids) {
+        if (Lists.isEmptyOrNull(zalopayids)) {
+            return Collections.emptyList();
+        }
+
+        Timber.d("getZaloPayUsers: %s", zalopayids);
+
+        List<ZaloPayProfileGD> list = mZaloPayUserDao.queryBuilder()
+                .where(ZaloPayProfileGDDao.Properties.ZaloPayId.in(zalopayids))
+                .orderAsc()
+                .list();
+        return mDataMapper.transformZaloPayUserEntity(list);
+    }
+
+    @Nullable
+    @Override
+    public ZaloPayUserEntity getZaloPayUser(String zalopayId) {
+        if (TextUtils.isEmpty(zalopayId)) {
+            return null;
+
+        }
+        List<ZaloPayUserEntity> list = getZaloPayUsers(Arrays.asList(zalopayId));
+        if (Lists.isEmptyOrNull(list)) {
+            return null;
+        }
+
+        return list.get(0);
+    }
 
     /**
-     * Trường hợp update từ zalo thì k được override displayName ~ shouldUpdateName = false;
-     * Ngược lại, update từ contact được override displayname ~ shouldUpdateName = true;
+     * Trả về list user zalo using-app và đã có zalopayID
      */
-
+    @NonNull
     @Override
-    public void put(List<ZaloFriendEntity> val, boolean shouldUpdateName) {
-
-        List<ZaloFriendGD> list = transform(val, shouldUpdateName);
-
-        if (Lists.isEmptyOrNull(list)) {
-            return;
-        }
-
-        mDao.insertOrReplaceInTx(list);
+    public List<RedPacketUserEntity> getRedPacketUsersEntity(List<Long> zaloids) {
+        String strZaloIds = Strings.joinWithDelimiter(",", zaloids);
+        List<ZaloFriendGD> list = mZaloUserDao.queryDeep("WHERE T.\"" + ZaloFriendGDDao.Properties.ZaloId.columnName + "\" IN (" + strZaloIds + ") AND T.\""
+                + ZaloFriendGDDao.Properties.UsingApp.columnName + "\" = 1 AND T0.\""
+                + ZaloPayProfileGDDao.Properties.ZaloPayId.columnName + "\" IS NOT NULL");
+        Timber.d("getRedPacketUsersEntity result: %s", list.size());
+        return mDataMapper.transformRedPacketEntity(list);
     }
 
+    /**
+     * Lấy danh sách friend zalo (close cursor ở adapter)
+     */
     @Override
-    public boolean isHaveZaloFriendDb() {
-        return mDao.count() > 0;
+    public Cursor getZaloUserCursor() {
+        return getDaoSession().getDatabase().rawQuery(getSelectDeep(), null);
     }
 
-    @Override
-    public Cursor zaloFriendList() {
-        return mDao.queryBuilder()
-                .orderDesc(ZaloFriendGDDao.Properties.UsingApp)
-                .orderAsc(ZaloFriendGDDao.Properties.Fulltextsearch)
-                .buildCursor()
-                .forCurrentThread()
-                .query();
-    }
-
+    /**
+     * search friend zalo (close cursor ở adapter)
+     */
     @Override
     public Cursor searchZaloFriendList(String s) {
-        return mDao.queryBuilder()
-                .where(ZaloFriendGDDao.Properties.Fulltextsearch.like("%" + Strings.stripAccents(s).toLowerCase() + "%"))
-                .orderDesc(ZaloFriendGDDao.Properties.UsingApp)
-                .orderAsc(ZaloFriendGDDao.Properties.Fulltextsearch)
-                .buildCursor()
-                .forCurrentThread()
-                .query();
+        return getDaoSession().getDatabase().rawQuery(searchUserZalo(s), null);
     }
 
+    /**
+     * Lấy danh sách user đã cài app. nhưng không có zalopayId;
+     */
     @Override
-    public List<ZaloFriendEntity> get() {
-        List<ZaloFriendGD> list = mDao.queryBuilder()
-                .orderAsc(ZaloFriendGDDao.Properties.Fulltextsearch)
-                .list();
-        return transformEntity(list);
-    }
+    @NonNull
+    public List<ZaloUserEntity> getZaloUserWithoutZaloPayId() {
+        List<ZaloFriendGD> list = mZaloUserDao.queryDeep("WHERE T.\""
+                + ZaloFriendGDDao.Properties.UsingApp.columnName + "\" = 1 AND T0.\""
+                + ZaloPayProfileGDDao.Properties.ZaloPayId.columnName + "\" IS NULL");
 
-    private ZaloFriendGD transform(ZaloFriendEntity entity, boolean shouldUpdateName) {
+        Timber.d("get zalo user without zalopayid : %s ", list.size());
 
-        if (entity == null || entity.userId <= 0) {
-            return null;
-        }
-
-        ZaloFriendGD item = getZFriendDb(entity.userId);
-
-        if (item == null) {
-            item = new ZaloFriendGD();
-            item.zaloId = (entity.userId);
-            item.zaloPayId = (entity.zaloPayId);
-            item.phoneNumber = (entity.numberPhone);
-            item.status = (entity.status);
-            item.zaloPayName = (entity.zaloPayName);
-        }
-
-        if (shouldUpdateName || TextUtils.isEmpty(item.displayName)) {
-            item.displayName = (entity.displayName);
-            item.fulltextsearch = Strings.stripAccents(item.displayName);
-        }
-
-        item.userName = (entity.userName);
-        item.avatar = (entity.avatar);
-        item.usingApp = (entity.usingApp);
-
-        return item;
-    }
-
-    private ZaloFriendEntity transform(ZaloFriendGD entity) {
-        ZaloFriendEntity ret = new ZaloFriendEntity();
-        ret.userId = entity.zaloId;
-        ret.userName = entity.userName;
-        ret.displayName = entity.displayName;
-        ret.avatar = entity.avatar;
-        ret.normalizeDisplayName = entity.fulltextsearch;
-        ret.usingApp = entity.usingApp;
-
-        ret.zaloPayId = entity.zaloPayId;
-        ret.numberPhone = entity.phoneNumber == null ? 0 : entity.phoneNumber;
-        ret.zaloPayName = entity.zaloPayName;
-        ret.status = entity.status == null ? 0L : entity.status;
-        return ret;
-    }
-
-    private List<ZaloFriendGD> transform(List<ZaloFriendEntity> entities, boolean shouldUpdateName) {
-        if (Lists.isEmptyOrNull(entities)) {
-            return Collections.emptyList();
-        }
-        List<ZaloFriendGD> list = new ArrayList<>();
-        for (ZaloFriendEntity entity : entities) {
-            ZaloFriendGD dao = transform(entity, shouldUpdateName);
-            if (dao != null) {
-                list.add(dao);
-            }
-        }
-        return list;
-    }
-
-    private List<ZaloFriendEntity> transformEntity(List<ZaloFriendGD> entities) {
-        if (Lists.isEmptyOrNull(entities)) {
-            return Collections.emptyList();
-        }
-        List<ZaloFriendEntity> list = new ArrayList<>();
-        for (ZaloFriendGD dao : entities) {
-            ZaloFriendEntity entity = transform(dao);
-            if (dao != null) {
-                list.add(entity);
-            }
-        }
-        return list;
-    }
-
-    @Override
-    public void mergeZaloPayId(@Nullable List<UserExistEntity> list) {
-        if (Lists.isEmptyOrNull(list)) {
-            return;
-        }
-
-        ArrayList<ZaloFriendGD> listUserDb = new ArrayList<>();
-        for (UserExistEntity entity : list) {
-            ZaloFriendGD zaloFriendGD = getZFriendDb(entity.zaloid);
-            if (zaloFriendGD != null) {
-                zaloFriendGD.status = (entity.status);
-                zaloFriendGD.phoneNumber = (entity.phonenumber);
-                zaloFriendGD.zaloPayId = (entity.userid);
-                zaloFriendGD.zaloPayName = (entity.zalopayname);
-                listUserDb.add(zaloFriendGD);
-            }
-        }
-        Timber.d("merge ZaloPay Id %s", listUserDb.size());
-        mDao.insertOrReplaceInTx(listUserDb);
-    }
-
-    @Nullable
-    private ZaloFriendGD getZFriendDb(String zId) {
-        long zaloId = -1;
-        try {
-            zaloId = Long.valueOf(zId);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-
-        return getZFriendDb(zaloId);
-    }
-    
-    @Nullable
-    private ZaloFriendGD getZFriendDb(long zId) {
-        List<ZaloFriendGD> item = listZFriendCondition(ZaloFriendGDDao.Properties.ZaloId.eq(zId));
-        if (Lists.isEmptyOrNull(item)) {
-            return null;
-        }
-        return item.get(0);
-    }
-
-
-    @Override
-    public List<ZaloFriendEntity> getZaloFriendWithoutZpId() {
-        return listZFriend(ZaloFriendGDDao.Properties.ZaloPayId.isNull());
-    }
-
-    @Override
-    public List<ZaloFriendEntity> listZaloFriend(List<Long> list) {
-        return listZFriend(ZaloFriendGDDao.Properties.ZaloId.in(list));
-    }
-
-    @Override
-    public List<ZaloFriendEntity> listZaloFriendWithPhoneNumber() {
-        return listZFriend(ZaloFriendGDDao.Properties.PhoneNumber.isNotNull(), ZaloFriendGDDao.Properties.PhoneNumber.gt(0));
+        return mDataMapper.transformZaloUserEntity(list);
     }
 
     @Override
@@ -228,14 +224,87 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         insertDataManifest(MANIFEST_LASTTIME_SYNC_CONTACT, String.valueOf(time));
     }
 
-    private List<ZaloFriendEntity> listZFriend(WhereCondition... condMore) {
-        List<ZaloFriendGD> ret = listZFriendCondition(condMore);
-        return transformEntity(ret);
+    private String selectDeep;
+
+    public String getSelectDeep() {
+        if (selectDeep == null) {
+            StringBuilder builder = sqlSelect();
+            builder.append(orderBy());
+            selectDeep = builder.toString();
+        }
+        Timber.d("sql select [%s]", selectDeep);
+        return selectDeep;
     }
 
-    private List<ZaloFriendGD> listZFriendCondition(WhereCondition... condMore) {
-        return mDao.queryBuilder().where(ZaloFriendGDDao.Properties.UsingApp.eq(true), condMore)
-                .build()
-                .list();
+    /**
+     * ALIAS_DISPLAY_NAME : column trả về tên hiển thị, nếu tên trong contact == null thì lấy trên của zalo
+     * ALIAS_FULLTEXTSEARCH : chuỗi ký tự không dấu ALIAS_DISPLAY_NAME
+     */
+    private StringBuilder sqlSelect() {
+        StringBuilder builder = new StringBuilder("SELECT ");
+        SqlUtils.appendColumns(builder, "T", mZaloUserDao.getAllColumns());
+        builder.append(',');
+        SqlUtils.appendColumns(builder, "T0", mZaloPayUserDao.getAllColumns());
+        builder.append(',');
+        SqlUtils.appendColumns(builder, "T1", mContactDao.getAllColumns());
+        builder.append(',');
+        builder.append(" IFNULL( T1.\"");
+        builder.append(ContactGDDao.Properties.DisplayName.columnName);
+        builder.append("\",T.\"");
+        builder.append(ZaloFriendGDDao.Properties.DisplayName.columnName);
+        builder.append("\") AS ");
+        builder.append(ColumnIndex.ALIAS_DISPLAY_NAME);
+        builder.append(',');
+        builder.append(" IFNULL( T1.\"");
+        builder.append(ContactGDDao.Properties.Fulltextsearch.columnName);
+        builder.append("\",T.\"");
+        builder.append(ZaloFriendGDDao.Properties.Fulltextsearch.columnName);
+        builder.append("\") AS ");
+        builder.append(ColumnIndex.ALIAS_FULL_TEXT_SEARCH);
+        builder.append(" FROM ");
+        builder.append(mZaloUserDao.getTablename());
+        builder.append(" T");
+        builder.append(" LEFT JOIN ");
+        builder.append(mZaloPayUserDao.getTablename());
+        builder.append(" T0");
+        builder.append(" ON T.\"");
+        builder.append(ZaloFriendGDDao.Properties.ZaloId.columnName);
+        builder.append("\"=T0.\"");
+        builder.append(ZaloPayProfileGDDao.Properties.ZaloId.columnName);
+        builder.append("\"");
+        builder.append(" LEFT JOIN ");
+        builder.append(mContactDao.getTablename());
+        builder.append(" T1");
+        builder.append(" ON T0.\"");
+        builder.append(ZaloPayProfileGDDao.Properties.PhoneNumber.columnName);
+        builder.append("\"=T1.\"");
+        builder.append(ContactGDDao.Properties.PhoneNumber.columnName);
+        builder.append("\"");
+        builder.append(' ');
+        return builder;
+    }
+
+    private String orderBy() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ORDER BY ");
+        builder.append("T0.");
+        builder.append(ZaloPayProfileGDDao.Properties.Status.columnName);
+        builder.append(" DESC");
+        builder.append(", ");
+        builder.append(ColumnIndex.ALIAS_FULL_TEXT_SEARCH);
+        return builder.toString();
+    }
+
+    public String searchUserZalo(String key) {
+        StringBuilder builder = sqlSelect();
+        builder.append("WHERE ");
+        builder.append(ColumnIndex.ALIAS_FULL_TEXT_SEARCH);
+        builder.append(" LIKE");
+        builder.append(" '%");
+        builder.append(key);
+        builder.append("%'");
+        builder.append(' ');
+        builder.append(orderBy());
+        return builder.toString();
     }
 }

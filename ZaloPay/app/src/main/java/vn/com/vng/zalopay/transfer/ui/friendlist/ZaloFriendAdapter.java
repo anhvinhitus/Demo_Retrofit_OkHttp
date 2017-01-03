@@ -83,7 +83,7 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
         HashMap<String, Boolean> titleSectionUsingApp = new HashMap<>();
         while (c.moveToNext()) {
 
-            boolean isUseApp = c.getInt(ColumnIndex.UsingApp) == 1;
+            boolean isUseApp = c.getInt(c.getColumnIndex(ColumnIndex.STATUS)) == 1;
 
             if (isUseApp && !titleSectionUsingApp.containsKey("use")) {
                 SectionObject section = new SectionObject(mContext.getString(R.string.friends_use_zalopay), isUseApp);
@@ -102,7 +102,7 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
                 titleSectionUsingApp.put("notuse", true);
             }
             String firstLetter;
-            String fullTextSearch = c.getString(ColumnIndex.Fulltextsearch);
+            String fullTextSearch = c.getString(c.getColumnIndex(ColumnIndex.ALIAS_FULL_TEXT_SEARCH));
             if (TextUtils.isEmpty(fullTextSearch)) {
                 fullTextSearch = "#";
             }
@@ -175,9 +175,9 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
 
         void bindView(Cursor cursor, boolean isShowSeparate) {
 
-            String displayName = cursor.getString(ColumnIndex.DisplayName);
-            String avatar = cursor.getString(ColumnIndex.Avatar);
-            int isUsingApp = cursor.getInt(ColumnIndex.UsingApp);
+            String displayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_DISPLAY_NAME));
+            String avatar = cursor.getString(ColumnIndex.AVATAR);
+            int isUsingApp = cursor.getInt(ColumnIndex.USING_APP);
 
             mTvDisplayName.setText(displayName);
             mImgAvatar.setImageURI(avatar);

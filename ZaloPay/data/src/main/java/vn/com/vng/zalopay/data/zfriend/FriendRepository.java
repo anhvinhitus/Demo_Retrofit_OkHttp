@@ -5,25 +5,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.functions.Func1;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
-import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
-import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
+import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
@@ -58,21 +51,26 @@ public class FriendRepository implements FriendStore.Repository {
         mContactFetcher = contactFetcher;
     }
 
+    /**
+     * Get danh sánh friend zalo, đồng thời get zalopayid với những user đã using-app
+     */
+
     @Override
     public Observable<Boolean> fetchZaloFriends() {
         Timber.d("fetchZaloFriends");
         return mZaloRequestService.fetchFriendList()
-                .doOnNext(entities -> mLocalStorage.put(entities, false))
+                .doOnNext(mLocalStorage::putZaloUser)
+                .last()
+                .timeout(TIMEOUT_REQUEST_FRIEND, TimeUnit.SECONDS)
+                .map(entities -> Boolean.TRUE)
                 .doOnCompleted(this::updateTimeStamp)
-                .map(entities -> Boolean.TRUE);
+                ;
     }
 
     @Override
     public Observable<Cursor> fetchZaloFriendList() {
         return fetchZaloFriends()
-                .last()
                 .flatMap(aBoolean -> getZaloFriendsCursorLocal())
-                .timeout(TIMEOUT_REQUEST_FRIEND, TimeUnit.SECONDS)
                 ;
     }
 
@@ -81,7 +79,7 @@ public class FriendRepository implements FriendStore.Repository {
         Timber.d("Retrieve Zalo Friends AsNeeded");
         return shouldUpdateFriendList()
                 .filter(Boolean::booleanValue)
-                .flatMap(aBoolean -> fetchZaloFriends());
+                .flatMap(aBoolean -> fetchZaloFriendFullInfo());
     }
 
     @Nullable
@@ -91,26 +89,22 @@ public class FriendRepository implements FriendStore.Repository {
             return null;
         }
         ZaloFriend zaloFriend = new ZaloFriend();
-        zaloFriend.userId = cursor.getLong(ColumnIndex.Id);
-        zaloFriend.userName = cursor.getString(ColumnIndex.UserName);
-        zaloFriend.displayName = cursor.getString(ColumnIndex.DisplayName);
-        zaloFriend.avatar = cursor.getString(ColumnIndex.Avatar);
-        zaloFriend.usingApp = cursor.getInt(ColumnIndex.UsingApp) == 1;
-        zaloFriend.normalizeDisplayName = cursor.getString(ColumnIndex.Fulltextsearch);
+        zaloFriend.userId = cursor.getLong(ColumnIndex.ID);
+        zaloFriend.userName = cursor.getString(ColumnIndex.USER_NAME);
+        zaloFriend.displayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_DISPLAY_NAME));
+        zaloFriend.avatar = cursor.getString(ColumnIndex.AVATAR);
+        zaloFriend.usingApp = cursor.getInt(ColumnIndex.USING_APP) == 1;
+        zaloFriend.zaloPayId = cursor.getString(cursor.getColumnIndex(ColumnIndex.ZALOPAY_ID));
         return zaloFriend;
     }
 
     public Observable<Boolean> shouldUpdateFriendList() {
-        return ObservableHelper.makeObservable(() -> {
-            if (mLocalStorage.isHaveZaloFriendDb()) {
-                long lastUpdated = mLocalStorage.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
-                long currentTime = System.currentTimeMillis() / 1000;
-                boolean flag = ((currentTime - lastUpdated) >= TIME_RELOAD);
-                Timber.i("Should update: %s [current: %d, last: %d, offset: %d]", flag, currentTime, lastUpdated, currentTime - lastUpdated);
-                return flag;
-
-            }
-            return Boolean.TRUE;
+        return makeObservable(() -> {
+            long lastUpdated = mLocalStorage.getDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND, 0);
+            long currentTime = System.currentTimeMillis() / 1000;
+            boolean flag = ((currentTime - lastUpdated) >= TIME_RELOAD);
+            Timber.i("Should update: %s [current: %d, last: %d, offset: %d]", flag, currentTime, lastUpdated, currentTime - lastUpdated);
+            return flag;
         });
     }
 
@@ -123,7 +117,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Cursor> getZaloFriendsCursorLocal() {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.zaloFriendList());
+        return makeObservable(() -> mLocalStorage.getZaloUserCursor());
     }
 
     @Override
@@ -131,7 +125,7 @@ public class FriendRepository implements FriendStore.Repository {
         Observable<Cursor> observableFriendLocal = getZaloFriendsCursorLocal()
                 .filter(cursor -> cursor != null && !cursor.isClosed() && cursor.getCount() > 0);
 
-        Observable<Cursor> observableZaloApi = fetchZaloFriendList();
+        Observable<Cursor> observableZaloApi = fetchZaloFriendCursorFullInfo();
 
         return Observable.concat(observableFriendLocal, observableZaloApi)
                 .first();
@@ -139,7 +133,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Cursor> searchZaloFriend(String s) {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.searchZaloFriendList(s));
+        return makeObservable(() -> mLocalStorage.searchZaloFriendList(s));
     }
 
     @Override
@@ -149,9 +143,7 @@ public class FriendRepository implements FriendStore.Repository {
                 .filter(zaloFriends -> !Lists.isEmptyOrNull(zaloFriends));
 
         Observable<List<ZaloFriend>> observableZaloApi = fetchZaloFriends()
-                .last()
-                .flatMap(aBoolean -> getFriendLocal())
-                .timeout(TIMEOUT_REQUEST_FRIEND, TimeUnit.SECONDS);
+                .flatMap(aBoolean -> getFriendLocal());
 
         return Observable.concat(observableFriendLocal, observableZaloApi)
                 .first();
@@ -159,49 +151,62 @@ public class FriendRepository implements FriendStore.Repository {
 
     private Observable<List<ZaloFriend>> getFriendLocal() {
         Timber.d("get friend zalo local");
-        return ObservableHelper.makeObservable(() -> mLocalStorage.get())
-                .map(this::transform);
+        return makeObservable(() -> mLocalStorage.getZaloUserCursor())
+                .map(this::transformZaloFriend);
     }
 
-    private ZaloFriend transform(ZaloFriendEntity entity) {
-        ZaloFriend friend = null;
-        if (entity != null) {
-            friend = new ZaloFriend();
-            friend.userId = entity.userId;
-            friend.avatar = entity.avatar;
-            friend.displayName = entity.displayName;
-            friend.userName = entity.userName;
-            friend.usingApp = entity.usingApp;
-            friend.normalizeDisplayName = entity.normalizeDisplayName;
-        }
-        return friend;
-    }
-
-    private List<ZaloFriend> transform(List<ZaloFriendEntity> zaloFriends) {
-        if (Lists.isEmptyOrNull(zaloFriends)) {
+    private List<ZaloFriend> transformZaloFriend(Cursor cursor) {
+        if (cursor == null || cursor.isClosed()) {
             return Collections.emptyList();
         }
-
-        List<ZaloFriend> result = new ArrayList<>();
-        for (ZaloFriendEntity zaloFriend : zaloFriends) {
-            ZaloFriend zaloFriendTmp = transform(zaloFriend);
-            if (zaloFriendTmp != null) {
-                result.add(zaloFriendTmp);
+        List<ZaloFriend> ret = new ArrayList<>();
+        try {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    ZaloFriend zaloFriend = transform(cursor);
+                    ret.add(zaloFriend);
+                    cursor.moveToNext();
+                }
             }
+        } finally {
+            cursor.close();
         }
-        return result;
+
+        return ret;
     }
 
-    public Observable<List<UserExistEntity>> checkListZaloIdForClient() {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.getZaloFriendWithoutZpId())
+
+    /**
+     * Kiểm tra trong db có friend nào chưa có zalopay thì request
+     **/
+    @Override
+    public Observable<Boolean> checkListZaloIdForClient() {
+        return makeObservable(() -> mLocalStorage.getZaloUserWithoutZaloPayId())
                 .map(this::transformZpId)
                 .filter(s -> !TextUtils.isEmpty(s))
-                .flatMap(s -> Observable.create(subscriber -> checklistzaloidforclient(s, subscriber, 0)));
+                .flatMap(this::fetchZaloPayId)
+                .map(entities -> Boolean.TRUE);
     }
 
-    private String mPreviousZaloId = null;
+    private String transformZpId(List<ZaloUserEntity> list) {
+        if (Lists.isEmptyOrNull(list)) {
+            return null;
+        }
 
-    private void checklistzaloidforclient(String zaloidlist, Subscriber<? super List<UserExistEntity>> subscriber, int deep) {
+        StringBuilder builder = new StringBuilder();
+        for (ZaloUserEntity entity : list) {
+            if (builder.length() == 0) {
+                builder.append(entity.userId);
+            } else {
+                builder.append(",");
+                builder.append(entity.userId);
+            }
+        }
+        return builder.toString();
+    }
+
+  /*   private String mPreviousZaloId = null;
+ private void checklistzaloidforclient(String zaloidlist, Subscriber<? super List<ZaloPayUserEntity>> subscriber, int deep) {
         Timber.d("check list zaloid for client %s deep %s", zaloidlist, deep);
         Subscription subscription = fetchZaloPayId(zaloidlist)
                 .doOnNext(entities -> {
@@ -210,7 +215,7 @@ public class FriendRepository implements FriendStore.Repository {
                         return;
                     }
 
-                    List<ZaloFriendEntity> mList = mLocalStorage.getZaloFriendWithoutZpId();
+                    List<ZaloUserEntity> mList = mLocalStorage.getZaloFriendWithoutZpId();
                     Timber.d("list zalo need merge %s ", Lists.isEmptyOrNull(mList) ? 0 : mList.size());
                     String mNextZaloIdList = transformZpId(mList);
                     if (TextUtils.isEmpty(mNextZaloIdList) || mNextZaloIdList.equals(mPreviousZaloId)) {
@@ -224,34 +229,19 @@ public class FriendRepository implements FriendStore.Repository {
                 .doOnTerminate(() -> mPreviousZaloId = null)
                 .subscribe(subscriber::onNext, subscriber::onError);
     }
+*/
 
 
-    private String transformZpId(List<ZaloFriendEntity> list) {
-        if (Lists.isEmptyOrNull(list)) {
-            return null;
-        }
-
-        StringBuilder builder = new StringBuilder();
-        for (ZaloFriendEntity entity : list) {
-            if (builder.length() == 0) {
-                builder.append(entity.userId);
-            } else {
-                builder.append(",");
-                builder.append(entity.userId);
-            }
-        }
-        return builder.toString();
-    }
-
-    private Observable<List<UserExistEntity>> fetchZaloPayId(String zaloidlist) {
+    private Observable<List<ZaloPayUserEntity>> fetchZaloPayId(String zaloidlist) {
+        Timber.d("fetch zalopay info: zaloids [%s]", zaloidlist);
         return mRequestService.checklistzaloidforclient(mUser.zaloPayId, mUser.accesstoken, zaloidlist)
                 .map(response -> response.userList)
-                .doOnNext(entities -> mLocalStorage.mergeZaloPayId(entities))
+                .doOnNext(mLocalStorage::putZaloPayUser)
                 ;
     }
 
     @Override
-    public Observable<List<UserRPEntity>> getListUserZaloPay(List<Long> listZaloId) {
+    public Observable<List<RedPacketUserEntity>> getListUserZaloPay(List<Long> listZaloId) {
         return getListUserZaloPayLocal(listZaloId)
                 .map(entities -> listUserWithoutZaloPayId(entities, listZaloId))
                 .flatMap(listUserWithoutId -> {
@@ -264,17 +254,13 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @NonNull
-    private List<Long> listUserWithoutZaloPayId(List<UserRPEntity> listUser, List<Long> listZaloId) {
-        if (Lists.isEmptyOrNull(listUser)) {
+    private List<Long> listUserWithoutZaloPayId(List<RedPacketUserEntity> listUser, List<Long> listZaloId) {
+        if (Lists.isEmptyOrNull(listUser) || Lists.isEmptyOrNull(listZaloId)) {
             return listZaloId;
         }
 
-        if (Lists.isEmptyOrNull(listZaloId)) {
-            return Collections.emptyList();
-        }
-
         List<Long> listUserWithZaloPayId = new ArrayList<>();
-        for (UserRPEntity entity : listUser) {
+        for (RedPacketUserEntity entity : listUser) {
             if (TextUtils.isEmpty(entity.zaloPayID)) {
                 continue;
             }
@@ -294,33 +280,15 @@ public class FriendRepository implements FriendStore.Repository {
         return listUserWithoutZaloPayId;
     }
 
-    private Observable<List<UserRPEntity>> getListUserZaloPayLocal(List<Long> listZaloId) {
-        return makeObservable(() -> mLocalStorage.listZaloFriend(listZaloId))
-                .map(this::transformUserRedPackage);
+    private Observable<List<RedPacketUserEntity>> getListUserZaloPayLocal(List<Long> listZaloId) {
+        return makeObservable(() -> mLocalStorage.getRedPacketUsersEntity(listZaloId));
     }
 
-    private Observable<List<UserRPEntity>> fetchListUserZaloPay(List<Long> listUserWithoutId, List<Long> listZaloId) {
+    private Observable<List<RedPacketUserEntity>> fetchListUserZaloPay(List<Long> listUserWithoutId, List<Long> listZaloId) {
         Timber.d("fetchListUserZaloPay [%s]", listUserWithoutId.size());
         return fetchZaloPayId(Strings.joinWithDelimiter(",", listUserWithoutId))
                 .onErrorResumeNext(throwable -> Observable.just(new ArrayList<>()))
                 .flatMap(entities -> getListUserZaloPayLocal(listZaloId));
-    }
-
-    private UserRPEntity transformUserRedPackage(ZaloFriendEntity entity) {
-        UserRPEntity ret = null;
-        if (entity != null) {
-            ret = new UserRPEntity();
-            ret.avatar = entity.avatar;
-            ret.zaloName = entity.displayName;
-            ret.zaloID = String.valueOf(entity.userId);
-            ret.zaloPayID = entity.zaloPayId;
-        }
-
-        return ret;
-    }
-
-    private List<UserRPEntity> transformUserRedPackage(List<ZaloFriendEntity> entities) {
-        return Lists.transform(entities, this::transformUserRedPackage);
     }
 
     @Override
@@ -333,51 +301,29 @@ public class FriendRepository implements FriendStore.Repository {
     private Observable<Boolean> beginSync() {
         Timber.d("begin Sync contact");
         return makeObservable(() -> {
-            Timber.d("begin sync current thread %s", Thread.currentThread().getName());
             ArrayList<Contact> listContact = mContactFetcher.fetchAll();
-            List<ZaloFriendEntity> zEntities = mLocalStorage.listZaloFriendWithPhoneNumber();
-
-            Timber.d(" list contact size [%s], list zalo friend have phone [%s],", listContact.size(), zEntities.size());
-
-            if (Lists.isEmptyOrNull(listContact) || Lists.isEmptyOrNull(zEntities)) {
-                return Boolean.TRUE;
-            }
-            int numberPhoneChange = 0;
-            for (ZaloFriendEntity zEntity : zEntities) {
-
-                int index = indexOfContact(listContact, zEntity);
-                if (index > 0) {
-                    Contact contact = listContact.get(index);
-                    if (contact != null && !TextUtils.isEmpty(contact.name)) {
-                        zEntity.displayName = contact.name;
-                        numberPhoneChange++;
-                    }
-                }
-            }
-            Timber.d("beginSync: sync number %s", numberPhoneChange);
-            if (numberPhoneChange > 0) {
-                mLocalStorage.put(zEntities, true);
-            }
-
-            listContact.clear();
-            zEntities.clear();
-
+            mLocalStorage.putContacts(listContact);
             return Boolean.TRUE;
         }).doOnCompleted(() -> mLocalStorage.setLastTimeSyncContact(System.currentTimeMillis() / 1000));
     }
 
-    private int indexOfContact(ArrayList<Contact> listContact, ZaloFriendEntity zEntity) {
-        int size = listContact.size();
-        String numberPhone = PhoneUtil.formatPhoneNumber(zEntity.numberPhone);
-        Timber.d("phone of user zalo %s", numberPhone);
-        for (int i = 0; i < size; i++) {
-            Contact contact = listContact.get(i);
-            if (contact.inside(numberPhone)) {
-                return i;
-            }
-        }
-        return -1;
+    @Override
+    public Observable<Boolean> fetchZaloFriendFullInfo() {
+
+        Observable<Boolean> fetchZaloProfile = fetchZaloFriends();
+        Observable<Boolean> fetchZaloPayInfo = checkListZaloIdForClient()
+                .onErrorResumeNext(throwable -> Observable.just(Boolean.TRUE));
+
+        return Observable.concat(fetchZaloProfile, fetchZaloPayInfo)
+                .last();
     }
 
-
+    @Override
+    public Observable<Cursor> fetchZaloFriendCursorFullInfo() {
+        return fetchZaloFriendFullInfo()
+                .flatMap(aBoolean -> {
+                    Timber.d("fetch zalo friend cursor full info call");
+                    return getZaloFriendsCursorLocal();
+                });
+    }
 }

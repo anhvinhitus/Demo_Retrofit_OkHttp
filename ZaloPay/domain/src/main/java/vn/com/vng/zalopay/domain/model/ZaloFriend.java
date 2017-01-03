@@ -10,22 +10,15 @@ import android.os.Parcelable;
 public class ZaloFriend extends AbstractData implements Parcelable {
 
     public long userId;
+    public String zaloPayId;
     public String userName;
     public String displayName;
     public String avatar;
-    public int userGender;
     public boolean usingApp;
-
     public String normalizeDisplayName;
-
-    public ZaloFriend() {
-        this.userId = -1;
-        this.userName = "";
-        this.displayName = "";
-        this.avatar = "";
-        this.userGender = 1;
-        this.usingApp = false;
-    }
+    public long phonenumber;
+    public String zalopayname;
+    public long status;
 
     @Override
     public int describeContents() {
@@ -35,25 +28,34 @@ public class ZaloFriend extends AbstractData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.userId);
+        dest.writeString(this.zaloPayId);
         dest.writeString(this.userName);
         dest.writeString(this.displayName);
         dest.writeString(this.avatar);
-        dest.writeInt(this.userGender);
         dest.writeByte(this.usingApp ? (byte) 1 : (byte) 0);
         dest.writeString(this.normalizeDisplayName);
+        dest.writeLong(this.phonenumber);
+        dest.writeString(this.zalopayname);
+        dest.writeLong(this.status);
     }
 
-    protected ZaloFriend(Parcel in) {
+    public ZaloFriend() {
+    }
+
+    private ZaloFriend(Parcel in) {
         this.userId = in.readLong();
+        this.zaloPayId = in.readString();
         this.userName = in.readString();
         this.displayName = in.readString();
         this.avatar = in.readString();
-        this.userGender = in.readInt();
         this.usingApp = in.readByte() != 0;
         this.normalizeDisplayName = in.readString();
+        this.phonenumber = in.readLong();
+        this.zalopayname = in.readString();
+        this.status = in.readLong();
     }
 
-    public static final Parcelable.Creator<ZaloFriend> CREATOR = new Parcelable.Creator<ZaloFriend>() {
+    public static final Creator<ZaloFriend> CREATOR = new Creator<ZaloFriend>() {
         @Override
         public ZaloFriend createFromParcel(Parcel source) {
             return new ZaloFriend(source);

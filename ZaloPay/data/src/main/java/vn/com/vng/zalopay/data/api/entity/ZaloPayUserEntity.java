@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  * Không sử dụng cho view
  */
 
-public class UserExistEntity {
+public class ZaloPayUserEntity {
 
     @SerializedName("zaloid")
     public String zaloid;
@@ -20,4 +20,19 @@ public class UserExistEntity {
     public String zalopayname;
     @SerializedName("status")
     public long status;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ZaloPayUserEntity entity = (ZaloPayUserEntity) o;
+
+        if (zaloid != null ? !zaloid.equals(entity.zaloid) : entity.zaloid != null) {
+            return false;
+        }
+
+        return userid != null ? userid.equals(entity.userid) : entity.userid == null;
+    }
 }

@@ -44,7 +44,7 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
     }
 
     void refreshFriendList() {
-        Subscription subscription = mFriendRepository.fetchZaloFriendList()
+        Subscription subscription = mFriendRepository.fetchZaloFriendCursorFullInfo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FriendListSubscriber());
@@ -64,14 +64,16 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
 
     private Observable<Cursor> retrieveZaloFriendsAsNeeded() {
         return mFriendRepository.shouldUpdateFriendList()
+                .filter(new Func1<Boolean, Boolean>() {
+                    @Override
+                    public Boolean call(Boolean aBoolean) {
+                        return aBoolean;
+                    }
+                })
                 .flatMap(new Func1<Boolean, Observable<Cursor>>() {
                     @Override
                     public Observable<Cursor> call(Boolean aBoolean) {
-                        if (aBoolean) {
-                            return mFriendRepository.fetchZaloFriendList();
-                        } else {
-                            return Observable.empty();
-                        }
+                        return mFriendRepository.fetchZaloFriendCursorFullInfo();
                     }
                 });
     }

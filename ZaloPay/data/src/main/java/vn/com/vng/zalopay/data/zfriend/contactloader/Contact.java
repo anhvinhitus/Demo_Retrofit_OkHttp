@@ -2,9 +2,6 @@ package vn.com.vng.zalopay.data.zfriend.contactloader;
 
 import java.util.ArrayList;
 
-import timber.log.Timber;
-import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
-
 public class Contact {
     public String id;
     public String name;

@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.data.zfriend;
 import android.text.TextUtils;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -11,11 +10,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.observers.Subscribers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.BuildConfig;
-import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.exception.GetZaloFriendException;
 
 /**
@@ -25,14 +21,14 @@ import vn.com.vng.zalopay.data.exception.GetZaloFriendException;
 public class FriendRequestService implements FriendStore.ZaloRequestService {
     private final int OFFSET_FRIEND_LIST = 50;
 
-    FriendStore.SDKApi mSDKApi;
+    private FriendStore.SDKApi mSDKApi;
 
     public FriendRequestService(FriendStore.SDKApi SDKApi) {
         mSDKApi = SDKApi;
     }
 
-    private List<ZaloFriendEntity> zaloFriends(final JSONArray jsonArray) {
-        List<ZaloFriendEntity> zaloFriends = new ArrayList<>();
+    private List<ZaloUserEntity> zaloFriends(final JSONArray jsonArray) {
+        List<ZaloUserEntity> zaloFriends = new ArrayList<>();
         if (jsonArray == null || jsonArray.length() <= 0) {
             return zaloFriends;
         }
@@ -40,7 +36,7 @@ public class FriendRequestService implements FriendStore.ZaloRequestService {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.optJSONObject(i);
             if (jsonObject != null) {
-                ZaloFriendEntity zaloFriend = new ZaloFriendEntity(jsonObject);
+                ZaloUserEntity zaloFriend = new ZaloUserEntity(jsonObject);
                 if (zaloFriend.userId > 0 && !TextUtils.isEmpty(zaloFriend.displayName)) {
                     zaloFriends.add(zaloFriend);
                 }
@@ -51,21 +47,21 @@ public class FriendRequestService implements FriendStore.ZaloRequestService {
     }
 
     @Override
-    public Observable<List<ZaloFriendEntity>> fetchFriendList() {
-        return Observable.create(new Observable.OnSubscribe<List<ZaloFriendEntity>>() {
+    public Observable<List<ZaloUserEntity>> fetchFriendList() {
+        return Observable.create(new Observable.OnSubscribe<List<ZaloUserEntity>>() {
             @Override
-            public void call(final Subscriber<? super List<ZaloFriendEntity>> subscriber) {
+            public void call(final Subscriber<? super List<ZaloUserEntity>> subscriber) {
                 zaloRequestFriendList(0, subscriber);
             }
         });
     }
 
-    private void zaloRequestFriendList(final int pageIndex, final Subscriber<? super List<ZaloFriendEntity>> subscriber) {
+    private void zaloRequestFriendList(final int pageIndex, final Subscriber<? super List<ZaloUserEntity>> subscriber) {
         Timber.d("zalo Request FriendList pageIndex %s ", pageIndex);
         mSDKApi.getFriendList(pageIndex, OFFSET_FRIEND_LIST, arg0 -> handleApiCallback(pageIndex, subscriber, arg0));
     }
 
-    private void handleApiCallback(int pageIndex, Subscriber<? super List<ZaloFriendEntity>> subscriber, JSONObject arg0) {
+    private void handleApiCallback(int pageIndex, Subscriber<? super List<ZaloUserEntity>> subscriber, JSONObject arg0) {
         JSONArray data;
         if (arg0 == null) {
             if (!subscriber.isUnsubscribed()) {
@@ -84,7 +80,7 @@ public class FriendRequestService implements FriendStore.ZaloRequestService {
             Timber.d("Emit Completed on empty response");
             subscriber.onCompleted();
         } else {
-            List<ZaloFriendEntity> zaloFriends = zaloFriends(data);
+            List<ZaloUserEntity> zaloFriends = zaloFriends(data);
             Timber.d("Emit Next on response");
             subscriber.onNext(zaloFriends);
 

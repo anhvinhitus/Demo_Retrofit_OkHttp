@@ -1,10 +1,13 @@
 package vn.com.vng.zalopay.data.cache.model;
 
+import java.util.List;
+import java.util.ArrayList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.Property;
+import org.greenrobot.greendao.internal.SqlUtils;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
@@ -22,19 +25,17 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property ZaloId = new Property(0, long.class, "zaloId", true, "_id");
-        public final static Property UserName = new Property(1, String.class, "userName", false, "USER_NAME");
-        public final static Property DisplayName = new Property(2, String.class, "displayName", false, "DISPLAY_NAME");
-        public final static Property Avatar = new Property(3, String.class, "avatar", false, "AVATAR");
-        public final static Property UserGender = new Property(4, Long.class, "userGender", false, "USER_GENDER");
-        public final static Property Birthday = new Property(5, String.class, "birthday", false, "BIRTHDAY");
-        public final static Property UsingApp = new Property(6, Boolean.class, "usingApp", false, "USING_APP");
-        public final static Property Fulltextsearch = new Property(7, String.class, "fulltextsearch", false, "FULLTEXTSEARCH");
-        public final static Property ZaloPayId = new Property(8, String.class, "zaloPayId", false, "ZALO_PAY_ID");
-        public final static Property Status = new Property(9, Long.class, "status", false, "STATUS");
-        public final static Property PhoneNumber = new Property(10, Long.class, "phoneNumber", false, "PHONE_NUMBER");
-        public final static Property ZaloPayName = new Property(11, String.class, "zaloPayName", false, "ZALO_PAY_NAME");
+        public final static Property UserName = new Property(0, String.class, "userName", false, "USER_NAME");
+        public final static Property DisplayName = new Property(1, String.class, "displayName", false, "DISPLAY_NAME");
+        public final static Property Avatar = new Property(2, String.class, "avatar", false, "AVATAR");
+        public final static Property UserGender = new Property(3, Long.class, "userGender", false, "USER_GENDER");
+        public final static Property Birthday = new Property(4, String.class, "birthday", false, "BIRTHDAY");
+        public final static Property UsingApp = new Property(5, Boolean.class, "usingApp", false, "USING_APP");
+        public final static Property Fulltextsearch = new Property(6, String.class, "fulltextsearch", false, "FULLTEXTSEARCH");
+        public final static Property ZaloId = new Property(7, long.class, "zaloId", true, "_id");
     }
+
+    private DaoSession daoSession;
 
 
     public ZaloFriendGDDao(DaoConfig config) {
@@ -43,24 +44,21 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
     
     public ZaloFriendGDDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ZALO_FRIEND_GD\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY NOT NULL ," + // 0: zaloId
-                "\"USER_NAME\" TEXT," + // 1: userName
-                "\"DISPLAY_NAME\" TEXT," + // 2: displayName
-                "\"AVATAR\" TEXT," + // 3: avatar
-                "\"USER_GENDER\" INTEGER," + // 4: userGender
-                "\"BIRTHDAY\" TEXT," + // 5: birthday
-                "\"USING_APP\" INTEGER," + // 6: usingApp
-                "\"FULLTEXTSEARCH\" TEXT," + // 7: fulltextsearch
-                "\"ZALO_PAY_ID\" TEXT," + // 8: zaloPayId
-                "\"STATUS\" INTEGER," + // 9: status
-                "\"PHONE_NUMBER\" INTEGER," + // 10: phoneNumber
-                "\"ZALO_PAY_NAME\" TEXT);"); // 11: zaloPayName
+                "\"USER_NAME\" TEXT," + // 0: userName
+                "\"DISPLAY_NAME\" TEXT," + // 1: displayName
+                "\"AVATAR\" TEXT," + // 2: avatar
+                "\"USER_GENDER\" INTEGER," + // 3: userGender
+                "\"BIRTHDAY\" TEXT," + // 4: birthday
+                "\"USING_APP\" INTEGER," + // 5: usingApp
+                "\"FULLTEXTSEARCH\" TEXT," + // 6: fulltextsearch
+                "\"_id\" INTEGER PRIMARY KEY NOT NULL );"); // 7: zaloId
     }
 
     /** Drops the underlying database table. */
@@ -72,128 +70,94 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, ZaloFriendGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.zaloId);
  
         String userName = entity.userName;
         if (userName != null) {
-            stmt.bindString(2, userName);
+            stmt.bindString(1, userName);
         }
  
         String displayName = entity.displayName;
         if (displayName != null) {
-            stmt.bindString(3, displayName);
+            stmt.bindString(2, displayName);
         }
  
         String avatar = entity.avatar;
         if (avatar != null) {
-            stmt.bindString(4, avatar);
+            stmt.bindString(3, avatar);
         }
  
         Long userGender = entity.userGender;
         if (userGender != null) {
-            stmt.bindLong(5, userGender);
+            stmt.bindLong(4, userGender);
         }
  
         String birthday = entity.birthday;
         if (birthday != null) {
-            stmt.bindString(6, birthday);
+            stmt.bindString(5, birthday);
         }
  
         Boolean usingApp = entity.usingApp;
         if (usingApp != null) {
-            stmt.bindLong(7, usingApp ? 1L: 0L);
+            stmt.bindLong(6, usingApp ? 1L: 0L);
         }
  
         String fulltextsearch = entity.fulltextsearch;
         if (fulltextsearch != null) {
-            stmt.bindString(8, fulltextsearch);
+            stmt.bindString(7, fulltextsearch);
         }
- 
-        String zaloPayId = entity.zaloPayId;
-        if (zaloPayId != null) {
-            stmt.bindString(9, zaloPayId);
-        }
- 
-        Long status = entity.status;
-        if (status != null) {
-            stmt.bindLong(10, status);
-        }
- 
-        Long phoneNumber = entity.phoneNumber;
-        if (phoneNumber != null) {
-            stmt.bindLong(11, phoneNumber);
-        }
- 
-        String zaloPayName = entity.zaloPayName;
-        if (zaloPayName != null) {
-            stmt.bindString(12, zaloPayName);
-        }
+        stmt.bindLong(8, entity.zaloId);
     }
 
     @Override
     protected final void bindValues(SQLiteStatement stmt, ZaloFriendGD entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.zaloId);
  
         String userName = entity.userName;
         if (userName != null) {
-            stmt.bindString(2, userName);
+            stmt.bindString(1, userName);
         }
  
         String displayName = entity.displayName;
         if (displayName != null) {
-            stmt.bindString(3, displayName);
+            stmt.bindString(2, displayName);
         }
  
         String avatar = entity.avatar;
         if (avatar != null) {
-            stmt.bindString(4, avatar);
+            stmt.bindString(3, avatar);
         }
  
         Long userGender = entity.userGender;
         if (userGender != null) {
-            stmt.bindLong(5, userGender);
+            stmt.bindLong(4, userGender);
         }
  
         String birthday = entity.birthday;
         if (birthday != null) {
-            stmt.bindString(6, birthday);
+            stmt.bindString(5, birthday);
         }
  
         Boolean usingApp = entity.usingApp;
         if (usingApp != null) {
-            stmt.bindLong(7, usingApp ? 1L: 0L);
+            stmt.bindLong(6, usingApp ? 1L: 0L);
         }
  
         String fulltextsearch = entity.fulltextsearch;
         if (fulltextsearch != null) {
-            stmt.bindString(8, fulltextsearch);
+            stmt.bindString(7, fulltextsearch);
         }
- 
-        String zaloPayId = entity.zaloPayId;
-        if (zaloPayId != null) {
-            stmt.bindString(9, zaloPayId);
-        }
- 
-        Long status = entity.status;
-        if (status != null) {
-            stmt.bindLong(10, status);
-        }
- 
-        Long phoneNumber = entity.phoneNumber;
-        if (phoneNumber != null) {
-            stmt.bindLong(11, phoneNumber);
-        }
- 
-        String zaloPayName = entity.zaloPayName;
-        if (zaloPayName != null) {
-            stmt.bindString(12, zaloPayName);
-        }
+        stmt.bindLong(8, entity.zaloId);
+    }
+
+    @Override
+    protected final void attachEntity(ZaloFriendGD entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.getLong(offset + 7);
     }    
 
     @Override
@@ -205,18 +169,14 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
      
     @Override
     public void readEntity(Cursor cursor, ZaloFriendGD entity, int offset) {
-        entity.zaloId = cursor.getLong(offset + 0);
-        entity.userName = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
-        entity.displayName = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
-        entity.avatar = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
-        entity.userGender = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
-        entity.birthday = cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5);
-        entity.usingApp = cursor.isNull(offset + 6) ? null : cursor.getShort(offset + 6) != 0;
-        entity.fulltextsearch = cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7);
-        entity.zaloPayId = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
-        entity.status = cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9);
-        entity.phoneNumber = cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10);
-        entity.zaloPayName = cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11);
+        entity.userName = cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
+        entity.displayName = cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1);
+        entity.avatar = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
+        entity.userGender = cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3);
+        entity.birthday = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
+        entity.usingApp = cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0;
+        entity.fulltextsearch = cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6);
+        entity.zaloId = cursor.getLong(offset + 7);
      }
     
     @Override
@@ -244,4 +204,97 @@ public class ZaloFriendGDDao extends AbstractDao<ZaloFriendGD, Long> {
         return true;
     }
     
+    private String selectDeep;
+
+    protected String getSelectDeep() {
+        if (selectDeep == null) {
+            StringBuilder builder = new StringBuilder("SELECT ");
+            SqlUtils.appendColumns(builder, "T", getAllColumns());
+            builder.append(',');
+            SqlUtils.appendColumns(builder, "T0", daoSession.getZaloPayProfileGDDao().getAllColumns());
+            builder.append(" FROM ZALO_FRIEND_GD T");
+            builder.append(" LEFT JOIN ZALO_PAY_PROFILE_GD T0 ON T.\"_id\"=T0.\"ZALO_ID\"");
+            builder.append(' ');
+            selectDeep = builder.toString();
+        }
+        return selectDeep;
+    }
+    
+    protected ZaloFriendGD loadCurrentDeep(Cursor cursor, boolean lock) {
+        ZaloFriendGD entity = loadCurrent(cursor, 0, lock);
+        int offset = getAllColumns().length;
+
+        ZaloPayProfileGD zaloPayInfo = loadCurrentOther(daoSession.getZaloPayProfileGDDao(), cursor, offset);
+         if(zaloPayInfo != null) {
+            entity.setZaloPayInfo(zaloPayInfo);
+        }
+
+        return entity;    
+    }
+
+    public ZaloFriendGD loadDeep(Long key) {
+        assertSinglePk();
+        if (key == null) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder(getSelectDeep());
+        builder.append("WHERE ");
+        SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
+        String sql = builder.toString();
+        
+        String[] keyArray = new String[] { key.toString() };
+        Cursor cursor = db.rawQuery(sql, keyArray);
+        
+        try {
+            boolean available = cursor.moveToFirst();
+            if (!available) {
+                return null;
+            } else if (!cursor.isLast()) {
+                throw new IllegalStateException("Expected unique result, but count was " + cursor.getCount());
+            }
+            return loadCurrentDeep(cursor, true);
+        } finally {
+            cursor.close();
+        }
+    }
+    
+    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
+    public List<ZaloFriendGD> loadAllDeepFromCursor(Cursor cursor) {
+        int count = cursor.getCount();
+        List<ZaloFriendGD> list = new ArrayList<ZaloFriendGD>(count);
+        
+        if (cursor.moveToFirst()) {
+            if (identityScope != null) {
+                identityScope.lock();
+                identityScope.reserveRoom(count);
+            }
+            try {
+                do {
+                    list.add(loadCurrentDeep(cursor, false));
+                } while (cursor.moveToNext());
+            } finally {
+                if (identityScope != null) {
+                    identityScope.unlock();
+                }
+            }
+        }
+        return list;
+    }
+    
+    protected List<ZaloFriendGD> loadDeepAllAndCloseCursor(Cursor cursor) {
+        try {
+            return loadAllDeepFromCursor(cursor);
+        } finally {
+            cursor.close();
+        }
+    }
+    
+
+    /** A raw-style query where you can pass any WHERE clause and arguments. */
+    public List<ZaloFriendGD> queryDeep(String where, String... selectionArg) {
+        Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
+        return loadDeepAllAndCloseCursor(cursor);
+    }
+ 
 }

@@ -1,9 +1,13 @@
 package vn.com.vng.zalopay.react.redpacket;
 
+import android.text.TextUtils;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,8 +107,7 @@ class DataMapper {
         friendItem.putString("displayName", friend.displayName);
         friendItem.putString("ascciDisplayName", friend.normalizeDisplayName);
         friendItem.putString("userId", String.valueOf(friend.userId));
-        friendItem.putInt("userGender", friend.userGender);
-        friendItem.putBoolean("usingApp", friend.usingApp);
+        friendItem.putBoolean("usingApp", friend.usingApp && !TextUtils.isEmpty(friend.zaloPayId));
         friendItem.putString("avatar", friend.avatar);
         return friendItem;
     }

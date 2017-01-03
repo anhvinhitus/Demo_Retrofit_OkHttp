@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.zfriend;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.json.JSONObject;
@@ -10,11 +11,12 @@ import java.util.List;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
-import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
-import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
-import vn.com.vng.zalopay.data.api.entity.ZaloFriendEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
+import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.api.response.ListUserExistResponse;
 import vn.com.vng.zalopay.data.cache.SqlBaseScope;
+import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
 /**
@@ -24,23 +26,42 @@ import vn.com.vng.zalopay.domain.model.ZaloFriend;
 public interface FriendStore {
     interface LocalStorage extends SqlBaseScope {
 
-        boolean isHaveZaloFriendDb();
+        void putZaloUser(List<ZaloUserEntity> val);
 
-        void put(List<ZaloFriendEntity> val, boolean shouldUpdateName);
+        @NonNull
+        List<ZaloUserEntity> getZaloUsers();
 
-        List<ZaloFriendEntity> get();
+        @NonNull
+        List<ZaloUserEntity> getZaloUsers(List<Long> zaloids);
 
-        Cursor zaloFriendList();
+        ZaloUserEntity getZaloUser(long zaloid);
+
+        void putZaloUser(ZaloUserEntity entity);
+
+        void putZaloPayUser(@Nullable List<ZaloPayUserEntity> entities);
+
+        void putZaloPayUser(ZaloPayUserEntity entity);
+
+        @NonNull
+        List<ZaloPayUserEntity> getZaloPayUsers();
+
+        @NonNull
+        List<ZaloPayUserEntity> getZaloPayUsers(List<String> zalopayids);
+
+        @Nullable
+        ZaloPayUserEntity getZaloPayUser(String zalopayId);
+
+        @NonNull
+        List<RedPacketUserEntity> getRedPacketUsersEntity(List<Long> zaloids);
+
+        void putContacts(@Nullable List<Contact> contacts);
+
+        Cursor getZaloUserCursor();
 
         Cursor searchZaloFriendList(String s);
 
-        void mergeZaloPayId(@Nullable List<UserExistEntity> list);
-
-        List<ZaloFriendEntity> getZaloFriendWithoutZpId();
-
-        List<ZaloFriendEntity> listZaloFriend(List<Long> listZaloId);
-
-        List<ZaloFriendEntity> listZaloFriendWithPhoneNumber(); // list zalo friend co so dien thoai
+        @NonNull
+        List<ZaloUserEntity> getZaloUserWithoutZaloPayId();
 
         long lastTimeSyncContact();
 
@@ -48,7 +69,7 @@ public interface FriendStore {
     }
 
     interface ZaloRequestService {
-        Observable<List<ZaloFriendEntity>> fetchFriendList();
+        Observable<List<ZaloUserEntity>> fetchFriendList();
     }
 
     interface RequestService {
@@ -88,10 +109,15 @@ public interface FriendStore {
 
         Observable<List<ZaloFriend>> getZaloFriendList();
 
-        Observable<List<UserExistEntity>> checkListZaloIdForClient();
+        Observable<Boolean> checkListZaloIdForClient();
 
-        Observable<List<UserRPEntity>> getListUserZaloPay(List<Long> listZaloId);
+        Observable<List<RedPacketUserEntity>> getListUserZaloPay(List<Long> listZaloId);
 
         Observable<Boolean> syncContact();
+
+
+        Observable<Boolean> fetchZaloFriendFullInfo();
+
+        Observable<Cursor> fetchZaloFriendCursorFullInfo();
     }
 }

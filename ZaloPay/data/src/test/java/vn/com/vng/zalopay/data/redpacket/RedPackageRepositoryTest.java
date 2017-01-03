@@ -21,7 +21,7 @@ import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.CustomObserver;
 import vn.com.vng.zalopay.data.CustomRobolectricRunner;
 import vn.com.vng.zalopay.data.DefaultObserver;
-import vn.com.vng.zalopay.data.api.entity.UserRPEntity;
+import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
@@ -296,8 +296,8 @@ public class RedPackageRepositoryTest {
         final List<Boolean> result = new ArrayList<>();
 
         long bundleId = 123321L;
-        List<UserRPEntity> entities = new ArrayList<>();
-        UserRPEntity entity = new UserRPEntity();
+        List<RedPacketUserEntity> entities = new ArrayList<>();
+        RedPacketUserEntity entity = new RedPacketUserEntity();
         entity.avatar = "ava";
         entity.zaloID = "zaloId";
         entity.zaloName = "name";

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 
 /**
  * Created by hieuvm on 11/25/16.
@@ -12,5 +12,5 @@ import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
 
 public class ListUserExistResponse extends BaseResponse {
     @SerializedName("userslist")
-    public List<UserExistEntity> userList;
+    public List<ZaloPayUserEntity> userList;
 }

@@ -27,7 +27,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
-import vn.com.vng.zalopay.data.api.entity.UserExistEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
@@ -132,10 +132,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     }
 
     private void getZaloFriend() {
-        Observable<Boolean> observableZFriendList = retrieveZaloFriendsAsNeeded();
-        Observable<Boolean> observableMergeWithZp = checkListZaloIdForClient();
-
-        Subscription subscription = observableZFriendList.concatWith(observableMergeWithZp)
+        Subscription subscription = retrieveZaloFriendsAsNeeded()
                 .doOnTerminate(new Action0() {
                     @Override
                     public void call() {
@@ -163,17 +160,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                         return Observable.empty();
                     }
                 });
-    }
-
-    private Observable<Boolean> checkListZaloIdForClient() {
-        return mFriendRepository.checkListZaloIdForClient()
-                .map(new Func1<List<UserExistEntity>, Boolean>() {
-                    @Override
-                    public Boolean call(List<UserExistEntity> entities) {
-                        return Boolean.TRUE;
-                    }
-                })
-                ;
     }
 
     private void syncContact() {
@@ -348,7 +334,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (!isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
-        
+
         ensureAppResourceAvailable();
     }
 
