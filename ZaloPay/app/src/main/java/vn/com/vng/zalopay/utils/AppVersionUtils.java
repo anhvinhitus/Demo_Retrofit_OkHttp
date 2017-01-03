@@ -113,7 +113,7 @@ public class AppVersionUtils {
         Timber.d("Show upgrade dialog, context [%s]", activity);
         String contentText = getUpdateMessageInServer();
         String newVersion = getLatestVersionInServer();
-        if (activity == null || isShowedDialogUpdateApp(newVersion)) {
+        if (activity == null || (!forceUpdate && isShowedDialogUpdateApp(newVersion))) {
             return;
         }
         if (TextUtils.isEmpty(contentText)) {
