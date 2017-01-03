@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
 import butterknife.BindView;
@@ -188,6 +189,9 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
         @BindView(R.id.tvMessage)
         TextView tvNoteView;
 
+        @BindView(R.id.iconState)
+        IconFont mIconState;
+
         @BindView(R.id.tvMoney)
         TextView mMoneyChangeSuccess;
 
@@ -289,7 +293,7 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
             if (mMoneyChangeSuccess != null) {
                 mMoneyChangeSuccess.setTextColor(ContextCompat.getColor(itemView.getContext(), success ? R.color.green : R.color.red));
                 mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(amount, false));
-                mMoneyChangeSuccess.setCompoundDrawablesWithIntrinsicBounds(success ? R.drawable.ic_thanhcong_24dp : R.drawable.ic_thatbai_24dp, 0, 0, 0);
+                mIconState.setText(success ? R.string.general_success : R.string.general_failed);
             }
         }
 

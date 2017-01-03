@@ -26,6 +26,6 @@
     <string name="notify_1_withdraw">&#59714;</string>
 
     <string name="general_question">&#59748;</string>
-
-
+    <string name="general_success">&#59750;</string>
+    <string name="general_failed">&#59743;</string>
 </resources>
