@@ -31,7 +31,7 @@
     <dependency>
       <groupId>com.facebook.react</groupId>
       <artifactId>react-native</artifactId>
-      <version>0.31.0</version>
+      <version>0.31.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
