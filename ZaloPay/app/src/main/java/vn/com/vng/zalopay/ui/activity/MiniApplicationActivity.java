@@ -11,7 +11,6 @@ import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.MiniApplicationBaseActivity;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
-import com.zalopay.modules.FontLoaderPackage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -193,7 +192,6 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 new MainReactPackage(),
                 reactInternalPackage(),
                 new SQLitePluginPackage(),
-                new FontLoaderPackage(),
                 // new ReactReceiveMoneyPackage(mUser, eventBus),
                 new RNDeviceInfo());
     }
