@@ -1,13 +1,10 @@
 package vn.com.vng.zalopay.data.cache.model;
 
-import java.util.List;
-import java.util.ArrayList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.Property;
-import org.greenrobot.greendao.internal.SqlUtils;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
@@ -30,8 +27,6 @@ public class ContactGDDao extends AbstractDao<ContactGD, Long> {
         public final static Property PhoneNumber = new Property(2, long.class, "phoneNumber", true, "PHONE_NUMBER");
     }
 
-    private DaoSession daoSession;
-
 
     public ContactGDDao(DaoConfig config) {
         super(config);
@@ -39,7 +34,6 @@ public class ContactGDDao extends AbstractDao<ContactGD, Long> {
     
     public ContactGDDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -90,12 +84,6 @@ public class ContactGDDao extends AbstractDao<ContactGD, Long> {
     }
 
     @Override
-    protected final void attachEntity(ContactGD entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
-    }
-
-    @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 2);
     }    
@@ -139,97 +127,4 @@ public class ContactGDDao extends AbstractDao<ContactGD, Long> {
         return true;
     }
     
-    private String selectDeep;
-
-    protected String getSelectDeep() {
-        if (selectDeep == null) {
-            StringBuilder builder = new StringBuilder("SELECT ");
-            SqlUtils.appendColumns(builder, "T", getAllColumns());
-            builder.append(',');
-            SqlUtils.appendColumns(builder, "T0", daoSession.getZaloPayProfileGDDao().getAllColumns());
-            builder.append(" FROM CONTACT_GD T");
-            builder.append(" LEFT JOIN ZALO_PAY_PROFILE_GD T0 ON T.\"PHONE_NUMBER\"=T0.\"ZALO_ID\"");
-            builder.append(' ');
-            selectDeep = builder.toString();
-        }
-        return selectDeep;
-    }
-    
-    protected ContactGD loadCurrentDeep(Cursor cursor, boolean lock) {
-        ContactGD entity = loadCurrent(cursor, 0, lock);
-        int offset = getAllColumns().length;
-
-        ZaloPayProfileGD zaloPayInfo = loadCurrentOther(daoSession.getZaloPayProfileGDDao(), cursor, offset);
-         if(zaloPayInfo != null) {
-            entity.setZaloPayInfo(zaloPayInfo);
-        }
-
-        return entity;    
-    }
-
-    public ContactGD loadDeep(Long key) {
-        assertSinglePk();
-        if (key == null) {
-            return null;
-        }
-
-        StringBuilder builder = new StringBuilder(getSelectDeep());
-        builder.append("WHERE ");
-        SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
-        String sql = builder.toString();
-        
-        String[] keyArray = new String[] { key.toString() };
-        Cursor cursor = db.rawQuery(sql, keyArray);
-        
-        try {
-            boolean available = cursor.moveToFirst();
-            if (!available) {
-                return null;
-            } else if (!cursor.isLast()) {
-                throw new IllegalStateException("Expected unique result, but count was " + cursor.getCount());
-            }
-            return loadCurrentDeep(cursor, true);
-        } finally {
-            cursor.close();
-        }
-    }
-    
-    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
-    public List<ContactGD> loadAllDeepFromCursor(Cursor cursor) {
-        int count = cursor.getCount();
-        List<ContactGD> list = new ArrayList<ContactGD>(count);
-        
-        if (cursor.moveToFirst()) {
-            if (identityScope != null) {
-                identityScope.lock();
-                identityScope.reserveRoom(count);
-            }
-            try {
-                do {
-                    list.add(loadCurrentDeep(cursor, false));
-                } while (cursor.moveToNext());
-            } finally {
-                if (identityScope != null) {
-                    identityScope.unlock();
-                }
-            }
-        }
-        return list;
-    }
-    
-    protected List<ContactGD> loadDeepAllAndCloseCursor(Cursor cursor) {
-        try {
-            return loadAllDeepFromCursor(cursor);
-        } finally {
-            cursor.close();
-        }
-    }
-    
-
-    /** A raw-style query where you can pass any WHERE clause and arguments. */
-    public List<ContactGD> queryDeep(String where, String... selectionArg) {
-        Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
-        return loadDeepAllAndCloseCursor(cursor);
-    }
- 
 }

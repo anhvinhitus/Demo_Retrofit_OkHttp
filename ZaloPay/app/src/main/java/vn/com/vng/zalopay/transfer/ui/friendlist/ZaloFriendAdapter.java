@@ -177,11 +177,11 @@ final class ZaloFriendAdapter extends CursorSectionAdapter {
 
             String displayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_DISPLAY_NAME));
             String avatar = cursor.getString(ColumnIndex.AVATAR);
-            int isUsingApp = cursor.getInt(ColumnIndex.USING_APP);
+            int status = cursor.getInt(cursor.getColumnIndex(ColumnIndex.STATUS));
 
             mTvDisplayName.setText(displayName);
             mImgAvatar.setImageURI(avatar);
-            mImgZaloPay.setSelected(isUsingApp == 1);
+            mImgZaloPay.setSelected(status == 1);
             mViewSeparate.setVisibility(isShowSeparate ? View.VISIBLE : View.INVISIBLE);
         }
     }

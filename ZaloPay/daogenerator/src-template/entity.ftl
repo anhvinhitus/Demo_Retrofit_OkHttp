@@ -265,7 +265,7 @@ property>${property.javaTypeInEntity} ${property.propertyName}<#if property_has_
         synchronized (this) {
             this.${toOne.name} = ${toOne.name};
 <#if toOne.useFkProperty>        
-            ${toOne.fkProperties[0].propertyName} = <#if !toOne.fkProperties[0].notNull>${toOne.name} == null ? null : </#if>${toOne.name}.get${toOne.targetEntity.pkProperty.propertyName?cap_first}();
+            ${toOne.fkProperties[0].propertyName} = <#if !toOne.fkProperties[0].notNull>${toOne.name} == null ? null : </#if>${toOne.name}.${toOne.targetEntity.pkProperty.propertyName};
             ${toOne.name}__resolvedKey = ${toOne.fkProperties[0].propertyName};
 <#else>
             ${toOne.name}__refreshed = true;
