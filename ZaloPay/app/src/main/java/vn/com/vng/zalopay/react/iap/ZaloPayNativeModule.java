@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.react.iap;
 
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -13,8 +15,10 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.views.text.ReactFontManager;
 import com.zalopay.apploader.network.NetworkService;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -287,6 +291,18 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     public void showNoInternetConnection() {
         if (getCurrentActivity() != null) {
             mNavigator.startTutorialConnectInternetActivity(getCurrentActivity());
+        }
+    }
+
+    @ReactMethod
+    public void loadFontAsync(final String fontFamilyName, final String localUri, final Promise promise) {
+        try {
+            Timber.d("loadFontAsync fontPath %s", localUri);
+            Typeface typeface = Typeface.createFromFile(new File(Uri.parse(localUri).getPath()));
+            ReactFontManager.getInstance().setTypeface("MerchantFont-" + fontFamilyName, Typeface.NORMAL, typeface);
+            promise.resolve(Arguments.createMap());
+        } catch (Exception e) {
+            promise.reject(e);
         }
     }
 }

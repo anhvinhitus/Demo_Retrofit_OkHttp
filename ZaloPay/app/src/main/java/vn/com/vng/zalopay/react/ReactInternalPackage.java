@@ -7,7 +7,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.zpmodal.ReactModalHostManager;
-import com.zalopay.modules.FontLoaderModule;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -90,7 +89,6 @@ public class ReactInternalPackage implements ReactPackage {
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mTransactionRepository, mNotificationRepository, mEventBus));
         modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUser, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository, mEventBus));
-        modules.add(new FontLoaderModule(reactContext));
 
         return modules;
     }
