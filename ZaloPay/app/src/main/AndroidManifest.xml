@@ -349,6 +349,13 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receivers.UpgradedAppReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
+
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

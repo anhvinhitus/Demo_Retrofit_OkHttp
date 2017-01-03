@@ -61,7 +61,7 @@ public class AppVersionUtils {
         return mPreferences.getString(UPDATE_MESSAGE_IN_SERVER, "");
     }
 
-    private static boolean needUpgradeApp() {
+    public static boolean needUpgradeApp() {
         try {
             return !isLastVersion();
         } catch (NumberFormatException ex) {
@@ -155,5 +155,12 @@ public class AppVersionUtils {
         setForceUpdateApp(forceUpdate);
         setLatestVersionInServer(latestVersion);
         setUpdateMessageInServer(msg);
+    }
+
+    public static void clearData() {
+        showedDialogUpdateApp("");
+        setForceUpdateApp(false);
+        setLatestVersionInServer("");
+        setUpdateMessageInServer("");
     }
 }
