@@ -76,6 +76,7 @@
     <string name="btn_wait_loading">Đợi tải</string>
     <string name="btn_reload">Tải Lại</string>
     <string name="btn_turn_on_network">Bật Kết Nối</string>
+    <string name="btn_send">Gửi</string>
 
     <string name="txt_deposit">Nạp tiền</string>
     <string name="txt_withdraw">Rút tiền</string>
@@ -281,14 +282,14 @@
     <string name="lbl.nfc.fragment">Đặt điện thoại của bạn\nlên máy giao dịch để thanh toán</string>
     <string name="lbl.recommend.upload.avatar">Đăng ảnh của bạn để hoàn tất thủ tục xác minh</string>
 
-    <string name="lbl.send.feedback">Vui lòng nhập thông tin để gửi đến bộ phận CSKH</string>
-    <string name="lbl.send.user.information">Gửi kèm thông tin người dùng</string>
-    <string name="lbl.send.device.information">Gửi kèm thông tin thiết bị</string>
-    <string name="lbl.send.app.information">Gửi kèm thông tin ứng dụng</string>
-    <string name="lbl.attach.screen">Đính kèm màn hình (0/4)</string>
+    <string name="txt_send_feedback">Vui lòng nhập thông tin để gửi đến bộ phận CSKH</string>
+    <string name="txt_send_user_information">Gửi kèm thông tin người dùng</string>
+    <string name="txt_send_device_information">Gửi kèm thông tin thiết bị</string>
+    <string name="txt_send_app_information">Gửi kèm thông tin ứng dụng</string>
+    <string name="txt_attach_screen">Đính kèm màn hình (%s/4)</string>
     <string name="email_to_feedback">Nhập email để nhận phản hồi <font color='red'>*</font></string>
     <string name="compulsory_email">Email <font color='red'>*</font></string>
-    <string name="describe_error_count">Mô tả lỗi (0/64)</string>
+    <string name="describe_error_count">Mô tả lỗi (%s/64)</string>
     <string name="describe_error">Mô tả lỗi</string>
     <string name="transaction_id">Mã giao dịch</string>
 
