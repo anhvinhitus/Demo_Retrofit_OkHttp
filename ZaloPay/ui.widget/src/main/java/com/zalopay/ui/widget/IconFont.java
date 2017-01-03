@@ -6,9 +6,9 @@ import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.R;
 import com.zalopay.ui.widget.util.FontHelper;
 
 /**
@@ -36,24 +36,43 @@ public class IconFont extends TextView {
         if (typedArray == null) {
             return;
         }
-        String fontAsset = typedArray.getString(R.styleable.IconFont_typefaceAsset);
-        String iconName = typedArray.getString(R.styleable.IconFont_iconName);
-        typedArray.recycle();
+        try {
+            String fontAsset = typedArray.getString(R.styleable.IconFont_typefaceAsset);
+            String iconName = typedArray.getString(R.styleable.IconFont_iconName);
 
-        if (TextUtils.isEmpty(fontAsset)) {
-            return;
+            if (!TextUtils.isEmpty(fontAsset)) {
+                Typeface typeface = FontHelper.getmInstance().getFont(fontAsset);
+                int style = Typeface.NORMAL;
+
+                if (getTypeface() != null)
+                    style = getTypeface().getStyle();
+
+                if (typeface != null) {
+                    setTypeface(typeface, style);
+                } else {
+                    Log.d("IconFont", String.format("Could not create a font from asset: %s", fontAsset));
+                }
+            }
+            setText(iconName);
+        } catch (RuntimeException e) {
+            Log.d("IconFont", "set font and icon name throw RuntimeException: " + e.getMessage());
         }
-        Typeface typeface = FontHelper.getmInstance().getFont(fontAsset);
-        int style = Typeface.NORMAL;
 
-        if (getTypeface() != null)
-            style = getTypeface().getStyle();
-
-        if (typeface != null) {
-            setTypeface(typeface, style);
-        } else {
-            Log.d("IconFont", String.format("Could not create a font from asset: %s", fontAsset));
+        try {
+            int iconSize = typedArray.getDimensionPixelSize(R.styleable.IconFont_iconSize, -1);
+            if (iconSize >= 0) {
+                setTextSize(TypedValue.COMPLEX_UNIT_PX, iconSize);
+            }
+        } catch (UnsupportedOperationException e) {
+            Log.d("IconFont", "get icon size throw UnsupportedOperationException: " + e.getMessage());
+        } catch (RuntimeException e) {
+            Log.d("IconFont", "get icon size throw RuntimeException: " + e.getMessage());
         }
-        setText(iconName);
+
+        try {
+            typedArray.recycle();
+        } catch (RuntimeException e) {
+            Log.d("IconFont", "recycle typedArray throw RuntimeException: " + e.getMessage());
+        }
     }
 }
