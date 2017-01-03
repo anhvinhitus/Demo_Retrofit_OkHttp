@@ -17,9 +17,11 @@
 package vn.com.vng.zalopay.fingerprint;
 
 import android.annotation.TargetApi;
+import android.app.KeyguardManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,7 +49,12 @@ public class FingerprintUiHelper {
 
     static final long SUCCESS_DELAY_MILLIS = 1300;
 
+    @Nullable
     private final FingerprintManager mFingerprintManager;
+
+    @Nullable
+    private final KeyguardManager mKeyguardManager;
+
     private final ImageView mIcon;
     private final TextView mErrorTextView;
     private final Callback mCallback;
@@ -61,19 +68,21 @@ public class FingerprintUiHelper {
      */
     public static class FingerprintUiHelperBuilder {
         private final FingerprintManager mFingerPrintManager;
+        private final KeyguardManager mKeyguardManager;
 
         @Inject
-        public FingerprintUiHelperBuilder(FingerprintManager fingerprintManager) {
-            mFingerPrintManager = fingerprintManager;
+        public FingerprintUiHelperBuilder(FingerprintProvider provider) {
+            mFingerPrintManager = provider.getFingerprintManager();
+            mKeyguardManager = provider.getKeyguardManager();
         }
 
         public FingerprintUiHelper build() {
-            return new FingerprintUiHelper(mFingerPrintManager, null, null,
+            return new FingerprintUiHelper(mFingerPrintManager, mKeyguardManager, null, null,
                     null);
         }
 
         public FingerprintUiHelper build(ImageView icon, TextView errorTextView, Callback callback) {
-            return new FingerprintUiHelper(mFingerPrintManager, icon, errorTextView,
+            return new FingerprintUiHelper(mFingerPrintManager, mKeyguardManager, icon, errorTextView,
                     callback);
         }
     }
@@ -82,12 +91,13 @@ public class FingerprintUiHelper {
      * Constructor for {@link FingerprintUiHelper}. This method is expected to be called from
      * only the {@link FingerprintUiHelperBuilder} class.
      */
-    private FingerprintUiHelper(FingerprintManager fingerprintManager,
+    private FingerprintUiHelper(FingerprintManager fingerprintManager, KeyguardManager keyguardManager,
                                 ImageView icon, TextView errorTextView, Callback callback) {
         mFingerprintManager = fingerprintManager;
         mIcon = icon;
         mErrorTextView = errorTextView;
         mCallback = callback;
+        this.mKeyguardManager = keyguardManager;
     }
 
     public boolean isFingerprintAuthAvailable() {
@@ -104,6 +114,10 @@ public class FingerprintUiHelper {
             return false;
         }
 
+        if (mFingerprintManager == null) {
+            return false;
+        }
+
         try {
             return mFingerprintManager.isHardwareDetected();
         } catch (SecurityException ignored) {
@@ -111,9 +125,26 @@ public class FingerprintUiHelper {
         }
     }
 
+
+    public boolean isKeyguardSecure() {
+        if (!checkAndroidMVersion()) {
+            return false;
+        }
+
+        if (mKeyguardManager == null) {
+            return false;
+        }
+
+        return mKeyguardManager.isKeyguardSecure();
+    }
+
     @TargetApi(Build.VERSION_CODES.M)
     public boolean hasFingerprintRegistered() {
         if (!checkAndroidMVersion()) {
+            return false;
+        }
+
+        if (mFingerprintManager == null) {
             return false;
         }
 
@@ -127,6 +158,10 @@ public class FingerprintUiHelper {
     @TargetApi(Build.VERSION_CODES.M)
     public void startListening(FingerprintManager.CryptoObject cryptoObject) throws SecurityException {
         if (!isFingerprintAuthAvailable()) {
+            return;
+        }
+
+        if (mFingerprintManager == null) {
             return;
         }
 

@@ -23,8 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="164dp"
         android:paddingBottom="8dp"
-        android:paddingEnd="20dp"
-        android:paddingStart="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:paddingTop="20dp">
 
         <include layout="@layout/fingerprint_dialog_encrypt_content" />

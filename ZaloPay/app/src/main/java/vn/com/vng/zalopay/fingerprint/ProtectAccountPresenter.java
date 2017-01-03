@@ -1,21 +1,16 @@
 package vn.com.vng.zalopay.fingerprint;
 
 import android.app.Activity;
-import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
@@ -31,11 +26,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     private FingerprintUiHelper mFingerprintUiHelper;
 
     @Inject
-    KeyguardManager mKeyguardManager;
-
-    @Inject
     SharedPreferences mSharedPreferences;
-
 
     @Inject
     ProtectAccountPresenter(FingerprintUiHelper.FingerprintUiHelperBuilder fingerprintBuilder) {
@@ -108,7 +99,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     }
 
     private void enableFingerprint() {
-        if (!mKeyguardManager.isKeyguardSecure()) {
+        if (!mFingerprintUiHelper.isKeyguardSecure()) {
             mView.showError("Secure lock screen hasn't set up.\n"
                     + "Go to 'Settings -> Security -> Fingerprint' to set up a fingerprint");
             mView.setCheckedFingerprint(false);

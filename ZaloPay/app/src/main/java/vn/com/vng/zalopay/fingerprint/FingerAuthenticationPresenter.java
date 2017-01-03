@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.fingerprint;
 
 import android.annotation.TargetApi;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.fingerprint.FingerprintManager;
@@ -48,13 +49,7 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
     @Inject
     SharedPreferences mPreferences;
 
-    FingerprintUiHelper mFingerprintUiHelper;
-
-    @Inject
-    KeyStore mKeyStore;
-
-    @Inject
-    KeyGenerator mKeyGenerator;
+    private FingerprintUiHelper mFingerprintUiHelper;
 
     private Cipher mEncryptCipher;
 
@@ -63,6 +58,9 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
     private Stage mStage = Stage.FINGERPRINT_DECRYPT;
 
     private String mPassword;
+
+    @Inject
+    KeyTools mKeyTools;
 
     @Inject
     FingerAuthenticationPresenter(AccountStore.Repository accountRepository,
@@ -340,6 +338,13 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
     }
 
     private SecretKey getKey() {
+
+        KeyStore mKeyStore = mKeyTools.getKeyStore();
+        if (mKeyStore == null) {
+            Timber.d(new NullPointerException(), "KeyStore is NULL");
+            return null;
+        }
+
         try {
             mKeyStore.load(null);
             SecretKey key = (SecretKey) mKeyStore.getKey(Constants.KEY_ALIAS_NAME, null);
@@ -356,6 +361,12 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
     @TargetApi(Build.VERSION_CODES.M)
     private SecretKey createKey() {
         Timber.d("create secret key");
+        KeyGenerator mKeyGenerator = mKeyTools.getKeyGenerator();
+        if (mKeyGenerator == null) {
+            Timber.d(new NullPointerException(), "KeyGenerator is NULL");
+            return null;
+        }
+
         try {
             mKeyGenerator.init(new KeyGenParameterSpec.Builder(Constants.KEY_ALIAS_NAME,
                     KeyProperties.PURPOSE_DECRYPT | KeyProperties.PURPOSE_ENCRYPT)
@@ -373,6 +384,13 @@ public class FingerAuthenticationPresenter extends AbstractPresenter<IFingerprin
 
     @TargetApi(Build.VERSION_CODES.M)
     private Cipher getCipher(int mode) {
+
+        KeyStore mKeyStore = mKeyTools.getKeyStore();
+        if (mKeyStore == null) {
+            Timber.d(new NullPointerException(), "KeyStore is NULL");
+            return null;
+        }
+        
         Cipher cipher;
 
         try {
