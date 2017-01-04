@@ -522,6 +522,17 @@ public class Navigator implements INavigator {
         AuthenticationDialog dialog = AuthenticationDialog.newInstance();
         dialog.setPendingIntent(pendingIntent);
         dialog.setFinishActivity(isFinish);
+        dialog.setAuthenticationCallback(new AuthenticationCallback() {
+            @Override
+            public void onAuthenticated() {
+                setLastTimeCheckPin(System.currentTimeMillis());
+            }
+
+            @Override
+            public void onAuthenticationFailure() {
+
+            }
+        });
         dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
     }
 
@@ -532,6 +543,7 @@ public class Navigator implements INavigator {
             public void onAuthenticated() {
                 Timber.d("onPinSuccess resolve true");
                 Helpers.promiseResolveSuccess(promise, null);
+                setLastTimeCheckPin(System.currentTimeMillis());
             }
 
             @Override

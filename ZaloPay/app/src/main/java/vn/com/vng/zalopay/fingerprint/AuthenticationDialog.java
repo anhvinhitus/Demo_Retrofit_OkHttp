@@ -115,9 +115,6 @@ public class AuthenticationDialog extends DialogFragment implements IFingerprint
 
     private boolean isFinish = false; //
 
-    @Inject
-    Navigator mNavigator;
-
     public AuthenticationDialog() {
     }
 
@@ -331,10 +328,12 @@ public class AuthenticationDialog extends DialogFragment implements IFingerprint
             if (isFinish) {
                 getActivity().finish();
             }
-        } else if (mCallback != null) {
+        }
+
+        if (mCallback != null) {
             mCallback.onAuthenticated();
         }
-        mNavigator.setLastTimeCheckPin(System.currentTimeMillis());
+
         dismiss();
     }
 
