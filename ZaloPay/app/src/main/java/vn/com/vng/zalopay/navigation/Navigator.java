@@ -36,7 +36,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.fingerprint.AuthenticationCallback;
-import vn.com.vng.zalopay.fingerprint.FingerprintAuthenticationDialogFragment;
+import vn.com.vng.zalopay.fingerprint.AuthenticationDialog;
 import vn.com.vng.zalopay.fingerprint.ProtectAccountActivity;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
@@ -519,14 +519,14 @@ public class Navigator implements INavigator {
     }
 
     private void showPinDialog(Context context, Intent pendingIntent, boolean isFinish) {
-        FingerprintAuthenticationDialogFragment dialog = FingerprintAuthenticationDialogFragment.newInstance();
+        AuthenticationDialog dialog = AuthenticationDialog.newInstance();
         dialog.setPendingIntent(pendingIntent);
         dialog.setFinishActivity(isFinish);
-        dialog.show(((Activity) context).getFragmentManager(), FingerprintAuthenticationDialogFragment.TAG);
+        dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
     }
 
     private void showPinDialog(Context context, final Promise promise) {
-        FingerprintAuthenticationDialogFragment dialog = FingerprintAuthenticationDialogFragment.newInstance();
+        AuthenticationDialog dialog = AuthenticationDialog.newInstance();
         dialog.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
             public void onAuthenticated() {
@@ -539,7 +539,7 @@ public class Navigator implements INavigator {
                 Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
             }
         });
-        dialog.show(((Activity) context).getFragmentManager(), FingerprintAuthenticationDialogFragment.TAG);
+        dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
     }
 
     /**

@@ -5,12 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CompoundButton;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnTouch;
 import timber.log.Timber;
@@ -119,7 +117,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
     public void showFingerAuthentication() {
         Timber.d("show finger authentication");
 
-        FingerprintAuthenticationDialogFragment fragment = FingerprintAuthenticationDialogFragment.newInstance();
+        AuthenticationDialog fragment = AuthenticationDialog.newInstance();
         fragment.setStage(Stage.PASSWORD_SETTING);
         fragment.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
@@ -135,7 +133,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
             }
         });
 
-        fragment.show(getActivity().getFragmentManager(), FingerprintAuthenticationDialogFragment.TAG);
+        fragment.show(getActivity().getFragmentManager(), AuthenticationDialog.TAG);
     }
 
     @Override
@@ -174,10 +172,10 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
     @OnClick(R.id.btnFingerprint)
     public void onClickFingerprint() {
-        FingerprintAuthenticationDialogFragment fragment = FingerprintAuthenticationDialogFragment.newInstance();
+        AuthenticationDialog fragment = AuthenticationDialog.newInstance();
         fragment.setStage(Stage.FINGERPRINT_DECRYPT);
         fragment.setAuthenticationCallback(null);
-        fragment.show(getActivity().getFragmentManager(), FingerprintAuthenticationDialogFragment.TAG);
+        fragment.show(getActivity().getFragmentManager(), AuthenticationDialog.TAG);
     }
 
 }

@@ -22,10 +22,9 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.fingerprint.FingerprintAuthenticationDialogFragment;
+import vn.com.vng.zalopay.fingerprint.AuthenticationDialog;
 import vn.com.vng.zalopay.fingerprint.FingerprintModule;
 import vn.com.vng.zalopay.fingerprint.ProtectAccountFragment;
-import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
 import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
 import vn.com.vng.zalopay.internal.di.modules.UserBalanceModule;
@@ -185,5 +184,5 @@ public interface UserComponent {
 
     void inject(ProtectAccountFragment f);
 
-    void inject(FingerprintAuthenticationDialogFragment f);
+    void inject(AuthenticationDialog f);
 }
