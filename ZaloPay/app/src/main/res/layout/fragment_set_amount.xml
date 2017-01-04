@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:background="@color/separate"/>
+            android:background="@color/separate" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate"
-                android:background="@color/separate"/>
+                android:background="@color/separate" />
 
             <vn.com.vng.zalopay.ui.widget.MoneyEditText
                 android:id="@+id/edtAmount"
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_amount"
                 android:maxLength="@integer/max_length_edittext_money"
-                app:zlp_paddingLeftLine="16dp"/>
+                app:zlp_paddingLeftLine="16dp" />
 
             <com.zalopay.ui.widget.edittext.ZPEditText
                 android:id="@+id/edtNote"
@@ -43,8 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_message"
-                android:inputType="text|textCapWords"
-                android:maxLength="@integer/max_length_message"/>
+                android:inputType="text|textCapSentences"
+                android:maxLength="@integer/max_length_message" />
 
         </LinearLayout>
 
@@ -54,6 +54,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/button.height"
             android:enabled="false"
-            android:text="@string/confirm"/>
+            android:text="@string/confirm" />
     </LinearLayout>
 </ScrollView>
