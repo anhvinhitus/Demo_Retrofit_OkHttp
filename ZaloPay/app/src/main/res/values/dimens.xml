@@ -5,7 +5,7 @@
     <dimen name="font_size_balance_manager_deposit">28dp</dimen>
     <dimen name="font_size_balance_manager_withdraw">28dp</dimen>
     <dimen name="font_size_balance_manager_question">16dp</dimen>
-    <dimen name="font_size_transfer_header">40dp</dimen>
+    <dimen name="font_size_transfer_header">36dp</dimen>
     <dimen name="font_size_transfer_item">18dp</dimen>
     <dimen name="font_size_receive_state">22dp</dimen>
 
