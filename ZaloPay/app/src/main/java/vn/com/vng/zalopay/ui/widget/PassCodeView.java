@@ -50,7 +50,7 @@ public class PassCodeView extends FrameLayout {
     AppCompatEditText mEditText;
 
     @BindView(R.id.btnShowHide)
-    Button mTvShowHide;
+    TextView mTvShowHide;
 
     private ArrayList<TextView> mTextViews;
     private int mTextViewSize = 0;
