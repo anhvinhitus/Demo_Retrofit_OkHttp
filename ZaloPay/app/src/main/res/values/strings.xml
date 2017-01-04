@@ -441,7 +441,7 @@
     <string name="confirm.off.fingerprint.message">Bạn chắc chắn muốn hủy thanh toán bằng vân tay?</string>
     <string name="confirm.off.protect.message">Bạn chắc chắn muốn bỏ bảo vệ thông tin cá nhân?</string>
     <string name="use.fingerprint">Sử dụng Fingerprint</string>
-    <string name="use.fingerprint.description">Xác thực bằng vâng tay thay vi sử dụng mật khẩu thanh toán.\nLưu ý: Bất cứ vân tay nào đã đăng ký trong hệ thống đều xác thực được bằng thành toán.</string>
+    <string name="use.fingerprint.description">Xác thực bằng vân tay thay vì sử dụng mật khẩu thanh toán.\nLưu ý: Bất cứ vân tay nào đã đăng ký trong hệ thống đều xác thực được khi thanh toán.</string>
     <string name="protection.information">Bảo vệ thông tin cá nhân</string>
     <string name="protection.information.description">Hỏi mật khẩu hoặc xác thực vân tay mỗi khi truy xuất: Danh sách liên kết thẻ, Thông tin cá nhân, Lịch sử thanh toán.</string>
     <string name="change.password">Đổi mật khẩu thanh toán</string>
