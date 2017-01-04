@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -18,20 +20,22 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
+            <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/spacing.medium.l"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_doimapin" />
+                android:layout_marginLeft="@dimen/spacing.medium"
+                android:textColor="@color/menu_font_ic_blue"
+                app:iconName="@string/profile_lock"
+                app:iconSize="@dimen/font_size_profile_lock"
+                app:typefaceAsset="@string/font_name"/>
 
             <TextView
                 style="@style/TextView.Profile.Edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/spacing.medium.l"
+                android:layout_marginLeft="@dimen/spacing.medium"
                 android:layout_weight="1.0"
                 android:text="@string/establish.and.protect.account"
                 android:textColor="@color/black" />

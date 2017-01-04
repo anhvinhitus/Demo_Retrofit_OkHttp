@@ -28,4 +28,6 @@
     <string name="general_question">&#59748;</string>
     <string name="general_success">&#59750;</string>
     <string name="general_failed">&#59743;</string>
+
+    <string name="profile_lock">&#59777;</string>
 </resources>
