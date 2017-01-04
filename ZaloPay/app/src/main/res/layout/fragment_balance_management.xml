@@ -48,7 +48,7 @@
     <LinearLayout
         android:id="@+id/layoutAccountName"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="56dp"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -92,7 +92,7 @@
         <LinearLayout
             android:id="@+id/layoutDeposit"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="6dp"
@@ -101,7 +101,7 @@
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/app_padding"
+                android:layout_margin="@dimen/app_padding"
                 android:textColor="@color/menu_font_ic_green"
                 app:iconName="@string/notify_1_receivemoney"
                 app:iconSize="@dimen/font_size_balance_manager_deposit"
@@ -136,7 +136,7 @@
         <LinearLayout
             android:id="@+id/layoutWithdraw"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="6dp"
@@ -145,7 +145,7 @@
             <com.zalopay.ui.widget.IconFont
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/app_padding"
+                android:layout_margin="@dimen/app_padding"
                 android:textColor="@color/menu_font_ic_yellow"
                 app:iconName="@string/notify_1_withdraw"
                 app:iconSize="@dimen/font_size_balance_manager_deposit"

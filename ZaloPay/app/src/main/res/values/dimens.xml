@@ -1,9 +1,9 @@
 <resources>
-    <dimen name="font_size_home_function">52dp</dimen>
+    <dimen name="font_size_home_function">48dp</dimen>
     <dimen name="font_size_menu">26dp</dimen>
     <dimen name="font_size_balance_manager_header">60dp</dimen>
-    <dimen name="font_size_balance_manager_deposit">28dp</dimen>
-    <dimen name="font_size_balance_manager_withdraw">28dp</dimen>
+    <dimen name="font_size_balance_manager_deposit">36dp</dimen>
+    <dimen name="font_size_balance_manager_withdraw">36dp</dimen>
     <dimen name="font_size_balance_manager_question">16dp</dimen>
     <dimen name="font_size_transfer_header">36dp</dimen>
     <dimen name="font_size_transfer_item">18dp</dimen>

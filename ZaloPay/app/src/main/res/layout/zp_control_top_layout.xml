@@ -1,13 +1,14 @@
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="112dp">
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
@@ -110,4 +111,4 @@
         android:text="0 VND"
         android:textColor="@color/txt_item_sub_2"
         android:textSize="@dimen/font_size_normal"/>
-</FrameLayout>
+</LinearLayout>
