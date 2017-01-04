@@ -125,5 +125,6 @@
     <color name="menu_font_ic_yellow">#f6b501</color>
     <color name="menu_font_ic_gray">#53718b</color>
     <color name="transfer_font_green">#008fe5</color>
+    <color name="profile_font_gray">#848d99</color>
     <!--Menu icon color END-->
 </resources>

@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -103,13 +102,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     TextView tvTerm;
 
     @BindView(R.id.btnRemoveFrontCmnd)
-    ImageView btnRemoveFrontImage;
+    TextView btnRemoveFrontImage;
 
     @BindView(R.id.btnRemoveBackCmnd)
-    ImageView btnRemoveBackImage;
+    TextView btnRemoveBackImage;
 
     @BindView(R.id.btnRemoveAvatar)
-    ImageView btnRemoveAvatar;
+    TextView btnRemoveAvatar;
 
     @BindView(R.id.btnContinue)
     Button mBtnContinue;
@@ -434,7 +433,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         mTvFgIdentityView.setVisibility(View.GONE);
         btnRemoveFrontImage.setClickable(true);
-        btnRemoveFrontImage.setImageResource(R.drawable.ic_remove_circle);
+        btnRemoveFrontImage.setText(R.string.general_del);
 
         checkIfNoInput();
     }
@@ -444,7 +443,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mFgIdentityView.setVisibility(View.GONE);
         mTvFgIdentityView.setVisibility(View.VISIBLE);
         btnRemoveFrontImage.setClickable(false);
-        btnRemoveFrontImage.setImageResource(R.drawable.ic_camera);
+        btnRemoveFrontImage.setText(R.string.profile_camera);
         mUriFgIdentity = null;
 
         checkIfNoInput();
@@ -461,7 +460,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         mTvAvatarView.setVisibility(View.GONE);
         btnRemoveAvatar.setClickable(true);
-        btnRemoveAvatar.setImageResource(R.drawable.ic_remove_circle);
+        btnRemoveAvatar.setText(R.string.general_del);
 
         checkIfNoInput();
     }
@@ -472,7 +471,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mTvAvatarView.setVisibility(View.VISIBLE);
 
         btnRemoveAvatar.setClickable(false);
-        btnRemoveAvatar.setImageResource(R.drawable.ic_camera);
+        btnRemoveAvatar.setText(R.string.profile_camera);
         mUriAvatar = null;
 
         checkIfNoInput();
@@ -490,7 +489,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         mTvBgIdentityView.setVisibility(View.GONE);
         btnRemoveBackImage.setClickable(true);
-        btnRemoveBackImage.setImageResource(R.drawable.ic_remove_circle);
+        btnRemoveBackImage.setText(R.string.general_del);
 
         checkIfNoInput();
     }
@@ -500,7 +499,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mBgIdentityView.setVisibility(View.GONE);
         mTvBgIdentityView.setVisibility(View.VISIBLE);
         btnRemoveBackImage.setClickable(false);
-        btnRemoveBackImage.setImageResource(R.drawable.ic_camera);
+        btnRemoveBackImage.setText(R.string.profile_camera);
         mUriBgIdentity = null;
 
         checkIfNoInput();

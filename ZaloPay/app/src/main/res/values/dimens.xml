@@ -9,6 +9,8 @@
     <dimen name="font_size_transfer_item">18dp</dimen>
     <dimen name="font_size_receive_state">22dp</dimen>
     <dimen name="font_size_profile_lock">18dp</dimen>
+    <dimen name="font_size_profile_icon">20dp</dimen>
+    <dimen name="font_size_feedback_camera">20dp</dimen>
 
     <dimen name="textsize.card.number">18sp</dimen>
     <dimen name="textsize.text.main">15sp</dimen>
