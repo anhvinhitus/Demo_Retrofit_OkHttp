@@ -119,6 +119,7 @@
     <color name="green">#06be04</color>
 
     <!--Menu icon color START-->
+    <color name="home_font_inside_app">#bbc1c8</color>
     <color name="menu_font_ic_blue">#4387f6</color>
     <color name="menu_font_ic_red">#de4438</color>
     <color name="menu_font_ic_green">#129d5a</color>

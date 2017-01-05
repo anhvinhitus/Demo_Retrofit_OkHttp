@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -74,6 +75,7 @@ import vn.com.vng.zalopay.R;
 
 /**
  * Created by AnhHieu on 9/14/15.
+ * *
  */
 public class AndroidUtils {
     public static final String TAG = "AndroidUtils";
@@ -257,6 +259,22 @@ public class AndroidUtils {
             measuredHeight = d.getHeight();
         }
         return measuredWidth < measuredHeight ? measuredWidth : measuredHeight;
+    }
+
+    /**
+     * Get color string from color resource.
+     * @return color string (format #f0f0f0)
+     */
+    public static String getColorFromResource(int colorResource) {
+        if (colorResource == 0) {
+            return null;
+        }
+        try {
+            return "#" + Integer.toHexString(ContextCompat.getColor(AndroidApplication.instance(),
+                    colorResource));
+        } catch (Resources.NotFoundException e) {
+            return null;
+        }
     }
 
     public static float dpToPixels(Context context, int dp) {

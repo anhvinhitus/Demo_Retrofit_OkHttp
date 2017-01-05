@@ -35,8 +35,11 @@ public class AppResourceEntity {
     @SerializedName("weburl")
     public String weburl;
 
-    @SerializedName("iconurl")
-    public String iconurl;
+    @SerializedName("iconname")
+    public String iconName;
+
+    @SerializedName("iconcolor")
+    public String iconColor;
 
     public long sortOrder;
 

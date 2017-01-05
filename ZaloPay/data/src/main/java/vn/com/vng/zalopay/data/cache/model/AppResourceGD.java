@@ -20,7 +20,8 @@ public class AppResourceGD {
     public String checksum;
     public Long apptype;
     public String weburl;
-    public String iconurl;
+    public String iconname;
+    public String iconcolor;
     public Long sortOrder;
     public Long stateDownload;
     public Long timeDownload;

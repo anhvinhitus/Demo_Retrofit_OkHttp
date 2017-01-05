@@ -31,11 +31,12 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
         public final static Property Checksum = new Property(6, String.class, "checksum", false, "CHECKSUM");
         public final static Property Apptype = new Property(7, Long.class, "apptype", false, "APPTYPE");
         public final static Property Weburl = new Property(8, String.class, "weburl", false, "WEBURL");
-        public final static Property Iconurl = new Property(9, String.class, "iconurl", false, "ICONURL");
-        public final static Property SortOrder = new Property(10, Long.class, "sortOrder", false, "SORT_ORDER");
-        public final static Property StateDownload = new Property(11, Long.class, "stateDownload", false, "STATE_DOWNLOAD");
-        public final static Property TimeDownload = new Property(12, Long.class, "timeDownload", false, "TIME_DOWNLOAD");
-        public final static Property NumRetry = new Property(13, Long.class, "numRetry", false, "NUM_RETRY");
+        public final static Property Iconname = new Property(9, String.class, "iconname", false, "ICONNAME");
+        public final static Property Iconcolor = new Property(10, String.class, "iconcolor", false, "ICONCOLOR");
+        public final static Property SortOrder = new Property(11, Long.class, "sortOrder", false, "SORT_ORDER");
+        public final static Property StateDownload = new Property(12, Long.class, "stateDownload", false, "STATE_DOWNLOAD");
+        public final static Property TimeDownload = new Property(13, Long.class, "timeDownload", false, "TIME_DOWNLOAD");
+        public final static Property NumRetry = new Property(14, Long.class, "numRetry", false, "NUM_RETRY");
     }
 
 
@@ -60,11 +61,12 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
                 "\"CHECKSUM\" TEXT," + // 6: checksum
                 "\"APPTYPE\" INTEGER," + // 7: apptype
                 "\"WEBURL\" TEXT," + // 8: weburl
-                "\"ICONURL\" TEXT," + // 9: iconurl
-                "\"SORT_ORDER\" INTEGER," + // 10: sortOrder
-                "\"STATE_DOWNLOAD\" INTEGER," + // 11: stateDownload
-                "\"TIME_DOWNLOAD\" INTEGER," + // 12: timeDownload
-                "\"NUM_RETRY\" INTEGER);"); // 13: numRetry
+                "\"ICONNAME\" TEXT," + // 9: iconname
+                "\"ICONCOLOR\" TEXT," + // 10: iconcolor
+                "\"SORT_ORDER\" INTEGER," + // 11: sortOrder
+                "\"STATE_DOWNLOAD\" INTEGER," + // 12: stateDownload
+                "\"TIME_DOWNLOAD\" INTEGER," + // 13: timeDownload
+                "\"NUM_RETRY\" INTEGER);"); // 14: numRetry
     }
 
     /** Drops the underlying database table. */
@@ -118,29 +120,34 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(9, weburl);
         }
  
-        String iconurl = entity.iconurl;
-        if (iconurl != null) {
-            stmt.bindString(10, iconurl);
+        String iconname = entity.iconname;
+        if (iconname != null) {
+            stmt.bindString(10, iconname);
+        }
+ 
+        String iconcolor = entity.iconcolor;
+        if (iconcolor != null) {
+            stmt.bindString(11, iconcolor);
         }
  
         Long sortOrder = entity.sortOrder;
         if (sortOrder != null) {
-            stmt.bindLong(11, sortOrder);
+            stmt.bindLong(12, sortOrder);
         }
  
         Long stateDownload = entity.stateDownload;
         if (stateDownload != null) {
-            stmt.bindLong(12, stateDownload);
+            stmt.bindLong(13, stateDownload);
         }
  
         Long timeDownload = entity.timeDownload;
         if (timeDownload != null) {
-            stmt.bindLong(13, timeDownload);
+            stmt.bindLong(14, timeDownload);
         }
  
         Long numRetry = entity.numRetry;
         if (numRetry != null) {
-            stmt.bindLong(14, numRetry);
+            stmt.bindLong(15, numRetry);
         }
     }
 
@@ -189,29 +196,34 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
             stmt.bindString(9, weburl);
         }
  
-        String iconurl = entity.iconurl;
-        if (iconurl != null) {
-            stmt.bindString(10, iconurl);
+        String iconname = entity.iconname;
+        if (iconname != null) {
+            stmt.bindString(10, iconname);
+        }
+ 
+        String iconcolor = entity.iconcolor;
+        if (iconcolor != null) {
+            stmt.bindString(11, iconcolor);
         }
  
         Long sortOrder = entity.sortOrder;
         if (sortOrder != null) {
-            stmt.bindLong(11, sortOrder);
+            stmt.bindLong(12, sortOrder);
         }
  
         Long stateDownload = entity.stateDownload;
         if (stateDownload != null) {
-            stmt.bindLong(12, stateDownload);
+            stmt.bindLong(13, stateDownload);
         }
  
         Long timeDownload = entity.timeDownload;
         if (timeDownload != null) {
-            stmt.bindLong(13, timeDownload);
+            stmt.bindLong(14, timeDownload);
         }
  
         Long numRetry = entity.numRetry;
         if (numRetry != null) {
-            stmt.bindLong(14, numRetry);
+            stmt.bindLong(15, numRetry);
         }
     }
 
@@ -238,11 +250,12 @@ public class AppResourceGDDao extends AbstractDao<AppResourceGD, Void> {
         entity.checksum = cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6);
         entity.apptype = cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7);
         entity.weburl = cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8);
-        entity.iconurl = cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9);
-        entity.sortOrder = cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10);
-        entity.stateDownload = cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11);
-        entity.timeDownload = cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12);
-        entity.numRetry = cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13);
+        entity.iconname = cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9);
+        entity.iconcolor = cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10);
+        entity.sortOrder = cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11);
+        entity.stateDownload = cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12);
+        entity.timeDownload = cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13);
+        entity.numRetry = cursor.isNull(offset + 14) ? null : cursor.getLong(offset + 14);
      }
     
     @Override

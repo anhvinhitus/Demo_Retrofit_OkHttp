@@ -9,6 +9,7 @@ import java.util.List;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by AnhHieu on 7/1/16.
@@ -34,17 +35,20 @@ public class PaymentAppConfig {
                 new AppResource(Constants.TRANSFER_MONEY,
                         PaymentAppTypeEnum.INTERNAL_APP.value,
                         AndroidApplication.instance().getString(R.string.transfer_money),
-                        String.valueOf(R.drawable.ic_chuyentien)));
+                        String.valueOf(R.string.app_1_transfers),
+                        AndroidUtils.getColorFromResource(R.color.menu_font_ic_blue)));
         APP_RESOURCE_MAP.put(Constants.RECEIVE_MONEY,
                 new AppResource(Constants.RECEIVE_MONEY,
                         PaymentAppTypeEnum.INTERNAL_APP.value,
                         AndroidApplication.instance().getString(R.string.receive_money),
-                        String.valueOf(R.drawable.ic_nhantien)));
+                        String.valueOf(R.string.app_1_receivemoney),
+                        AndroidUtils.getColorFromResource(R.color.menu_font_ic_green)));
         APP_RESOURCE_MAP.put(Constants.RED_PACKET,
                 new AppResource(Constants.RED_PACKET,
                         PaymentAppTypeEnum.REACT_NATIVE.value,
                         AndroidApplication.instance().getString(R.string.red_envelope),
-                        String.valueOf(R.drawable.ic_lixi)));
+                        String.valueOf(R.string.app_6_red),
+                        AndroidUtils.getColorFromResource(R.color.menu_font_ic_red)));
 
         APP_RESOURCE_MAP.put(Constants.SHOW_SHOW,
                 new AppResource(Constants.SHOW_SHOW,

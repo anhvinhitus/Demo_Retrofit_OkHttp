@@ -41,19 +41,7 @@ public class IconFont extends TextView {
             String iconName = typedArray.getString(R.styleable.IconFont_iconName);
             Log.d("IconFont", "icon name: " + iconName);
 
-            if (!TextUtils.isEmpty(fontAsset)) {
-                Typeface typeface = FontHelper.getmInstance().getFont(fontAsset);
-                int style = Typeface.NORMAL;
-
-                if (getTypeface() != null)
-                    style = getTypeface().getStyle();
-
-                if (typeface != null) {
-                    setTypeface(typeface, style);
-                } else {
-                    Log.d("IconFont", String.format("Could not create a font from asset: %s", fontAsset));
-                }
-            }
+            setTypefaceFromAsset(fontAsset);
             setText(iconName);
         } catch (RuntimeException e) {
             Log.d("IconFont", "set font and icon name throw RuntimeException: " + e.getMessage());
@@ -75,5 +63,38 @@ public class IconFont extends TextView {
         } catch (RuntimeException e) {
             Log.d("IconFont", "recycle typedArray throw RuntimeException: " + e.getMessage());
         }
+    }
+
+    public void setTypefaceFromAsset(String fontAsset) {
+        if (TextUtils.isEmpty(fontAsset)) {
+            return;
+        }
+        Typeface typeface = FontHelper.getmInstance().getFontFromAsset(fontAsset);
+        if (typeface == null) {
+            Log.d("IconFont", String.format("Could not create a typeface from asset: %s", fontAsset));
+        } else {
+            setTypefaceWithoutStyle(typeface);
+        }
+    }
+
+    public void setTypefaceFromFile(String filePath) {
+        Typeface typeface = FontHelper.getmInstance().getFontFromFileName(filePath);
+        if (typeface == null) {
+            Log.d("IconFont", String.format("Could not create a typeface from file: %s", filePath));
+        } else {
+            setTypefaceWithoutStyle(typeface);
+        }
+    }
+
+    private void setTypefaceWithoutStyle(Typeface typeface) {
+        if (typeface == null) {
+            return;
+        }
+        int style = Typeface.NORMAL;
+
+        if (getTypeface() != null) {
+            style = getTypeface().getStyle();
+        }
+        setTypeface(typeface, style);
     }
 }

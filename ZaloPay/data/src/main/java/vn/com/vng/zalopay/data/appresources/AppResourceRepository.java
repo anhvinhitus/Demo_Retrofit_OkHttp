@@ -166,9 +166,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             List<AppResourceEntity> resourcelist = new ArrayList<>();
             for (int i = 0; i < resourceResponse.resourcelist.size(); i++) {
                 AppResourceEntity appResourceEntity = resourceResponse.resourcelist.get(i);
-                if (!TextUtils.isEmpty(appResourceEntity.iconurl)) {
-                    appResourceEntity.iconurl = resourceResponse.baseurl + appResourceEntity.iconurl;
-                }
                 int index = resourceResponse.orderedInsideApps.indexOf(appResourceEntity.appid);
                 Timber.d("processAppResourceResponse appId [%s] index [%s]", appResourceEntity.appid, index);
                 appResourceEntity.sortOrder = index;

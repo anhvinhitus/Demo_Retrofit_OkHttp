@@ -42,7 +42,8 @@ public class AppConfigEntityDataMapper {
             appResource.appType = entity.apptype;
             appResource.webUrl = entity.weburl;
             appResource.urlImage = entity.imageurl;
-            appResource.iconUrl = entity.iconurl;
+            appResource.iconName = entity.iconName;
+            appResource.iconColor = entity.iconColor;
         }
         return appResource;
     }

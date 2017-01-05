@@ -19,21 +19,25 @@ public class AppResource implements Parcelable {
 
     public String webUrl;
 
-    public String iconUrl;
+    public String iconName;
+
+    public String iconColor;
 
     public AppResource(long appid) {
         this.appid = appid;
     }
 
     public AppResource(long appid, long appType, String appname) {
-        this(appid, appType, appname, "");
+        this(appid, appType, appname, "", "");
     }
 
-    public AppResource(long appid, long appType, String appname, String urlImage) {
+    public AppResource(long appid, long appType, String appname,
+                       String iconName, String iconColor) {
         this.appid = appid;
         this.appType = appType;
         this.appname = appname;
-        this.iconUrl = urlImage;
+        this.iconName = iconName;
+        this.iconColor = iconColor;
     }
 
     public AppResource() {
@@ -59,7 +63,8 @@ public class AppResource implements Parcelable {
         result = 31 * result + (urlImage != null ? urlImage.hashCode() : 0);
         result = 31 * result + (int) (appType ^ (appType >>> 32));
         result = 31 * result + (webUrl != null ? webUrl.hashCode() : 0);
-        result = 31 * result + (iconUrl != null ? iconUrl.hashCode() : 0);
+        result = 31 * result + (iconName != null ? iconName.hashCode() : 0);
+        result = 31 * result + (iconColor != null ? iconColor.hashCode() : 0);
         return result;
     }
 
@@ -77,7 +82,8 @@ public class AppResource implements Parcelable {
         dest.writeString(this.urlImage);
         dest.writeLong(this.appType);
         dest.writeString(this.webUrl);
-        dest.writeString(this.iconUrl);
+        dest.writeString(this.iconName);
+        dest.writeString(this.iconColor);
     }
 
     protected AppResource(Parcel in) {
@@ -88,7 +94,8 @@ public class AppResource implements Parcelable {
         this.urlImage = in.readString();
         this.appType = in.readInt();
         this.webUrl = in.readString();
-        this.iconUrl = in.readString();
+        this.iconName = in.readString();
+        this.iconColor = in.readString();
     }
 
     public static final Parcelable.Creator<AppResource> CREATOR = new Parcelable.Creator<AppResource>() {

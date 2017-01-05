@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.appresources;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.util.Locale;
 
@@ -11,6 +12,7 @@ import java.util.Locale;
 public class ResourceHelper {
 
     private static String mBundleRootFolder = "";
+
     public static String getBundleRootFolder() {
         return mBundleRootFolder;
     }
@@ -23,7 +25,20 @@ public class ResourceHelper {
      * Returns the path of this module.
      */
     public static String getPath(long appId) {
+        if (appId <= 0) {
+            return null;
+        }
         return String.format(Locale.getDefault(), "%s/modules/%d/app", getBundleRootFolder(), appId);
+    }
+
+    /**
+     * Returns the path of this module.
+     */
+    public static String getFontPath(long appId, String fileName) {
+        if (TextUtils.isEmpty(fileName) || appId <= 0) {
+            return null;
+        }
+        return String.format(Locale.getDefault(), "%s/fonts/%s", ResourceHelper.getPath(appId), fileName);
     }
 
     public static String getResource(Context context, int appId, String resourceName) {

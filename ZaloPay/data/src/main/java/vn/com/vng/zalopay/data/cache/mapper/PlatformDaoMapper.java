@@ -67,7 +67,8 @@ public class PlatformDaoMapper {
             appResourceGD.status = (appResourceEntity.status);
             appResourceGD.apptype = (appResourceEntity.apptype);
             appResourceGD.weburl = (appResourceEntity.weburl);
-            appResourceGD.iconurl = (appResourceEntity.iconurl);
+            appResourceGD.iconname = (appResourceEntity.iconName);
+            appResourceGD.iconcolor = (appResourceEntity.iconColor);
             appResourceGD.sortOrder = (appResourceEntity.sortOrder);
             appResourceGD.stateDownload = (appResourceEntity.stateDownload);
             appResourceGD.numRetry = (appResourceEntity.numRetry);
@@ -92,8 +93,10 @@ public class PlatformDaoMapper {
                     ? 0 : appResourceGD.apptype;
             appResourceEntity.weburl = appResourceGD.weburl == null
                     ? "" : appResourceGD.weburl;
-            appResourceEntity.iconurl = appResourceGD.iconurl == null
-                    ? "" : appResourceGD.iconurl;
+            appResourceEntity.iconName = appResourceGD.iconname == null
+                    ? "" : appResourceGD.iconname;
+            appResourceEntity.iconColor = appResourceGD.iconcolor == null
+                    ? "" : appResourceGD.iconcolor;
             appResourceEntity.sortOrder = appResourceGD.sortOrder == null
                     ? 0 : appResourceGD.sortOrder;
             appResourceEntity.stateDownload = appResourceGD.stateDownload == null

@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * Created by longlv on 11/17/16.
- * Cache mFonts that app is using.
+ * Cache fonts that app is using.
  */
 
 public class FontHelper {
@@ -33,7 +33,10 @@ public class FontHelper {
         return mInstance;
     }
 
-    public Typeface getFont(String asset) {
+    public Typeface getFontFromAsset(String asset) {
+        if (TextUtils.isEmpty(asset)) {
+            return null;
+        }
         asset= "fonts/" + asset;
         if (mFonts.containsKey(asset))
             return mFonts.get(asset);
@@ -44,24 +47,55 @@ public class FontHelper {
             font = Typeface.createFromAsset(mAssetManager, asset);
             mFonts.put(asset, font);
         } catch (Exception e) {
-            Log.d("FontHelper", "Get font, font name should contain extension.");
+            Log.d("FontHelper", "Get font, font name should contain extension: " + asset);
         }
 
         if (font == null) {
             try {
-                String fixedAsset = fixAssetFilename(asset);
+                String fixedAsset = fixFontFileName(asset);
                 font = Typeface.createFromAsset(mAssetManager, fixedAsset);
                 mFonts.put(asset, font);
                 mFonts.put(fixedAsset, font);
             } catch (Exception e) {
-                Log.d("FontHelper", "Get font error, font isn't found.");
+                Log.d("FontHelper", "Get font error, font isn't found: "+ asset);
             }
         }
 
         return font;
     }
 
-    private String fixAssetFilename(String asset) {
+    public Typeface getFontFromFileName(String filePath) {
+        //String filePath = "/storage/emulated/0/fonts/" + fileName;
+        if (TextUtils.isEmpty(filePath)) {
+            return null;
+        }
+        if (mFonts.containsKey(filePath))
+            return mFonts.get(filePath);
+
+        Typeface typeface = null;
+
+        try {
+            typeface = Typeface.createFromFile(filePath);
+            mFonts.put(filePath, typeface);
+        } catch (Exception e) {
+            Log.d("FontHelper", "Get font, font name should contain extension: " + filePath);
+        }
+
+        if (typeface == null) {
+            try {
+                String fixedAsset = fixFontFileName(filePath);
+                typeface = Typeface.createFromFile(fixedAsset);
+                mFonts.put(filePath, typeface);
+                mFonts.put(fixedAsset, typeface);
+            } catch (Exception e) {
+                Log.d("FontHelper", "Get font error, font isn't found: " + filePath);
+            }
+        }
+
+        return typeface;
+    }
+
+    private String fixFontFileName(String asset) {
         // Empty font filename?
         // Just return it. We can't help.
         if (TextUtils.isEmpty(asset))

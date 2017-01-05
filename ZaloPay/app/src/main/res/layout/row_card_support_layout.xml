@@ -17,6 +17,6 @@
         android:paddingBottom="3dp"
         android:paddingTop="3dp"
         android:scaleType="centerInside"
-        tools:src="@drawable/ic_chuyentien" />
+        tools:src="@drawable/ic_launcher" />
 </FrameLayout>
 
