@@ -8,4 +8,6 @@ public interface AuthenticationCallback {
     void onAuthenticated(String password);
 
     void onAuthenticationFailure();
+
+    void onCancel();
 }

@@ -146,6 +146,11 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             public void onAuthenticationFailure() {
 
             }
+
+            @Override
+            public void onCancel() {
+                
+            }
         });
 
         fragment.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);

@@ -2,12 +2,11 @@ package vn.com.vng.zalopay.fingerprint;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.exception.FingerprintException;
-import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 
@@ -15,29 +14,19 @@ import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
  * Created by hieuvm on 1/5/17.
  */
 
-public class PaymentFingerPrint implements IPaymentFingerPrint, AuthenticationProvider.Callback {
+public class PaymentFingerPrint implements IPaymentFingerPrint {
 
-    private KeyTools mKeyTools;
-    private AuthenticationProvider mProvider;
     private IFPCallback mCallback;
     private Context mContext;
+    private KeyTools mKeyTools;
 
     public PaymentFingerPrint(Context context) {
         mContext = context;
-        mKeyTools = new KeyTools(context, AndroidApplication.instance().getAppComponent().sharedPreferences());
-        mProvider = new FingerprintProvider(context, mKeyTools, this);
+        SharedPreferences mPreferences = ((AndroidApplication) context).getAppComponent().sharedPreferences();
+        mKeyTools = new KeyTools(context, mPreferences);
     }
 
     @Override
-    public void authen(IFPCallback ifpCallback) throws Exception {
-        mCallback = ifpCallback;
-        if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
-            mCallback.onComplete("");
-            return;
-        }
-        mProvider.startVerify();
-    }
-
     public void authen(Activity activity, IFPCallback callback) throws Exception {
 
         if (callback == null) {
@@ -47,7 +36,12 @@ public class PaymentFingerPrint implements IPaymentFingerPrint, AuthenticationPr
 
         mCallback = callback;
         if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
-            mCallback.onCancel();
+            mCallback.onComplete("");
+            return;
+        }
+
+        if (!mKeyTools.isHavePassword()) {
+            mCallback.onComplete("");
             return;
         }
 
@@ -65,14 +59,16 @@ public class PaymentFingerPrint implements IPaymentFingerPrint, AuthenticationPr
             public void onAuthenticationFailure() {
 
             }
+
+            @Override
+            public void onCancel() {
+                if (mCallback != null) {
+                    mCallback.onCancel();
+                }
+            }
         });
 
         dialog.show(activity.getFragmentManager(), AuthenticationDialog.TAG);
-    }
-
-    @Override
-    public void stopAuthen() throws Exception {
-        mProvider.stopVerify();
     }
 
     @Override
@@ -83,24 +79,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint, AuthenticationPr
         }
     }
 
-    @Override
-    public void onAuthenticated(String password) {
-        if (mCallback != null) {
-            mCallback.onComplete(password);
-        }
-    }
+    public void stopAuthen() throws Exception {
 
-    @Override
-    public void onError(Throwable e) {
-        if (e instanceof FingerprintException) {
-            if (((FingerprintException) e).mErrorCode > 0) { // FingerprintManager
-                mCallback.onCancel();
-                return;
-            }
-        }
-
-        FPError error = new FPError();
-        error.message = e.getMessage();
-        mCallback.onError(error);
     }
 }

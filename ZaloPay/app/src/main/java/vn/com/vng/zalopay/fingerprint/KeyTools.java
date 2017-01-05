@@ -7,6 +7,7 @@ import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -288,6 +289,15 @@ public class KeyTools {
     }
 
     public void updatePassword(String password) {
+        if (!isHavePassword()) {
+            return;
+        }
+
         encrypt(password, true);
+    }
+
+    public boolean isHavePassword() {
+        String password = mPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
+        return !TextUtils.isEmpty(password);
     }
 }

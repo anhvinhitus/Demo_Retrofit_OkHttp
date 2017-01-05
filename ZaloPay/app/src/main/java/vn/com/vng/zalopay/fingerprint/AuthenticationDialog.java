@@ -196,6 +196,9 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     @OnClick(R.id.cancel_button)
     public void onClickCancel(View v) {
+        if (mCallback != null) {
+            mCallback.onCancel();
+        }
         dismiss();
     }
 
@@ -236,8 +239,9 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         switch (mStage) {
             case FINGERPRINT_DECRYPT:
                 mCancelButton.setText(R.string.cancel);
-                mCancelButton.setVisibility(mVisibleSecondButton ? View.VISIBLE : View.GONE);
+                mCancelButton.setVisibility(View.VISIBLE);
                 mSecondDialogButton.setText(R.string.use_password);
+                mSecondDialogButton.setVisibility(mVisibleSecondButton ? View.VISIBLE : View.GONE);
                 mFingerprintDecrypt.setVisibility(View.VISIBLE);
                 mFingerprintEncrypt.setVisibility(View.GONE);
                 mBackupContent.setVisibility(View.GONE);
