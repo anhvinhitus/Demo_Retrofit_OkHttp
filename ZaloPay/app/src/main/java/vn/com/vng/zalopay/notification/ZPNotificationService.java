@@ -200,12 +200,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
             final List<NotificationData> listMessage = ((RecoveryMessageEvent) event).listNotify;
             Timber.d("Receive notification %s", listMessage);
 
-            if (Lists.isEmptyOrNull(listMessage)) {
-                this.recoveryTransaction();
-                return;
-            }
-
-            if (mNotificationHelper != null) {
+            if (mNotificationHelper != null && !Lists.isEmptyOrNull(listMessage)) {
                 //Cần recoveryNotification xong để set lasttime recovery xong,
                 // mới tiếp tục sendmessage recovery.
                 Subscription sub = mNotificationHelper.recoveryNotification(listMessage)
@@ -241,6 +236,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
             if (listMessage.size() < NUMBER_NOTIFICATION) {
                 this.recoveryTransaction();
+                this.recoveryRedPacketStatus();
             }
         }
     }
@@ -268,6 +264,10 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     private void recoveryTransaction() {
         Timber.d("Begin recovery transaction");
         mNotificationHelper.recoveryTransaction();
+    }
+
+    private void recoveryRedPacketStatus() {
+        mNotificationHelper.recoveryRedPacketStatus();
     }
 
     private void sendMessageRecovery(long timeStamp) {

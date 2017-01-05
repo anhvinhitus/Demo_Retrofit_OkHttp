@@ -12,6 +12,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.entity.RedPacketStatusEntity;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
@@ -52,6 +53,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     private final User user;
     private final int mAppId;
     private final Gson mGson;
+
 
     public RedPacketRepository(RedPacketStore.RequestService requestService,
                                RedPacketStore.RequestTPEService requestTPEService,
@@ -468,5 +470,17 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     private void insertPackageInBundle(List<PackageInBundle> packageInBundles) {
         mLocalStorage.putPackageInBundle(Lists.transform(packageInBundles, mDataMapper::transform));
+    }
+
+    @Override
+    public Observable<Boolean> getListPackageStatus(List<Long> listpackageid) {
+        return mRequestService.getListPackageStatus(listpackageid, user.zaloPayId, user.accesstoken)
+                .doOnNext(response -> updateListPackageStatus(response.listpackagestatus))
+                .map(BaseResponse::isSuccessfulResponse)
+                ;
+    }
+
+    private void updateListPackageStatus(List<RedPacketStatusEntity> listpackagestatus) {
+        mLocalStorage.updateListPackageStatus(listpackagestatus);
     }
 }

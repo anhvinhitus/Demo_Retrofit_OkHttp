@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -70,6 +71,7 @@ public class NotificationHelper {
     private final UserConfig mUserConfig;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private List<Long> mListPacketIdToRecovery = new ArrayList<>();
 
     @Inject
     NotificationHelper(Context applicationContext, User user,
@@ -150,7 +152,7 @@ public class NotificationHelper {
                 mUserConfig.setWaitingApproveProfileLevel3(false);
                 break;
             case NotificationType.SEND_RED_PACKET:
-                extractRedPacketFromNotification(notify);
+                extractRedPacketFromNotification(notify, false);
                 break;
             case NotificationType.RETRY_TRANSACTION:
                 updateTransactionStatus(notify);
@@ -225,7 +227,7 @@ public class NotificationHelper {
         mEventBus.post(event);
     }
 
-    private void extractRedPacketFromNotification(NotificationData data) {
+    private void extractRedPacketFromNotification(NotificationData data, boolean addToRecovery) {
         try {
             JsonObject embeddata = data.getEmbeddata();
             if (embeddata == null) {
@@ -242,6 +244,10 @@ public class NotificationHelper {
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<>());
             compositeSubscription.add(subscription);
+
+            if (addToRecovery) {
+                mListPacketIdToRecovery.add(packageid);
+            }
         } catch (Exception ex) {
             Timber.e(ex, "Extract RedPacket error");
         }
@@ -447,7 +453,7 @@ public class NotificationHelper {
 
             switch (notificationType) {
                 case NotificationType.SEND_RED_PACKET:
-                    extractRedPacketFromNotification(notify);
+                    extractRedPacketFromNotification(notify, true);
                     break;
             }
         }
@@ -457,6 +463,14 @@ public class NotificationHelper {
         Timber.d("Recovery notification size [%s]", listMessage.size());
         processRecoveryNotification(listMessage);
         return mNotifyRepository.recoveryNotify(listMessage);
+    }
+
+    void recoveryRedPacketStatus() {
+        Subscription subscription = mRedPacketRepository.getListPackageStatus(mListPacketIdToRecovery)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<Boolean>());
+        compositeSubscription.add(subscription);
     }
 
     void recoveryTransaction() {

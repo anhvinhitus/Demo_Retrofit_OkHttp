@@ -71,5 +71,6 @@ public class Constants {
         String GETPACKAGESINBUNDLE = "redpackage/getpackagesinbundle";
         String GETAPPINFO = "redpackage/getappinfo";
         String SUBMITTOSENDBUNDLEBYZALOPAYINFO = "redpackage/submittosendbundlebyzalopayinfo";
+        String GET_LIST_PACKAGE_STATUS = "redpackage/getlistpackagestatus";
     }
 }

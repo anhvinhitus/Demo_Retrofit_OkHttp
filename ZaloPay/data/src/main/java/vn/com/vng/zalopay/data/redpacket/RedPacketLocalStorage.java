@@ -1,10 +1,13 @@
 package vn.com.vng.zalopay.data.redpacket;
 
+import android.support.annotation.Nullable;
+
 import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.entity.RedPacketStatusEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.BundleGD;
@@ -177,7 +180,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     @Override
     public Observable<List<SentBundle>> getSentBundle(long timeCreate, int limit) {
         if (limit <= 0) {
-            return ObservableHelper.makeObservable(() -> Collections.emptyList());
+            return Observable.just(Collections.emptyList());
         }
         return ObservableHelper.makeObservable(() -> querySentBundleList(timeCreate, limit))
                 .doOnNext(redPackageList -> Timber.d("getSentBundle timeCreate [%s] limit [%s] size [%s]",
@@ -200,7 +203,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
             return null;
         }
 
-        sentBundleGD.status = (long)(status);
+        sentBundleGD.status = (long) (status);
         getDaoSession().getSentBundleGDDao().insertOrReplace(sentBundleGD);
         Timber.d("SentBundle is set to be opened");
         return null;
@@ -291,7 +294,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
             return null;
         }
 
-        packageGD.status = (long)(status);
+        packageGD.status = (long) (status);
         packageGD.messageStatus = (messageStatus);
         packageGD.amount = (amount);
         packageGD.openedTime = (System.currentTimeMillis());
@@ -308,7 +311,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         if (packageGD == null) {
             packageGD = new ReceivePackageGD();
             packageGD.id = (packetId);
-            packageGD.status = (long)(RedPacketStatus.CanOpen.getValue());
+            packageGD.status = (long) (RedPacketStatus.CanOpen.getValue());
         }
         packageGD.bundleID = (bundleId);
         packageGD.senderFullName = (senderName);
@@ -327,8 +330,9 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     @Override
     public void putReceivePackages(List<ReceivePackageGD> receivePackageGDs) {
         if (Lists.isEmptyOrNull(receivePackageGDs)) {
-            emptyList();
+            return;
         }
+
         try {
             getDaoSession().getReceivePackageGDDao().insertOrReplaceInTx(receivePackageGDs);
 
@@ -341,7 +345,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
     @Override
     public Observable<List<ReceivePackage>> getReceiveBundle(long openTime, int limit) {
         if (limit <= 0) {
-            return ObservableHelper.makeObservable(() -> Collections.emptyList());
+            Observable.just(Collections.emptyList());
         }
         return ObservableHelper.makeObservable(() -> queryReceivePackageList(openTime, limit))
                 .doOnNext(receivePackageList -> Timber.d("getReceiveBundle openTime [%s] limit [%s] size [%s]",
@@ -448,6 +452,24 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
             return null;
         } else {
             return receivePackages.get(0);
+        }
+    }
+
+    @Override
+    public void updateListPackageStatus(@Nullable List<RedPacketStatusEntity> entities) {
+        if (Lists.isEmptyOrNull(entities)) {
+            return;
+        }
+
+        Timber.d("updateListPackageStatus: %s", entities.size());
+
+        for (RedPacketStatusEntity entity : entities) {
+            ReceivePackageGD receivePackageGD = getPacketStatus(entity.packageID);
+            if (receivePackageGD == null) {
+                continue;
+            }
+            receivePackageGD.status = entity.status;
+            getDaoSession().insertOrReplace(receivePackageGD);
         }
     }
 }

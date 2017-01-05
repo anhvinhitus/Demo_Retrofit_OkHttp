@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.redpacket;
 
+import android.support.annotation.Nullable;
+
 import java.util.List;
 
 import retrofit2.http.Field;
@@ -9,8 +11,10 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.api.entity.RedPacketStatusEntity;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.api.response.ListRedPacketStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
@@ -25,6 +29,7 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
+import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
@@ -85,6 +90,8 @@ public interface RedPacketStore {
         Void addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
 
         ReceivePackage getReceivedPacket(long packetId);
+
+        void updateListPackageStatus(@Nullable List<RedPacketStatusEntity> listpackagestatus);
     }
 
     interface RequestTPEService {
@@ -121,6 +128,8 @@ public interface RedPacketStore {
         @POST(Constants.REDPACKET_API.SUBMITTOSENDBUNDLEBYZALOPAYINFO)
         Observable<BaseResponse> submittosendbundlebyzalopayinfo(@Field("bundleid") long bundleID, @Field("zalopayoffriendlist") String friends, @Field("zalopayofsender") String sender, @Field("accesstoken") String accessToken);
 
+        @GET(Constants.REDPACKET_API.GET_LIST_PACKAGE_STATUS)
+        Observable<ListRedPacketStatusResponse> getListPackageStatus(@Query("listpackageid") List<Long> list, @Query("userid") String zalopayId, @Query("accesstoken") String accessToken);
     }
 
     /**
@@ -160,5 +169,7 @@ public interface RedPacketStore {
         Observable<RedPacketAppInfo> getAppInfoServer(String checksum);
 
         Observable<RedPacketAppInfo> getRedPacketAppInfo();
+
+        Observable<Boolean> getListPackageStatus(List<Long> listpackageid);
     }
 }
