@@ -9,13 +9,16 @@ import android.security.keystore.KeyProperties;
 import android.support.annotation.Nullable;
 import android.util.Base64;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -65,24 +68,7 @@ public class KeyTools {
         return mKeyStore;
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    @Nullable
-    private KeyGenerator providesKeyGenerator() {
-        if (!FingerprintProvider.checkAndroidMVersion()) {
-            return null;
-        }
-
-        try {
-            return KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            Timber.e(e, "Failed to get an instance of KeyGenerator");
-            return null;
-        }
-    }
-
-
     private SecretKey getKey() {
-
         KeyStore mKeyStore = getKeyStore();
         if (mKeyStore == null) {
             Timber.d(new NullPointerException(), "KeyStore is NULL");
@@ -91,11 +77,10 @@ public class KeyTools {
 
         try {
             mKeyStore.load(null);
-            KeyStore.Entry entry = mKeyStore.getEntry(Constants.KEY_ALIAS_NAME, null);
-            if (entry != null) {
-                return ((KeyStore.SecretKeyEntry) entry).getSecretKey();
+            SecretKey key = (SecretKey) mKeyStore.getKey(Constants.KEY_ALIAS_NAME, null);
+            if (key != null) {
+                return key;
             }
-
             return createKey();
 
         } catch (Exception e) {
@@ -115,7 +100,7 @@ public class KeyTools {
                     | KeyProperties.PURPOSE_DECRYPT)
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                    // .setKeySize(128)
+                    //.setKeySize(128)
                     .build();
 
             KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE);
@@ -159,7 +144,7 @@ public class KeyTools {
             }
             return cipher;
         } catch (Exception e) {
-            Timber.e(e, "get cipher error");
+            Timber.d("Get cipher error", e);
         }
         return null;
     }
@@ -196,11 +181,11 @@ public class KeyTools {
         }*/
 
         mDecryptCipher = getCipher(Cipher.DECRYPT_MODE);
-        Timber.d("decrypt cipher: %s", mDecryptCipher);
+        Timber.d("decrypt cipher: [%s]", mDecryptCipher);
         return (mDecryptCipher != null);
     }
 
-    public boolean encrypt2(String secret) {
+   /* public boolean encrypt2(String secret) {
         Timber.d("encrypt [%s]", secret);
         try {
 
@@ -224,10 +209,10 @@ public class KeyTools {
         }
 
         return false;
-    }
-
+    }*/
 
     public String decrypt(Cipher cipher) {
+        Timber.d("decrypt : [%s]", cipher);
         try {
             String keyPassword = mPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
             Timber.d("secret base64: [%s] ", keyPassword);
@@ -236,36 +221,27 @@ public class KeyTools {
             String result = new String(decodedData);
             Timber.d("decrypt: %s", result);
             return result;
+
+            //   Timber.d("encrypt: %s", passwordSha256.getBytes().length);
+            // Timber.d("encrypt: %s %s", outputStream.toByteArray(), new String(outputStream.toByteArray()));
+          /*  String keyPassword = mPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
+            Timber.d("secret base64 : %s", keyPassword);
+            byte[] decodeData = Base64.decode(keyPassword, Base64.DEFAULT);
+            byte[] in = new byte[decodeData.length];
+            Timber.d("decrypt: %s", decodeData.length);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(decodeData);
+            CipherInputStream cipherInputStream = new CipherInputStream(inputStream, mDecryptCipher);
+            IOUtils.readFully(cipherInputStream, in);
+            String muchWow = new String(in);
+            Timber.d("encrypt: muchWow %s", muchWow);
+            cipherInputStream.close();
+            return muchWow;*/
         } catch (Exception e) {
             Timber.e(e, "Failed to decrypt the data with the generated key.");
         }
         return null;
     }
 
- /*   public String decrypt2(Cipher cipher) {
-        try {
-
-          *//*  IvParameterSpec ivParameterSpec = new IvParameterSpec(cipher.getIV());
-            cipher = Cipher.getInstance(TRANSFORMATION);
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);*//*
-
-            byte[] in = new byte[suchAlphabet.getBytes().length];
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
-            IOUtils.readFully(cipherInputStream, in);
-            cipherInputStream.close();
-
-        } catch (Exception e) {
-            Timber.e(e, "Failed to decrypt the data with the generated key.");
-        }
-        //  VERIFY
-        //  String muchWow = new String(in);
-
-        return null;
-    }*/
-
-
-    private static final String TRANSFORMATION = "AES/CBC/PKCS7Padding";
 
     @TargetApi(Build.VERSION_CODES.M)
     public boolean encrypt(String secret) {
@@ -275,12 +251,16 @@ public class KeyTools {
 
         try {
             final String passwordSha256 = Utils.sha256Base(secret);
-
-            initEncryptCipher();
+            Timber.d("Password sha256 : [%s]", passwordSha256);
+            if (!initEncryptCipher()) {
+                return false;
+            }
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, mEncryptCipher);
             cipherOutputStream.write(passwordSha256.getBytes());
+            cipherOutputStream.flush();
+            cipherOutputStream.close();
 
             IvParameterSpec ivParams = new IvParameterSpec(mEncryptCipher.getIV());
             String iv = Base64.encodeToString(ivParams.getIV(), Base64.DEFAULT);
@@ -288,41 +268,12 @@ public class KeyTools {
             byte[] encrypted = outputStream.toByteArray();
             SharedPreferences.Editor editor = mPreferences.edit();
             String secretBase64 = Base64.encodeToString(encrypted, Base64.DEFAULT);
+            editor.putString(Constants.PREF_KEY_PASSWORD, secretBase64);
+            editor.putString(Constants.PREF_KEY_PASSWORD_IV, iv);
+            editor.apply();
+
             Timber.d("secret base64 : [%s]", secretBase64);
             Timber.d("iv : [%s]", iv);
-            editor.putString(Constants.PREF_KEY_PASSWORD, secretBase64);
-            editor.putString(Constants.PREF_KEY_PASSWORD_IV, iv);
-            editor.apply();
-
-            cipherOutputStream.flush();
-            cipherOutputStream.close();
-
-            return true;
-        } catch (Exception ex) {
-            Timber.e(ex, "Failed to encrypt the data with the generated key.");
-        }
-        return false;
-    }
-
-    public boolean encrypt3(String secret) {
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, mEncryptCipher);
-            cipherOutputStream.write(secret.getBytes());
-
-            IvParameterSpec ivParams = new IvParameterSpec(mEncryptCipher.getIV());
-            String iv = Base64.encodeToString(ivParams.getIV(), Base64.DEFAULT);
-
-            byte[] encrypted = outputStream.toByteArray();
-            SharedPreferences.Editor editor = mPreferences.edit();
-            String secretBase64 = Base64.encodeToString(encrypted, Base64.DEFAULT);
-            Timber.d("secret base64 : [%s]", secretBase64);
-            editor.putString(Constants.PREF_KEY_PASSWORD, secretBase64);
-            editor.putString(Constants.PREF_KEY_PASSWORD_IV, iv);
-            editor.apply();
-
-            cipherOutputStream.flush();
-            cipherOutputStream.close();
             return true;
         } catch (Exception ex) {
             Timber.e(ex, "Failed to encrypt the data with the generated key.");
@@ -342,6 +293,5 @@ public class KeyTools {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putString(Constants.PREF_KEY_PASSWORD, password);
         editor.apply();
-
     }
 }
