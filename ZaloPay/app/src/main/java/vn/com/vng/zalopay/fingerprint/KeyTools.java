@@ -9,16 +9,11 @@ import android.security.keystore.KeyProperties;
 import android.support.annotation.Nullable;
 import android.util.Base64;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.util.Arrays;
 
 import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -245,20 +240,27 @@ public class KeyTools {
 
     @TargetApi(Build.VERSION_CODES.M)
     public boolean encrypt(String secret) {
+        return encrypt(secret, false);
+    }
+
+    private boolean encrypt(String secret, boolean isSha256) {
         if (!FingerprintProvider.checkAndroidMVersion()) {
             return false;
         }
 
         try {
-            final String passwordSha256 = Utils.sha256Base(secret);
-            Timber.d("Password sha256 : [%s]", passwordSha256);
+            if (!isSha256) {
+                secret = Utils.sha256Base(secret);
+            }
+
+            Timber.d("Password sha256 : [%s]", secret);
             if (!initEncryptCipher()) {
                 return false;
             }
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, mEncryptCipher);
-            cipherOutputStream.write(passwordSha256.getBytes());
+            cipherOutputStream.write(secret.getBytes());
             cipherOutputStream.flush();
             cipherOutputStream.close();
 
@@ -281,17 +283,11 @@ public class KeyTools {
         return false;
     }
 
-    public Cipher getDecryptCipher() {
+    Cipher getDecryptCipher() {
         return mDecryptCipher;
     }
 
-    public Cipher getEncryptCipher() {
-        return mEncryptCipher;
-    }
-
     public void updatePassword(String password) {
-        SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putString(Constants.PREF_KEY_PASSWORD, password);
-        editor.apply();
+        encrypt(password, true);
     }
 }

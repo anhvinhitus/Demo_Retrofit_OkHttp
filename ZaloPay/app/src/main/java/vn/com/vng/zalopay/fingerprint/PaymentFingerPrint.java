@@ -1,10 +1,12 @@
 package vn.com.vng.zalopay.fingerprint;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.exception.FingerprintException;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
@@ -17,7 +19,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint, AuthenticationPr
 
     private KeyTools mKeyTools;
     private AuthenticationProvider mProvider;
-    private IFPCallback mFPCallback;
+    private IFPCallback mCallback;
     private Context mContext;
 
     public PaymentFingerPrint(Context context) {
@@ -28,12 +30,44 @@ public class PaymentFingerPrint implements IPaymentFingerPrint, AuthenticationPr
 
     @Override
     public void authen(IFPCallback ifpCallback) throws Exception {
-        mFPCallback = ifpCallback;
+        mCallback = ifpCallback;
         if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
-            mFPCallback.onComplete("");
+            mCallback.onComplete("");
             return;
         }
         mProvider.startVerify();
+    }
+
+    public void authen(Activity activity, IFPCallback callback) throws Exception {
+
+        if (callback == null) {
+            Timber.d("Callback is null");
+            return;
+        }
+
+        mCallback = callback;
+        if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
+            mCallback.onCancel();
+            return;
+        }
+
+        AuthenticationDialog dialog = new AuthenticationDialog();
+        dialog.setVisibleSecondButton(false);
+        dialog.setAuthenticationCallback(new AuthenticationCallback() {
+            @Override
+            public void onAuthenticated(String password) {
+                if (mCallback != null) {
+                    mCallback.onComplete(password);
+                }
+            }
+
+            @Override
+            public void onAuthenticationFailure() {
+
+            }
+        });
+
+        dialog.show(activity.getFragmentManager(), AuthenticationDialog.TAG);
     }
 
     @Override
@@ -44,22 +78,29 @@ public class PaymentFingerPrint implements IPaymentFingerPrint, AuthenticationPr
     @Override
     public void updatePassword(String s, String s1) throws Exception {
         Timber.d("updatePassword: passwordOld %s passwordNew %s", s, s1);
-        if (!TextUtils.isEmpty(s) && !s.equals(s1)) {
+        if (!TextUtils.isEmpty(s1) && !s1.equals(s)) {
             mKeyTools.updatePassword(s1);
         }
     }
 
     @Override
     public void onAuthenticated(String password) {
-        if (mFPCallback != null) {
-            mFPCallback.onComplete(password);
+        if (mCallback != null) {
+            mCallback.onComplete(password);
         }
     }
 
     @Override
     public void onError(Throwable e) {
+        if (e instanceof FingerprintException) {
+            if (((FingerprintException) e).mErrorCode > 0) { // FingerprintManager
+                mCallback.onCancel();
+                return;
+            }
+        }
+
         FPError error = new FPError();
         error.message = e.getMessage();
-        mFPCallback.onError(error);
+        mCallback.onError(error);
     }
 }

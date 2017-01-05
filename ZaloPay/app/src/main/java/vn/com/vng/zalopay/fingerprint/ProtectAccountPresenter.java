@@ -125,13 +125,21 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         fragment.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
-                mView.setCheckedFingerprint(true);
-                mView.setCheckedProtectAccount(true);
-                setUseProtectAccount(true);
-                // if (mKeyTools.initEncryptCipher()) {
+
                 boolean result = mKeyTools.encrypt(password);
                 Timber.d("encrypt cipher result %s", result);
-                // }
+                if (!result) {
+                    return;
+                }
+
+                setUseProtectAccount(true);
+
+                if (mView == null) {
+                    return;
+                }
+
+                mView.setCheckedFingerprint(true);
+                mView.setCheckedProtectAccount(true);
             }
 
             @Override

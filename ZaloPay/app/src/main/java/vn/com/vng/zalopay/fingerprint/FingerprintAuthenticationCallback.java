@@ -1,51 +1,75 @@
 package vn.com.vng.zalopay.fingerprint;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 
 import java.lang.ref.WeakReference;
+
+import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 
 /**
  * Created by hieuvm on 12/29/16.
  */
 @TargetApi(Build.VERSION_CODES.M)
 final class FingerprintAuthenticationCallback extends FingerprintManager.AuthenticationCallback {
-    private WeakReference<FingerprintProvider> fingerprintUiHelper;
+    private WeakReference<FingerprintProvider> fingerprintProvider;
+    private Context mContext;
 
-    FingerprintAuthenticationCallback(FingerprintProvider fingerprintUiHelper) {
-        this.fingerprintUiHelper = new WeakReference<>(fingerprintUiHelper);
+    FingerprintAuthenticationCallback(Context context, FingerprintProvider fingerprintUiHelper) {
+        this.fingerprintProvider = new WeakReference<>(fingerprintUiHelper);
+        this.mContext = context;
     }
 
     @Override
     public void onAuthenticationError(int errorCode, CharSequence errString) {
-        if (fingerprintUiHelper.get() == null) {
+        Timber.d("onAuthenticationError: errorCode %s errString %s", errorCode, errString);
+        if (fingerprintProvider.get() == null) {
             return;
         }
-        fingerprintUiHelper.get().onAuthenticationError(errorCode, errString);
+
+        switch (errorCode) {
+            case FingerprintManager.FINGERPRINT_ERROR_LOCKOUT:
+                errString = mContext.getString(R.string.finger_too_many_attempts);
+                break;
+        }
+
+        fingerprintProvider.get().onAuthenticationError(errorCode, errString);
     }
 
     @Override
     public void onAuthenticationHelp(int helpCode, CharSequence helpString) {
-        if (fingerprintUiHelper.get() == null) {
+        Timber.d("onAuthenticationHelp: helpCode %s helpString %s", helpCode, helpString);
+        if (fingerprintProvider.get() == null) {
             return;
         }
-        fingerprintUiHelper.get().onAuthenticationHelp(helpCode, helpString);
+        switch (helpCode) {
+            case FingerprintManager.FINGERPRINT_ACQUIRED_TOO_FAST:
+                helpString = mContext.getString(R.string.finger_moved_too_fast);
+                break;
+            case FingerprintManager.FINGERPRINT_ACQUIRED_TOO_SLOW:
+                helpString = mContext.getString(R.string.finger_moved_too_slow);
+                break;
+        }
+        fingerprintProvider.get().onAuthenticationHelp(helpCode, helpString);
     }
 
     @Override
     public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
-        if (fingerprintUiHelper.get() == null) {
+        if (fingerprintProvider.get() == null) {
             return;
         }
-        fingerprintUiHelper.get().onAuthenticationSucceeded(result);
+        fingerprintProvider.get().onAuthenticationSucceeded(result);
     }
 
     @Override
     public void onAuthenticationFailed() {
-        if (fingerprintUiHelper.get() == null) {
+        Timber.d("onAuthenticationFailed");
+        if (fingerprintProvider.get() == null) {
             return;
         }
-        fingerprintUiHelper.get().onAuthenticationFailed();
+        fingerprintProvider.get().onAuthenticationFailed();
     }
 }

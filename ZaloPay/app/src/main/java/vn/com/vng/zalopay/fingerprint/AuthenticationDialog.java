@@ -236,8 +236,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         switch (mStage) {
             case FINGERPRINT_DECRYPT:
                 mCancelButton.setText(R.string.cancel);
-                mCancelButton.setVisibility(View.VISIBLE);
-
+                mCancelButton.setVisibility(mVisibleSecondButton ? View.VISIBLE : View.GONE);
                 mSecondDialogButton.setText(R.string.use_password);
                 mFingerprintDecrypt.setVisibility(View.VISIBLE);
                 mFingerprintEncrypt.setVisibility(View.GONE);
@@ -247,7 +246,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
             case PASSWORD:
                 mCancelButton.setText(R.string.cancel);
                 mCancelButton.setVisibility(View.INVISIBLE);
-
                 mSecondDialogButton.setText(R.string.txt_close);
                 mFingerprintEncrypt.setVisibility(View.GONE);
                 mFingerprintDecrypt.setVisibility(View.GONE);
@@ -373,4 +371,10 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
             // mIcon.setImageResource(R.drawable.ic_touch);
         }
     };
+
+    private boolean mVisibleSecondButton = true;
+
+    public void setVisibleSecondButton(boolean visibleSecondButton) {
+        this.mVisibleSecondButton = visibleSecondButton;
+    }
 }

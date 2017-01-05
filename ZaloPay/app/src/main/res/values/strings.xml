@@ -446,6 +446,9 @@
     <string name="protection.information.description">Hỏi mật khẩu hoặc xác thực vân tay mỗi khi truy xuất: Danh sách liên kết thẻ, Thông tin cá nhân, Lịch sử thanh toán.</string>
     <string name="change.password">Đổi mật khẩu thanh toán</string>
     <string name="change.password.description">Mật khẩu thanh toán dùng để xác thực mỗi khi thực hiện thanh toán</string>
+    <string name="finger.moved.too.fast">Ngón tay di chuyển quá nhanh. Vui lòng thử lại.</string>
+    <string name="finger.moved.too.slow">Ngón tay di chuyển quá chậm. Vui lòng thử lại.</string>
+    <string name="finger.too.many.attempts">Thực hiện xác thực quá nhiều. Vui lòng thử lại.</string>
     <!-- End Fingerprint-->
 
 </resources>

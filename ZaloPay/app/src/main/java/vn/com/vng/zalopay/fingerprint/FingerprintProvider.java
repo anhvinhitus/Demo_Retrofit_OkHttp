@@ -13,7 +13,7 @@ import javax.crypto.Cipher;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.exception.GenericException;
+import vn.com.vng.zalopay.exception.FingerprintException;
 
 /**
  * Created by hieuvm on 1/3/17.
@@ -108,23 +108,25 @@ public class FingerprintProvider implements AuthenticationProvider {
 
     private FingerprintAuthenticationCallback getFingerCallBack() {
         if (mFingerCallBack == null) {
-            mFingerCallBack = new FingerprintAuthenticationCallback(this);
+            mFingerCallBack = new FingerprintAuthenticationCallback(mContext, this);
         }
         return mFingerCallBack;
     }
 
     void onAuthenticationError(int errMsgId, CharSequence errString) {
         if (!mSelfCancelled) {
-            mCallback.onError(new GenericException(errString.toString()));
+            mCallback.onError(new FingerprintException(errMsgId, errString.toString()));
         }
     }
 
     void onAuthenticationHelp(int helpMsgId, CharSequence helpString) {
-        mCallback.onError(new GenericException(helpString.toString()));
+        if (!mSelfCancelled) {
+            mCallback.onError(new FingerprintException(helpMsgId, helpString.toString()));
+        }
     }
 
     void onAuthenticationFailed() {
-        mCallback.onError(new GenericException(mContext.getString(R.string.fingerprint_not_recognized)));
+        mCallback.onError(new FingerprintException(-1, mContext.getString(R.string.fingerprint_not_recognized)));
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -132,6 +134,7 @@ public class FingerprintProvider implements AuthenticationProvider {
         final Cipher c = result.getCryptoObject().getCipher();
         String string = mKeyTools.decrypt(c);
         if (TextUtils.isEmpty(string)) {
+            Timber.d("onAuthenticationSucceeded: decrypt empty");
             return;
         }
         mCallback.onAuthenticated(string);
@@ -174,7 +177,6 @@ public class FingerprintProvider implements AuthenticationProvider {
             if (mKeyTools.initDecryptCipher()) {
                 startListening(new FingerprintManager.CryptoObject(mKeyTools.getDecryptCipher()));
             }
-
         } catch (Exception ex) {
             Timber.d(ex, "start verify");
         }
