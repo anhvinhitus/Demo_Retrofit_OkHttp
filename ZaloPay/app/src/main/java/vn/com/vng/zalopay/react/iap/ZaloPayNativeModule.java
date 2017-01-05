@@ -38,6 +38,7 @@ import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.FileDownloader;
 import vn.com.zalopay.analytics.ZPAnalytics;
 
 /**
@@ -295,12 +296,41 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void loadFontAsync(final String fontFamilyName, final String localUri, final Promise promise) {
+    public void loadFontAsync(final String fontFamilyName, final String url, final Promise promise) {
+        if (fontFamilyName.equalsIgnoreCase("") || url.equalsIgnoreCase("")) {
+            promise.reject(new Exception("Do not leave param null"));
+            return;
+        }
+
         try {
-            Timber.d("loadFontAsync fontPath %s", localUri);
-            Typeface typeface = Typeface.createFromFile(new File(Uri.parse(localUri).getPath()));
-            ReactFontManager.getInstance().setTypeface("MerchantFont-" + fontFamilyName, Typeface.NORMAL, typeface);
-            promise.resolve(Arguments.createMap());
+            Timber.d("loadFontAsync fontPath %s", url);
+            if (url.contains("file://")) {
+                Typeface typeface = Typeface.createFromFile(new File(Uri.parse(url).getPath()));
+                ReactFontManager.getInstance().setTypeface(fontFamilyName, Typeface.NORMAL, typeface);
+                promise.resolve(Arguments.createMap());
+            } else {
+                FileDownloader.DownloadParam param = new FileDownloader.DownloadParam();
+                param.fileName = fontFamilyName;
+                param.url = url;
+                param.dest = getReactApplicationContext().getFilesDir() + "/Fonts/";
+                param.callback = new FileDownloader.DownloadCallback() {
+                    @Override
+                    public void onSuccess(File dest) {
+                        Typeface typeface = Typeface.createFromFile(dest);
+//                        ReactFontManager.getInstance().setTypeface("MerchantFont-" + fontFamilyName, Typeface.NORMAL, typeface);
+                        ReactFontManager.getInstance().setTypeface(fontFamilyName, Typeface.NORMAL, typeface);
+                        Timber.d("FileDownloader onSuccess");
+                        promise.resolve(Arguments.createMap());
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+                        promise.reject(e);
+                    }
+                };
+                FileDownloader downloader = new FileDownloader();
+                downloader.execute(param);
+            }
         } catch (Exception e) {
             promise.reject(e);
         }
