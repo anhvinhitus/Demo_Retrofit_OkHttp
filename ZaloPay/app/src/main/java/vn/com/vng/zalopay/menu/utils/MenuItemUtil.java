@@ -39,7 +39,7 @@ public class MenuItemUtil {
 
         mMenuItems.add(new MenuItem(TRANSACTION_ID, MenuItemType.HEADER, "GIAO DỊCH"));
         mMenuItems.add(new MenuItem(DEPOSIT_ID, MenuItemType.ITEM, "Nạp Tiền", R.string.menu_1_receivemoney, R.color.menu_font_ic_green));
-        mMenuItems.add(new MenuItem(SCAN_QR_ID, MenuItemType.ITEM, "Trả Tiền", R.string.menu_payqrcode, R.color.menu_font_ic_green));
+        mMenuItems.add(new MenuItem(SCAN_QR_ID, MenuItemType.ITEM, "Trả Tiền", R.string.menu_payqrcode, R.color.menu_font_ic_yellow));
         mMenuItems.add(new MenuItem(TRANSFER_ID, MenuItemType.ITEM, "Chuyển Tiền", R.string.menu_1_transfers, R.color.menu_font_ic_blue));
 
         mMenuItems.add(new MenuItem(APPLICATION_ID, MenuItemType.HEADER, "HỖ TRỢ"));
