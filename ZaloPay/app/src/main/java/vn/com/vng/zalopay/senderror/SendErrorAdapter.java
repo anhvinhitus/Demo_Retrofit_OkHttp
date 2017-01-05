@@ -1,38 +1,30 @@
-package vn.com.vng.zalopay.feedback;
+package vn.com.vng.zalopay.senderror;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
-import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 
 /**
  * Created by cpu11759-local on 03/01/2017.
  */
 
-public class FeedbackAdapter extends AbsRecyclerAdapter<Integer, RecyclerView.ViewHolder> {
+public class SendErrorAdapter extends AbsRecyclerAdapter<Integer, RecyclerView.ViewHolder> {
     private static final int FOOTER_VIEW = 1;
 
-    private FeedbackAdapter.OnClickAddListener addListener;
-    private FeedbackAdapter.OnClickDeleteListener deleteListener;
+    private SendErrorAdapter.OnClickAddListener addListener;
+    private SendErrorAdapter.OnClickDeleteListener deleteListener;
 
-    public FeedbackAdapter(Context context, FeedbackAdapter.OnClickAddListener addListener,
-                           FeedbackAdapter.OnClickDeleteListener deleteListener) {
+    public SendErrorAdapter(Context context, SendErrorAdapter.OnClickAddListener addListener,
+                            SendErrorAdapter.OnClickDeleteListener deleteListener) {
         super(context);
         this.addListener = addListener;
         this.deleteListener = deleteListener;
@@ -41,11 +33,11 @@ public class FeedbackAdapter extends AbsRecyclerAdapter<Integer, RecyclerView.Vi
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == FOOTER_VIEW) {
-            return new FeedbackAdapter.FooterViewHolder(mInflater
+            return new SendErrorAdapter.FooterViewHolder(mInflater
                     .inflate(R.layout.layout_add_screenshot, parent, false), addListener);
         }
 
-        return new FeedbackAdapter.ViewHolder(mInflater
+        return new SendErrorAdapter.ViewHolder(mInflater
                 .inflate(R.layout.row_card_image_feedback, parent, false), deleteListener);
     }
 
@@ -58,10 +50,10 @@ public class FeedbackAdapter extends AbsRecyclerAdapter<Integer, RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof FeedbackAdapter.ViewHolder) {
+        if (holder instanceof SendErrorAdapter.ViewHolder) {
             Integer screen = getItem(position);
             if (screen != null) {
-                ((FeedbackAdapter.ViewHolder) holder).bindView(screen);
+                ((SendErrorAdapter.ViewHolder) holder).bindView(screen);
             }
         }
 //        else if (holder instanceof FooterViewHolder) {

@@ -73,7 +73,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/transaction_id"
-                    app:zlp_paddingLeftLine="16dp" />
+                    app:zlp_paddingLeftLine="16dp"
+                    android:focusable="false"
+                    app:zlp_clearButton="false" />
 
                 <com.zalopay.ui.widget.edittext.ZPEditText
                     android:id="@+id/edtEmail"
@@ -84,14 +86,24 @@
                     android:inputType="textEmailAddress"
                     android:maxLength="@integer/max_length_email"
                     app:zlp_floatingLabelText="@string/compulsory_email"
-                    app:zlp_autoValidate="false"
                     app:zlp_paddingLeftLine="16dp" />
 
                 <com.zalopay.ui.widget.edittext.ZPEditText
                     android:id="@+id/edtDescribe"
-                    style="@style/ZaloPayEditText.DescribeError"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="8dp"
+                    app:zlp_autoValidate="false"
+                    app:zlp_checkCharactersCountAtBeginning="false"
+                    app:zlp_clearButton="true"
+                    app:zlp_floatingLabel="highlight"
+                    app:zlp_textColorHint="@color/hint"
+                    app:zlp_validateOnFocusLost="true"
+                    android:textSize="15sp"
+                    app:zlp_floatingLabelPadding="6dp"
                     android:hint="@string/describe_error"
                     android:inputType="textMultiLine|textNoSuggestions"
                     android:maxLength="@integer/max_length_describe_error"
@@ -110,119 +122,12 @@
                 android:layout_marginTop="@dimen/spacing.medium"
                 android:background="@color/separate" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingLeft="@dimen/spacing.medium"
-                    android:paddingRight="@dimen/spacing.medium">
-
-                    <TextView
-                        style="@style/TextView.Item.Title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txt_send_user_information" />
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:id="@+id/swSendUserInfor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:checked="true" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/separate"
-                    android:layout_marginLeft="@dimen/spacing.medium"
-                    android:background="@color/separate" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingLeft="@dimen/spacing.medium"
-                    android:paddingRight="@dimen/spacing.medium">
-
-                    <TextView
-                        style="@style/TextView.Item.Title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txt_send_device_information" />
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:id="@+id/swSendDeviceInfor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:checked="true" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/separate"
-                    android:layout_marginLeft="@dimen/spacing.medium"
-                    android:background="@color/separate" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingLeft="@dimen/spacing.medium"
-                    android:paddingRight="@dimen/spacing.medium">
-
-                    <TextView
-                        style="@style/TextView.Item.Title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txt_send_app_information" />
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:id="@+id/swSendAppInfor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:checked="true" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/txtTitleImage"
-                style="@style/TextView.SubTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/txt_attach_screen"
-                android:textSize="@dimen/font_size_medium" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="horizontal">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/listView"
-                    style="@style/RecyclerView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-            </LinearLayout>
+            <include layout="@layout/layout_send_error_information" />
         </LinearLayout>
     </ScrollView>
 
     <Button
-        android:id="@+id/btnSennd"
+        android:id="@+id/btnSend"
         style="@style/Button.Default.New"
         android:layout_width="match_parent"
         android:layout_height="@dimen/button.height"

@@ -110,7 +110,7 @@
     <string name="title.activity.tutorial.link.card">Thông Báo</string>
     <string name="title.activity.warning.root">Cảnh báo</string>
     <string name="title.activity.protect.account">Thiết lập bảo vệ tài khoản</string>
-    <string name="title.activity.feedback">Gửi báo lỗi</string>
+    <string name="title.activity.senderror">Gửi báo lỗi</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Hướng camera vào mã QR để thanh toán</string>
@@ -287,10 +287,10 @@
     <string name="txt_send_device_information">Gửi kèm thông tin thiết bị</string>
     <string name="txt_send_app_information">Gửi kèm thông tin ứng dụng</string>
     <string name="txt_attach_screen">Đính kèm màn hình (%s/4)</string>
-    <string name="email_to_feedback">Nhập email để nhận phản hồi <font color='red'>*</font></string>
-    <string name="compulsory_email">Email <font color='red'>*</font></string>
-    <string name="describe_error_count">Mô tả lỗi (%s/64)</string>
-    <string name="describe_error">Mô tả lỗi</string>
+    <string name="email_to_feedback">Nhập email để nhận phản hồi (bắt buộc)</string>
+    <string name="compulsory_email">Email (bắt buộc)</string>
+    <string name="describe_error_count">Mô tả lỗi (%s/64) (bắt buộc)</string>
+    <string name="describe_error">Mô tả lỗi (bắt buộc)</string>
     <string name="transaction_id">Mã giao dịch</string>
 
     <!-- Link CARDS START-->
