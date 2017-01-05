@@ -16,7 +16,7 @@ build:
   except:
     - tags  
   script:
-    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 assembleProductionRelease
+    - cd ZaloPay && ./gradlew --no-daemon --max-workers=3 assembleProductionDebug
 
 test:
   stage: test
