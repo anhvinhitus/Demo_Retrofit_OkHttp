@@ -1,6 +1,12 @@
 package vn.com.vng.zalopay.senderror;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +19,7 @@ import android.widget.TextView;
 
 import com.zalopay.ui.widget.edittext.ZPEditText;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,17 +32,21 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.AbsPickerImageFragment;
 import vn.com.vng.zalopay.data.UserCollector;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 import vn.zalopay.feedback.FeedbackCollector;
 import vn.zalopay.feedback.collectors.AppCollector;
 import vn.zalopay.feedback.collectors.DeviceCollector;
 import vn.zalopay.feedback.collectors.NetworkCollector;
 
-public class SendErrorFragment extends BaseFragment implements
+public class SendErrorFragment extends AbsPickerImageFragment implements
         SendErrorAdapter.OnClickAddListener, SendErrorAdapter.OnClickDeleteListener, SwitchCompat.OnCheckedChangeListener {
 
+    private static final int IMAGE_REQUEST_CODE = 100;
+
+    private static final int PERMISSION_READ_EXTERNAL_STORAGE = 1001;
+
     private SendErrorAdapter mAdapter;
+    private Uri mUri;
     private FeedbackCollector mCollector;
     private UserCollector mUserCollector;
     private AppCollector mAppCollector;
@@ -64,6 +75,13 @@ public class SendErrorFragment extends BaseFragment implements
 
     @BindView(R.id.btnSend)
     Button mBtnSend;
+
+    private String getEmail() {
+        if (mEdtEmail != null) {
+            return mEdtEmail.getText().toString();
+        }
+        return "";
+    }
 
     public static SendErrorFragment newInstance() {
         return new SendErrorFragment();
@@ -112,12 +130,12 @@ public class SendErrorFragment extends BaseFragment implements
         testData();
     }
 
-    public void setScreenshot(List<Integer> images) {
+    public void setScreenshot(List<Bitmap> images) {
         mAdapter.setData(images);
         setImageCount();
     }
 
-    public void updateScreenshot(Integer image) {
+    public void updateScreenshot(Bitmap image) {
         mAdapter.insert(image);
         setImageCount();
     }
@@ -210,7 +228,7 @@ public class SendErrorFragment extends BaseFragment implements
 
     @Override
     public void onClickAdd() {
-        showBottomSheetDialog();
+        showBottomSheetDialog(IMAGE_REQUEST_CODE);
     }
 
     @Override
@@ -218,20 +236,77 @@ public class SendErrorFragment extends BaseFragment implements
         removeScreenshot(position);
     }
 
-    private void showBottomSheetDialog() {
+    private void showBottomSheetDialog(final int requestCode) {
         AbsPickerImageFragment.CoverBottomSheetDialogFragment dialog = AbsPickerImageFragment.CoverBottomSheetDialogFragment.newInstance();
         dialog.setOnClickListener(new AbsPickerImageFragment.CoverBottomSheetDialogFragment.OnClickListener() {
             @Override
             public void onClickCapture() {
-//                startCaptureImage(requestCode, getImageNameFromReqCode(requestCode));
+                startCaptureImage(requestCode, "image");
             }
 
             @Override
             public void onClickGallery() {
-//                startPickImage(requestCode);
+                startPickImage(requestCode);
             }
         });
         dialog.show(getChildFragmentManager(), "bottomsheet");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Timber.d("onActivityResult: requestCode %s resultCode %s", requestCode, resultCode);
+
+        if (resultCode == Activity.RESULT_OK) {
+            Uri uri = getPickImageResultUri(data, "image");
+            if (uri == null) {
+                return;
+            }
+
+            Timber.d("onActivityResult: uri %s", uri.toString());
+
+            switch (requestCode) {
+                case IMAGE_REQUEST_CODE:
+                    try {
+                        mUri = uri;
+                        loadScreenshot(mUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default:
+            }
+        }
+    }
+
+    @Override
+    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
+        super.permissionGranted(permissionRequestCode, isGranted);
+
+        if (!isGranted) {
+            return;
+        }
+
+        switch (permissionRequestCode) {
+            case IMAGE_REQUEST_CODE:
+                try {
+                    loadScreenshot(mUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                break;
+        }
+    }
+
+    private void loadScreenshot(@Nullable Uri uri) throws IOException {
+        Timber.d("load background image [%s]", uri);
+        if (uri == null) {
+            return;
+        }
+
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getApplicationContext().getContentResolver(), uri);
+        updateScreenshot(bitmap);
     }
 
     private void setImageCount() {
@@ -262,8 +337,8 @@ public class SendErrorFragment extends BaseFragment implements
     private void testData() {
         setTransactionType("Rút tiền");
         setTransactionId("160810000000064");
-        List<Integer> tmp = new ArrayList<>();
-        tmp.add(R.drawable.ic_agribank);
+        List<Bitmap> tmp = new ArrayList<>();
+        tmp.add(BitmapFactory.decodeResource(getResources(), R.drawable.ic_sacombank));
 //        tmp.add(R.drawable.ic_bidv);
 //        tmp.add(R.drawable.ic_chungchi);
 //        tmp.add(R.drawable.ic_eximbank);

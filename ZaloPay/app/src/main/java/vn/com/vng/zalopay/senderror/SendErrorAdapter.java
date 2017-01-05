@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.senderror;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import vn.com.vng.zalopay.R;
  * Created by cpu11759-local on 03/01/2017.
  */
 
-public class SendErrorAdapter extends AbsRecyclerAdapter<Integer, RecyclerView.ViewHolder> {
+public class SendErrorAdapter extends AbsRecyclerAdapter<Bitmap, RecyclerView.ViewHolder> {
     private static final int FOOTER_VIEW = 1;
 
     private SendErrorAdapter.OnClickAddListener addListener;
@@ -51,14 +52,11 @@ public class SendErrorAdapter extends AbsRecyclerAdapter<Integer, RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof SendErrorAdapter.ViewHolder) {
-            Integer screen = getItem(position);
+            Bitmap screen = getItem(position);
             if (screen != null) {
                 ((SendErrorAdapter.ViewHolder) holder).bindView(screen);
             }
         }
-//        else if (holder instanceof FooterViewHolder) {
-//            FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
-//        }
     }
 
     @Override
@@ -106,14 +104,14 @@ public class SendErrorAdapter extends AbsRecyclerAdapter<Integer, RecyclerView.V
             });
         }
 
-        public void bindView(Integer screen) {
+        public void bindView(Bitmap screen) {
             if (imgScreen == null) {
                 return;
             }
-            if (screen == 0) {
-                imgScreen.setImageDrawable(null);
+            if (screen == null) {
+                imgScreen.setImageBitmap(null);
             } else {
-                imgScreen.setImageResource(screen);
+                imgScreen.setImageBitmap(screen);
             }
         }
     }
