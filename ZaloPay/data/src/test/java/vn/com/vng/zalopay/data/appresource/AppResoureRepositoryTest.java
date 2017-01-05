@@ -85,7 +85,8 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
         appResourceEntity.sortOrder = index;
         appResourceEntity.imageurl = "imageurl" + index;
         appResourceEntity.jsurl = "jsurl" + index;
-        appResourceEntity.iconurl = "iconurl" + index;
+        appResourceEntity.iconName = "iconName" + index;
+        appResourceEntity.iconColor = "iconColor" + index;
         appResourceEntity.weburl = "webUrl" + index;
         appResourceEntity.stateDownload = 0;
         appResourceEntity.numRetry = 0;
@@ -100,7 +101,8 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
         appResourceEntity.sortOrder = index;
         appResourceEntity.imageurl = "Upgrade imageurl" + index;
         appResourceEntity.jsurl = "Upgrade jsurl" + index;
-        appResourceEntity.iconurl = "Upgrade iconurl" + index;
+        appResourceEntity.iconName = "Upgrade iconName" + index;
+        appResourceEntity.iconColor = "Upgrade iconColor" + index;
         appResourceEntity.weburl = "Upgrade webUrl" + index;
         appResourceEntity.stateDownload = 0;
         appResourceEntity.numRetry = 0;
@@ -177,7 +179,9 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
             return false;
         } else if (!appResource1.jsurl.equals(appResource2.jsurl)) {
             return false;
-        } else if (!appResource1.iconurl.equals(appResource2.iconurl)) {
+        } else if (!appResource1.iconName.equals(appResource2.iconName)) {
+            return false;
+        } else if (!appResource1.iconColor.equals(appResource2.iconColor)) {
             return false;
         } else if (!appResource1.weburl.equals(appResource2.weburl)) {
             return false;
