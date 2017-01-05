@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.senderror;
+package vn.com.vng.zalopay.feedback;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -38,14 +38,14 @@ import vn.zalopay.feedback.collectors.AppCollector;
 import vn.zalopay.feedback.collectors.DeviceCollector;
 import vn.zalopay.feedback.collectors.NetworkCollector;
 
-public class SendErrorFragment extends AbsPickerImageFragment implements
-        SendErrorAdapter.OnClickAddListener, SendErrorAdapter.OnClickDeleteListener, SwitchCompat.OnCheckedChangeListener {
+public class FeedbackFragment extends AbsPickerImageFragment implements
+        FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener, SwitchCompat.OnCheckedChangeListener {
 
     private static final int IMAGE_REQUEST_CODE = 100;
 
     private static final int PERMISSION_READ_EXTERNAL_STORAGE = 1001;
 
-    private SendErrorAdapter mAdapter;
+    private FeedbackAdapter mAdapter;
     private Uri mUri;
     private FeedbackCollector mCollector;
     private UserCollector mUserCollector;
@@ -83,8 +83,8 @@ public class SendErrorFragment extends AbsPickerImageFragment implements
         return "";
     }
 
-    public static SendErrorFragment newInstance() {
-        return new SendErrorFragment();
+    public static FeedbackFragment newInstance() {
+        return new FeedbackFragment();
     }
 
     @Override
@@ -94,14 +94,14 @@ public class SendErrorFragment extends AbsPickerImageFragment implements
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_send_error;
+        return R.layout.fragment_send_feedback;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAdapter = new SendErrorAdapter(getContext(), this, this);
+        mAdapter = new FeedbackAdapter(getContext(), this, this);
 
         mCollector = new FeedbackCollector();
         mUserCollector = new UserCollector(getAppComponent().userConfig());

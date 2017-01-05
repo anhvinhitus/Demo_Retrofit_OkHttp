@@ -1,12 +1,12 @@
-package vn.com.vng.zalopay.senderror;
+package vn.com.vng.zalopay.feedback;
 
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
-public class SendErrorActivity extends BaseToolBarActivity {
+public class FeedbackActivity extends BaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return SendErrorFragment.newInstance();
+        return FeedbackFragment.newInstance();
     }
 }

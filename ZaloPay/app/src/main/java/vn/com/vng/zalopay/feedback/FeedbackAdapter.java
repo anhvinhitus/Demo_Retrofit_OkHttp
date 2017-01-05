@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.senderror;
+package vn.com.vng.zalopay.feedback;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,14 +18,14 @@ import vn.com.vng.zalopay.R;
  * Created by cpu11759-local on 03/01/2017.
  */
 
-public class SendErrorAdapter extends AbsRecyclerAdapter<Bitmap, RecyclerView.ViewHolder> {
+public class FeedbackAdapter extends AbsRecyclerAdapter<Bitmap, RecyclerView.ViewHolder> {
     private static final int FOOTER_VIEW = 1;
 
-    private SendErrorAdapter.OnClickAddListener addListener;
-    private SendErrorAdapter.OnClickDeleteListener deleteListener;
+    private FeedbackAdapter.OnClickAddListener addListener;
+    private FeedbackAdapter.OnClickDeleteListener deleteListener;
 
-    public SendErrorAdapter(Context context, SendErrorAdapter.OnClickAddListener addListener,
-                            SendErrorAdapter.OnClickDeleteListener deleteListener) {
+    public FeedbackAdapter(Context context, FeedbackAdapter.OnClickAddListener addListener,
+                           FeedbackAdapter.OnClickDeleteListener deleteListener) {
         super(context);
         this.addListener = addListener;
         this.deleteListener = deleteListener;
@@ -34,11 +34,11 @@ public class SendErrorAdapter extends AbsRecyclerAdapter<Bitmap, RecyclerView.Vi
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == FOOTER_VIEW) {
-            return new SendErrorAdapter.FooterViewHolder(mInflater
+            return new FeedbackAdapter.FooterViewHolder(mInflater
                     .inflate(R.layout.layout_add_screenshot, parent, false), addListener);
         }
 
-        return new SendErrorAdapter.ViewHolder(mInflater
+        return new FeedbackAdapter.ViewHolder(mInflater
                 .inflate(R.layout.row_card_image_feedback, parent, false), deleteListener);
     }
 
@@ -51,10 +51,10 @@ public class SendErrorAdapter extends AbsRecyclerAdapter<Bitmap, RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof SendErrorAdapter.ViewHolder) {
+        if (holder instanceof FeedbackAdapter.ViewHolder) {
             Bitmap screen = getItem(position);
             if (screen != null) {
-                ((SendErrorAdapter.ViewHolder) holder).bindView(screen);
+                ((FeedbackAdapter.ViewHolder) holder).bindView(screen);
             }
         }
     }

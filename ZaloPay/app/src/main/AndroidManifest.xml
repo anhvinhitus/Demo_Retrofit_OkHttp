@@ -337,8 +337,8 @@
             android:name=".warningrooted.WarningRootedActivity"
             android:label="@string/title.activity.warning.root" />
 
-        <activity android:name=".senderror.SendErrorActivity"
-            android:label="@string/title.activity.senderror" />
+        <activity android:name=".feedback.FeedbackActivity"
+            android:label="@string/title.activity.feedback" />
 
         <receiver
             android:name=".receivers.BootCompletedReceiver"
