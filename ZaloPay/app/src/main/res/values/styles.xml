@@ -260,4 +260,15 @@
         <item name="android:layout_marginBottom">120dp</item>
     </style>
 
+    <style name="HomeHeaderItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1.0</item>
+        <item name="android:background">?selector</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
 </resources>
