@@ -243,4 +243,11 @@ public class KeyTools {
     public Cipher getEncryptCipher() {
         return mEncryptCipher;
     }
+
+    public void updatePassword(String password) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putString(Constants.PREF_KEY_PASSWORD, password);
+        editor.apply();
+
+    }
 }

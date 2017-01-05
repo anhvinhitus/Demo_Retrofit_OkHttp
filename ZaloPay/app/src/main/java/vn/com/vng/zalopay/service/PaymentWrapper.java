@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.fingerprint.PaymentFingerPrint;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -292,19 +293,19 @@ public class PaymentWrapper {
                 owner, paymentChannel, paymentInfo);
         mPendingOrder = paymentInfo;
         mPendingChannel = paymentChannel;
-        WalletSDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener);
+        WalletSDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener, new PaymentFingerPrint(mActivity.getApplication()));
     }
 
     private boolean validPaymentInfo(ZPWPaymentInfo paymentInfo) {
-        if (paymentInfo.amount <= 0){
+        if (paymentInfo.amount <= 0) {
             return false;
         } else if (paymentInfo.appID <= 0) {
             return false;
-        } else if (TextUtils.isEmpty(paymentInfo.appTransID)){
+        } else if (TextUtils.isEmpty(paymentInfo.appTransID)) {
             return false;
-        } else if (paymentInfo.appTime <= 0){
+        } else if (paymentInfo.appTime <= 0) {
             return false;
-        } else if (TextUtils.isEmpty(paymentInfo.mac)){
+        } else if (TextUtils.isEmpty(paymentInfo.mac)) {
             return false;
         }
         return true;
