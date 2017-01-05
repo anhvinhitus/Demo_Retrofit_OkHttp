@@ -223,7 +223,7 @@ public class Helpers {
             int sweetAlertType;
             switch (dialogType) {
                 case DialogType.NORMAL_TYPE:
-                    sweetAlertType = SweetAlertDialog.CUSTOM_IMAGE_TYPE;
+                    sweetAlertType = SweetAlertDialog.INFO_NO_ICON;
                     break;
 
                 case DialogType.ERROR_TYPE:
@@ -243,7 +243,7 @@ public class Helpers {
                     break;
 
                 default:
-                    sweetAlertType = SweetAlertDialog.CUSTOM_IMAGE_TYPE;
+                    sweetAlertType = SweetAlertDialog.INFO_NO_ICON;
             }
 
             DialogHelper.showCustomDialog(activity,
