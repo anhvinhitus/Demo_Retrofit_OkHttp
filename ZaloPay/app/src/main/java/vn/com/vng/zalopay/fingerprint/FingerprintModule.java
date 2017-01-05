@@ -1,9 +1,6 @@
 package vn.com.vng.zalopay.fingerprint;
 
-import android.content.Context;
-
 import dagger.Module;
-import dagger.Provides;
 
 /**
  * Created by hieuvm on 12/26/16.
@@ -11,7 +8,7 @@ import dagger.Provides;
 @Module
 public class FingerprintModule {
 
-    @Provides
+    /*@Provides
     public FingerprintProvider providersFingerprintProvider(Context context) {
         return new FingerprintProvider(context);
     }
@@ -19,6 +16,6 @@ public class FingerprintModule {
     @Provides
     public KeyTools providesKeystore(Context context) {
         return new KeyTools(context);
-    }
+    }*/
 
 }

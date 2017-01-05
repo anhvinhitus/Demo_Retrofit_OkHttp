@@ -114,28 +114,6 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
         mSwcTouchIdView.setChecked(var);
     }
 
-    public void showFingerAuthentication() {
-        Timber.d("show finger authentication");
-
-        AuthenticationDialog fragment = AuthenticationDialog.newInstance();
-        fragment.setStage(Stage.PASSWORD_SETTING);
-        fragment.setAuthenticationCallback(new AuthenticationCallback() {
-            @Override
-            public void onAuthenticated() {
-                setCheckedFingerprint(true);
-                setCheckedProtectAccount(true);
-                mPresenter.setUseProtectAccount(true);
-            }
-
-            @Override
-            public void onAuthenticationFailure() {
-
-            }
-        });
-
-        fragment.show(getActivity().getFragmentManager(), AuthenticationDialog.TAG);
-    }
-
     @Override
     public void setCheckedTouchId(boolean checked) {
         if (mSwcTouchIdView != null) {

@@ -524,7 +524,7 @@ public class Navigator implements INavigator {
         dialog.setFinishActivity(isFinish);
         dialog.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
-            public void onAuthenticated() {
+            public void onAuthenticated(String password) {
                 setLastTimeCheckPin(System.currentTimeMillis());
             }
 
@@ -540,7 +540,7 @@ public class Navigator implements INavigator {
         AuthenticationDialog dialog = AuthenticationDialog.newInstance();
         dialog.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
-            public void onAuthenticated() {
+            public void onAuthenticated(String password) {
                 Timber.d("onPinSuccess resolve true");
                 Helpers.promiseResolveSuccess(promise, null);
                 setLastTimeCheckPin(System.currentTimeMillis());

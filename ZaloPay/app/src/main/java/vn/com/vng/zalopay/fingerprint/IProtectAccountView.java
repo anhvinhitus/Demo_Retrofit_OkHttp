@@ -9,8 +9,6 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 interface IProtectAccountView extends ILoadDataView {
     void setCheckedFingerprint(boolean var);
 
-    void showFingerAuthentication();
-
     void setCheckedTouchId(boolean checked);
 
     void setCheckedProtectAccount(boolean checked);

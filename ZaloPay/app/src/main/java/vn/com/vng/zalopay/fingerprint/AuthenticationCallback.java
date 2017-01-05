@@ -5,7 +5,7 @@ package vn.com.vng.zalopay.fingerprint;
  */
 
 public interface AuthenticationCallback {
-    void onAuthenticated();
+    void onAuthenticated(String password);
 
     void onAuthenticationFailure();
 }

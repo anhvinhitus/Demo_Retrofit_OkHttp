@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +23,16 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.widget.GridPasswordViewFitWidth;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
+import static vn.com.vng.zalopay.fingerprint.FingerprintProvider.ERROR_TIMEOUT_MILLIS;
 
-public class AuthenticationDialog extends DialogFragment implements IFingerprintAuthenticationView {
+
+public class AuthenticationDialog extends DialogFragment implements IAuthenticationView {
 
 
     public static AuthenticationDialog newInstance() {
@@ -104,10 +106,7 @@ public class AuthenticationDialog extends DialogFragment implements IFingerprint
     private AuthenticationCallback mCallback;
 
     @Inject
-    FingerAuthenticationPresenter mPresenter;
-
-    @Inject
-    FingerprintUiHelper.FingerprintUiHelperBuilder mFingerprintUiHelperBuilder;
+    AuthenticationPresenter mPresenter;
 
     private Intent pendingIntent;
 
@@ -186,8 +185,7 @@ public class AuthenticationDialog extends DialogFragment implements IFingerprint
 
     @OnClick(R.id.second_dialog_button)
     public void onOnClickButtonSecond(View v) {
-        if (mPresenter.getStage() == Stage.PASSWORD ||
-                mPresenter.getStage() == Stage.PASSWORD_SETTING) {
+        if (mPresenter.getStage() == Stage.PASSWORD) {
             dismiss();
             return;
         }
@@ -211,7 +209,6 @@ public class AuthenticationDialog extends DialogFragment implements IFingerprint
     public void onPause() {
         mPresenter.pause();
         super.onPause();
-
     }
 
     @Override
@@ -256,7 +253,7 @@ public class AuthenticationDialog extends DialogFragment implements IFingerprint
                 mFingerprintDecrypt.setVisibility(View.GONE);
                 mBackupContent.setVisibility(View.VISIBLE);
                 break;
-            case PASSWORD_SETTING:
+       /*     case PASSWORD_SETTING:
                 mCancelButton.setText(R.string.cancel);
                 mCancelButton.setVisibility(View.INVISIBLE);
 
@@ -273,6 +270,7 @@ public class AuthenticationDialog extends DialogFragment implements IFingerprint
                 mFingerprintDecrypt.setVisibility(View.GONE);
                 mBackupContent.setVisibility(View.GONE);
                 break;
+        */
         }
     }
 
@@ -321,7 +319,7 @@ public class AuthenticationDialog extends DialogFragment implements IFingerprint
     }
 
     @Override
-    public void onAuthenticated() {
+    public void onAuthenticated(String password) {
         Timber.d("onAuthenticated");
         if (pendingIntent != null) {
             startActivity(pendingIntent);
@@ -331,7 +329,7 @@ public class AuthenticationDialog extends DialogFragment implements IFingerprint
         }
 
         if (mCallback != null) {
-            mCallback.onAuthenticated();
+            mCallback.onAuthenticated(password);
         }
 
         dismiss();
@@ -348,16 +346,31 @@ public class AuthenticationDialog extends DialogFragment implements IFingerprint
     }
 
     @Override
-    public FingerprintUiHelper getFingerprintUiHelper(Stage stage) {
-        switch (stage) {
-            case FINGERPRINT_ENCRYPT:
-                return mFingerprintUiHelperBuilder.build(mIconFingerprintView, mStatusFingerprint, mPresenter);
-            case FINGERPRINT_DECRYPT:
-                return mFingerprintUiHelperBuilder.build(mIconDecryptView, mTvDecryptView, mPresenter);
-            default:
-                return mFingerprintUiHelperBuilder.build(mIconDecryptView, mTvDecryptView, mPresenter);
-        }
+    public void showFingerprintError(CharSequence error) {
+        mTvDecryptView.setText(error);
+        mTvDecryptView.setTextColor(ContextCompat.getColor(getActivity(), R.color.red));
+        // mIcon.setImageResource(R.drawable.ic_fingerprint_error);
 
+        AndroidUtils.cancelRunOnUIThread(mResetErrorTextRunnable);
+        AndroidUtils.runOnUIThread(mResetErrorTextRunnable, ERROR_TIMEOUT_MILLIS);
     }
 
+    @Override
+    public void showFingerprintSuccess() {
+
+        AndroidUtils.cancelRunOnUIThread(mResetErrorTextRunnable);
+        mTvDecryptView.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+        mTvDecryptView.setText(getString(R.string.fingerprint_success));
+        //  mIcon.setImageResource(R.drawable.ic_fingerprint_success);
+    }
+
+    Runnable mResetErrorTextRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            mTvDecryptView.setTextColor(ContextCompat.getColor(getActivity(), R.color.hint));
+            mTvDecryptView.setText(getString(R.string.fingerprint_hint));
+            // mIcon.setImageResource(R.drawable.ic_touch);
+        }
+    };
 }

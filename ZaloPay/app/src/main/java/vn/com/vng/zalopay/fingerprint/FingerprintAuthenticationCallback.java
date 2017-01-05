@@ -11,9 +11,9 @@ import java.lang.ref.WeakReference;
  */
 @TargetApi(Build.VERSION_CODES.M)
 final class FingerprintAuthenticationCallback extends FingerprintManager.AuthenticationCallback {
-    private WeakReference<FingerprintUiHelper> fingerprintUiHelper;
+    private WeakReference<FingerprintProvider> fingerprintUiHelper;
 
-    FingerprintAuthenticationCallback(FingerprintUiHelper fingerprintUiHelper) {
+    FingerprintAuthenticationCallback(FingerprintProvider fingerprintUiHelper) {
         this.fingerprintUiHelper = new WeakReference<>(fingerprintUiHelper);
     }
 

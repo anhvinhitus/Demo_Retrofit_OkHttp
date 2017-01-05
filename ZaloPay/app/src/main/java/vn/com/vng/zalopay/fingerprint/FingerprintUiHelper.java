@@ -12,7 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License
- */
+ *//*
+
 
 package vn.com.vng.zalopay.fingerprint;
 
@@ -32,9 +33,11 @@ import javax.inject.Inject;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
+*/
 /**
  * Small helper class to manage text/icon around fingerprint authentication UI.
- */
+ *//*
+
 public class FingerprintUiHelper {
 
 
@@ -62,10 +65,12 @@ public class FingerprintUiHelper {
 
     boolean mSelfCancelled;
 
-    /**
+    */
+/**
      * Builder class for {@link FingerprintUiHelper} in which injected fields from Dagger
      * holds its fields and takes other arguments in the {@link #build} method.
-     */
+     *//*
+
     public static class FingerprintUiHelperBuilder {
         private final FingerprintManager mFingerPrintManager;
         private final KeyguardManager mKeyguardManager;
@@ -87,10 +92,12 @@ public class FingerprintUiHelper {
         }
     }
 
-    /**
+    */
+/**
      * Constructor for {@link FingerprintUiHelper}. This method is expected to be called from
      * only the {@link FingerprintUiHelperBuilder} class.
-     */
+     *//*
+
     private FingerprintUiHelper(FingerprintManager fingerprintManager, KeyguardManager keyguardManager,
                                 ImageView icon, TextView errorTextView, Callback callback) {
         mFingerprintManager = fingerprintManager;
@@ -168,7 +175,9 @@ public class FingerprintUiHelper {
         mCancellationSignal = new CancellationSignal();
         mSelfCancelled = false;
         mFingerprintManager
-                .authenticate(cryptoObject, mCancellationSignal, 0 /* flags */, getFingerCallBack(), null);
+                .authenticate(cryptoObject, mCancellationSignal, 0 */
+/* flags *//*
+, getFingerCallBack(), null);
 
         if (mIcon != null) {
             mIcon.setImageResource(R.drawable.ic_touch);
@@ -278,3 +287,4 @@ public class FingerprintUiHelper {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 }
+*/

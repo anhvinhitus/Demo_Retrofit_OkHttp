@@ -23,14 +23,14 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     @Inject
     public Context mContext;
 
-    private FingerprintUiHelper mFingerprintUiHelper;
-
     @Inject
     SharedPreferences mSharedPreferences;
 
     @Inject
-    ProtectAccountPresenter(FingerprintUiHelper.FingerprintUiHelperBuilder fingerprintBuilder) {
-        mFingerprintUiHelper = fingerprintBuilder.build();
+    KeyTools mKeyTools;
+
+    @Inject
+    ProtectAccountPresenter() {
     }
 
     void useFingerprintToAuthenticate(boolean enable) {
@@ -82,7 +82,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             return;
         }
 
-        if (!mFingerprintUiHelper.isHardwarePresent()) {
+        if (!FingerprintUtil.isHardwarePresent(mContext)) {
             mView.hideFingerprintLayout();
         }
 
@@ -93,26 +93,54 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
         String password = mSharedPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
         Timber.d("onViewCreated: password [%s] ", password);
 
-        boolean isFingerprintAuthAvailable = mFingerprintUiHelper.isFingerprintAuthAvailable();
+        boolean isFingerprintAuthAvailable = FingerprintUtil.isFingerprintAuthAvailable(mContext);
 
         mView.setCheckedFingerprint(useProtect & !TextUtils.isEmpty(password) & isFingerprintAuthAvailable);
     }
 
     private void enableFingerprint() {
-        if (!mFingerprintUiHelper.isKeyguardSecure()) {
+        if (!FingerprintUtil.isKeyguardSecure(mContext)) {
             mView.showError("Secure lock screen hasn't set up.\n"
                     + "Go to 'Settings -> Security -> Fingerprint' to set up a fingerprint");
             mView.setCheckedFingerprint(false);
             return;
         }
 
-        if (!mFingerprintUiHelper.isFingerprintAuthAvailable()) {
+        if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
             mView.setCheckedFingerprint(false);
             mView.showError("Go to 'Settings -> Security -> Fingerprint' and register at least one fingerprint");
             return;
         }
 
-        mView.showFingerAuthentication();
+        showFingerAuthentication();
+    }
+
+    private void showFingerAuthentication() {
+        if (mView == null) {
+            return;
+        }
+
+        AuthenticationDialog fragment = AuthenticationDialog.newInstance();
+        fragment.setStage(Stage.PASSWORD);
+        fragment.setAuthenticationCallback(new AuthenticationCallback() {
+            @Override
+            public void onAuthenticated(String password) {
+                mView.setCheckedFingerprint(true);
+                mView.setCheckedProtectAccount(true);
+                setUseProtectAccount(true);
+                if (mKeyTools.initEncryptCipher()) {
+                    boolean result = mKeyTools.encrypt(password);
+                    Timber.d("encrypt cipher result %s", result);
+                }
+            }
+
+            @Override
+            public void onAuthenticationFailure() {
+
+            }
+        });
+
+        fragment.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);
     }
 
     private void disableFingerprint() {

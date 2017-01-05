@@ -6,7 +6,14 @@ package vn.com.vng.zalopay.data.exception;
 
 public class GenericException extends Throwable {
 
+    public int mErrorCode = -1;
+
     public GenericException(String message) {
         super(message);
+    }
+
+    public GenericException(int errorCode, String message) {
+        this(message);
+        this.mErrorCode = errorCode;
     }
 }

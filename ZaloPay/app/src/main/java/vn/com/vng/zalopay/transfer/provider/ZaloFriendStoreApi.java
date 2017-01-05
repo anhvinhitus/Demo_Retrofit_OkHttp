@@ -1,13 +1,7 @@
 package vn.com.vng.zalopay.transfer.provider;
 
 import android.content.Context;
-import android.os.Handler;
 import android.os.Looper;
-
-import timber.log.Timber;
-import vn.com.vng.zalopay.data.zfriend.FriendStore;
-import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
-import vn.com.vng.zalopay.fingerprint.FingerprintUiHelper;
 
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -16,7 +10,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+
+import timber.log.Timber;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
+import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 
 
 /**

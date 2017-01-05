@@ -6,7 +6,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  * Created by hieuvm on 12/27/16.
  */
 
-interface IFingerprintAuthenticationView extends ILoadDataView {
+interface IAuthenticationView extends ILoadDataView {
 
     void clearPassword();
 
@@ -16,11 +16,13 @@ interface IFingerprintAuthenticationView extends ILoadDataView {
 
     void dismiss();
 
-    void onAuthenticated();
+    void onAuthenticated(String password);
 
     void onAuthenticationFailure();
 
-    FingerprintUiHelper getFingerprintUiHelper(Stage stage);
-
     void setErrorVerifyPassword(String error);
+
+    void showFingerprintError(CharSequence error);
+
+    void showFingerprintSuccess();
 }

@@ -7,6 +7,6 @@ package vn.com.vng.zalopay.fingerprint;
 enum Stage {
     FINGERPRINT_ENCRYPT,
     FINGERPRINT_DECRYPT,
-    PASSWORD_SETTING,
+    /*PASSWORD_SETTING,*/
     PASSWORD,
 }
