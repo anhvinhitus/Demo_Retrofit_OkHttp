@@ -134,5 +134,6 @@
         android:layout_marginBottom="@dimen/button.margin.bottom"
         android:layout_marginTop="@dimen/button.margin.top.min"
         android:layout_weight="0.0"
-        android:text="@string/btn_send" />
+        android:text="@string/btn_send"
+        android:enabled="false"/>
 </LinearLayout>
