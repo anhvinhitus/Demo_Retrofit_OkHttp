@@ -128,10 +128,10 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mView.setCheckedFingerprint(true);
                 mView.setCheckedProtectAccount(true);
                 setUseProtectAccount(true);
-                if (mKeyTools.initEncryptCipher()) {
-                    boolean result = mKeyTools.encrypt(password);
-                    Timber.d("encrypt cipher result %s", result);
-                }
+                // if (mKeyTools.initEncryptCipher()) {
+                boolean result = mKeyTools.encrypt(password);
+                Timber.d("encrypt cipher result %s", result);
+                // }
             }
 
             @Override

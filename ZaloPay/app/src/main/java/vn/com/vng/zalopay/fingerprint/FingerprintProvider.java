@@ -7,6 +7,7 @@ import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
+import android.text.TextUtils;
 
 import javax.crypto.Cipher;
 
@@ -130,6 +131,9 @@ public class FingerprintProvider implements AuthenticationProvider {
     void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
         final Cipher c = result.getCryptoObject().getCipher();
         String string = mKeyTools.decrypt(c);
+        if (TextUtils.isEmpty(string)) {
+            return;
+        }
         mCallback.onAuthenticated(string);
     }
 
@@ -166,10 +170,14 @@ public class FingerprintProvider implements AuthenticationProvider {
     public void startVerify() {
         stopVerify();
 
-        if (mKeyTools.initDecryptCipher()) {
-            startListening(new FingerprintManager.CryptoObject(mKeyTools.getDecryptCipher()));
-        }
+        try {
+            if (mKeyTools.initDecryptCipher()) {
+                startListening(new FingerprintManager.CryptoObject(mKeyTools.getDecryptCipher()));
+            }
 
+        } catch (Exception ex) {
+            Timber.d(ex, "start verify");
+        }
     }
 
     @Override
