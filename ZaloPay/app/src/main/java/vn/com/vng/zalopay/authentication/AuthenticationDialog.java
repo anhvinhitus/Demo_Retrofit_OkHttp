@@ -68,9 +68,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     @BindView(R.id.second_dialog_button)
     Button mSecondDialogButton;
 
-    @BindView(R.id.fingerprint_encrypt_container)
-    View mFingerprintEncrypt;
-
     @BindView(R.id.fingerprint_decrypt_container)
     View mFingerprintDecrypt;
 
@@ -228,7 +225,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
                 mSecondDialogButton.setText(R.string.use_password);
                 mSecondDialogButton.setVisibility(mVisibleSecondButton ? View.VISIBLE : View.GONE);
                 mFingerprintDecrypt.setVisibility(View.VISIBLE);
-                mFingerprintEncrypt.setVisibility(View.GONE);
                 mBackupContent.setVisibility(View.GONE);
                 break;
 
@@ -236,7 +232,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
                 mCancelButton.setText(R.string.cancel);
                 mCancelButton.setVisibility(View.INVISIBLE);
                 mSecondDialogButton.setText(R.string.txt_close);
-                mFingerprintEncrypt.setVisibility(View.GONE);
                 mFingerprintDecrypt.setVisibility(View.GONE);
                 mBackupContent.setVisibility(View.VISIBLE);
                 break;
