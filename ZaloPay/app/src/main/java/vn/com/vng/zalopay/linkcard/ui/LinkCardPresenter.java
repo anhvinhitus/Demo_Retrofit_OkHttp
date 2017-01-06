@@ -67,12 +67,6 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             @Override
             public List<BankCard> call() throws Exception {
                 List<DMappedCard> mapCardLis = CShareData.getInstance().getMappedCardList(user.zaloPayId);
-                DMappedCard dMappedCard = new DMappedCard();
-                dMappedCard.cardname = "VISA";
-                dMappedCard.first6cardno = "445095";
-                dMappedCard.last4cardno = "4321";
-                dMappedCard.bankcode = "VISA";
-                mapCardLis.add(dMappedCard);
                 return transform(mapCardLis);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
