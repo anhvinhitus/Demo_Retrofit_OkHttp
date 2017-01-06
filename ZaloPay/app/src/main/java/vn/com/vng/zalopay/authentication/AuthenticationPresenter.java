@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.fingerprint;
+package vn.com.vng.zalopay.authentication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,9 +11,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-
-import static vn.com.vng.zalopay.fingerprint.Stage.FINGERPRINT_DECRYPT;
-import static vn.com.vng.zalopay.fingerprint.Stage.PASSWORD;
 
 /**
  * Created by hieuvm on 12/27/16.
@@ -46,13 +43,13 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
         updateStage();
         if (!FingerprintUtil.isKeyguardSecure(mApplicationContext)
                 || !FingerprintUtil.isFingerprintAuthAvailable(mApplicationContext)
-                || mStage == PASSWORD) {
+                || mStage == Stage.PASSWORD) {
             enterPassword();
         } else {
             String password = mPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
             Timber.d("show password [%s]", password);
             if (!TextUtils.isEmpty(password)) {
-                setStage(FINGERPRINT_DECRYPT);
+                setStage(Stage.FINGERPRINT_DECRYPT);
                 return;
             }
             enterPassword();
@@ -132,7 +129,7 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
             return;
         }
 
-        if (mStage == FINGERPRINT_DECRYPT) {
+        if (mStage == Stage.FINGERPRINT_DECRYPT) {
             mView.showFingerprintSuccess();
         }
 
@@ -144,7 +141,7 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
     @Override
     public void onError(Throwable e) {
         Timber.d(e, "onError: ");
-        if (mStage == FINGERPRINT_DECRYPT) {
+        if (mStage == Stage.FINGERPRINT_DECRYPT) {
             handleErrorFingerprint(e);
         } else {
             handleErrorPassword(e);

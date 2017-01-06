@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.fingerprint;
+package vn.com.vng.zalopay.authentication;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

@@ -22,7 +22,7 @@ import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.fingerprint.AuthenticationDialog;
+import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.fingerprint.ProtectAccountFragment;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
 import vn.com.vng.zalopay.internal.di.modules.UserApiModule;

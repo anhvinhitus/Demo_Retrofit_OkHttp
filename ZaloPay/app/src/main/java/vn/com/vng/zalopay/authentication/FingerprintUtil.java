@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.fingerprint;
+package vn.com.vng.zalopay.authentication;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -13,9 +13,9 @@ import timber.log.Timber;
  * Created by hieuvm on 1/5/17.
  */
 
-final class FingerprintUtil {
+public final class FingerprintUtil {
 
-    static boolean isFingerprintAuthAvailable(Context context) {
+    public static boolean isFingerprintAuthAvailable(Context context) {
         if (!checkAndroidMVersion()) {
             return false;
         }
@@ -24,7 +24,7 @@ final class FingerprintUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    static boolean isHardwarePresent(Context context) {
+    public static boolean isHardwarePresent(Context context) {
         if (!checkAndroidMVersion()) {
             return false;
         }
@@ -40,7 +40,7 @@ final class FingerprintUtil {
         return false;
     }
 
-    static boolean isKeyguardSecure(Context context) {
+    public static boolean isKeyguardSecure(Context context) {
         if (!checkAndroidMVersion()) {
             return false;
         }
@@ -50,7 +50,7 @@ final class FingerprintUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    static boolean hasFingerprintRegistered(Context context) {
+    public static boolean hasFingerprintRegistered(Context context) {
         if (!checkAndroidMVersion()) {
             return false;
         }
@@ -66,11 +66,11 @@ final class FingerprintUtil {
         return false;
     }
 
-    static boolean checkAndroidMVersion() {
+    public static boolean checkAndroidMVersion() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
-    static FingerprintManager getFingerprintManager(Context context) {
+    public static FingerprintManager getFingerprintManager(Context context) {
         if (!checkAndroidMVersion()) {
             return null;
         }
@@ -84,7 +84,7 @@ final class FingerprintUtil {
     }
 
 
-    static KeyguardManager getKeyguardManager(Context context) {
+    public static KeyguardManager getKeyguardManager(Context context) {
         if (!checkAndroidMVersion()) {
             return null;
         }

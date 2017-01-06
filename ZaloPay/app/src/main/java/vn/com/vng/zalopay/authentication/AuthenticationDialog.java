@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.fingerprint;
+package vn.com.vng.zalopay.authentication;
 
 import android.app.DialogFragment;
 import android.content.Context;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +27,6 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
-
-import static vn.com.vng.zalopay.fingerprint.FingerprintProvider.ERROR_TIMEOUT_MILLIS;
 
 
 public class AuthenticationDialog extends DialogFragment implements IAuthenticationView {
@@ -324,7 +321,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         // mIcon.setImageResource(R.drawable.ic_fingerprint_error);
 
         AndroidUtils.cancelRunOnUIThread(mResetErrorTextRunnable);
-        AndroidUtils.runOnUIThread(mResetErrorTextRunnable, ERROR_TIMEOUT_MILLIS);
+        AndroidUtils.runOnUIThread(mResetErrorTextRunnable, FingerprintProvider.ERROR_TIMEOUT_MILLIS);
     }
 
     @Override

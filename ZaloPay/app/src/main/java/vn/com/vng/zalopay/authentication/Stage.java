@@ -1,10 +1,10 @@
-package vn.com.vng.zalopay.fingerprint;
+package vn.com.vng.zalopay.authentication;
 
 /**
  * Created by hieuvm on 12/27/16.
  */
 
-enum Stage {
+public enum Stage {
     FINGERPRINT_ENCRYPT,
     FINGERPRINT_DECRYPT,
     PASSWORD,
