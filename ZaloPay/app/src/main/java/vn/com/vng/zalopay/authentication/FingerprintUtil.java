@@ -70,6 +70,7 @@ public final class FingerprintUtil {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     public static FingerprintManager getFingerprintManager(Context context) {
         if (!checkAndroidMVersion()) {
             return null;

@@ -430,7 +430,7 @@
     <string name="password">Mật khẩu</string>
     <string name="fingerprint_description">Quyét vân tay để quá trình hoàn tất</string>
     <string name="fingerprint_decrypt_title">Fingerprint cho ZaloPay</string>
-    <string name="fingerprint_status_decrypt">Quyét dấu vân tay để truy cập thông tin</string>
+    <string name="fingerprint_status_decrypt">Quét dấu vân tay để truy cập thông tin</string>
     <string name="fingerprint_description1">Xác nhận vân tay để tiếp tục</string>
     <!--Confirm your fingerprint now-->
     <string name="fingerprint_hint">Xác nhận fingerprint của bạn ngay</string>
@@ -450,6 +450,7 @@
     <string name="finger.moved.too.fast">Ngón tay di chuyển quá nhanh. Vui lòng thử lại.</string>
     <string name="finger.moved.too.slow">Ngón tay di chuyển quá chậm. Vui lòng thử lại.</string>
     <string name="finger.too.many.attempts">Thực hiện xác thực quá nhiều. Vui lòng thử lại.</string>
+    <string name="fingerprint.description.pay">Quét vân tay để xác nhận thanh toán</string>
     <!-- End Fingerprint-->
 
 </resources>

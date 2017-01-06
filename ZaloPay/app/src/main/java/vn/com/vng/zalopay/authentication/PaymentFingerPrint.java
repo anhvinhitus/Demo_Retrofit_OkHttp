@@ -44,7 +44,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
         }
 
         AuthenticationDialog dialog = new AuthenticationDialog();
-        dialog.setVisibleSecondButton(false);
+        dialog.setContentPayment(true);
         dialog.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {

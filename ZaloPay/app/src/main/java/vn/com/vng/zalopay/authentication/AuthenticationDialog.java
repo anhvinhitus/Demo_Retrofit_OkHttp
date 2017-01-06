@@ -162,13 +162,12 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
                 mPassword.clearPassword();
             }
         });
-
     }
 
     @OnClick(R.id.second_dialog_button)
     public void onOnClickButtonSecond(View v) {
-        if (mPresenter.getStage() == Stage.PASSWORD) {
-            dismiss();
+        if (mPresenter.getStage() == Stage.PASSWORD || isAuthPayment) {
+            cancel();
             return;
         }
 
@@ -176,12 +175,16 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         mPassword.clearPassword();
     }
 
-    @OnClick(R.id.cancel_button)
-    public void onClickCancel(View v) {
+    private void cancel() {
         if (mCallback != null) {
             mCallback.onCancel();
         }
         dismiss();
+    }
+
+    @OnClick(R.id.cancel_button)
+    public void onClickCancel(View v) {
+        cancel();
     }
 
     @Override
@@ -221,10 +224,11 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         switch (mStage) {
             case FINGERPRINT_DECRYPT:
                 mCancelButton.setText(R.string.cancel);
-                mCancelButton.setVisibility(View.VISIBLE);
+                mCancelButton.setVisibility(isAuthPayment ? View.GONE : View.VISIBLE);
                 mSecondDialogButton.setText(R.string.use_password);
-                mSecondDialogButton.setVisibility(mVisibleSecondButton ? View.VISIBLE : View.GONE);
+                mSecondDialogButton.setVisibility(View.VISIBLE);
                 mFingerprintDecrypt.setVisibility(View.VISIBLE);
+                mTvDecryptView.setText(isAuthPayment ? R.string.fingerprint_description_pay : R.string.fingerprint_status_decrypt);
                 mBackupContent.setVisibility(View.GONE);
                 break;
 
@@ -338,9 +342,9 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         }
     };
 
-    private boolean mVisibleSecondButton = true;
+    private boolean isAuthPayment = false;
 
-    public void setVisibleSecondButton(boolean visibleSecondButton) {
-        this.mVisibleSecondButton = visibleSecondButton;
+    public void setContentPayment(boolean isAuthPayment) {
+        this.isAuthPayment = isAuthPayment;
     }
 }

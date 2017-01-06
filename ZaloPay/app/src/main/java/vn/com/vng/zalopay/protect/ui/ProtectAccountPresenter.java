@@ -105,15 +105,15 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
     private void enableFingerprint() {
         if (!FingerprintUtil.isKeyguardSecure(mContext)) {
-            mView.showError("Secure lock screen hasn't set up.\n"
-                    + "Go to 'Settings -> Security -> Fingerprint' to set up a fingerprint");
+            // user hasn't set up a fingerprint or lock screen.
+            mView.showError("Khóa màn hình chưa được thiết thập.\nVào 'Cài đặt -> Bảo mật -> Vân tay' để thiết lập xác thực vân tay");
             mView.setCheckedFingerprint(false);
             return;
         }
 
         if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
             mView.setCheckedFingerprint(false);
-            mView.showError("Go to 'Settings -> Security -> Fingerprint' and register at least one fingerprint");
+            mView.showError("Vào 'Cài đặt -> Bảo mật -> Vân tay' và đăng ký ít nhất một dấu vân tay");
             return;
         }
 
@@ -154,7 +154,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
             @Override
             public void onCancel() {
-                
+
             }
         });
 
