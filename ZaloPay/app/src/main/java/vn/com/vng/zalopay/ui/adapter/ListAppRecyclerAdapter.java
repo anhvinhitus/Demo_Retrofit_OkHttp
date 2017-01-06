@@ -3,16 +3,15 @@ package vn.com.vng.zalopay.ui.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.IconFont;
+import com.zalopay.ui.widget.iconfont.IconFontHelper;
+import com.zalopay.ui.widget.iconfont.IconFontInfo;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
@@ -24,12 +23,9 @@ import butterknife.OnClick;
 import rx.functions.Func2;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ImageLoader;
 
@@ -151,59 +147,42 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
             }
 
             try {
-                if (appResource.appid == PaymentAppConfig.Constants.TRANSFER_MONEY
-                        || appResource.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
-                    loadIconFontFromAssert(iconInsideApp,
-                            Integer.parseInt(appResource.iconName),
-                            appResource.iconColor);
-                } else {
-                    loadIconFontFromFile(iconInsideApp,
-                            appResource.iconName,
-                            appResource.iconColor);
-                }
+                loadIconFont(iconInsideApp,
+                        appResource.iconName,
+                        appResource.iconColor);
             } catch (Exception e) {
                 Timber.w(e, "set IconFont for inside app exception.");
                 loadIconFontDefault();
             }
         }
 
-        private void setColorIconFont(IconFont iconInsideApp, String color) {
-            if (!TextUtils.isEmpty(color)) {
-                iconInsideApp.setTextColor(Color.parseColor(color));
-            }
+        private void loadIconFontDefault() {
+            loadIconFont(iconInsideApp,
+                    R.string.general_icondefault,
+                    AndroidUtils.getColorFromResource(R.color.home_font_inside_app));
         }
 
-        private void loadIconFontFromAssert(IconFont iconInsideApp, int resourceId, String iconColor)
+        private void loadIconFont(IconFont iconInsideApp, String iconName, String iconColor)
+                throws Resources.NotFoundException {
+            iconInsideApp.setTypeface(IconFontHelper.getInstance().getCurrentTypeface());
+            IconFontInfo iconFontInfo = IconFontHelper.getInstance().getIconFontInfo(iconName);
+            if (iconFontInfo != null) {
+                iconInsideApp.setText(iconFontInfo.code);
+            }
+            setColorIconFont(iconInsideApp, iconColor);
+        }
+
+        private void loadIconFont(IconFont iconInsideApp, int resourceId, String iconColor)
                 throws Resources.NotFoundException {
             iconInsideApp.setTypefaceFromAsset(getContext().getString(R.string.font_name));
             iconInsideApp.setText(resourceId);
             setColorIconFont(iconInsideApp, iconColor);
         }
 
-        private void loadIconFontFromFile(IconFont iconInsideApp, String code, String iconColor) {
-            if (TextUtils.isEmpty(code)) {
-                loadIconFontDefault();
+        private void setColorIconFont(IconFont iconInsideApp, String color) {
+            if (!TextUtils.isEmpty(color)) {
+                iconInsideApp.setIconColor(color);
             }
-            String filePath = ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID,
-                    getContext().getString(R.string.font_name_dynamic));
-            iconInsideApp.setTypefaceFromFile(filePath);
-            iconInsideApp.setText(fromHtml(String.format("&#%s;", code)));
-            setColorIconFont(iconInsideApp, iconColor);
-        }
-
-        private void loadIconFontDefault() {
-            loadIconFontFromAssert(iconInsideApp,
-                    R.string.general_icondefault,
-                    AndroidUtils.getColorFromResource(R.color.home_font_inside_app));
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private static Spanned fromHtml(String source) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            return Html.fromHtml(source);
         }
     }
 

@@ -1,42 +1,42 @@
 <resources>
     <string name="font_name">zalopay.ttf</string>
-    <string name="font_name_dynamic">zalopay.ttf</string>
+    <string name="json_font_info">zalopay.json</string>
 
     <!--HomePage START-->
-    <string name="header_payqrcode">&#59764;</string>
-    <string name="header_overbalance">&#59763;</string>
-    <string name="header_linkcard">&#59762;</string>
+    <string name="header_payqrcode">header_payqrcode</string>
+    <string name="header_overbalance">header_overbalance</string>
+    <string name="header_linkcard">header_linkcard</string>
     <!--HomePage END-->
 
     <!--Menu START-->
-    <string name="menu_payqrcode">&#59737;</string>
-    <string name="menu_1_receivemoney">&#59729;</string>
-    <string name="menu_1_transfers">&#59730;</string>
-    <string name="menu_linkcard">&#59735;</string>
-    <string name="menu_history">&#59732;</string>
-    <string name="menu_supportcenter">&#59738;</string>
-    <string name="menu_feedback">&#59731;</string>
-    <string name="menu_infomation">&#59733;</string>
-    <string name="menu_logout">&#59736;</string>
+    <string name="menu_payqrcode">menu_payqrcode</string>
+    <string name="menu_1_receivemoney">menu_1_receivemoney</string>
+    <string name="menu_1_transfers">menu_1_transfers</string>
+    <string name="menu_linkcard">menu_linkcard</string>
+    <string name="menu_history">menu_history</string>
+    <string name="menu_supportcenter">menu_supportcenter</string>
+    <string name="menu_feedback">menu_feedback</string>
+    <string name="menu_infomation">menu_infomation</string>
+    <string name="menu_logout">menu_logout</string>
     <!--Menu END-->
 
-    <string name="sendmoney_zalopayid">&#59774;</string>
-    <string name="sendmoney_friend">&#59772;</string>
+    <string name="sendmoney_zalopayid">sendmoney_zalopayid</string>
+    <string name="sendmoney_friend">sendmoney_friend</string>
 
-    <string name="notify_1_receivemoney">&#59712;</string>
-    <string name="notify_1_withdraw">&#59714;</string>
+    <string name="notify_1_receivemoney">notify_1_receivemoney</string>
+    <string name="notify_1_withdraw">notify_1_withdraw</string>
 
-    <string name="general_question">&#59748;</string>
-    <string name="general_success">&#59750;</string>
-    <string name="general_failed">&#59743;</string>
-    <string name="general_del">&#59742;</string>
-    <string name="general_icondefault">&#59745;</string>
+    <string name="general_question">general_question</string>
+    <string name="general_success">general_success</string>
+    <string name="general_failed">general_failed</string>
+    <string name="general_del">general_del</string>
+    <string name="general_icondefault">general_icondefault</string>
 
-    <string name="profile_lock">&#59777;</string>
-    <string name="profile_camera">&#59775;</string>
-    <string name="profile_library">&#59776;</string>
+    <string name="profile_lock">profile_lock</string>
+    <string name="profile_camera">profile_camera</string>
+    <string name="profile_library">profile_library</string>
 
-    <string name="app_1_transfers">&#59752;</string>
-    <string name="app_1_receivemoney">&#59751;</string>
-    <string name="app_6_red">&#59753;</string>
+    <string name="app_1_transfers">app_1_transfers</string>
+    <string name="app_1_receivemoney">app_1_receivemoney</string>
+    <string name="app_6_red">app_6_red</string>
 </resources>

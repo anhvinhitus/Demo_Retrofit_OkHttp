@@ -1,14 +1,19 @@
 package com.zalopay.ui.widget;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.iconfont.IconFontHelper;
+import com.zalopay.ui.widget.iconfont.IconFontInfo;
 import com.zalopay.ui.widget.util.FontHelper;
 
 /**
@@ -42,7 +47,7 @@ public class IconFont extends TextView {
             Log.d("IconFont", "icon name: " + iconName);
 
             setTypefaceFromAsset(fontAsset);
-            setText(iconName);
+            setIcon(iconName);
         } catch (RuntimeException e) {
             Log.d("IconFont", "set font and icon name throw RuntimeException: " + e.getMessage());
         }
@@ -65,22 +70,48 @@ public class IconFont extends TextView {
         }
     }
 
-    public void setTypefaceFromAsset(String fontAsset) {
-        if (TextUtils.isEmpty(fontAsset)) {
-            return;
-        }
-        Typeface typeface = FontHelper.getmInstance().getFontFromAsset(fontAsset);
-        if (typeface == null) {
-            Log.d("IconFont", String.format("Could not create a typeface from asset: %s", fontAsset));
-        } else {
-            setTypefaceWithoutStyle(typeface);
+    public void setIconColor(int color) {
+        try {
+            super.setTextColor(ResourcesCompat.getColor(getResources(), color, null));
+        } catch (Resources.NotFoundException e) {
+            Log.w("IconFont", "setIconColor throw NotFoundException: " + e.getMessage());
         }
     }
 
-    public void setTypefaceFromFile(String filePath) {
-        Typeface typeface = FontHelper.getmInstance().getFontFromFileName(filePath);
+    public void setIconColor(String color) {
+        if (TextUtils.isEmpty(color)) {
+            return;
+        }
+        super.setTextColor(Color.parseColor(color));
+    }
+
+    public void setIcon(Integer iconResource) {
+        String iconName = getContext().getString(iconResource);
+        setIcon(iconName);
+    }
+
+    public void setIcon(String iconName) {
+        if (TextUtils.isEmpty(iconName)) {
+            setText("");
+        } else {
+            IconFontInfo iconFontInfo = IconFontHelper.getInstance().getIconFontInfo(iconName);
+            if (iconFontInfo == null) {
+                setText("");
+            } else {
+                setText(iconFontInfo.code);
+            }
+        }
+    }
+
+    public void setTypefaceFromAsset(String fontAsset) {
+        if (TextUtils.isEmpty(fontAsset)
+                || getContext() == null
+                || getContext().getAssets() == null) {
+            return;
+        }
+        Typeface typeface = FontHelper.getInstance().getFontFromAsset(getContext().getAssets(), fontAsset);
         if (typeface == null) {
-            Log.d("IconFont", String.format("Could not create a typeface from file: %s", filePath));
+            Log.d("IconFont", String.format("Could not create a typeface from asset: %s", fontAsset));
         } else {
             setTypefaceWithoutStyle(typeface);
         }

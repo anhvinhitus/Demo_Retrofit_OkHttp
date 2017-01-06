@@ -34,11 +34,11 @@ public class ResourceHelper {
     /**
      * Returns the path of this module.
      */
-    public static String getFontPath(long appId, String fileName) {
-        if (TextUtils.isEmpty(fileName) || appId <= 0) {
+    public static String getFontPath(long appId) {
+        if (appId <= 0) {
             return null;
         }
-        return String.format(Locale.getDefault(), "%s/fonts/%s", ResourceHelper.getPath(appId), fileName);
+        return String.format(Locale.getDefault(), "%s/fonts/", ResourceHelper.getPath(appId));
     }
 
     public static String getResource(Context context, int appId, String resourceName) {

@@ -16,13 +16,14 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.squareup.leakcanary.LeakCanary;
 import com.zalopay.apploader.logging.ReactNativeAppLoaderLogger;
-import com.zalopay.ui.widget.util.FontHelper;
+import com.zalopay.ui.widget.iconfont.IconFontHelper;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.AppLifeCycle;
+import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
@@ -31,13 +32,13 @@ import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.service.ZPTrackerAnswers;
 import vn.com.vng.zalopay.service.ZPTrackerGA;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 
 /**
  * Created by AnhHieu on 3/24/16.
+ * *
  */
 public class AndroidApplication extends Application {
 
@@ -96,7 +97,15 @@ public class AndroidApplication extends Application {
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
 
-        FontHelper.init(getAssets());
+        initIconFont();
+    }
+
+    private void initIconFont() {
+        IconFontHelper.getInstance().initialize(getAssets(),
+                "fonts/" + getString(R.string.font_name),
+                "fonts/" + getString(R.string.json_font_info),
+                ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.font_name),
+                ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.json_font_info));
     }
 
     private void initPaymentSdk() {
@@ -142,13 +151,13 @@ public class AndroidApplication extends Application {
         });
     }
 
-    private void initializeFontFamily() {
+    /*private void initializeFontFamily() {
         AndroidUtils.setDefaultFont(this, "DEFAULT", "fonts/Roboto-Regular.ttf");
         AndroidUtils.setDefaultFont(this, "DEFAULT_BOLD", "fonts/Roboto-Medium.ttf");
         AndroidUtils.setDefaultFont(this, "MONOSPACE", "fonts/Roboto-Medium.ttf");
         AndroidUtils.setDefaultFont(this, "SERIF", "fonts/Roboto-Regular.ttf");
         AndroidUtils.setDefaultFont(this, "SANS_SERIF", "fonts/Roboto-Regular.ttf");
-    }
+    }*/
 
     public UserComponent createUserComponent(User user) {
         Timber.d("Create new instance of UserComponent");

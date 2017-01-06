@@ -29,7 +29,7 @@ dependencies {
     compile libs.support_recyclerview_v7
     compile libs.support_design
     compile libs.support_cardview_v7
-
+    compile libs.gson
 
     compile 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
     compile 'com.ogaclejapan.smarttablayout:utils-v4:1.6.1@aar'

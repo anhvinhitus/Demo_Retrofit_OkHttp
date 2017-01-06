@@ -114,9 +114,8 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
         void bindView(MenuItem menuItem) {
             mTvTitle.setText(menuItem.title);
-            mIconFont.setText(menuItem.iconResource);
-            mIconFont.setTextColor(ResourcesCompat.getColor(AndroidApplication.instance().getResources(),
-                    menuItem.iconColor, null));
+            mIconFont.setIcon(menuItem.iconResource);
+            mIconFont.setIconColor(menuItem.iconColor);
             if (menuItem.showDivider) {
                 viewSeparate.setVisibility(View.VISIBLE);
             } else {
