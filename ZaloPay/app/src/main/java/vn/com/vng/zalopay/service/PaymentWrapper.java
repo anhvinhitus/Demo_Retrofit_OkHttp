@@ -293,7 +293,7 @@ public class PaymentWrapper {
                 owner, paymentChannel, paymentInfo);
         mPendingOrder = paymentInfo;
         mPendingChannel = paymentChannel;
-        WalletSDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener, new PaymentFingerPrint(mActivity.getApplication()));
+        WalletSDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()));
     }
 
     private boolean validPaymentInfo(ZPWPaymentInfo paymentInfo) {

@@ -16,32 +16,30 @@ import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 
 public class PaymentFingerPrint implements IPaymentFingerPrint {
 
-    private IFPCallback mCallback;
     private Context mContext;
     private KeyTools mKeyTools;
 
-    public PaymentFingerPrint(Context context) {
+    public PaymentFingerPrint(AndroidApplication context) {
         mContext = context;
-        SharedPreferences mPreferences = ((AndroidApplication) context).getAppComponent().sharedPreferences();
+        SharedPreferences mPreferences = context.getAppComponent().sharedPreferences();
         mKeyTools = new KeyTools(context, mPreferences);
     }
 
     @Override
-    public void authen(Activity activity, IFPCallback callback) throws Exception {
+    public void authen(Activity activity, final IFPCallback callback) throws Exception {
 
         if (callback == null) {
             Timber.d("Callback is null");
             return;
         }
 
-        mCallback = callback;
         if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
-            mCallback.onComplete("");
+            callback.onComplete("");
             return;
         }
 
         if (!mKeyTools.isHavePassword()) {
-            mCallback.onComplete("");
+            callback.onComplete("");
             return;
         }
 
@@ -50,9 +48,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
         dialog.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
-                if (mCallback != null) {
-                    mCallback.onComplete(password);
-                }
+                callback.onComplete(password);
             }
 
             @Override
@@ -62,9 +58,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
 
             @Override
             public void onCancel() {
-                if (mCallback != null) {
-                    mCallback.onCancel();
-                }
+                callback.onCancel();
             }
         });
 
@@ -77,9 +71,5 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
         if (!TextUtils.isEmpty(s1) && !s1.equals(s)) {
             mKeyTools.updatePassword(s1);
         }
-    }
-
-    public void stopAuthen() throws Exception {
-
     }
 }
