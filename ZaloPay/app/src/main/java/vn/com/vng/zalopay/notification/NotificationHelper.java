@@ -469,7 +469,12 @@ public class NotificationHelper {
         Subscription subscription = mRedPacketRepository.getListPackageStatus(mListPacketIdToRecovery)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        mListPacketIdToRecovery.clear();
+                    }
+                });
         compositeSubscription.add(subscription);
     }
 

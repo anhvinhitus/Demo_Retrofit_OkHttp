@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -50,6 +51,9 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
     @BindView(R.id.lblTouchId)
     View mTvTouchIdView;
+
+    @BindView(R.id.tvProtectDesc)
+    TextView mProtectDescView;
 
     @Inject
     ProtectAccountPresenter mPresenter;
@@ -125,6 +129,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
     public void hideFingerprintLayout() {
         mVgTouchIdView.setVisibility(View.GONE);
         mTvTouchIdView.setVisibility(View.GONE);
+        mProtectDescView.setText(R.string.protection_information_description_no_fingerprint);
     }
 
     @OnTouch(R.id.swcTouchId)

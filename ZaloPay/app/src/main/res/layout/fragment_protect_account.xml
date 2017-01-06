@@ -75,6 +75,7 @@
     </FrameLayout>
 
     <TextView
+        android:id="@+id/tvProtectDesc"
         style="@style/TextView.Item.Sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
