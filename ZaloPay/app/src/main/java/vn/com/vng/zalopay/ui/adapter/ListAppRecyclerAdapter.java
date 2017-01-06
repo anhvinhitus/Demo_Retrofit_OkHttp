@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -172,13 +173,17 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
             }
         }
 
-        private void loadIconFontFromAssert(IconFont iconInsideApp, int resourceId, String iconColor) {
+        private void loadIconFontFromAssert(IconFont iconInsideApp, int resourceId, String iconColor)
+                throws Resources.NotFoundException {
             iconInsideApp.setTypefaceFromAsset(getContext().getString(R.string.font_name));
             iconInsideApp.setText(resourceId);
             setColorIconFont(iconInsideApp, iconColor);
         }
 
         private void loadIconFontFromFile(IconFont iconInsideApp, String code, String iconColor) {
+            if (TextUtils.isEmpty(code)) {
+                loadIconFontDefault();
+            }
             String filePath = ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID,
                     getContext().getString(R.string.font_name_dynamic));
             iconInsideApp.setTypefaceFromFile(filePath);
