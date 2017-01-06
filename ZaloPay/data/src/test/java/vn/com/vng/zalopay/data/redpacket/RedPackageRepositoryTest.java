@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.data.DefaultObserver;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
+import vn.com.vng.zalopay.data.api.response.ListRedPacketStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
@@ -264,6 +265,11 @@ public class RedPackageRepositoryTest {
         @Override
         public Observable<BaseResponse> submittosendbundlebyzalopayinfo(@Field("bundleid") long bundleID, @Field("zalopayoffriendlist") String friends, @Field("zalopayofsender") String sender, @Field("accesstoken") String accessToken) {
             return Observable.just(baseResponse);
+        }
+
+        @Override
+        public Observable<ListRedPacketStatusResponse> getListPackageStatus(@Query("listpackageid") List<Long> list, @Query("userid") String zalopayId, @Query("accesstoken") String accessToken) {
+            return Observable.just(new ListRedPacketStatusResponse());
         }
     }
 

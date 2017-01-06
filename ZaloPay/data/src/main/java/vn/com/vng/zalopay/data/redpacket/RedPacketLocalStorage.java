@@ -37,8 +37,6 @@ import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
-import static java.util.Collections.emptyList;
-
 /**
  * Created by longlv on 13/07/2016.
  * Implementation of RedPacketStore.LocalStorage
@@ -344,9 +342,10 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
 
     @Override
     public Observable<List<ReceivePackage>> getReceiveBundle(long openTime, int limit) {
-        if (limit <= 0) {
-            Observable.just(Collections.emptyList());
+        if (openTime < 0 || limit <= 0) {
+            return Observable.just(Collections.emptyList());
         }
+        
         return ObservableHelper.makeObservable(() -> queryReceivePackageList(openTime, limit))
                 .doOnNext(receivePackageList -> Timber.d("getReceiveBundle openTime [%s] limit [%s] size [%s]",
                         openTime, limit, receivePackageList.size()));
