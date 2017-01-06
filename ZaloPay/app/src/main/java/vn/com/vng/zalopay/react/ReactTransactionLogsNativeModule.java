@@ -206,7 +206,7 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
             mEventBus.register(this);
         }
 
-        updateTransactionLatest();
+        // updateTransactionLatest();
     }
 
     @Override
@@ -279,14 +279,6 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         item.putInt("statusType", event.typeSuccess);
         sendEvent("zalopayTransactionsUpdated", item);
     }
-
-    private void updateTransactionLatest() {
-        Subscription subscription = mTransactionRepository.fetchTransactionHistoryLatest()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
-        mCompositeSubscription.add(subscription);
-    }
-
 
     @ReactMethod
     public void reloadTransactionWithId(final String transactionId, String notificationId, final Promise promise) {
