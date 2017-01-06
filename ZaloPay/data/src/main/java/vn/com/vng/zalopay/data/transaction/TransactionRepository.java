@@ -131,6 +131,9 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<TransHistory> getTransaction(long id) {
+        if (mLocalStorage == null) {
+            return Observable.empty();
+        }
         return ObservableHelper.makeObservable(() -> mLocalStorage.getTransaction(id))
                 .map(entity -> mDataMapper.transform(entity));
     }
@@ -154,6 +157,9 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private Observable<List<TransHistoryEntity>> getTransactionHistoryLocal(int pageIndex, int count, int statusType) {
+        if (mLocalStorage == null) {
+            return Observable.empty();
+        }
         return makeObservable(() -> mLocalStorage.get(pageIndex, count, statusType));
     }
 
@@ -200,6 +206,9 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     private long getNextTimestamp(int sortOrder, int statusType) {
         long ret = -1;
+        if (mLocalStorage == null) {
+            return ret;
+        }
         if (sortOrder == TRANSACTION_ORDER_LATEST) {
             ret = mLocalStorage.getLatestTimeTransaction(statusType);
         } else if (sortOrder == TRANSACTION_ORDER_OLDEST) {
@@ -246,6 +255,9 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private Observable<List<TransHistoryEntity>> fetchTransactionHistoryCloud(long timestamp, int sortOrder, int statusType) {
+        if (mRequestService == null) {
+            return Observable.empty();
+        }
         return mRequestService.getTransactionHistories(mUser.zaloPayId, mUser.accesstoken, timestamp, TRANSACTION_LENGTH, sortOrder, statusType)
                 .map(response -> response.data)
                 .doOnNext(data -> {
@@ -274,6 +286,9 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private void writeTransactionEntity(List<TransHistoryEntity> data, int sortOder, int statusType) {
+        if (mLocalStorage == null) {
+            return;
+        }
         int size = data.size();
         if (size > 0) {
             for (TransHistoryEntity transHistoryEntity : data) {
@@ -332,11 +347,11 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private Observable<Long> getLatestTimeTransaction(int statusType) {
-        return makeObservable(() -> mLocalStorage.getLatestTimeTransaction(statusType));
+        return makeObservable(() -> mLocalStorage != null ? mLocalStorage.getLatestTimeTransaction(statusType) : 0L);
     }
 
     private Observable<Long> getOldestTimeTransaction(int statusType) {
-        return makeObservable(() -> mLocalStorage.getOldestTimeTransaction(statusType));
+        return makeObservable(() -> mLocalStorage != null ? mLocalStorage.getOldestTimeTransaction(statusType) : 0L);
     }
 
     private Observable<Boolean> fetchTransactionHistoryOldestSuccess(long thresholdTime) {

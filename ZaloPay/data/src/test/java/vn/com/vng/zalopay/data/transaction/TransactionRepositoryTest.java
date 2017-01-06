@@ -628,7 +628,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("fetchTransactionHistorySuccessLatest with only data from cloud", 0, result.size());
+        Assert.assertEquals("fetchTransactionHistorySuccessLatest with only data from cloud", 1, result.size());
     }
 
     @Test
@@ -678,7 +678,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("fetchTransactionHistoryFailLatest with only data from cloud", 0, result.size());
+        Assert.assertEquals("fetchTransactionHistoryFailLatest with only data from cloud", 1, result.size());
     }
 
     @Test
@@ -728,7 +728,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("fetchTransactionHistoryLatest with only data from cloud", 0, result.size());
+        Assert.assertEquals("fetchTransactionHistoryLatest with only data from cloud", 1, result.size());
     }
 
     @Test
@@ -849,7 +849,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
     }
 
     private void assertEquals(List<TransHistory> list1, List<TransHistoryEntity> list2) {
-        if(list1.size() == 0) {
+        if (list1.size() == 0) {
             Assert.fail("object is null");
             return;
         }
