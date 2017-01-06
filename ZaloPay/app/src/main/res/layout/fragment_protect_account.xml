@@ -123,12 +123,4 @@
         android:text="@string/change.password.description"
         android:textSize="14dp" />
 
-    <Button
-        android:id="@+id/btnFingerprint"
-        style="@style/Button.Default.New"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:text="Sign in"
-        android:visibility="gone" />
-
 </LinearLayout>

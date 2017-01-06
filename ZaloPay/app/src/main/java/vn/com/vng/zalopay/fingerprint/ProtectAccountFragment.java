@@ -52,9 +52,6 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
     @BindView(R.id.lblTouchId)
     View mTvTouchIdView;
 
-    @BindView(R.id.btnFingerprint)
-    View mBtnFingerprint;
-
     @Inject
     ProtectAccountPresenter mPresenter;
 
@@ -68,7 +65,6 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         mPresenter.onViewCreated();
-        mBtnFingerprint.setVisibility(BuildConfig.DEBUG ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -96,12 +92,10 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
     @Override
     public void showLoading() {
-
     }
 
     @Override
     public void hideLoading() {
-
     }
 
     @Override
@@ -146,14 +140,6 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
         Timber.d("onTouchProtectAccount");
         mPresenter.userProtectAccount(!mSwcProtectAccountView.isChecked());
         return false;
-    }
-
-    @OnClick(R.id.btnFingerprint)
-    public void onClickFingerprint() {
-        AuthenticationDialog fragment = AuthenticationDialog.newInstance();
-        fragment.setStage(Stage.FINGERPRINT_DECRYPT);
-        fragment.setAuthenticationCallback(null);
-        fragment.show(getActivity().getFragmentManager(), AuthenticationDialog.TAG);
     }
 
 }

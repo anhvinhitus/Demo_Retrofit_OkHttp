@@ -152,10 +152,6 @@ public class KeyTools {
             return false;
         }
 
-      /*  if (mEncryptCipher != null) {
-            return true;
-        }*/
-
         mEncryptCipher = getCipher(Cipher.ENCRYPT_MODE);
         if (mEncryptCipher == null) {
             createKey();
@@ -172,40 +168,10 @@ public class KeyTools {
             return false;
         }
 
-       /* if (mDecryptCipher != null) {
-            return true;
-        }*/
-
         mDecryptCipher = getCipher(Cipher.DECRYPT_MODE);
         Timber.d("decrypt cipher: [%s]", mDecryptCipher);
         return (mDecryptCipher != null);
     }
-
-   /* public boolean encrypt2(String secret) {
-        Timber.d("encrypt [%s]", secret);
-        try {
-
-            byte[] encrypted = mEncryptCipher.doFinal(secret.getBytes());
-
-            IvParameterSpec ivParams = mEncryptCipher.getParameters().getParameterSpec(IvParameterSpec.class);
-            String iv = Base64.encodeToString(ivParams.getIV(), Base64.DEFAULT);
-
-            SharedPreferences.Editor editor = mPreferences.edit();
-            Timber.d("encrypt %s", new String(encrypted));
-            String secretBase64 = Base64.encodeToString(encrypted, Base64.DEFAULT);
-            Timber.d("secret base64 : [%s]", secretBase64);
-            Timber.d("iv : [%s]", secretBase64);
-            editor.putString(Constants.PREF_KEY_PASSWORD, secretBase64);
-            editor.putString(Constants.PREF_KEY_PASSWORD_IV, iv);
-            editor.apply();
-            return true;
-
-        } catch (Exception e) {
-            Timber.e(e, "Failed to encrypt the data with the generated key.");
-        }
-
-        return false;
-    }*/
 
     public String decrypt(Cipher cipher) {
         Timber.d("decrypt : [%s]", cipher);
@@ -217,21 +183,6 @@ public class KeyTools {
             String result = new String(decodedData);
             Timber.d("decrypt: %s", result);
             return result;
-
-            //   Timber.d("encrypt: %s", passwordSha256.getBytes().length);
-            // Timber.d("encrypt: %s %s", outputStream.toByteArray(), new String(outputStream.toByteArray()));
-          /*  String keyPassword = mPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
-            Timber.d("secret base64 : %s", keyPassword);
-            byte[] decodeData = Base64.decode(keyPassword, Base64.DEFAULT);
-            byte[] in = new byte[decodeData.length];
-            Timber.d("decrypt: %s", decodeData.length);
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(decodeData);
-            CipherInputStream cipherInputStream = new CipherInputStream(inputStream, mDecryptCipher);
-            IOUtils.readFully(cipherInputStream, in);
-            String muchWow = new String(in);
-            Timber.d("encrypt: muchWow %s", muchWow);
-            cipherInputStream.close();
-            return muchWow;*/
         } catch (Exception e) {
             Timber.e(e, "Failed to decrypt the data with the generated key.");
         }

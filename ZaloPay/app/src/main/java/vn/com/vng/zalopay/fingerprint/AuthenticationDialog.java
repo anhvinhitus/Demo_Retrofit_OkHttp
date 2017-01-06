@@ -65,9 +65,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         this.isFinish = isFinish;
     }
 
-    @BindView(R.id.rootView)
-    View mRootView;
-
     @BindView(R.id.cancel_button)
     Button mCancelButton;
 
@@ -89,17 +86,8 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     @BindView(R.id.hintPassword)
     TextView mHintPassword;
 
-    @BindView(R.id.fingerprint_icon_decrypt)
-    ImageView mIconDecryptView;
-
     @BindView(R.id.fingerprint_status_decrypt)
     TextView mTvDecryptView;
-
-    @BindView(R.id.fingerprint_icon)
-    ImageView mIconFingerprintView;
-
-    @BindView(R.id.fingerprint_status)
-    TextView mStatusFingerprint;
 
     private Unbinder mUnbinder;
 
@@ -255,24 +243,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
                 mFingerprintDecrypt.setVisibility(View.GONE);
                 mBackupContent.setVisibility(View.VISIBLE);
                 break;
-       /*     case PASSWORD_SETTING:
-                mCancelButton.setText(R.string.cancel);
-                mCancelButton.setVisibility(View.INVISIBLE);
-
-                mSecondDialogButton.setText(R.string.txt_close);
-                mFingerprintEncrypt.setVisibility(View.GONE);
-                mFingerprintDecrypt.setVisibility(View.GONE);
-                mBackupContent.setVisibility(View.VISIBLE);
-                break;
-            case FINGERPRINT_ENCRYPT:
-                mCancelButton.setText(R.string.cancel);
-                mCancelButton.setVisibility(View.VISIBLE);
-                mSecondDialogButton.setVisibility(View.GONE);
-                mFingerprintEncrypt.setVisibility(View.VISIBLE);
-                mFingerprintDecrypt.setVisibility(View.GONE);
-                mBackupContent.setVisibility(View.GONE);
-                break;
-        */
         }
     }
 
