@@ -1,34 +1,37 @@
 package vn.com.vng.zalopay.feedback;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 
 /**
  * Created by cpu11759-local on 03/01/2017.
  */
 
-public class FeedbackAdapter extends AbsRecyclerAdapter<Bitmap, RecyclerView.ViewHolder> {
+public class FeedbackAdapter extends AbsRecyclerAdapter<ScreenshotData, RecyclerView.ViewHolder> {
     private static final int FOOTER_VIEW = 1;
 
     private FeedbackAdapter.OnClickAddListener addListener;
     private FeedbackAdapter.OnClickDeleteListener deleteListener;
+
+    private int maxScreenshot = 4;
 
     public FeedbackAdapter(Context context, FeedbackAdapter.OnClickAddListener addListener,
                            FeedbackAdapter.OnClickDeleteListener deleteListener) {
         super(context);
         this.addListener = addListener;
         this.deleteListener = deleteListener;
+        maxScreenshot = context.getResources().getInteger(R.integer.max_length_add_screenshot);
     }
 
     @Override
@@ -52,7 +55,7 @@ public class FeedbackAdapter extends AbsRecyclerAdapter<Bitmap, RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FeedbackAdapter.ViewHolder) {
-            Bitmap screen = getItem(position);
+            ScreenshotData screen = getItem(position);
             if (screen != null) {
                 ((FeedbackAdapter.ViewHolder) holder).bindView(screen);
             }
@@ -61,24 +64,16 @@ public class FeedbackAdapter extends AbsRecyclerAdapter<Bitmap, RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        if (mItems == null) {
-            return 0;
+        if (getItems().size() == maxScreenshot) {
+            return super.getItemCount();
         }
 
-        if (mItems.size() == 0) {
-            return 1;
-        }
-
-        if(mItems.size() == getContext().getResources().getInteger(R.integer.max_length_add_screenshot)) {
-            return mItems.size();
-        }
-
-        return mItems.size() + 1;
+        return super.getItemCount() + 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == mItems.size()) {
+        if (position == getItems().size()) {
             return FOOTER_VIEW;
         }
 
@@ -87,49 +82,50 @@ public class FeedbackAdapter extends AbsRecyclerAdapter<Bitmap, RecyclerView.Vie
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_image)
-        ImageView imgScreen;
+        SimpleDraweeView mScreenshotView;
 
-        @BindView(R.id.iv_delete)
-        ImageView mDelete;
+        private OnClickDeleteListener mListener;
 
-        public ViewHolder(View itemView, final OnClickDeleteListener listener) {
+        public ViewHolder(View itemView, OnClickDeleteListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
-            mDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onClickDelete(getPosition());
-                }
-            });
+            mListener = listener;
         }
 
-        public void bindView(Bitmap screen) {
-            if (imgScreen == null) {
-                return;
+        @OnClick(R.id.iv_delete)
+        public void onClick() {
+            if (mListener != null) {
+                mListener.onClickDelete(getAdapterPosition());
             }
-            if (screen == null) {
-                imgScreen.setImageBitmap(null);
+        }
+
+        public void bindView(ScreenshotData image) {
+            if (!TextUtils.isEmpty(image.mUrl)) {
+                mScreenshotView.setImageURI(image.mUrl);
+            } else if (image.mBitmap != null) {
+                mScreenshotView.setImageBitmap(image.mBitmap);
             } else {
-                imgScreen.setImageBitmap(screen);
+                mScreenshotView.setImageURI("");
             }
+
         }
     }
 
     public class FooterViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.container)
-        LinearLayout container;
+
+        private OnClickAddListener mListener;
 
         public FooterViewHolder(View itemView, final OnClickAddListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.mListener = listener;
+        }
 
-            container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onClickAdd();
-                }
-            });
+        @OnClick(R.id.container)
+        public void onClickAdd(View v) {
+            if (mListener != null) {
+                mListener.onClickAdd();
+            }
         }
     }
 

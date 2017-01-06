@@ -10,28 +10,28 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.edittext.ZPEditText;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.AbsPickerImageFragment;
 import vn.com.vng.zalopay.data.UserCollector;
-import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 import vn.zalopay.feedback.FeedbackCollector;
 import vn.zalopay.feedback.collectors.AppCollector;
@@ -39,11 +39,23 @@ import vn.zalopay.feedback.collectors.DeviceCollector;
 import vn.zalopay.feedback.collectors.NetworkCollector;
 
 public class FeedbackFragment extends AbsPickerImageFragment implements
-        FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener, SwitchCompat.OnCheckedChangeListener {
+        FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener, IFeedbackView {
+
+    public static FeedbackFragment newInstance() {
+        return new FeedbackFragment();
+    }
+
+    @Override
+    protected void setupFragmentComponent() {
+        getUserComponent().inject(this);
+    }
+
+    @Override
+    protected int getResLayoutId() {
+        return R.layout.fragment_send_feedback;
+    }
 
     private static final int IMAGE_REQUEST_CODE = 100;
-
-    private static final int PERMISSION_READ_EXTERNAL_STORAGE = 1001;
 
     private FeedbackAdapter mAdapter;
     private Uri mUri;
@@ -53,7 +65,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
     private DeviceCollector mDeviceCollector;
 
     @BindView(R.id.tvTransactionType)
-    TextView mTvTransactionType;
+    TextView mCategoryView;
     @BindView(R.id.edtTransactionId)
     ZPEditText mEdtTransactionId;
     @BindView(R.id.edtEmail)
@@ -61,41 +73,26 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
     @BindView(R.id.edtDescribe)
     ZPEditText mEdtDescribe;
 
-    @BindView(R.id.swSendUserInfor)
-    SwitchCompat mSwSendUserInfor;
-    @BindView(R.id.swSendDeviceInfor)
-    SwitchCompat mSwSendDeviceInfor;
-    @BindView(R.id.swSendAppInfor)
-    SwitchCompat mSwSendAppInfor;
-
     @BindView(R.id.txtTitleImage)
     TextView mTvTitleImage;
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
 
     @BindView(R.id.btnSend)
-    Button mBtnSend;
+    View mBtnSendView;
 
-    private String getEmail() {
-        if (mEdtEmail != null) {
-            return mEdtEmail.getText().toString();
-        }
-        return "";
-    }
+    @Inject
+    FeedbackPresenter mPresenter;
 
-    public static FeedbackFragment newInstance() {
-        return new FeedbackFragment();
-    }
+    @Inject
+    User mUser;
 
-    @Override
-    protected void setupFragmentComponent() {
-//        getUserComponent().inject(this);
-    }
+    private String mCategory;
+    private String mTransactionId;
 
-    @Override
-    protected int getResLayoutId() {
-        return R.layout.fragment_send_feedback;
-    }
+    //compress format png
+    @Nullable
+    private byte[] mScreenshot;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,38 +102,53 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
 
         mCollector = new FeedbackCollector();
         mUserCollector = new UserCollector(getAppComponent().userConfig());
-        mAppCollector = new AppCollector(this.getActivity());
+        mAppCollector = new AppCollector(AndroidApplication.instance());
         mDeviceCollector = new DeviceCollector();
+
+        initArgs(getActivity().getIntent().getExtras());
+    }
+
+    private void initArgs(Bundle bundle) {
+        if (bundle == null) {
+            return;
+        }
+
+        mCategory = bundle.getString("category");
+        mTransactionId = bundle.getString("transactionid");
+        mScreenshot = bundle.getByteArray("screenshot");
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mPresenter.attachView(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mRecyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
-        mSwSendUserInfor.setOnCheckedChangeListener(this);
-        mSwSendDeviceInfor.setOnCheckedChangeListener(this);
-        mSwSendAppInfor.setOnCheckedChangeListener(this);
 
         mEdtEmail.addValidator(new EmailValidate(getString(R.string.email_invalid)));
 
+        setEmail(mUser.email);
+        mCategoryView.setText(mCategory);
+        mEdtTransactionId.setText(mTransactionId);
+
+        if (mScreenshot != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(mScreenshot, 0, mScreenshot.length);
+            if (bitmap != null) {
+                insertScreenshot(new ScreenshotData(bitmap));
+            }
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         collectInformation();
-        setDefaultEmail();
-
-        testData();
     }
 
-    public void setScreenshot(List<Bitmap> images) {
-        mAdapter.setData(images);
-        setImageCount();
-    }
-
-    public void updateScreenshot(Bitmap image) {
-        mAdapter.insert(image);
+    private void insertScreenshot(ScreenshotData data) {
+        mAdapter.insert(data);
         setImageCount();
     }
 
@@ -145,28 +157,16 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         setImageCount();
     }
 
-    public void setTransactionType(String type) {
-        if(type != null) {
-            mTvTransactionType.setText(type);
-        }
-    }
-
-    public void setTransactionId(String id) {
-        if(id != null) {
-            mEdtTransactionId.setText(id);
-        }
-    }
-
     @Override
     public void onDestroyView() {
-//        mPresenter.detachView();
+        mRecyclerView.setAdapter(null);
+        mPresenter.detachView();
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
-//        mPresenter.destroy();
-        mAdapter = null;
+        mPresenter.destroy();
         super.onDestroy();
     }
 
@@ -179,18 +179,18 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
 
     @OnTextChanged(value = R.id.edtDescribe, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void afterTextChangedDescribe() {
-        mBtnSend.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid());
+        mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid());
     }
 
     @OnTextChanged(value = R.id.edtEmail, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void afterTextChangedEmail() {
-        mBtnSend.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid());
+        mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid());
     }
 
     @OnFocusChange({R.id.edtEmail, R.id.edtDescribe})
     public void onFocusChange(View v, boolean hasView) {
         Timber.d("onFocusChange %s", hasView);
-        mBtnSend.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid());
+        mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid());
     }
 
     @OnClick(R.id.btnSend)
@@ -202,27 +202,39 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         mCollector.startCollectors();
     }
 
-    @Override
+    @OnCheckedChanged(value = {R.id.swSendUserInfor, R.id.swSendDeviceInfor, R.id.swSendAppInfor})
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         int itemId = compoundButton.getId();
-        if (itemId == R.id.swSendUserInfor) {
-            if(b == false) {
-                mCollector.removeCollector(mUserCollector);
-            } else if(b == true) {
-                mCollector.installCollector(mUserCollector);
-            }
-        } else if (itemId == R.id.swSendDeviceInfor) {
-            if(b == false) {
-                mCollector.removeCollector(mDeviceCollector);
-            } else if(b == true) {
-                mCollector.installCollector(mDeviceCollector);
-            }
-        } else if (itemId == R.id.swSendAppInfor) {
-            if(b == false) {
-                mCollector.removeCollector(mAppCollector);
-            } else if(b == true) {
-                mCollector.installCollector(mAppCollector);
-            }
+        switch (itemId) {
+            case R.id.swSendUserInfor:
+
+                if (b) {
+                    mCollector.installCollector(mUserCollector);
+                } else {
+                    mCollector.removeCollector(mUserCollector);
+                }
+
+                break;
+            case R.id.swSendDeviceInfor:
+
+                if (b) {
+                    mCollector.installCollector(mDeviceCollector);
+                } else {
+                    mCollector.removeCollector(mDeviceCollector);
+                }
+
+                break;
+            case R.id.swSendAppInfor:
+
+                if (b) {
+                    mCollector.installCollector(mAppCollector);
+                } else {
+                    mCollector.removeCollector(mAppCollector);
+                }
+
+                break;
+            default:
+                break;
         }
     }
 
@@ -271,7 +283,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
                         mUri = uri;
                         loadScreenshot(mUri);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Timber.d(e, "load screenshot error");
                     }
                     break;
                 default:
@@ -292,7 +304,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
                 try {
                     loadScreenshot(mUri);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Timber.d(e, "load screenshot error");
                 }
 
                 break;
@@ -304,25 +316,15 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         if (uri == null) {
             return;
         }
-
-        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getApplicationContext().getContentResolver(), uri);
-        updateScreenshot(bitmap);
     }
 
     private void setImageCount() {
-        int size = mAdapter.getItemCount() - 1;
-        if(mAdapter.getItemViewType(size) == 0) {
-            size = size + 1;
-        }
-
-        mTvTitleImage.setText(String.format(getResources().getString(R.string.txt_attach_screen),
-                String.valueOf(size)));
+        mTvTitleImage.setText(String.format(getString(R.string.txt_attach_screen),
+                String.valueOf(mAdapter.getItems().size())));
     }
 
-    private void setDefaultEmail() {
-        UserConfig currentUser = getAppComponent().userConfig();
-        String email = currentUser.getCurrentUser().email;
-        if(email != null) {
+    private void setEmail(String email) {
+        if (mEdtEmail != null) {
             mEdtEmail.setText(email);
         }
     }
@@ -334,14 +336,18 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         mCollector.installCollector(new NetworkCollector(this.getActivity()));
     }
 
-    private void testData() {
-        setTransactionType("Rút tiền");
-        setTransactionId("160810000000064");
-        List<Bitmap> tmp = new ArrayList<>();
-        tmp.add(BitmapFactory.decodeResource(getResources(), R.drawable.ic_sacombank));
-//        tmp.add(R.drawable.ic_bidv);
-//        tmp.add(R.drawable.ic_chungchi);
-//        tmp.add(R.drawable.ic_eximbank);
-        setScreenshot(tmp);
+    @Override
+    public void showLoading() {
+        showProgressDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideProgressDialog();
+    }
+
+    @Override
+    public void showError(String message) {
+        showToast(message);
     }
 }

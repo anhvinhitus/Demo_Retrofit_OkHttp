@@ -1,6 +1,6 @@
 package vn.zalopay.feedback.collectors;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
@@ -16,9 +16,10 @@ import vn.zalopay.feedback.IFeedbackCollector;
  */
 
 public class AppCollector implements IFeedbackCollector {
-    private Activity mActivity;
+    private Context mContext;
 
     private static CollectorSetting sSetting;
+
     static {
         sSetting = new CollectorSetting();
         sSetting.userVisibility = true;
@@ -26,8 +27,8 @@ public class AppCollector implements IFeedbackCollector {
         sSetting.dataKeyName = "appinfo";
     }
 
-    public AppCollector(Activity activity) {
-        mActivity = activity;
+    public AppCollector(Context context) {
+        mContext = context;
     }
 
     /**
@@ -46,7 +47,7 @@ public class AppCollector implements IFeedbackCollector {
     @Override
     public JSONObject doInBackground() {
         try {
-            PackageInfo pInfo = mActivity.getPackageManager().getPackageInfo(mActivity.getPackageName(), 0);
+            PackageInfo pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
             JSONObject retVal = new JSONObject();
             retVal.put("version", pInfo.versionName);
             retVal.put("build_number", pInfo.versionCode);

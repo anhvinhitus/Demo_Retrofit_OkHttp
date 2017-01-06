@@ -26,7 +26,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -173,11 +173,18 @@
 
         <activity
             android:name=".ui.activity.MiniApplicationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="vn.com.vng.zalopay.action.FAQ" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".paymentapps.ui.PaymentApplicationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:theme="@style/AppTheme.Payment"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
@@ -337,8 +344,16 @@
             android:name=".warningrooted.WarningRootedActivity"
             android:label="@string/title.activity.warning.root" />
 
-        <activity android:name=".feedback.FeedbackActivity"
-            android:label="@string/title.activity.feedback" />
+        <activity
+            android:name=".feedback.FeedbackActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:label="@string/title.activity.feedback"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="vn.com.vng.zalopay.action.FEEDBACK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name=".receivers.BootCompletedReceiver"
@@ -351,8 +366,8 @@
 
         <receiver android:name=".receivers.UpgradedAppReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
-                <data android:scheme="package"/>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
 

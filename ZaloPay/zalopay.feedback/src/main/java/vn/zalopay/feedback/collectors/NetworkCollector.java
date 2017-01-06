@@ -1,6 +1,5 @@
 package vn.zalopay.feedback.collectors;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -17,9 +16,10 @@ import vn.zalopay.feedback.IFeedbackCollector;
  */
 
 public class NetworkCollector implements IFeedbackCollector {
-    private Activity mActivity;
+    private Context mContext;
 
     private static CollectorSetting sSetting;
+
     static {
         sSetting = new CollectorSetting();
         sSetting.userVisibility = true;
@@ -27,8 +27,8 @@ public class NetworkCollector implements IFeedbackCollector {
         sSetting.dataKeyName = "networkinfo";
     }
 
-    public NetworkCollector(Activity activity) {
-        mActivity = activity;
+    public NetworkCollector(Context context) {
+        mContext = context;
     }
 
     /**
@@ -47,9 +47,8 @@ public class NetworkCollector implements IFeedbackCollector {
     @Override
     public JSONObject doInBackground() {
         try {
-            TelephonyManager telephonyManager = (TelephonyManager) mActivity.getBaseContext()
-                    .getSystemService(Context.TELEPHONY_SERVICE);
-            ConnectivityManager connectivityManager = (ConnectivityManager) mActivity
+            TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+            ConnectivityManager connectivityManager = (ConnectivityManager) mContext
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 

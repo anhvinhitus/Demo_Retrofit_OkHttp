@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
+import vn.com.vng.zalopay.feedback.FeedbackActivity;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
@@ -632,6 +633,11 @@ public class Navigator implements INavigator {
 
     public void startProtectAccount(Context context) {
         Intent intent = new Intent(context, ProtectAccountActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void startFeedbackActivity(Context context) {
+        Intent intent = new Intent(context, FeedbackActivity.class);
         context.startActivity(intent);
     }
 }
