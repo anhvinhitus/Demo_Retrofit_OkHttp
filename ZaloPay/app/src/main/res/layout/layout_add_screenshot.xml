@@ -20,7 +20,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/profile_font_gray"
             app:iconName="@string/profile_camera"
-            app:iconSize="@dimen/font_size_feedback_camera"
-            app:typefaceAsset="@string/font_name"/>
+            app:iconSize="@dimen/font_size_feedback_camera"/>
     </LinearLayout>
 </FrameLayout>

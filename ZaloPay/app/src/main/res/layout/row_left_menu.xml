@@ -17,8 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/app_padding"
-            app:iconSize="@dimen/font_size_menu"
-            app:typefaceAsset="@string/font_name"/>
+            app:iconSize="@dimen/font_size_menu"/>
 
         <TextView
             android:id="@+id/tvTitle"

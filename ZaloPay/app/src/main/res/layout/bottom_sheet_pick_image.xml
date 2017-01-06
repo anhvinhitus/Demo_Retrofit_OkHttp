@@ -33,8 +33,7 @@
             android:layout_marginRight="@dimen/spacing.medium"
             android:textColor="@color/menu_font_ic_blue"
             app:iconName="@string/profile_camera"
-            app:iconSize="@dimen/font_size_profile_icon"
-            app:typefaceAsset="@string/font_name"/>
+            app:iconSize="@dimen/font_size_profile_icon"/>
     </FrameLayout>
 
     <View
@@ -68,8 +67,7 @@
             android:layout_marginRight="@dimen/spacing.medium"
             android:textColor="@color/menu_font_ic_blue"
             app:iconName="@string/profile_library"
-            app:iconSize="@dimen/font_size_profile_icon"
-            app:typefaceAsset="@string/font_name"/>
+            app:iconSize="@dimen/font_size_profile_icon"/>
     </FrameLayout>
 
     <View

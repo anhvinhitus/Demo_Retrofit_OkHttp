@@ -27,8 +27,7 @@
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:textColor="@color/menu_font_ic_blue"
                 app:iconName="@string/profile_lock"
-                app:iconSize="@dimen/font_size_profile_lock"
-                app:typefaceAsset="@string/font_name"/>
+                app:iconSize="@dimen/font_size_profile_lock"/>
 
             <TextView
                 style="@style/TextView.Profile.Edit"

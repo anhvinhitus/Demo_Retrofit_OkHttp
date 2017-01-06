@@ -46,7 +46,11 @@ public class IconFont extends TextView {
             String iconName = typedArray.getString(R.styleable.IconFont_iconName);
             Log.d("IconFont", "icon name: " + iconName);
 
-            setTypefaceFromAsset(fontAsset);
+            if (!TextUtils.isEmpty(fontAsset)) {
+                setTypefaceFromAsset(fontAsset);
+            } else {
+                setTypefaceWithoutStyle(IconFontHelper.getInstance().getCurrentTypeface());
+            }
             setIcon(iconName);
         } catch (RuntimeException e) {
             Log.d("IconFont", "set font and icon name throw RuntimeException: " + e.getMessage());

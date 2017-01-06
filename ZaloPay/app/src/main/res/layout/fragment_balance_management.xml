@@ -21,8 +21,7 @@
             android:layout_marginTop="30dp"
             android:textColor="@color/white"
             app:iconName="@string/header_overbalance"
-            app:iconSize="@dimen/font_size_balance_manager_header"
-            app:typefaceAsset="@string/font_name"/>
+            app:iconSize="@dimen/font_size_balance_manager_header"/>
 
         <TextView
             style="@style/TextView.Title"
@@ -104,8 +103,7 @@
                 android:layout_margin="@dimen/app_padding"
                 android:textColor="@color/menu_font_ic_green"
                 app:iconName="@string/notify_1_receivemoney"
-                app:iconSize="@dimen/font_size_balance_manager_deposit"
-                app:typefaceAsset="@string/font_name"/>
+                app:iconSize="@dimen/font_size_balance_manager_deposit"/>
 
             <TextView
                 style="@style/LeftMenu.Title"
@@ -148,8 +146,7 @@
                 android:layout_margin="@dimen/app_padding"
                 android:textColor="@color/menu_font_ic_yellow"
                 app:iconName="@string/notify_1_withdraw"
-                app:iconSize="@dimen/font_size_balance_manager_deposit"
-                app:typefaceAsset="@string/font_name"/>
+                app:iconSize="@dimen/font_size_balance_manager_deposit"/>
 
             <TextView
                 style="@style/LeftMenu.Title"
@@ -194,8 +191,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_green"
                 app:iconName="@string/general_question"
-                app:iconSize="@dimen/font_size_balance_manager_question"
-                app:typefaceAsset="@string/font_name"/>
+                app:iconSize="@dimen/font_size_balance_manager_question"/>
 
             <TextView
                 android:id="@+id/tvQuestion"

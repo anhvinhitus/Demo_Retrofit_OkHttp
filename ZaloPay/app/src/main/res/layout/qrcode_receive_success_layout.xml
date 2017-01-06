@@ -39,8 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/green"
-            app:iconSize="@dimen/font_size_receive_state"
-            app:typefaceAsset="@string/font_name"/>
+            app:iconSize="@dimen/font_size_receive_state"/>
 
         <TextView
             android:id="@+id/tvMoney"

@@ -28,8 +28,7 @@
                 android:layout_marginTop="@dimen/spacing.medium.t"
                 android:textColor="@color/menu_font_ic_green"
                 app:iconName="@string/sendmoney_zalopayid"
-                app:iconSize="@dimen/font_size_transfer_header"
-                app:typefaceAsset="@string/font_name"/>
+                app:iconSize="@dimen/font_size_transfer_header"/>
 
             <TextView
                 style="@style/TextView.Title"
@@ -69,8 +68,7 @@
                 android:layout_marginTop="@dimen/spacing.medium.t"
                 android:textColor="@color/menu_font_ic_blue"
                 app:iconName="@string/sendmoney_friend"
-                app:iconSize="@dimen/font_size_transfer_header"
-                app:typefaceAsset="@string/font_name"/>
+                app:iconSize="@dimen/font_size_transfer_header"/>
 
             <TextView
                 android:layout_width="match_parent"

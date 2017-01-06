@@ -55,8 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/spacing.medium"
-            app:iconSize="@dimen/font_size_transfer_item"
-            app:typefaceAsset="@string/font_name"/>
+            app:iconSize="@dimen/font_size_transfer_item"/>
     </LinearLayout>
 
     <View
