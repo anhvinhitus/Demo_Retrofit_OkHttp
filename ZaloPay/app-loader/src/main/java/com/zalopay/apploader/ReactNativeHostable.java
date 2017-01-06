@@ -1,6 +1,7 @@
 package com.zalopay.apploader;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.facebook.react.ReactInstanceManager;
 
@@ -25,6 +26,7 @@ public interface ReactNativeHostable {
      */
     void handleJSException(ReactBasedActivity activity, Exception e);
 
+    @Nullable
     Context getActivityContext();
     void setActivityContext(ReactBasedActivity activity);
 }
