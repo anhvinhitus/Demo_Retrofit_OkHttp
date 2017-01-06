@@ -52,11 +52,6 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
             }
 
             @Override
-            public void onAuthenticationFailure() {
-
-            }
-
-            @Override
             public void onCancel() {
                 callback.onCancel();
             }

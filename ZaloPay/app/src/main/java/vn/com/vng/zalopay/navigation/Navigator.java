@@ -527,12 +527,6 @@ public class Navigator implements INavigator {
             public void onAuthenticated(String password) {
                 setLastTimeCheckPin(System.currentTimeMillis());
             }
-
-            @Override
-            public void onAuthenticationFailure() {}
-
-            @Override
-            public void onCancel() {}
         });
         dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
     }
@@ -551,9 +545,6 @@ public class Navigator implements INavigator {
             public void onAuthenticationFailure() {
                 Helpers.promiseResolveError(promise, -1, "Sai mật khẩu");
             }
-
-            @Override
-            public void onCancel() {}
         });
         dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
     }
