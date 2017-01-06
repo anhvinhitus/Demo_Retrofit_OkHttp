@@ -1,60 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_header_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    tools:background="@color/colorPrimary">
-
-    <!-- <com.zalopay.ui.widget.image.BezelImageView
-         android:id="@+id/im_avatar"
-         android:layout_width="@dimen/leftmenu.avatar"
-         android:layout_height="@dimen/leftmenu.avatar"
-         android:scaleType="centerCrop"
-         app:borderDrawable="@drawable/circle_border_profile"
-         app:maskDrawable="@drawable/circle_mask"/>
- -->
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/im_avatar"
-        style="@style/AvatarDraweeView"
-        android:layout_width="@dimen/leftmenu.avatar"
-        android:layout_height="@dimen/leftmenu.avatar"
-        app:roundingBorderColor="@color/leftmenu.avatar.bg"
-        app:roundingBorderWidth="3dp" />
+    android:background="@color/colorPrimary">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1.0"
-        android:baselineAligned="false"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:background="?selector"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        tools:background="@color/colorPrimary">
 
-        <TextView
-            android:id="@+id/tv_name"
-            style="@style/TextView.Default"
+        <!-- <com.zalopay.ui.widget.image.BezelImageView
+             android:id="@+id/im_avatar"
+             android:layout_width="@dimen/leftmenu.avatar"
+             android:layout_height="@dimen/leftmenu.avatar"
+             android:scaleType="centerCrop"
+             app:borderDrawable="@drawable/circle_border_profile"
+             app:maskDrawable="@drawable/circle_mask"/>
+     -->
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/im_avatar"
+            style="@style/AvatarDraweeView"
+            android:layout_width="@dimen/leftmenu.avatar"
+            android:layout_height="@dimen/leftmenu.avatar"
+            app:roundingBorderColor="@color/leftmenu.avatar.bg"
+            app:roundingBorderWidth="3dp"/>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing.medium"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_size_large"
-            tools:text="@string/app_name" />
+            android:layout_weight="1.0"
+            android:baselineAligned="false"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvZaloPayName"
-            style="@style/TextView.Item.Sub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing.tiny"
-            android:textColor="@color/txt_item_sub_2"
-            android:textSize="@dimen/font_size_medium"
-            tools:text="@string/app_name" />
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/TextView.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.medium"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_large"
+                tools:text="@string/app_name"/>
+
+            <TextView
+                android:id="@+id/tvZaloPayName"
+                style="@style/TextView.Item.Sub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.tiny"
+                android:textColor="@color/txt_item_sub_2"
+                android:textSize="@dimen/font_size_medium"
+                tools:text="@string/app_name"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>
