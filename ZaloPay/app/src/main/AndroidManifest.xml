@@ -222,7 +222,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".fingerprint.ProtectAccountActivity"
+            android:name=".protect.ui.ProtectAccountActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/title.activity.protect.account"
             android:theme="@style/AppTheme.NoActionBar"
