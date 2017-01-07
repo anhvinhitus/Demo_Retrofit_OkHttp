@@ -107,14 +107,18 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         if (wdMaintenance == null || !wdMaintenance.ismaintainwithdraw) {
             return false;
         }
+        showMaintainWithdrawDialog(wdMaintenance.maintainwithdrawfrom, wdMaintenance.maintainwithdrawto);
+        return true;
+    }
+
+    private void showMaintainWithdrawDialog(long maintainFrom, long maintainTo) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm 'ngày' dd/MM/yyyy", Locale.getDefault());
-        String maintainWithdrawFrom = simpleDateFormat.format(new Date(wdMaintenance.maintainwithdrawfrom));
-        String maintainWithdrawTo = simpleDateFormat.format(new Date(wdMaintenance.maintainwithdrawto));
+        String maintainWithdrawFrom = simpleDateFormat.format(new Date(maintainFrom));
+        String maintainWithdrawTo = simpleDateFormat.format(new Date(maintainTo));
         String message = String.format(mView.getContext().getString(R.string.maintain_withdraw_message),
                 maintainWithdrawFrom,
                 maintainWithdrawTo);
         mView.showError(message);
-        return true;
     }
 
     public void startWithdrawActivity() {
