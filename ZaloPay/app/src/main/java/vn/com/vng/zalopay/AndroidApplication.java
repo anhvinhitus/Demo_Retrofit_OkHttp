@@ -9,6 +9,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.react.modules.fresco.FrescoModule;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
@@ -179,6 +180,12 @@ public class AndroidApplication extends Application {
 
     public UserComponent getUserComponent() {
         return userComponent;
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        Fresco.getImagePipeline().clearMemoryCaches();
     }
 
 }

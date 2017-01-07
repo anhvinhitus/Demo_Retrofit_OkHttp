@@ -65,7 +65,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
     }
 
     private File createPhotoFile(String name) {
-        File storageDir = getContext().getFilesDir();
+        File storageDir = getContext().getCacheDir();
         return new File(storageDir + File.separator + "images", name + ".jpg");
     }
 

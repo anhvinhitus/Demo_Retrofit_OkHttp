@@ -15,7 +15,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.Priority;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.zalopay.ui.widget.KeyboardLinearLayout;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
@@ -189,6 +193,9 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     public void onDestroyView() {
         mEdtIdentityView.clearValidators();
         mEdtEmailView.clearValidators();
+        clearCacheFresco(mUriAvatar);
+        clearCacheFresco(mUriFgIdentity);
+        clearCacheFresco(mUriBgIdentity);
         presenter.detachView();
         super.onDestroyView();
     }
@@ -377,6 +384,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         dialog.show(getChildFragmentManager(), "bottomsheet");
     }
 
+    private void clearCacheFresco(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+        Fresco.getImagePipeline().evictFromCache(uri);
+    }
+
     private String getImageNameFromReqCode(int requestCode) {
         if (requestCode == AVATAR_REQUEST_CODE) {
             return "avatar";
@@ -401,6 +415,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             }
 
             Timber.d("onActivityResult: uri %s", uri.toString());
+            clearCacheFresco(uri);
 
             switch (requestCode) {
                 case BACKGROUND_IMAGE_REQUEST_CODE:
@@ -439,7 +454,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private void clearFrontImage() {
-        mFgIdentityView.setImageDrawable(null);
+        mFgIdentityView.setImageURI("");
         mFgIdentityView.setVisibility(View.GONE);
         mTvFgIdentityView.setVisibility(View.VISIBLE);
         btnRemoveFrontImage.setClickable(false);
@@ -466,7 +481,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private void clearAvatar() {
-        mAvatarView.setImageDrawable(null);
+        mAvatarView.setImageURI("");
         mAvatarView.setVisibility(View.GONE);
         mTvAvatarView.setVisibility(View.VISIBLE);
 
@@ -495,7 +510,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private void clearBackgroundImage() {
-        mBgIdentityView.setImageDrawable(null);
+        mBgIdentityView.setImageURI("");
         mBgIdentityView.setVisibility(View.GONE);
         mTvBgIdentityView.setVisibility(View.VISIBLE);
         btnRemoveBackImage.setClickable(false);
