@@ -8,6 +8,7 @@ public class ModuleName {
     public static final String PAYMENT_MAIN = "PaymentMain";
     public static final String ABOUT = "About";
     public static final String HELP = "Help";
+    public static final String SUPPORT_CENTER = "SupportCenter";
     public static final String FAQ = "FAQ";
     public static final String TRANSACTION_LOGS = "TransactionLogs";
     public static final String RED_PACKET = "RedPacket";

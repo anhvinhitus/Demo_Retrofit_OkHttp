@@ -179,11 +179,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
                 break;
 
             case MenuItemUtil.SUPPORT_CENTER:
-                //navigator.startMiniAppActivity(this, ModuleName.HELP);
-                showCustomDialog("Tính năng sẽ sớm được ra mắt.",
-                        getString(R.string.txt_close),
-                        SweetAlertDialog.INFO_TYPE,
-                        null);
+                navigator.startMiniAppActivity(this, ModuleName.SUPPORT_CENTER);
                 ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHELP);
                 break;
             case MenuItemUtil.FEED_BACK:
