@@ -213,6 +213,6 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        super.showErrorDialog(message);
     }
 }

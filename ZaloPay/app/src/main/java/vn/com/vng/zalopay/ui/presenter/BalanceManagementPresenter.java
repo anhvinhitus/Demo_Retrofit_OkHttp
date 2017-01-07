@@ -7,7 +7,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -27,6 +30,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -98,8 +102,26 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         mSubscription.add(subscription);
     }
 
+    private boolean isMaintainWithdraw() {
+        WDMaintenance wdMaintenance = CShareData.getInstance().getWithdrawMaintenance();
+        if (wdMaintenance == null || !wdMaintenance.ismaintainwithdraw) {
+            return false;
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm 'ngày' dd/MM/yyyy", Locale.getDefault());
+        String maintainWithdrawFrom = simpleDateFormat.format(new Date(wdMaintenance.maintainwithdrawfrom));
+        String maintainWithdrawTo = simpleDateFormat.format(new Date(wdMaintenance.maintainwithdrawto));
+        String message = String.format(mView.getContext().getString(R.string.maintain_withdraw_message),
+                maintainWithdrawFrom,
+                maintainWithdrawTo);
+        mView.showError(message);
+        return true;
+    }
+
     public void startWithdrawActivity() {
         if (mView == null || mView.getContext() == null) {
+            return;
+        }
+        if (isMaintainWithdraw()) {
             return;
         }
         if (!isValidProfile()) {

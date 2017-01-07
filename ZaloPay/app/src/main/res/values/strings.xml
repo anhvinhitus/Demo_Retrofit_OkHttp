@@ -453,4 +453,5 @@
     <string name="fingerprint.description.pay">Quét vân tay để xác nhận thanh toán</string>
     <!-- End Fingerprint-->
 
+    <string name="maintain_withdraw_message" formatted="false">Zalo Pay đang tiến hành bảo trì chức năng Rút Tiền trong khoảng thời gian từ %s đến %s.</string>
 </resources>
