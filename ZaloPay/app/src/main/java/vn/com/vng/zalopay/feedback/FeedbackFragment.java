@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -49,8 +50,8 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
 
     private FeedbackAdapter mAdapter;
 
-    @BindView(R.id.tvTransactionType)
-    TextView mCategoryView;
+    @BindView(R.id.edtCategory)
+    ZPEditText mCategoryView;
 
     @BindView(R.id.edtTransactionId)
     ZPEditText mEdtTransactionId;
@@ -116,6 +117,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         mPresenter.attachView(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setBackgroundColor(Color.WHITE);
 
         mRecyclerView.setAdapter(mAdapter);
 
@@ -126,10 +128,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         setTransactionId(mTransactionId);
 
         if (mScreenshot != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(mScreenshot, 0, mScreenshot.length);
-            if (bitmap != null) {
-                insertScreenshot(new ScreenshotData(bitmap));
-            }
+            mPresenter.insertScreenshot(mScreenshot);
         }
 
         setImageCount();
@@ -148,16 +147,17 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         }
 
         if (requestCode == IMAGE_REQUEST_CODE) {
-            Uri uri = getPickImageResultUri(data, "screenshot");
+            Uri uri = getPickImageResultUri(data, "screenshot.jpg");
             if (uri == null) {
                 return;
             }
 
-            insertScreenshot(new ScreenshotData(uri));
+            insertScreenshot(uri);
         }
     }
 
-    private void insertScreenshot(ScreenshotData data) {
+    @Override
+    public void insertScreenshot(Uri data) {
         mAdapter.insert(data, 0);
         setImageCount();
     }
@@ -209,8 +209,13 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
             return;
         }
 
-        mPresenter.sendEmail(mEdtTransactionId.getText().toString(), mCategoryView.getText().toString(), mEdtEmail.getText().toString(), mEdtDescribe.getText().toString(),
-                swSendUserInfor.isChecked(), swSendAppInfor.isChecked(), swSendDeviceInfor.isChecked());
+        mPresenter.sendEmail(mEdtTransactionId.getText().toString(),
+                mCategoryView.getText().toString(),
+                mEdtEmail.getText().toString(),
+                mEdtDescribe.getText().toString(),
+                swSendUserInfor.isChecked(),
+                swSendAppInfor.isChecked(),
+                swSendDeviceInfor.isChecked(), mAdapter.getItems());
 
     }
 
@@ -229,7 +234,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         dialog.setOnClickListener(new CoverBottomSheetDialogFragment.OnClickListener() {
             @Override
             public void onClickCapture() {
-                startCaptureImage(requestCode, "screenshot");
+                startCaptureImage(requestCode, "screenshot.jpg");
             }
 
             @Override
@@ -278,4 +283,6 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
     public void showError(String message) {
         showToast(message);
     }
+
+
 }

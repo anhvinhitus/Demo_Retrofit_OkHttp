@@ -33,20 +33,20 @@ import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
+import vn.com.vng.zalopay.authentication.AuthenticationCallback;
+import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.authentication.AuthenticationCallback;
-import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.feedback.FeedbackActivity;
-import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
 import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
@@ -642,11 +642,15 @@ public class Navigator implements INavigator {
 
     public void startFeedbackActivity(Context context) {
         Intent intent = new Intent(context, FeedbackActivity.class);
+        intent.putExtra("category", "Nạp Tiền");
+        intent.putExtra("transactionid", "1234567890");
+        // intent.putExtra("screenshot","Nạp Tiền");
+
         context.startActivity(intent);
     }
 
-    public void startEmail(@NonNull Context context, @NonNull String emailTo, @Nullable String emailCC,
-                      @NonNull String subject, @Nullable String emailText, @Nullable ArrayList<Uri> uris) {
+    public boolean startEmail(@NonNull Activity activity, @NonNull String emailTo, @Nullable String emailCC,
+                              @NonNull String subject, @Nullable String emailText, @Nullable ArrayList<Uri> uris) {
 
         Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         emailIntent.setType("text/plain");
@@ -669,10 +673,15 @@ public class Navigator implements INavigator {
             emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
         }
 
+       /* emailIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);*/
+        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
         try {
-            context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            activity.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            return true;
         } catch (Exception e) {
             Timber.e(e, "No support send via email");
         }
+        return false;
     }
 }

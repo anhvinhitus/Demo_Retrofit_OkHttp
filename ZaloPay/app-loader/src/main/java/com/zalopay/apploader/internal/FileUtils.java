@@ -1,6 +1,8 @@
 package com.zalopay.apploader.internal;
 
 
+import android.support.annotation.Nullable;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,6 +23,7 @@ import timber.log.Timber;
  */
 public class FileUtils {
 
+    public static final String AUTHORITY_PROVIDER = "vn.com.vng.zalopay.provider";
     private static final int WRITE_BUFFER_SIZE = 1024 * 8;
 
     public static void copyDirectoryContents(String sourceDirectoryPath, String destinationDirectoryPath)
@@ -68,7 +71,7 @@ public class FileUtils {
             File[] files = directory.listFiles();
             if (files != null) {
                 for (File file : files) {
-                    if(file.isDirectory()) {
+                    if (file.isDirectory()) {
                         deleteDirectory(file);
                     } else {
                         file.delete();
@@ -154,6 +157,28 @@ public class FileUtils {
         }
     }
 
+    @Nullable
+    public static String writeByteArrayToFile(byte[] byteArray, String filePath) {
+        File file = new File(filePath);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            fos.write(byteArray);
+            return file.getAbsolutePath();
+        } catch (IOException io) {
+            Timber.d(io, "write png byteArray to file: ");
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.flush();
+                    fos.close();
+                } catch (IOException ignore) {
+                }
+            }
+        }
+        return null;
+    }
+
     public static void unzipFile(InputStream stream, String destination, boolean deleteExisting) throws IOException, MiniApplicationException {
         BufferedInputStream bufferedStream = null;
         ZipInputStream zipStream = null;
@@ -227,5 +252,16 @@ public class FileUtils {
             return null;
         }
         return json;
+    }
+
+    public static boolean mkdirs(File directory) {
+        if (directory.exists()) {
+            if (directory.isDirectory()) {
+                return true;
+            }
+            directory.delete();
+        }
+
+        return !directory.mkdirs() && !directory.isDirectory();
     }
 }

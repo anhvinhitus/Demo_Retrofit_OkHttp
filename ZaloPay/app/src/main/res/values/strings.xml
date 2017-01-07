@@ -454,4 +454,6 @@
     <!-- End Fingerprint-->
 
     <string name="maintain_withdraw_message" formatted="false">Zalo Pay đang tiến hành bảo trì chức năng Rút Tiền trong khoảng thời gian từ %s đến %s.</string>
+    <string name="email.support">hotro@zalopay.vn</string>
+    <string name="subject.compose.email.support">Phản hồi/Góp ý Zalo Pay</string>
 </resources>

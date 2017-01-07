@@ -17,6 +17,8 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.FileProvider;
 import android.view.View;
 
+import com.zalopay.apploader.internal.FileUtils;
+
 import java.io.File;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
+import vn.com.vng.zalopay.utils.PhotoUtil;
 
 /**
  * Created by AnhHieu on 7/1/16.
@@ -32,15 +35,13 @@ import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
  */
 public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
 
-    private static final String AUTHORITY = "vn.com.vng.zalopay.provider";
-
     private int mPickImageRequestCode;
     private int mCaptureImageRequestCode;
     private String mImageName;
 
     private Uri getCaptureImageOutputUri(String name, boolean removeOldFile) {
         Uri outputFileUri = null;
-        File photoFile = createPhotoFile(name);
+        File photoFile = PhotoUtil.createPhotoFile(getContext(), name);
         if (removeOldFile) {
             if (photoFile.exists()) {
                 photoFile.delete();
@@ -51,7 +52,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
 
         Timber.d("getCaptureImageOutputUri %s", photoFile);
         if (photoFile != null) {
-            outputFileUri = FileProvider.getUriForFile(getContext(), AUTHORITY, photoFile);
+            outputFileUri = FileProvider.getUriForFile(getContext(), FileUtils.AUTHORITY_PROVIDER, photoFile);
         }
         return outputFileUri;
     }
@@ -62,11 +63,6 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
             return data.getData();
         }
         return getCaptureImageOutputUri(name, false);
-    }
-
-    private File createPhotoFile(String name) {
-        File storageDir = getContext().getCacheDir();
-        return new File(storageDir + File.separator + "images", name + ".jpg");
     }
 
     protected void startPickImage(int requestCode) {

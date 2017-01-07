@@ -4,4 +4,9 @@
     <cache-path
         name="zpimages"
         path="images/" />
+
+    <cache-path
+        name="data"
+        path="data/" />
+
 </paths>

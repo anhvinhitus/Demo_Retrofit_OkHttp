@@ -8,7 +8,10 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 
+import com.zalopay.apploader.internal.FileUtils;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -194,4 +197,12 @@ public class PhotoUtil {
             return data.getAllocationByteCount();
         }
     }
+
+
+    public static File createPhotoFile(Context context, String name) {
+        File storageDir = new File(context.getCacheDir() + File.separator + "images");
+        boolean mkdir = FileUtils.mkdirs(storageDir);
+        return new File(storageDir, name);
+    }
+
 }

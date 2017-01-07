@@ -393,13 +393,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     private String getImageNameFromReqCode(int requestCode) {
         if (requestCode == AVATAR_REQUEST_CODE) {
-            return "avatar";
+            return "avatar.jpg";
         } else if (requestCode == BACKGROUND_IMAGE_REQUEST_CODE) {
-            return "bgcmnd";
+            return "bgcmnd.jpg";
         } else if (requestCode == FOREGROUND_IMAGE_REQUEST_CODE) {
-            return "fgcmnd";
+            return "fgcmnd.jpg";
         } else {
-            return "noname";
+            return "noname.jpg";
         }
     }
 

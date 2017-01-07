@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.feedback;
 
+import android.net.Uri;
+
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
@@ -7,4 +9,5 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  */
 
 interface IFeedbackView extends ILoadDataView {
+    void insertScreenshot(Uri uri);
 }

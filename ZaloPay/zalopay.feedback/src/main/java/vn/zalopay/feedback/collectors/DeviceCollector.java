@@ -72,16 +72,21 @@ public class DeviceCollector implements IFeedbackCollector {
 
     private String getCpu() {
         if (new File("/proc/cpuinfo").exists()) {
+            Scanner scanner = null;
             try {
-                Scanner s = new Scanner(new File("/proc/cpuinfo"));
-                while (s.hasNextLine()) {
-                    String[] values = s.nextLine().split(": ");
+                scanner = new Scanner(new File("/proc/cpuinfo"));
+                while (scanner.hasNextLine()) {
+                    String[] values = scanner.nextLine().split(": ");
                     if (values.length > 1 && values[0].trim().contains("model name")) {
                         return values[1].trim();
                     }
                 }
             } catch (IOException e) {
                 return null;
+            } finally {
+                if (scanner != null) {
+                    scanner.close();
+                }
             }
         }
         return null;

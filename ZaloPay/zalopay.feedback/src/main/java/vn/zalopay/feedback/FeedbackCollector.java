@@ -1,6 +1,8 @@
 package vn.zalopay.feedback;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,7 +10,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
 import timber.log.Timber;
 
@@ -19,8 +20,15 @@ import timber.log.Timber;
 
 public class FeedbackCollector {
     private final List<IFeedbackCollector> mCollectors = new ArrayList<>();
+    private Context mContext;
+
+    public FeedbackCollector(Context context) {
+        this.mContext = context;
+    }
+
     /**
      * Install new data collector
+     *
      * @param collector instance of new data collector
      */
     public void installCollector(IFeedbackCollector collector) {
@@ -39,6 +47,7 @@ public class FeedbackCollector {
 
     /**
      * Remove an existing data collector
+     *
      * @param collector data collector to be removed
      */
     public void removeCollector(IFeedbackCollector collector) {
@@ -54,10 +63,9 @@ public class FeedbackCollector {
     /**
      * Start data collectors in the background thread
      */
-    public void startCollectors() {
-        DataCollectorAsyncTask task = new DataCollectorAsyncTask();
+    public void startCollectors(CollectorListener listener) {
+        DataCollectorAsyncTask task = new DataCollectorAsyncTask(mContext, mCollectors, listener);
         task.execute();
-
     }
 
     /**
@@ -67,7 +75,18 @@ public class FeedbackCollector {
 
     }
 
-    private class DataCollectorAsyncTask extends AsyncTask<Void, Void, JSONArray> {
+    private static class DataCollectorAsyncTask extends AsyncTask<Void, Void, String> {
+
+        private Context mContext;
+        private CollectorListener mListener;
+        private final List<IFeedbackCollector> mCollectors;
+
+        private DataCollectorAsyncTask(Context context, List<IFeedbackCollector> list,
+                                       CollectorListener listener) {
+            this.mContext = context;
+            this.mListener = listener;
+            this.mCollectors = list;
+        }
 
         /**
          * Override this method to perform a computation on a background thread. The
@@ -84,7 +103,7 @@ public class FeedbackCollector {
          * @see #publishProgress
          */
         @Override
-        protected JSONArray doInBackground(Void[] params) {
+        protected String doInBackground(Void[] params) {
             JSONArray array = new JSONArray();
             synchronized (mCollectors) {
                 for (IFeedbackCollector collector : mCollectors) {
@@ -97,12 +116,19 @@ public class FeedbackCollector {
                         }
 
                         array.put(item);
-                    } catch (JSONException e) {
-                        continue;
+                    } catch (JSONException ignore) {
                     }
                 }
             }
-            return array;
+
+            JSONObject object = new JSONObject();
+            try {
+                object.put("data", array);
+                Timber.d("Data collected: %s", object);
+            } catch (JSONException ignore) {
+            }
+
+            return FileUtils.writeStringToFile(mContext, object.toString(), "data.json");
         }
 
         /**
@@ -128,19 +154,16 @@ public class FeedbackCollector {
          * <p>
          * <p>This method won't be invoked if the task was cancelled.</p>
          *
-         * @param o The result of the operation computed by {@link #doInBackground}.
+         * @param filePath The result of the operation computed by {@link #doInBackground}.
          * @see #onPreExecute
          * @see #doInBackground
          * @see #onCancelled(Object)
          */
         @Override
-        protected void onPostExecute(JSONArray o) {
-            try {
-                JSONObject object = new JSONObject();
-                object.put("data", o);
-                Timber.d("Data collected: %s", object);
-            } catch (JSONException e) {
+        protected void onPostExecute(String filePath) {
 
+            if (mListener != null) {
+                mListener.onCollectorEnd(filePath);
             }
         }
 
@@ -154,5 +177,9 @@ public class FeedbackCollector {
         protected void onPreExecute() {
             super.onPreExecute();
         }
+    }
+
+    public interface CollectorListener {
+        void onCollectorEnd(@Nullable String filePath);
     }
 }
