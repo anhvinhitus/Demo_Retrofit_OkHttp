@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
@@ -14,6 +16,7 @@ import com.zalopay.apploader.internal.ModuleName;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +37,7 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
@@ -639,5 +643,36 @@ public class Navigator implements INavigator {
     public void startFeedbackActivity(Context context) {
         Intent intent = new Intent(context, FeedbackActivity.class);
         context.startActivity(intent);
+    }
+
+    public void startEmail(@NonNull Context context, @NonNull String emailTo, @Nullable String emailCC,
+                      @NonNull String subject, @Nullable String emailText, @Nullable ArrayList<Uri> uris) {
+
+        Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
+                new String[]{emailTo});
+
+        if (!TextUtils.isEmpty(emailCC)) {
+            emailIntent.putExtra(android.content.Intent.EXTRA_CC,
+                    new String[]{emailCC});
+
+        }
+
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+
+        if (!TextUtils.isEmpty(emailText)) {
+            emailIntent.putExtra(Intent.EXTRA_TEXT, emailText);
+        }
+
+        if (!Lists.isEmptyOrNull(uris)) {
+            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        }
+
+        try {
+            context.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        } catch (Exception e) {
+            Timber.e(e, "No support send via email");
+        }
     }
 }

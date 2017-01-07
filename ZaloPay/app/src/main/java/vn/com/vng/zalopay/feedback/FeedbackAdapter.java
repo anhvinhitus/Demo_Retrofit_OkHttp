@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.R;
 
 public class FeedbackAdapter extends AbsRecyclerAdapter<ScreenshotData, RecyclerView.ViewHolder> {
     private static final int FOOTER_VIEW = 1;
+    private static final int ITEM_VIEW = 0;
 
     private FeedbackAdapter.OnClickAddListener addListener;
     private FeedbackAdapter.OnClickDeleteListener deleteListener;
@@ -31,7 +32,7 @@ public class FeedbackAdapter extends AbsRecyclerAdapter<ScreenshotData, Recycler
         super(context);
         this.addListener = addListener;
         this.deleteListener = deleteListener;
-        maxScreenshot = context.getResources().getInteger(R.integer.max_length_add_screenshot);
+        this.maxScreenshot = context.getResources().getInteger(R.integer.max_length_add_screenshot);
     }
 
     @Override
@@ -54,33 +55,45 @@ public class FeedbackAdapter extends AbsRecyclerAdapter<ScreenshotData, Recycler
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof FeedbackAdapter.ViewHolder) {
+        if (holder instanceof ViewHolder) {
             ScreenshotData screen = getItem(position);
             if (screen != null) {
-                ((FeedbackAdapter.ViewHolder) holder).bindView(screen);
+                ((ViewHolder) holder).bindView(screen);
             }
         }
     }
 
+    private boolean isHasFooter() {
+        return getItems().size() < maxScreenshot;
+    }
+
     @Override
     public int getItemCount() {
-        if (getItems().size() == maxScreenshot) {
-            return super.getItemCount();
+        if (isHasFooter()) {
+            return super.getItemCount() + 1;
         }
 
-        return super.getItemCount() + 1;
+        return super.getItemCount();
+    }
+
+    @Override
+    public void insert(ScreenshotData object, int index) {
+        synchronized (_lock) {
+            mItems.add(index, object);
+        }
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (position == getItems().size()) {
+        if (isHasFooter() && position == getItemCount() - 1) {
             return FOOTER_VIEW;
         }
 
-        return super.getItemViewType(position);
+        return ITEM_VIEW;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_image)
         SimpleDraweeView mScreenshotView;
 
@@ -100,7 +113,7 @@ public class FeedbackAdapter extends AbsRecyclerAdapter<ScreenshotData, Recycler
         }
 
         public void bindView(ScreenshotData image) {
-            if (!TextUtils.isEmpty(image.mUrl)) {
+            if (image.mUrl != null) {
                 mScreenshotView.setImageURI(image.mUrl);
             } else if (image.mBitmap != null) {
                 mScreenshotView.setImageBitmap(image.mBitmap);
@@ -111,11 +124,11 @@ public class FeedbackAdapter extends AbsRecyclerAdapter<ScreenshotData, Recycler
         }
     }
 
-    public class FooterViewHolder extends RecyclerView.ViewHolder {
+    public static class FooterViewHolder extends RecyclerView.ViewHolder {
 
         private OnClickAddListener mListener;
 
-        public FooterViewHolder(View itemView, final OnClickAddListener listener) {
+        private FooterViewHolder(View itemView, final OnClickAddListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.mListener = listener;

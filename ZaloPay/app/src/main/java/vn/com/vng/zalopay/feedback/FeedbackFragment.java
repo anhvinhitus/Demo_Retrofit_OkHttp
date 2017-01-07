@@ -6,37 +6,27 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.edittext.ZPEditText;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.AbsPickerImageFragment;
-import vn.com.vng.zalopay.data.UserCollector;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
-import vn.zalopay.feedback.FeedbackCollector;
-import vn.zalopay.feedback.collectors.AppCollector;
-import vn.zalopay.feedback.collectors.DeviceCollector;
-import vn.zalopay.feedback.collectors.NetworkCollector;
 
 public class FeedbackFragment extends AbsPickerImageFragment implements
         FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener, IFeedbackView {
@@ -58,23 +48,22 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
     private static final int IMAGE_REQUEST_CODE = 100;
 
     private FeedbackAdapter mAdapter;
-    private Uri mUri;
-    private FeedbackCollector mCollector;
-    private UserCollector mUserCollector;
-    private AppCollector mAppCollector;
-    private DeviceCollector mDeviceCollector;
 
     @BindView(R.id.tvTransactionType)
     TextView mCategoryView;
+
     @BindView(R.id.edtTransactionId)
     ZPEditText mEdtTransactionId;
+
     @BindView(R.id.edtEmail)
     ZPEditText mEdtEmail;
+
     @BindView(R.id.edtDescribe)
     ZPEditText mEdtDescribe;
 
     @BindView(R.id.txtTitleImage)
     TextView mTvTitleImage;
+
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
 
@@ -86,6 +75,15 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
 
     @Inject
     User mUser;
+
+    @BindView(R.id.swSendUserInfor)
+    SwitchCompat swSendUserInfor;
+
+    @BindView(R.id.swSendDeviceInfor)
+    SwitchCompat swSendDeviceInfor;
+
+    @BindView(R.id.swSendAppInfor)
+    SwitchCompat swSendAppInfor;
 
     private String mCategory;
     private String mTransactionId;
@@ -99,12 +97,6 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mAdapter = new FeedbackAdapter(getContext(), this, this);
-
-        mCollector = new FeedbackCollector();
-        mUserCollector = new UserCollector(getAppComponent().userConfig());
-        mAppCollector = new AppCollector(AndroidApplication.instance());
-        mDeviceCollector = new DeviceCollector();
-
         initArgs(getActivity().getIntent().getExtras());
     }
 
@@ -130,8 +122,8 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         mEdtEmail.addValidator(new EmailValidate(getString(R.string.email_invalid)));
 
         setEmail(mUser.email);
-        mCategoryView.setText(mCategory);
-        mEdtTransactionId.setText(mTransactionId);
+        setCategory(mCategory);
+        setTransactionId(mTransactionId);
 
         if (mScreenshot != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(mScreenshot, 0, mScreenshot.length);
@@ -139,16 +131,34 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
                 insertScreenshot(new ScreenshotData(bitmap));
             }
         }
+
+        setImageCount();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        collectInformation();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == IMAGE_REQUEST_CODE) {
+            Uri uri = getPickImageResultUri(data, "screenshot");
+            if (uri == null) {
+                return;
+            }
+
+            insertScreenshot(new ScreenshotData(uri));
+        }
     }
 
     private void insertScreenshot(ScreenshotData data) {
-        mAdapter.insert(data);
+        mAdapter.insert(data, 0);
         setImageCount();
     }
 
@@ -199,43 +209,9 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
             return;
         }
 
-        mCollector.startCollectors();
-    }
+        mPresenter.sendEmail(mEdtTransactionId.getText().toString(), mCategoryView.getText().toString(), mEdtEmail.getText().toString(), mEdtDescribe.getText().toString(),
+                swSendUserInfor.isChecked(), swSendAppInfor.isChecked(), swSendDeviceInfor.isChecked());
 
-    @OnCheckedChanged(value = {R.id.swSendUserInfor, R.id.swSendDeviceInfor, R.id.swSendAppInfor})
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        int itemId = compoundButton.getId();
-        switch (itemId) {
-            case R.id.swSendUserInfor:
-
-                if (b) {
-                    mCollector.installCollector(mUserCollector);
-                } else {
-                    mCollector.removeCollector(mUserCollector);
-                }
-
-                break;
-            case R.id.swSendDeviceInfor:
-
-                if (b) {
-                    mCollector.installCollector(mDeviceCollector);
-                } else {
-                    mCollector.removeCollector(mDeviceCollector);
-                }
-
-                break;
-            case R.id.swSendAppInfor:
-
-                if (b) {
-                    mCollector.installCollector(mAppCollector);
-                } else {
-                    mCollector.removeCollector(mAppCollector);
-                }
-
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -249,11 +225,11 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
     }
 
     private void showBottomSheetDialog(final int requestCode) {
-        AbsPickerImageFragment.CoverBottomSheetDialogFragment dialog = AbsPickerImageFragment.CoverBottomSheetDialogFragment.newInstance();
-        dialog.setOnClickListener(new AbsPickerImageFragment.CoverBottomSheetDialogFragment.OnClickListener() {
+        CoverBottomSheetDialogFragment dialog = CoverBottomSheetDialogFragment.newInstance();
+        dialog.setOnClickListener(new CoverBottomSheetDialogFragment.OnClickListener() {
             @Override
             public void onClickCapture() {
-                startCaptureImage(requestCode, "image");
+                startCaptureImage(requestCode, "screenshot");
             }
 
             @Override
@@ -264,63 +240,10 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         dialog.show(getChildFragmentManager(), "bottomsheet");
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        Timber.d("onActivityResult: requestCode %s resultCode %s", requestCode, resultCode);
-
-        if (resultCode == Activity.RESULT_OK) {
-            Uri uri = getPickImageResultUri(data, "image");
-            if (uri == null) {
-                return;
-            }
-
-            Timber.d("onActivityResult: uri %s", uri.toString());
-
-            switch (requestCode) {
-                case IMAGE_REQUEST_CODE:
-                    try {
-                        mUri = uri;
-                        loadScreenshot(mUri);
-                    } catch (IOException e) {
-                        Timber.d(e, "load screenshot error");
-                    }
-                    break;
-                default:
-            }
-        }
-    }
-
-    @Override
-    protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
-        super.permissionGranted(permissionRequestCode, isGranted);
-
-        if (!isGranted) {
-            return;
-        }
-
-        switch (permissionRequestCode) {
-            case IMAGE_REQUEST_CODE:
-                try {
-                    loadScreenshot(mUri);
-                } catch (IOException e) {
-                    Timber.d(e, "load screenshot error");
-                }
-
-                break;
-        }
-    }
-
-    private void loadScreenshot(@Nullable Uri uri) throws IOException {
-        Timber.d("load background image [%s]", uri);
-        if (uri == null) {
-            return;
-        }
-    }
-
     private void setImageCount() {
-        mTvTitleImage.setText(String.format(getString(R.string.txt_attach_screen),
-                String.valueOf(mAdapter.getItems().size())));
+        String description = String.format(getString(R.string.txt_attach_screen),
+                String.valueOf(mAdapter.getItems().size()));
+        mTvTitleImage.setText(description);
     }
 
     private void setEmail(String email) {
@@ -329,11 +252,16 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         }
     }
 
-    private void collectInformation() {
-        mCollector.installCollector(mUserCollector);
-        mCollector.installCollector(mAppCollector);
-        mCollector.installCollector(mDeviceCollector);
-        mCollector.installCollector(new NetworkCollector(this.getActivity()));
+    private void setCategory(String category) {
+        if (mCategoryView != null) {
+            mCategoryView.setText(category);
+        }
+    }
+
+    private void setTransactionId(String tranId) {
+        if (mEdtTransactionId != null) {
+            mEdtTransactionId.setText(tranId);
+        }
     }
 
     @Override

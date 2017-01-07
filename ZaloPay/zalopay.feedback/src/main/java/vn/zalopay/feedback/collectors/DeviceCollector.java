@@ -3,6 +3,7 @@ package vn.zalopay.feedback.collectors;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,6 +24,7 @@ import vn.zalopay.feedback.IFeedbackCollector;
 
 public class DeviceCollector implements IFeedbackCollector {
     private static CollectorSetting sSetting;
+
     static {
         sSetting = new CollectorSetting();
         sSetting.userVisibility = true;
@@ -63,7 +65,7 @@ public class DeviceCollector implements IFeedbackCollector {
 //            }
 
             return retVal;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -105,11 +107,10 @@ public class DeviceCollector implements IFeedbackCollector {
 
     private static long getTotalMemorySize(StatFs statFs) {
         long blockSize, totalBlocks;
-        if(Build.VERSION.SDK_INT >= 18) {
+        if (Build.VERSION.SDK_INT >= 18) {
             blockSize = statFs.getBlockSizeLong();
             totalBlocks = statFs.getBlockCountLong();
-        }
-        else {
+        } else {
             blockSize = statFs.getBlockSize();
             totalBlocks = statFs.getBlockCount();
         }

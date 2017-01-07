@@ -18,6 +18,7 @@ public class UserCollector implements IFeedbackCollector {
     private UserConfig mUserConfig;
 
     private static CollectorSetting sSetting;
+
     static {
         sSetting = new CollectorSetting();
         sSetting.userVisibility = true;
@@ -45,6 +46,11 @@ public class UserCollector implements IFeedbackCollector {
     @Override
     public JSONObject doInBackground() {
         try {
+
+            if (!mUserConfig.hasCurrentUser()) {
+                return null;
+            }
+
             User user = mUserConfig.getCurrentUser();
 
             JSONObject retVal = new JSONObject();
@@ -55,7 +61,7 @@ public class UserCollector implements IFeedbackCollector {
             retVal.put("zalopayid", user.zalopayname);
 
             return retVal;
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return null;
         }
     }
