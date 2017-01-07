@@ -44,7 +44,7 @@ public class MenuItemUtil {
 
         mMenuItems.add(new MenuItem(APPLICATION_ID, MenuItemType.HEADER, "HỖ TRỢ"));
         mMenuItems.add(new MenuItem(SUPPORT_CENTER, MenuItemType.ITEM, "Trung Tâm Hỗ Trợ", R.string.menu_supportcenter, R.color.menu_font_ic_gray));
-        mMenuItems.add(new MenuItem(FEED_BACK, MenuItemType.ITEM, "Góp Ý", R.string.menu_feedback, R.color.menu_font_ic_gray));
+        //mMenuItems.add(new MenuItem(FEED_BACK, MenuItemType.ITEM, "Góp Ý", R.string.menu_feedback, R.color.menu_font_ic_gray));
         mMenuItems.add(new MenuItem(APPLICATION_INFO_ID, MenuItemType.ITEM, "Thông Tin Ứng Dụng", R.string.menu_infomation, R.color.menu_font_ic_gray));
         mMenuItems.add(new MenuItem(SIGN_OUT_ID, MenuItemType.ITEM, "Đăng Xuất", R.string.menu_logout, R.color.menu_font_ic_gray, false));
     }
