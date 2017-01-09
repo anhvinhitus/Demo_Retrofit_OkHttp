@@ -58,6 +58,9 @@ import vn.com.vng.zalopay.utils.ToastUtil;
  * Mini (Internal) application
  */
 public class MiniApplicationActivity extends MiniApplicationBaseActivity {
+
+    public static final String ACTION_SUPPORT_CENTER = "vn.com.vng.zalopay.action.SUPPORT_CENTER";
+
     @Inject
     BundleReactConfig bundleReactConfig;
 
@@ -100,7 +103,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Inject
     User mUser;
 
-    Bundle mLaunchOptions = new Bundle();
+    Bundle mLaunchOptions = null;
 
 
     CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -115,6 +118,30 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         this.shouldMarkAllNotify();
     }
 
+    private String getComponentNameFromIntentAction(Intent intent) {
+        String action = intent.getAction();
+        if (TextUtils.isEmpty(action)) {
+            return null;
+        }
+
+        if (action.equals(ACTION_SUPPORT_CENTER)) {
+            return ModuleName.SUPPORT_CENTER;
+        }
+
+        return null;
+    }
+
+    @Override
+    protected String getMainComponentName() {
+        String componentName = getComponentNameFromIntentAction(getIntent());
+
+        if (!TextUtils.isEmpty(componentName)) {
+            return componentName;
+        }
+
+        return super.getMainComponentName();
+    }
+
     @Override
     protected void initArgs(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
@@ -122,6 +149,10 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
             mLaunchOptions = intent.getBundleExtra("launchOptions");
         } else {
             mLaunchOptions = savedInstanceState.getBundle("launchOptions");
+        }
+
+        if (mLaunchOptions == null) {
+            mLaunchOptions = new Bundle();
         }
 
     }
@@ -175,9 +206,8 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         return bundleReactConfig.getInternalJsBundle();
     }
 
-    protected
     @Nullable
-    Bundle getLaunchOptions() {
+    protected Bundle getLaunchOptions() {
         mLaunchOptions.putString("zalopay_userid", getUserComponent().currentUser().zaloPayId);
 
         Timber.d("getLaunchOptions: mLaunchOptions %s", mLaunchOptions);

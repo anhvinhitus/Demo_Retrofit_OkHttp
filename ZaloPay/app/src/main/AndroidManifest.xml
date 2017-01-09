@@ -177,7 +177,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
-                <action android:name="vn.com.vng.zalopay.action.FAQ" />
+                <action android:name="vn.com.vng.zalopay.action.SUPPORT_CENTER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -88,6 +89,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
 
     private String mCategory;
     private String mTransactionId;
+    private String mDescription;
 
     //compress format png
     @Nullable
@@ -109,6 +111,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         mCategory = bundle.getString("category");
         mTransactionId = bundle.getString("transactionid");
         mScreenshot = bundle.getByteArray("screenshot");
+        mDescription = bundle.getString("description");
     }
 
     @Override
@@ -126,6 +129,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         setEmail(mUser.email);
         setCategory(mCategory);
         setTransactionId(mTransactionId);
+        setDescription(mDescription);
 
         if (mScreenshot != null) {
             mPresenter.insertScreenshot(mScreenshot);
@@ -252,9 +256,14 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
     }
 
     private void setEmail(String email) {
-        if (mEdtEmail != null) {
-            mEdtEmail.setText(email);
+        if (mEdtEmail == null || TextUtils.isEmpty(email)) {
+            return;
         }
+
+        mEdtEmail.setClickable(false);
+        mEdtEmail.setFocusable(false);
+        mEdtEmail.setFocusableInTouchMode(false);
+        mEdtEmail.setText(email);
     }
 
     private void setCategory(String category) {
@@ -267,6 +276,17 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         if (mEdtTransactionId != null) {
             mEdtTransactionId.setText(tranId);
         }
+    }
+
+    private void setDescription(String message) {
+        if (mEdtDescribe == null || TextUtils.isEmpty(message)) {
+            return;
+        }
+
+        mEdtDescribe.setClickable(false);
+        mEdtDescribe.setFocusable(false);
+        mEdtDescribe.setFocusableInTouchMode(false);
+        mEdtDescribe.setText(message);
     }
 
     @Override
