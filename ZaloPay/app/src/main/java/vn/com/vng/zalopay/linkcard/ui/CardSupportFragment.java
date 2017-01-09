@@ -104,17 +104,29 @@ public class CardSupportFragment extends BaseFragment {
         mGetCardSupportListListener = new IGetCardSupportListListener() {
             @Override
             public void onProcess() {
+                if (!isAdded()) {
+                    return;
+                }
+
                 Timber.d("getCardSupportList onProcess");
             }
 
             @Override
             public void onComplete(ArrayList<ZPCard> cardSupportList) {
+                if (!isAdded()) {
+                    return;
+                }
+
                 Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
                 refreshCardSupportList(cardSupportList);
             }
 
             @Override
             public void onError(String pErrorMess) {
+                if (!isAdded()) {
+                    return;
+                }
+
                 Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
                 hideProgressDialog();
                 showRetryDialog(getString(R.string.exception_generic), new ZPWOnEventConfirmDialogListener() {
@@ -132,6 +144,9 @@ public class CardSupportFragment extends BaseFragment {
 
             @Override
             public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
+                if (!isAdded()) {
+                    return;
+                }
                 Timber.d("cardSupportHashMap forceUpdate [%s] latestVersion [%s] message [%s]",
                         forceUpdate, latestVersion, message);
                 AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, message);
