@@ -82,7 +82,7 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
         ImageView mImgAvatar;
 
         @BindView(R.id.imgTransferType)
-        TextView mImgTransferType;
+        IconFont mImgTransferType;
 
         ImageLoader mImageLoader;
 
@@ -105,16 +105,16 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
 
             if (!TextUtils.isEmpty(zaloPayName)) {
                 mTvPhone.setText(String.format(context.getString(R.string.account_format), zaloPayName));
-                mImgTransferType.setText(R.string.sendmoney_zalopayid);
-                mImgTransferType.setTextColor(ContextCompat.getColor(context, R.color.menu_font_ic_green));
+                mImgTransferType.setIcon(R.string.sendmoney_zalopayid);
+                mImgTransferType.setIconColor(R.color.menu_font_ic_green);
             } else if (!TextUtils.isEmpty(phone)) {
                 mTvPhone.setText(String.format(context.getString(R.string.phone_format), phone));
-                mImgTransferType.setText(R.string.sendmoney_friend);
-                mImgTransferType.setTextColor(ContextCompat.getColor(context, R.color.menu_font_ic_blue));
+                mImgTransferType.setIcon(R.string.sendmoney_friend);
+                mImgTransferType.setIconColor(R.color.menu_font_ic_blue);
             } else {
                 mTvPhone.setText(R.string.not_update_zalopay_id);
-                mImgTransferType.setText(R.string.sendmoney_friend);
-                mImgTransferType.setTextColor(ContextCompat.getColor(context, R.color.menu_font_ic_blue));
+                mImgTransferType.setIcon(R.string.sendmoney_friend);
+                mImgTransferType.setIconColor(R.color.menu_font_ic_blue);
             }
         }
 

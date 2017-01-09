@@ -20,6 +20,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.Priority;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.KeyboardLinearLayout;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
@@ -106,13 +107,13 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     TextView tvTerm;
 
     @BindView(R.id.btnRemoveFrontCmnd)
-    TextView btnRemoveFrontImage;
+    IconFont btnRemoveFrontImage;
 
     @BindView(R.id.btnRemoveBackCmnd)
-    TextView btnRemoveBackImage;
+    IconFont btnRemoveBackImage;
 
     @BindView(R.id.btnRemoveAvatar)
-    TextView btnRemoveAvatar;
+    IconFont btnRemoveAvatar;
 
     @BindView(R.id.btnContinue)
     Button mBtnContinue;
@@ -448,7 +449,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         mTvFgIdentityView.setVisibility(View.GONE);
         btnRemoveFrontImage.setClickable(true);
-        btnRemoveFrontImage.setText(R.string.general_del);
+        btnRemoveFrontImage.setIcon(R.string.general_del);
 
         checkIfNoInput();
     }
@@ -458,7 +459,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mFgIdentityView.setVisibility(View.GONE);
         mTvFgIdentityView.setVisibility(View.VISIBLE);
         btnRemoveFrontImage.setClickable(false);
-        btnRemoveFrontImage.setText(R.string.profile_camera);
+        btnRemoveFrontImage.setIcon(R.string.profile_camera);
         mUriFgIdentity = null;
 
         checkIfNoInput();
@@ -475,7 +476,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         mTvAvatarView.setVisibility(View.GONE);
         btnRemoveAvatar.setClickable(true);
-        btnRemoveAvatar.setText(R.string.general_del);
+        btnRemoveAvatar.setIcon(R.string.general_del);
 
         checkIfNoInput();
     }
@@ -486,7 +487,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mTvAvatarView.setVisibility(View.VISIBLE);
 
         btnRemoveAvatar.setClickable(false);
-        btnRemoveAvatar.setText(R.string.profile_camera);
+        btnRemoveAvatar.setIcon(R.string.profile_camera);
         mUriAvatar = null;
 
         checkIfNoInput();
@@ -504,7 +505,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         mTvBgIdentityView.setVisibility(View.GONE);
         btnRemoveBackImage.setClickable(true);
-        btnRemoveBackImage.setText(R.string.general_del);
+        btnRemoveBackImage.setIcon(R.string.general_del);
 
         checkIfNoInput();
     }
@@ -514,7 +515,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
         mBgIdentityView.setVisibility(View.GONE);
         mTvBgIdentityView.setVisibility(View.VISIBLE);
         btnRemoveBackImage.setClickable(false);
-        btnRemoveBackImage.setText(R.string.profile_camera);
+        btnRemoveBackImage.setIcon(R.string.profile_camera);
         mUriBgIdentity = null;
 
         checkIfNoInput();
