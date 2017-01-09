@@ -80,6 +80,7 @@
                 android:hint="@string/describe_error"
                 android:inputType="text|textCapSentences"
                 android:maxLength="@integer/max_length_describe_error"
+                android:maxLines="3"
                 app:zlp_floatingLabelText="@string/describe_error_count" />
 
             <View
