@@ -21,7 +21,7 @@ import vn.com.vng.zalopay.R;
  * Created by cpu11759-local on 03/01/2017.
  */
 
-final class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.ViewHolder> {
+final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.ViewHolder> {
 
     private static final int FOOTER_VIEW = 1;
     private static final int ITEM_VIEW = 0;

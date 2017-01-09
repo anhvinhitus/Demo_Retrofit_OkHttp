@@ -111,6 +111,7 @@
     <string name="title.activity.warning.root">Cảnh báo</string>
     <string name="title.activity.protect.account">Thiết lập bảo vệ tài khoản</string>
     <string name="title.activity.feedback">Gửi báo lỗi</string>
+    <string name="title.activity.requestsupport">Yêu cầu hỗ trợ</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Hướng camera vào mã QR để thanh toán</string>
@@ -289,9 +290,14 @@
     <string name="txt_attach_screen">Đính kèm màn hình (%s/4)</string>
     <string name="email_to_feedback">Nhập email để nhận phản hồi (bắt buộc)</string>
     <string name="compulsory_email">Email (bắt buộc)</string>
+    <string name="transaction_id">Mã giao dịch</string>
+
     <string name="describe_error_count">Mô tả lỗi (%s/64) (bắt buộc)</string>
     <string name="describe_error">Mô tả lỗi (bắt buộc)</string>
-    <string name="transaction_id">Mã giao dịch</string>
+    <string name="category">Phân loại</string>
+
+    <string name="describe_request_support_count">Mô tả (%s/64) (bắt buộc)</string>
+    <string name="describe_request_support">Nhập thông tin cần hỗ trợ (bắt buộc)</string>
 
     <!-- Link CARDS START-->
     <string name="intro.title.step1">BƯỚC 1</string>

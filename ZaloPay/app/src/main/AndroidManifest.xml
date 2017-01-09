@@ -355,6 +355,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".requestsupport.RequestSupportActivity"
+            android:label="@string/title.activity.requestsupport" />
+
         <receiver
             android:name=".receivers.BootCompletedReceiver"
             android:enabled="true">
