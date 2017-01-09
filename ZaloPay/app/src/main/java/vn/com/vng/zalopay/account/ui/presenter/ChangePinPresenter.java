@@ -1,16 +1,20 @@
 package vn.com.vng.zalopay.account.ui.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
+import vn.com.vng.zalopay.authentication.KeyTools;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
@@ -42,6 +46,11 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
     private AccountStore.Repository mAccountRepository;
     private final Context mApplicationContext;
     private CompositeSubscription mSubscription = new CompositeSubscription();
+
+    private String mNewPassword;
+
+    @Inject
+    KeyTools mKeyTools;
 
     @Inject
     public ChangePinPresenter(Context context, AccountStore.Repository accountRepository) {
@@ -95,37 +104,42 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
 
     @Override
     public void changePin(String oldPin, String newPin) {
-
-        if (mChangePinView != null) {
-            mChangePinView.showLoading();
-        }
-
         Subscription subscription = mAccountRepository.recoveryPin(oldPin, newPin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ChangePinSubscriber());
+                .subscribe(new ChangePinSubscriber(newPin));
         mSubscription.add(subscription);
     }
 
     @Override
     public void verify(String otp) {
-        if (mChangePinVerifyView != null) {
-            mChangePinVerifyView.showLoading();
-        }
-
         Subscription subscription = mAccountRepository.verifyRecoveryPin(otp)
+                .doOnNext(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (!TextUtils.isEmpty(mNewPassword) && mKeyTools.isHavePassword()) {
+                            boolean encrypt = mKeyTools.encrypt(mNewPassword);
+                            Timber.d("encrypt result %s", encrypt);
+                        }
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new VerifySubscriber());
         mSubscription.add(subscription);
     }
 
-    private void onChangePinSuccess() {
+    private void onChangePinSuccess(String newPassword) {
+        this.mNewPassword = newPassword;
         mChangePinView.hideLoading();
         mView.nextPage();
     }
 
     private void onChangePinError(Throwable e) {
+        if (mChangePinView == null) {
+            return;
+        }
+
         mChangePinView.hideLoading();
         String message = ErrorMessageFactory.create(mApplicationContext, e);
         if (e instanceof NetworkConnectionException) {
@@ -161,6 +175,7 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
     }
 
     private void onVerifyOTPError(Throwable e) {
+
         if (mChangePinVerifyView != null) {
             mChangePinVerifyView.hideLoading();
         }
@@ -189,9 +204,23 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
     }
 
     private class ChangePinSubscriber extends DefaultSubscriber<Boolean> {
+
+        private String mNewPassword;
+
+        public ChangePinSubscriber(String password) {
+            mNewPassword = password;
+        }
+
+        @Override
+        public void onStart() {
+            if (mChangePinView != null) {
+                mChangePinView.showLoading();
+            }
+        }
+
         @Override
         public void onNext(Boolean aBoolean) {
-            ChangePinPresenter.this.onChangePinSuccess();
+            ChangePinPresenter.this.onChangePinSuccess(mNewPassword);
         }
 
         @Override
@@ -204,6 +233,14 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
     }
 
     private final class VerifySubscriber extends DefaultSubscriber<Boolean> {
+
+        @Override
+        public void onStart() {
+            if (mChangePinVerifyView != null) {
+                mChangePinVerifyView.showLoading();
+            }
+        }
+
         @Override
         public void onNext(Boolean aBoolean) {
             ChangePinPresenter.this.onVerifyOTPSuccess();

@@ -74,6 +74,7 @@ public class PassportFactory {
         if (!TextUtils.isEmpty(lastUid)) {
             if (!lastUid.equals(userId)) {
                 clearAllUserDB();
+                userConfig.removeFingerprint();
             }
         }
 

@@ -62,14 +62,14 @@ public class FriendRequestService implements FriendStore.ZaloRequestService {
     }
 
     private void handleApiCallback(int pageIndex, Subscriber<? super List<ZaloUserEntity>> subscriber, JSONObject arg0) {
-        JSONArray data;
         if (arg0 == null) {
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onError(new GetZaloFriendException(pageIndex, new NullPointerException()));
             }
             return;
         }
-        data = arg0.optJSONArray("result");
+        
+        JSONArray data = arg0.optJSONArray("result");
 
         if (subscriber.isUnsubscribed()) {
             Timber.d("Subscriber is unsubscribed");

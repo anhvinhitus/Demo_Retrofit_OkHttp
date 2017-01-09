@@ -10,11 +10,13 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.UserConfigImpl;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.authentication.FingerprintUtil;
 import vn.com.vng.zalopay.authentication.KeyTools;
 import vn.com.vng.zalopay.authentication.Stage;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
@@ -29,10 +31,10 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     public Context mContext;
 
     @Inject
-    SharedPreferences mSharedPreferences;
+    KeyTools mKeyTools;
 
     @Inject
-    KeyTools mKeyTools;
+    UserConfig mUserConfig;
 
     @Inject
     ProtectAccountPresenter() {
@@ -91,11 +93,11 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             mView.hideFingerprintLayout();
         }
 
-        boolean useProtect = mSharedPreferences.getBoolean(Constants.PREF_USE_PROTECT_PROFILE, true);
+        boolean useProtect = mUserConfig.isUseProtectAccount();
 
         mView.setCheckedProtectAccount(useProtect);
 
-        String password = mSharedPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
+        String password = mUserConfig.getEncryptedPassword();
         Timber.d("onViewCreated: password [%s] ", password);
 
         boolean isFingerprintAuthAvailable = FingerprintUtil.isFingerprintAuthAvailable(mContext);
@@ -181,19 +183,13 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     }
 
     void setUseProtectAccount(boolean enable) {
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putBoolean(Constants.PREF_USE_PROTECT_PROFILE, enable);
-        editor.apply();
+        mUserConfig.useProtectAccount(enable);
     }
 
     private void setUseFingerprint(boolean enable) {
         if (enable) {
             return;
         }
-
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.remove(Constants.PREF_KEY_PASSWORD);
-        editor.remove(Constants.PREF_KEY_PASSWORD_IV);
-        editor.apply();
+        mUserConfig.removeFingerprint();
     }
 }

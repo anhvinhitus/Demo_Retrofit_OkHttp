@@ -1,8 +1,6 @@
 package vn.com.vng.zalopay.authentication;
 
 import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
@@ -23,6 +21,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Utils;
 
 /**
@@ -33,21 +32,18 @@ public class KeyTools {
 
     private KeyStore mKeyStore;
 
-    private SharedPreferences mPreferences;
+    private UserConfig mUserConfig;
 
     private Cipher mEncryptCipher;
 
     private Cipher mDecryptCipher;
 
-    private Context mContext;
-
     private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
 
     @Inject
-    public KeyTools(Context context, SharedPreferences preferences) {
+    public KeyTools(UserConfig userConfig) {
         this.mKeyStore = providesKeyStore();
-        this.mPreferences = preferences;
-        this.mContext = context;
+        this.mUserConfig = userConfig;
     }
 
     private KeyStore providesKeyStore() {
@@ -132,7 +128,7 @@ public class KeyTools {
                 cipher.init(mode, getKey());
             } else {
                 SecretKey secretKey = ((KeyStore.SecretKeyEntry) mKeyStore.getEntry(Constants.KEY_ALIAS_NAME, null)).getSecretKey();
-                String keyPasswordIv = mPreferences.getString(Constants.PREF_KEY_PASSWORD_IV, "");
+                String keyPasswordIv = mUserConfig.getEncryptedPasswordIV();
                 Timber.d("iv : [%s] ", keyPasswordIv);
                 iv = Base64.decode(keyPasswordIv, Base64.DEFAULT);
                 ivParams = new IvParameterSpec(iv);
@@ -176,7 +172,7 @@ public class KeyTools {
     public String decrypt(Cipher cipher) {
         Timber.d("decrypt : [%s]", cipher);
         try {
-            String keyPassword = mPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
+            String keyPassword = mUserConfig.getEncryptedPassword();
             Timber.d("secret base64: [%s] ", keyPassword);
             byte[] encodedData = Base64.decode(keyPassword, Base64.DEFAULT);
             byte[] decodedData = cipher.doFinal(encodedData);
@@ -189,8 +185,6 @@ public class KeyTools {
         return null;
     }
 
-
-    @TargetApi(Build.VERSION_CODES.M)
     public boolean encrypt(String secret) {
         return encrypt(secret, false);
     }
@@ -220,11 +214,9 @@ public class KeyTools {
             String iv = Base64.encodeToString(ivParams.getIV(), Base64.DEFAULT);
 
             byte[] encrypted = outputStream.toByteArray();
-            SharedPreferences.Editor editor = mPreferences.edit();
             String secretBase64 = Base64.encodeToString(encrypted, Base64.DEFAULT);
-            editor.putString(Constants.PREF_KEY_PASSWORD, secretBase64);
-            editor.putString(Constants.PREF_KEY_PASSWORD_IV, iv);
-            editor.apply();
+
+            mUserConfig.setEncryptedPassword(secretBase64, iv);
 
             Timber.d("secret base64 : [%s]", secretBase64);
             Timber.d("iv : [%s]", iv);
@@ -248,7 +240,7 @@ public class KeyTools {
     }
 
     public boolean isHavePassword() {
-        String password = mPreferences.getString(Constants.PREF_KEY_PASSWORD, "");
+        String password = mUserConfig.getEncryptedPassword();
         return !TextUtils.isEmpty(password);
     }
 }

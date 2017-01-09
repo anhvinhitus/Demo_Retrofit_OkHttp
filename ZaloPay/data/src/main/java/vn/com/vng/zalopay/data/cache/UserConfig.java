@@ -63,4 +63,16 @@ public interface UserConfig {
     void setWaitingApproveProfileLevel3(boolean waitingApproveProfile);
 
     boolean isWaitingApproveProfileLevel3();
+
+    void removeFingerprint();
+
+    void useProtectAccount(boolean isUse);
+
+    boolean isUseProtectAccount();
+
+    String getEncryptedPassword();
+
+    String getEncryptedPasswordIV();
+
+    void setEncryptedPassword(String passwordBase64, String iv);
 }

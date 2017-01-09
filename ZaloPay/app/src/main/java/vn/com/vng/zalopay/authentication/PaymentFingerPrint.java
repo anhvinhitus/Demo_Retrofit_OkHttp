@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 
@@ -21,8 +22,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
 
     public PaymentFingerPrint(AndroidApplication context) {
         mContext = context;
-        SharedPreferences mPreferences = context.getAppComponent().sharedPreferences();
-        mKeyTools = new KeyTools(context, mPreferences);
+        mKeyTools = new KeyTools(context.getAppComponent().userConfig());
     }
 
     @Override

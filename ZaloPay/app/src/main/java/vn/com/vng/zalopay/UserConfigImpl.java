@@ -2,6 +2,7 @@ package vn.com.vng.zalopay;
 
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Base64;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
@@ -321,5 +322,44 @@ public class UserConfigImpl implements UserConfig {
         editor.apply();
 
         eventBus.post(new ZaloPayNameEvent(accountName));
+    }
+
+    @Override
+    public void removeFingerprint() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(Constants.PREF_KEY_PASSWORD);
+        editor.remove(Constants.PREF_KEY_PASSWORD_IV);
+        editor.apply();
+    }
+
+    @Override
+    public void useProtectAccount(boolean isUse) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(Constants.PREF_USE_PROTECT_PROFILE, isUse);
+        editor.apply();
+    }
+
+    @Override
+    public boolean isUseProtectAccount() {
+        return preferences.getBoolean(Constants.PREF_USE_PROTECT_PROFILE, true);
+    }
+
+    @Override
+    public String getEncryptedPassword() {
+        return preferences.getString(Constants.PREF_KEY_PASSWORD, "");
+    }
+
+    @Override
+    public String getEncryptedPasswordIV() {
+        return preferences.getString(Constants.PREF_KEY_PASSWORD_IV, "");
+    }
+
+    @Override
+    public void setEncryptedPassword(String passwordBase64, String iv) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constants.PREF_KEY_PASSWORD, passwordBase64);
+        editor.putString(Constants.PREF_KEY_PASSWORD_IV, iv);
+        editor.apply();
+
     }
 }
