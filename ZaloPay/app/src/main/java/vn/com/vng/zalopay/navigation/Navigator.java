@@ -4,18 +4,24 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.BitmapCompat;
 import android.text.TextUtils;
 
+import com.facebook.imageutils.BitmapUtil;
 import com.facebook.react.bridge.Promise;
 import com.zalopay.apploader.internal.ModuleName;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -640,14 +646,20 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startFeedbackActivity(Context context) {
+   /* public void startFeedbackActivityTest(Context context) {
         Intent intent = new Intent(context, FeedbackActivity.class);
         intent.putExtra("category", "Nạp Tiền");
         intent.putExtra("transactionid", "1234567890");
-        // intent.putExtra("screenshot","Nạp Tiền");
-
+        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        intent.putExtra("screenshot", getBytesFromBitmap(bm));
         context.startActivity(intent);
     }
+
+    private byte[] getBytesFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+        return stream.toByteArray();
+    }*/
 
     public boolean startEmail(@NonNull Activity activity, @NonNull String emailTo, @Nullable String emailCC,
                               @NonNull String subject, @Nullable String emailText, @Nullable ArrayList<Uri> uris) {

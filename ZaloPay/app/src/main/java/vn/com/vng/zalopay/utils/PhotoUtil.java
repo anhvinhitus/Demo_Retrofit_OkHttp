@@ -165,7 +165,7 @@ public class PhotoUtil {
     }
 
     //Note: this function not compress bitmap
-    private static byte[] bitmap2byteArray(Bitmap b) {
+    public static byte[] bitmap2byteArray(Bitmap b) {
         int bytes = byteSizeOf(b);
         //or we can calculate bytes this way. Use a different value than 4 if you don't use 32bit images.
         //int bytes = b.getWidth()*b.getHeight()*4;

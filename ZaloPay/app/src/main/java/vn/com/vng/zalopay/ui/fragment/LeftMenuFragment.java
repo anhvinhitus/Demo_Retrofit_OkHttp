@@ -132,7 +132,8 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
         header.setOnClickListener(new DebouncingOnClickListener() {
             @Override
             public void doClick(View v) {
-                mMenuListener.onClickProfile();
+              //  mMenuListener.onClickProfile();
+                navigator.startFeedbackActivity(getContext());
             }
         });
 

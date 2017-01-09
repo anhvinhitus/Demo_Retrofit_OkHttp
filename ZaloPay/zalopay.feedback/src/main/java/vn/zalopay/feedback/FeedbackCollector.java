@@ -1,8 +1,6 @@
 package vn.zalopay.feedback;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,10 +18,8 @@ import timber.log.Timber;
 
 public class FeedbackCollector {
     private final List<IFeedbackCollector> mCollectors = new ArrayList<>();
-    private Context mContext;
 
-    public FeedbackCollector(Context context) {
-        this.mContext = context;
+    public FeedbackCollector() {
     }
 
     /**
@@ -64,7 +60,7 @@ public class FeedbackCollector {
      * Start data collectors in the background thread
      */
     public void startCollectors(CollectorListener listener) {
-        DataCollectorAsyncTask task = new DataCollectorAsyncTask(mContext, mCollectors, listener);
+        DataCollectorAsyncTask task = new DataCollectorAsyncTask(mCollectors, listener);
         task.execute();
     }
 
@@ -75,15 +71,13 @@ public class FeedbackCollector {
 
     }
 
-    private static class DataCollectorAsyncTask extends AsyncTask<Void, Void, String> {
+    private static class DataCollectorAsyncTask extends AsyncTask<Void, Void, JSONObject> {
 
-        private Context mContext;
         private CollectorListener mListener;
         private final List<IFeedbackCollector> mCollectors;
 
-        private DataCollectorAsyncTask(Context context, List<IFeedbackCollector> list,
+        private DataCollectorAsyncTask(List<IFeedbackCollector> list,
                                        CollectorListener listener) {
-            this.mContext = context;
             this.mListener = listener;
             this.mCollectors = list;
         }
@@ -103,7 +97,7 @@ public class FeedbackCollector {
          * @see #publishProgress
          */
         @Override
-        protected String doInBackground(Void[] params) {
+        protected JSONObject doInBackground(Void[] params) {
             JSONArray array = new JSONArray();
             synchronized (mCollectors) {
                 for (IFeedbackCollector collector : mCollectors) {
@@ -128,7 +122,7 @@ public class FeedbackCollector {
             } catch (JSONException ignore) {
             }
 
-            return FileUtils.writeStringToFile(mContext, object.toString(), "data.json");
+            return object;
         }
 
         /**
@@ -154,16 +148,16 @@ public class FeedbackCollector {
          * <p>
          * <p>This method won't be invoked if the task was cancelled.</p>
          *
-         * @param filePath The result of the operation computed by {@link #doInBackground}.
+         * @param data The result of the operation computed by {@link #doInBackground}.
          * @see #onPreExecute
          * @see #doInBackground
          * @see #onCancelled(Object)
          */
         @Override
-        protected void onPostExecute(String filePath) {
+        protected void onPostExecute(JSONObject data) {
 
             if (mListener != null) {
-                mListener.onCollectorEnd(filePath);
+                mListener.onCollectorEnd(data);
             }
         }
 
@@ -180,6 +174,6 @@ public class FeedbackCollector {
     }
 
     public interface CollectorListener {
-        void onCollectorEnd(@Nullable String filePath);
+        void onCollectorEnd(JSONObject data);
     }
 }

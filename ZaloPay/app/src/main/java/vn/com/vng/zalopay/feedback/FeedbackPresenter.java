@@ -3,13 +3,13 @@ package vn.com.vng.zalopay.feedback;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
 import com.zalopay.apploader.internal.FileUtils;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,14 +18,15 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.UserCollector;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -69,22 +70,53 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
 
         feedbackCollector.startCollectors(new FeedbackCollector.CollectorListener() {
             @Override
-            public void onCollectorEnd(@Nullable String filePath) {
-                Timber.d("onCollectorEnd: %s", filePath);
+            public void onCollectorEnd(JSONObject data) {
+                Timber.d("onCollectorEnd: %s", data);
                 if (mView == null) {
                     return;
                 }
 
-                ArrayList<Uri> uris = new ArrayList<>(screenshot);
-                if (!TextUtils.isEmpty(filePath)) {
-                    Uri uri = FileProvider.getUriForFile(mContext, FileUtils.AUTHORITY_PROVIDER, new File(filePath));
-                    uris.add(uri);
-                }
+                Subscription subscription = saveCollectFile(data)
+                        .map(new Func1<String, ArrayList<Uri>>() {
+                            @Override
+                            public ArrayList<Uri> call(String filePath) {
+                                ArrayList<Uri> uris = new ArrayList<>(screenshot);
+                                if (!TextUtils.isEmpty(filePath)) {
+                                    Uri uri = FileProvider.getUriForFile(mContext, FileUtils.AUTHORITY_PROVIDER, new File(filePath));
+                                    Timber.d("uri file data %s", uri.toString());
+                                    uris.add(uri);
+                                }
+                                return uris;
+                            }
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new DefaultSubscriber<ArrayList<Uri>>() {
+                            @Override
+                            public void onNext(ArrayList<Uri> uris) {
+                                if (mView == null) {
+                                    return;
+                                }
 
-                mNavigator.startEmail((Activity) mView.getContext(), mContext.getString(R.string.email_support),
-                        null, mContext.getString(R.string.subject_compose_email_support),
-                        null, uris);
+                                mNavigator.startEmail((Activity) mView.getContext(), mContext.getString(R.string.email_support),
+                                        null, mContext.getString(R.string.subject_compose_email_support),
+                                        null, uris);
+                            }
+                        });
+                mSubscription.add(subscription);
 
+            }
+        });
+    }
+
+
+    private Observable<String> saveCollectFile(final JSONObject data) {
+        return makeObservable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                String filePath = FileUtils.writeStringToFile(mContext, data.toString(), "data.json");
+                Timber.d("write to file _ filePath [%s] ", filePath);
+                return filePath;
             }
         });
     }
@@ -125,7 +157,7 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
 
     private FeedbackCollector collectInformation(boolean user, boolean app, boolean device) {
 
-        FeedbackCollector mCollector = new FeedbackCollector(mContext);
+        FeedbackCollector mCollector = new FeedbackCollector();
 
         if (user) {
             mCollector.installCollector(new UserCollector(mUserConfig));

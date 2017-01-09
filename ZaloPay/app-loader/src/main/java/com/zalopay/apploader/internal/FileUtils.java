@@ -1,6 +1,7 @@
 package com.zalopay.apploader.internal;
 
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 
 import java.io.BufferedInputStream;
@@ -8,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -263,5 +265,28 @@ public class FileUtils {
         }
 
         return !directory.mkdirs() && !directory.isDirectory();
+    }
+
+    @Nullable
+    public static String writeStringToFile(Context context, String content, String fileName) {
+        FileWriter out = null;
+        try {
+            File directory = new File(context.getCacheDir() + File.separator + "data");
+            mkdirs(directory);
+            File file = new File(directory, fileName);
+            out = new FileWriter(file);
+            out.write(content);
+            return file.getAbsolutePath();
+        } catch (IOException e) {
+            Timber.d(e, "writeStringToFile: ");
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException ignore) {
+            }
+        }
+        return null;
     }
 }
