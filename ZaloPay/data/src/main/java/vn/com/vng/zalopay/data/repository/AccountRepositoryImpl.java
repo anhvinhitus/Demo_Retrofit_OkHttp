@@ -29,7 +29,7 @@ import static vn.com.vng.zalopay.data.util.Utils.sha256Base;
  * Implementation for Account Repository
  */
 public class AccountRepositoryImpl implements AccountStore.Repository {
-
+    private final int TIMEOUT_CACHE_OTP_STATE = 5 * 60 * 1000;
     private final AccountStore.RequestService mRequestService;
     private final AccountStore.UploadPhotoService mUploadPhotoService;
     private final AccountStore.LocalStorage mLocalStore;
@@ -264,14 +264,24 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     public Observable<ProfileLevel2> getProfileLevel2Cache() {
         return ObservableHelper.makeObservable(() -> {
             Map map = mLocalStore.getProfileLevel2();
-            Object phoneNumber = map.get(Constants.ProfileLevel2.PHONE_NUMBER);
-            Object isReceivedOtp = map.get(Constants.ProfileLevel2.RECEIVE_OTP);
+            Object phoneNumberObj = map.get(Constants.ProfileLevel2.PHONE_NUMBER);
+            Object isReceivedOtpObj = map.get(Constants.ProfileLevel2.RECEIVE_OTP);
+            Object timeReceivedOtpObj = map.get(Constants.ProfileLevel2.TIME_RECEIVE_OTP);
+
             ProfileLevel2 profileLevel2 = new ProfileLevel2();
-            if (phoneNumber != null) {
-                profileLevel2.phoneNumber = phoneNumber.toString();
+            if (phoneNumberObj != null) {
+                profileLevel2.phoneNumber = phoneNumberObj.toString();
             }
-            if (isReceivedOtp != null) {
-                profileLevel2.isReceivedOtp = Boolean.valueOf(isReceivedOtp.toString());
+            if (isReceivedOtpObj == null || timeReceivedOtpObj == null) {
+                return profileLevel2;
+            }
+            try {
+                boolean isReceivedOtp = Boolean.valueOf(isReceivedOtpObj.toString());
+                long timeReceiveOtp = Long.valueOf(timeReceivedOtpObj.toString());
+                profileLevel2.isReceivedOtp = (isReceivedOtp &&
+                        System.currentTimeMillis() - timeReceiveOtp <= TIMEOUT_CACHE_OTP_STATE);
+            } catch (NumberFormatException e) {
+                return profileLevel2;
             }
             return profileLevel2;
         });
@@ -299,11 +309,19 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     public Observable<Boolean> getChangePinState() {
         return ObservableHelper.makeObservable(() -> {
             Map map = mLocalStore.getChangePinState();
-            Object isReceivedOtp = map.get(Constants.ChangePin.RECEIVE_OTP_KEY);
-            if (isReceivedOtp != null) {
-                return Boolean.valueOf(isReceivedOtp.toString());
+            Object isReceivedOtpObj = map.get(Constants.ChangePin.RECEIVE_OTP_KEY);
+            Object timeReceiveOtpObj = map.get(Constants.ChangePin.TIME_RECEIVE_OTP_KEY);
+            if (isReceivedOtpObj == null || timeReceiveOtpObj == null) {
+                return Boolean.FALSE;
             }
-            return Boolean.FALSE;
+            boolean isReceivedOtp = Boolean.valueOf(isReceivedOtpObj.toString());
+            try {
+                long timeReceivedOtp = Long.valueOf(timeReceiveOtpObj.toString());
+                return (isReceivedOtp &&
+                        (System.currentTimeMillis() - timeReceivedOtp <= TIMEOUT_CACHE_OTP_STATE));
+            } catch (NumberFormatException e) {
+                return Boolean.FALSE;
+            }
         });
     }
 

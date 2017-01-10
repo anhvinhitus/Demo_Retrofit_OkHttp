@@ -115,6 +115,7 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(Constants.ProfileLevel2.PHONE_NUMBER, TextUtils.isEmpty(phoneNumber) ? "" : phoneNumber);
         jsonObject.addProperty(Constants.ProfileLevel2.RECEIVE_OTP, receiveOtp);
+        jsonObject.addProperty(Constants.ProfileLevel2.TIME_RECEIVE_OTP, System.currentTimeMillis());
 
         insertDataManifest(Constants.ProfileLevel2.PROFILE_LEVEL2, jsonObject.toString());
     }
@@ -142,7 +143,7 @@ public class AccountLocalStorage extends SqlBaseScopeImpl implements AccountStor
     public void saveChangePinState(boolean receiveOtp) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(Constants.ChangePin.RECEIVE_OTP_KEY, receiveOtp);
-
+        jsonObject.addProperty(Constants.ChangePin.TIME_RECEIVE_OTP_KEY, System.currentTimeMillis());
         insertDataManifest(Constants.ChangePin.CHANGE_PIN, jsonObject.toString());
     }
 }
