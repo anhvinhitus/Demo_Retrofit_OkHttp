@@ -20,12 +20,12 @@ import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
 
 public class RNCallAdapter extends BaseCallAdapter {
 
-    public RNCallAdapter(Context context, Type responseType, Scheduler scheduler) {
-        super(context, responseType, scheduler, 0);
+    public RNCallAdapter(Context context, int apiClientId, Type responseType, Scheduler scheduler) {
+        super(context, apiClientId, responseType, scheduler, 0);
     }
 
-    public RNCallAdapter(Context context, Type responseType, Scheduler scheduler, int retryNumber) {
-        super(context, responseType, scheduler, retryNumber);
+    public RNCallAdapter(Context context, int apiClientId, Type responseType, Scheduler scheduler, int retryNumber) {
+        super(context, apiClientId, responseType, scheduler, retryNumber);
     }
 
     @NonNull

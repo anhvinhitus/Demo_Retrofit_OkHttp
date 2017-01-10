@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.net.adapter;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import okhttp3.Request;
@@ -16,6 +17,9 @@ import rx.subscriptions.Subscriptions;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.analytics.ZPTracker;
 
 /**
  * Created by huuhoa on 7/4/16.
@@ -24,10 +28,12 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
     private final Context mContext;
     private final Call<T> mOriginalCall;
+    private final int mApiClientId;
 
-    CallOnSubscribe(Context context, Call<T> originalCall) {
+    CallOnSubscribe(Context context, Call<T> originalCall, int apiClientId) {
         this.mContext = context;
         this.mOriginalCall = originalCall;
+        mApiClientId = apiClientId;
     }
 
     @Override
@@ -39,7 +45,12 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
         subscriber.add(Subscriptions.create(call::cancel));
 
         try {
+            long beginRequestTime = System.currentTimeMillis();
             Response<T> response = call.execute();
+            long endRequestTime = System.currentTimeMillis();
+            if (response != null && response.isSuccessful()) {
+                logTiming(call.request(), endRequestTime - beginRequestTime);
+            }
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onNext(response);
             }
@@ -77,5 +88,20 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
         if (!subscriber.isUnsubscribed()) {
             subscriber.onCompleted();
         }
+    }
+
+    private void logTiming(Request request, long duration) {
+        String api = request.url().encodedPath();
+        if (api.startsWith("/")) {
+            api = api.replaceFirst("/", "");
+        }
+
+        api = "api_" + api.replaceAll("/", "_");
+        Timber.i("Request URL: %s, eventId: %s, eventName: %s, duration: %s", api, mApiClientId, ZPEvents.actionFromEventId(mApiClientId), duration);
+        if (mApiClientId <= 0) {
+            Timber.i("Skip logging timing event");
+            return;
+        }
+        ZPAnalytics.trackTiming(mApiClientId, duration);
     }
 }

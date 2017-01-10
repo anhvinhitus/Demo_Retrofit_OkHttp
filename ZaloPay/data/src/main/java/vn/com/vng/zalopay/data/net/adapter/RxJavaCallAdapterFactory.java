@@ -62,23 +62,38 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
 
     @Override
     public CallAdapter<?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
-        return getCallAdapter(returnType, scheduler);
+        int apiEventId = -1;
+        API_NAME apiNameAnnotation = getAnnotation(annotations);
+        if (apiNameAnnotation != null) {
+            apiEventId = apiNameAnnotation.value();
+        }
+
+        return getCallAdapter(returnType, scheduler, apiEventId);
     }
 
-    private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler) {
+    private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler, int apiEventId) {
         Type observableType = getParameterUpperBound(0, (ParameterizedType) returnType);
 
         switch (mAdapterType) {
             case ZaloPay:
-                return new ZaloPayCallAdapter(mApplicationContext, observableType, scheduler);
+                return new ZaloPayCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
             case RedPacket:
-                return new RedPacketCallAdapter(mApplicationContext, observableType, scheduler);
+                return new RedPacketCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
             case PaymentAppWithRetry:
-                return new RNCallAdapter(mApplicationContext, observableType, scheduler, Constants.NUMBER_RETRY_REST);
+                return new RNCallAdapter(mApplicationContext, apiEventId, observableType, scheduler, Constants.NUMBER_RETRY_REST);
             case PaymentAppWithoutRetry:
-                return new RNCallAdapter(mApplicationContext, observableType, scheduler, 0);
+                return new RNCallAdapter(mApplicationContext, apiEventId, observableType, scheduler, 0);
             default:
-                return new ZaloPayCallAdapter(mApplicationContext, observableType, scheduler);
+                return new ZaloPayCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
         }
+    }
+
+    private API_NAME getAnnotation(Annotation[] annotations) {
+        for (Annotation annotation : annotations) {
+            if (API_NAME.class == annotation.annotationType()) {
+                return (API_NAME) annotation;
+            }
+        }
+        return null;
     }
 }

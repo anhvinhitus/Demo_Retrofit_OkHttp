@@ -88,6 +88,7 @@ dependencies {
     compile libs.gson
 //    compile libs.cbor
     compile libs.wire_runtime
+    compile libs.zalopay_analytics
 
     compile project(':domain')
     compile project(':zalopay.feedback')

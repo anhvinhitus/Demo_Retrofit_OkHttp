@@ -28,19 +28,22 @@ import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
 public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
     private final int NUMBER_RETRY_REST;
     protected final Context mContext;
+    private final int mApiEventId;
     protected final Type mResponseType;
     protected final Scheduler mScheduler;
     private int mRestRetryCount;
 
-    public BaseCallAdapter(Context context, Type responseType, Scheduler scheduler) {
+    public BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler) {
         this.mContext = context;
+        this.mApiEventId = apiEventId;
         this.mResponseType = responseType;
         this.mScheduler = scheduler;
         this.NUMBER_RETRY_REST = Constants.NUMBER_RETRY_REST;
     }
 
-    public BaseCallAdapter(Context context, Type responseType, Scheduler scheduler, int retryNumber) {
+    public BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler, int retryNumber) {
         this.mContext = context;
+        this.mApiEventId = apiEventId;
         this.mResponseType = responseType;
         this.mScheduler = scheduler;
         this.NUMBER_RETRY_REST = retryNumber > 0 ? retryNumber : 0;
@@ -54,7 +57,7 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
     @Override
     public <R> Observable<R> adapt(Call<R> call) {
         mRestRetryCount = NUMBER_RETRY_REST;
-        Observable<R> observable = Observable.create(new CallOnSubscribe<>(mContext, call))
+        Observable<R> observable = Observable.create(new CallOnSubscribe<>(mContext, call, mApiEventId))
                 .retryWhen(errors -> errors.flatMap(error -> {
                     if (!call.request().method().equalsIgnoreCase("GET")) {
                         return Observable.error(error);
