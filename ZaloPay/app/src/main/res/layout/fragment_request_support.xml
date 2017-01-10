@@ -47,6 +47,7 @@
                 android:paddingRight="@dimen/spacing.medium">
 
                 <TextView
+                    android:id="@+id/tvCategory"
                     style="@style/TextView.Title.Default"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

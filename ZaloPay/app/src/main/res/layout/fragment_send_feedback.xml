@@ -37,51 +37,7 @@
                 android:layout_height="@dimen/separate"
                 android:background="@color/separate" />
 
-            <com.zalopay.ui.widget.edittext.ZPEditText
-                android:id="@+id/edtCategory"
-                style="@style/ZaloPayEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                app:zlp_clearButton="false"
-                app:zlp_floatingLabel="none"
-                app:zlp_paddingLeftLine="16dp" />
-
-            <com.zalopay.ui.widget.edittext.ZPEditText
-                android:id="@+id/edtTransactionId"
-                style="@style/ZaloPayEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:hint="@string/transaction_id"
-                app:zlp_clearButton="false"
-                app:zlp_floatingLabel="highlight"
-                app:zlp_paddingLeftLine="16dp" />
-
-            <com.zalopay.ui.widget.edittext.ZPEditText
-                android:id="@+id/edtEmail"
-                style="@style/ZaloPayEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/email_to_feedback"
-                android:inputType="textEmailAddress"
-                android:maxLength="@integer/max_length_email"
-                app:zlp_floatingLabelText="@string/compulsory_email"
-                app:zlp_paddingLeftLine="16dp" />
-
-            <com.zalopay.ui.widget.edittext.ZPEditText
-                android:id="@+id/edtDescribe"
-                style="@style/ZaloPayEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/describe_error"
-                android:inputType="text|textMultiLine|textCapSentences"
-                android:maxLength="@integer/max_length_describe_error"
-                android:maxLines="3"
-                app:zlp_floatingLabelText="@string/describe_error_count" />
+            <include layout="@layout/layout_feedback_information" />
 
             <View
                 android:layout_width="match_parent"

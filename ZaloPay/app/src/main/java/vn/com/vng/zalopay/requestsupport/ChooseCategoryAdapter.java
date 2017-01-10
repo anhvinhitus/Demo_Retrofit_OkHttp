@@ -20,11 +20,11 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 
-public class RequestSupportAdapter extends AbsRecyclerAdapter<AppResource, RequestSupportAdapter.ViewHolder> {
+public class ChooseCategoryAdapter extends AbsRecyclerAdapter<AppResource, ChooseCategoryAdapter.ViewHolder> {
 
-    private RequestSupportAdapter.OnClickAppListener listener;
+    private ChooseCategoryAdapter.OnClickAppListener listener;
 
-    public RequestSupportAdapter(Context context, RequestSupportAdapter.OnClickAppListener listener) {
+    public ChooseCategoryAdapter(Context context, ChooseCategoryAdapter.OnClickAppListener listener) {
         super(context);
         this.listener = listener;
     }
@@ -53,8 +53,8 @@ public class RequestSupportAdapter extends AbsRecyclerAdapter<AppResource, Reque
     }
 
     @Override
-    public RequestSupportAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new RequestSupportAdapter.ViewHolder(mInflater.inflate(R.layout.row_category_app_layout, parent, false), mOnItemClickListener);
+    public ChooseCategoryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ChooseCategoryAdapter.ViewHolder(mInflater.inflate(R.layout.row_category_app_layout, parent, false), mOnItemClickListener);
     }
 
     @Override
@@ -63,19 +63,6 @@ public class RequestSupportAdapter extends AbsRecyclerAdapter<AppResource, Reque
         if (item != null) {
             holder.bindView(item);
         }
-    }
-
-    @Override
-    public void insertItems(List<AppResource> items) {
-        if (items == null || items.isEmpty()) return;
-        synchronized (_lock) {
-            for (AppResource item : items) {
-                if (!exist(item)) {
-                    insert(item);
-                }
-            }
-        }
-        notifyDataSetChanged();
     }
 
     @Override
@@ -90,11 +77,6 @@ public class RequestSupportAdapter extends AbsRecyclerAdapter<AppResource, Reque
             return;
         }
         super.setData(items);
-    }
-
-    private boolean exist(AppResource item) {
-        List<AppResource> list = getItems();
-        return list.indexOf(item) >= 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

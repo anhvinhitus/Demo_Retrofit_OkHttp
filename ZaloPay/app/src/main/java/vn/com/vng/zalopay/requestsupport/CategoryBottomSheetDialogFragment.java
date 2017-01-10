@@ -9,9 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 
 import java.util.ArrayList;
@@ -26,6 +24,7 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 public class CategoryBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
     private List<AppResource> mAppResourceList = new ArrayList<>();
+    private AppResource mAppResource;
 
     @BindView(R.id.numberPicker)
     NumberPicker mPicker;
@@ -77,12 +76,57 @@ public class CategoryBottomSheetDialogFragment extends BottomSheetDialogFragment
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
         }
 
-        setData();
         setPicker();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @OnClick(R.id.tvCancel)
+    public void onClickCancel() {
+        if (listener != null) {
+            listener.onClickCancel();
+        }
+        dismiss();
+    }
+
+    @OnClick(R.id.tvAccept)
+    public void onClickAccept() {
+        if (listener != null) {
+            listener.onClickAccept();
+        }
+        dismiss();
+    }
+
+    public void setValues(List<AppResource> appResourceList) {
+        mAppResourceList = appResourceList;
+    }
+
+    public AppResource getValue() {
+        return mAppResourceList.get(mPicker.getValue());
+    }
+
+    private CategoryBottomSheetDialogFragment.OnClickListener listener;
+
+    public void setOnClickListener(CategoryBottomSheetDialogFragment.OnClickListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void onDestroyView() {
+        this.listener = null;
+        super.onDestroyView();
+    }
+
     private void setPicker() {
-        setDividerColor(mPicker, R.color.windowBackground);
+        setDividerColor(mPicker, R.color.gray);
 
         String values[] = new String[mAppResourceList.size()];
         for(int i = 0; i < mAppResourceList.size(); i++){
@@ -113,56 +157,5 @@ public class CategoryBottomSheetDialogFragment extends BottomSheetDialogFragment
                 break;
             }
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @OnClick(R.id.tvCancel)
-    public void onClickCancel() {
-        dismiss();
-    }
-
-    @OnClick(R.id.tvAccept)
-    public void onClickAccept() {
-        dismiss();
-    }
-
-    private CategoryBottomSheetDialogFragment.OnClickListener listener;
-
-    public void setOnClickListener(CategoryBottomSheetDialogFragment.OnClickListener listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public void onDestroyView() {
-        this.listener = null;
-        super.onDestroyView();
-    }
-
-    private void setData() {
-        AppResource tmp = new AppResource();
-        tmp.appname = "Nạp tiền";
-        AppResource tmp1 = new AppResource();
-        tmp1.appname = "Rút tiền";
-        AppResource tmp2 = new AppResource();
-        tmp2.appname = "Chuyển tiền";
-        AppResource tmp3 = new AppResource();
-        tmp3.appname = "Nhận tiền";
-        AppResource tmp4 = new AppResource();
-        tmp4.appname = "Liên kết thẻ";
-
-        mAppResourceList.add(tmp);
-        mAppResourceList.add(tmp1);
-        mAppResourceList.add(tmp2);
-        mAppResourceList.add(tmp3);
-        mAppResourceList.add(tmp4);
     }
 }

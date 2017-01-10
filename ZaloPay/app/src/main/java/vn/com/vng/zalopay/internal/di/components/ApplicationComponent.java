@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.monitors.IMonitorReport;
 import vn.com.vng.zalopay.monitors.IMonitorTiming;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.requestsupport.ChooseCategoryFragment;
 import vn.com.vng.zalopay.service.DownloadService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
@@ -111,4 +112,6 @@ public interface ApplicationComponent {
     void inject(IntroAppFragment f);
 
     void inject(ExternalCallSplashScreenActivity a);
+
+    void inject(ChooseCategoryFragment a);
 }

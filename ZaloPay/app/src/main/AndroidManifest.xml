@@ -357,7 +357,11 @@
 
         <activity
             android:name=".requestsupport.RequestSupportActivity"
-            android:label="@string/title.activity.requestsupport" />
+            android:label="@string/title.activity.request.support" />
+
+        <activity
+            android:name=".requestsupport.ChooseCategoryActivity"
+            android:label="@string/title.activity.choose.category" />
 
         <receiver
             android:name=".receivers.BootCompletedReceiver"

@@ -43,6 +43,7 @@ import vn.com.vng.zalopay.linkcard.ui.LinkCardFragment;
 import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardFragment;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.requestsupport.RequestSupportFragment;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
@@ -189,4 +190,6 @@ public interface UserComponent {
     void inject(AuthenticationDialog f);
 
     void inject(FeedbackFragment f);
+
+    void inject(RequestSupportFragment f);
 }

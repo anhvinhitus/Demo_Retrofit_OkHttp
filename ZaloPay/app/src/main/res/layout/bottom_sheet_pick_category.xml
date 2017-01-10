@@ -47,6 +47,5 @@
         android:id="@+id/numberPicker"
         android:layout_width="match_parent"
         android:layout_height="128dp"
-        android:scaleY="0.8"
         android:layout_gravity="center"/>
 </LinearLayout>

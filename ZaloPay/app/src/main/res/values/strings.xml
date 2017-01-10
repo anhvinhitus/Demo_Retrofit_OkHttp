@@ -111,7 +111,8 @@
     <string name="title.activity.warning.root">Cảnh báo</string>
     <string name="title.activity.protect.account">Thiết lập bảo vệ tài khoản</string>
     <string name="title.activity.feedback">Gửi báo lỗi</string>
-    <string name="title.activity.requestsupport">Yêu cầu hỗ trợ</string>
+    <string name="title.activity.request.support">Yêu cầu hỗ trợ</string>
+    <string name="title.activity.choose.category">Phân loại</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Hướng camera vào mã QR để thanh toán</string>
@@ -284,6 +285,7 @@
     <string name="lbl.recommend.upload.avatar">Đăng ảnh của bạn để hoàn tất thủ tục xác minh</string>
 
     <string name="txt_send_feedback">Vui lòng nhập thông tin để gửi đến bộ phận CSKH</string>
+    <string name="txt_choose_category">CHỌN LOẠI BẠN CẦN HỖ TRỢ</string>
     <string name="txt_send_user_information">Gửi kèm thông tin người dùng</string>
     <string name="txt_send_device_information">Gửi kèm thông tin thiết bị</string>
     <string name="txt_send_app_information">Gửi kèm thông tin ứng dụng</string>
