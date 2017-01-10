@@ -3,11 +3,11 @@ package vn.com.vng.zalopay.data.ws.connection;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.UnresolvedAddressException;
 
@@ -29,20 +29,22 @@ class SSLClient implements SocketClient {
     private Listener mListener;
     private Socket mSslSocket = null;
 
+    private DataInputStream mInputStream;
+
     SSLClient(String hostname, int port, Listener listener) {
         mHostname = hostname;
         mPort = port;
         mListener = listener;
 
-        // event handler thread - all socket events are processed in that thread
+        // event handler thread - all socket events are processed mInputStream that thread
         // such as: data received, socket connected, socket disconnected, socket error
         // Thread for handling commands, network events, read/write queue to network connection
         HandlerThread eventHandlerThread = new HandlerThread("socket-thread");
 
         // connection thread - create socket connection, sending data, ...
-        // are all processed in this thread
+        // are all processed mInputStream this thread
         // Thread for handling network connection
-        // Modification to mConnection will only be happened in this thread
+        // Modification to mConnection will only be happened mInputStream this thread
         HandlerThread connectionThread = new HandlerThread("connection-thread");
 
         eventHandlerThread.start();
@@ -51,6 +53,7 @@ class SSLClient implements SocketClient {
         mEventHandler = new Handler(eventHandlerThread.getLooper());
         mConnectionHandler = new Handler(connectionThread.getLooper());
     }
+
 
     @Override
     public void connect() {
@@ -70,6 +73,7 @@ class SSLClient implements SocketClient {
                 context.init(null, null, new java.security.SecureRandom());
                 SSLSocketFactory sf = context.getSocketFactory();
                 mSslSocket = sf.createSocket(mHostname, mPort);
+                mInputStream = new DataInputStream(mSslSocket.getInputStream());
 
                 if (isConnected()) {
                     postConnectedEvent();
@@ -144,6 +148,10 @@ class SSLClient implements SocketClient {
             }
 
             try {
+                if (mInputStream != null) {
+                    mInputStream.close();
+                }
+
                 mSslSocket.close();
             } catch (IOException e) {
                 Timber.w("Exception while disconnect socket");
@@ -157,26 +165,25 @@ class SSLClient implements SocketClient {
         });
     }
 
-    private byte[] receiveBuffer() throws IOException {
-        int retByte;
-        byte[] header = new byte[4];
 
-        retByte = mSslSocket.getInputStream().read(header);
-        if (retByte < 4) {
+    private byte[] receiveBuffer() throws IOException {
+
+        /*// available stream to be read
+        int length = mInputStream.available();*/
+
+        int szBody = mInputStream.readInt();
+
+        if (szBody < 4) {
             return null;
         }
 
-        int szBody = ByteBuffer.wrap(header).getInt();
         if (szBody <= 0 || szBody > 20000) {
             return null;
         }
 
         byte[] body = new byte[szBody];
 
-        retByte = mSslSocket.getInputStream().read(body);
-        if (retByte < szBody) {
-            return null;
-        }
+        mInputStream.readFully(body);
 
         return body;
     }
@@ -205,6 +212,9 @@ class SSLClient implements SocketClient {
                 mSslSocket.getOutputStream().flush();
             } catch (Throwable ex) {
                 Timber.w(ex, "Exception while writing data to SSL socket");
+                if (mInputStream != null) {
+                    mInputStream.close();
+                }
                 mSslSocket.close();
                 postErrorEvent(ex);
             }

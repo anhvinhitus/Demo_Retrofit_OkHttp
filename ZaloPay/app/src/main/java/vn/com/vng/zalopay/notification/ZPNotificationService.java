@@ -72,7 +72,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
-    private final int NUMBER_NOTIFICATION = BuildConfig.DEBUG ? 5 : 30;
+    private static final int NUMBER_NOTIFICATION = 30;
 
     private long mLastTimeRecovery;
 
