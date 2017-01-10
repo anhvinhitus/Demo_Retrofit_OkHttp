@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -11,6 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.ui.activity.MainActivity;
 
 /**
  * Created by AnhHieu on 3/23/16.
@@ -26,7 +32,7 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
+        checkCreatedIfRootActivity(activity, savedInstanceState);
     }
 
     @Override
@@ -72,9 +78,8 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
     private short mLastState;
 
     private void applicationStatus() {
-        Timber.i("Is application background " + isBackGround());
+        //   Timber.i("Is application background " + isBackGround());
         if (isBackGround()) {
-            //Do something if the application is in background
             if (mLastState == 0) {
                 return;
             }
@@ -88,11 +93,52 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
         }
     }
 
-    public static boolean activityExistInStack(String simpleName) {
-        return false;
-    }
-
     public static boolean isLastActivity(@NonNull String simpleName) {
         return simpleName.equalsIgnoreCase(mLastActivity);
     }
+
+    private void checkCreatedIfRootActivity(Activity activity, Bundle savedInstanceState) {
+       // Timber.d("Created savedInstanceState %s activities %s getUserComponent() %s", savedInstanceState, activities, getUserComponent());
+
+        if (savedInstanceState == null || !activities.isEmpty()) {
+            return;
+        }
+
+        if (activity.getClass().getSimpleName().equals(MainActivity.TAG)) {
+            return;
+        }
+
+        createUserComponent();
+
+        if (getUserComponent() == null) {
+            return;
+        }
+
+        getUserComponent().userSession().ensureUserInitialized();
+    }
+
+    private void createUserComponent() {
+
+        Timber.d(" user component %s", getUserComponent());
+
+        if (getUserComponent() != null) {
+            return;
+        }
+
+        UserConfig userConfig = getAppComponent().userConfig();
+        Timber.d(" isSignIn %s", userConfig.isSignIn());
+        if (userConfig.isSignIn()) {
+            userConfig.loadConfig();
+            AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());
+        }
+    }
+
+    public ApplicationComponent getAppComponent() {
+        return AndroidApplication.instance().getAppComponent();
+    }
+
+    private UserComponent getUserComponent() {
+        return AndroidApplication.instance().getUserComponent();
+    }
+
 }

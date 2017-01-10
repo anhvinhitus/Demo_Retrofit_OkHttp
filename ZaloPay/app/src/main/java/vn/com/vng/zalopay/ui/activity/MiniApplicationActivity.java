@@ -29,6 +29,7 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -43,6 +44,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
@@ -58,6 +60,8 @@ import vn.com.vng.zalopay.utils.ToastUtil;
  * Mini (Internal) application
  */
 public class MiniApplicationActivity extends MiniApplicationBaseActivity {
+
+    protected final String TAG = getClass().getSimpleName();
 
     public static final String ACTION_SUPPORT_CENTER = "vn.com.vng.zalopay.action.SUPPORT_CENTER";
 
@@ -268,31 +272,44 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTokenExpiredMain(TokenExpiredEvent event) {
-        Timber.d("Receive token expired");
-        getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_token_expired_message);
-        getAppComponent().applicationSession().clearUserSession();
+    public void onTokenExpired(TokenExpiredEvent event) {
+        Timber.i("SESSION EXPIRED in Screen %s", TAG);
+        boolean result = clearUserSession(getString(R.string.exception_token_expired_message));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerMaintain(ServerMaintainEvent event) {
         Timber.i("Receive server maintain event");
-        if (TextUtils.isEmpty(event.getMessage())) {
-            getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_server_maintain);
-        } else {
-            getAppComponent().applicationSession().setMessageAtLogin(event.getMessage());
-        }
-        getAppComponent().applicationSession().clearUserSession();
 
+        String eventMessage = TextUtils.isEmpty(event.getMessage()) ?
+                getString(R.string.exception_server_maintain) : event.getMessage();
+
+        boolean result = clearUserSession(eventMessage);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountSuspended(AccountSuspendedException event) {
-        Timber.i("Receive Suspended event");
-        getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_zpw_account_suspended);
-        getAppComponent().applicationSession().clearUserSession();
+        Timber.i("Receive suspended event");
+
+        boolean result = clearUserSession(getString(R.string.exception_zpw_account_suspended));
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
+        Timber.i("SESSION EXPIRED in Screen %s", TAG);
+        boolean result = clearUserSession(getString(R.string.exception_token_expired_message));
+    }
+
+    protected boolean clearUserSession(String message) {
+
+        if (getUserComponent() != null) {
+            getUserComponent().userSession().endSession();
+        }
+
+        getAppComponent().applicationSession().setMessageAtLogin(message);
+        getAppComponent().applicationSession().clearUserSession();
+        return true;
+    }
 
     @Subscribe
     public void onUncaughtRuntimeException(UncaughtRuntimeExceptionEvent event) {

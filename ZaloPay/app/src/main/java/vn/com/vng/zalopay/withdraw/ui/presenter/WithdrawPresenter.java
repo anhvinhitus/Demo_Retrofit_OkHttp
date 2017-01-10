@@ -15,13 +15,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.GenericException;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -44,7 +43,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     private final BalanceStore.Repository mBalanceRepository;
     private final ZaloPayRepository mZaloPayRepository;
     private final Navigator mNavigator;
-    private final ApplicationSession mApplicationSession;
 
     private PaymentWrapper paymentWrapper;
 
@@ -57,12 +55,11 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     public WithdrawPresenter(Context context, BalanceStore.Repository balanceRepository,
                              ZaloPayRepository zaloPayRepository,
                              TransactionStore.Repository transactionRepository,
-                             Navigator navigator, ApplicationSession applicationSession
+                             Navigator navigator
     ) {
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mNavigator = navigator;
-        this.mApplicationSession = applicationSession;
         this.mContext = context;
 
         paymentWrapper = new PaymentWrapperBuilder()
@@ -189,14 +186,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 mView.getActivity().setResult(Activity.RESULT_OK, null);
                 mView.getActivity().finish();
             }
-        }
-
-        @Override
-        public void onResponseTokenInvalid() {
-            if (mView == null) {
-                return;
-            }
-            mApplicationSession.clearUserSession();
         }
 
         @Override

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
@@ -36,6 +38,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -74,7 +77,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     private final TransferStore.Repository mTransferRepository;
     private Context applicationContext;
     private final TransferNotificationHelper mTransferNotificationHelper;
-    private final ApplicationSession mApplicationSession;
+    private final EventBus mEventBus;
 
     @Inject
     TransferPresenter(final User user, NotificationStore.Repository notificationRepository,
@@ -84,17 +87,17 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                       final AccountStore.Repository accountRepository,
                       Navigator navigator,
                       TransferStore.Repository transferRepository,
-                      Context applicationContext, ApplicationSession applicationSession) {
+                      Context applicationContext, EventBus eventBus) {
 
         this.user = user;
-        mZaloPayRepository = zaloPayRepository;
+        this.mZaloPayRepository = zaloPayRepository;
         this.accountRepository = accountRepository;
-        mNavigator = navigator;
+        this.mNavigator = navigator;
         this.mTransferRepository = transferRepository;
         this.applicationContext = applicationContext;
 
+        this.mEventBus = eventBus;
         mTransferNotificationHelper = new TransferNotificationHelper(notificationRepository, user);
-        mApplicationSession = applicationSession;
 
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
@@ -649,15 +652,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                     ));
                 }
             }
-        }
-
-        @Override
-        public void onResponseTokenInvalid() {
-            if (mView == null) {
-                return;
-            }
-            mView.onTokenInvalid();
-            mApplicationSession.clearUserSession();
         }
 
         @Override

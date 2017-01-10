@@ -16,7 +16,5 @@ interface ICardSupportView extends ILoadDataView {
 
     Activity getActivity();
 
-    void onTokenInvalid();
-
     void onPreComplete();
 }

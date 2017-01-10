@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
+import org.greenrobot.eventbus.EventBus;
+
 import dagger.Module;
 import dagger.Provides;
 import vn.com.vng.zalopay.data.api.ZaloPayService;
@@ -30,7 +32,9 @@ public class UserControllerModule {
     @Provides
     IPaymentService providesIPaymentService(MerchantStore.Repository merchantRepository,
                                             BalanceStore.Repository balanceRepository,
-                                            TransactionStore.Repository transactionRepository) {
-        return new PaymentServiceImpl(merchantRepository, balanceRepository, transactionRepository);
+                                            TransactionStore.Repository transactionRepository,
+                                            EventBus eventBus
+    ) {
+        return new PaymentServiceImpl(merchantRepository, balanceRepository, transactionRepository, eventBus);
     }
 }

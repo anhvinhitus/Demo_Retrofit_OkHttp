@@ -1,14 +1,8 @@
 package vn.com.vng.zalopay.paymentapps.ui;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -16,15 +10,14 @@ import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
+import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
 import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactBasedActivity;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.apploader.network.NetworkService;
-import com.zalopay.zcontacts.ZContactsModule;
 import com.zalopay.zcontacts.ZContactsPackage;
 
 import org.greenrobot.eventbus.EventBus;
@@ -51,6 +44,7 @@ import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
@@ -60,13 +54,13 @@ import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.ToastUtil;
 
-import static vn.com.vng.zalopay.R.style.AppTheme;
-
 /**
  * Created by huuhoa on 5/16/16.
  * Activity for hosting payment app
  */
 public class PaymentApplicationActivity extends ReactBasedActivity {
+
+    protected final String TAG = getClass().getSimpleName();
 
     private static final int RECHARGE_MONEY_PHONE_APP_ID = 11;
 
@@ -82,7 +76,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     BundleReactConfig bundleReactConfig;
 
     @Inject
-    EventBus eventBus;
+    EventBus mEventBus;
 
     @Inject
     ReactNativeHostable mReactNativeHostable;
@@ -152,14 +146,14 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Override
     public void onPause() {
         super.onPause();
-        eventBus.unregister(this);
+        mEventBus.unregister(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
         }
     }
 
@@ -298,13 +292,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         return AndroidApplication.instance().getUserComponent();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTokenExpiredMain(TokenExpiredEvent event) {
-        Timber.d("Receive token expired");
-        getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_token_expired_message);
-        getAppComponent().applicationSession().clearUserSession();
-    }
-
     @Subscribe
     public void onUncaughtRuntimeException(UncaughtRuntimeExceptionEvent event) {
         reactInstanceCaughtError();
@@ -312,28 +299,47 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTokenExpired(TokenExpiredEvent event) {
+        Timber.i("SESSION EXPIRED in Screen %s", TAG);
+        boolean result = clearUserSession(getString(R.string.exception_token_expired_message));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerMaintain(ServerMaintainEvent event) {
         Timber.i("Receive server maintain event");
-        if (TextUtils.isEmpty(event.getMessage())) {
-            getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_server_maintain);
-        } else {
-            getAppComponent().applicationSession().setMessageAtLogin(event.getMessage());
-        }
-        getAppComponent().applicationSession().clearUserSession();
 
+        String eventMessage = TextUtils.isEmpty(event.getMessage()) ?
+                getString(R.string.exception_server_maintain) : event.getMessage();
+
+        boolean result = clearUserSession(eventMessage);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountSuspended(AccountSuspendedException event) {
         Timber.i("Receive Suspended event");
-        getAppComponent().applicationSession().setMessageAtLogin(R.string.exception_zpw_account_suspended);
-        getAppComponent().applicationSession().clearUserSession();
+        boolean result = clearUserSession(getString(R.string.exception_zpw_account_suspended));
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
+        Timber.i("SESSION EXPIRED in Screen %s", TAG);
+        boolean result = clearUserSession(getString(R.string.exception_token_expired_message));
+    }
+
+    protected boolean clearUserSession(String message) {
+
+        if (getUserComponent() != null) {
+            getUserComponent().userSession().endSession();
+        }
+
+        getAppComponent().applicationSession().setMessageAtLogin(message);
+        getAppComponent().applicationSession().clearUserSession();
+        return true;
+    }
 
     @Override
     protected void handleException(Throwable e) {
-        eventBus.post(new PaymentAppExceptionEvent(e, appResource.appid));
+        mEventBus.post(new PaymentAppExceptionEvent(e, appResource.appid));
         super.handleException(e);
     }
 
@@ -344,41 +350,5 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     public void showToast(int message) {
         ToastUtil.showToast(this, message);
     }
-
-    public boolean checkAndRequestPermission(String permission, int requestCode) {
-        boolean hasPermission = true;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                hasPermission = false;
-                requestPermissions(new String[]{permission}, requestCode);
-            }
-        }
-        return hasPermission;
-    }
-
-    public void checkAndRequestReadContactPermission() {
-        checkAndRequestPermission(Manifest.permission.READ_CONTACTS, ZContactsModule.REQUEST_READ_CONTACT);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case ZContactsModule.REQUEST_READ_CONTACT: {
-                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (BuildConfig.DEBUG) {
-                        Toast.makeText(this, "Read contact permission granted", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    if (BuildConfig.DEBUG) {
-                        Toast.makeText(this, "Read contact permission didn't grante", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                return;
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
 
 }

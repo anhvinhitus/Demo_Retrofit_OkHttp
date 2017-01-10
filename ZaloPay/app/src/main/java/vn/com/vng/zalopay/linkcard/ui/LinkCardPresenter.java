@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +32,7 @@ import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
@@ -45,20 +48,17 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  * *
  */
 public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> {
-    @Inject
-    User user;
 
     @Inject
     LinkCardPresenter(ZaloPayRepository zaloPayRepository,
                       Navigator navigator,
                       BalanceStore.Repository balanceRepository,
                       TransactionStore.Repository transactionRepository,
-                      ApplicationSession applicationSession,
                       User user,
-                      SharedPreferences sharedPreferences
-                      ) {
+                      SharedPreferences sharedPreferences, EventBus eventBus
+    ) {
         super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
-                applicationSession, user, sharedPreferences);
+                user, sharedPreferences, eventBus);
     }
 
     private void getListCard() {
@@ -141,7 +141,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
         @Override
         public void onSuccess(DMappedCard mapCard) {
-            Timber.tag("LinkCardPresenter").d("removed map card: %s", mapCard);
+            Timber.d("removed map card: %s", mapCard);
             hideLoadingView();
             if (mapCard != null) {
                 BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno,
@@ -152,7 +152,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
         @Override
         public void onError(BaseResponse pMessage) {
-            Timber.tag("LinkCardPresenter").d("RemoveMapCard onError: " + pMessage);
+            Timber.d("RemoveMapCard onError: " + pMessage);
             hideLoadingView();
             if (pMessage == null) {
                 if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
@@ -161,11 +161,9 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                     showNetworkErrorDialog();
                 }
             } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
-                ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
-                applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
-                applicationSession.clearUserSession();
+                mEventBus.post(new TokenPaymentExpiredEvent());
             } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
-                Timber.tag("LinkCardPresenter").e("err removed map card " + pMessage.returnmessage);
+                Timber.e("err removed map card " + pMessage.returnmessage);
                 showErrorView(pMessage.returnmessage);
             }
         }
@@ -208,14 +206,6 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             return null;
         }
         return mView.getContext();
-    }
-
-    @Override
-    void onTokenInvalid() {
-        if (mView == null) {
-            return;
-        }
-        mView.onTokenInvalid();
     }
 
     @Override

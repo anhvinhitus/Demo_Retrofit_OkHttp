@@ -10,7 +10,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +26,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
-import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
@@ -37,6 +35,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
@@ -47,13 +46,13 @@ import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.service.UserSession;
+import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -94,9 +93,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     @Inject
     NotificationStore.Repository mNotifyRepository;
-
-    @Inject
-    ZPNotificationService notificationService;
 
     @Inject
     UserSession mUserSession;
@@ -194,7 +190,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         mEventBus.unregister(this);
         unsubscribeIfNotNull(mRefPlatformSubscription);
         GlobalData.initApplication(null);
-        notificationService.destroy();
         CShareData.dispose();
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
         super.detachView();
@@ -202,8 +197,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     @Override
     public void resume() {
-        notificationService.startNotificationService();
-
+        mUserSession.ensureNotifyConnect();
         GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
         if (message != null && mView != null) {
             SweetAlertDialog alertDialog = new SweetAlertDialog(mView.getContext(), message.messageType, R.style.alert_dialog);
@@ -216,7 +210,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     @Override
     public void destroy() {
-        mUserSession.endSession();
         super.destroy();
     }
 
@@ -399,8 +392,13 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (mEventBus.isRegistered(this)) {
             mEventBus.unregister(this);
         }
-        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-        applicationComponent.applicationSession().clearUserSession();
+
+        if (mView == null) {
+            return;
+        }
+
+        ((BaseActivity) mView.getActivity()).clearUserSession(null);
+
     }
 
     public void pay(final long appId, String zptranstoken, final boolean isAppToApp) {

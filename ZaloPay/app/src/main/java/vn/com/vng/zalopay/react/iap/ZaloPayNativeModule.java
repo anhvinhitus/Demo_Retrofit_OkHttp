@@ -18,6 +18,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.views.text.ReactFontManager;
 import com.zalopay.apploader.network.NetworkService;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +37,7 @@ import vn.com.vng.zalopay.domain.Constants;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.Helpers;
@@ -99,17 +102,17 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 //            long appid, String zptranstoken, String apptransid, String appuser, long apptime,
 //            String embeddata, String item, long amount, String description, String payoption, String mac
 
-                (long) params.getDouble(Constants.APPID), // appid
-                "", // zptranstoken
-                params.getString(Constants.APPTRANSID), // apptransid
-                params.getString(Constants.APPUSER), // appuser
-                (long) params.getDouble(Constants.APPTIME), // apptime
-                params.getString(Constants.EMBEDDATA), // embeddata
-                params.getString(Constants.ITEM), // item
-                (long) params.getDouble(Constants.AMOUNT), // amount
-                params.getString(Constants.DESCRIPTION), // description
-                "",
-                params.getString(Constants.MAC)
+                    (long) params.getDouble(Constants.APPID), // appid
+                    "", // zptranstoken
+                    params.getString(Constants.APPTRANSID), // apptransid
+                    params.getString(Constants.APPUSER), // appuser
+                    (long) params.getDouble(Constants.APPTIME), // apptime
+                    params.getString(Constants.EMBEDDATA), // embeddata
+                    params.getString(Constants.ITEM), // item
+                    (long) params.getDouble(Constants.AMOUNT), // amount
+                    params.getString(Constants.DESCRIPTION), // description
+                    "",
+                    params.getString(Constants.MAC)
             );
 
             if (order.appid < 0) {
@@ -177,9 +180,8 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void logout() {
         Timber.d("Payment app %s request to logout", mAppId);
-        ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
-        applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
-        applicationSession.clearUserSession();
+        EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
+        eventBus.post(new TokenPaymentExpiredEvent());
     }
 
     @ReactMethod

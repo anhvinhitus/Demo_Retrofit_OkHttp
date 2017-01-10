@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
@@ -13,6 +15,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
@@ -35,15 +38,15 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     private PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
 
-    ApplicationSession mApplicationSession;
     User user;
+
     SharedPreferences mSharedPreferences;
+
+    protected EventBus mEventBus;
 
     abstract Activity getActivity();
 
     abstract Context getContext();
-
-    abstract void onTokenInvalid();
 
     abstract void onPreComplete();
 
@@ -61,13 +64,12 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                               Navigator navigator,
                               BalanceStore.Repository balanceRepository,
                               TransactionStore.Repository transactionRepository,
-                              ApplicationSession applicationSession,
                               User user,
-                              SharedPreferences sharedPreferences) {
+                              SharedPreferences sharedPreferences, EventBus eventBus) {
         mNavigator = navigator;
-        mApplicationSession = applicationSession;
         this.user = user;
         mSharedPreferences = sharedPreferences;
+        this.mEventBus = eventBus;
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
@@ -123,8 +125,11 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
         @Override
         public void onResponseTokenInvalid() {
-            onTokenInvalid();
-            mApplicationSession.clearUserSession();
+            if (mView == null) {
+                return;
+            }
+
+            mEventBus.post(new TokenPaymentExpiredEvent());
         }
 
         @Override

@@ -49,12 +49,6 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
     }
 
     @Override
-    public void onTokenInvalid() {
-        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_token_expired_message));
-        getAppComponent().applicationSession().clearUserSession();
-    }
-
-    @Override
     public void onPreComplete() {
         setResult(RESULT_OK);
         finish();

@@ -46,6 +46,7 @@ import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
+import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
@@ -85,6 +86,8 @@ import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
 public interface UserComponent {
 
     User currentUser();
+
+    UserSession userSession();
 
     AccountStore.Repository accountRepository();
 

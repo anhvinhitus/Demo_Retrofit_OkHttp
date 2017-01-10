@@ -21,11 +21,10 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
+import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
@@ -40,7 +39,6 @@ import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -70,9 +68,6 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     NotificationHelper mNotificationHelper;
 
     @Inject
-    ApplicationSession mApplicationSession;
-
-    @Inject
     ThreadExecutor mExecutor;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -85,8 +80,8 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     ZPNotificationService() {
     }
 
-    public void startNotificationService() {
-        Timber.d("startNotificationService");
+    public void start() {
+        Timber.d("Start notification service");
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
@@ -105,7 +100,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
 
     public void destroy() {
-        Timber.d("destroy");
+        Timber.d("Destroy notification service");
         mIsSubscribeGcm = false;
 
         if (mCompositeSubscription != null) {
@@ -181,9 +176,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
                     // session expired
                     Timber.d("Session is expired");
                     // clear user session and logout
-
-                    mApplicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
-                    mApplicationSession.clearUserSession();
+                    mEventBus.post(new TokenExpiredEvent(authenticationData.code));
                 }
             } else {
                 Timber.d("Socket authentication succeeded");
@@ -334,7 +327,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
             mEventBus.removeStickyEvent(stickyEvent);
             mIsSubscribeGcm = false;
             mWsConnection.disconnect();
-            startNotificationService();
+            start();
         }
     }
 

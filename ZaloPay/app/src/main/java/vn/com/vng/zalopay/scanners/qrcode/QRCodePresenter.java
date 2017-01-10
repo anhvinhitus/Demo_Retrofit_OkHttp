@@ -43,7 +43,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -72,7 +71,6 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
     private final User mUser;
 
     private PaymentWrapper paymentWrapper;
-    private ApplicationSession mApplicationSession;
 
     @Inject
     QRCodePresenter(BalanceStore.Repository balanceRepository,
@@ -80,10 +78,8 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
                     TransactionStore.Repository transactionRepository,
                     Context applicationContext,
                     Navigator navigator,
-                    User user,
-                    ApplicationSession applicationSession) {
+                    User user) {
         Timber.d("New instance of QRCodePresenter");
-        mApplicationSession = applicationSession;
         mApplicationContext = applicationContext;
         mNavigator = navigator;
         mUser = user;
@@ -435,16 +431,6 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
             if (mView != null && mView.getActivity() != null) {
                 mView.getActivity().finish();
             }
-        }
-
-        @Override
-        public void onResponseTokenInvalid() {
-            if (mView == null) {
-                return;
-            }
-
-            mView.onTokenInvalid();
-            mApplicationSession.clearUserSession();
         }
 
         @Override

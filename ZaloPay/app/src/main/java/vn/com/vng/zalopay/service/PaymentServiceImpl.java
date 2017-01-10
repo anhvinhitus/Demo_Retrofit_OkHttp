@@ -5,6 +5,8 @@ import android.content.Intent;
 
 import com.facebook.react.bridge.Promise;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Locale;
 
 import rx.Subscription;
@@ -16,6 +18,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.Helpers;
@@ -34,15 +37,18 @@ public class PaymentServiceImpl implements IPaymentService {
     private final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper mPaymentWrapper;
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
+    private final EventBus mEventBus;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public PaymentServiceImpl(MerchantStore.Repository zaloPayIAPRepository,
                               BalanceStore.Repository balanceRepository,
-                              TransactionStore.Repository transactionRepository) {
+                              TransactionStore.Repository transactionRepository,
+                              EventBus eventBus) {
         this.mMerchantRepository = zaloPayIAPRepository;
         this.mBalanceRepository = balanceRepository;
         this.mTransactionRepository = transactionRepository;
+        this.mEventBus = eventBus;
     }
 
     @Override
@@ -60,9 +66,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private void logout() {
         Timber.d("logout");
-        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-        applicationComponent.applicationSession().setMessageAtLogin(R.string.exception_token_expired_message);
-        applicationComponent.applicationSession().clearUserSession();
+        mEventBus.post(new TokenPaymentExpiredEvent());
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {

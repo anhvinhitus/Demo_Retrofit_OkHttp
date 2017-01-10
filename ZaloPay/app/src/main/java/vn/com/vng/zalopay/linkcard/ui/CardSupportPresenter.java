@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Inject;
 
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -19,20 +21,16 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
  * *
  */
 class CardSupportPresenter extends AbstractLinkCardPresenter<ICardSupportView> {
-    @Inject
-    User user;
 
     @Inject
     CardSupportPresenter(ZaloPayRepository zaloPayRepository,
                          Navigator navigator,
                          BalanceStore.Repository balanceRepository,
                          TransactionStore.Repository transactionRepository,
-                         ApplicationSession applicationSession,
                          User user,
-                         SharedPreferences sharedPreferences
-                         ) {
-        super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
-                applicationSession, user, sharedPreferences);
+                         SharedPreferences sharedPreferences, EventBus mEventBus
+    ) {
+        super(zaloPayRepository, navigator, balanceRepository, transactionRepository, user, sharedPreferences, mEventBus);
     }
 
     @Override
@@ -49,14 +47,6 @@ class CardSupportPresenter extends AbstractLinkCardPresenter<ICardSupportView> {
             return null;
         }
         return mView.getContext();
-    }
-
-    @Override
-    void onTokenInvalid() {
-        if (mView == null) {
-            return;
-        }
-        mView.onTokenInvalid();
     }
 
     @Override

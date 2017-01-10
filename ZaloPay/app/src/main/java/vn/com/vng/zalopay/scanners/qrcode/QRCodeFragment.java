@@ -85,11 +85,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     public Fragment getFragment() {
         return this;
     }
-
-    @Override
-    public void onTokenInvalid() {
-    }
-
+    
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

@@ -338,10 +338,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     }
 
     @Override
-    public void onTokenInvalid() {
-    }
-
-    @Override
     public void showLoading() {
         super.showProgressDialog();
     }

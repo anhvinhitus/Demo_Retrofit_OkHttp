@@ -2,10 +2,14 @@ package vn.com.vng.zalopay.service;
 
 import android.text.TextUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -64,10 +68,12 @@ public abstract class DefaultPaymentResponseListener implements PaymentWrapper.I
     @Override
     public void onResponseTokenInvalid() {
         Timber.d("onResponseTokenInvalid - cleanup and logout");
+        if (getView() == null) {
+            return;
+        }
 
-        ApplicationSession applicationSession = AndroidApplication.instance().getAppComponent().applicationSession();
-        applicationSession.setMessageAtLogin(R.string.exception_token_expired_message);
-        applicationSession.clearUserSession();
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+        applicationComponent.eventBus().post(new TokenPaymentExpiredEvent());
     }
 
     @Override

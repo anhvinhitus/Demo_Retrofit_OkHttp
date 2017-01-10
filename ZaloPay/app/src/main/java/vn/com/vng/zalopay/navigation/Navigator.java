@@ -423,10 +423,6 @@ public class Navigator implements INavigator {
     }
 
     public void startBalanceManagementActivity(Context context) {
-        if (userConfig == null || userConfig.getCurrentUser() == null) {
-            EventBus.getDefault().post(new TokenExpiredEvent(NetworkError.TOKEN_INVALID));
-            return;
-        }
         Intent intent = new Intent(context, BalanceManagementActivity.class);
         context.startActivity(intent);
     }

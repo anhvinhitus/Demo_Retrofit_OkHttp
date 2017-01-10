@@ -11,10 +11,15 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
+import javax.inject.Inject;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
@@ -281,8 +286,7 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
 
     @Override
     public void logout() {
-        getAppComponent().applicationSession().clearUserSession();
-        getActivity().finish();
+        getAppComponent().eventBus().post(new TokenPaymentExpiredEvent());
     }
 
     @Override

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -25,6 +27,7 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
@@ -42,20 +45,18 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
 
     private final ZaloPayRepository mZaloPayRepository;
     private final PaymentWrapper paymentWrapper;
-    private final ApplicationSession mApplicationSession;
 
     private Navigator mNavigator;
     private User mUser;
+    private EventBus mEventBus;
 
     @Inject
     BalanceTopupPresenter(BalanceStore.Repository balanceRepository,
                           ZaloPayRepository zaloPayRepository,
                           TransactionStore.Repository transactionRepository,
-                          ApplicationSession applicationSession,
                           User user,
-                          Navigator navigator) {
+                          Navigator navigator, EventBus eventBus) {
         mZaloPayRepository = zaloPayRepository;
-        mApplicationSession = applicationSession;
         mUser = user;
         mNavigator = navigator;
         paymentWrapper = new PaymentWrapperBuilder()
@@ -65,6 +66,7 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new PaymentRedirectListener())
                 .build();
+        mEventBus = eventBus;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -177,13 +179,8 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
             if (mView == null) {
                 return;
             }
-            mApplicationSession.clearUserSession();
+            mEventBus.post(new TokenPaymentExpiredEvent());
         }
-
-        // Topup don't support add more money since this is action to add more money
-//        @Override
-//        public void onNotEnoughMoney() {
-//        }
     }
 
     private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {

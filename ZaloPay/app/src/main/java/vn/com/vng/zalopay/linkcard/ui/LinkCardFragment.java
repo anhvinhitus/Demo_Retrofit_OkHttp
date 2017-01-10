@@ -251,12 +251,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     @Override
-    public void onTokenInvalid() {
-        getAppComponent().applicationSession().setMessageAtLogin(getString(R.string.exception_token_expired_message));
-        getAppComponent().applicationSession().clearUserSession();
-    }
-
-    @Override
     public void showWarningView(String error) {
         showWarningDialog(error, getString(R.string.txt_close), null);
     }

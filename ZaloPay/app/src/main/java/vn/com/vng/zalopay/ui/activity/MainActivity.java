@@ -38,6 +38,8 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  */
 public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
 
+    public static final String TAG = "MainActivity";
+
     @Override
     protected int getResLayoutId() {
         return R.layout.activity_home;

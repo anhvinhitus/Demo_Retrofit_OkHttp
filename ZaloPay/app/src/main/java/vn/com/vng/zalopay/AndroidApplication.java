@@ -3,6 +3,7 @@ package vn.com.vng.zalopay;
 import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
+import android.support.annotation.Nullable;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
@@ -178,6 +179,7 @@ public class AndroidApplication extends Application {
         return appComponent;
     }
 
+    @Nullable
     public UserComponent getUserComponent() {
         return userComponent;
     }

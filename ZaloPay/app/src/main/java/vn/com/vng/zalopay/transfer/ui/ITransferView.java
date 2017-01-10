@@ -14,8 +14,6 @@ public interface ITransferView extends ILoadDataView {
     Activity getActivity();
     Fragment getFragment();
 
-    void onTokenInvalid();
-
     void setEnableBtnContinue(boolean isEnable);
 
     /**

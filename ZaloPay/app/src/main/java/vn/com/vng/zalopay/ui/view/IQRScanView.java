@@ -13,7 +13,6 @@ public interface IQRScanView extends ILoadDataView {
     Activity getActivity();
     Fragment getFragment();
 
-    void onTokenInvalid();
     void resumeScanner();
     void showWarningDialog(String message, ZPWOnEventDialogListener cancelListener);
 }
