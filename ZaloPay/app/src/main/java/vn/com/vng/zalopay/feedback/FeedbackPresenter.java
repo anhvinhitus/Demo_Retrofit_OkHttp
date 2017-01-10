@@ -6,6 +6,10 @@ import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.zalopay.apploader.internal.FileUtils;
 
 import org.json.JSONException;
@@ -27,6 +31,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.UserCollector;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.util.JsonUtil;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -114,7 +119,7 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
         return makeObservable(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                String filePath = FileUtils.writeStringToFile(mContext, data.toString(), "data.json");
+                String filePath = FileUtils.writeStringToFile(mContext, JsonUtil.toPrettyFormat(data.toString()), "data.txt");
                 Timber.d("write to file _ filePath [%s] ", filePath);
                 return filePath;
             }
@@ -124,7 +129,7 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
     private DynamicCollector collectDynamic(String transactionID, String category, String email, String description) {
         DynamicCollector dynamicCollector = new DynamicCollector();
         try {
-            dynamicCollector.put("transactionID", transactionID);
+            dynamicCollector.put("transactionid", transactionID);
             dynamicCollector.put("category", category);
             dynamicCollector.put("email", email);
             dynamicCollector.put("description", description);

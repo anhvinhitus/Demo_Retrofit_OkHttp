@@ -140,16 +140,16 @@ final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.
         @OnClick(R.id.container)
         public void onClickAdd(View v) {
             if (mListener != null) {
-                mListener.onClickAdd();
+                mListener.onClickAdd(getAdapterPosition());
             }
         }
     }
 
-    public interface OnClickAddListener {
-        void onClickAdd();
+    interface OnClickAddListener {
+        void onClickAdd(int position);
     }
 
-    public interface OnClickDeleteListener {
+    interface OnClickDeleteListener {
         void onClickDelete(int position);
     }
 }

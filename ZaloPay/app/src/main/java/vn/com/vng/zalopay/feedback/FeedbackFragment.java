@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.feedback;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,7 +14,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.zalopay.ui.widget.edittext.ZPEditText;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -95,12 +100,18 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
     @Nullable
     private byte[] mScreenshot;
 
+    private String mScreenshotName;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         setHasOptionsMenu(true);
         mAdapter = new FeedbackAdapter(getContext(), this, this);
         initArgs(getActivity().getIntent().getExtras());
+        if (savedInstanceState != null) {
+            mScreenshotName = savedInstanceState.getString("screenshotName");
+        }
     }
 
     private void initArgs(Bundle bundle) {
@@ -151,7 +162,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         }
 
         if (requestCode == IMAGE_REQUEST_CODE) {
-            Uri uri = getPickImageResultUri(data, "screenshot.jpg");
+            Uri uri = getPickImageResultUri(data, mScreenshotName);
             if (uri == null) {
                 return;
             }
@@ -166,13 +177,20 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         setImageCount();
     }
 
-    public void removeScreenshot(int position) {
+    private void removeScreenshot(int position) {
+        Uri screenshot = mAdapter.getItem(position);
+        if (screenshot == null) {
+            return;
+        }
+
         mAdapter.remove(position);
         setImageCount();
+        clearCacheFresco(screenshot);
     }
 
     @Override
     public void onDestroyView() {
+        clearCacheFresco(mAdapter.getItems());
         mRecyclerView.setAdapter(null);
         mPresenter.detachView();
         super.onDestroyView();
@@ -224,8 +242,8 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
     }
 
     @Override
-    public void onClickAdd() {
-        showBottomSheetDialog(IMAGE_REQUEST_CODE);
+    public void onClickAdd(int position) {
+        showBottomSheetDialog(IMAGE_REQUEST_CODE, position);
     }
 
     @Override
@@ -233,12 +251,12 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         removeScreenshot(position);
     }
 
-    private void showBottomSheetDialog(final int requestCode) {
+    private void showBottomSheetDialog(final int requestCode, final int position) {
         CoverBottomSheetDialogFragment dialog = CoverBottomSheetDialogFragment.newInstance();
         dialog.setOnClickListener(new CoverBottomSheetDialogFragment.OnClickListener() {
             @Override
             public void onClickCapture() {
-                startCaptureImage(requestCode, "screenshot.jpg");
+                startCaptureImage(requestCode, getScreenshotName(position));
             }
 
             @Override
@@ -247,6 +265,13 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
             }
         });
         dialog.show(getChildFragmentManager(), "bottomsheet");
+    }
+
+    private String getScreenshotName(int position) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HH:mm:ss", Locale.getDefault());
+        mScreenshotName = "screenshot-" + dateFormat.format(new Date()) + ".jpg";
+        Timber.d("getScreenshotName: %s", mScreenshotName);
+        return mScreenshotName;
     }
 
     private void setImageCount() {
@@ -304,5 +329,24 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         showToast(message);
     }
 
+    private void clearCacheFresco(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+        Fresco.getImagePipeline().evictFromCache(uri);
+    }
 
+    private void clearCacheFresco(List<Uri> uris) {
+        for (Uri uri : uris) {
+            clearCacheFresco(uri);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (!TextUtils.isEmpty(mScreenshotName)) {
+            outState.putString("screenshotName", mScreenshotName);
+        }
+        super.onSaveInstanceState(outState);
+    }
 }
