@@ -123,18 +123,19 @@ public class ZPEvents {
     public static final int API_UM_UPDATEZALOPAYNAME = 2019;
     public static final int API_UM_VALIDATEPIN = 2020;
     public static final int API_UM_SENDNOTIFICATION = 2021;
-    public static final int API_UMMERCHANT_GETMERCHANTUSERINFO = 2022;
-    public static final int API_UMMERCHANT_GETLISTMERCHANTUSERINFO = 2023;
-    public static final int API_UMUPLOAD_PREUPDATEPROFILELEVEL3 = 2024;
-    public static final int API_REDPACKAGE_CREATEBUNDLEORDER = 2025;
-    public static final int API_REDPACKAGE_SUBMITTOSENDBUNDLE = 2026;
-    public static final int API_REDPACKAGE_SUBMITOPENPACKAGE = 2027;
-    public static final int API_REDPACKAGE_GETSENTBUNDLELIST = 2028;
-    public static final int API_REDPACKAGE_GETREVPACKAGELIST = 2029;
-    public static final int API_REDPACKAGE_GETPACKAGESINBUNDLE = 2030;
-    public static final int API_REDPACKAGE_GETAPPINFO = 2031;
-    public static final int API_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO = 2032;
-    public static final int API_REDPACKAGE_GETLISTPACKAGESTATUS = 2033;
+    public static final int API_UM_CHECKLISTZALOIDFORCLIENT = 2022;
+    public static final int API_UMMERCHANT_GETMERCHANTUSERINFO = 2023;
+    public static final int API_UMMERCHANT_GETLISTMERCHANTUSERINFO = 2024;
+    public static final int API_UMUPLOAD_PREUPDATEPROFILELEVEL3 = 2025;
+    public static final int API_REDPACKAGE_CREATEBUNDLEORDER = 2026;
+    public static final int API_REDPACKAGE_SUBMITTOSENDBUNDLE = 2027;
+    public static final int API_REDPACKAGE_SUBMITOPENPACKAGE = 2028;
+    public static final int API_REDPACKAGE_GETSENTBUNDLELIST = 2029;
+    public static final int API_REDPACKAGE_GETREVPACKAGELIST = 2030;
+    public static final int API_REDPACKAGE_GETPACKAGESINBUNDLE = 2031;
+    public static final int API_REDPACKAGE_GETAPPINFO = 2032;
+    public static final int API_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO = 2033;
+    public static final int API_REDPACKAGE_GETLISTPACKAGESTATUS = 2034;
     public static final int UPDATEPROFILE2_LAUNCH = 2100;
     public static final int UPDATEPROFILE2_NAVIGATEBACK = 2101;
     public static final int UPDATEPROFILE2_PRESSCHECK = 2102;
@@ -420,6 +421,8 @@ public class ZPEvents {
                 return "api_um_validatepin";
             case API_UM_SENDNOTIFICATION:
                 return "api_um_sendnotification";
+            case API_UM_CHECKLISTZALOIDFORCLIENT:
+                return "api_um_checklistzaloidforclient";
             case API_UMMERCHANT_GETMERCHANTUSERINFO:
                 return "api_ummerchant_getmerchantuserinfo";
             case API_UMMERCHANT_GETLISTMERCHANTUSERINFO:
@@ -776,6 +779,8 @@ public class ZPEvents {
             case API_UM_VALIDATEPIN:
                 return "Timing UM";
             case API_UM_SENDNOTIFICATION:
+                return "Timing UM";
+            case API_UM_CHECKLISTZALOIDFORCLIENT:
                 return "Timing UM";
             case API_UMMERCHANT_GETMERCHANTUSERINFO:
                 return "Timing UM";
