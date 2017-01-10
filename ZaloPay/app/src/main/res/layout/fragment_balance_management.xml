@@ -128,7 +128,7 @@
             android:id="@+id/viewSeparate"
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:layout_marginLeft="48dp"
+            android:layout_marginLeft="62dp"
             android:background="@color/separate"/>
 
         <LinearLayout
