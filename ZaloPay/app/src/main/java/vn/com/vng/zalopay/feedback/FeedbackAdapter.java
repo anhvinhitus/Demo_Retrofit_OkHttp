@@ -145,11 +145,11 @@ final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.
         }
     }
 
-    interface OnClickAddListener {
+    public interface OnClickAddListener {
         void onClickAdd(int position);
     }
 
-    interface OnClickDeleteListener {
+    public interface OnClickDeleteListener {
         void onClickDelete(int position);
     }
 }

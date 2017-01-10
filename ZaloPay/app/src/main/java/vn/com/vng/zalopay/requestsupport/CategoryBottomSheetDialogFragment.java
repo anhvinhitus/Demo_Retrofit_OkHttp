@@ -1,16 +1,21 @@
 package vn.com.vng.zalopay.requestsupport;
 
 import android.app.Dialog;
-import android.graphics.Color;
+import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,18 +23,16 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 
-public class CategoryBottomSheetDialogFragment extends BottomSheetDialogFragment implements
-        RequestSupportAdapter.OnClickAppListener {
+public class CategoryBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
-    private RequestSupportAdapter mAdapter;
+    private List<AppResource> mAppResourceList = new ArrayList<>();
 
-    @BindView(R.id.listView)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.numberPicker)
+    NumberPicker mPicker;
 
     public interface OnClickListener {
         void onClickCancel();
         void onClickAccept();
-        void onClickAppListener();
     }
 
     public static CategoryBottomSheetDialogFragment newInstance() {
@@ -42,7 +45,7 @@ public class CategoryBottomSheetDialogFragment extends BottomSheetDialogFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new RequestSupportAdapter(getContext(), this);
+        mPicker = new NumberPicker(getContext());
     }
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
@@ -67,19 +70,48 @@ public class CategoryBottomSheetDialogFragment extends BottomSheetDialogFragment
 
         ButterKnife.bind(this, contentView);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setBackgroundColor(Color.WHITE);
-
-        mRecyclerView.setAdapter(mAdapter);
-
-        setData();
-
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();
         CoordinatorLayout.Behavior behavior = params.getBehavior();
 
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
+        }
+
+        setData();
+        setPicker();
+    }
+
+    private void setPicker() {
+        setDividerColor(mPicker, R.color.windowBackground);
+
+        String values[] = new String[mAppResourceList.size()];
+        for(int i = 0; i < mAppResourceList.size(); i++){
+            values[i] = mAppResourceList.get(i).appname;
+        }
+        mPicker.setMinValue(0);
+        mPicker.setMaxValue(mAppResourceList.size() - 1);
+        mPicker.setDisplayedValues(values);
+        mPicker.setWrapSelectorWheel(false);
+    }
+
+    private void setDividerColor(NumberPicker picker, int color) {
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(getResources().getColor(color));
+                    pf.set(picker, colorDrawable);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
         }
     }
 
@@ -103,11 +135,6 @@ public class CategoryBottomSheetDialogFragment extends BottomSheetDialogFragment
         dismiss();
     }
 
-    @Override
-    public void onClickAppListener(AppResource app, int position) {
-
-    }
-
     private CategoryBottomSheetDialogFragment.OnClickListener listener;
 
     public void setOnClickListener(CategoryBottomSheetDialogFragment.OnClickListener listener) {
@@ -121,20 +148,21 @@ public class CategoryBottomSheetDialogFragment extends BottomSheetDialogFragment
     }
 
     private void setData() {
-        AppResource appResource = new AppResource();
-        appResource.appname = "Rút tiền";
-        mAdapter.insert(appResource, 0);
-        AppResource appResource2 = new AppResource();
-        appResource2.appname = "Chuyển tiền";
-        mAdapter.insert(appResource2, 1);
-        AppResource appResource3 = new AppResource();
-        appResource3.appname = "Trả tiền";
-        mAdapter.insert(appResource3, 2);
-        AppResource appResource4 = new AppResource();
-        appResource4.appname = "Nhận tiền";
-        mAdapter.insert(appResource4, 3);
-        AppResource appResource5 = new AppResource();
-        appResource5.appname = "Nạp tiền";
-        mAdapter.insert(appResource5, 4);
+        AppResource tmp = new AppResource();
+        tmp.appname = "Nạp tiền";
+        AppResource tmp1 = new AppResource();
+        tmp1.appname = "Rút tiền";
+        AppResource tmp2 = new AppResource();
+        tmp2.appname = "Chuyển tiền";
+        AppResource tmp3 = new AppResource();
+        tmp3.appname = "Nhận tiền";
+        AppResource tmp4 = new AppResource();
+        tmp4.appname = "Liên kết thẻ";
+
+        mAppResourceList.add(tmp);
+        mAppResourceList.add(tmp1);
+        mAppResourceList.add(tmp2);
+        mAppResourceList.add(tmp3);
+        mAppResourceList.add(tmp4);
     }
 }

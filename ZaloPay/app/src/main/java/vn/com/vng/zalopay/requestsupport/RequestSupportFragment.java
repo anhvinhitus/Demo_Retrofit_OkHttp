@@ -1,10 +1,8 @@
 package vn.com.vng.zalopay.requestsupport;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,12 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zalopay.ui.widget.edittext.ZPEditText;
 
@@ -215,7 +208,7 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements
     }
 
     @Override
-    public void onClickAdd() {
+    public void onClickAdd(int position) {
         showScreenshotBottomSheetDialog(IMAGE_REQUEST_CODE);
     }
 
@@ -251,11 +244,6 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements
 
             @Override
             public void onClickAccept() {
-
-            }
-
-            @Override
-            public void onClickAppListener() {
 
             }
         });
