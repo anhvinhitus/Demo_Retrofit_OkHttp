@@ -56,6 +56,7 @@ public class ZPTrackerGA implements ZPTracker {
     public void trackTiming(int eventId, long value) {
         mTracker.send(new HitBuilders.TimingBuilder()
             .setCategory(ZPEvents.categoryFromEventId(eventId))
+            .setLabel(ZPEvents.actionFromEventId(eventId))
             .setValue(value)
             .build());
     }
