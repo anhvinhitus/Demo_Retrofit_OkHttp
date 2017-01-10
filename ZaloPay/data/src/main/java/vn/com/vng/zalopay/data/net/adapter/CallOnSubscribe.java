@@ -49,7 +49,7 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
             Response<T> response = call.execute();
             long endRequestTime = System.currentTimeMillis();
             if (response != null && response.isSuccessful()) {
-                logTiming(call.request(), endRequestTime - beginRequestTime);
+                logTiming(endRequestTime - beginRequestTime);
             }
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onNext(response);
@@ -90,18 +90,13 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
         }
     }
 
-    private void logTiming(Request request, long duration) {
-        String api = request.url().encodedPath();
-        if (api.startsWith("/")) {
-            api = api.replaceFirst("/", "");
-        }
-
-        api = "api_" + api.replaceAll("/", "_");
-        Timber.i("Request URL: %s, eventId: %s, eventName: %s, duration: %s", api, mApiClientId, ZPEvents.actionFromEventId(mApiClientId), duration);
+    private void logTiming(long duration) {
+        Timber.i("Request eventId: %s, eventName: %s, duration: %s", mApiClientId, ZPEvents.actionFromEventId(mApiClientId), duration);
         if (mApiClientId <= 0) {
             Timber.i("Skip logging timing event");
             return;
         }
+
         ZPAnalytics.trackTiming(mApiClientId, duration);
     }
 }
