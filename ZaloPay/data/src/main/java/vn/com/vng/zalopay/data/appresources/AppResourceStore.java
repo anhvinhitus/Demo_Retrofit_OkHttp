@@ -10,7 +10,9 @@ import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.response.AppResourceResponse;
+import vn.com.vng.zalopay.data.net.adapter.API_NAME;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 8/10/16.
@@ -41,6 +43,7 @@ public interface AppResourceStore {
 
     interface RequestService {
 
+        @API_NAME(ZPEvents.API_V001_TPE_GETINSIDEAPPRESOURCE)
         @GET(Constants.TPE_API.GETINSIDEAPPRESOURCE)
         Observable<AppResourceResponse> getinsideappresource(@Query(value = "appidlist", encoded = false) String appidlist,
                                                              @Query(value = "checksumlist", encoded = true) String checksumlist,

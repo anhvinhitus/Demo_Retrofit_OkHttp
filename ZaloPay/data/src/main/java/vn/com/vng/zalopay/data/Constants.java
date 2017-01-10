@@ -56,6 +56,7 @@ public class Constants {
         String SENDNOTIFICATION = "um/sendnotification";
         String GETMERCHANTUSERINFO = "ummerchant/getmerchantuserinfo";
         String GETLISTMERCHANTUSERINFO = "ummerchant/getlistmerchantuserinfo";
+        String CHECKLISTZALOIDFORCLIENT = "um/checklistzaloidforclient";
     }
 
     public interface UMUPLOAD_API {

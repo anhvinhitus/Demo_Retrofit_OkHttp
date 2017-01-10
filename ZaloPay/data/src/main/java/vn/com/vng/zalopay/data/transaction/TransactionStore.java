@@ -9,7 +9,9 @@ import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
+import vn.com.vng.zalopay.data.net.adapter.API_NAME;
 import vn.com.vng.zalopay.domain.model.TransHistory;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by huuhoa on 6/15/16.
@@ -42,6 +44,7 @@ public interface TransactionStore {
     }
 
     interface RequestService {
+        @API_NAME(ZPEvents.API_V001_TPE_TRANSHISTORY)
         @GET(Constants.TPE_API.TRANSHISTORY)
         Observable<TransactionHistoryResponse> getTransactionHistories(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("statustype") int statustype);
     }

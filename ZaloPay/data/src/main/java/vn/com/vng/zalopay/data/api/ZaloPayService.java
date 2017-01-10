@@ -8,6 +8,8 @@ import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
+import vn.com.vng.zalopay.data.net.adapter.API_NAME;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 5/4/16.
@@ -15,12 +17,14 @@ import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
  */
 public interface ZaloPayService {
 
+    @API_NAME(ZPEvents.API_V001_TPE_GETORDERINFO)
     @GET(Constants.TPE_API.GETORDERINFO)
     Observable<GetOrderResponse> getorder(@Query("userid") String userid,
                                           @Query("accesstoken") String accesstoken,
                                           @Query(Constants.APPID) long appId,
                                           @Query(Constants.ZPTRANSTOKEN) String apptransid);
 
+    @API_NAME(ZPEvents.API_V001_TPE_CREATEWALLETORDER)
     @FormUrlEncoded
     @POST(Constants.TPE_API.CREATEWALLETORDER)
     Observable<GetOrderResponse> createwalletorder(@Field("userid") String userid,

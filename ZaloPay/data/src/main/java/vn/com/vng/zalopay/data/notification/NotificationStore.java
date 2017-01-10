@@ -8,7 +8,9 @@ import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.SqlBaseScope;
+import vn.com.vng.zalopay.data.net.adapter.API_NAME;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 6/20/16.
@@ -71,6 +73,7 @@ public interface NotificationStore {
          * @param embededdata stringify of json data sent to another user
          * @return basic response
          */
+        @API_NAME(ZPEvents.API_UM_SENDNOTIFICATION)
         @GET(Constants.UM_API.SENDNOTIFICATION)
         Observable<BaseResponse> sendNotification(@Query("userid") String uid,
                                                   @Query("accesstoken") String accesstoken,

@@ -10,7 +10,9 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.ListMUIResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
+import vn.com.vng.zalopay.data.net.adapter.API_NAME;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 9/21/16.
@@ -32,11 +34,13 @@ public interface MerchantStore {
     }
 
     interface RequestService {
+        @API_NAME(ZPEvents.API_UMMERCHANT_GETMERCHANTUSERINFO)
         @GET(Constants.UM_API.GETMERCHANTUSERINFO)
         Observable<GetMerchantUserInfoResponse> getmerchantuserinfo(@Query("appid") long appid,
                                                                     @Query("userid") String userid,
                                                                     @Query("accesstoken") String accesstoken);
 
+        @API_NAME(ZPEvents.API_UMMERCHANT_GETLISTMERCHANTUSERINFO)
         @GET(Constants.UM_API.GETLISTMERCHANTUSERINFO)
         Observable<ListMUIResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist,
                                                             @Query("userid") String userid,
