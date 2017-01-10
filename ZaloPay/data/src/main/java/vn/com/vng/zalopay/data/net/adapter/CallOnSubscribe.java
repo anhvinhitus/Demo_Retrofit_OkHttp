@@ -91,7 +91,7 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
     }
 
     private void logTiming(long duration) {
-        Timber.i("Request eventId: %s, eventName: %s, duration: %s", mApiClientId, ZPEvents.actionFromEventId(mApiClientId), duration);
+        Timber.d("API Request %s (%s), duration: %s (ms)", mApiClientId, ZPEvents.actionFromEventId(mApiClientId), duration);
         if (mApiClientId <= 0) {
             Timber.i("Skip logging timing event");
             return;
