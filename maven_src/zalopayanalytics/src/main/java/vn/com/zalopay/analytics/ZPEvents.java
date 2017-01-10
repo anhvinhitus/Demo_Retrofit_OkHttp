@@ -103,6 +103,38 @@ public class ZPEvents {
     public static final int NOTIFICATIONS_TAPPROMOTIONITEM = 1904;
     public static final int TIMING_GETORDER = 2000;
     public static final int TIMING_SCANQR = 2001;
+    public static final int API_V001_TPE_GETBALANCE = 2002;
+    public static final int API_V001_TPE_CREATEWALLETORDER = 2003;
+    public static final int API_V001_TPE_GETINSIDEAPPRESOURCE = 2004;
+    public static final int API_V001_TPE_GETORDERINFO = 2005;
+    public static final int API_V001_TPE_GETTRANSSTATUS = 2006;
+    public static final int API_V001_TPE_TRANSHISTORY = 2007;
+    public static final int API_UM_CREATEACCESSTOKEN = 2008;
+    public static final int API_UM_REMOVEACCESSTOKEN = 2009;
+    public static final int API_UM_VERIFYCODETEST = 2010;
+    public static final int API_UM_UPDATEPROFILE = 2011;
+    public static final int API_UM_VERIFYOTPPROFILE = 2012;
+    public static final int API_UM_RECOVERYPIN = 2013;
+    public static final int API_UM_GETUSERINFO = 2014;
+    public static final int API_UM_GETUSERPROFILELEVEL = 2015;
+    public static final int API_UM_GETUSERINFOBYZALOPAYNAME = 2016;
+    public static final int API_UM_GETUSERINFOBYZALOPAYID = 2017;
+    public static final int API_UM_CHECKZALOPAYNAMEEXIST = 2018;
+    public static final int API_UM_UPDATEZALOPAYNAME = 2019;
+    public static final int API_UM_VALIDATEPIN = 2020;
+    public static final int API_UM_SENDNOTIFICATION = 2021;
+    public static final int API_UMMERCHANT_GETMERCHANTUSERINFO = 2022;
+    public static final int API_UMMERCHANT_GETLISTMERCHANTUSERINFO = 2023;
+    public static final int API_UMUPLOAD_PREUPDATEPROFILELEVEL3 = 2024;
+    public static final int API_REDPACKAGE_CREATEBUNDLEORDER = 2025;
+    public static final int API_REDPACKAGE_SUBMITTOSENDBUNDLE = 2026;
+    public static final int API_REDPACKAGE_SUBMITOPENPACKAGE = 2027;
+    public static final int API_REDPACKAGE_GETSENTBUNDLELIST = 2028;
+    public static final int API_REDPACKAGE_GETREVPACKAGELIST = 2029;
+    public static final int API_REDPACKAGE_GETPACKAGESINBUNDLE = 2030;
+    public static final int API_REDPACKAGE_GETAPPINFO = 2031;
+    public static final int API_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO = 2032;
+    public static final int API_REDPACKAGE_GETLISTPACKAGESTATUS = 2033;
     public static final int UPDATEPROFILE2_LAUNCH = 2100;
     public static final int UPDATEPROFILE2_NAVIGATEBACK = 2101;
     public static final int UPDATEPROFILE2_PRESSCHECK = 2102;
@@ -348,6 +380,70 @@ public class ZPEvents {
                 return "Timing_GetOrder";
             case TIMING_SCANQR:
                 return "Timing_ScanQR";
+            case API_V001_TPE_GETBALANCE:
+                return "api_v001_tpe_getbalance";
+            case API_V001_TPE_CREATEWALLETORDER:
+                return "api_v001_tpe_createwalletorder";
+            case API_V001_TPE_GETINSIDEAPPRESOURCE:
+                return "api_v001_tpe_getinsideappresource";
+            case API_V001_TPE_GETORDERINFO:
+                return "api_v001_tpe_getorderinfo";
+            case API_V001_TPE_GETTRANSSTATUS:
+                return "api_v001_tpe_gettransstatus";
+            case API_V001_TPE_TRANSHISTORY:
+                return "api_v001_tpe_transhistory";
+            case API_UM_CREATEACCESSTOKEN:
+                return "api_um_createaccesstoken";
+            case API_UM_REMOVEACCESSTOKEN:
+                return "api_um_removeaccesstoken";
+            case API_UM_VERIFYCODETEST:
+                return "api_um_verifycodetest";
+            case API_UM_UPDATEPROFILE:
+                return "api_um_updateprofile";
+            case API_UM_VERIFYOTPPROFILE:
+                return "api_um_verifyotpprofile";
+            case API_UM_RECOVERYPIN:
+                return "api_um_recoverypin";
+            case API_UM_GETUSERINFO:
+                return "api_um_getuserinfo";
+            case API_UM_GETUSERPROFILELEVEL:
+                return "api_um_getuserprofilelevel";
+            case API_UM_GETUSERINFOBYZALOPAYNAME:
+                return "api_um_getuserinfobyzalopayname";
+            case API_UM_GETUSERINFOBYZALOPAYID:
+                return "api_um_getuserinfobyzalopayid";
+            case API_UM_CHECKZALOPAYNAMEEXIST:
+                return "api_um_checkzalopaynameexist";
+            case API_UM_UPDATEZALOPAYNAME:
+                return "api_um_updatezalopayname";
+            case API_UM_VALIDATEPIN:
+                return "api_um_validatepin";
+            case API_UM_SENDNOTIFICATION:
+                return "api_um_sendnotification";
+            case API_UMMERCHANT_GETMERCHANTUSERINFO:
+                return "api_ummerchant_getmerchantuserinfo";
+            case API_UMMERCHANT_GETLISTMERCHANTUSERINFO:
+                return "api_ummerchant_getlistmerchantuserinfo";
+            case API_UMUPLOAD_PREUPDATEPROFILELEVEL3:
+                return "api_umupload_preupdateprofilelevel3";
+            case API_REDPACKAGE_CREATEBUNDLEORDER:
+                return "api_redpackage_createbundleorder";
+            case API_REDPACKAGE_SUBMITTOSENDBUNDLE:
+                return "api_redpackage_submittosendbundle";
+            case API_REDPACKAGE_SUBMITOPENPACKAGE:
+                return "api_redpackage_submitopenpackage";
+            case API_REDPACKAGE_GETSENTBUNDLELIST:
+                return "api_redpackage_getsentbundlelist";
+            case API_REDPACKAGE_GETREVPACKAGELIST:
+                return "api_redpackage_getrevpackagelist";
+            case API_REDPACKAGE_GETPACKAGESINBUNDLE:
+                return "api_redpackage_getpackagesinbundle";
+            case API_REDPACKAGE_GETAPPINFO:
+                return "api_redpackage_getappinfo";
+            case API_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO:
+                return "api_redpackage_submittosendbundlebyzalopayinfo";
+            case API_REDPACKAGE_GETLISTPACKAGESTATUS:
+                return "api_redpackage_getlistpackagestatus";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2_Launch";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -641,6 +737,70 @@ public class ZPEvents {
                 return "Timing Get Order";
             case TIMING_SCANQR:
                 return "Timing Scan QR";
+            case API_V001_TPE_GETBALANCE:
+                return "Timing TPE";
+            case API_V001_TPE_CREATEWALLETORDER:
+                return "Timing TPE";
+            case API_V001_TPE_GETINSIDEAPPRESOURCE:
+                return "Timing TPE";
+            case API_V001_TPE_GETORDERINFO:
+                return "Timing TPE";
+            case API_V001_TPE_GETTRANSSTATUS:
+                return "Timing TPE";
+            case API_V001_TPE_TRANSHISTORY:
+                return "Timing TPE";
+            case API_UM_CREATEACCESSTOKEN:
+                return "Timing UM";
+            case API_UM_REMOVEACCESSTOKEN:
+                return "Timing UM";
+            case API_UM_VERIFYCODETEST:
+                return "Timing UM";
+            case API_UM_UPDATEPROFILE:
+                return "Timing UM";
+            case API_UM_VERIFYOTPPROFILE:
+                return "Timing UM";
+            case API_UM_RECOVERYPIN:
+                return "Timing UM";
+            case API_UM_GETUSERINFO:
+                return "Timing UM";
+            case API_UM_GETUSERPROFILELEVEL:
+                return "Timing UM";
+            case API_UM_GETUSERINFOBYZALOPAYNAME:
+                return "Timing UM";
+            case API_UM_GETUSERINFOBYZALOPAYID:
+                return "Timing UM";
+            case API_UM_CHECKZALOPAYNAMEEXIST:
+                return "Timing UM";
+            case API_UM_UPDATEZALOPAYNAME:
+                return "Timing UM";
+            case API_UM_VALIDATEPIN:
+                return "Timing UM";
+            case API_UM_SENDNOTIFICATION:
+                return "Timing UM";
+            case API_UMMERCHANT_GETMERCHANTUSERINFO:
+                return "Timing UM";
+            case API_UMMERCHANT_GETLISTMERCHANTUSERINFO:
+                return "Timing UM";
+            case API_UMUPLOAD_PREUPDATEPROFILELEVEL3:
+                return "Timing UM";
+            case API_REDPACKAGE_CREATEBUNDLEORDER:
+                return "Timing RedPacket";
+            case API_REDPACKAGE_SUBMITTOSENDBUNDLE:
+                return "Timing RedPacket";
+            case API_REDPACKAGE_SUBMITOPENPACKAGE:
+                return "Timing RedPacket";
+            case API_REDPACKAGE_GETSENTBUNDLELIST:
+                return "Timing RedPacket";
+            case API_REDPACKAGE_GETREVPACKAGELIST:
+                return "Timing RedPacket";
+            case API_REDPACKAGE_GETPACKAGESINBUNDLE:
+                return "Timing RedPacket";
+            case API_REDPACKAGE_GETAPPINFO:
+                return "Timing RedPacket";
+            case API_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO:
+                return "Timing RedPacket";
+            case API_REDPACKAGE_GETLISTPACKAGESTATUS:
+                return "Timing RedPacket";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2";
             case UPDATEPROFILE2_NAVIGATEBACK:

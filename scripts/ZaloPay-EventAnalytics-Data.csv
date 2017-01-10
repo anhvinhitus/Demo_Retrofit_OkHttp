@@ -98,6 +98,38 @@ EventId,Category,Action
 1904,Notifications,Notifications_TapPromotionItem
 2000,Timing Get Order,Timing_GetOrder
 2001,Timing Scan QR,Timing_ScanQR
+2002,Timing TPE,api_v001_tpe_getbalance
+2003,Timing TPE,api_v001_tpe_createwalletorder
+2004,Timing TPE,api_v001_tpe_getinsideappresource
+2005,Timing TPE,api_v001_tpe_getorderinfo
+2006,Timing TPE,api_v001_tpe_gettransstatus
+2007,Timing TPE,api_v001_tpe_transhistory
+2008,Timing UM,api_um_createaccesstoken
+2009,Timing UM,api_um_removeaccesstoken
+2010,Timing UM,api_um_verifycodetest
+2011,Timing UM,api_um_updateprofile
+2012,Timing UM,api_um_verifyotpprofile
+2013,Timing UM,api_um_recoverypin
+2014,Timing UM,api_um_getuserinfo
+2015,Timing UM,api_um_getuserprofilelevel
+2016,Timing UM,api_um_getuserinfobyzalopayname
+2017,Timing UM,api_um_getuserinfobyzalopayid
+2018,Timing UM,api_um_checkzalopaynameexist
+2019,Timing UM,api_um_updatezalopayname
+2020,Timing UM,api_um_validatepin
+2021,Timing UM,api_um_sendnotification
+2022,Timing UM,api_ummerchant_getmerchantuserinfo
+2023,Timing UM,api_ummerchant_getlistmerchantuserinfo
+2024,Timing UM,api_umupload_preupdateprofilelevel3
+2025,Timing RedPacket,api_redpackage_createbundleorder
+2026,Timing RedPacket,api_redpackage_submittosendbundle
+2027,Timing RedPacket,api_redpackage_submitopenpackage
+2028,Timing RedPacket,api_redpackage_getsentbundlelist
+2029,Timing RedPacket,api_redpackage_getrevpackagelist
+2030,Timing RedPacket,api_redpackage_getpackagesinbundle
+2031,Timing RedPacket,api_redpackage_getappinfo
+2032,Timing RedPacket,api_redpackage_submittosendbundlebyzalopayinfo
+2033,Timing RedPacket,api_redpackage_getlistpackagestatus
 2100,UpdateProfile2,UpdateProfile2_Launch
 2101,UpdateProfile2,UpdateProfile2_NavigateBack
 2102,UpdateProfile2,UpdateProfile2_PressCheck
