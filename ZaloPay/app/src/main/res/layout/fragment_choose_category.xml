@@ -4,29 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txtTitle"
-        style="@style/TextView.SubTitle"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/listView"
+        style="@style/RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingTop="16dp"
-        android:text="@string/txt_choose_category"
-        android:textSize="@dimen/font_size_medium" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.0"
-        android:background="@color/white"
-        android:fillViewport="true">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/listView"
-            style="@style/RecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:paddingBottom="96dp"/>
 </LinearLayout>

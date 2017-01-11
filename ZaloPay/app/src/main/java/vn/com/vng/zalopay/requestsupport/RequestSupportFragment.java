@@ -15,9 +15,6 @@ import android.widget.TextView;
 
 import com.zalopay.ui.widget.edittext.ZPEditText;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -27,7 +24,6 @@ import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.AbsPickerImageFragment;
-import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.feedback.FeedbackAdapter;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
@@ -53,7 +49,6 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
     private static final int CATEGORY_REQUEST_CODE = 101;
 
     private FeedbackAdapter mAdapter;
-    private AppResource mAppResource = new AppResource();
 
     @BindView(R.id.tvCategory)
     TextView mTvCategory;
@@ -132,6 +127,11 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
 
             insertScreenshot(uri);
         }
+
+        if (requestCode == CATEGORY_REQUEST_CODE) {
+            String category = data.getStringExtra("category");
+            mTvCategory.setText(category);
+        }
     }
 
     @Override
@@ -167,18 +167,21 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
 
     @OnTextChanged(value = R.id.edtDescribe, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void afterTextChangedDescribe() {
-        mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid() && mAppResource.appname != null);
+        mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid()
+                && mTvCategory.getText() != getResources().getString(R.string.category));
     }
 
     @OnTextChanged(value = R.id.edtEmail, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void afterTextChangedEmail() {
-        mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid() && mAppResource.appname != null);
+        mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid()
+                && mTvCategory.getText() != getResources().getString(R.string.category));
     }
 
     @OnFocusChange({R.id.edtEmail, R.id.edtDescribe})
     public void onFocusChange(View v, boolean hasView) {
         Timber.d("onFocusChange %s", hasView);
-        mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid() && mAppResource.appname != null);
+        mBtnSendView.setEnabled(mEdtEmail.isValid() && mEdtDescribe.isValid()
+                && mTvCategory.getText() != getResources().getString(R.string.category));
     }
 
     @OnClick(R.id.btnSend)
@@ -187,7 +190,7 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
             return;
         }
 
-        if(mAppResource.appname == null) {
+        if(mTvCategory.getText() == getResources().getString(R.string.category)) {
             return;
         }
 
@@ -201,7 +204,6 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
 
     @OnClick(R.id.containerCategory)
     public void onClickCategory() {
-//        showCategoryBottomSheetDialog();
         Intent intent = new Intent(getContext(), ChooseCategoryActivity.class);
         startActivityForResult(intent, CATEGORY_REQUEST_CODE);
     }
@@ -232,25 +234,6 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
         dialog.show(getChildFragmentManager(), "bottomsheet");
     }
 
-    private void showCategoryBottomSheetDialog() {
-        final CategoryBottomSheetDialogFragment dialog = CategoryBottomSheetDialogFragment.newInstance();
-        dialog.setValues(setData());
-        dialog.setOnClickListener(new CategoryBottomSheetDialogFragment.OnClickListener() {
-
-            @Override
-            public void onClickCancel() {
-            }
-
-            @Override
-            public void onClickAccept() {
-                mAppResource = dialog.getValue();
-                mTvCategory.setText(mAppResource.appname);
-            }
-        });
-        dialog.show(getChildFragmentManager(), "bottomsheet");
-    }
-
-
     private void setImageCount() {
         String description = String.format(getString(R.string.txt_attach_screen),
                 String.valueOf(mAdapter.getItems().size()));
@@ -276,28 +259,5 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
     @Override
     public void showError(String message) {
         showToast(message);
-    }
-
-    private List<AppResource> setData() {
-        List<AppResource> mAppResourceList = new ArrayList<>();
-
-        AppResource tmp = new AppResource();
-        tmp.appname = "Nạp tiền";
-        AppResource tmp1 = new AppResource();
-        tmp1.appname = "Rút tiền";
-        AppResource tmp2 = new AppResource();
-        tmp2.appname = "Chuyển tiền";
-        AppResource tmp3 = new AppResource();
-        tmp3.appname = "Nhận tiền";
-        AppResource tmp4 = new AppResource();
-        tmp4.appname = "Liên kết thẻ";
-
-        mAppResourceList.add(tmp);
-        mAppResourceList.add(tmp1);
-        mAppResourceList.add(tmp2);
-        mAppResourceList.add(tmp3);
-        mAppResourceList.add(tmp4);
-
-        return mAppResourceList;
     }
 }

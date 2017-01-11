@@ -4,7 +4,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
-import vn.com.vng.zalopay.feedback.FeedbackFragment;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;

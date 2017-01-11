@@ -1,6 +1,6 @@
 package vn.com.vng.zalopay.requestsupport;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,12 +13,12 @@ import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
-public class ChooseCategoryFragment extends BaseFragment implements IChooseCategoryView,
-        ChooseCategoryAdapter.OnClickAppListener {
+import static android.app.Activity.RESULT_OK;
 
-    @Inject
-    ChooseCategoryPresenter mPresenter;
+public class ChooseCategoryFragment extends BaseFragment implements
+        ChooseCategoryAdapter.OnClickAppListener, ILoadDataView {
 
     public static ChooseCategoryFragment newInstance() {
         return new ChooseCategoryFragment();
@@ -39,6 +39,9 @@ public class ChooseCategoryFragment extends BaseFragment implements IChooseCateg
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
 
+    @Inject
+    ChooseCategoryPresenter mPresenter;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +54,14 @@ public class ChooseCategoryFragment extends BaseFragment implements IChooseCateg
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
-        mAdapter.setData(mPresenter.fetchAppResource());
+        try {
+            mAdapter.setData(mPresenter.fetchAppResource());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setBackgroundColor(Color.WHITE);
 
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -66,8 +72,12 @@ public class ChooseCategoryFragment extends BaseFragment implements IChooseCateg
     }
 
     @Override
-    public void onClickAppListener(AppResource app, int position) {
-
+    public void onClickAppListener(AppResource app) {
+        Intent intent = new Intent();
+        intent.putExtra("category", app.appname);
+        getActivity().setIntent(intent);
+        getActivity().setResult(RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override

@@ -31,7 +31,6 @@ import vn.com.vng.zalopay.data.util.JsonUtil;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.vng.zalopay.utils.PhotoUtil;
 import vn.zalopay.feedback.FeedbackCollector;
 import vn.zalopay.feedback.collectors.AppCollector;
 import vn.zalopay.feedback.collectors.DeviceCollector;
@@ -127,28 +126,6 @@ public class RequestSupportPresenter extends AbstractPresenter<IRequestSupportVi
         } catch (JSONException ignore) {
         }
         return dynamicCollector;
-    }
-
-    void insertScreenshot(final byte[] screenshot) {
-        Subscription subscription = makeObservable(new Callable<Uri>() {
-            @Override
-            public Uri call() throws Exception {
-                File file = PhotoUtil.createPhotoFile(mContext, "screenshot-1.png");
-                FileUtils.writeByteArrayToFile(screenshot, file.getAbsolutePath());
-                return FileProvider.getUriForFile(mContext, FileUtils.AUTHORITY_PROVIDER, file);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<Uri>() {
-                    @Override
-                    public void onNext(Uri uri) {
-                        if (mView != null) {
-                            mView.insertScreenshot(uri);
-                        }
-                    }
-                });
-        mSubscription.add(subscription);
     }
 
     private FeedbackCollector collectInformation(boolean user, boolean app, boolean device) {
