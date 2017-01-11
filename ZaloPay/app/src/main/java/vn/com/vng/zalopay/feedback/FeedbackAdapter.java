@@ -9,17 +9,10 @@ import android.view.ViewGroup;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-
-/**
- * Created by cpu11759-local on 03/01/2017.
- */
 
 final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.ViewHolder> {
 
@@ -28,14 +21,17 @@ final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.
 
     private FeedbackAdapter.OnClickAddListener addListener;
     private FeedbackAdapter.OnClickDeleteListener deleteListener;
+    private FeedbackAdapter.OnClickImageListener imageListener;
 
     private int maxScreenshot = 4;
 
     public FeedbackAdapter(Context context, FeedbackAdapter.OnClickAddListener addListener,
-                           FeedbackAdapter.OnClickDeleteListener deleteListener) {
+                           FeedbackAdapter.OnClickDeleteListener deleteListener,
+                           FeedbackAdapter.OnClickImageListener imageListener) {
         super(context);
         this.addListener = addListener;
         this.deleteListener = deleteListener;
+        this.imageListener = imageListener;
         this.maxScreenshot = context.getResources().getInteger(R.integer.max_length_add_screenshot);
     }
 
@@ -47,13 +43,14 @@ final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.
         }
 
         return new FeedbackAdapter.ViewHolder(mInflater
-                .inflate(R.layout.row_card_image_feedback, parent, false), deleteListener);
+                .inflate(R.layout.row_card_image_feedback, parent, false), deleteListener, imageListener);
     }
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         addListener = null;
         deleteListener = null;
+        imageListener = null;
         super.onDetachedFromRecyclerView(recyclerView);
     }
 
@@ -102,19 +99,28 @@ final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.
         @BindView(R.id.iv_image)
         SimpleDraweeView mScreenshotView;
 
-        private OnClickDeleteListener mListener;
+        private OnClickDeleteListener mDeleteListener;
+        private OnClickImageListener mImageListener;
 
-        public ViewHolder(View itemView, OnClickDeleteListener listener) {
+        public ViewHolder(View itemView, OnClickDeleteListener deleteListener, OnClickImageListener imageListener) {
 
             super(itemView);
             ButterKnife.bind(this, itemView);
-            mListener = listener;
+            mDeleteListener = deleteListener;
+            mImageListener = imageListener;
+        }
+
+        @OnClick(R.id.iv_image)
+        public void onClickImage() {
+            if (mImageListener != null) {
+                mImageListener.onClickImage(getAdapterPosition());
+            }
         }
 
         @OnClick(R.id.iv_delete)
-        public void onClick() {
-            if (mListener != null) {
-                mListener.onClickDelete(getAdapterPosition());
+        public void onClickDelete() {
+            if (mDeleteListener != null) {
+                mDeleteListener.onClickDelete(getAdapterPosition());
             }
         }
 
@@ -138,7 +144,7 @@ final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.
         }
 
         @OnClick(R.id.container)
-        public void onClickAdd(View v) {
+        public void onClickAdd() {
             if (mListener != null) {
                 mListener.onClickAdd(getAdapterPosition());
             }
@@ -151,5 +157,9 @@ final public class FeedbackAdapter extends AbsRecyclerAdapter<Uri, RecyclerView.
 
     public interface OnClickDeleteListener {
         void onClickDelete(int position);
+    }
+
+    public interface OnClickImageListener {
+        void onClickImage(int position);
     }
 }

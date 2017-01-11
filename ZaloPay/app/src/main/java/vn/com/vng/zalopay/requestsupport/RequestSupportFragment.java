@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.edittext.ZPEditText;
@@ -29,7 +31,7 @@ import vn.com.vng.zalopay.feedback.FeedbackAdapter;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 
 public class RequestSupportFragment extends AbsPickerImageFragment implements IRequestSupportView,
-        FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener {
+        FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener, FeedbackAdapter.OnClickImageListener {
 
     public static RequestSupportFragment newInstance() {
         return new RequestSupportFragment();
@@ -48,6 +50,7 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
     private static final int IMAGE_REQUEST_CODE = 100;
     private static final int CATEGORY_REQUEST_CODE = 101;
 
+    private int mScreenshotPos;
     private FeedbackAdapter mAdapter;
 
     @BindView(R.id.tvCategory)
@@ -68,6 +71,12 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
     @BindView(R.id.btnSend)
     View mBtnSendView;
 
+    @BindView(R.id.screenshotView)
+    LinearLayout mView;
+
+    @BindView(R.id.screenshot)
+    ImageView mScreenshotView;
+
     @Inject
     RequestSupportPresenter mPresenter;
 
@@ -87,7 +96,7 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAdapter = new FeedbackAdapter(getContext(), this, this);
+        mAdapter = new FeedbackAdapter(getContext(), this, this, this);
     }
 
     @Override
@@ -208,6 +217,17 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
         startActivityForResult(intent, CATEGORY_REQUEST_CODE);
     }
 
+    @OnClick(R.id.tvCancel)
+    public void onClickScreenshotCancel() {
+        mView.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.tvDelete)
+    public void onClickScreenshotDelete() {
+        removeScreenshot(mScreenshotPos);
+        mView.setVisibility(View.GONE);
+    }
+
     @Override
     public void onClickAdd(int position) {
         showScreenshotBottomSheetDialog(IMAGE_REQUEST_CODE);
@@ -216,6 +236,13 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
     @Override
     public void onClickDelete(int position) {
         removeScreenshot(position);
+    }
+
+    @Override
+    public void onClickImage(int position) {
+        mView.setVisibility(View.VISIBLE);
+        mScreenshotPos = position;
+        mScreenshotView.setImageURI(mAdapter.getItem(mScreenshotPos));
     }
 
     private void showScreenshotBottomSheetDialog(final int requestCode) {

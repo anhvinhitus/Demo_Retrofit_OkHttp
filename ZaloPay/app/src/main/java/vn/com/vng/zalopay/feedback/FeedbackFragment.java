@@ -12,6 +12,8 @@ import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -35,8 +37,8 @@ import vn.com.vng.zalopay.account.ui.fragment.AbsPickerImageFragment;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 
-public class FeedbackFragment extends AbsPickerImageFragment implements
-        FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener, IFeedbackView {
+public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbackView,
+        FeedbackAdapter.OnClickAddListener, FeedbackAdapter.OnClickDeleteListener, FeedbackAdapter.OnClickImageListener {
 
     public static FeedbackFragment newInstance() {
         return new FeedbackFragment();
@@ -54,6 +56,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
 
     private static final int IMAGE_REQUEST_CODE = 100;
 
+    private int mScreenshotPos;
     private FeedbackAdapter mAdapter;
 
     @BindView(R.id.edtCategory)
@@ -76,6 +79,12 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
 
     @BindView(R.id.btnSend)
     View mBtnSendView;
+
+    @BindView(R.id.screenshotView)
+    LinearLayout mView;
+
+    @BindView(R.id.screenshot)
+    ImageView mScreenshotView;
 
     @Inject
     FeedbackPresenter mPresenter;
@@ -107,7 +116,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        mAdapter = new FeedbackAdapter(getContext(), this, this);
+        mAdapter = new FeedbackAdapter(getContext(), this, this, this);
         initArgs(getActivity().getIntent().getExtras());
         if (savedInstanceState != null) {
             mScreenshotName = savedInstanceState.getString("screenshotName");
@@ -241,6 +250,17 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
 
     }
 
+    @OnClick(R.id.tvCancel)
+    public void onClickScreenshotCancel() {
+        mView.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.tvDelete)
+    public void onClickScreenshotDelete() {
+        removeScreenshot(mScreenshotPos);
+        mView.setVisibility(View.GONE);
+    }
+
     @Override
     public void onClickAdd(int position) {
         showBottomSheetDialog(IMAGE_REQUEST_CODE, position);
@@ -249,6 +269,13 @@ public class FeedbackFragment extends AbsPickerImageFragment implements
     @Override
     public void onClickDelete(int position) {
         removeScreenshot(position);
+    }
+
+    @Override
+    public void onClickImage(int position) {
+        mView.setVisibility(View.VISIBLE);
+        mScreenshotPos = position;
+        mScreenshotView.setImageURI(mAdapter.getItem(mScreenshotPos));
     }
 
     private void showBottomSheetDialog(final int requestCode, final int position) {
