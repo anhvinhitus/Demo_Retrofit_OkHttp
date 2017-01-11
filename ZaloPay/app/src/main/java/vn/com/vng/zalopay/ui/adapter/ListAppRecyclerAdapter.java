@@ -168,14 +168,16 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
             IconFontInfo iconFontInfo = IconFontHelper.getInstance().getIconFontInfo(iconName);
             if (iconFontInfo != null) {
                 iconInsideApp.setText(iconFontInfo.code);
+                setColorIconFont(iconInsideApp, iconColor);
+            } else {
+                loadIconFontDefault();
             }
-            setColorIconFont(iconInsideApp, iconColor);
         }
 
         private void loadIconFont(IconFont iconInsideApp, int resourceId, String iconColor)
                 throws Resources.NotFoundException {
             iconInsideApp.setTypefaceFromAsset(getContext().getString(R.string.font_name));
-            iconInsideApp.setText(resourceId);
+            iconInsideApp.setIcon(resourceId);
             setColorIconFont(iconInsideApp, iconColor);
         }
 
