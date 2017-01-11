@@ -280,8 +280,8 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                 }
 
                 refreshBanners();
-                AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
-                AppVersionUtils.showDialogUpgradeAppIfNeed(mView.getActivity());
+                AppVersionUtils.handleEventUpdateVersion(mView.getActivity(),
+                        forceUpdate, latestVersion, msg);
             }
         });
     }

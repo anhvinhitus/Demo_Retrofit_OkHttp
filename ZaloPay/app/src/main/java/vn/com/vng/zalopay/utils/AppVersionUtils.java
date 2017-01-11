@@ -34,17 +34,14 @@ public class AppVersionUtils {
 
     private static boolean isShowedDialogUpdateApp(String version) {
         String currentVersionShowed = mPreferences.getString(SHOWED_DIALOG_UPDATE_APP, "");
-        if (TextUtils.isEmpty(currentVersionShowed)) {
-            return false;
-        }
-        return currentVersionShowed.equals(version);
+        return !TextUtils.isEmpty(currentVersionShowed) && currentVersionShowed.equals(version);
     }
 
     private static void setForceUpdateApp(boolean forceUpdateApp) {
         mPreferences.edit().putBoolean(FORCE_UPDATE_APP, forceUpdateApp).apply();
     }
 
-    public static boolean isForceUpdateApp() {
+    private static boolean isForceUpdateApp() {
         return mPreferences.getBoolean(FORCE_UPDATE_APP, false);
     }
 
@@ -64,7 +61,7 @@ public class AppVersionUtils {
         return mPreferences.getString(UPDATE_MESSAGE_IN_SERVER, "");
     }
 
-    public static boolean needUpgradeApp() {
+    private static boolean needUpgradeApp() {
         try {
             return !isLastVersion();
         } catch (NumberFormatException ex) {
@@ -111,7 +108,7 @@ public class AppVersionUtils {
         Timber.d("Show upgrade dialog, context [%s]", activity);
         String contentText = getUpdateMessageInServer();
         String newVersion = getLatestVersionInServer();
-        if (activity == null || (!forceUpdate && isShowedDialogUpdateApp(newVersion))) {
+        if (activity == null) {
             return;
         }
         if (TextUtils.isEmpty(contentText)) {
@@ -141,15 +138,41 @@ public class AppVersionUtils {
                 }, forceUpdate);
     }
 
-    public static void showDialogUpgradeAppIfNeed(Activity activity) {
-        boolean upgradeApp = needUpgradeApp();
-        if (!upgradeApp) {
-            return;
+    public static boolean showDialogForceUpgradeApp(Activity activity) {
+        if (!needUpgradeApp() || !isForceUpdateApp()) {
+            return false;
         }
-        showDialogUpgradeApp(activity, isForceUpdateApp());
+        showDialogUpgradeApp(activity, true);
+        return true;
     }
 
-    public static void setVersionInfoInServer(boolean forceUpdate, String latestVersion, String msg) {
+    private static boolean showDialogUpgradeAppIfNeed(Activity activity) {
+        boolean upgradeApp = needUpgradeApp();
+        if (!upgradeApp) {
+            return false;
+        }
+        if (isForceUpdateApp()) {
+            showDialogUpgradeApp(activity, true);
+            return true;
+        } else if (!isShowedDialogUpdateApp(getLatestVersionInServer())) {
+            showDialogUpgradeApp(activity, false);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean handleEventUpdateVersion(Activity activity,
+                                                   boolean forceUpdate,
+                                                   String latestVersion,
+                                                   String message) {
+        setVersionInfoInServer(forceUpdate, latestVersion, message);
+        return showDialogUpgradeAppIfNeed(activity);
+    }
+
+    private static void setVersionInfoInServer(boolean forceUpdate,
+                                               String latestVersion,
+                                               String msg) {
         setForceUpdateApp(forceUpdate);
         setLatestVersionInServer(latestVersion);
         setUpdateMessageInServer(msg);

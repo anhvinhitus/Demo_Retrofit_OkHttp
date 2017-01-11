@@ -155,8 +155,8 @@ class WalletListener implements ZPPaymentListener {
     public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
         Timber.d("onUpVersion forceUpdate[%s] latestVersion [%s] msg [%s]",
                 forceUpdate, latestVersion, msg);
-        AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, msg);
-        AppVersionUtils.showDialogUpgradeAppIfNeed(mPaymentWrapper.mActivity);
+        AppVersionUtils.handleEventUpdateVersion(mPaymentWrapper.mActivity,
+                forceUpdate, latestVersion, msg);
 
         mPaymentWrapper.cleanup();
     }

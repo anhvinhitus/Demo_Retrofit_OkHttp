@@ -149,8 +149,7 @@ public class CardSupportFragment extends BaseFragment {
                 }
                 Timber.d("cardSupportHashMap forceUpdate [%s] latestVersion [%s] message [%s]",
                         forceUpdate, latestVersion, message);
-                AppVersionUtils.setVersionInfoInServer(forceUpdate, latestVersion, message);
-                AppVersionUtils.showDialogUpgradeAppIfNeed(getActivity());
+                AppVersionUtils.handleEventUpdateVersion(getActivity(), forceUpdate, latestVersion, message);
             }
         };
 
