@@ -122,6 +122,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         this.shouldMarkAllNotify();
     }
 
+    @Nullable
     private String getComponentNameFromIntentAction(Intent intent) {
         String action = intent.getAction();
         if (TextUtils.isEmpty(action)) {

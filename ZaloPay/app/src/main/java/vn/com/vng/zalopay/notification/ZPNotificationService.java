@@ -10,6 +10,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -190,6 +191,10 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
             mNotificationHelper.processNotification((NotificationData) event);
         } else if (event instanceof RecoveryMessageEvent) {
+            if (mTimeoutRecoverySubscription != null) {
+                mTimeoutRecoverySubscription.unsubscribe();
+            }
+
             final List<NotificationData> listMessage = ((RecoveryMessageEvent) event).listNotify;
             Timber.d("Receive notification %s", listMessage);
 
@@ -228,12 +233,13 @@ public class ZPNotificationService implements OnReceiverMessageListener {
             }
 
             if (listMessage.size() < NUMBER_NOTIFICATION) {
-                this.recoveryTransaction();
-                this.recoveryRedPacketStatus();
+                recoveryData();
             }
         }
     }
 
+
+    private Subscription mTimeoutRecoverySubscription;
 
     private void recoveryNotification(final boolean isFirst) {
         if (mNotificationHelper == null) {
@@ -254,6 +260,23 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         mCompositeSubscription.add(subscription);
     }
 
+    private Subscription startTimeoutRecoveryNotification() {
+        return Observable.timer(5, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        Timber.d("onCompleted: start recovery transaction");
+                        recoveryData();
+                    }
+                });
+    }
+
+    private void recoveryData() {
+        this.recoveryTransaction();
+        this.recoveryRedPacketStatus();
+    }
+
     private void recoveryTransaction() {
         Timber.d("Begin recovery transaction");
         mNotificationHelper.recoveryTransaction();
@@ -272,6 +295,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
         mLastTimeRecovery = timeStamp;
         if (mWsConnection != null) {
+            mTimeoutRecoverySubscription = startTimeoutRecoveryNotification();
             NotificationApiMessage message = NotificationApiHelper.createMessageRecovery(NUMBER_NOTIFICATION, timeStamp);
             mWsConnection.send(message.messageCode, message.messageContent);
         }
