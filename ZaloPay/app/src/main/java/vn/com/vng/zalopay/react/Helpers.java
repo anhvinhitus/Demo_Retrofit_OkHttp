@@ -108,6 +108,9 @@ public class Helpers {
     }
 
     public static String readableMapToString(ReadableMap param) {
+        if (param == null) {
+            return "";
+        }
         StringBuilder builder = new StringBuilder();
         builder.append("{");
         ReadableMapKeySetIterator iterator = param.keySetIterator();
@@ -146,6 +149,9 @@ public class Helpers {
     }
 
     public static String readableArrayToString(ReadableArray param) {
+        if (param == null) {
+            return "";
+        }
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         for (int index = 0; index < param.size(); index++) {
