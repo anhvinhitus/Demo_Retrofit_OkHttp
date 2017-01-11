@@ -8,10 +8,14 @@ import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
 /**
  * Created by huuhoa on 12/11/16.
@@ -29,7 +33,7 @@ public class ZaloHelper {
             return;
         }
 
-        startTimeout(5000);
+        final Subscription mTimeoutSubscription = timeoutSubscription();
 
         mCallback = new ZaloOpenAPICallback() {
             @Override
@@ -40,8 +44,7 @@ public class ZaloHelper {
                 } catch (Exception ex) {
                     Timber.w(ex, " Exception :");
                 }
-
-                stopTimeout();
+                mTimeoutSubscription.unsubscribe();
                 mCallback = null;
             }
         };
@@ -49,29 +52,13 @@ public class ZaloHelper {
         ZaloSDK.Instance.getProfile(context, mCallback);
     }
 
-    private static CountDownTimer mCountDownTimer;
-
-    private static void startTimeout(long timeMillis) {
-        stopTimeout();
-        mCountDownTimer = new CountDownTimer(timeMillis, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-            }
-
-            @Override
-            public void onFinish() {
-                Timber.d("Get zalo profile timeout");
-                mCallback = null;
-            }
-        };
-        mCountDownTimer.start();
-    }
-
-    private static void stopTimeout() {
-        if (mCountDownTimer != null) {
-            mCountDownTimer.cancel();
-            mCountDownTimer = null;
-        }
-
+    private static Subscription timeoutSubscription() {
+        return Observable.timer(5, TimeUnit.SECONDS)
+                .subscribe(new DefaultSubscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        mCallback = null;
+                    }
+                });
     }
 }
