@@ -38,7 +38,7 @@ public class IconFontHelper {
     }
 
     public void initialize(AssetManager mgr, String fontPathInAsset, String jsonPathInAsset,
-                     String fontPathInResource, String jsonPathInResource) {
+                           String fontPathInResource, String jsonPathInResource) {
         this.mAssetManager = mgr;
         initIconFont(fontPathInAsset, jsonPathInAsset,
                 fontPathInResource, jsonPathInResource);

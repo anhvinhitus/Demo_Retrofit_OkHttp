@@ -139,6 +139,13 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
         listView.addHeaderView(header);
     }
 
+    public void refreshIconFont() {
+        if (mAdapter == null) {
+            return;
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

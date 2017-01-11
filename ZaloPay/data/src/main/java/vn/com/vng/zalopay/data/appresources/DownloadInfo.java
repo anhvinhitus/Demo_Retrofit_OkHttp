@@ -3,7 +3,7 @@ package vn.com.vng.zalopay.data.appresources;
 /**
  * Created by AnhHieu on 5/23/16.
  */
-final class DownloadInfo {
+public final class DownloadInfo {
 
     public final String url;
     public final String appname;

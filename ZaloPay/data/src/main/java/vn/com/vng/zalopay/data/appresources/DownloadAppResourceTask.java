@@ -92,6 +92,10 @@ final class DownloadAppResourceTask {
         return ResourceHelper.getPath(appId);
     }
 
+    public DownloadInfo getDownloadInfo() {
+        return downloadInfo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

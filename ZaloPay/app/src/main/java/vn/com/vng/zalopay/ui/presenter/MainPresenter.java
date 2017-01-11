@@ -24,10 +24,13 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
+import vn.com.vng.zalopay.data.appresources.DownloadInfo;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -54,6 +57,7 @@ import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.view.IHomeView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
@@ -90,6 +94,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     private User mUser;
     private FriendStore.Repository mFriendRepository;
     private Subscription mRefPlatformSubscription;
+    private Runnable mRunnableRefreshIconFont;
 
     @Inject
     NotificationStore.Repository mNotifyRepository;
@@ -210,6 +215,10 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     @Override
     public void destroy() {
+        if (mRunnableRefreshIconFont != null) {
+            AndroidUtils.cancelRunOnUIThread(mRunnableRefreshIconFont);
+            mRunnableRefreshIconFont = null;
+        }
         super.destroy();
     }
 
@@ -381,6 +390,32 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             });
             dialog.show();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onDownloadAppEvent(DownloadAppEvent event) {
+        Timber.d("onDownloadAppEvent result[%s]", event.isDownloadSuccess);
+        if (!event.isDownloadSuccess) {
+            return;
+        }
+        if (event.mDownloadInfo != null &&
+                event.mDownloadInfo.appid == 22) {
+            refreshIconFont();
+        }
+    }
+
+    private void refreshIconFont() {
+        AndroidApplication.instance().initIconFont();
+        if (mRunnableRefreshIconFont == null) {
+            mRunnableRefreshIconFont = new Runnable() {
+                @Override
+                public void run() {
+                    Timber.d("refreshIconFont");
+                    mView.refreshIconFont();
+                }
+            };
+        }
+        AndroidUtils.runOnUIThread(mRunnableRefreshIconFont, 1000);
     }
 
     public void logout() {

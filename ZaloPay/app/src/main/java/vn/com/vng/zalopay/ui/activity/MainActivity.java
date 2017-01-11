@@ -68,6 +68,8 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     private ActionBarDrawerToggle toggle;
     private SweetAlertDialog mProgressDialog;
+    private LeftMenuFragment mLeftMenuFragment;
+    private ZaloPayFragment mZaloPayFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +79,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.menu, LeftMenuFragment.newInstance(), "MenuFragment");
-            fragmentTransaction.add(R.id.container, ZaloPayFragment.newInstance(), "ZaloPayFragment");
+            mLeftMenuFragment = LeftMenuFragment.newInstance();
+            mZaloPayFragment = ZaloPayFragment.newInstance();
+            fragmentTransaction.add(R.id.menu, mLeftMenuFragment, "MenuFragment");
+            fragmentTransaction.add(R.id.container, mZaloPayFragment, "ZaloPayFragment");
             fragmentTransaction.commit();
         }
 
@@ -221,6 +225,16 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void refreshIconFont() {
+        if (mLeftMenuFragment != null) {
+            mLeftMenuFragment.refreshIconFont();
+        }
+        if (mZaloPayFragment != null) {
+            mZaloPayFragment.refreshIconFont();
+        }
     }
 
     private final class OpenMenuRunnable implements Runnable {

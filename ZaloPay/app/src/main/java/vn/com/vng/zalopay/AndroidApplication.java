@@ -102,7 +102,7 @@ public class AndroidApplication extends Application {
         initIconFont();
     }
 
-    private void initIconFont() {
+    public void initIconFont() {
         IconFontHelper.getInstance().initialize(getAssets(),
                 "fonts/" + getString(R.string.font_name),
                 "fonts/" + getString(R.string.json_font_info),

@@ -66,6 +66,9 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @Inject
     ZaloPayPresenter presenter;
 
+    @BindView(R.id.home_top_layout)
+    View mTopLayout;
+
     /* Advertisement START */
     @BindView(R.id.tvAdsSubContent)
     TextView mTvAdsSubContent;
@@ -233,6 +236,15 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @OnClick(R.id.btn_balance)
     public void onClickBalance() {
         navigator.startBalanceManagementActivity(getContext());
+    }
+
+    public void refreshIconFont() {
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
+        if (mTopLayout != null) {
+            mTopLayout.invalidate();
+        }
     }
 
     @Override

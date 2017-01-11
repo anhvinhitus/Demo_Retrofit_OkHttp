@@ -3,9 +3,12 @@ package vn.com.vng.zalopay.data.appresources;
 import android.app.IntentService;
 import android.content.Intent;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
 
 /**
  * Created by AnhHieu on 5/20/16.
@@ -68,6 +71,7 @@ public abstract class AbsDownloadService extends IntentService {
             mRunning = true;
             boolean result = task.execute();
 
+            EventBus.getDefault().post(new DownloadAppEvent(true, task.getDownloadInfo()));
             if (result) {
                 Timber.d("download success");
             } else {
