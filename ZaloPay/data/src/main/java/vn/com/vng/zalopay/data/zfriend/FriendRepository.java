@@ -95,6 +95,7 @@ public class FriendRepository implements FriendStore.Repository {
         zaloFriend.avatar = cursor.getString(ColumnIndex.AVATAR);
         zaloFriend.usingApp = cursor.getInt(ColumnIndex.USING_APP) == 1;
         zaloFriend.zaloPayId = cursor.getString(cursor.getColumnIndex(ColumnIndex.ZALOPAY_ID));
+        zaloFriend.normalizeDisplayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_FULL_TEXT_SEARCH));
         return zaloFriend;
     }
 
@@ -152,7 +153,13 @@ public class FriendRepository implements FriendStore.Repository {
     private Observable<List<ZaloFriend>> getFriendLocal() {
         Timber.d("get friend zalo local");
         return makeObservable(() -> mLocalStorage.getZaloUserCursor())
-                .map(this::transformZaloFriend);
+                .map(cursor -> {
+                    List<ZaloFriend> ret = transformZaloFriend(cursor);
+                    if (cursor != null && !cursor.isClosed()) {
+                        cursor.close();
+                    }
+                    return ret;
+                });
     }
 
     private List<ZaloFriend> transformZaloFriend(Cursor cursor) {
