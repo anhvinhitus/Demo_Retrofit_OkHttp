@@ -16,6 +16,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.views.text.ReactFontManager;
+import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.apploader.network.NetworkService;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,6 +43,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.FileDownloader;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -342,6 +344,13 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
             }
         } catch (Exception e) {
             promise.reject(e);
+        }
+    }
+
+    @ReactMethod
+    public void navigateSupportCenter() {
+        if (getCurrentActivity() != null) {
+            mNavigator.startMiniAppActivity(getCurrentActivity(), ModuleName.SUPPORT_CENTER);
         }
     }
 }
