@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 
@@ -49,6 +50,11 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
             @Override
             public void onAuthenticated(String password) {
                 callback.onComplete(password);
+            }
+
+            @Override
+            public void onAuthenticationFailure() {
+                callback.onError(new FPError());
             }
 
             @Override

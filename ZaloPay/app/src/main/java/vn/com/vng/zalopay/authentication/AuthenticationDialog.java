@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.authentication;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +23,7 @@ import butterknife.Unbinder;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.widget.GridPasswordViewFitWidth;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -96,6 +98,8 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     private boolean isFinish = false; //
 
+    private boolean isCancel = true;
+
     public AuthenticationDialog() {
     }
 
@@ -117,7 +121,10 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     }
 
     private void setupFragmentComponent() {
-        AndroidApplication.instance().getUserComponent().inject(this);
+        UserComponent userComponent = AndroidApplication.instance().getUserComponent();
+        if (userComponent != null) {
+            userComponent.inject(this);
+        }
     }
 
     @Override
@@ -176,9 +183,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     }
 
     private void cancel() {
-        if (mCallback != null) {
-            mCallback.onCancel();
-        }
+        isCancel = true;
         dismiss();
     }
 
@@ -289,6 +294,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     @Override
     public void onAuthenticated(String password) {
         Timber.d("onAuthenticated");
+
         if (pendingIntent != null) {
             startActivity(pendingIntent);
             if (isFinish) {
@@ -296,6 +302,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
             }
         }
 
+        isCancel = false;
         if (mCallback != null) {
             mCallback.onAuthenticated(password);
         }
@@ -306,6 +313,8 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     @Override
     public void onAuthenticationFailure() {
         Timber.d("onAuthenticationFailure");
+
+        isCancel = false;
         if (mCallback != null) {
             mCallback.onAuthenticationFailure();
         }
@@ -314,12 +323,16 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     }
 
     @Override
-    public void showFingerprintError(CharSequence error) {
+    public void showFingerprintError(CharSequence error, boolean retry) {
         mTvDecryptView.setText(error);
         mTvDecryptView.setTextColor(ContextCompat.getColor(getActivity(), R.color.red));
         // mIcon.setImageResource(R.drawable.ic_fingerprint_error);
 
         AndroidUtils.cancelRunOnUIThread(mResetErrorTextRunnable);
+
+        if (!retry) {
+            return;
+        }
         AndroidUtils.runOnUIThread(mResetErrorTextRunnable, FingerprintProvider.ERROR_TIMEOUT_MILLIS);
     }
 
@@ -346,5 +359,14 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     public void setContentPayment(boolean isAuthPayment) {
         this.isAuthPayment = isAuthPayment;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        Timber.d("onDismiss: %s", isCancel);
+        if (mCallback != null && isCancel) {
+            mCallback.onCancel();
+        }
+        super.onDismiss(dialog);
     }
 }

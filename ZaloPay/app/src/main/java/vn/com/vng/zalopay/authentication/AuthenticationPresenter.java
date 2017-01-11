@@ -1,7 +1,10 @@
 package vn.com.vng.zalopay.authentication;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
 import android.text.TextUtils;
 
 import javax.inject.Inject;
@@ -10,6 +13,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
+import vn.com.vng.zalopay.exception.FingerprintException;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 
 /**
@@ -148,10 +152,20 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private void handleErrorFingerprint(Throwable e) {
-        if (e != null) {
-            mView.showFingerprintError(e.getMessage());
+        if (mView == null) {
+            return;
         }
+
+        if (!(e instanceof FingerprintException)) {
+            return;
+        }
+
+        boolean notRetry = ((FingerprintException) e).mErrorCode == FingerprintManager.FINGERPRINT_ERROR_TIMEOUT
+                || ((FingerprintException) e).mErrorCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT;
+
+        mView.showFingerprintError(e.getMessage(), !notRetry);
     }
 
     private void handleErrorPassword(Throwable e) {

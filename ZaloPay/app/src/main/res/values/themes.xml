@@ -15,7 +15,6 @@
         <item name="colorControlNormal">@color/edt_control_normal</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="colorControlHighlight">@color/colorPrimary</item>
-        <item name="colorSwitchThumbNormal">@color/colorPrimary</item>
 
         <item name="alertDialogTheme">@style/AlertDialogStyle</item>
         <item name="android:textColorHint">@color/hint</item>

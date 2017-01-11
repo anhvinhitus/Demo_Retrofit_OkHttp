@@ -22,7 +22,7 @@ interface IAuthenticationView extends ILoadDataView {
 
     void setErrorVerifyPassword(String error);
 
-    void showFingerprintError(CharSequence error);
+    void showFingerprintError(CharSequence error, boolean retry);
 
     void showFingerprintSuccess();
 }

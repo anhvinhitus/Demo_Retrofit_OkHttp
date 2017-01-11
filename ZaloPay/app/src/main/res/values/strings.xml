@@ -457,7 +457,7 @@
     <string name="change.password.description">Mật khẩu thanh toán dùng để xác thực mỗi khi thực hiện thanh toán</string>
     <string name="finger.moved.too.fast">Ngón tay di chuyển quá nhanh. Vui lòng thử lại.</string>
     <string name="finger.moved.too.slow">Ngón tay di chuyển quá chậm. Vui lòng thử lại.</string>
-    <string name="finger.too.many.attempts">Thực hiện xác thực quá nhiều. Vui lòng thử lại.</string>
+    <string name="finger.too.many.attempts">Thực hiện xác thực quá nhiều. Vui lòng nhập mật khẩu để tiếp tục.</string>
     <string name="fingerprint.description.pay">Quét vân tay để xác nhận thanh toán</string>
     <!-- End Fingerprint-->
 
