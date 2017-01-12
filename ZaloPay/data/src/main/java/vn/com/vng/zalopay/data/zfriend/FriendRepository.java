@@ -88,15 +88,20 @@ public class FriendRepository implements FriendStore.Repository {
         if (cursor == null || cursor.isClosed()) {
             return null;
         }
-        ZaloFriend zaloFriend = new ZaloFriend();
-        zaloFriend.userId = cursor.getLong(ColumnIndex.ID);
-        zaloFriend.userName = cursor.getString(ColumnIndex.USER_NAME);
-        zaloFriend.displayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_DISPLAY_NAME));
-        zaloFriend.avatar = cursor.getString(ColumnIndex.AVATAR);
-        zaloFriend.usingApp = cursor.getInt(ColumnIndex.USING_APP) == 1;
-        zaloFriend.zaloPayId = cursor.getString(cursor.getColumnIndex(ColumnIndex.ZALOPAY_ID));
-        zaloFriend.normalizeDisplayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_FULL_TEXT_SEARCH));
-        return zaloFriend;
+        try {
+            ZaloFriend zaloFriend = new ZaloFriend();
+            zaloFriend.userId = cursor.getLong(ColumnIndex.ID);
+            zaloFriend.userName = cursor.getString(ColumnIndex.USER_NAME);
+            zaloFriend.displayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_DISPLAY_NAME));
+            zaloFriend.avatar = cursor.getString(ColumnIndex.AVATAR);
+            zaloFriend.usingApp = cursor.getInt(ColumnIndex.USING_APP) == 1;
+            zaloFriend.zaloPayId = cursor.getString(cursor.getColumnIndex(ColumnIndex.ZALOPAY_ID));
+            zaloFriend.normalizeDisplayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_FULL_TEXT_SEARCH));
+            return zaloFriend;
+        } catch (Exception e) {
+            Timber.d(e, "Transform friend exception");
+            return null;
+        }
     }
 
     public Observable<Boolean> shouldUpdateFriendList() {
@@ -167,16 +172,17 @@ public class FriendRepository implements FriendStore.Repository {
             return Collections.emptyList();
         }
         List<ZaloFriend> ret = new ArrayList<>();
-        try {
-            if (cursor.moveToFirst()) {
-                while (!cursor.isAfterLast()) {
-                    ZaloFriend zaloFriend = transform(cursor);
-                    ret.add(zaloFriend);
-                    cursor.moveToNext();
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                ZaloFriend zaloFriend = transform(cursor);
+                if (zaloFriend == null) {
+                    continue;
                 }
+
+                ret.add(zaloFriend);
+                cursor.moveToNext();
             }
-        } finally {
-            cursor.close();
         }
 
         return ret;
