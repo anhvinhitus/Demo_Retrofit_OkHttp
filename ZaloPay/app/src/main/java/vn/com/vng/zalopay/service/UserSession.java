@@ -120,6 +120,10 @@ public class UserSession {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onSessionChanged(NewSessionEvent event) {
         Timber.d("onSessionChange from server [%s]", event.newSession);
+        if (TextUtils.isEmpty(event.newSession)) {
+            return;
+        }
+
         if (!mUser.accesstoken.equals(event.newSession)) {
             Timber.d("Update accesstoken old: [%s]", mUser.accesstoken);
             mUser.accesstoken = event.newSession;
