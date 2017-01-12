@@ -136,6 +136,19 @@ public class ZPEvents {
     public static final int API_REDPACKAGE_GETAPPINFO = 2032;
     public static final int API_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO = 2033;
     public static final int API_REDPACKAGE_GETLISTPACKAGESTATUS = 2034;
+    public static final int API_V001_TPE_V001GETPLATFORMINFO = 2035;
+    public static final int API_V001_TPE_GETAPPINFO = 2036;
+    public static final int API_V001_TPE_GETBANKLIST = 2037;
+    public static final int API_V001_TPE_SUBMITTRANS = 2038;
+    public static final int API_V001_TPE_ATMAUTHENPAYER = 2039;
+    public static final int API_V001_TPE_AUTHCARDHOLDERFORMAPPING = 2040;
+    public static final int API_V001_TPE_GETSTATUSMAPCARD = 2041;
+    public static final int API_V001_TPE_VERIFYCARDFORMAPPING = 2042;
+    public static final int API_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT = 2043;
+    public static final int API_V001_TPE_SDKWRITEATMTIME = 2044;
+    public static final int API_V001_TPE_REMOVEMAPCARD = 2045;
+    public static final int API_V001_TPE_SDKERRORREPORT = 2046;
+    public static final int API_UM_LISTCARDINFOFORCLIENT = 2047;
     public static final int UPDATEPROFILE2_LAUNCH = 2100;
     public static final int UPDATEPROFILE2_NAVIGATEBACK = 2101;
     public static final int UPDATEPROFILE2_PRESSCHECK = 2102;
@@ -447,6 +460,32 @@ public class ZPEvents {
                 return "api_redpackage_submittosendbundlebyzalopayinfo";
             case API_REDPACKAGE_GETLISTPACKAGESTATUS:
                 return "api_redpackage_getlistpackagestatus";
+            case API_V001_TPE_V001GETPLATFORMINFO:
+                return "api_v001_tpe_v001getplatforminfo";
+            case API_V001_TPE_GETAPPINFO:
+                return "api_v001_tpe_getappinfo";
+            case API_V001_TPE_GETBANKLIST:
+                return "api_v001_tpe_getbanklist";
+            case API_V001_TPE_SUBMITTRANS:
+                return "api_v001_tpe_submittrans";
+            case API_V001_TPE_ATMAUTHENPAYER:
+                return "api_v001_tpe_atmauthenpayer";
+            case API_V001_TPE_AUTHCARDHOLDERFORMAPPING:
+                return "api_v001_tpe_authcardholderformapping";
+            case API_V001_TPE_GETSTATUSMAPCARD:
+                return "api_v001_tpe_getstatusmapcard";
+            case API_V001_TPE_VERIFYCARDFORMAPPING:
+                return "api_v001_tpe_verifycardformapping";
+            case API_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT:
+                return "api_v001_tpe_getstatusbyapptransidforclient";
+            case API_V001_TPE_SDKWRITEATMTIME:
+                return "api_v001_tpe_sdkwriteatmtime";
+            case API_V001_TPE_REMOVEMAPCARD:
+                return "api_v001_tpe_removemapcard";
+            case API_V001_TPE_SDKERRORREPORT:
+                return "api_v001_tpe_sdkerrorreport";
+            case API_UM_LISTCARDINFOFORCLIENT:
+                return "api_um_listcardinfoforclient";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2_Launch";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -806,6 +845,32 @@ public class ZPEvents {
                 return "Timing RedPacket";
             case API_REDPACKAGE_GETLISTPACKAGESTATUS:
                 return "Timing RedPacket";
+            case API_V001_TPE_V001GETPLATFORMINFO:
+                return "Timing TPE";
+            case API_V001_TPE_GETAPPINFO:
+                return "Timing TPE";
+            case API_V001_TPE_GETBANKLIST:
+                return "Timing TPE";
+            case API_V001_TPE_SUBMITTRANS:
+                return "Timing TPE";
+            case API_V001_TPE_ATMAUTHENPAYER:
+                return "Timing TPE";
+            case API_V001_TPE_AUTHCARDHOLDERFORMAPPING:
+                return "Timing TPE";
+            case API_V001_TPE_GETSTATUSMAPCARD:
+                return "Timing TPE";
+            case API_V001_TPE_VERIFYCARDFORMAPPING:
+                return "Timing TPE";
+            case API_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT:
+                return "Timing TPE";
+            case API_V001_TPE_SDKWRITEATMTIME:
+                return "Timing TPE";
+            case API_V001_TPE_REMOVEMAPCARD:
+                return "Timing TPE";
+            case API_V001_TPE_SDKERRORREPORT:
+                return "Timing TPE";
+            case API_UM_LISTCARDINFOFORCLIENT:
+                return "Timing UM";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2";
             case UPDATEPROFILE2_NAVIGATEBACK:

@@ -131,6 +131,19 @@ EventId,Category,Action
 2032,Timing RedPacket,api_redpackage_getappinfo
 2033,Timing RedPacket,api_redpackage_submittosendbundlebyzalopayinfo
 2034,Timing RedPacket,api_redpackage_getlistpackagestatus
+2035,Timing TPE,api_v001_tpe_v001getplatforminfo
+2036,Timing TPE,api_v001_tpe_getappinfo
+2037,Timing TPE,api_v001_tpe_getbanklist
+2038,Timing TPE,api_v001_tpe_submittrans
+2039,Timing TPE,api_v001_tpe_atmauthenpayer
+2040,Timing TPE,api_v001_tpe_authcardholderformapping
+2041,Timing TPE,api_v001_tpe_getstatusmapcard
+2042,Timing TPE,api_v001_tpe_verifycardformapping
+2043,Timing TPE,api_v001_tpe_getstatusbyapptransidforclient
+2044,Timing TPE,api_v001_tpe_sdkwriteatmtime
+2045,Timing TPE,api_v001_tpe_removemapcard
+2046,Timing TPE,api_v001_tpe_sdkerrorreport
+2047,Timing UM,api_um_listcardinfoforclient
 2100,UpdateProfile2,UpdateProfile2_Launch
 2101,UpdateProfile2,UpdateProfile2_NavigateBack
 2102,UpdateProfile2,UpdateProfile2_PressCheck
