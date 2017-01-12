@@ -479,6 +479,9 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                             writableMap.putString("message", receivePackageGD.messageStatus);
                             Timber.d("open status [%s][%s] for packet: %s", receivePackageGD.status,
                                     receivePackageGD.messageStatus, packetId);
+                        } else {
+                            writableMap.putDouble("code", RedPacketStatus.CanOpen.getValue());
+                            writableMap.putString("message", "");
                         }
 
                         promise.resolve(writableMap);
