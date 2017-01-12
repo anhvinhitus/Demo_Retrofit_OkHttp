@@ -12,9 +12,12 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.exception.FingerprintException;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+
+import static vn.com.vng.zalopay.data.NetworkError.INCORRECT_PIN;
 
 /**
  * Created by hieuvm on 12/27/16.
@@ -172,9 +175,16 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
         if (mView == null) {
             return;
         }
+
         String message = ErrorMessageFactory.create(mApplicationContext, e);
         mView.hideLoading();
+        mView.clearPassword();
         mView.setErrorVerifyPassword(message);
+        if (e instanceof BodyException) {
+            if (((BodyException) e).errorCode == INCORRECT_PIN) {
+                mView.showKeyboard();
+            }
+        }
     }
 
 }

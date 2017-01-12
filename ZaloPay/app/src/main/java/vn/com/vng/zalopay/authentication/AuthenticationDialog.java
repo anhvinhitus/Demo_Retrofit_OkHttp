@@ -167,7 +167,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
             public void onInputFinish(String s) {
                 Timber.d("onInputFinish: %s", s);
                 mPresenter.verify(s);
-                mPassword.clearPassword();
+                //  mPassword.clearPassword();
             }
         });
     }
