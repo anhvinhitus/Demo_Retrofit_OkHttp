@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.balancetopup.ui.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -122,6 +123,12 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         mEdtAmountView.clearValidators();
         mPresenter.detachView();
         super.onDestroyView();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        getActivity().setResult(Activity.RESULT_CANCELED);
+        return super.onBackPressed();
     }
 
     @Override

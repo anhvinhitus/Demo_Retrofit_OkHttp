@@ -10,10 +10,4 @@ public class BalanceTopupActivity extends BaseToolBarActivity {
     public BaseFragment getFragmentToHost() {
         return BalanceTopupFragment.newInstance(getIntent().getExtras());
     }
-
-    @Override
-    public void onBackPressed() {
-        setResult(RESULT_CANCELED);
-        super.onBackPressed();
-    }
 }
