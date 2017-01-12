@@ -96,8 +96,9 @@ public class KeyboardHelper {
             @Override
             public void onGlobalLayout() {
                 if (mOriRect.height() == 0) {
-                    throw new RuntimeException(KeyboardHelper.class.getName() + " You must call init() before setGlobalLayoutListener()");
+                    return;
                 }
+
                 if (mListener == null) {
                     return;
                 }
