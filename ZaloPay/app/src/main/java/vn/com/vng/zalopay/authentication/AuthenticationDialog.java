@@ -212,6 +212,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     @Override
     public void onDestroyView() {
         mPassword.setOnPasswordChangedListener(null);
+        mPresenter.detachView();
         mUnbinder.unbind();
         super.onDestroyView();
     }
@@ -348,6 +349,9 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     Runnable mResetErrorTextRunnable = new Runnable() {
         @Override
         public void run() {
+            if (mTvDecryptView == null) {
+                return;
+            }
 
             mTvDecryptView.setTextColor(ContextCompat.getColor(getActivity(), R.color.hint));
             mTvDecryptView.setText(getString(R.string.fingerprint_hint));
@@ -364,6 +368,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     @Override
     public void onDismiss(DialogInterface dialog) {
         Timber.d("onDismiss: %s", isCancel);
+        AndroidUtils.cancelRunOnUIThread(mResetErrorTextRunnable);
         if (mCallback != null && isCancel) {
             mCallback.onCancel();
         }
