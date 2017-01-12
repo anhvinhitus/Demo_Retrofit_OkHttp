@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:singleLine="false"
         android:text="Quét mã QR để chuyển tiền cho tôi mà không cần kết bạn"
-        android:textSize="14dp" />
+        android:textSize="@dimen/font_size_medium" />
 
     <TextView
         android:id="@+id/tvAmount"

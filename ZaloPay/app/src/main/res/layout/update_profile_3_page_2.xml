@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical">
 
         <TextView
@@ -17,11 +15,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:singleLine="false"
             android:text="@string/lbl.update.profile.3.page.2"
-            android:textSize="14dp" />
+            android:textSize="@dimen/font_size_medium" />
 
         <View
             android:layout_width="match_parent"
@@ -44,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/lbl.identify.front"
-                android:textSize="14dp" />
+                android:textSize="@dimen/font_size_medium" />
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/ivFgCmnd"
@@ -99,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/lbl.identify.back"
-                android:textSize="14dp" />
+                android:textSize="@dimen/font_size_medium" />
 
             <com.zalopay.ui.widget.IconFont
                 android:id="@+id/btnRemoveBackCmnd"
@@ -122,11 +121,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:singleLine="false"
             android:text="@string/lbl.recommend.upload.avatar"
-            android:textSize="14dp" />
+            android:textSize="@dimen/font_size_medium" />
 
         <View
             android:layout_width="match_parent"
@@ -159,7 +159,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="Ảnh của bạn"
-                android:textSize="14dp" />
+                android:textSize="@dimen/font_size_medium" />
 
             <com.zalopay.ui.widget.IconFont
                 android:id="@+id/btnRemoveAvatar"

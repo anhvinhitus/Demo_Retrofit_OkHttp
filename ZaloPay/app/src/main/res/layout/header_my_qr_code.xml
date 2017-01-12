@@ -41,7 +41,7 @@
             android:layout_gravity="center_vertical|left"
             android:layout_marginLeft="16dp"
             android:text="Tổng cộng"
-            android:textSize="14dp" />
+            android:textSize="@dimen/font_size_medium" />
 
         <TextView
             android:id="@+id/totalView"
@@ -51,7 +51,7 @@
             android:layout_gravity="center_vertical|right"
             android:layout_marginRight="16dp"
             android:text="0 VND"
-            android:textSize="14dp" />
+            android:textSize="@dimen/font_size_medium" />
 
         <View
             android:layout_width="match_parent"

@@ -44,7 +44,7 @@
         android:paddingTop="8dp"
         android:singleLine="false"
         android:text="@string/use.fingerprint.description"
-        android:textSize="14dp" />
+        android:textSize="@dimen/font_size_medium" />
 
 
     <FrameLayout
@@ -85,7 +85,7 @@
         android:paddingTop="8dp"
         android:singleLine="false"
         android:text="@string/protection.information.description"
-        android:textSize="14dp" />
+        android:textSize="@dimen/font_size_medium" />
 
 
     <FrameLayout
@@ -122,6 +122,6 @@
         android:paddingTop="8dp"
         android:singleLine="false"
         android:text="@string/change.password.description"
-        android:textSize="14dp" />
+        android:textSize="@dimen/font_size_medium" />
 
 </LinearLayout>
