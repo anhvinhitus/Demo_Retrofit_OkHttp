@@ -100,8 +100,12 @@ public class IconFont extends TextView {
         } else {
             IconFontInfo iconFontInfo = IconFontHelper.getInstance().getIconFontInfo(iconName);
             if (iconFontInfo == null) {
+                Log.w("IconFont", String.format("setIcon fail, not found info of iconName:%s",
+                        iconName));
                 setText("");
             } else {
+                Log.d("IconFont", String.format("setIcon success, iconName:%s code:%s",
+                        iconName, iconFontInfo.code));
                 setText(iconFontInfo.code);
             }
         }
