@@ -661,10 +661,9 @@ public class Navigator implements INavigator {
                               @NonNull String subject, @Nullable String emailText, @Nullable ArrayList<Uri> uris) {
 
         Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        emailIntent.setType("text/plain");
+        emailIntent.setType("message/rfc822");
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
                 new String[]{emailTo});
-
         if (!TextUtils.isEmpty(emailCC)) {
             emailIntent.putExtra(android.content.Intent.EXTRA_CC,
                     new String[]{emailCC});
@@ -683,6 +682,19 @@ public class Navigator implements INavigator {
 
        /* emailIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);*/
         emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        emailIntent.setPackage("com.google.android.gm");
+
+        if (emailIntent.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivity(emailIntent);
+            return true;
+        }
+
+        emailIntent.setPackage("com.google.android.apps.inbox");
+
+        if (emailIntent.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivity(emailIntent);
+            return true;
+        }
 
         try {
             activity.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
@@ -690,6 +702,7 @@ public class Navigator implements INavigator {
         } catch (Exception e) {
             Timber.e(e, "No support send via email");
         }
+
         return false;
     }
 }
