@@ -23,6 +23,7 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
     private String mCurrentUrl = "";
     private boolean mIsPageValid = false;
     private boolean mHasError = false;
+    private boolean mLoadPageFinished = false;
 
     private ZPWebView mWebView = null;
     private IWebViewListener mWebViewListener;
@@ -40,6 +41,7 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         }
         showLoading();
         mHasError = false;
+        mLoadPageFinished = false;
         mCurrentUrl = pUrl;
         mWebView.loadUrl(pUrl);
     }
@@ -48,13 +50,17 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         return mHasError;
     }
 
+    public boolean isLoadPageFinished() {
+        return mLoadPageFinished;
+    }
+
     @Override
     public void onPageFinished(WebView view, String url) {
         Timber.d("onPageFinished url [%s]", url);
         if (mHasError || mWebView == null) {
             return;
         }
-
+        mLoadPageFinished = true;
         hideLoading();
         injectScriptFile("webapp.js");
 
@@ -279,4 +285,5 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
 
         mWebViewListener = null;
     }
+
 }

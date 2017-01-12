@@ -176,6 +176,9 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
 
                     @Override
                     public void onOKevent() {
+                        if (mWebViewProcessor != null && mWebViewProcessor.isLoadPageFinished()) {
+                            return;
+                        }
                         showProgressDialog(timeout);
                     }
                 });

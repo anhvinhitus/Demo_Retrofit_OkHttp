@@ -111,6 +111,7 @@ public abstract class BaseFragment extends Fragment {
             return;
         }
         mProgressDialog.dismiss();
+        cancelShowLoadingTimeoutRunnable();
     }
 
     public void showProgressDialog() {
