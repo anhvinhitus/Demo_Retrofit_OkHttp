@@ -432,23 +432,21 @@
     <string name="no.result.your.search">Không có kết quả nào phù hợp với tìm kiếm của bạn</string>
     <string name="establish.and.protect.account">Thiết lập bảo vệ tài khoản</string>
 
-
     <!-- Start Fingerprint-->
     <string name="use_password">Nhập mật khẩu</string>
     <string name="password">Mật khẩu</string>
     <string name="fingerprint_description">Quyét vân tay để quá trình hoàn tất</string>
-    <string name="fingerprint_decrypt_title">Fingerprint cho ZaloPay</string>
+    <string name="fingerprint_decrypt_title">Xác thực vân tay</string>
     <string name="fingerprint_status_decrypt">Quét dấu vân tay để truy cập thông tin</string>
     <string name="fingerprint_description1">Xác nhận vân tay để tiếp tục</string>
     <!--Confirm your fingerprint now-->
-    <string name="fingerprint_hint">Xác nhận fingerprint của bạn ngay</string>
+    <string name="fingerprint_hint">Xác nhận vân tay của bạn ngay</string>
     <string name="password_description">Nhập mật khẩu thanh toán để tiếp tục</string>
     <string name="fingerprint_not_recognized">Không nhận diện được dấu vân tay</string>
     <string name="fingerprint_success">Xác thực thành công</string>
-    <string name="use_fingerprint_to_authenticate_title">Sử dụng vân tay để xác thực</string>
     <string name="confirm.off.fingerprint.message">Bạn chắc chắn muốn hủy thanh toán bằng vân tay?</string>
     <string name="confirm.off.protect.message">Bạn chắc chắn muốn bỏ bảo vệ thông tin cá nhân?</string>
-    <string name="use.fingerprint">Sử dụng Fingerprint</string>
+    <string name="use.fingerprint">Sử dụng vân tay để xác thực</string>
     <string name="use.fingerprint.description">Xác thực bằng vân tay thay vì sử dụng mật khẩu thanh toán.\nLưu ý: Bất cứ vân tay nào đã đăng ký trong hệ thống đều xác thực được khi thanh toán.</string>
     <string name="protection.information">Bảo vệ thông tin cá nhân</string>
     <string name="protection.information.description">Hỏi mật khẩu hoặc xác thực vân tay mỗi khi truy xuất: Danh sách liên kết thẻ, Thông tin cá nhân, Lịch sử thanh toán.</string>
@@ -458,7 +456,10 @@
     <string name="finger.moved.too.fast">Ngón tay di chuyển quá nhanh. Vui lòng thử lại.</string>
     <string name="finger.moved.too.slow">Ngón tay di chuyển quá chậm. Vui lòng thử lại.</string>
     <string name="finger.too.many.attempts">Thực hiện xác thực quá nhiều. Vui lòng nhập mật khẩu để tiếp tục.</string>
+    <string name="finger.error.canceled">Xác thực vân tay tạm dừng. Vui lòng nhập mật khẩu để tiếp tục.</string>
     <string name="fingerprint.description.pay">Quét vân tay để xác nhận thanh toán</string>
+    <string name="fingerprint.error.hw.unavailable">Xác thực vân tay không sẵn sàng. Vui lòng nhập mật khẩu để tiếp tục.</string>
+    <string name="fingerprint.error.timeout">Thời gian xác thực vân tay hết hạn. Vui lòng nhập mật khẩu để tiếp tục.</string>
     <!-- End Fingerprint-->
 
     <string name="maintain_withdraw_message" formatted="false">Tính năng Rút Tiền đang được bảo trì. Thời gian bảo trì từ %s đến %s.</string>

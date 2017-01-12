@@ -30,13 +30,29 @@ final class FingerprintAuthenticationCallback extends FingerprintManager.Authent
             return;
         }
 
+        boolean showError = true;
         switch (errorCode) {
+            case FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE:
+                errString = mContext.getString(R.string.fingerprint_error_hw_unavailable);
+                break;
+            case FingerprintManager.FINGERPRINT_ERROR_TIMEOUT:
+                errString = mContext.getString(R.string.fingerprint_error_timeout);
+                break;
             case FingerprintManager.FINGERPRINT_ERROR_LOCKOUT:
                 errString = mContext.getString(R.string.finger_too_many_attempts);
                 break;
+            case FingerprintManager.FINGERPRINT_ERROR_CANCELED:
+                errString = mContext.getString(R.string.finger_error_canceled);
+                break;
+            default:
+                showError = false;
+                break;
         }
 
-        fingerprintProvider.get().onAuthenticationError(errorCode, errString);
+        if (showError) {
+            fingerprintProvider.get().onAuthenticationError(errorCode, errString);
+        }
+
     }
 
     @Override
@@ -45,6 +61,7 @@ final class FingerprintAuthenticationCallback extends FingerprintManager.Authent
         if (fingerprintProvider.get() == null) {
             return;
         }
+        boolean showError = true;
         switch (helpCode) {
             case FingerprintManager.FINGERPRINT_ACQUIRED_TOO_FAST:
                 helpString = mContext.getString(R.string.finger_moved_too_fast);
@@ -52,8 +69,14 @@ final class FingerprintAuthenticationCallback extends FingerprintManager.Authent
             case FingerprintManager.FINGERPRINT_ACQUIRED_TOO_SLOW:
                 helpString = mContext.getString(R.string.finger_moved_too_slow);
                 break;
+            default:
+                showError = false;
+                break;
         }
-        fingerprintProvider.get().onAuthenticationHelp(helpCode, helpString);
+
+        if (showError) {
+            fingerprintProvider.get().onAuthenticationHelp(helpCode, helpString);
+        }
     }
 
     @Override
