@@ -165,11 +165,12 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
             return;
         }
 
-        boolean notRetry = ((FingerprintException) e).mErrorCode == FingerprintManager.FINGERPRINT_ERROR_TIMEOUT
-                || ((FingerprintException) e).mErrorCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT
-                || ((FingerprintException) e).mErrorCode == FingerprintManager.FINGERPRINT_ERROR_CANCELED
-                || ((FingerprintException) e).mErrorCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE
-                ;
+        FingerprintException fingerException = (FingerprintException) e;
+
+        boolean notRetry = (fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_TIMEOUT
+                || fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT
+                || fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_CANCELED
+                || fingerException.mErrorCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE);
 
         mView.showFingerprintError(e.getMessage(), !notRetry);
     }
