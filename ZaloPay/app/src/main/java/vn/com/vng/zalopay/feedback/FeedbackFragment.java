@@ -248,6 +248,7 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
                 swSendAppInfor.isChecked(),
                 swSendDeviceInfor.isChecked(), mAdapter.getItems());
 
+
     }
 
     @OnClick(R.id.tvCancel)
@@ -375,5 +376,10 @@ public class FeedbackFragment extends AbsPickerImageFragment implements IFeedbac
             outState.putString("screenshotName", mScreenshotName);
         }
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void finish() {
+        getActivity().finish();
     }
 }

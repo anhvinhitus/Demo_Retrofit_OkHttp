@@ -103,9 +103,15 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
                                     return;
                                 }
 
-                                mNavigator.startEmail((Activity) mView.getContext(), mContext.getString(R.string.email_support),
+                                boolean result = mNavigator.startEmail((Activity) mView.getContext(), mContext.getString(R.string.email_support),
                                         null, mContext.getString(R.string.subject_compose_email_support),
                                         null, uris);
+                                if (result) {
+                                    mView.finish();
+                                } else {
+                                    mView.showError(mContext.getString(R.string.exception_send_feedback));
+                                }
+
                             }
                         });
                 mSubscription.add(subscription);

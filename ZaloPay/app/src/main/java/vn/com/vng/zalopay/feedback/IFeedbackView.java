@@ -10,4 +10,6 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 interface IFeedbackView extends ILoadDataView {
     void insertScreenshot(Uri uri);
+
+    void finish();
 }
