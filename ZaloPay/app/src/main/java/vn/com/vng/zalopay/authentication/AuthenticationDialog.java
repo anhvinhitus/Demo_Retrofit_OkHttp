@@ -114,6 +114,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getDialog().setTitle(getString(R.string.confirm));
+        getDialog().setCanceledOnTouchOutside(false);
         View v = inflater.inflate(R.layout.fingerprint_dialog_container, container, false);
         mUnbinder = ButterKnife.bind(this, v);
         setupFragmentComponent();
