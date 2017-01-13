@@ -12,6 +12,8 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.RedPacketNetworkErrorEnum;
 import vn.com.vng.zalopay.data.api.entity.RedPacketStatusEntity;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
@@ -24,6 +26,7 @@ import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
@@ -474,15 +477,23 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<Boolean> getListPackageStatus(List<Long> listpackageid) {
-        String appIds = listpackageid.toString().replaceAll("\\s", "");
-        Timber.d("getListPackageStatus: %s", appIds);
-        return mRequestService.getListPackageStatus(appIds, user.zaloPayId, user.accesstoken)
+        String listPacketId = Strings.joinWithDelimiter(",", listpackageid);
+        Timber.d("getListPackageStatus: %s", listPacketId);
+        return mRequestService.getListPackageStatus(listPacketId, user.zaloPayId, user.accesstoken)
                 .doOnNext(response -> updateListPackageStatus(response.listpackagestatus))
                 .map(BaseResponse::isSuccessfulResponse)
                 ;
     }
 
     private void updateListPackageStatus(List<RedPacketStatusEntity> listpackagestatus) {
+        for (RedPacketStatusEntity entity : listpackagestatus) {
+            if (entity.status == 2) { // OPENED
+                entity.status = RedPacketNetworkErrorEnum.PACKAGE_HAS_OPENED.getValue();
+            } else if (entity.status == 3) { // REFUNDED
+                entity.status = RedPacketNetworkErrorEnum.PACKAGE_HAS_REFUND.getValue();
+            }
+        }
+
         mLocalStorage.updateListPackageStatus(listpackagestatus);
     }
 }
