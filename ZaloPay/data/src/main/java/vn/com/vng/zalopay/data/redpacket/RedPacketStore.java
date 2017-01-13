@@ -141,7 +141,7 @@ public interface RedPacketStore {
 
         @API_NAME(ZPEvents.API_REDPACKAGE_GETLISTPACKAGESTATUS)
         @GET(Constants.REDPACKET_API.GET_LIST_PACKAGE_STATUS)
-        Observable<ListRedPacketStatusResponse> getListPackageStatus(@Query("listpackageid") List<Long> list, @Query("userid") String zalopayId, @Query("accesstoken") String accessToken);
+        Observable<ListRedPacketStatusResponse> getListPackageStatus(@Query("listpackageid") String listpackageid, @Query("userid") String zalopayId, @Query("accesstoken") String accessToken);
     }
 
     /**

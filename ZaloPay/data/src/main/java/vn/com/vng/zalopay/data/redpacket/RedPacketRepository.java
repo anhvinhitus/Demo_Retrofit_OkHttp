@@ -474,7 +474,9 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<Boolean> getListPackageStatus(List<Long> listpackageid) {
-        return mRequestService.getListPackageStatus(listpackageid, user.zaloPayId, user.accesstoken)
+        String appIds = listpackageid.toString().replaceAll("\\s", "");
+        Timber.d("getListPackageStatus: %s", appIds);
+        return mRequestService.getListPackageStatus(appIds, user.zaloPayId, user.accesstoken)
                 .doOnNext(response -> updateListPackageStatus(response.listpackagestatus))
                 .map(BaseResponse::isSuccessfulResponse)
                 ;
