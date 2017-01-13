@@ -21,7 +21,7 @@
         android:layout_gravity="right|top"
         android:gravity="center"
         android:textColor="#ffffff"
-        android:textSize="@dimen/font_size_normal"
+        android:textSize="12dp"
         android:visibility="gone"
         rv:rv_backgroundColor="@color/red"
         rv:rv_isRadiusHalfHeight="true"

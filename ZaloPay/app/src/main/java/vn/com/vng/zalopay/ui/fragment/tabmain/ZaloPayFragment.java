@@ -134,7 +134,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
                 new ClickableSpanNoUnderline(ContextCompat.getColor(getContext(), R.color.txt_check_internet)) {
                     @Override
                     public void onClick(View widget) {
-                        navigator.startTutorialConnectInternetActivity(ZaloPayFragment.this.getContext());
+                        navigator.startTutorialConnectInternetActivity(getContext());
                     }
                 });
     }
