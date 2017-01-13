@@ -29,7 +29,7 @@ public class ZPTrackerGA implements ZPTracker {
         HitBuilders.EventBuilder eventBuilder = new HitBuilders.EventBuilder()
                 .setCategory(ZPEvents.categoryFromEventId(eventId))
                 .setAction(ZPEvents.actionFromEventId(eventId))
-                .setLabel("");
+                .setLabel(ZPEvents.actionFromEventId(eventId));
 
 //        if (eventValue != null) {
 //            eventBuilder.setValue(eventValue);
@@ -56,8 +56,9 @@ public class ZPTrackerGA implements ZPTracker {
     public void trackTiming(int eventId, long value) {
         mTracker.send(new HitBuilders.TimingBuilder()
             .setCategory(ZPEvents.categoryFromEventId(eventId))
-            .setLabel(ZPEvents.actionFromEventId(eventId))
             .setValue(value)
+            .setLabel(ZPEvents.actionFromEventId(eventId))
+            .setVariable(ZPEvents.actionFromEventId(eventId))
             .build());
     }
 }
