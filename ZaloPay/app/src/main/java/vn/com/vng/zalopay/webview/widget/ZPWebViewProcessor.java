@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.webview.widget;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
@@ -39,10 +41,10 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         if (pActivity == null || TextUtils.isEmpty(pUrl) || mWebView == null) {
             return;
         }
-        showLoading();
         mHasError = false;
         mLoadPageFinished = false;
         mCurrentUrl = pUrl;
+        Timber.d("start load url[%s]", pUrl);
         mWebView.loadUrl(pUrl);
     }
 
@@ -55,7 +57,14 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
     }
 
     @Override
+    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        super.onPageStarted(view, url, favicon);
+        showLoading();
+    }
+
+    @Override
     public void onPageFinished(WebView view, String url) {
+        super.onPageFinished(view, url);
         Timber.d("onPageFinished url [%s]", url);
         if (mHasError || mWebView == null) {
             return;
@@ -159,9 +168,20 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         onReceivedError(errorCode, description);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        if (request == null) {
+            return false;
+        }
+        String url = request.getUrl().toString();
+        Timber.d("shouldOverrideUrlLoading  uri[%s]", url);
+        return !TextUtils.isEmpty(url) && shouldOverrideUrlLoading(view, url);
+    }
+
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Timber.d("shouldOverrideUrlLoading: %s", url);
+        Timber.d("shouldOverrideUrlLoading url[%s]", url);
         //use case for url
         if (TextUtils.isEmpty(url)) {
             return true;
