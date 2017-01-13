@@ -467,8 +467,24 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
             if (receivePackageGD == null) {
                 continue;
             }
-            receivePackageGD.status = entity.status;
+            receivePackageGD.status = (long) mapRedPacketStatus(entity.status).getValue();
             getDaoSession().insertOrReplace(receivePackageGD);
+        }
+    }
+
+//    -1: Không tìm thấy package
+//    1. INIT (chưa mở)
+//    2. OPENED (đã mở)
+//    3. REFUNDED (đã hoàn tiền)
+    private RedPacketStatus mapRedPacketStatus(long status) {
+        if (status == 1) {
+            return RedPacketStatus.CanOpen;
+        } else if (status == 2) {
+            return RedPacketStatus.Opened;
+        } else if (status == 3) {
+            return RedPacketStatus.Refunded;
+        } else {
+            return RedPacketStatus.Unknown;
         }
     }
 }
