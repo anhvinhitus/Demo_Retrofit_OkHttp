@@ -293,7 +293,7 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
             if (mMoneyChangeSuccess != null) {
                 mMoneyChangeSuccess.setTextColor(ContextCompat.getColor(itemView.getContext(), success ? R.color.green : R.color.red));
                 mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(amount, false));
-                mIconState.setText(success ? R.string.general_success : R.string.general_failed);
+                mIconState.setIcon(success ? R.string.general_success : R.string.general_failed);
             }
         }
 
