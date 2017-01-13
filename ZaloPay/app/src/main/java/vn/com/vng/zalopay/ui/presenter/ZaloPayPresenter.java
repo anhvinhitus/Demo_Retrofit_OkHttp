@@ -17,9 +17,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
@@ -61,6 +59,10 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     private Navigator mNavigator;
 
     private Context mContext;
+
+    private int numberCallAppResource;
+
+    private long mLastTimeRefreshApp;
 
     @Inject
     ZaloPayPresenter(Context context, MerchantStore.Repository mMerchantRepository,
@@ -110,7 +112,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     @Override
     public void initialize() {
-        this.getListAppResource(false);
+        this.getListAppResource();
         this.getTotalNotification(2000);
         this.getBalance();
         this.ensureAppResourceAvailable();
@@ -126,19 +128,8 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mSubscription.add(subscription);
     }
 
-    private void getListAppResource(boolean isShouldUpdate) {
-
-        Observable<List<AppResource>> observable = isShouldUpdate ? mAppResourceRepository.fetchListAppHome() :
-                mAppResourceRepository.getListAppHome();
-
-        Subscription subscription = observable
-                .filter(new Func1<List<AppResource>, Boolean>() {
-                    @Override
-                    public Boolean call(List<AppResource> appResources) {
-                        return Math.abs(System.currentTimeMillis() / 1000 - mLastTimeRefreshApp) > 30 ||
-                                mView.getAppCount() <= PaymentAppConfig.APP_RESOURCE_LIST.size();
-                    }
-                })
+    private void getListAppResource() {
+        Subscription subscription = mAppResourceRepository.getListAppHome()
                 .doOnNext(new Action1<List<AppResource>>() {
                     @Override
                     public void call(List<AppResource> appResources) {
@@ -222,11 +213,11 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         return listId;
     }
 
-    private int numberCallAppResource;
-
     private void onGetAppResourceSuccess(List<AppResource> resources) {
+
         numberCallAppResource++;
         Timber.d("get app resource call : " + numberCallAppResource);
+        mLastTimeRefreshApp = System.currentTimeMillis() / 1000;
 
         AppResource showhow = getAppResource(Constants.SHOW_SHOW);
 
@@ -240,15 +231,13 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mView.refreshInsideApps(resources);
     }
 
-    private long mLastTimeRefreshApp;
-
     private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
 
         @Override
         public void onNext(List<AppResource> appResources) {
             ZaloPayPresenter.this.onGetAppResourceSuccess(appResources);
             Timber.d(" AppResource %s", appResources.size());
-            mLastTimeRefreshApp = System.currentTimeMillis() / 1000;
+
         }
 
         @Override
@@ -340,10 +329,25 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent e) {
         Timber.d("onRefreshPlatformInfoEvent");
-        this.getListAppResource(true);
+        if (System.currentTimeMillis() / 1000 - mLastTimeRefreshApp <= 120) {
+            return;
+        }
+
+        Timber.d("Fetch list application");
+        Subscription subscription = mAppResourceRepository.fetchListAppHome()
+                .doOnNext(new Action1<List<AppResource>>() {
+                    @Override
+                    public void call(List<AppResource> appResources) {
+                        getListMerchantUser(appResources);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AppResourceSubscriber());
+        mSubscription.add(subscription);
     }
 
-    void ensureAppResourceAvailable() {
+    private void ensureAppResourceAvailable() {
         Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());

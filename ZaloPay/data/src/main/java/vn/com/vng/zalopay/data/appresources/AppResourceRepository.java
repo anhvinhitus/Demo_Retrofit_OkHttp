@@ -327,17 +327,10 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     public Observable<List<AppResource>> getListAppHome() {
         Observable<List<AppResource>> local = getAppResourceLocal();
         Observable<List<AppResource>> cloud = fetchAppResource()
-                .onErrorResumeNext(throwable -> getAppResourceLocal());
-        Observable<List<AppResource>> source = Observable.concat(local, cloud);
-        if (isUpToDate()) {
-            return source
-                    .takeFirst(resources -> !Lists.isEmptyOrNull(resources) && resources.size() > 0)
-                    .map(this::listAppInHomePage);
-        } else {
-            return source
-                    .throttleLast(200, TimeUnit.MILLISECONDS)
-                    .map(this::listAppInHomePage);
-        }
+                .onErrorResumeNext(Observable.empty());
+        return Observable.concat(local, cloud)
+                // .throttleLast(100,TimeUnit.MILLISECONDS)
+                .map(this::listAppInHomePage);
 
     }
 
