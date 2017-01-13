@@ -134,8 +134,8 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         if (layoutRetry == null || imgError == null || tvError == null) {
             return;
         }
-        imgError.setImageResource(R.drawable.webapp_ic_noconnect);
-        tvError.setText(R.string.exception_no_connection_try_again);
+        imgError.setImageResource(R.drawable.webapp_ic_noload);
+        tvError.setText(R.string.load_data_error);
         layoutRetry.setVisibility(View.VISIBLE);
     }
 
