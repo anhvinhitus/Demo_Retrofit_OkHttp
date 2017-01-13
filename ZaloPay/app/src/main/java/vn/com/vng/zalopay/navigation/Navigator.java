@@ -91,7 +91,7 @@ public class Navigator implements INavigator {
 
     private long lastTimeCheckPassword = 0;
 
-    private final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
+    private static final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
 
     @Inject
     SharedPreferences mPreferences;
