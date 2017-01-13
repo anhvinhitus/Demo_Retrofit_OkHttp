@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.crashlytics.android.Crashlytics;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -129,5 +130,10 @@ public class UserSession {
             mUser.accesstoken = event.newSession;
             mUserConfig.setAccessToken(event.newSession);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onNoSubscriber(NoSubscriberEvent event) {
+        Timber.d("onNoSubscriber: %s", event.originalEvent);
     }
 }

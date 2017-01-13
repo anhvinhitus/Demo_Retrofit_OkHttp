@@ -73,7 +73,7 @@ public abstract class DefaultPaymentResponseListener implements PaymentWrapper.I
         }
 
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-        applicationComponent.eventBus().post(new TokenPaymentExpiredEvent());
+        applicationComponent.eventBus().postSticky(new TokenPaymentExpiredEvent());
     }
 
     @Override

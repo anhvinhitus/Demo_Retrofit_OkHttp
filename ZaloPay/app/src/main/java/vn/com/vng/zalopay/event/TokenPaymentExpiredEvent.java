@@ -5,4 +5,5 @@ package vn.com.vng.zalopay.event;
  */
 
 public class TokenPaymentExpiredEvent {
+    public TokenPaymentExpiredEvent(){}
 }

@@ -161,7 +161,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                     showNetworkErrorDialog();
                 }
             } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
-                mEventBus.post(new TokenPaymentExpiredEvent());
+                mEventBus.postSticky(new TokenPaymentExpiredEvent());
             } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
                 Timber.e("err removed map card " + pMessage.returnmessage);
                 showErrorView(pMessage.returnmessage);

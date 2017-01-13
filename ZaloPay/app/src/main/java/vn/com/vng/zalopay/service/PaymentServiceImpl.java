@@ -66,7 +66,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     private void logout() {
         Timber.d("logout");
-        mEventBus.post(new TokenPaymentExpiredEvent());
+        mEventBus.postSticky(new TokenPaymentExpiredEvent());
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {

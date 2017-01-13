@@ -129,7 +129,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 return;
             }
 
-            mEventBus.post(new TokenPaymentExpiredEvent());
+            mEventBus.postSticky(new TokenPaymentExpiredEvent());
         }
 
         @Override

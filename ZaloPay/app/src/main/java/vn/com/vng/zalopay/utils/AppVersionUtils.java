@@ -101,7 +101,7 @@ public class AppVersionUtils {
 
     private static void clearSession() {
         EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-        eventBus.post(new TokenPaymentExpiredEvent());
+        eventBus.postSticky(new TokenPaymentExpiredEvent());
     }
 
     private static void showDialogUpgradeApp(final Activity activity, final boolean forceUpdate) {

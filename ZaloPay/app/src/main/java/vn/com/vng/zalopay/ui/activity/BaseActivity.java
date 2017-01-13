@@ -216,7 +216,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onServerMaintain(ServerMaintainEvent event) {
         Timber.i("Receive server maintain event");
-
         String eventMessage = TextUtils.isEmpty(event.getMessage()) ?
                 getString(R.string.exception_server_maintain) : event.getMessage();
 
@@ -240,7 +239,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
         boolean result = clearUserSession(getString(R.string.exception_token_expired_message));
@@ -250,6 +249,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (TAG.equals(LoginZaloActivity.class.getSimpleName())) {
             return false;
         }
+
+        //Remove all sticky event in app
+        eventBus.removeAllStickyEvents();
 
         if (getUserComponent() != null) {
             getUserComponent().userSession().endSession();

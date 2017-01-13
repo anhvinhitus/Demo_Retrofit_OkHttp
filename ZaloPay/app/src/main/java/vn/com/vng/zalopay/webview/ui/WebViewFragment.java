@@ -289,7 +289,7 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
 
     @Override
     public void logout() {
-        getAppComponent().eventBus().post(new TokenPaymentExpiredEvent());
+        getAppComponent().eventBus().postSticky(new TokenPaymentExpiredEvent());
     }
 
     @Override
