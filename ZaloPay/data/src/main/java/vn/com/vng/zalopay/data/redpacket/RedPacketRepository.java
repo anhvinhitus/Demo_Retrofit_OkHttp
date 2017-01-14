@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
+import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Strings;
@@ -491,13 +492,25 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     private void updateListPackageStatus(List<RedPacketStatusEntity> listpackagestatus) {
         for (RedPacketStatusEntity entity : listpackagestatus) {
-            if (entity.status == 2) { // OPENED
-                entity.status = RedPacketNetworkErrorEnum.PACKAGE_HAS_OPENED.getValue();
-            } else if (entity.status == 3) { // REFUNDED
-                entity.status = RedPacketNetworkErrorEnum.PACKAGE_HAS_REFUND.getValue();
-            }
+            entity.status = mapRedPacketStatus(entity.status).getValue();
         }
 
         mLocalStorage.updateListPackageStatus(listpackagestatus);
+    }
+
+    //    -1: Không tìm thấy package
+    //    1. INIT (chưa mở)
+    //    2. OPENED (đã mở)
+    //    3. REFUNDED (đã hoàn tiền)
+    private RedPacketStatus mapRedPacketStatus(long status) {
+        if (status == 1) {
+            return RedPacketStatus.CanOpen;
+        } else if (status == 2) {
+            return RedPacketStatus.Opened;
+        } else if (status == 3) {
+            return RedPacketStatus.Refunded;
+        } else {
+            return RedPacketStatus.Unknown;
+        }
     }
 }
