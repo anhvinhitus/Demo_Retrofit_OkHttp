@@ -26,6 +26,8 @@ import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
 import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by AnhHieu on 6/14/16.
@@ -358,6 +360,7 @@ public class WsConnection extends Connection {
                 long currentTime = System.currentTimeMillis();
                 Timber.v("Got pong from server. Time elapsed: %s", currentTime - ((ServerPongData) message).clientData);
                 mServerPongBus.send(currentTime - ((ServerPongData) message).clientData);
+                ZPAnalytics.trackTiming(ZPEvents.API_NOTIFICATION_PING_PONG, currentTime - ((ServerPongData) message).clientData);
                 ensureAuthenticationSuccess();
             } else {
                 postResult(message);
