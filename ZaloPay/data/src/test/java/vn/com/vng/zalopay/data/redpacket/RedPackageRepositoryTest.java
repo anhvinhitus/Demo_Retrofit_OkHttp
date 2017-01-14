@@ -268,7 +268,7 @@ public class RedPackageRepositoryTest {
         }
 
         @Override
-        public Observable<ListRedPacketStatusResponse> getListPackageStatus(@Query("listpackageid") List<Long> list, @Query("userid") String zalopayId, @Query("accesstoken") String accessToken) {
+        public Observable<ListRedPacketStatusResponse> getListPackageStatus(@Query("listpackageid") String listpackageid, @Query("userid") String zalopayId, @Query("accesstoken") String accessToken) {
             return Observable.just(new ListRedPacketStatusResponse());
         }
     }
