@@ -16,6 +16,8 @@ import com.zalopay.ui.widget.iconfont.IconFontHelper;
 import com.zalopay.ui.widget.iconfont.IconFontInfo;
 import com.zalopay.ui.widget.util.FontHelper;
 
+import timber.log.Timber;
+
 /**
  * Created by longlv on 11/17/16.
  * TextView subclass which allows the user to define a truetype font file to use as the view's typeface.
@@ -44,7 +46,7 @@ public class IconFont extends TextView {
         try {
             String fontAsset = typedArray.getString(R.styleable.IconFont_typefaceAsset);
             String iconName = typedArray.getString(R.styleable.IconFont_iconName);
-            Log.d("IconFont", "icon name: " + iconName);
+//            Log.d("IconFont", "icon name: " + iconName);
 
             if (!TextUtils.isEmpty(fontAsset)) {
                 setTypefaceFromAsset(fontAsset);
@@ -53,7 +55,7 @@ public class IconFont extends TextView {
             }
             setIcon(iconName);
         } catch (RuntimeException e) {
-            Log.d("IconFont", "set font and icon name throw RuntimeException: " + e.getMessage());
+            Timber.d(e, "set font and icon name throw RuntimeException");
         }
 
         try {
@@ -62,15 +64,15 @@ public class IconFont extends TextView {
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, iconSize);
             }
         } catch (UnsupportedOperationException e) {
-            Log.d("IconFont", "get icon size throw UnsupportedOperationException: " + e.getMessage());
+            Timber.d(e, "get icon size throw UnsupportedOperationException");
         } catch (RuntimeException e) {
-            Log.d("IconFont", "get icon size throw RuntimeException: " + e.getMessage());
+            Timber.d(e, "get icon size throw RuntimeException");
         }
 
         try {
             typedArray.recycle();
         } catch (RuntimeException e) {
-            Log.d("IconFont", "recycle typedArray throw RuntimeException: " + e.getMessage());
+            Timber.d(e, "recycle typedArray throw RuntimeException");
         }
     }
 
@@ -78,7 +80,7 @@ public class IconFont extends TextView {
         try {
             super.setTextColor(ResourcesCompat.getColor(getResources(), color, null));
         } catch (Resources.NotFoundException e) {
-            Log.w("IconFont", "setIconColor throw NotFoundException: " + e.getMessage());
+            Timber.w(e, "setIconColor throw NotFoundException");
         }
     }
 
@@ -100,12 +102,10 @@ public class IconFont extends TextView {
         } else {
             IconFontInfo iconFontInfo = IconFontHelper.getInstance().getIconFontInfo(iconName);
             if (iconFontInfo == null) {
-                Log.w("IconFont", String.format("setIcon fail, not found info of iconName:%s",
-                        iconName));
+                Timber.w("setIcon fail, not found info of iconName: %s", iconName);
                 setText("");
             } else {
-                Log.d("IconFont", String.format("setIcon success, iconName:%s code:%s",
-                        iconName, iconFontInfo.code));
+                Timber.d("setIcon success, iconName: %s code: %s", iconName, iconFontInfo.code);
                 setText(iconFontInfo.code);
             }
         }
@@ -119,7 +119,7 @@ public class IconFont extends TextView {
         }
         Typeface typeface = FontHelper.getInstance().getFontFromAsset(getContext().getAssets(), fontAsset);
         if (typeface == null) {
-            Log.d("IconFont", String.format("Could not create a typeface from asset: %s", fontAsset));
+            Timber.d("Could not create a typeface from asset: %s", fontAsset);
         } else {
             setTypefaceWithoutStyle(typeface);
         }
