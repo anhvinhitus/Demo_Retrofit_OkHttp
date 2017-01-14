@@ -477,6 +477,10 @@ public class RedPacketRepository implements RedPacketStore.Repository {
 
     @Override
     public Observable<Boolean> getListPackageStatus(List<Long> listpackageid) {
+        if (listpackageid == null || listpackageid.isEmpty()) {
+            return Observable.just(true);
+        }
+
         String listPacketId = Strings.joinWithDelimiter(",", listpackageid);
         Timber.d("getListPackageStatus: %s", listPacketId);
         return mRequestService.getListPackageStatus(listPacketId, user.zaloPayId, user.accesstoken)

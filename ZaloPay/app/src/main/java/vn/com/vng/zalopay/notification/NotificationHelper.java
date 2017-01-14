@@ -466,6 +466,10 @@ public class NotificationHelper {
     }
 
     void recoveryRedPacketStatus() {
+        if (mListPacketIdToRecovery == null || mListPacketIdToRecovery.isEmpty()) {
+            return;
+        }
+
         Subscription subscription = mRedPacketRepository.getListPackageStatus(mListPacketIdToRecovery)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
