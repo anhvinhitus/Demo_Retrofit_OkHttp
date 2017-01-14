@@ -1,9 +1,11 @@
 package vn.com.vng.zalopay.data.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.greenrobot.greendao.database.Database;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 
 /**
@@ -19,7 +21,7 @@ public class DBOpenHelper extends DaoMaster.OpenHelper {
     public void onUpgrade(Database db, int oldVersion, int newVersion) {
 
         //Todo: apply db upgrade code here
-        // Debug
+        Timber.i("Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
         DaoMaster.dropAllTables(db, true);
         onCreate(db);
     }
