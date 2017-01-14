@@ -62,7 +62,7 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
         this.mUserConfig = userConfig;
     }
 
-    void sendEmail(String transactionID, String category, String email, String description,
+    void sendEmail(String transactionID, String category, String email, final String description,
                    boolean user, boolean app, boolean device, final List<Uri> screenshot) {
 
         Timber.d("sendEmail: transId [%s] category [%s] email [%s] desc [%s] user [%s] app [%s] device [%s]",
@@ -105,7 +105,7 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
 
                                 boolean result = mNavigator.startEmail((Activity) mView.getContext(), mContext.getString(R.string.email_support),
                                         null, mContext.getString(R.string.subject_compose_email_support),
-                                        null, uris);
+                                        description, uris);
                                 if (result) {
                                     mView.finish();
                                 } else {
