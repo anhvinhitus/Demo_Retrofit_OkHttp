@@ -105,7 +105,6 @@ public class IconFont extends TextView {
                 Timber.w("setIcon fail, not found info of iconName: %s", iconName);
                 setText("");
             } else {
-                Timber.d("setIcon success, iconName: %s code: %s", iconName, iconFontInfo.code);
                 setText(iconFontInfo.code);
             }
         }
