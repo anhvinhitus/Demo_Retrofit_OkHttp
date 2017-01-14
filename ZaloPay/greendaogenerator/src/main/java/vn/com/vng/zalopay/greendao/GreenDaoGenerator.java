@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.ToMany;
 
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 53;
+    private static final int APP_DB_VERSION = 54;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
