@@ -103,4 +103,5 @@
     <dimen name="button.text.padding.right">24sp</dimen>
 
     <dimen name="linkcard.margin.bottom.lastitem">35dp</dimen>
+    <dimen name="payment.actionbar.height">76dp</dimen>
 </resources>
