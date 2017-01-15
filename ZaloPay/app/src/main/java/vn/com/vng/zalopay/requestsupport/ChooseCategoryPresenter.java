@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import rx.Observer;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -36,6 +37,7 @@ public class ChooseCategoryPresenter extends AbstractPresenter<IChooseCategoryVi
     void fetchAppResource() {
         Subscription subscription = mAppResourceRepository.fetchAppResource()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<List<AppResource>>() {
 
                     @Override
