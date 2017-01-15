@@ -18,6 +18,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -139,6 +140,10 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         @Override
         public void onSuccess(DMappedCard mapCard) {
             Timber.d("removed map card: %s", mapCard);
+            if (mView == null) {
+                return;
+            }
+
             hideLoadingView();
             if (mapCard != null) {
                 BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno,
@@ -150,6 +155,10 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         @Override
         public void onError(BaseResponse pMessage) {
             Timber.d("RemoveMapCard onError: %s", pMessage);
+            if (mView == null) {
+                return;
+            }
+
             hideLoadingView();
             if (pMessage == null) {
                 if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
