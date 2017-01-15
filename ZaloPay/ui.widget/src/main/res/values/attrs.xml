@@ -12,13 +12,6 @@
     <attr name="separate" format="reference|color" />
     <attr name="separate.height" format="dimension" />
 
-
-    <declare-styleable name="BezelImageView">
-        <attr name="maskDrawable" format="reference" />
-        <attr name="borderDrawable" format="reference" />
-        <attr name="desaturateOnPress" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="TintableImageView">
         <attr name="tint" format="reference|color" />
     </declare-styleable>
