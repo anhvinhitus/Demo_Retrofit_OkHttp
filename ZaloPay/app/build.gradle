@@ -231,22 +231,6 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-3"'
         }
 
-        iapSandbox {
-            // IAP dev with sandbox environment
-            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
-            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.com.vn/"'
-            buildConfigField 'String', 'TERMS_HOST', '"https://sandbox.zalopay.com.vn/terms"'
-            buildConfigField 'String', 'FAQ_HOST', '"https://sandbox.zalopay.com.vn/faq"'
-            buildConfigField 'String', 'SUPPORT_CENTER_HOST', '"https://sandbox.zalopay.com.vn/trung-tam-ho-tro"'
-            buildConfigField 'vn.com.zalopay.wallet.business.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.business.data.Constants.HostType.SANDBOX'
-            buildConfigField 'String', 'WS_HOST', '"sbnotifyv2.zalopay.vn"'
-            buildConfigField 'int', 'WS_PORT', '8484'
-            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.com.vn/"'
-            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
-            buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
-            buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
-        }
-
         iapProduction {
             // IAP dev with live environment
             buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
@@ -261,6 +245,22 @@ android {
             buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"https://comerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
+        }
+
+        iapSandbox {
+            // IAP dev with sandbox environment
+            buildConfigField "vn.com.vng.zalopay.config.ReactSupport", "REACT_DEVELOP_SUPPORT", 'vn.com.vng.zalopay.config.ReactSupport.DEV_EXTERNAL'
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'TERMS_HOST', '"https://sandbox.zalopay.com.vn/terms"'
+            buildConfigField 'String', 'FAQ_HOST', '"https://sandbox.zalopay.com.vn/faq"'
+            buildConfigField 'String', 'SUPPORT_CENTER_HOST', '"https://sandbox.zalopay.com.vn/trung-tam-ho-tro"'
+            buildConfigField 'vn.com.zalopay.wallet.business.data.Constants.HostType', 'HOST_TYPE', 'vn.com.zalopay.wallet.business.data.Constants.HostType.SANDBOX'
+            buildConfigField 'String', 'WS_HOST', '"sbnotifyv2.zalopay.vn"'
+            buildConfigField 'int', 'WS_PORT', '8484'
+            buildConfigField 'String', 'UPLOAD_PHOTO_HOST', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
+            buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
+            buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
         }
 
         iapStaging {
