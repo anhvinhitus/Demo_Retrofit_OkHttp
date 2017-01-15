@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
@@ -99,7 +100,19 @@ public class PassCodeView extends FrameLayout {
         mTvHint.setPadding((int) paddingLeft, 0, 0, 0);
         mRootView.setPadding((int) paddingLeft, 0, 0, 0);
         mEditText.setCustomSelectionActionModeCallback(new NonSelectionActionModeCallback());
-        mOriginalTintList = mEditText.getSupportBackgroundTintList();
+
+        int[][] states = new int[][]{
+                new int[]{-android.R.attr.state_focused}, // unfocused
+                new int[]{} // default
+        };
+
+        int[] colors = new int[]{
+                ContextCompat.getColor(context, R.color.hint),
+                ContextCompat.getColor(context, R.color.colorPrimary)
+        };
+
+        mOriginalTintList = new ColorStateList(states, colors);
+        mEditText.setSupportBackgroundTintList(mOriginalTintList);
         initTextView(context);
         addView(view);
     }
