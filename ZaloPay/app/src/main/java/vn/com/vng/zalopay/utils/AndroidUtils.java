@@ -62,6 +62,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -225,27 +226,24 @@ public class AndroidUtils {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public static int getScreenWidth(Activity context) {
-        int measuredWidth = 0;
-        int measuredHeight = 0;
+        int measuredWidth;
         WindowManager w = context.getWindowManager();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             Point size = new Point();
             w.getDefaultDisplay().getSize(size);
             measuredWidth = size.x;
-            measuredHeight = size.y;
         } else {
             Display d = w.getDefaultDisplay();
             measuredWidth = d.getWidth();
-            measuredHeight = d.getHeight();
         }
         return measuredWidth;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public static int getSmallerDimen(Activity context) {
-        int measuredWidth = 0;
-        int measuredHeight = 0;
+        int measuredWidth;
+        int measuredHeight;
         WindowManager w = context.getWindowManager();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
@@ -295,7 +293,7 @@ public class AndroidUtils {
         Intent mailer = Intent.createChooser(intent, title);
         StringBuilder strContent = new StringBuilder();
         strContent.append("To:");
-        strContent.append(to);
+        strContent.append(Arrays.toString(to));
         strContent.append(", title:");
         strContent.append(title);
         strContent.append(", extraSubject:");
@@ -337,7 +335,7 @@ public class AndroidUtils {
         if (activity == null)
             return false;
         PackageManager pm = activity.getPackageManager();
-        boolean app_installed = false;
+        boolean app_installed;
         try {
             pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
             app_installed = true;

@@ -117,7 +117,7 @@ public class BundleServiceImpl implements BundleService {
             FileUtils.unzipFile(stream, dstPath, true);
             return true;
         } catch (Exception e) {
-            Timber.w(e, "exception %s", e);
+            Timber.w(e, "exception %s", e.getMessage());
             return false;
         }
     }

@@ -115,7 +115,7 @@ public class ReactModalHostManager extends ViewGroupManager<ReactModalHostView> 
       PixelUtil.toDIPFromPixel(mContext.getResources().getDimensionPixelSize(heightResId)) :
       0;
 
-    return MapBuilder.<String, Object>of(
+    return MapBuilder.of(
       "StatusBarHeight", height
     );
   }

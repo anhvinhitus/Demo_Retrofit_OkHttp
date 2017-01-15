@@ -523,7 +523,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void setProfileInfo(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg) {
-        Timber.d("setProfileInfo: foregroundImg %s backgroundImg %s avatarImg ", foregroundImg, backgroundImg, avatarImg);
+        Timber.d("setProfileInfo: foregroundImg %s backgroundImg %s avatarImg %s", foregroundImg, backgroundImg, avatarImg);
 
         if (!TextUtils.isEmpty(email)) {
             setEmail(email);

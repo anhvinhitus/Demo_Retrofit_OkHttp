@@ -65,15 +65,14 @@ public class ScreenshotCollector implements IFeedbackCollector {
 
     private Bitmap takeScreenshot() {
         mView.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(mView.getDrawingCache());
 
-        return bitmap;
+        return Bitmap.createBitmap(mView.getDrawingCache());
     }
 
     private String convertBitmapToString(Bitmap bitmap) {
 
         int quality = 100;
-        String strImage;;
+        String strImage;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         bitmap.compress(Bitmap.CompressFormat.PNG, quality, byteArrayOutputStream);

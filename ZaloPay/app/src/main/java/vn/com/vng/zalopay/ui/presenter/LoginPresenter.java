@@ -111,7 +111,7 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         try {
             ZaloSDK.Instance.onActivityResult(activity, requestCode, resultCode, data);
         } catch (Exception ex) {
-            Timber.w(ex, " message " + ex.getMessage());
+            Timber.w(ex, "message %s", ex.getMessage());
         }
     }
 

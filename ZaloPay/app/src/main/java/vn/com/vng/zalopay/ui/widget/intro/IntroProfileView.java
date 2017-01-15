@@ -252,7 +252,8 @@ public class IntroProfileView extends RelativeLayout {
     }
 
     public void dismiss() {
-        this.setDisplayed();
+        setDisplayed();
+
         animateFadeOut(this, this.fadeAnimationDuration, new DefaultAnimatorListener() {
             @Override
             public void onAnimationEnd(Animator animation) {

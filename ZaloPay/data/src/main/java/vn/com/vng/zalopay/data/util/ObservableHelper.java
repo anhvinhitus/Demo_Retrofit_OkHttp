@@ -37,13 +37,4 @@ public class ObservableHelper {
                     }
                 });
     }
-
-    private final static Observable.Transformer schedulersTransformer =
-            observable -> ((Observable) observable).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-
-    @SuppressWarnings("unchecked")
-    public static <T> Observable.Transformer<T, T> applySchedulers() {
-        return (Observable.Transformer<T, T>) schedulersTransformer;
-    }
 }

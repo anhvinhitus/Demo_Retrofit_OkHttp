@@ -29,7 +29,7 @@ public class SmoothViewPager extends ViewPager {
             scroller.setAccessible(true);
             scroller.set(this, new MyScroller(getContext()));
         } catch (Exception e) {
-            Timber.w(e, "Get Declared field 'mScroller' exception ", e.getMessage());
+            Timber.w(e, "Get Declared field 'mScroller' exception [%s]", e.getMessage());
         }
     }
 

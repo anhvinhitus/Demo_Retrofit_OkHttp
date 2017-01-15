@@ -109,7 +109,7 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                 this.executeReader(tag);
             } else {
-                Timber.d("Wrong mime type: " + type);
+                Timber.d("Wrong mime type: %s", type);
             }
         } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
             // In case we would still use the Tech Discovered Intent

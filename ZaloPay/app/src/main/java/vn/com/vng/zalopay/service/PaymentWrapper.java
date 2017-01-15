@@ -279,13 +279,14 @@ public class PaymentWrapper {
 
         if (paymentChannel != EPaymentChannel.LINK_CARD && !validPaymentInfo(paymentInfo)) {
             responseListener.onAppError(owner.getString(R.string.data_invalid_try_again));
-            Timber.e(new Exception(
+            Exception e = new Exception(
                     String.format("PaymentInfo is invalid, appId[%s] transId[%s] amount[%s] appTime[%s]  mac[%s]",
                             paymentInfo.appID,
                             paymentInfo.appTransID,
                             paymentInfo.amount,
                             paymentInfo.appTime,
-                            paymentInfo.mac)));
+                            paymentInfo.mac));
+            Timber.e(e, e.getMessage());
             return;
         }
 
@@ -395,7 +396,7 @@ public class PaymentWrapper {
 
         @Override
         public void onError(Throwable e) {
-            Timber.w(e, "onError " + e);
+            Timber.w(e, "onError %s", e.getMessage());
             if (ResponseHelper.shouldIgnoreError(e)) {
                 // simply ignore the error
                 // because it is handled from event subscribers

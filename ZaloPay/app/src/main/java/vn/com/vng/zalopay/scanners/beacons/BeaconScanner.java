@@ -308,7 +308,7 @@ public class BeaconScanner {
 
             return manufacturerData;
         } catch (Exception e) {
-            Timber.e(e, "unable to parse scan record: " + Arrays.toString(scanRecord));
+            Timber.e(e, "unable to parse scan record: %s", Arrays.toString(scanRecord));
             // As the record is invalid, ignore all the parsed results for this packet
             // and return an empty record with raw scanRecord bytes in results
             return null;

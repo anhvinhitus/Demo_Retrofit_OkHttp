@@ -119,7 +119,7 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
         @Override
         public void onNext(Order order) {
-            Timber.d("Create order for WalletTopup success: " + order);
+            Timber.d("Create order for WalletTopup success: %s", order);
             BalanceTopupPresenter.this.onCreateWalletOrderSuccess(order);
         }
 
@@ -131,7 +131,7 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
                 return;
             }
 
-            Timber.w(e, "onError " + e);
+            Timber.w(e, "onError");
             BalanceTopupPresenter.this.onCreateWalletOrderError(e);
         }
     }

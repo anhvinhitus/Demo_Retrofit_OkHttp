@@ -158,7 +158,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     public void replaceFragmentImmediate(final int id) {
 
-        Timber.d(TAG, "replaceFragmentImmediate  ", id);
+        Timber.d("replaceFragmentImmediate  %s", id);
 
         switch (id) {
             case MenuItemUtil.SAVE_CARD_ID:

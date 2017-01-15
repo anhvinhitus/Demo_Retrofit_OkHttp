@@ -152,18 +152,18 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
         @Override
         public void onError(BaseResponse pMessage) {
-            Timber.d("RemoveMapCard onError: " + pMessage);
+            Timber.d("RemoveMapCard onError: %s", pMessage);
             hideLoadingView();
             if (pMessage == null) {
                 if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
-                    showErrorView("Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.");
+                    showErrorView(mView.getContext().getString(R.string.error_message_link_card_unknown_error));
                 } else {
                     showNetworkErrorDialog();
                 }
             } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
                 mEventBus.postSticky(new TokenPaymentExpiredEvent());
             } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
-                Timber.e("err removed map card " + pMessage.returnmessage);
+                Timber.e("err removed map card %s", pMessage.returnmessage);
                 showErrorView(pMessage.returnmessage);
             }
         }

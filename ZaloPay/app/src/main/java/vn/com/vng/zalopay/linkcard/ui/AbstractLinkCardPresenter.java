@@ -40,7 +40,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     User user;
 
-    SharedPreferences mSharedPreferences;
+    private SharedPreferences mSharedPreferences;
 
     protected EventBus mEventBus;
 

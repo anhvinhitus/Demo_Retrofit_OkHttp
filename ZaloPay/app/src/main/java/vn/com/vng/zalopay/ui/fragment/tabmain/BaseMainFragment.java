@@ -17,7 +17,7 @@ public abstract class BaseMainFragment extends BaseFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        Timber.d("setUserVisibleHint " + isVisibleToUser);
+        Timber.d("setUserVisibleHint %s", isVisibleToUser);
 
         if (isVisibleToUser && !mIsVisibleToUser) {
             onScreenVisible();

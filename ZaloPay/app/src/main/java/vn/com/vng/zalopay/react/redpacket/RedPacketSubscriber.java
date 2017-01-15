@@ -29,7 +29,7 @@ public class RedPacketSubscriber<T> extends DefaultSubscriber<T> {
 
     @Override
     public void onError(Throwable e) {
-        Timber.d("onError exception [%s]", e);
+        Timber.d(e, "onError exception [%s]", e.getMessage());
         if (mPromise == null) {
             return;
         }

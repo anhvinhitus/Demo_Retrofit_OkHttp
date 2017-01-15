@@ -50,7 +50,7 @@ public class ReactInputTextViewManager extends SimpleViewManager<ZPEditText> {
     @Override
     public
     @Nullable
-    Map getExportedCustomDirectEventTypeConstants() {
+    Map<String, Object> getExportedCustomDirectEventTypeConstants() {
         return super.getExportedCustomDirectEventTypeConstants();
     }
 

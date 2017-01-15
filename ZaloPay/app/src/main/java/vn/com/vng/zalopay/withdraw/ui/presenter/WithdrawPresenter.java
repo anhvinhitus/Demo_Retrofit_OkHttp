@@ -113,7 +113,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
 
         @Override
         public void onNext(Order order) {
-            Timber.d("CreateWalletOrderSubscriber success " + order);
+            Timber.d("CreateWalletOrderSubscriber success with order: %s", order);
             WithdrawPresenter.this.onCreateWalletOrderSuccess(order);
         }
 

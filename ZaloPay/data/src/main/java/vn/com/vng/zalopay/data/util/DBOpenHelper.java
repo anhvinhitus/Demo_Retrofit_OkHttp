@@ -21,7 +21,7 @@ public class DBOpenHelper extends DaoMaster.OpenHelper {
     public void onUpgrade(Database db, int oldVersion, int newVersion) {
 
         //Todo: apply db upgrade code here
-        Timber.i("Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
+        Timber.i("Upgrading schema from version %s to %s by dropping all tables", oldVersion, newVersion);
         DaoMaster.dropAllTables(db, true);
         onCreate(db);
     }

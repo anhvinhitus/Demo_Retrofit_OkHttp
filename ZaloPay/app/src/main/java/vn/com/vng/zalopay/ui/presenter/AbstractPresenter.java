@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.support.annotation.CallSuper;
+
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -18,6 +20,7 @@ public abstract class AbstractPresenter<View> implements IPresenter<View> {
      * <p>
      * The best time to call this function is when a view is created by Android framework
      */
+    @CallSuper
     @Override
     public void attachView(View view) {
         Timber.d("attachView: %s", view);
@@ -31,6 +34,7 @@ public abstract class AbstractPresenter<View> implements IPresenter<View> {
      * <p>
      * detachView is called when the view is about to be destroyed by Android framework
      */
+    @CallSuper
     @Override
     public void detachView() {
         Timber.d("detachView: %s", mView);
@@ -41,6 +45,7 @@ public abstract class AbstractPresenter<View> implements IPresenter<View> {
     /**
      * notify the presenter that view is destroyed (onDestroy on Activity, Fragment)
      */
+    @CallSuper
     @Override
     public void destroy() {
         Timber.d("destroy is called");

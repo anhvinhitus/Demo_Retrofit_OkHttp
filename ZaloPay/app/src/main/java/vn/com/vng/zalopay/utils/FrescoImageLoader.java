@@ -33,10 +33,6 @@ public class FrescoImageLoader implements ImageLoader<SimpleDraweeView> {
         hierarchy.setPlaceholderImage(placeHolder);
         hierarchy.setFailureImage(error);
 
-        if (ScaleType.CENTER_CROP == scaleType) {
-        } else if (ScaleType.FIT_CENTER == scaleType) {
-        }
-
         target.setImageURI(url);
     }
 

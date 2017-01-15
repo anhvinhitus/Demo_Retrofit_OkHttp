@@ -465,4 +465,5 @@
     <string name="maintain_withdraw_message" formatted="false">Tính năng Rút Tiền đang được bảo trì. Thời gian bảo trì từ %s đến %s.</string>
     <string name="email.support">hotro@zalopay.vn</string>
     <string name="subject.compose.email.support">Phản hồi/Góp ý Zalo Pay</string>
+    <string name="error_message_link_card_unknown_error">Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.</string>
 </resources>

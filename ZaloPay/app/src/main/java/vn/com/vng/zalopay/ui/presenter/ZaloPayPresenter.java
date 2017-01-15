@@ -216,7 +216,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     private void onGetAppResourceSuccess(List<AppResource> resources) {
 
         numberCallAppResource++;
-        Timber.d("get app resource call : " + numberCallAppResource);
+        Timber.d("get app resource call: %s", numberCallAppResource);
         mLastTimeRefreshApp = System.currentTimeMillis() / 1000;
 
         AppResource showhow = getAppResource(Constants.SHOW_SHOW);
@@ -236,7 +236,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         @Override
         public void onNext(List<AppResource> appResources) {
             ZaloPayPresenter.this.onGetAppResourceSuccess(appResources);
-            Timber.d(" AppResource %s", appResources.size());
+            Timber.d("AppResource %s", appResources.size());
 
         }
 

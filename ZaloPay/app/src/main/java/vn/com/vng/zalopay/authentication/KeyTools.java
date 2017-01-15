@@ -136,7 +136,7 @@ public class KeyTools {
             }
             return cipher;
         } catch (Exception e) {
-            Timber.d("Get cipher error", e);
+            Timber.d(e, "Get cipher error");
         }
         return null;
     }

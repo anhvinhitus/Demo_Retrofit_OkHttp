@@ -72,7 +72,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
     }
 
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-        Timber.d("onActivityResult: requestCode [%s] resultCode [%s]");
+        Timber.d("onActivityResult: requestCode [%s] resultCode [%s]", requestCode, resultCode);
         if (requestCode == LOGIN_REQUEST_CODE &&
                 resultCode == Activity.RESULT_OK) {
             handleAppToAppPayment(data.getData());

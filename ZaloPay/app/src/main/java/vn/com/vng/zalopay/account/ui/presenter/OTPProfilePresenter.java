@@ -77,7 +77,7 @@ public class OTPProfilePresenter extends AbstractPresenter<IOTPProfileView> {
                 return;
             }
 
-            Timber.d(e, "onError " + e);
+            Timber.d(e, "onError %s", e.getMessage());
             OTPProfilePresenter.this.onConfirmOTPError(e);
         }
     }

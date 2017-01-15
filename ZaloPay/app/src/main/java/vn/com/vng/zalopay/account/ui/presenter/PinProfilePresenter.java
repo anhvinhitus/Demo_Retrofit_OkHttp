@@ -58,7 +58,7 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
 
         @Override
         public void onNext(Boolean result) {
-            Timber.d("updateProfile success " + result);
+            Timber.d("updateProfile reult %s", result);
             PinProfilePresenter.this.onUpdateProfileSuccess(phone);
         }
 

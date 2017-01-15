@@ -318,7 +318,7 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
             Result result = reader.decode(bitmap);
             contents = result.getText();
         } catch (Exception e) {
-            Timber.w("Error decoding barcode", e);
+            Timber.w(e, "Error decoding barcode");
         }
         return contents;
     }
@@ -333,7 +333,7 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
             qrDataInvalid();
             return;
         }
-        Timber.d("pay by image uri[%s]", uri.toString());
+        Timber.d("pay by image uri [%s]", uri.toString());
         showLoadingView();
         ObservableHelper.makeObservable(new Callable<String>() {
             @Override
@@ -343,7 +343,7 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
                     is = mView.getContext().getContentResolver().openInputStream(uri);
                     Bitmap bitmap = BitmapFactory.decodeStream(is);
                     String decoded = scanQRImage(bitmap);
-                    Timber.d("Decoded string=" + decoded);
+                    Timber.d("Decoded string = %s", decoded);
                     return decoded;
                 } catch (FileNotFoundException e) {
                     Timber.w(e, "Create input stream from uri exception");

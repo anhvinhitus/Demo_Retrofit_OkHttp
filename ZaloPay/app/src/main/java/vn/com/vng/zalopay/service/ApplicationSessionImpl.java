@@ -104,7 +104,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
         try {
             InstanceID.getInstance(applicationContext).deleteInstanceID();
         } catch (IOException e) {
-            Timber.d("deleteInstanceID gcm exception %s", e);
+            Timber.d(e, "deleteInstanceID gcm exception");
         } catch (Exception ex) {
             Timber.d(ex, "deleteInstanceID error");
         }

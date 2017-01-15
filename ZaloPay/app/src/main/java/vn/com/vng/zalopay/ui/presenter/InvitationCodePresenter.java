@@ -67,7 +67,7 @@ public class InvitationCodePresenter extends AbstractPresenter<IInvitationCodeVi
 
         @Override
         public void onNext(User user) {
-            Timber.d("login success " + user);
+            Timber.d("login success %s", user);
             // TODO: Use your own attributes to track content views in your app
             Answers.getInstance().logLogin(new LoginEvent().putSuccess(true));
             InvitationCodePresenter.this.onInvitationCodeSuccess(user);

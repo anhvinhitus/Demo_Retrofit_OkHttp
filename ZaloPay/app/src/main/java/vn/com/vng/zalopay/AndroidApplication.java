@@ -88,7 +88,7 @@ public class AndroidApplication extends Application {
 
         initAppComponent();
 
-        Timber.d(" onCreate " + appComponent);
+        Timber.d("onCreate %s", appComponent);
         ZaloSDKApplication.wrap(this);
         if (!BuildConfig.DEBUG) {
             // Disable Zalo log on RELEASE
@@ -128,7 +128,7 @@ public class AndroidApplication extends Application {
         ZPAnalytics.addTracker(new ZPTrackerAnswers());
     }
 
-    void initializeFresco() {
+    private void initializeFresco() {
         // if (!Fresco.hasBeenInitialized()) {
         ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
                 .setDownsampleEnabled(true)

@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
  */
 public abstract class AbsDownloadService extends IntentService {
 
-    public abstract void doInject();
+    protected abstract void doInject();
 
     @Inject
     public DownloadAppResourceTaskQueue mTaskQueue;

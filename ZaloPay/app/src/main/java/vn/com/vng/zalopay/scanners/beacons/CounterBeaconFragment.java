@@ -428,7 +428,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
 
         @Override
         public void onResponseError(PaymentError paymentError) {
-            Timber.d("Payment error: " + paymentError.value());
+            Timber.d("Payment error: %s", paymentError.value());
             beaconScanner.startScan();
         }
 
@@ -449,7 +449,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
 
         @Override
         public void onAppError(String msg) {
-            Timber.d("onAppError msg[%s]", msg);
+            Timber.d("onAppError msg [%s]", msg);
             showToast(getString(R.string.exception_generic));
             beaconScanner.startScan();
         }

@@ -69,7 +69,7 @@ public class MerchantLocalStorage extends SqlBaseScopeImpl implements MerchantSt
                 listMCIds.add(merchantUser.appid);
             }
 
-            boolean ret = appIds.removeAll(listMCIds);
+            appIds.removeAll(listMCIds);
         }
 
         Timber.d("notExistInDb appIds %s", appIds.size());

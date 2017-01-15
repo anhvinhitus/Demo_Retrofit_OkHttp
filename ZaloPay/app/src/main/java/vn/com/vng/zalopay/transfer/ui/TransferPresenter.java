@@ -205,7 +205,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
         @Override
         public void onNext(Order order) {
-            Timber.d("CreateWalletOrderSubscriber success " + order);
+            Timber.d("CreateWalletOrderSubscriber success with order %s", order);
             TransferPresenter.this.onCreateWalletOrderSuccess(order);
         }
 
@@ -237,7 +237,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
-        Timber.d("money transfer order: " + order.item);
+        Timber.d("money transfer order: %s", order.item);
         paymentWrapper.transfer(mView.getActivity(), order, mTransaction.displayName, mTransaction.avatar, mTransaction.phoneNumber, mTransaction.zaloPayName);
         hideLoading();
         mView.setEnableBtnContinue(true);
