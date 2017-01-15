@@ -132,7 +132,7 @@ public class ApplicationModule {
     Tracker provideDefaultTracker() {
         GoogleAnalytics analytics = GoogleAnalytics.getInstance(application);
         // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-        return analytics.newTracker(R.xml.global_tracker);
+        return analytics.newTracker(BuildConfig.GA_Tracker);
 
     }
 
