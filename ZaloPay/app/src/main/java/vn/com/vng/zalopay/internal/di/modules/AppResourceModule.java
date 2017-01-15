@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.internal.di.modules;
 import android.content.Context;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 import javax.inject.Named;
@@ -58,12 +59,13 @@ public class AppResourceModule {
                                                              DownloadAppResourceTaskQueue taskQueue,
                                                              OkHttpClient mOkHttpClient,
                                                              @Named("rootbundle") String rootBundle) {
+
         return new AppResourceRepository(mapper, requestService, localStorage,
                 paramsReq, taskQueue, mOkHttpClient,
                 BuildConfig.DOWNLOAD_APP_RESOURCE,
                 rootBundle,
                 BuildConfig.VERSION_NAME,
-                Arrays.asList(PaymentAppConfig.Constants.RED_PACKET),
+                Collections.singletonList(PaymentAppConfig.Constants.RED_PACKET),
                 PaymentAppConfig.APP_RESOURCE_LIST,
                 PaymentAppConfig.EXCLUDE_APP_RESOURCE_LIST
         );

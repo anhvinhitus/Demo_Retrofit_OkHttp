@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.authentication;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import timber.log.Timber;
@@ -27,8 +28,10 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
 
 
     /**
-     * Nullable khi fingerprint not available
+     * Null khi fingerprint not available
      **/
+
+    @Nullable
     @Override
     public DialogFragment getDialogFingerprintAuthentication(Activity activity, final IFPCallback callback) throws Exception {
 

@@ -198,7 +198,7 @@ public class AndroidUtils {
         return uniqueID;
     }
 
-    public static String getDeviceId() {
+  /*  public static String getDeviceId() {
         final TelephonyManager tm = (TelephonyManager) AndroidApplication.instance()
                 .getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -211,7 +211,7 @@ public class AndroidUtils {
         UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
         String deviceId = deviceUuid.toString();
         return deviceId;
-    }
+    }*/
 
     public static void hideKeyboarInputMethod(Activity activity) {
         if (activity == null)

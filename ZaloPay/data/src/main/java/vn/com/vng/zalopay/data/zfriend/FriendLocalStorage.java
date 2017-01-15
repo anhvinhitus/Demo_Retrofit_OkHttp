@@ -87,7 +87,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
             return null;
         }
 
-        List<ZaloUserEntity> list = getZaloUsers(Arrays.asList(zaloid));
+        List<ZaloUserEntity> list = getZaloUsers(Collections.singletonList(zaloid));
         if (Lists.isEmptyOrNull(list)) {
             return null;
         }
@@ -161,7 +161,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
             return null;
 
         }
-        List<ZaloPayUserEntity> list = getZaloPayUsers(Arrays.asList(zalopayId));
+        List<ZaloPayUserEntity> list = getZaloPayUsers(Collections.singletonList(zalopayId));
         if (Lists.isEmptyOrNull(list)) {
             return null;
         }

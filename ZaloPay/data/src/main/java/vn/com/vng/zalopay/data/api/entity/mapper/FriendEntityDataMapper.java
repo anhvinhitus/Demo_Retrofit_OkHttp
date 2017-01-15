@@ -82,6 +82,7 @@ public class FriendEntityDataMapper {
         try {
             item.phoneNumber = Long.valueOf(PhoneUtil.formatPhoneNumber(entity.phonenumber));
         } catch (Exception e) {
+            Timber.d(e, "transform");
         }
 
         item.zaloPayName = entity.zalopayname;

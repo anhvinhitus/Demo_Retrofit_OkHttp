@@ -36,8 +36,7 @@ public class ScanNFCFragment extends BaseFragment implements NfcView, FragmentLi
      * @return A new instance of fragment ScanNFCFragment.
      */
     public static ScanNFCFragment newInstance() {
-        ScanNFCFragment fragment = new ScanNFCFragment();
-        return fragment;
+        return new ScanNFCFragment();
     }
 
     @Override
