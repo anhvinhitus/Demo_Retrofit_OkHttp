@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -255,7 +256,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             Timber.d("existResource appId [%s] state [%s]", appId, entity.stateDownload);
             boolean downloadSuccess = (entity.stateDownload >= DownloadState.STATE_SUCCESS);
             if (!downloadSuccess) {
-                startDownloadService(Arrays.asList(entity), null);
+                startDownloadService(Collections.singletonList(entity), null);
             }
             return downloadSuccess;
         });
