@@ -25,7 +25,16 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/loremipsum"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_tutorial_link_card" />
+                android:src="@drawable/ic_tutorial_link_card"/>
+
+            <ImageView
+                android:id="@+id/imgBankIcon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginLeft="28dp"
+                android:layout_marginTop="194dp"
+                android:contentDescription="@string/loremipsum"
+                tools:src="@drawable/ic_luuthe"/>
 
             <TextView
                 android:id="@+id/txtBankName"
@@ -38,7 +47,7 @@
                 android:maxWidth="84dp"
                 android:textColor="@color/txt_item_main"
                 android:textSize="9sp"
-                tools:text="@string/link_card_to_use_easily" />
+                tools:text="@string/link_card_to_use_easily"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -47,7 +56,7 @@
                 android:layout_marginTop="206dp"
                 android:text="@string/free_fee"
                 android:textColor="@color/txt_item_sub"
-                android:textSize="6sp" />
+                android:textSize="6sp"/>
 
             <TextView
                 android:id="@+id/txtLastNumberOfCard"
@@ -57,7 +66,7 @@
                 android:layout_marginTop="148dp"
                 android:textColor="@color/txt_item_main"
                 android:textSize="30sp"
-                tools:text="****6789" />
+                tools:text="****6789"/>
         </FrameLayout>
 
         <LinearLayout
@@ -73,21 +82,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="@string/tutorial_link_card_note_1" />
+                android:text="@string/tutorial_link_card_note_1"/>
 
             <TextView
                 style="@style/TextView.Default"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="@string/tutorial_link_card_note_2" />
+                android:text="@string/tutorial_link_card_note_2"/>
 
             <TextView
                 style="@style/TextView.Default"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="@string/tutorial_link_card_note_3" />
+                android:text="@string/tutorial_link_card_note_3"/>
         </LinearLayout>
 
         <Button
@@ -96,7 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/button.height"
             android:layout_marginBottom="@dimen/button.margin.bottom"
-            android:text="@string/manager_card" />
+            android:text="@string/manager_card"/>
     </LinearLayout>
 
 </ScrollView>
