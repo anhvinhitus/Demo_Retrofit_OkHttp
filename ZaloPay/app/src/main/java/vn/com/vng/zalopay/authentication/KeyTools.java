@@ -231,12 +231,20 @@ public class KeyTools {
         return mDecryptCipher;
     }
 
-    public void updatePassword(String password) {
-        if (!isHavePassword()) {
-            return;
+    void updatePassword(String newPassword) {
+        if (shouldUpdatePassword(mUserConfig.getEncryptedPassword(), newPassword)) {
+            encrypt(newPassword, true);
+        }
+    }
+
+
+    private boolean shouldUpdatePassword(String oldPassword, String newPassword) {
+        if (TextUtils.isEmpty(newPassword)
+                || TextUtils.isEmpty(oldPassword)) {
+            return false;
         }
 
-        encrypt(password, true);
+        return !oldPassword.equals(newPassword);
     }
 
     public boolean isHavePassword() {
