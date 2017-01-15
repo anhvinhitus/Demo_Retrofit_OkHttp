@@ -62,6 +62,10 @@ public class IntroProfileView extends RelativeLayout {
 
     private IIntroListener mListener;
 
+    private IntroProfileView(Context context) {
+        super(context);
+    }
+
     public IntroProfileView(Context context, IIntroListener listener) {
         super(context);
         this.mListener = listener;

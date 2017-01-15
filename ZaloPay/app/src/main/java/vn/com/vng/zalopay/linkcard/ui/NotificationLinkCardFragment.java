@@ -91,7 +91,7 @@ public class NotificationLinkCardFragment extends BaseFragment {
             return;
         }
         if (!TextUtils.isEmpty(lastCardNumber)) {
-            mTxtLastNumberOfCard.setText("\u2022\u2022\u2022\u2022" + lastCardNumber);
+            mTxtLastNumberOfCard.setText(TextUtils.concat("••••", lastCardNumber));
         }
     }
 

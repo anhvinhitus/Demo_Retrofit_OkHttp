@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -62,7 +63,7 @@ public class RippleBackground extends RelativeLayout {
         }
 
         final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.WaveView);
-        rippleColor = typedArray.getColor(R.styleable.WaveView_rb_color, getResources().getColor(R.color.rippelColor));
+        rippleColor = typedArray.getColor(R.styleable.WaveView_rb_color, ContextCompat.getColor(getContext(), R.color.rippelColor));
         rippleStrokeWidth = typedArray.getDimension(R.styleable.WaveView_rb_strokeWidth, getResources().getDimension(R.dimen.rippleStrokeWidth));
         rippleRadius = typedArray.getDimension(R.styleable.WaveView_rb_radius, getResources().getDimension(R.dimen.rippleRadius));
         rippleDurationTime = typedArray.getInt(R.styleable.WaveView_rb_duration, DEFAULT_DURATION_TIME);
@@ -87,7 +88,7 @@ public class RippleBackground extends RelativeLayout {
 
         animatorSet = new AnimatorSet();
         animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-        animatorList = new ArrayList<Animator>();
+        animatorList = new ArrayList<>();
 
         for (int i = 0; i < rippleAmount; i++) {
             RippleView rippleView = new RippleView(getContext());

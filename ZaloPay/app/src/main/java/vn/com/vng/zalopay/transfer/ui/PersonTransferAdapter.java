@@ -150,11 +150,11 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
             displayNameView.setText(person.displayName);
 
             if (person.state == Constants.MoneyTransfer.STAGE_PRETRANSFER) {
-                tvAmountView.setText("đang chuyển tiền");
+                tvAmountView.setText(R.string.transferring_money);
             } else if (person.state == Constants.MoneyTransfer.STAGE_TRANSFER_FAILED) {
-                tvAmountView.setText("hủy chuyển tiền");
+                tvAmountView.setText(R.string.cancel_transfer_money);
             } else if (person.state == Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL) {
-                tvAmountView.setText("hủy chuyển tiền");
+                tvAmountView.setText(R.string.cancel_transfer_money);
             } else {
                 tvAmountView.setText(CurrencyUtil.spanFormatCurrency(person.amount, false));
             }

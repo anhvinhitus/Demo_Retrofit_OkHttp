@@ -240,25 +240,6 @@ public class AndroidUtils {
         return measuredWidth;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public static int getSmallerDimen(Activity context) {
-        int measuredWidth;
-        int measuredHeight;
-        WindowManager w = context.getWindowManager();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            Point size = new Point();
-            w.getDefaultDisplay().getSize(size);
-            measuredWidth = size.x;
-            measuredHeight = size.y;
-        } else {
-            Display d = w.getDefaultDisplay();
-            measuredWidth = d.getWidth();
-            measuredHeight = d.getHeight();
-        }
-        return measuredWidth < measuredHeight ? measuredWidth : measuredHeight;
-    }
-
     /**
      * Get color string from color resource.
      * @return color string (format #f0f0f0)
@@ -410,17 +391,6 @@ public class AndroidUtils {
         }
         Timber.d(ret ? " Current Thread is Main Thread " : " Current Thread is Background Thread ");
         return ret;
-    }
-
-    public static int getColor(Context context, int colorResource) {
-        if (context == null) {
-            return -1;
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return context.getResources().getColor(colorResource);
-        } else {
-            return context.getColor(colorResource);
-        }
     }
 
 
@@ -643,7 +613,7 @@ public class AndroidUtils {
     }
 
 
-    public static Point getRealScreenSize() {
+   /* public static Point getRealScreenSize() {
         Point size = new Point();
         try {
             WindowManager windowManager = (WindowManager) AndroidApplication.instance().getSystemService(Context.WINDOW_SERVICE);
@@ -663,7 +633,7 @@ public class AndroidUtils {
 
         }
         return size;
-    }
+    }*/
 
     @SuppressLint("NewApi")
     public static void clearDrawableAnimation(View view) {

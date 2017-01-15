@@ -87,7 +87,7 @@ public class CounterBeaconRecyclerViewAdapter extends AbsRecyclerAdapter<BeaconD
                 mDescriptionView.setText(description);
             } else if (mItem.paymentRecord != null) {
                 amount = CurrencyUtil.formatCurrency(mItem.paymentRecord.amount);
-                mDescriptionView.setText("Hoá đơn: ");
+                mDescriptionView.setText(R.string.lbl_bill);
             } else {
                 mDescriptionView.setText(mItem.id);
             }
