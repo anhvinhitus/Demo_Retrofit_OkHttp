@@ -32,7 +32,7 @@
 
             <TextView
                 style="@style/TextView.Title"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing.medium.t"
                 android:layout_weight="1.0"
@@ -71,7 +71,7 @@
                 app:iconSize="@dimen/font_size_transfer_header"/>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing.medium.t"
                 android:layout_weight="1.0"
