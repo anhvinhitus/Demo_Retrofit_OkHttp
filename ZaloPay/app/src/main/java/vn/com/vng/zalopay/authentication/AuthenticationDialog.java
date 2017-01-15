@@ -174,8 +174,13 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     @OnClick(R.id.second_dialog_button)
     public void onOnClickButtonSecond(View v) {
-        if (mPresenter.getStage() == Stage.PASSWORD || isAuthPayment) {
+        if (mPresenter.getStage() == Stage.PASSWORD) {
             cancel();
+            return;
+        }
+
+        if (isAuthPayment) {
+            onAuthenticated("");
             return;
         }
 

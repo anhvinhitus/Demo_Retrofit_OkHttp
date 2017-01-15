@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.authentication;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -24,22 +25,25 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
         mKeyTools = new KeyTools(context.getAppComponent().userConfig());
     }
 
+
+    /**
+     * Nullable khi fingerprint not available
+     **/
     @Override
-    public void authen(Activity activity, final IFPCallback callback) throws Exception {
+    public DialogFragment getDialogFingerprintAuthentication(Activity activity, final IFPCallback callback) throws Exception {
 
         if (callback == null) {
-            Timber.d("Callback is null");
-            return;
+            Timber.e(new NullPointerException(), "PaymentCallback is null");
+            return null;
         }
 
         if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
-            callback.onComplete("");
-            return;
+            Timber.d("Fingerprint not Available");
+            return null;
         }
 
         if (!mKeyTools.isHavePassword()) {
-            callback.onComplete("");
-            return;
+            return null;
         }
 
         AuthenticationDialog dialog = new AuthenticationDialog();
@@ -61,7 +65,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
             }
         });
 
-        dialog.show(activity.getFragmentManager(), AuthenticationDialog.TAG);
+        return dialog;
     }
 
     @Override
