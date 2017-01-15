@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_header_main"
@@ -18,26 +17,17 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         tools:background="@color/colorPrimary">
 
-        <!-- <com.zalopay.ui.widget.image.BezelImageView
-             android:id="@+id/im_avatar"
-             android:layout_width="@dimen/leftmenu.avatar"
-             android:layout_height="@dimen/leftmenu.avatar"
-             android:scaleType="centerCrop"
-             app:borderDrawable="@drawable/circle_border_profile"
-             app:maskDrawable="@drawable/circle_mask"/>
-     -->
-
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/im_avatar"
             style="@style/AvatarDraweeView"
             android:layout_width="@dimen/leftmenu.avatar"
             android:layout_height="@dimen/leftmenu.avatar"
             app:roundingBorderColor="@color/leftmenu.avatar.bg"
-            app:roundingBorderWidth="3dp"/>
+            app:roundingBorderWidth="3dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1.0"
             android:baselineAligned="false"
             android:gravity="center_horizontal"
@@ -51,7 +41,7 @@
                 android:layout_marginTop="@dimen/spacing.medium"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_size_large"
-                tools:text="@string/app_name"/>
+                tools:text="@string/app_name" />
 
             <TextView
                 android:id="@+id/tvZaloPayName"
@@ -61,7 +51,7 @@
                 android:layout_marginTop="@dimen/spacing.tiny"
                 android:textColor="@color/txt_item_sub_2"
                 android:textSize="@dimen/font_size_medium"
-                tools:text="@string/app_name"/>
+                tools:text="@string/app_name" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
