@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -18,7 +20,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import static android.app.Activity.RESULT_OK;
 
 public class ChooseCategoryFragment extends BaseFragment implements
-        ChooseCategoryAdapter.OnClickAppListener, ILoadDataView {
+        ChooseCategoryAdapter.OnClickAppListener, IChooseCategoryView {
 
     public static ChooseCategoryFragment newInstance() {
         return new ChooseCategoryFragment();
@@ -31,13 +33,16 @@ public class ChooseCategoryFragment extends BaseFragment implements
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.fragment_choose_category;
+        return R.layout.fragment_recycleview;
     }
 
     private ChooseCategoryAdapter mAdapter;
 
-    @BindView(R.id.listView)
+    @BindView(R.id.listview)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.progressContainer)
+    View mLoadingView;
 
     @Inject
     ChooseCategoryPresenter mPresenter;
@@ -54,12 +59,6 @@ public class ChooseCategoryFragment extends BaseFragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
-        try {
-            mAdapter.setData(mPresenter.fetchAppResource());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
 
@@ -69,6 +68,7 @@ public class ChooseCategoryFragment extends BaseFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mPresenter.fetchAppResource();
     }
 
     @Override
@@ -95,16 +95,21 @@ public class ChooseCategoryFragment extends BaseFragment implements
 
     @Override
     public void showLoading() {
-        showProgressDialog();
+        mLoadingView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        hideProgressDialog();
+        mLoadingView.setVisibility(View.GONE);
     }
 
     @Override
     public void showError(String message) {
         showToast(message);
+    }
+
+    @Override
+    public void setData(List<AppResource> data) {
+        mAdapter.setData(data);
     }
 }

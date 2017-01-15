@@ -90,21 +90,6 @@ public class ChooseCategoryAdapter extends AbsRecyclerAdapter<AppResource, Recyc
         return VIEWTYPE_ITEM;
     }
 
-    @Override
-    public void setData(List<AppResource> items) {
-        items.add(0, null);
-        if (Lists.elementsEqual(items, getItems(), new Func2<AppResource, AppResource, Boolean>() {
-            @Override
-            public Boolean call(AppResource app, AppResource app2) {
-                return app.equals(app2);
-            }
-        })) {
-            Timber.d("application data not change");
-            return;
-        }
-        super.setData(items);
-    }
-
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         public HeaderViewHolder(View itemView) {
