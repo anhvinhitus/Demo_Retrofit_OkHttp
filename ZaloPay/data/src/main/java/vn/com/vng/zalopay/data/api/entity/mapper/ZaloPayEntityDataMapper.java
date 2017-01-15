@@ -1,19 +1,12 @@
 package vn.com.vng.zalopay.data.api.entity.mapper;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.response.GetOrderResponse;
-import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.TransHistory;
-
-import static java.util.Collections.emptyList;
 
 /**
  * Created by AnhHieu on 5/9/16.

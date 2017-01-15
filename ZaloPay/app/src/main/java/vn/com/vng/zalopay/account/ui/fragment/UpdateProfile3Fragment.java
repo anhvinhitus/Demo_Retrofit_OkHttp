@@ -17,9 +17,6 @@ import android.widget.ViewFlipper;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.Priority;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.KeyboardLinearLayout;
 import com.zalopay.ui.widget.edittext.ZPEditText;

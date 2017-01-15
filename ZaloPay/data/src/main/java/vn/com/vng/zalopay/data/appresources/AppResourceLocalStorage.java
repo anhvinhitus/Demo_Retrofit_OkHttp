@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.BuildConfig;
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.mapper.PlatformDaoMapper;

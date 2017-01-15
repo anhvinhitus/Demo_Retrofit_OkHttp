@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.data;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import butterknife.BindView;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 
 /**

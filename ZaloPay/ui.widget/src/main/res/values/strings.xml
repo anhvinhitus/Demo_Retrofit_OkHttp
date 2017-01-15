@@ -21,7 +21,7 @@
 
     <string name="exception.video.not.found">Cannot retrieve video data. Check your internet connection</string>
     <string name="retry">Retry</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="copy">Copy</string>
     <string name="no">No</string>
     <string name="done">Done</string>

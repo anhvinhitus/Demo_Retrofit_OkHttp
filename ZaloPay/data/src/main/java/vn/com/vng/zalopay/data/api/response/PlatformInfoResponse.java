@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import vn.com.vng.zalopay.data.api.entity.CardEntity;
-import vn.com.vng.zalopay.data.api.entity.PCMEntity;
 import vn.com.vng.zalopay.data.api.entity.PaymentTransTypeEntity;
 
 /**

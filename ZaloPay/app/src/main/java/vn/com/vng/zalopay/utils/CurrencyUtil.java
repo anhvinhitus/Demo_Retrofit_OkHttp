@@ -10,9 +10,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import timber.log.Timber;
-import vn.com.vng.zalopay.BuildConfig;
-
 /**
  * Created by longlv on 05/05/2016.
  */

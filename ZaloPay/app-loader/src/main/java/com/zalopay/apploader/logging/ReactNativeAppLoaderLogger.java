@@ -1,12 +1,8 @@
 package com.zalopay.apploader.logging;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.facebook.common.logging.LoggingDelegate;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 import timber.log.Timber;
 

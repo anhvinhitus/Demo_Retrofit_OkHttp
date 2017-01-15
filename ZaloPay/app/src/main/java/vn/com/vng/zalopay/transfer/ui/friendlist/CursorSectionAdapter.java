@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import timber.log.Timber;
-
 /**
  * Created by AnhHieu on 10/4/15.
  * *

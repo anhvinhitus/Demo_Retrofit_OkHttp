@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
-import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 

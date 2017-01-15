@@ -6,8 +6,6 @@ import com.google.gson.JsonParser;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by huuhoa on 9/2/16.
  */

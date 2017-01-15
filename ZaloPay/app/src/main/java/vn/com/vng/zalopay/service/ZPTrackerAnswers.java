@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.service;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.crashlytics.android.answers.CustomEvent;
-import com.google.android.gms.analytics.HitBuilders;
 
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.analytics.ZPTracker;

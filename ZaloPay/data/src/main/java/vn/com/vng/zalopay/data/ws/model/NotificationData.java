@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import timber.log.Timber;
 import vn.com.vng.zalopay.domain.Enums;
 
 /**

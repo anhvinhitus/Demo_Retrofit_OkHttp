@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import java.lang.ref.WeakReference;
 
-import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;

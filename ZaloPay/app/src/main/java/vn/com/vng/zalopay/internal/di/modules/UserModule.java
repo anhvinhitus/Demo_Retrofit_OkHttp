@@ -7,7 +7,6 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.balance.BalanceRepository;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;

@@ -5,7 +5,6 @@ import android.app.Activity;
 import java.lang.ref.WeakReference;
 
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.navigation.Navigator;

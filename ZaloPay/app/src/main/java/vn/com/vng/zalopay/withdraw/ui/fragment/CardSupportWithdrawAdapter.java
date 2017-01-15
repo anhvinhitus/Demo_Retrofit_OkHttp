@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
-import java.util.Collection;
 import java.util.List;
 
 import butterknife.BindView;

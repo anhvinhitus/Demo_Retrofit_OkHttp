@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.utils;
 import android.app.Activity;
 
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.react.Helpers;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;

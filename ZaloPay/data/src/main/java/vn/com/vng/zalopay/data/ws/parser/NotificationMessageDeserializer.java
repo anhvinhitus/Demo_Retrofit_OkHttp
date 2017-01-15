@@ -5,14 +5,12 @@ import android.util.Base64;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 import java.lang.reflect.Type;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.model.NotificationEmbedData;
 
 /**

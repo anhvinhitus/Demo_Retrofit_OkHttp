@@ -3,8 +3,6 @@ package vn.com.vng.zalopay.account.ui.presenter;
 import android.content.Context;
 import android.text.TextUtils;
 
-import javax.inject.Inject;
-
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;

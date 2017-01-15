@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.utils;
 
 import android.content.Context;
-import android.os.CountDownTimer;
 
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
@@ -11,7 +10,6 @@ import org.json.JSONObject;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;

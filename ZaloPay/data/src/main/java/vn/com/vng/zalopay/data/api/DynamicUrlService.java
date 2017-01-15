@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.data.api;
 
-import android.support.annotation.NonNull;
-
 import java.util.Map;
 
 import retrofit2.http.Body;

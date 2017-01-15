@@ -41,10 +41,7 @@ public class ValidateUtil {
         if (isCMND(input)) {
             return true;
         }
-        if (isPassport(input)) {
-            return true;
-        }
-        return false;
+        return isPassport(input);
     }
 
     private static boolean isCMND(String str) {

@@ -1,7 +1,6 @@
 package vn.zalopay.feedback.collectors;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Base64;
 import android.view.View;

@@ -3,18 +3,15 @@ package vn.com.vng.zalopay.ui.widget;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.edittext.ZPEditTextValidate;
 
-import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by hieuvm on 11/12/16.

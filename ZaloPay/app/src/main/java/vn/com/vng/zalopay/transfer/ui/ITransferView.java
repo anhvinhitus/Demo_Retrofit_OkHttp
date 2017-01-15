@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.transfer.ui;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 
-import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**

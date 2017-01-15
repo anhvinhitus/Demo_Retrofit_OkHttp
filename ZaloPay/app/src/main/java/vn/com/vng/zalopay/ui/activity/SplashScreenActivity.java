@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.ui.activity;
 import android.os.Bundle;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.SplashScreenFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;

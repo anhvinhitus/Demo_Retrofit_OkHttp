@@ -88,11 +88,8 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (TextUtils.isEmpty(newNotify.message)) {
             return false;
         }
-        if (oldNotify.notificationtype != null
-                && oldNotify.message != null) {
-            return false;
-        }
-        return true;
+        return !(oldNotify.notificationtype != null
+                && oldNotify.message != null);
     }
 
     private long upgrade(NotificationGD newNotify) {

@@ -3,14 +3,9 @@ package vn.com.vng.zalopay.ui.presenter;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import rx.Subscription;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.ApplicationState;
-import vn.com.vng.zalopay.data.appresources.AppResourceRepository;
-import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 import vn.com.vng.zalopay.utils.IntroAppUtils;
 import vn.com.vng.zalopay.utils.ZaloHelper;

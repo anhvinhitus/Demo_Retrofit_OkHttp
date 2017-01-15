@@ -4,7 +4,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;

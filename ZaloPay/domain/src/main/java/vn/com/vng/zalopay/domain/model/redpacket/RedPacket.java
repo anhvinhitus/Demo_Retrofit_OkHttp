@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.domain.model.redpacket;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.Person;

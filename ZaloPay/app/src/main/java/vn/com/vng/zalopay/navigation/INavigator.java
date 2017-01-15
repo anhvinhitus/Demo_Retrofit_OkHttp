@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import com.facebook.react.bridge.Promise;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import vn.com.vng.zalopay.domain.model.AppResource;

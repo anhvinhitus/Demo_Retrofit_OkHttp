@@ -2,13 +2,11 @@ package vn.com.vng.zalopay.account.ui.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
 
 import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 /**
  * A simple pager adapter that represents 2 ProfileSlidePagerAdapter objects, in

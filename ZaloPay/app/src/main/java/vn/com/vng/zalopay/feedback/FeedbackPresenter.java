@@ -6,10 +6,6 @@ import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.zalopay.apploader.internal.FileUtils;
 
 import org.json.JSONException;

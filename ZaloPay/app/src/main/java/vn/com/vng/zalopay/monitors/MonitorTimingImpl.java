@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.monitors;
 
 import java.util.HashMap;
 
-import javax.inject.Inject;
-
 /**
  * Created by huuhoa on 6/5/16.
  * Implementation of timing monitor

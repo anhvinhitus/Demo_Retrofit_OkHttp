@@ -3,8 +3,6 @@ package vn.com.vng.zalopay.data.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by huuhoa on 7/28/16.
  * Unit tests for Crc16

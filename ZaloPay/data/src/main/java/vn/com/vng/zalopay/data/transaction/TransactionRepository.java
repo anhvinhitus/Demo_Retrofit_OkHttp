@@ -13,7 +13,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
-import vn.com.vng.zalopay.data.exception.ArgumentException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.TransHistory;

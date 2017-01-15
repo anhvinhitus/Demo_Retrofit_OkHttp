@@ -25,12 +25,10 @@ import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.react.listener.DialogSimpleEventListener;
 import vn.com.vng.zalopay.react.listener.SweetDialogSimpleEventListener;
 import vn.com.vng.zalopay.react.model.DialogType;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 

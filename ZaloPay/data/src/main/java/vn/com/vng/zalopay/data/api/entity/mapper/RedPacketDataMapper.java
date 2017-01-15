@@ -32,8 +32,6 @@ import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
 import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
-import static java.util.Collections.emptyList;
-
 /**
  * Created by longlv on 16/07/2016.
  * Transform RedPacket data entities

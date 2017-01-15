@@ -4,15 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.DrawableRes;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import vn.com.vng.zalopay.R;
 
 /**
  * Created by AnhHieu on 9/15/16.

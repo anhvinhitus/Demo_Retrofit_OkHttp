@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.account.ui.view;
 
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**

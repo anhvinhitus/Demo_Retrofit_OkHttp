@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
-import java.util.Collection;
 import java.util.List;
 
 import butterknife.BindView;

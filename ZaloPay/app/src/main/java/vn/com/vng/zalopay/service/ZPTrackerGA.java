@@ -1,8 +1,5 @@
 package vn.com.vng.zalopay.service;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 

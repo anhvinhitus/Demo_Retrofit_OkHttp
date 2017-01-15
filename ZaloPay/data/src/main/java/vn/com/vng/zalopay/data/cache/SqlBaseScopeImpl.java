@@ -1,11 +1,9 @@
 package vn.com.vng.zalopay.data.cache;
 
 import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
-import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.DataManifest;
 import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
-import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGDDao;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 
 /**

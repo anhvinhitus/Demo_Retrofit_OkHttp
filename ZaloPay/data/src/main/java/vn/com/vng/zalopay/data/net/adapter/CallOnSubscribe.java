@@ -1,25 +1,19 @@
 package vn.com.vng.zalopay.data.net.adapter;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.provider.Settings;
 import android.text.TextUtils;
 
-import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.exceptions.Exceptions;
-import rx.functions.Action0;
 import rx.subscriptions.Subscriptions;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.analytics.ZPTracker;
 
 /**
  * Created by huuhoa on 7/4/16.

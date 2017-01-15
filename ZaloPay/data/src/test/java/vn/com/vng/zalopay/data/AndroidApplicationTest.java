@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.data;
 
 import android.app.Application;
 
-import timber.log.Timber;
-
 /**
  * Created by hieuvm on 11/14/16.
  */

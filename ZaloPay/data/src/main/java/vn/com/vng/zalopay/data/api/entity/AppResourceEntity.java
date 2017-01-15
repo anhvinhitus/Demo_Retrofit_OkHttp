@@ -62,10 +62,7 @@ public class AppResourceEntity {
             return false;
         }
 
-        if (((AppResourceEntity) o).apptype != apptype) {
-            return false;
-        }
+        return ((AppResourceEntity) o).apptype == apptype;
 
-        return true;
     }
 }

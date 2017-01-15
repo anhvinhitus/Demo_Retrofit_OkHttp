@@ -11,8 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.BuildConfig;
-import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.zalopay.analytics.ZPTracker;
 
 /**

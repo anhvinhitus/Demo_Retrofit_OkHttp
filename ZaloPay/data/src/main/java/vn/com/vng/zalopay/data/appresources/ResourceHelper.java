@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.data.appresources;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import java.util.Locale;
 
