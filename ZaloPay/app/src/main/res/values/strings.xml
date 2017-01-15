@@ -469,4 +469,12 @@
     <string name="lbl.bill">Hóa đơn:</string>
     <string name="transferring.money">đang chuyển tiền</string>
     <string name="cancel.transfer.money">hủy chuyển tiền</string>
+    <string name="lbl.qr.code.transfer.money.for.me">Quét mã QR để chuyển tiền cho tôi mà không cần kết bạn</string>
+    <string name="input.phone.number">Nhập số điện thoại</string>
+    <string name="nfc">Nfc</string>
+    <string name="take.a.picture">Chụp Hình</string>
+    <string name="image.gallery">Thư viện hình ảnh</string>
+    <string name="total">Tổng cộng</string>
+    <string name="avatar">Ảnh của bạn</string>
+    <string name="zero.currency">0 VND</string>
 </resources>

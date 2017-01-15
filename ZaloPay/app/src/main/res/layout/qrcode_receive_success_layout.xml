@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:text="300.000 VND"
+            tools:text="300.000 VND"
             android:textColor="@color/green"
             android:textSize="26dp"/>
     </LinearLayout>

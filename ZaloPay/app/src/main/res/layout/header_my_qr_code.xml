@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|left"
             android:layout_marginLeft="16dp"
-            android:text="Tổng cộng"
+            android:text="@string/total"
             android:textSize="@dimen/font_size_medium" />
 
         <TextView
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|right"
             android:layout_marginRight="16dp"
-            android:text="0 VND"
+            android:text="@string/zero.currency"
             android:textSize="@dimen/font_size_medium" />
 
         <View

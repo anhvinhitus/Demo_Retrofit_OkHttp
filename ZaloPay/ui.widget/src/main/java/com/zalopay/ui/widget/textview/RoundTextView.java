@@ -1,5 +1,6 @@
 package com.zalopay.ui.widget.textview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -61,21 +62,18 @@ public class RoundTextView extends TextView {
         show(num, GONE);
     }
 
+    @SuppressLint("all")
     public void show(int num, int typeHide) {
         RoundTextView rtv = this;
-        if (rtv == null) {
-            return;
-        }
         ViewGroup.LayoutParams lp = rtv.getLayoutParams();
         rtv.setVisibility(View.VISIBLE);
         if (num <= 0) {
             setVisibility(typeHide);
-            return;
         } else {
             lp.height = (int) (18 * density);
             if (num > 0 && num < 10) {//
                 lp.width = (int) (18 * density);
-                rtv.setText(num + "");
+                rtv.setText(String.valueOf(num));
             } else if (num > 9 && num < 100) {
                 lp.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
                 rtv.setPadding((int) (6 * density), 0, (int) (6 * density), 0);

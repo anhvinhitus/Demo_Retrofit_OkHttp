@@ -12,10 +12,10 @@
         android:src="@drawable/ic_pro_arrow_bottom" />
 
     <TextView
+        style="@style/TextView.SubTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextView.SubTitle"
         android:layout_marginTop="4dp"
-        android:text="Nhập số điện thoại"
+        android:text="@string/input.phone.number"
         android:textColor="@color/white" />
 </LinearLayout>

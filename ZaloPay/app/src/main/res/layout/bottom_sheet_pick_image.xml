@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,9 +21,9 @@
             android:layout_gravity="center_vertical"
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingRight="@dimen/spacing.medium"
-            android:text="Chụp Hình"
+            android:text="@string/take.a.picture"
             android:textColor="#dd000000"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <com.zalopay.ui.widget.IconFont
             android:layout_width="wrap_content"
@@ -33,13 +32,13 @@
             android:layout_marginRight="@dimen/spacing.medium"
             android:textColor="@color/menu_font_ic_blue"
             app:iconName="@string/profile_camera"
-            app:iconSize="@dimen/font_size_profile_icon"/>
+            app:iconSize="@dimen/font_size_profile_icon" />
     </FrameLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <FrameLayout
         android:id="@+id/layoutGallery"
@@ -56,9 +55,9 @@
             android:layout_gravity="center_vertical"
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingRight="@dimen/spacing.medium"
-            android:text="Thư viện hình ảnh"
+            android:text="@string/image.gallery"
             android:textColor="#dd000000"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <com.zalopay.ui.widget.IconFont
             android:layout_width="wrap_content"
@@ -67,13 +66,13 @@
             android:layout_marginRight="@dimen/spacing.medium"
             android:textColor="@color/menu_font_ic_blue"
             app:iconName="@string/profile_library"
-            app:iconSize="@dimen/font_size_profile_icon"/>
+            app:iconSize="@dimen/font_size_profile_icon" />
     </FrameLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <FrameLayout
         android:id="@+id/layoutCancel"
@@ -89,9 +88,9 @@
             android:layout_gravity="center_vertical"
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingRight="@dimen/spacing.medium"
-            android:text="Huỷ"
+            android:text="@string/cancel"
             android:textColor="@color/colorPrimary"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
     </FrameLayout>
 
 </LinearLayout>

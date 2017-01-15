@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -18,8 +19,8 @@
         android:paddingBottom="@dimen/default_padding"
         android:paddingLeft="@dimen/default_padding_normal"
         android:paddingTop="15dp"
-        android:text="A"
         android:textAllCaps="true"
-        android:textColor="@color/txt_item_sub" />
+        android:textColor="@color/txt_item_sub"
+        tools:text="A" />
 
 </LinearLayout>

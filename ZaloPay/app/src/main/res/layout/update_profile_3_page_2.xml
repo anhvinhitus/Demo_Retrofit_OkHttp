@@ -158,7 +158,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="Ảnh của bạn"
+                android:text="@string/avatar"
                 android:textSize="@dimen/font_size_medium" />
 
             <com.zalopay.ui.widget.IconFont

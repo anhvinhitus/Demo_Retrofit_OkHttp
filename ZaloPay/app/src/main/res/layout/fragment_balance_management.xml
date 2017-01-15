@@ -1,5 +1,4 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,7 +20,7 @@
             android:layout_marginTop="30dp"
             android:textColor="@color/white"
             app:iconName="@string/header_overbalance"
-            app:iconSize="@dimen/font_size_balance_manager_header"/>
+            app:iconSize="@dimen/font_size_balance_manager_header" />
 
         <TextView
             style="@style/TextView.Title"
@@ -30,7 +29,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="18dp"
             android:text="@string/my_balance"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/tv_balance"
@@ -41,7 +40,8 @@
             android:text="0"
             android:textColor="@color/white"
             android:textSize="34sp"
-            android:textStyle="normal"/>
+            android:textStyle="normal"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <LinearLayout
@@ -58,7 +58,7 @@
             style="@style/TextView.Item.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/account_name"/>
+            android:text="@string/account_name" />
 
         <TextView
             android:id="@+id/tvAccountName"
@@ -68,19 +68,19 @@
             android:drawablePadding="@dimen/spacing.small"
             android:drawableRight="@drawable/ic_arrow_right"
             android:gravity="right|center_vertical"
-            android:hint="@string/not_update"/>
+            android:hint="@string/not_update" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -103,7 +103,7 @@
                 android:layout_margin="@dimen/app_padding"
                 android:textColor="@color/menu_font_ic_green"
                 app:iconName="@string/notify_1_receivemoney"
-                app:iconSize="@dimen/font_size_balance_manager_deposit"/>
+                app:iconSize="@dimen/font_size_balance_manager_deposit" />
 
             <TextView
                 style="@style/LeftMenu.Title"
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"
                 android:gravity="start|center_vertical"
-                android:text="@string/txt_deposit"/>
+                android:text="@string/txt_deposit" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -121,7 +121,7 @@
                 android:layout_weight="0.0"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_arrow_right"/>
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
         <View
@@ -129,7 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
             android:layout_marginLeft="62dp"
-            android:background="@color/separate"/>
+            android:background="@color/separate" />
 
         <LinearLayout
             android:id="@+id/layoutWithdraw"
@@ -146,7 +146,7 @@
                 android:layout_margin="@dimen/app_padding"
                 android:textColor="@color/menu_font_ic_yellow"
                 app:iconName="@string/notify_1_withdraw"
-                app:iconSize="@dimen/font_size_balance_manager_deposit"/>
+                app:iconSize="@dimen/font_size_balance_manager_deposit" />
 
             <TextView
                 style="@style/LeftMenu.Title"
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"
                 android:gravity="start|center_vertical"
-                android:text="@string/txt_withdraw"/>
+                android:text="@string/txt_withdraw" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -164,13 +164,13 @@
                 android:layout_weight="0.0"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_arrow_right"/>
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:background="@color/separate"/>
+            android:background="@color/separate" />
     </LinearLayout>
 
     <FrameLayout
@@ -191,7 +191,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_green"
                 app:iconName="@string/general_question"
-                app:iconSize="@dimen/font_size_balance_manager_question"/>
+                app:iconSize="@dimen/font_size_balance_manager_question" />
 
             <TextView
                 android:id="@+id/tvQuestion"
@@ -199,7 +199,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:text="@string/more_info_acc_zalopay"
-                android:textColor="@color/text_green"/>
+                android:textColor="@color/text_green" />
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>
