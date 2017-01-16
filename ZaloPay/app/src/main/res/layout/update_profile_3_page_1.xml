@@ -19,7 +19,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:singleLine="false"
             android:text="@string/lbl.update.profile.3.page.1"
             android:textSize="@dimen/font_size_medium" />
 
@@ -67,7 +66,6 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
-            android:singleLine="false"
             android:textSize="@dimen/font_size_medium" />
 
         <Button
