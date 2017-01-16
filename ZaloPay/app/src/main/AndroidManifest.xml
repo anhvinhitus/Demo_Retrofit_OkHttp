@@ -174,7 +174,6 @@
         <activity
             android:name=".ui.activity.MiniApplicationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:theme="@style/AppTheme.Payment"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="vn.com.vng.zalopay.action.SUPPORT_CENTER" />
