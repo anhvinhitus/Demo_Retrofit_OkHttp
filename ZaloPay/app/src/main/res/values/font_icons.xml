@@ -39,4 +39,6 @@
     <string name="app_1_transfers">app_1_transfers</string>
     <string name="app_1_receivemoney">app_1_receivemoney</string>
     <string name="app_6_red">app_6_red</string>
+
+    <string name="linkaccount_add">linkaccount_add</string>
 </resources>

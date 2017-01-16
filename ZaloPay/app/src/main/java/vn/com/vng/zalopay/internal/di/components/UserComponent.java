@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.feedback.FeedbackFragment;
+import vn.com.vng.zalopay.linkcard.ui.BankSupportFragment;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountFragment;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
 import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
@@ -38,7 +39,6 @@ import vn.com.vng.zalopay.internal.di.modules.UserRedPacketModule;
 import vn.com.vng.zalopay.internal.di.modules.UserTransactionModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
-import vn.com.vng.zalopay.linkcard.ui.CardSupportFragment;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardFragment;
 import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardFragment;
 import vn.com.vng.zalopay.notification.NotificationHelper;
@@ -171,8 +171,6 @@ public interface UserComponent {
 
     void inject(ZaloFriendListFragment f);
 
-    void inject(CardSupportFragment f);
-
     void inject(NotificationLinkCardFragment f);
 
     void inject(WarningRootedFragment f);
@@ -192,4 +190,6 @@ public interface UserComponent {
     void inject(FeedbackFragment f);
 
     void inject(RequestSupportFragment f);
+
+    void inject(BankSupportFragment f);
 }

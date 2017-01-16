@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
@@ -31,11 +32,13 @@
             android:layout_weight="0.0"
             android:orientation="horizontal">
 
-            <ImageView
+            <com.zalopay.ui.widget.IconFont
+                android:id="@+id/iconInsideApp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/loremipsum"
-                android:src="@drawable/ic_lc_card_add"/>
+                android:textColor="@color/white"
+                app:iconName="@string/linkaccount_add"
+                app:iconSize="@dimen/font_size_link_card_add"/>
 
             <TextView
                 android:layout_width="wrap_content"

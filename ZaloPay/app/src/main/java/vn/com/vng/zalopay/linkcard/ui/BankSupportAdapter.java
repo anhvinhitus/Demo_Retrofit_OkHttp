@@ -20,9 +20,9 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
  * Created by longlv on 10/13/16.
  * *
  */
-class CardSupportAdapter extends AbsRecyclerAdapter<ZPCard, CardSupportAdapter.ViewHolder> {
+class BankSupportAdapter extends AbsRecyclerAdapter<ZPCard, BankSupportAdapter.ViewHolder> {
 
-    CardSupportAdapter(Context context) {
+    BankSupportAdapter(Context context) {
         super(context);
     }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/layoutLinkCardEmpty"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -7,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/background"
         android:orientation="vertical">
 
         <LinearLayout
@@ -49,10 +50,13 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageView
+                <com.zalopay.ui.widget.IconFont
+                    android:id="@+id/iconInsideApp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_lc_card_add"/>
+                    android:textColor="@color/white"
+                    app:iconName="@string/linkaccount_add"
+                    app:iconSize="@dimen/font_size_link_card_add"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -69,46 +73,60 @@
             android:layout_height="0.5dp"
             android:background="@color/separate"/>
 
-        <TextView
-            style="@style/TextView.Group.Title"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingTop="@dimen/spacing.medium"
-            android:text="@string/secure_info"
-            android:textAllCaps="true"
-            android:textColor="@color/txt_item_main"/>
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/spacing.medium"
+            android:background="@color/separate"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/loremipsum"
-                android:paddingLeft="@dimen/spacing.medium"
-                android:paddingRight="@dimen/spacing.medium"
-                android:paddingTop="@dimen/spacing.medium.t"
-                android:scaleType="center"
-                android:src="@drawable/ic_chungchi"/>
+            android:background="@color/white"
+            android:layout_marginBottom="@dimen/spacing.medium"
+            android:orientation="vertical">
 
             <TextView
+                style="@style/TextView.Group.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingRight="@dimen/spacing.medium.s"
-                android:text="@string/secure_info_detail"
-                android:textColor="@color/txt_item_main"
-                android:textSize="13sp"/>
-        </LinearLayout>
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingTop="@dimen/spacing.medium"
+                android:text="@string/secure_info"
+                android:textAllCaps="true"
+                android:textColor="@color/txt_item_main"/>
 
-        <fragment
-            android:id="@+id/cardSupportFragment"
-            android:name="vn.com.vng.zalopay.linkcard.ui.CardSupportFragment"
-            android:layout_marginTop="14dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/loremipsum"
+                    android:paddingLeft="@dimen/spacing.medium"
+                    android:paddingRight="@dimen/spacing.medium"
+                    android:paddingTop="@dimen/spacing.medium.t"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_chungchi"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingRight="@dimen/spacing.medium.s"
+                    android:text="@string/secure_info_detail"
+                    android:textColor="@color/txt_item_main"
+                    android:textSize="13sp"/>
+            </LinearLayout>
+
+            <fragment
+                android:id="@+id/bankSupportFragment"
+                android:name="vn.com.vng.zalopay.linkcard.ui.BankSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"/>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

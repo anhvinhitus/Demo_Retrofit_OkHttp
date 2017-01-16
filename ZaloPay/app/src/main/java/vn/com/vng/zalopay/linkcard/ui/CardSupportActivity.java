@@ -40,7 +40,7 @@ public class CardSupportActivity extends BaseToolBarActivity implements ICardSup
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return CardSupportFragment.newInstance(true);
+        return BankSupportFragment.newInstance(true);
     }
 
     @Override

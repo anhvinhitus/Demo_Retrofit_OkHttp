@@ -43,7 +43,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     private Dialog mBottomSheetDialog;
     private BankCard mCurrentBankCard;
     private LinkCardAdapter mAdapter;
-    private CardSupportFragment mCardSupportFragment;
+    private BankSupportFragment mBankSupportFragment;
 
     @BindView(R.id.layoutLinkCardEmpty)
     View mLayoutLinkCardEmpty;
@@ -112,9 +112,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         }
 //        mRecyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
         mRecyclerView.setAdapter(mAdapter);
-        mCardSupportFragment = (CardSupportFragment)
-                getChildFragmentManager().findFragmentById(R.id.cardSupportFragment);
 
+        mBankSupportFragment = (BankSupportFragment)
+                getChildFragmentManager().findFragmentById(R.id.bankSupportFragment);
         initBottomSheet();
     }
 
@@ -164,8 +164,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     private void showLinkCardEmpty() {
-        if (mCardSupportFragment.getCountCardSupport() <= 0) {
-            mCardSupportFragment.getCardSupport();
+        if (mBankSupportFragment.getCountLinkCardSupport() <= 0
+                || mBankSupportFragment.getCountLinkAccountSupport() <= 0) {
+            mBankSupportFragment.getCardSupport();
         }
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
         mLayoutContent.setVisibility(View.GONE);
@@ -209,7 +210,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         mCurrentBankCard = null;
         // break circular link between this and mAdapter
         mAdapter = null;
-        mCardSupportFragment = null;
+        mBankSupportFragment = null;
         super.onDestroy();
     }
 
@@ -218,7 +219,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         mAdapter.setData(bankCards);
         showOrHideLinkCardEmpty();
     }
-
 
     @Override
     public void updateData(BankCard bankCard) {
