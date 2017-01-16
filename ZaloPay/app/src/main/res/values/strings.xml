@@ -461,8 +461,7 @@
     <string name="fingerprint.error.hw.unavailable">Xác thực vân tay không sẵn sàng. Vui lòng nhập mật khẩu để tiếp tục.</string>
     <string name="fingerprint.error.timeout">Thời gian xác thực vân tay hết hạn. Vui lòng nhập mật khẩu để tiếp tục.</string>
     <!-- End Fingerprint-->
-
-    <string name="maintain_withdraw_message" formatted="false">Tính năng Rút Tiền đang được bảo trì. Thời gian bảo trì từ %s đến %s.</string>
+    <string name="maintain_withdraw_message">Tính năng Rút Tiền đang được bảo trì. Thời gian bảo trì từ %1$s đến %2$s.</string>
     <string name="email.support">hotro@zalopay.vn</string>
     <string name="subject.compose.email.support">Phản hồi/Góp ý Zalo Pay</string>
     <string name="error_message_link_card_unknown_error">Lỗi xảy ra trong quá trình hủy liên kết thẻ. Vui lòng thử lại sau.</string>
@@ -478,3 +477,4 @@
     <string name="avatar">Ảnh của bạn</string>
     <string name="zero.currency">0 VND</string>
 </resources>
+
