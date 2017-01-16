@@ -189,3 +189,10 @@ EventId,Category,Action
 2413,ReceiveMoney,ReceiveMoney_Received_8
 2414,ReceiveMoney,ReceiveMoney_Received_9
 2415,ReceiveMoney,ReceiveMoney_Received_More
+2500,Timing ESALE,esale_api_v4_getshopitemlist
+2501,Timing ESALE,esale_api_v4_createorder
+2502,Timing ESALE,esale_api_v4_gethistory
+2503,Timing ESALE,esale_api_v4_getresult
+2504,Timing ESALE,esale_api_v4_carddetail
+2505,Timing ESALE,esale_api_v4_getproviders
+2506,Timing ESALE,esale_api_v4_querybill
