@@ -43,7 +43,6 @@
                 android:gravity="left|center_vertical"
                 tools:text="@string/app_name" />
         </LinearLayout>
-        .
     </LinearLayout>
 
     <ImageView
