@@ -1,5 +1,9 @@
 package vn.com.vng.zalopay.data.transaction;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.util.TimeUtils;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
@@ -14,7 +18,6 @@ import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.entity.mapper.ZaloPayEntityDataMapper;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.vng.zalopay.domain.model.User;
 
@@ -41,16 +44,16 @@ public class TransactionRepository implements TransactionStore.Repository {
     private static final int TRANSACTION_LENGTH = 20;
 
     public TransactionRepository(
-            ZaloPayEntityDataMapper zaloPayEntityDataMapper,
+            ZaloPayEntityDataMapper dataMapper,
             User user,
-            TransactionStore.LocalStorage transactionLocalStorage,
-            TransactionStore.RequestService transactionRequestService,
+            @NonNull TransactionStore.LocalStorage localStorage,
+            @NonNull TransactionStore.RequestService requestService,
             EventBus eventBus) {
 
-        this.mDataMapper = zaloPayEntityDataMapper;
+        this.mDataMapper = dataMapper;
         mUser = user;
-        mLocalStorage = transactionLocalStorage;
-        mRequestService = transactionRequestService;
+        mLocalStorage = localStorage;
+        mRequestService = requestService;
         mEventBus = eventBus;
     }
 
@@ -130,16 +133,17 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<TransHistory> getTransaction(long id) {
-        if (mLocalStorage == null) {
-            return Observable.empty();
-        }
-        return ObservableHelper.makeObservable(() -> mLocalStorage.getTransaction(id))
-                .map(entity -> mDataMapper.transform(entity));
+        Observable<TransHistoryEntity> observable = makeObservable(() -> mLocalStorage.getTransaction(id))
+                .filter(entity -> entity != null);
+        Observable<TransHistoryEntity> observableBackup = makeObservable(() -> mLocalStorage.getBackup(id));
+        return Observable.concat(observable, observableBackup)
+                .first()
+                .map(mDataMapper::transform);
     }
 
     @Override
     public Observable<Boolean> updateTransactionStatusSuccess(final long transId) {
-        return ObservableHelper.makeObservable(() -> {
+        return makeObservable(() -> {
             mLocalStorage.updateStatusType(transId, TRANSACTION_STATUS_SUCCESS);
             return Boolean.TRUE;
         });
@@ -156,9 +160,6 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private Observable<List<TransHistoryEntity>> getTransactionHistoryLocal(int pageIndex, int count, int statusType) {
-        if (mLocalStorage == null) {
-            return Observable.empty();
-        }
         return makeObservable(() -> mLocalStorage.get(pageIndex, count, statusType));
     }
 
@@ -205,9 +206,6 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     private long getNextTimestamp(int sortOrder, int statusType) {
         long ret = -1;
-        if (mLocalStorage == null) {
-            return ret;
-        }
         if (sortOrder == TRANSACTION_ORDER_LATEST) {
             ret = mLocalStorage.getLatestTimeTransaction(statusType);
         } else if (sortOrder == TRANSACTION_ORDER_OLDEST) {
@@ -254,9 +252,6 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private Observable<List<TransHistoryEntity>> fetchTransactionHistoryCloud(long timestamp, int sortOrder, int statusType) {
-        if (mRequestService == null) {
-            return Observable.empty();
-        }
         return mRequestService.getTransactionHistories(mUser.zaloPayId, mUser.accesstoken, timestamp, TRANSACTION_LENGTH, sortOrder, statusType)
                 .map(response -> response.data)
                 .doOnNext(data -> {
@@ -285,9 +280,6 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private void writeTransactionEntity(List<TransHistoryEntity> data, int sortOder, int statusType) {
-        if (mLocalStorage == null) {
-            return;
-        }
         int size = data.size();
         if (size > 0) {
             for (TransHistoryEntity transHistoryEntity : data) {
@@ -314,43 +306,12 @@ public class TransactionRepository implements TransactionStore.Repository {
                 (result1, result2) -> result1 && result2);
     }
 
-    @Override
-    public Observable<Boolean> reloadTransactionHistory(long time) {
-        Observable<Long> observableLatestSuccess = getLatestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
-        Observable<Long> observableOldestSuccess = getOldestTimeTransaction(TRANSACTION_STATUS_SUCCESS);
-
-        return Observable.zip(observableLatestSuccess, observableOldestSuccess, (latest, oldest) -> {
-            if (latest == 0 || oldest == 0) {
-                return TRANSACTION_ORDER_LATEST;
-            }
-
-            if (time >= latest) {
-                return TRANSACTION_ORDER_LATEST;
-            }
-
-            if (time <= oldest) {
-                return TRANSACTION_ORDER_OLDEST;
-            }
-
-            return 0;
-        }).flatMap(sortOder -> {
-            if (sortOder == TRANSACTION_ORDER_LATEST) {
-                return fetchTransactionHistoryLatestSuccess(time);
-            } else if (sortOder == TRANSACTION_ORDER_OLDEST) {
-                return fetchTransactionHistoryOldestSuccess(time);
-            } else {
-                return Observable.empty();
-            }
-        });
-
-    }
-
     private Observable<Long> getLatestTimeTransaction(int statusType) {
-        return makeObservable(() -> mLocalStorage != null ? mLocalStorage.getLatestTimeTransaction(statusType) : 0L);
+        return makeObservable(() -> mLocalStorage.getLatestTimeTransaction(statusType));
     }
 
     private Observable<Long> getOldestTimeTransaction(int statusType) {
-        return makeObservable(() -> mLocalStorage != null ? mLocalStorage.getOldestTimeTransaction(statusType) : 0L);
+        return makeObservable(() -> mLocalStorage.getOldestTimeTransaction(statusType));
     }
 
     private Observable<Boolean> fetchTransactionHistoryOldestSuccess(long thresholdTime) {
@@ -391,5 +352,59 @@ public class TransactionRepository implements TransactionStore.Repository {
     public Observable<List<TransHistory>> getTransactionsFailLocal(int pageIndex, int count) {
         return getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL)
                 .map(entities -> Lists.transform(entities, mDataMapper::transform));
+    }
+
+    /**
+     * time là millis
+     */
+    @Override
+    public Observable<TransHistory> reloadTransactionHistory(long transId, long time) {
+        long timestamp = time - 5000;
+        Timber.d("reloadTransactionHistory: transactionId %s  timeStamp %s", transId, timestamp);
+        Observable<List<TransHistoryEntity>> observableSuccess = fetchTransactionToBackup(timestamp, 5, TRANSACTION_STATUS_SUCCESS)
+                .onErrorResumeNext(throwable -> Observable.just(Collections.emptyList()));
+        Observable<List<TransHistoryEntity>> observableFail = fetchTransactionToBackup(timestamp, 5, TRANSACTION_STATUS_FAIL)
+                .onErrorResumeNext(throwable -> Observable.just(Collections.emptyList()));
+
+        return Observable
+                .zip(observableSuccess, observableFail, (entitiesSuccess, entitiesFail) -> {
+                    TransHistoryEntity entity = findTransaction(entitiesSuccess, transId);
+                    Timber.d("find transaction in list success %s", entity);
+                    if (entity != null) {
+                        return entity;
+                    }
+                    return findTransaction(entitiesFail, transId);
+                }).map(entity -> {
+                    if (entity != null) {
+                        mLocalStorage.putBackup(entity);
+                        return mDataMapper.transform(entity);
+                    }
+                    return null;
+                });
+
+    }
+
+
+    @Nullable
+    private TransHistoryEntity findTransaction(List<TransHistoryEntity> entities, long transId) {
+        if (Lists.isEmptyOrNull(entities)) {
+            return null;
+        }
+        for (TransHistoryEntity entity : entities) {
+            if (entity == null) {
+                continue;
+            }
+
+            if (entity.transid == transId) {
+                return entity;
+            }
+        }
+        return null;
+    }
+
+    private Observable<List<TransHistoryEntity>> fetchTransactionToBackup(long timestamp, int length, int statusType) {
+        return mRequestService.getTransactionHistories(mUser.zaloPayId, mUser.accesstoken, timestamp, length,
+                TRANSACTION_ORDER_LATEST, statusType)
+                .map(response -> response.data);
     }
 }

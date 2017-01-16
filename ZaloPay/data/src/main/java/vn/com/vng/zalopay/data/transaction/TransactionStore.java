@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.transaction;
 
+import android.support.annotation.Nullable;
+
 import java.util.List;
 
 import retrofit2.http.GET;
@@ -41,6 +43,11 @@ public interface TransactionStore {
 
         long getOldestTimeTransaction(int statusType);
 
+        void putBackup(@Nullable TransHistoryEntity val);
+
+        @Nullable
+        TransHistoryEntity getBackup(long transId);
+
     }
 
     interface RequestService {
@@ -77,6 +84,6 @@ public interface TransactionStore {
 
         Observable<Boolean> fetchTransactionHistoryLatest(long thresholdTime);
 
-        Observable<Boolean> reloadTransactionHistory(long time);
+        Observable<TransHistory> reloadTransactionHistory(long id, long time);
     }
 }

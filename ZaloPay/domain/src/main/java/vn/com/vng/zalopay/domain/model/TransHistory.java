@@ -97,4 +97,6 @@ public class TransHistory extends AbstractData implements Parcelable {
             return new TransHistory[size];
         }
     };
+
+
 }

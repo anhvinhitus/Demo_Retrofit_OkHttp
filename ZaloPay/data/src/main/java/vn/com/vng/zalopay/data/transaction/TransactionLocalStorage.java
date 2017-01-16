@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.transaction;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +13,7 @@ import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.cache.model.TransactionLog;
+import vn.com.vng.zalopay.data.cache.model.TransactionLogBackup;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -177,8 +180,7 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
     }
 
     private TransactionLog queryTransactionById(long id) {
-        TransactionLog ret = getDaoSession().getTransactionLogDao().load(id);
-        return ret;
+        return getDaoSession().getTransactionLogDao().load(id);
     }
 
     @Override
@@ -234,6 +236,73 @@ public class TransactionLocalStorage extends SqlBaseScopeImpl implements Transac
         }
         Timber.d("getOldestTimeTransaction timeUpdate %s", timeUpdate);
         return timeUpdate;
+    }
+
+    @Override
+    public void putBackup(@Nullable TransHistoryEntity val) {
+        TransactionLogBackup transaction = transformBackup(val);
+        if (transaction != null) {
+            getDaoSession().getTransactionLogBackupDao().insertOrReplaceInTx(transaction);
+        }
+    }
+
+    @Nullable
+    @Override
+    public TransHistoryEntity getBackup(long transId) {
+        TransactionLogBackup transaction = getDaoSession().getTransactionLogBackupDao().load(transId);
+        return transformBackupEntity(transaction);
+    }
+
+    @Nullable
+    private TransactionLogBackup transformBackup(@Nullable TransHistoryEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        TransactionLogBackup transDao = new TransactionLogBackup();
+        transDao.transid = entity.transid;
+        transDao.appuser = (entity.appuser);
+        transDao.appid = (entity.appid);
+        transDao.description = (entity.description);
+        transDao.userchargeamt = (entity.userchargeamt);
+        transDao.userfeeamt = (entity.userfeeamt);
+        transDao.amount = (entity.amount);
+        transDao.platform = (entity.platform);
+        transDao.pmcid = (entity.pmcid);
+        transDao.type = (entity.type);
+        transDao.reqdate = (entity.reqdate);
+        transDao.userid = (entity.userid);
+        transDao.sign = (entity.sign);
+        transDao.username = (entity.username);
+        transDao.appusername = (entity.appusername);
+        transDao.statustype = (entity.statustype);
+        return transDao;
+    }
+
+    @Nullable
+    private TransHistoryEntity transformBackupEntity(@Nullable TransactionLogBackup transDao) {
+        if (transDao == null) {
+            return null;
+        }
+
+        TransHistoryEntity entity = new TransHistoryEntity();
+        entity.appid = transDao.appid;
+        entity.appuser = transDao.appuser;
+        entity.description = transDao.description;
+        entity.userchargeamt = transDao.userchargeamt;
+        entity.userfeeamt = transDao.userfeeamt;
+        entity.amount = transDao.amount;
+        entity.platform = transDao.platform;
+        entity.pmcid = transDao.pmcid;
+        entity.reqdate = ConvertHelper.unboxValue(transDao.reqdate, 0);
+        entity.transid = transDao.transid;
+        entity.type = transDao.type;
+        entity.userid = transDao.userid;
+        entity.sign = transDao.sign;
+        entity.username = transDao.username;
+        entity.appusername = transDao.appusername;
+        entity.statustype = transDao.statustype;
+        return entity;
     }
 }
 
