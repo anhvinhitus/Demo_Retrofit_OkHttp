@@ -56,6 +56,7 @@ import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
+import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
@@ -454,7 +455,13 @@ public class Navigator implements INavigator {
     }
 
     private Intent getIntentMiniAppActivity(Context context, String moduleName, Map<String, String> launchOptions) {
-        Intent intent = new Intent(context, MiniApplicationActivity.class);
+        Intent intent;
+        if (moduleName.equals(ModuleName.RED_PACKET)) {
+            intent = new Intent(context, RedPacketApplicationActivity.class);
+        } else {
+            intent = new Intent(context, MiniApplicationActivity.class);
+        }
+
         intent.putExtra("moduleName", moduleName);
         Bundle options = new Bundle();
         for (Map.Entry<String, String> e : launchOptions.entrySet()) {
