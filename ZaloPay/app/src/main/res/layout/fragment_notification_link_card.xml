@@ -33,8 +33,7 @@
                 android:layout_height="22dp"
                 android:layout_marginLeft="28dp"
                 android:layout_marginTop="194dp"
-                android:contentDescription="@string/loremipsum"
-                tools:src="@drawable/ic_luuthe"/>
+                android:contentDescription="@string/loremipsum"/>
 
             <TextView
                 android:id="@+id/txtBankName"
