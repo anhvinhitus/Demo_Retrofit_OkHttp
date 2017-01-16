@@ -61,7 +61,7 @@
     </style>
 
     <style name="AppTheme.Payment.RedPacket">
-        <item name="android:windowBackground">@drawable/layer_payment_background</item>
+        <item name="android:windowBackground">@drawable/layer_redpacket_background</item>
     </style>
 
     <style name="Account.Login.Button" parent="@android:style/TextAppearance.Widget.TextView">

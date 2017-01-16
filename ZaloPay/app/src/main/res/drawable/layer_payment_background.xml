@@ -5,8 +5,9 @@
     android:opacity="opaque">
     <item android:drawable="@color/colorPrimary" />
     <item
-        android:drawable="@color/splash_bg"
+        android:drawable="@color/background"
         android:top="@dimen/payment.actionbar.height" />
+
     <item android:top="0dp">
         <bitmap
             android:gravity="center"
