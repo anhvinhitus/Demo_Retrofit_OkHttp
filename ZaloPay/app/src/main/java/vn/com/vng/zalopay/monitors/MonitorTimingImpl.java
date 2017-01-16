@@ -1,6 +1,6 @@
 package vn.com.vng.zalopay.monitors;
 
-import java.util.HashMap;
+import android.util.SparseArray;
 
 /**
  * Created by huuhoa on 6/5/16.
@@ -8,7 +8,7 @@ import java.util.HashMap;
  */
 public class MonitorTimingImpl implements IMonitorTiming {
     private final IMonitorReport monitorReport;
-    private final HashMap<Integer, Long> events = new HashMap<>();
+    private final SparseArray<Long> events = new SparseArray<>();
 
     public MonitorTimingImpl(IMonitorReport monitorReport) {
         this.monitorReport = monitorReport;

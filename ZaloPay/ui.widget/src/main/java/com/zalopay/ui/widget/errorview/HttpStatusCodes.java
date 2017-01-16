@@ -1,10 +1,13 @@
 package com.zalopay.ui.widget.errorview;
 
+import android.util.SparseArray;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by AnhHieu on 1/27/16.
+ * *
  */
 public class HttpStatusCodes {
     public static final int CODE_400 = 400;
@@ -33,8 +36,8 @@ public class HttpStatusCodes {
     public static final int CODE_504 = 504;
     public static final int CODE_505 = 505;
 
-    public static Map<Integer, String> getCodesMap() {
-        Map<Integer, String> mCodes = new HashMap<>();
+    public static SparseArray<String> getCodesMap() {
+        SparseArray<String> mCodes = new SparseArray<>();
 
         mCodes.put(CODE_400, "Bad Request");
         mCodes.put(CODE_401, "Unauthorized");

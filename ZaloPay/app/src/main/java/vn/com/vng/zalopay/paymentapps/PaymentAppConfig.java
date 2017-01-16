@@ -1,9 +1,10 @@
 package vn.com.vng.zalopay.paymentapps;
 
+import android.util.LongSparseArray;
+
 import com.zalopay.apploader.impl.BundleServiceImpl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import vn.com.vng.zalopay.AndroidApplication;
@@ -24,14 +25,14 @@ public class PaymentAppConfig {
         public static final long SHOW_SHOW = 22;
     }
 
-    private static final HashMap<Long, AppResource> APP_RESOURCE_MAP;
+    private static final LongSparseArray<AppResource> APP_RESOURCE_MAP;
 
     public static final List<AppResource> APP_RESOURCE_LIST;
     public static final List<AppResource> EXCLUDE_APP_RESOURCE_LIST;
     public static final List<String> EXCEPT_LOAD_FONTS;
 
     static {
-        APP_RESOURCE_MAP = new HashMap<>();
+        APP_RESOURCE_MAP = new LongSparseArray<>();
         APP_RESOURCE_MAP.put(Constants.TRANSFER_MONEY,
                 new AppResource(Constants.TRANSFER_MONEY,
                         PaymentAppTypeEnum.INTERNAL_APP.value,

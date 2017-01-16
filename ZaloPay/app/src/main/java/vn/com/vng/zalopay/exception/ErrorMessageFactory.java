@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.exception;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.zalopay.ui.widget.errorview.HttpStatusCodes;
 
@@ -29,7 +30,7 @@ public class ErrorMessageFactory {
         //empty
     }
 
-    private final static Map<Integer, String> mHttpStatusCode;
+    private final static SparseArray<String> mHttpStatusCode;
 
     static {
         mHttpStatusCode = HttpStatusCodes.getCodesMap();
