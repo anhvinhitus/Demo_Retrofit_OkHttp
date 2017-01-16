@@ -104,18 +104,19 @@ public class BeaconScanner {
         }
 
         try {
+            if (mBluetoothAdapter == null
+                    || !mBluetoothAdapter.isEnabled()) {
+                return;
+            }
+
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-                    return;
-                } else {
-                    mBluetoothAdapter.stopLeScan(getScanCallback18());
-                }
+                mBluetoothAdapter.stopLeScan(getScanCallback18());
             } else {
                 if (mLEScanner == null) {
                     return;
-                } else {
-                    mLEScanner.stopScan(getScanCallback());
                 }
+
+                mLEScanner.stopScan(getScanCallback());
             }
 
         } catch (Exception e) {
