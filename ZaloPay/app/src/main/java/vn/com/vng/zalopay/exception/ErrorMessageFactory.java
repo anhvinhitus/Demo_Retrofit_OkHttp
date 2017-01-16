@@ -3,13 +3,9 @@ package vn.com.vng.zalopay.exception;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.SparseArray;
-
-import com.zalopay.ui.widget.errorview.HttpStatusCodes;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import javax.net.ssl.SSLHandshakeException;
@@ -29,14 +25,7 @@ public class ErrorMessageFactory {
     private ErrorMessageFactory() {
         //empty
     }
-
-    private final static SparseArray<String> mHttpStatusCode;
-
-    static {
-        mHttpStatusCode = HttpStatusCodes.getCodesMap();
-    }
-
-
+    
     public static String create(Context context, Throwable exception) {
         if (context == null) {
             return null;

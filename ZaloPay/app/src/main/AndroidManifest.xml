@@ -174,13 +174,19 @@
         <activity
             android:name=".ui.activity.MiniApplicationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.Payment"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="vn.com.vng.zalopay.action.SUPPORT_CENTER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.activity.RedPacketApplicationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:theme="@style/AppTheme.Payment.RedPacket"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".paymentapps.ui.PaymentApplicationActivity"
