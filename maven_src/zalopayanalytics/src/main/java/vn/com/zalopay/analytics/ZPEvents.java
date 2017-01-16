@@ -194,6 +194,13 @@ public class ZPEvents {
     public static final int RECEIVEMONEY_RECEIVED_8 = 2413;
     public static final int RECEIVEMONEY_RECEIVED_9 = 2414;
     public static final int RECEIVEMONEY_RECEIVED_MORE = 2415;
+    public static final int ESALE_API_V4_GETSHOPITEMLIST = 2500;
+    public static final int ESALE_API_V4_CREATEORDER = 2501;
+    public static final int ESALE_API_V4_GETHISTORY = 2502;
+    public static final int ESALE_API_V4_GETRESULT = 2503;
+    public static final int ESALE_API_V4_CARDDETAIL = 2504;
+    public static final int ESALE_API_V4_GETPROVIDERS = 2505;
+    public static final int ESALE_API_V4_QUERYBILL = 2506;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -577,6 +584,20 @@ public class ZPEvents {
                 return "ReceiveMoney_Received_9";
             case RECEIVEMONEY_RECEIVED_MORE:
                 return "ReceiveMoney_Received_More";
+            case ESALE_API_V4_GETSHOPITEMLIST:
+                return "esale_api_v4_getshopitemlist";
+            case ESALE_API_V4_CREATEORDER:
+                return "esale_api_v4_createorder";
+            case ESALE_API_V4_GETHISTORY:
+                return "esale_api_v4_gethistory";
+            case ESALE_API_V4_GETRESULT:
+                return "esale_api_v4_getresult";
+            case ESALE_API_V4_CARDDETAIL:
+                return "esale_api_v4_carddetail";
+            case ESALE_API_V4_GETPROVIDERS:
+                return "esale_api_v4_getproviders";
+            case ESALE_API_V4_QUERYBILL:
+                return "esale_api_v4_querybill";
             default:
                 return "DefaultAction";
         }
@@ -964,6 +985,20 @@ public class ZPEvents {
                 return "ReceiveMoney";
             case RECEIVEMONEY_RECEIVED_MORE:
                 return "ReceiveMoney";
+            case ESALE_API_V4_GETSHOPITEMLIST:
+                return "Timing ESALE";
+            case ESALE_API_V4_CREATEORDER:
+                return "Timing ESALE";
+            case ESALE_API_V4_GETHISTORY:
+                return "Timing ESALE";
+            case ESALE_API_V4_GETRESULT:
+                return "Timing ESALE";
+            case ESALE_API_V4_CARDDETAIL:
+                return "Timing ESALE";
+            case ESALE_API_V4_GETPROVIDERS:
+                return "Timing ESALE";
+            case ESALE_API_V4_QUERYBILL:
+                return "Timing ESALE";
             default:
                 return "DefaultCategory";
         }
