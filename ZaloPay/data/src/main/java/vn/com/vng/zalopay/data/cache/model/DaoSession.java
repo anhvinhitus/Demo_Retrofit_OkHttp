@@ -11,6 +11,7 @@ import org.greenrobot.greendao.internal.DaoConfig;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGD;
 import vn.com.vng.zalopay.data.cache.model.TransactionLog;
+import vn.com.vng.zalopay.data.cache.model.TransactionLogBackup;
 import vn.com.vng.zalopay.data.cache.model.DataManifest;
 import vn.com.vng.zalopay.data.cache.model.BankCardGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
@@ -30,6 +31,7 @@ import vn.com.vng.zalopay.data.cache.model.MerchantUser;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
 import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGDDao;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
+import vn.com.vng.zalopay.data.cache.model.TransactionLogBackupDao;
 import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
 import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
@@ -58,6 +60,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig appResourceGDDaoConfig;
     private final DaoConfig paymentTransTypeGDDaoConfig;
     private final DaoConfig transactionLogDaoConfig;
+    private final DaoConfig transactionLogBackupDaoConfig;
     private final DaoConfig dataManifestDaoConfig;
     private final DaoConfig bankCardGDDaoConfig;
     private final DaoConfig zaloFriendGDDaoConfig;
@@ -77,6 +80,7 @@ public class DaoSession extends AbstractDaoSession {
     private final AppResourceGDDao appResourceGDDao;
     private final PaymentTransTypeGDDao paymentTransTypeGDDao;
     private final TransactionLogDao transactionLogDao;
+    private final TransactionLogBackupDao transactionLogBackupDao;
     private final DataManifestDao dataManifestDao;
     private final BankCardGDDao bankCardGDDao;
     private final ZaloFriendGDDao zaloFriendGDDao;
@@ -105,6 +109,9 @@ public class DaoSession extends AbstractDaoSession {
 
         transactionLogDaoConfig = daoConfigMap.get(TransactionLogDao.class).clone();
         transactionLogDaoConfig.initIdentityScope(type);
+
+        transactionLogBackupDaoConfig = daoConfigMap.get(TransactionLogBackupDao.class).clone();
+        transactionLogBackupDaoConfig.initIdentityScope(type);
 
         dataManifestDaoConfig = daoConfigMap.get(DataManifestDao.class).clone();
         dataManifestDaoConfig.initIdentityScope(type);
@@ -154,6 +161,7 @@ public class DaoSession extends AbstractDaoSession {
         appResourceGDDao = new AppResourceGDDao(appResourceGDDaoConfig, this);
         paymentTransTypeGDDao = new PaymentTransTypeGDDao(paymentTransTypeGDDaoConfig, this);
         transactionLogDao = new TransactionLogDao(transactionLogDaoConfig, this);
+        transactionLogBackupDao = new TransactionLogBackupDao(transactionLogBackupDaoConfig, this);
         dataManifestDao = new DataManifestDao(dataManifestDaoConfig, this);
         bankCardGDDao = new BankCardGDDao(bankCardGDDaoConfig, this);
         zaloFriendGDDao = new ZaloFriendGDDao(zaloFriendGDDaoConfig, this);
@@ -173,6 +181,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(AppResourceGD.class, appResourceGDDao);
         registerDao(PaymentTransTypeGD.class, paymentTransTypeGDDao);
         registerDao(TransactionLog.class, transactionLogDao);
+        registerDao(TransactionLogBackup.class, transactionLogBackupDao);
         registerDao(DataManifest.class, dataManifestDao);
         registerDao(BankCardGD.class, bankCardGDDao);
         registerDao(ZaloFriendGD.class, zaloFriendGDDao);
@@ -194,6 +203,7 @@ public class DaoSession extends AbstractDaoSession {
         appResourceGDDaoConfig.clearIdentityScope();
         paymentTransTypeGDDaoConfig.clearIdentityScope();
         transactionLogDaoConfig.clearIdentityScope();
+        transactionLogBackupDaoConfig.clearIdentityScope();
         dataManifestDaoConfig.clearIdentityScope();
         bankCardGDDaoConfig.clearIdentityScope();
         zaloFriendGDDaoConfig.clearIdentityScope();
@@ -221,6 +231,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public TransactionLogDao getTransactionLogDao() {
         return transactionLogDao;
+    }
+
+    public TransactionLogBackupDao getTransactionLogBackupDao() {
+        return transactionLogBackupDao;
     }
 
     public DataManifestDao getDataManifestDao() {

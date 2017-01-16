@@ -28,6 +28,7 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.TransactionChangeEvent;
+import vn.com.vng.zalopay.data.exception.ArgumentException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -163,10 +164,6 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
         }
 
         @Override
-        public void onCompleted() {
-        }
-
-        @Override
         public void onError(Throwable e) {
             Timber.w(e, "error on getting transaction logs");
             Helpers.promiseResolveError(mPromise.get(), ERR_CODE_FAIL.value(), "get transaction error");
@@ -283,36 +280,35 @@ class ReactTransactionLogsNativeModule extends ReactContextBaseJavaModule implem
     public void reloadTransactionWithId(final String transactionId, String notificationId, final Promise promise) {
         Timber.d("reloadTransactionWithId: transactionId [%s] notificationId [%s]", transactionId, notificationId);
         final long notifyId;
+        final long transId;
         try {
             notifyId = Long.valueOf(notificationId);
+            transId = Long.valueOf(transactionId);
         } catch (NumberFormatException e) {
             Helpers.promiseResolveError(promise, -1, "Arguments invalid");
             return;
         }
 
         Subscription subscription = mNotificationRepository.getNotify(notifyId)
-                .filter(new Func1<NotificationData, Boolean>() {
+                .flatMap(new Func1<NotificationData, Observable<TransHistory>>() {
                     @Override
-                    public Boolean call(NotificationData notify) {
-                        return notify.timestamp > 0;
-                    }
-                }).flatMap(new Func1<NotificationData, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(NotificationData notify) {
-                        return mTransactionRepository.reloadTransactionHistory(notify.timestamp);
+                    public Observable<TransHistory> call(NotificationData notify) {
+                        if (notify.timestamp <= 0) {
+                            return Observable.error(new ArgumentException());
+                        } else {
+                            return mTransactionRepository.reloadTransactionHistory(transId, notify.timestamp);
+                        }
                     }
                 })
-                .subscribe(new DefaultSubscriber<Boolean>() {
+                .map(new Func1<TransHistory, TransactionResult>() {
                     @Override
-                    public void onCompleted() {
-                        loadTransactionWithId(transactionId, promise);
+                    public TransactionResult call(TransHistory transactions) {
+                        Timber.d("result reload transaction %s", transactions);
+                        return new TransactionResult(ERR_CODE_SUCCESS.value(), "", Collections.singletonList(transactions));
                     }
+                })
+                .subscribe(new TransactionLogSubscriber(promise));
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Helpers.promiseResolveError(promise, -1, "Reload error");
-                    }
-                });
         mCompositeSubscription.add(subscription);
     }
 
