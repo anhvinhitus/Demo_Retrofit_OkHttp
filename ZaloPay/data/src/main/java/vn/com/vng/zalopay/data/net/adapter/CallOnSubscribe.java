@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.net.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Response;
 import rx.Observable;
@@ -43,7 +44,7 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
             Response<T> response = call.execute();
             long endRequestTime = System.currentTimeMillis();
             if (response != null && response.isSuccessful()) {
-                logTiming(endRequestTime - beginRequestTime);
+                logTiming(endRequestTime - beginRequestTime, call.request());
             }
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onNext(response);
@@ -84,13 +85,25 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
         }
     }
 
-    private void logTiming(long duration) {
+    private void logTiming(long duration, Request request) {
         Timber.d("API Request %s (%s), duration: %s (ms)", mApiClientId, ZPEvents.actionFromEventId(mApiClientId), duration);
-        if (mApiClientId <= 0) {
-            Timber.i("Skip logging timing event");
-            return;
+        int eventId = mApiClientId;
+        if (eventId <= 0) {
+            if (request != null) {
+                String path = request.url().encodedPath();
+                Timber.d("API Request: %s", path);
+                if (MerchantApiMap.gApiMapEvent.containsKey(path)) {
+                    Timber.d("Found API Request");
+                    eventId = MerchantApiMap.gApiMapEvent.get(path);
+                }
+            }
+
+            if (eventId <= 0) {
+                Timber.i("Skip logging timing event");
+                return;
+            }
         }
 
-        ZPAnalytics.trackTiming(mApiClientId, duration);
+        ZPAnalytics.trackTiming(eventId, duration);
     }
 }
