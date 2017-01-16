@@ -269,6 +269,10 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             @Override
             public void onFinish() {
                 Timber.d("load payment sdk finish");
+                if (mView == null) {
+                    return;
+                }
+
                 isLoadedGateWayInfo = true;
 
                 refreshBanners();
@@ -278,6 +282,10 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             @Override
             public void onUpVersion(boolean forceUpdate, String latestVersion, String msg) {
                 Timber.d("onUpVersion latestVersion [%s] msg [%s]", latestVersion, msg);
+                if (mView == null) {
+                    return;
+                }
+
                 isLoadedGateWayInfo = true;
 
                 if (!forceUpdate) {
