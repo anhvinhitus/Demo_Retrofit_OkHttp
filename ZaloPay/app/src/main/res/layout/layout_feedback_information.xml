@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <com.zalopay.ui.widget.edittext.ZPEditText
         android:id="@+id/edtCategory"
@@ -46,10 +46,12 @@
         style="@style/ZaloPayEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:hint="@string/describe_error"
         android:inputType="text|textMultiLine|textCapSentences"
         android:maxLength="@integer/max_length_describe_error"
-        android:maxLines="3"
-        app:zlp_floatingLabelText="@string/describe_error_count" />
+        android:maxLines="3" />
 
 </LinearLayout>

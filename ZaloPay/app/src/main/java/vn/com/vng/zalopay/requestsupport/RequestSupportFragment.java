@@ -167,12 +167,12 @@ public class RequestSupportFragment extends AbsPickerImageFragment implements IR
         super.onDestroy();
     }
 
-    @OnTextChanged(value = R.id.edtDescribe, callback = OnTextChanged.Callback.TEXT_CHANGED)
-    public void onTextChangedDescribe() {
-        mEdtDescribe.setFloatingLabelText(Html.fromHtml(
-                String.format(getResources().getString(R.string.describe_error_count),
-                        String.valueOf(mEdtDescribe.getText().length()))));
-    }
+//    @OnTextChanged(value = R.id.edtDescribe, callback = OnTextChanged.Callback.TEXT_CHANGED)
+//    public void onTextChangedDescribe() {
+//        mEdtDescribe.setFloatingLabelText(Html.fromHtml(
+//                String.format(getResources().getString(R.string.describe_error_count),
+//                        String.valueOf(mEdtDescribe.getText().length()))));
+//    }
 
     @OnTextChanged(value = R.id.edtDescribe, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     public void afterTextChangedDescribe() {
