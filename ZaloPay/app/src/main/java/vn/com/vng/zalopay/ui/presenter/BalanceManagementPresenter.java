@@ -112,7 +112,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     }
 
     private void showMaintainWithdrawDialog(long maintainFrom, long maintainTo) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm 'ngày' dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm 'ngày' dd/MM/yyyy", Locale.getDefault());
         String maintainWithdrawFrom = simpleDateFormat.format(new Date(maintainFrom));
         String maintainWithdrawTo = simpleDateFormat.format(new Date(maintainTo));
         String message = String.format(mView.getContext().getString(R.string.maintain_withdraw_message),
