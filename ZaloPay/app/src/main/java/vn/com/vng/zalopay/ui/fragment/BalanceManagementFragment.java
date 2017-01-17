@@ -64,7 +64,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
 
     @OnClick(R.id.tvQuestion)
     public void onClickQuestion() {
-        navigator.startMiniAppActivity(getActivity(), ModuleName.FAQ);
+        navigator.startMiniAppActivity(getActivity(), ModuleName.SUPPORT_CENTER);
     }
 
     private View.OnClickListener mOnClickAccountName = new View.OnClickListener() {
