@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <TextView
+        style="@style/TextView.Group.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingTop="@dimen/spacing.medium"
+        android:text="@string/secure_info"
+        android:textAllCaps="true"
+        android:textColor="@color/txt_item_main"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/loremipsum"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:paddingTop="@dimen/spacing.medium.t"
+            android:scaleType="center"
+            android:src="@drawable/ic_chungchi"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingRight="@dimen/spacing.medium.s"
+            android:text="@string/secure_info_detail"
+            android:textColor="@color/txt_item_main"
+            android:textSize="13sp"/>
+    </LinearLayout>
+</LinearLayout>

@@ -113,6 +113,7 @@
     <string name="title.activity.feedback">Gửi báo lỗi</string>
     <string name="title.activity.request.support">Yêu cầu hỗ trợ</string>
     <string name="title.activity.choose.category">Phân loại</string>
+    <string name="title_activity_bank_associate">Ngân hàng</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Hướng camera vào mã QR để thanh toán</string>
@@ -135,6 +136,8 @@
     <string name="free_fee">Miễn phí giao dịch</string>
     <string name="not_link_card">Bạn chưa liên kết thẻ.</string>
     <string name="link_card_to_use_easily">Liên kết thẻ để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
+    <string name="not_link_account">Bạn chưa liên kết tài khoản ngân hàng.</string>
+    <string name="link_account_to_use_easily">Liên kết tài khoản ngân hàng để thanh toán các dịch vụ được dễ dàng và nhanh chóng.</string>
     <string name="secure_info">Bảo mật thông tin</string>
     <string name="secure_info_detail">Thực hiện theo tiêu chuẩn bảo mật PCI-DSS, không lưu thông tin thẻ của bạn.</string>
     <string name="link_card_title">Ngân hàng liên kết</string>
@@ -170,6 +173,7 @@
     <string name="link_card_other">Thêm Thẻ</string>
     <string name="add.card">Thêm thẻ</string>
     <string name="link.card">Liên Kết Thẻ</string>
+    <string name="link.account">Liên Kết Tài Khoản</string>
     <string name="alert_processing">Đang xử lý</string>
 
     <string name="hint_birthday">Năm sinh</string>

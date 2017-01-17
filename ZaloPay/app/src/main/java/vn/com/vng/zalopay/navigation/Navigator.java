@@ -38,8 +38,8 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.linkcard.ui.CardSupportActivity;
-import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
 import vn.com.vng.zalopay.linkcard.ui.NotificationLinkCardActivity;
+import vn.com.vng.zalopay.linkcard.ui.BankAssociateActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.react.Helpers;
@@ -56,7 +56,6 @@ import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
-import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
@@ -394,7 +393,7 @@ public class Navigator implements INavigator {
 
     @Override
     public Intent intentLinkCard(Context context) {
-        return new Intent(context, LinkCardActivity.class);
+        return new Intent(context, BankAssociateActivity.class);
     }
 
     @Override

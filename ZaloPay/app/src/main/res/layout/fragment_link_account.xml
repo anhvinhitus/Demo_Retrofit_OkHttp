@@ -1,0 +1,53 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="vn.com.vng.zalopay.linkcard.ui.LinkAccountFragment">
+
+    <include
+        layout="@layout/layout_link_account_empty"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:id="@+id/layoutContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listView"
+            style="@style/RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"/>
+
+        <LinearLayout
+            android:id="@+id/btn_add_more"
+            style="@style/Button.Default.New"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button.height"
+            android:layout_marginBottom="@dimen/button.margin.bottom"
+            android:layout_marginTop="@dimen/button.margin.top.min"
+            android:layout_weight="0.0"
+            android:orientation="horizontal">
+
+            <com.zalopay.ui.widget.IconFont
+                android:id="@+id/iconInsideApp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                app:iconName="@string/linkaccount_add"
+                app:iconSize="@dimen/font_size_link_card_add"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing.small"
+                android:text="@string/link_card_other"
+                android:textColor="@color/white"
+                android:textSize="@dimen/button.text.size"/>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

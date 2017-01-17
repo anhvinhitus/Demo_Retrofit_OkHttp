@@ -370,6 +370,10 @@
             android:name=".requestsupport.ChooseCategoryActivity"
             android:label="@string/title.activity.choose.category" />
 
+        <activity
+            android:name=".linkcard.ui.BankAssociateActivity"
+            android:label="@string/title_activity_bank_associate" />
+
         <receiver
             android:name=".receivers.BootCompletedReceiver"
             android:enabled="true">

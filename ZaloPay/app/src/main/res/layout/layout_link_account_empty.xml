@@ -2,7 +2,7 @@
 <android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layoutLinkCardEmpty"
+    android:id="@+id/layoutLinkAccountEmpty"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:layout_marginRight="@dimen/spacing.medium"
-                android:text="@string/not_link_card"
+                android:text="@string/not_link_account"
                 android:textColor="@color/txt_item_main"
                 android:textSize="@dimen/textsize.text.main"
                 android:textStyle="bold"/>
@@ -38,12 +38,12 @@
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:layout_marginRight="@dimen/spacing.medium"
                 android:layout_marginTop="@dimen/spacing.small"
-                android:text="@string/link_card_to_use_easily"
+                android:text="@string/link_account_to_use_easily"
                 android:textColor="@color/txt_item_main"
                 android:textSize="13sp"/>
 
             <LinearLayout
-                android:id="@+id/btn_add_card"
+                android:id="@+id/btn_add_account"
                 style="@style/Button.Default.New"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/button.height"
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/spacing.small"
-                    android:text="@string/link.card"
+                    android:text="@string/link.account"
                     android:textColor="@color/white"/>
             </LinearLayout>
         </LinearLayout>

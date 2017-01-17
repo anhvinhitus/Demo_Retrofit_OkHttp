@@ -1,10 +1,8 @@
 package vn.com.vng.zalopay.linkcard.ui;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -19,20 +17,17 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.BankCard;
-import vn.com.vng.zalopay.linkcard.BankUtils;
-import vn.com.vng.zalopay.linkcard.models.BankCardStyle;
-import vn.com.vng.zalopay.utils.BankCardUtil;
+import vn.com.vng.zalopay.linkcard.models.BankAccount;
 
 /**
  * Created by AnhHieu on 5/10/16.
  * *
  */
-class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHolder> {
+class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.ViewHolder> {
 
-    private OnClickBankCardListener listener;
+    private OnClickBankAccountListener listener;
 
-    LinkCardAdapter(Context context, OnClickBankCardListener listener) {
+    public LinkAccountAdapter(Context context, OnClickBankAccountListener listener) {
         super(context);
         this.listener = listener;
     }
@@ -53,12 +48,11 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
             int id = anchor.getId();
 
             if (id == R.id.root) {
-                BankCard bankCard = getItem(position);
-                if (bankCard != null) {
-                    listener.onClickMenu(bankCard);
+                BankAccount bankAccount = getItem(position);
+                if (bankAccount != null) {
+                    listener.onClickMenu(bankAccount);
                 }
             }
-
         }
 
         @Override
@@ -79,10 +73,10 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder) {
-            BankCard bankCard = getItem(position);
+            BankAccount bankAccount = getItem(position);
             boolean isLastItem = (position == getItemCount() - 1);
-            if (bankCard != null) {
-                ((ViewHolder) holder).bindView(bankCard, isLastItem);
+            if (bankAccount != null) {
+                ((ViewHolder) holder).bindView(bankAccount, isLastItem);
             }
         }
     }
@@ -117,11 +111,9 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
             }
         }
 
-        public void bindView(final BankCard bankCard, boolean isLastItem) {
-            Timber.d("bindView bankCard.type:%s", bankCard.type);
-            bindBankCard(mRoot, imgLogo, bankCard, true);
-            String bankCardNumber = BankCardUtil.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno);
-            mCardNumber.setText(Html.fromHtml(bankCardNumber));
+        public void bindView(final BankAccount bankAccount, boolean isLastItem) {
+            Timber.d("bindView type:%s", bankAccount.type);
+            bindBankAccount(mRoot, imgLogo, bankAccount, true);
             setMargin(isLastItem);
         }
 
@@ -158,37 +150,13 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
         }
     }
 
-    private void setBankBackground(View mRoot, BankCardStyle bankCardStyle, boolean borderTopOnly) {
-        if (mRoot == null || bankCardStyle == null) {
-            return;
-        }
-
-        int[] colors = new int[3];
-        colors[0] = getColorFromResource(bankCardStyle.backgroundGradientStart);
-        colors[1] = getColorFromResource(bankCardStyle.backgroundGradientEnd);
-        colors[2] = getColorFromResource(bankCardStyle.backgroundGradientStart);
-
-        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
-        gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);
-        float radius = getContext().getResources().getDimension(R.dimen.border_link_card);
-        if (borderTopOnly) {
-            gradientDrawable.setCornerRadii(new float[]{radius, radius,
-                    radius, radius,
-                    0, 0,
-                    0, 0});
-        } else {
-            gradientDrawable.setCornerRadius(radius);
-        }
-        mRoot.setBackground(gradientDrawable);
+    public void bindBankAccount(View mRoot, ImageView imgLogo, BankAccount bankAccount, boolean borderTopOnly) {
+        /*BankImageSetting bankImageSetting = getBankCardStyle(bankAccount);
+        setBankIcon(imgLogo, bankImageSetting.bankIcon);
+        setBankBackground(mRoot, bankImageSetting, borderTopOnly);*/
     }
 
-    void bindBankCard(View mRoot, ImageView imgLogo, BankCard bankCard, boolean borderTopOnly) {
-        BankCardStyle bankCardStyle = BankUtils.getBankCardStyle(bankCard);
-        setBankIcon(imgLogo, bankCardStyle.bankIcon);
-        setBankBackground(mRoot, bankCardStyle, borderTopOnly);
-    }
-
-    interface OnClickBankCardListener {
-        void onClickMenu(BankCard bankCard);
+    interface OnClickBankAccountListener {
+        void onClickMenu(BankAccount bankAccount);
     }
 }

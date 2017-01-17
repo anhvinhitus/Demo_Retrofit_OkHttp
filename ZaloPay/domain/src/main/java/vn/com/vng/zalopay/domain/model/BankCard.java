@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 /**
  * Created by AnhHieu on 5/10/16.
+ * *
  */
 public class BankCard {
 

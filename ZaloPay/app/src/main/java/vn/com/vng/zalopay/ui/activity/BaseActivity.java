@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.linkcard.ui.BankAssociateActivity;
 import vn.com.vng.zalopay.linkcard.ui.LinkCardActivity;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
@@ -264,7 +265,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void logActionLaunch() {
 
-        if (TAG.equals(LinkCardActivity.class.getSimpleName())) {
+        if (TAG.equals(BankAssociateActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_LAUNCH);
         } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.ADDCASH_LAUNCH);
@@ -278,7 +279,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void logActionNavigationBack() {
-        if (TAG.equals(LinkCardActivity.class.getSimpleName())) {
+        if (TAG.equals(BankAssociateActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_NAVIGATEBACK);
         } else if (TAG.equals(BalanceTopupActivity.class.getSimpleName())) {
             ZPAnalytics.trackEvent(ZPEvents.ADDCASH_NAVIGATEBACK);
