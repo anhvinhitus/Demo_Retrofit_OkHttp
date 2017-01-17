@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
@@ -34,7 +35,6 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.view.ILoginView;
-import vn.com.vng.zalopay.utils.ZaloHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -53,6 +53,9 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     private Uri mData;
 
     private final AppResourceStore.Repository mAppResourceRepository;
+
+    @Inject
+    ZaloSdkApi mZaloSdkApi;
 
     @Inject
     LoginPresenter(Context applicationContext,
@@ -159,7 +162,7 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
 
         mUserConfig.saveUserInfo(zaloId, "", "", 0, 0);
         if (mView != null) {
-            ZaloHelper.getZaloProfileInfo(mApplicationContext, mUserConfig);
+            mZaloSdkApi.getProfile();
             this.loginPayment(zaloId, authCode);
         }
 

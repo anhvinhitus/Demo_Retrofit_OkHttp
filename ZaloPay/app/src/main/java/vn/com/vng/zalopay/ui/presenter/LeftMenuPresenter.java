@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
@@ -21,7 +22,6 @@ import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
-import vn.com.vng.zalopay.utils.ZaloHelper;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -35,6 +35,9 @@ public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
 
     private UserConfig mUserConfig;
     private Context context;
+
+    @Inject
+    ZaloSdkApi mZaloSdkApi;
 
     @Inject
     LeftMenuPresenter(User user, EventBus mEventBus,
@@ -88,7 +91,7 @@ public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
 
         if (TextUtils.isEmpty(mUser.displayName) ||
                 TextUtils.isEmpty(mUser.avatar)) {
-            ZaloHelper.getZaloProfileInfo(context, mUserConfig);
+            mZaloSdkApi.getProfile();
         }
     }
 
