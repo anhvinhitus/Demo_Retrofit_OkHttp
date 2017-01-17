@@ -141,7 +141,7 @@ public class RequestSupportPresenter extends AbstractPresenter<IRequestSupportVi
         }
 
         if (device) {
-            mCollector.installCollector(new DeviceCollector());
+            mCollector.installCollector(new DeviceCollector(mContext));
         }
         mCollector.installCollector(new NetworkCollector(mContext));
 

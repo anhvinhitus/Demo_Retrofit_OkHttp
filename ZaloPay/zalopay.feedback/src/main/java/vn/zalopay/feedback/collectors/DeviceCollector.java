@@ -1,8 +1,10 @@
 package vn.zalopay.feedback.collectors;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.util.DisplayMetrics;
 
 import org.json.JSONObject;
 
@@ -31,6 +33,12 @@ public class DeviceCollector implements IFeedbackCollector {
         sSetting.dataKeyName = "deviceinfo";
     }
 
+    private Context mContext;
+
+    public DeviceCollector(Context context) {
+        this.mContext = context;
+    }
+
     /**
      * Get pre-config settings for data collector
      */
@@ -57,11 +65,8 @@ public class DeviceCollector implements IFeedbackCollector {
             retVal.put("ram", getRam());
             retVal.put("internal_memory", getTotalMemorySize(internalPath));
             retVal.put("external_memory", getTotalMemorySize(externalPath));
-//            retVal.put("version", Build.VERSION.RELEASE);
-//            retVal.put("sdk_version", Build.VERSION.SDK_INT);
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                retVal.put("abilist", Build.SUPPORTED_ABIS);
-//            }
+            retVal.put("api_level", Build.VERSION.SDK_INT);
+            retVal.put("density", mContext.getResources().getDisplayMetrics().density);
 
             return retVal;
         } catch (Exception e) {
