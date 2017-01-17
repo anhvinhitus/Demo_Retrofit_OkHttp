@@ -6,9 +6,9 @@ import javax.inject.Singleton;
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.ui.view.ISplashScreenView;
 import vn.com.vng.zalopay.utils.IntroAppUtils;
-import vn.com.vng.zalopay.utils.ZaloHelper;
 
 /**
  * Created by AnhHieu on 5/13/16.
@@ -20,6 +20,8 @@ public class SplashScreenPresenter extends AbstractPresenter<ISplashScreenView> 
     private final UserConfig mUserConfig;
     private final ApplicationState mApplicationState;
 
+    @Inject
+    ZaloSdkApi mZaloSdkApi;
 
     @Inject
     SplashScreenPresenter(UserConfig userConfig, ApplicationState applicationState) {
@@ -31,7 +33,7 @@ public class SplashScreenPresenter extends AbstractPresenter<ISplashScreenView> 
         Timber.d("ApplicationState object [%s]", mApplicationState);
         if (mUserConfig.hasCurrentUser()) {
             Timber.i("go to Home Screen");
-            ZaloHelper.getZaloProfileInfo(mView.getContext(), mUserConfig);
+            mZaloSdkApi.getProfile();
             mView.gotoHomeScreen();
         } else if (IntroAppUtils.isShowedIntro()) {
             Timber.d("gotoLoginScreen");

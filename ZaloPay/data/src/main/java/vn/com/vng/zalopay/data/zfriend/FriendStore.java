@@ -4,16 +4,14 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
+import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.api.response.ListUserExistResponse;
 import vn.com.vng.zalopay.data.cache.SqlBaseScope;
@@ -80,14 +78,6 @@ public interface FriendStore {
         @API_NAME(ZPEvents.API_UM_CHECKLISTZALOIDFORCLIENT)
         @GET(Constants.UM_API.CHECKLISTZALOIDFORCLIENT)
         Observable<ListUserExistResponse> checklistzaloidforclient(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("zaloidlist") String zaloidlist);
-    }
-
-    interface APICallback {
-        void onResult(JSONObject var1);
-    }
-
-    interface SDKApi {
-        void getFriendList(int pageIndex, int totalCount, APICallback callback);
     }
 
     /**

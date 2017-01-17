@@ -13,6 +13,7 @@ import rx.Subscriber;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.exception.GetZaloFriendException;
+import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 
 /**
  * Created by huuhoa on 7/4/16.
@@ -21,9 +22,9 @@ import vn.com.vng.zalopay.data.exception.GetZaloFriendException;
 public class FriendRequestService implements FriendStore.ZaloRequestService {
     private final int OFFSET_FRIEND_LIST = 50;
 
-    private FriendStore.SDKApi mSDKApi;
+    private ZaloSdkApi mSDKApi;
 
-    public FriendRequestService(FriendStore.SDKApi SDKApi) {
+    public FriendRequestService(ZaloSdkApi SDKApi) {
         mSDKApi = SDKApi;
     }
 
@@ -68,7 +69,7 @@ public class FriendRequestService implements FriendStore.ZaloRequestService {
             }
             return;
         }
-        
+
         JSONArray data = arg0.optJSONArray("result");
 
         if (subscriber.isUnsubscribed()) {

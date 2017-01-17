@@ -19,11 +19,11 @@ import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.ImageLoader;
-import vn.com.vng.zalopay.utils.ZaloHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -58,6 +58,9 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
 
     @Inject
     ImageLoader mImageLoader;
+
+    @Inject
+    ZaloSdkApi mZaloSdkApi;
 
     @OnClick(R.id.layoutProfileInfo)
     public void onClickHeaderProfile() {
@@ -114,7 +117,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
 
     private void initView() {
         presenter.attachView(this);
-        ZaloHelper.getZaloProfileInfo(getApplicationContext(), userConfig);
+        mZaloSdkApi.getProfile();
         getToolbar().setTitleTextColor(Color.TRANSPARENT);
 
         mCollapsingToolbarLayout.setTitleEnabled(false);
