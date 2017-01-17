@@ -29,6 +29,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -335,7 +336,7 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         }
         Timber.d("pay by image uri [%s]", uri.toString());
         showLoadingView();
-        ObservableHelper.makeObservable(new Callable<String>() {
+        Subscription subscription = ObservableHelper.makeObservable(new Callable<String>() {
             @Override
             public String call() {
                 InputStream is = null;
@@ -358,7 +359,9 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
                 }
                 return null;
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<String>() {
                     @Override
                     public void onNext(String decoded) {
@@ -376,6 +379,8 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
                         super.onError(e);
                     }
                 });
+
+        mSubscription.add(subscription);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -68,7 +69,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     private int mMoneyTransferMode;
     private boolean mIsUserZaloPay = true;
 
-    private User user;
+    private User mUser;
     private final ZaloPayRepository mZaloPayRepository;
     private final AccountStore.Repository accountRepository;
     private final Navigator mNavigator;
@@ -76,6 +77,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     private Context applicationContext;
     private final TransferNotificationHelper mTransferNotificationHelper;
     private final EventBus mEventBus;
+    private final ZaloSdkApi mZaloSdkApi;
 
     @Inject
     TransferPresenter(final User user, NotificationStore.Repository notificationRepository,
@@ -85,9 +87,9 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                       final AccountStore.Repository accountRepository,
                       Navigator navigator,
                       TransferStore.Repository transferRepository,
-                      Context applicationContext, EventBus eventBus) {
+                      Context applicationContext, EventBus eventBus, ZaloSdkApi zaloSdkApi) {
 
-        this.user = user;
+        this.mUser = user;
         this.mZaloPayRepository = zaloPayRepository;
         this.accountRepository = accountRepository;
         this.mNavigator = navigator;
@@ -104,6 +106,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 .setResponseListener(new PaymentResponseListener())
                 .setRedirectListener(new PaymentRedirectListener())
                 .build();
+        mZaloSdkApi = zaloSdkApi;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -177,7 +180,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     public void transferMoney() {
-        if (user.profilelevel < 2) {
+        if (mUser.profilelevel < 2) {
             mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
         } else {
             if (mTransaction.amount <= 0) {
@@ -273,7 +276,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     /**
-     * Update message as user input
+     * Update message as mUser input
      *
      * @param message message
      */
@@ -301,7 +304,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
         mTransaction.amount = amount;
 
-        if (user.zaloPayId.equals(mTransaction.zaloPayId)) {
+        if (mUser.zaloPayId.equals(mTransaction.zaloPayId)) {
             if (mView != null) {
                 mView.showError(applicationContext.getString(R.string.exception_transfer_for_self));
             }
@@ -348,6 +351,14 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
         initCurrentState();
         checkShowBtnContinue();
+        ensureHaveProfile();
+
+    }
+
+    private void ensureHaveProfile() {
+        if (TextUtils.isEmpty(mUser.displayName)) {
+            mZaloSdkApi.getProfile();
+        }
     }
 
     private void getUserInfoByZaloPayId(String zaloPayId) {
@@ -435,7 +446,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
 
         if (mPreviousTransferId != null && !mPreviousTransferId.equals(mTransaction.zaloPayId)) {
-            Timber.d("Change user tranfer money");
+            Timber.d("Change mUser tranfer money");
             ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_CHANGERECEIVER);
         }
     }
@@ -451,7 +462,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
             // return to Zalo
             Intent data = new Intent();
-            data.putExtra("code", 0);  // user cancel
+            data.putExtra("code", 0);  // mUser cancel
             mView.getActivity().setResult(Activity.RESULT_OK, data);
             return;
         }
