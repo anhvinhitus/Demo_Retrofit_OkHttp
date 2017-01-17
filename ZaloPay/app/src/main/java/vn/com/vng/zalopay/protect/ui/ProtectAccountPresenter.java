@@ -69,12 +69,10 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                         @Override
                         public void onOKevent() {
                             setUseProtectAccount(false);
-                            setUseFingerprint(false);
                             if (mView == null) {
                                 return;
                             }
 
-                            mView.setCheckedFingerprint(false);
                             mView.setCheckedProtectAccount(false);
                         }
                     });
@@ -99,7 +97,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
 
         boolean isFingerprintAuthAvailable = FingerprintUtil.isFingerprintAuthAvailable(mContext);
 
-        mView.setCheckedFingerprint(useProtect & !TextUtils.isEmpty(password) & isFingerprintAuthAvailable);
+        mView.setCheckedFingerprint(!TextUtils.isEmpty(password) & isFingerprintAuthAvailable);
     }
 
     private void enableFingerprint() {
@@ -136,24 +134,11 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                     return;
                 }
 
-                setUseProtectAccount(true);
-
                 if (mView == null) {
                     return;
                 }
 
                 mView.setCheckedFingerprint(true);
-                mView.setCheckedProtectAccount(true);
-            }
-
-            @Override
-            public void onAuthenticationFailure() {
-
-            }
-
-            @Override
-            public void onCancel() {
-
             }
         });
 
@@ -161,22 +146,25 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     }
 
     private void disableFingerprint() {
-        DialogManager.showSweetDialogConfirm((Activity) mView.getContext(), mContext.getString(R.string.confirm_off_fingerprint_message),
-                mContext.getString(R.string.confirm), mContext.getString(R.string.cancel), new ZPWOnEventConfirmDialogListener() {
-                    @Override
-                    public void onCancelEvent() {
+        if (mView == null) {
+            return;
+        }
 
-                    }
+        AuthenticationDialog fragment = AuthenticationDialog.newInstance();
+        fragment.setStage(Stage.PASSWORD);
+        fragment.setAuthenticationCallback(new AuthenticationCallback() {
+            @Override
+            public void onAuthenticated(String password) {
+                setUseFingerprint(false);
+                if (mView == null) {
+                    return;
+                }
+                mView.setCheckedFingerprint(false);
+            }
+        });
 
-                    @Override
-                    public void onOKevent() {
-                        setUseFingerprint(false);
-                        if (mView == null) {
-                            return;
-                        }
-                        mView.setCheckedFingerprint(false);
-                    }
-                });
+        fragment.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);
+
     }
 
     void setUseProtectAccount(boolean enable) {
