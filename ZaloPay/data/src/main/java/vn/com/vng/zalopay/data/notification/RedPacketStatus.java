@@ -10,7 +10,7 @@ import vn.com.vng.zalopay.data.RedPacketNetworkErrorEnum;
 public enum RedPacketStatus {
     Unknown(0),
     CanOpen(1),
-    Opened(RedPacketNetworkErrorEnum.PACKAGE_HAS_REFUND.getValue()),
+    Opened(RedPacketNetworkErrorEnum.PACKAGE_HAS_OPENED.getValue()),
     Refunded(RedPacketNetworkErrorEnum.PACKAGE_HAS_REFUND.getValue());
 
     private int value;
