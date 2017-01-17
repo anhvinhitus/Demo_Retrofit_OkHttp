@@ -295,8 +295,7 @@
     <string name="compulsory_email">Email (bắt buộc)</string>
     <string name="transaction_id">Mã giao dịch</string>
 
-    <string name="describe_error_count">Mô tả lỗi (%s/64) (bắt buộc)</string>
-    <string name="describe_error">Mô tả lỗi (bắt buộc)</string>
+    <string name="describe_error">Mô tả lỗi</string>
     <string name="category">Phân loại</string>
 
     <string name="describe_request_support_count">Mô tả (%s/64) (bắt buộc)</string>
