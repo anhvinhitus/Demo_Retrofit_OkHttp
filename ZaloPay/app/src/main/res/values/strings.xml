@@ -480,5 +480,6 @@
     <string name="total">Tổng cộng</string>
     <string name="avatar">Ảnh của bạn</string>
     <string name="zero.currency">0 VND</string>
+    <string name="account_holders">Chủ TK:</string>
 </resources>
 

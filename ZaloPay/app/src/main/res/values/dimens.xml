@@ -105,4 +105,8 @@
 
     <dimen name="linkcard.margin.bottom.lastitem">35dp</dimen>
     <dimen name="payment.actionbar.height">76dp</dimen>
+
+    <dimen name="bank.link.account.height">104dp</dimen>
+    <dimen name="bank.link.account.line.width">4dp</dimen>
+    <dimen name="bank.link.account.border">8dp</dimen>
 </resources>

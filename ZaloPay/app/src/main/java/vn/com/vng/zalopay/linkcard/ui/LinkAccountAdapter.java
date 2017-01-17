@@ -34,9 +34,8 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.row_bank_card_layout, parent, false), onItemClickListener);
+        return new ViewHolder(mInflater.inflate(R.layout.row_bank_account_layout, parent, false), onItemClickListener);
     }
-
 
     private OnItemClickListener onItemClickListener = new OnItemClickListener() {
         @Override
