@@ -30,10 +30,14 @@ public final class FingerprintUtil {
         }
 
         FingerprintManager fingerprintManager = getFingerprintManager(context);
+        Timber.d("Fingerprint manager: %s", fingerprintManager);
         if (fingerprintManager != null) {
             try {
-                return fingerprintManager.isHardwareDetected();
+                boolean isHardwareDetected = fingerprintManager.isHardwareDetected();
+                Timber.d("isHardwarePresent: %s", isHardwareDetected);
+                return isHardwareDetected;
             } catch (SecurityException ignored) {
+                Timber.d(ignored, "SecurityException");
             }
         }
 
