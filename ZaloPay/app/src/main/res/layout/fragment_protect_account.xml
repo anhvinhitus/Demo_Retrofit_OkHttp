@@ -42,6 +42,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
+        android:singleLine="false"
         android:text="@string/use.fingerprint.description"
         android:textSize="@dimen/font_size_medium" />
 
@@ -82,6 +83,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
+        android:singleLine="false"
         android:text="@string/protection.information.description"
         android:textSize="@dimen/font_size_medium" />
 
@@ -118,6 +120,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
+        android:singleLine="false"
         android:text="@string/change.password.description"
         android:textSize="@dimen/font_size_medium" />
 
