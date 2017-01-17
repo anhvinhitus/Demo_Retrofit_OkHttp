@@ -175,7 +175,7 @@ final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
         }
 
         if (device) {
-            mCollector.installCollector(new DeviceCollector());
+            mCollector.installCollector(new DeviceCollector(mContext));
         }
         mCollector.installCollector(new NetworkCollector(mContext));
 
