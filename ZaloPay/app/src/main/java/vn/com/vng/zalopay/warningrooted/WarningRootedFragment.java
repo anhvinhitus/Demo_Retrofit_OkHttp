@@ -98,7 +98,6 @@ public class WarningRootedFragment extends BaseFragment {
 
     @Override
     protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
     }
 
     @Override
