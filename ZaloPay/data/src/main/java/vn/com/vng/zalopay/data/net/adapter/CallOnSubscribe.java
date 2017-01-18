@@ -86,15 +86,14 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
     }
 
     private void logTiming(long duration, Request request) {
-        Timber.d("API Request %s (%s), duration: %s (ms)", mApiClientId, ZPEvents.actionFromEventId(mApiClientId), duration);
         int eventId = mApiClientId;
         if (eventId <= 0) {
             if (request != null) {
                 String path = request.url().encodedPath();
-                Timber.d("API Request: %s", path);
                 if (MerchantApiMap.gApiMapEvent.containsKey(path)) {
-                    Timber.d("Found API Request");
                     eventId = MerchantApiMap.gApiMapEvent.get(path);
+                } else {
+                    Timber.d("API Request: %s - NOT FOUND", path);
                 }
             }
 
@@ -104,6 +103,7 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
             }
         }
 
+        Timber.d("API Request %s (%s), duration: %s (ms)", eventId, ZPEvents.actionFromEventId(eventId), duration);
         ZPAnalytics.trackTiming(eventId, duration);
     }
 }
