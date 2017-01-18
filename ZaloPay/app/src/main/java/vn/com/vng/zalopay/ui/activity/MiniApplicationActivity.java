@@ -136,7 +136,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     @Override
-    protected String getMainComponentName() {
+    public String getMainComponentName() {
         String componentName = getComponentNameFromIntentAction(getIntent());
 
         if (!TextUtils.isEmpty(componentName)) {
