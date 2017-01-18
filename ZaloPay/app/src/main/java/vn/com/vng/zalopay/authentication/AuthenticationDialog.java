@@ -86,6 +86,8 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     @BindView(R.id.fingerprint_status_decrypt)
     TextView mTvDecryptView;
 
+    private CharSequence mMessageOrigin;
+
     private Unbinder mUnbinder;
 
     private AuthenticationCallback mCallback;
@@ -124,6 +126,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         setupFragmentComponent();
         return v;
     }
+
 
     private void setupFragmentComponent() {
         UserComponent userComponent = AndroidApplication.instance().getUserComponent();
@@ -166,6 +169,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         if (!TextUtils.isEmpty(mMessagePassword)) {
             mPasswordDescriptionView.setText(mMessagePassword);
         }
+        mMessageOrigin = mTvDecryptView.getText();
     }
 
 
@@ -367,9 +371,12 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
                 return;
             }
 
-            mTvDecryptView.setTextColor(ContextCompat.getColor(getActivity(), R.color.hint));
-            mTvDecryptView.setText(getString(R.string.fingerprint_hint));
-            // mIcon.setImageResource(R.drawable.ic_touch);
+            mTvDecryptView.setTextColor(ContextCompat.getColor(getActivity(), R.color.c_text_black));
+            if (TextUtils.isEmpty(mMessageOrigin)) {
+                mTvDecryptView.setText(getString(R.string.fingerprint_hint));
+            } else {
+                mTvDecryptView.setText(mMessageOrigin);
+            }
         }
     };
 
