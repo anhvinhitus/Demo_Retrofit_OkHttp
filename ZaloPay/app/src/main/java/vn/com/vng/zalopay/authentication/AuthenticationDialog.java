@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
 
-public class AuthenticationDialog extends DialogFragment implements IAuthenticationView {
+public class AuthenticationDialog extends DialogFragment implements IAuthenticationView, GridPasswordView.OnPasswordChangedListener {
 
 
     public static AuthenticationDialog newInstance() {
@@ -88,6 +89,9 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
     private Unbinder mUnbinder;
 
     private AuthenticationCallback mCallback;
+
+    @BindView(R.id.password_description)
+    TextView mPasswordDescriptionView;
 
     @Inject
     AuthenticationPresenter mPresenter;
@@ -157,19 +161,23 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
         mPresenter.attachView(this);
         mPresenter.setStage(mStage);
         mPresenter.onViewCreated();
-        mPassword.setOnPasswordChangedListener(new GridPasswordView.OnPasswordChangedListener() {
-            @Override
-            public void onTextChanged(String s) {
+        mPassword.setOnPasswordChangedListener(this);
 
-            }
+        if (!TextUtils.isEmpty(mMessagePassword)) {
+            mPasswordDescriptionView.setText(mMessagePassword);
+        }
+    }
 
-            @Override
-            public void onInputFinish(String s) {
-                Timber.d("onInputFinish: %s", s);
-                mPresenter.verify(s);
-                //  mPassword.clearPassword();
-            }
-        });
+
+    @Override
+    public void onTextChanged(String s) {
+        //empty
+    }
+
+    @Override
+    public void onInputFinish(String s) {
+        Timber.d("onInputFinish: %s", s);
+        mPresenter.verify(s);
     }
 
     @OnClick(R.id.second_dialog_button)
@@ -369,6 +377,12 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     public void setContentPayment(boolean isAuthPayment) {
         this.isAuthPayment = isAuthPayment;
+    }
+
+    private String mMessagePassword;
+
+    public void setMessagePassword(String message) {
+        mMessagePassword = message;
     }
 
     @Override

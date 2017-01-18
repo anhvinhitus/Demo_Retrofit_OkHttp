@@ -59,23 +59,17 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
             setUseProtectAccount(true);
             mView.setCheckedProtectAccount(true);
         } else {
-            DialogManager.showSweetDialogConfirm((Activity) mView.getContext(), mContext.getString(R.string.confirm_off_protect_message),
-                    mContext.getString(R.string.confirm), mContext.getString(R.string.cancel), new ZPWOnEventConfirmDialogListener() {
-                        @Override
-                        public void onCancelEvent() {
+            showAuthenticationDialog(mContext.getString(R.string.confirm_off_protect_message), new AuthenticationCallback() {
+                @Override
+                public void onAuthenticated(String password) {
+                    setUseProtectAccount(false);
+                    if (mView == null) {
+                        return;
+                    }
 
-                        }
-
-                        @Override
-                        public void onOKevent() {
-                            setUseProtectAccount(false);
-                            if (mView == null) {
-                                return;
-                            }
-
-                            mView.setCheckedProtectAccount(false);
-                        }
-                    });
+                    mView.setCheckedProtectAccount(false);
+                }
+            });
         }
     }
 
@@ -103,14 +97,14 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     private void enableFingerprint() {
         if (!FingerprintUtil.isKeyguardSecure(mContext)) {
             // user hasn't set up a fingerprint or lock screen.
-            mView.showError("Khóa màn hình chưa được thiết thập.\nVào 'Cài đặt -> Bảo mật -> Vân tay' để thiết lập xác thực vân tay");
+            mView.showError(mContext.getString(R.string.tutorial_keyguard_secure_disable));
             mView.setCheckedFingerprint(false);
             return;
         }
 
         if (!FingerprintUtil.isFingerprintAuthAvailable(mContext)) {
             mView.setCheckedFingerprint(false);
-            mView.showError("Vào 'Cài đặt -> Bảo mật -> Vân tay' và đăng ký ít nhất một dấu vân tay");
+            mView.showError(mContext.getString(R.string.tutorial_fingerprint_unavailable));
             return;
         }
 
@@ -118,13 +112,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     }
 
     private void showFingerAuthentication() {
-        if (mView == null) {
-            return;
-        }
-
-        AuthenticationDialog fragment = AuthenticationDialog.newInstance();
-        fragment.setStage(Stage.PASSWORD);
-        fragment.setAuthenticationCallback(new AuthenticationCallback() {
+        showAuthenticationDialog(mContext.getString(R.string.enter_password_to_continue), new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
 
@@ -141,18 +129,23 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mView.setCheckedFingerprint(true);
             }
         });
-
-        fragment.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);
     }
 
-    private void disableFingerprint() {
+    private void showAuthenticationDialog(String message, AuthenticationCallback callback) {
         if (mView == null) {
             return;
         }
 
         AuthenticationDialog fragment = AuthenticationDialog.newInstance();
         fragment.setStage(Stage.PASSWORD);
-        fragment.setAuthenticationCallback(new AuthenticationCallback() {
+        fragment.setMessagePassword(message);
+        fragment.setAuthenticationCallback(callback);
+
+        fragment.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);
+    }
+
+    private void disableFingerprint() {
+        showAuthenticationDialog(mContext.getString(R.string.confirm_off_fingerprint_message), new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
                 setUseFingerprint(false);
@@ -162,9 +155,6 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
                 mView.setCheckedFingerprint(false);
             }
         });
-
-        fragment.show(((Activity) mView.getContext()).getFragmentManager(), AuthenticationDialog.TAG);
-
     }
 
     void setUseProtectAccount(boolean enable) {
