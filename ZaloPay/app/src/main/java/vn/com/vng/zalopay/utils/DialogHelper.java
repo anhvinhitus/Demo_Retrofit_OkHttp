@@ -259,7 +259,6 @@ public class DialogHelper {
             if (!activity.isFinishing()) {
                 Timber.d("show loading success.");
                 mProgressDialog.show();
-                showLoading(activity);
             } else {
                 Timber.d("show loading fail because activity finishing.");
             }
