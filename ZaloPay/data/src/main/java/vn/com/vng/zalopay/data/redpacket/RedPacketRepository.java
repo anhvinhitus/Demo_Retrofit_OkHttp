@@ -10,7 +10,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.entity.RedPacketStatusEntity;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
@@ -281,18 +280,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     @Override
     public Observable<List<PackageInBundle>> getPacketsInBundle(long bundleId) {
         if (shouldUpdatePacketsForBundle(bundleId)) {
-            return Observable.create(new Observable.OnSubscribe<List<PackageInBundle>>() {
-                @Override
-                public void call(Subscriber<? super List<PackageInBundle>> subscriber) {
-                    Timber.d("Begin to fetch packets from server for bundle: %s", bundleId);
-                    getAllPacketInBundleServer(bundleId).subscribeOn(Schedulers.io()).doOnCompleted(() -> {
-                        Timber.d("Finished fetching packets for bundle %s", bundleId);
-                        mLocalStorage.getPackageInBundle(bundleId)
-                                .subscribe(subscriber);
-                    }).subscribe(new DefaultSubscriber<>());
-                }
-            });
-
+            return getAllPacketInBundleServer(bundleId)
+                    .flatMap(aBoolean -> mLocalStorage.getPackageInBundle(bundleId));
         } else {
             return mLocalStorage.getPackageInBundle(bundleId);
         }
@@ -330,6 +319,7 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     public Observable<ReceivePackageGD> getPacketStatus(String packetIdStr) {
         return ObservableHelper.makeObservable(() -> {
             long packetId = Long.parseLong(packetIdStr);
+            Timber.d("getPacketStatus packetId[%s]", packetId);
             return mLocalStorage.getPacketStatus(packetId);
         });
     }
@@ -356,19 +346,12 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     @Override
     public Observable<RedPacketAppInfo> getRedPacketAppInfo() {
         if (shouldUpdateRedPacketAppInfo()) {
-            return Observable.create(new Observable.OnSubscribe<RedPacketAppInfo>() {
-                @Override
-                public void call(Subscriber<? super RedPacketAppInfo> subscriber) {
-                    Timber.d("Begin to fetch RedPacketAppInfo from server");
-                    RedPacketAppInfo redPacketAppInfo = mLocalStorage.getRedPacketAppInfo();
-                    String checksum = redPacketAppInfo == null ? "" : redPacketAppInfo.checksum;
-                    getAppInfoServer(checksum).subscribeOn(Schedulers.io()).doOnCompleted(() -> {
-                        Timber.d("Finished fetching AppInfo");
-                        ObservableHelper.makeObservable(mLocalStorage::getRedPacketAppInfo).subscribe(subscriber);
-                    }).subscribe(new DefaultSubscriber<>());
-                }
-            });
+            Timber.d("Begin to fetch RedPacketAppInfo from server");
+            RedPacketAppInfo redPacketAppInfo = mLocalStorage.getRedPacketAppInfo();
+            String checksum = redPacketAppInfo == null ? "" : redPacketAppInfo.checksum;
 
+            return getAppInfoServer(checksum)
+                    .map(redPacketAppInfo1 -> mLocalStorage.getRedPacketAppInfo());
         } else {
             return ObservableHelper.makeObservable(mLocalStorage::getRedPacketAppInfo);
         }
