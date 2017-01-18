@@ -80,7 +80,10 @@ public class FriendEntityDataMapper {
         item.zaloPayId = entity.userid;
         item.status = entity.status;
         try {
-            item.phoneNumber = Long.valueOf(PhoneUtil.formatPhoneNumber(entity.phonenumber));
+            String phone = PhoneUtil.formatPhoneNumber(entity.phonenumber);
+            if (!TextUtils.isEmpty(phone)) {
+                item.phoneNumber = Long.valueOf(phone);
+            }
         } catch (Exception e) {
             Timber.d(e, "transform");
         }
