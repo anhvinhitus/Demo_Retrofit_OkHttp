@@ -184,15 +184,17 @@ public class Helpers {
     }
 
     public static void showLoading(final Activity activity) {
+        Timber.d("React call showLoading.");
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                DialogHelper.showLoading(activity, null);
+                DialogHelper.showLoading(activity);
             }
         });
     }
 
     public static void hideLoading() {
+        Timber.d("React call hideLoading.");
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
@@ -204,6 +206,8 @@ public class Helpers {
     public static void showDialog(final Activity activity, final int dialogType,
                                   final String title, final String message, final ReadableArray btnNames,
                                   final Promise promise) {
+        Timber.d("React call showDialog, dialogType[%s] title[%s] message[%s]",
+                dialogType, title, message);
         if (btnNames == null || btnNames.size() <= 0) {
             return;
         }
