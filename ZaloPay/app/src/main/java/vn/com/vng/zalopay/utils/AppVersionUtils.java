@@ -34,6 +34,7 @@ public class AppVersionUtils {
 
     private static boolean isShowedDialogUpdateApp(String version) {
         String currentVersionShowed = mPreferences.getString(SHOWED_DIALOG_UPDATE_APP, "");
+        Timber.d("isShowedDialogUpdateApp version[%s] versionShowed[%s]", version, currentVersionShowed);
         return !TextUtils.isEmpty(currentVersionShowed) && currentVersionShowed.equals(version);
     }
 
@@ -105,7 +106,7 @@ public class AppVersionUtils {
     }
 
     private static void showDialogUpgradeApp(final Activity activity, final boolean forceUpdate) {
-        Timber.d("Show upgrade dialog, context [%s]", activity);
+        Timber.d("Show upgrade dialog, context [%s] forceUpdate[%s]", activity, forceUpdate);
         String contentText = getUpdateMessageInServer();
         String newVersion = getLatestVersionInServer();
         if (activity == null) {
