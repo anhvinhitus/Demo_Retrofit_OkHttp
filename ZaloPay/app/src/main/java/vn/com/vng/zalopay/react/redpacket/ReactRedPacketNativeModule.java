@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.react.redpacket;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,9 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.zalopay.apploader.MiniApplicationBaseActivity;
+import com.zalopay.apploader.ReactBasedActivity;
+import com.zalopay.apploader.internal.ModuleName;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +51,7 @@ import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
@@ -558,6 +563,14 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @Override
     public void onHostResume() {
         Timber.d("onResume");
+
+        if (isRedPacketComponent()) {
+            Timber.d("check list zaloid for client");
+            Subscription subscription = mFriendRepository.checkListZaloIdForClient()
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new DefaultSubscriber<Boolean>());
+            compositeSubscription.add(subscription);
+        }
     }
 
     @Override
@@ -579,5 +592,20 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         if (subscription != null) {
             subscription.clear();
         }
+    }
+
+    private boolean isRedPacketComponent() {
+        Activity activity = getCurrentActivity();
+
+        if (!(activity instanceof MiniApplicationBaseActivity)) {
+            return false;
+        }
+
+        String moduleName = ((MiniApplicationBaseActivity) activity).getMainComponentName();
+        if (TextUtils.isEmpty(moduleName)) {
+            return false;
+        }
+
+        return moduleName.equals(ModuleName.RED_PACKET);
     }
 }
