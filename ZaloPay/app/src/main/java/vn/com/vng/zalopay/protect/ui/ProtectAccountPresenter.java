@@ -112,7 +112,7 @@ final class ProtectAccountPresenter extends AbstractPresenter<IProtectAccountVie
     }
 
     private void showFingerAuthentication() {
-        showAuthenticationDialog(mContext.getString(R.string.enter_password_to_continue), new AuthenticationCallback() {
+        showAuthenticationDialog(mContext.getString(R.string.confirm_on_fingerprint_message), new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
 

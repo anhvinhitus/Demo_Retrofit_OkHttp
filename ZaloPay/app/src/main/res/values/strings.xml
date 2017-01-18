@@ -443,8 +443,8 @@
     <string name="password_description">Nhập mật khẩu thanh toán để tiếp tục</string>
     <string name="fingerprint_not_recognized">Không nhận diện được dấu vân tay</string>
     <string name="fingerprint_success">Xác thực thành công</string>
-    <string name="confirm.off.fingerprint.message">Bạn chắc chắn muốn hủy thanh toán bằng vân tay?</string>
-    <string name="confirm.off.protect.message">Bạn chắc chắn muốn tắt bảo vệ thông tin cá nhân?</string>
+    <string name="confirm.off.fingerprint.message">Bạn có muốn tắt thiết lập bảo vệ bằng vân tay?</string>
+    <string name="confirm.off.protect.message">Bạn có muốn tắt bảo vệ thông tin cá nhân?</string>
     <string name="use.fingerprint">Sử dụng vân tay để xác thực</string>
     <string name="use.fingerprint.description">Xác thực bằng vân tay thay vì sử dụng mật khẩu thanh toán.\nLưu ý: Bất cứ vân tay nào đã đăng ký trong hệ thống đều xác thực được khi thanh toán.</string>
     <string name="protection.information">Bảo vệ thông tin cá nhân</string>
@@ -478,7 +478,7 @@
     <string name="tutorial.keyguard.secure.disable">Khóa màn hình chưa được thiết thập.\nVào \'Cài đặt -> Bảo mật -> Vân tay\' để thiết lập xác thực vân tay</string>
     <string name="tutorial.fingerprint.unavailable">Vào \'Cài đặt -> Bảo mật -> Vân tay\' và đăng ký ít nhất một dấu vân tay</string>
     <string name="enter.password.to.continue">Nhập mật khẩu thanh toán để tiếp tục</string>
-    <string name="confirm.off.fingerprint">Bạn có chắc chắn muốn tắt xem thông tin cá nhân bằng vân tay?</string>
+    <string name="confirm.on.fingerprint.message">Xác thực bằng vân tay thay vì nhập mật khẩu thanh toán</string>
 
 </resources>
 
