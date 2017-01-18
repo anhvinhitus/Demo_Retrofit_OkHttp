@@ -32,7 +32,7 @@ import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 public class FriendRepository implements FriendStore.Repository {
     private final int TIME_RELOAD = 5 * 60; //5'
 
-    private final int TIMEOUT_REQUEST_FRIEND = 10;
+    private static final int TIMEOUT_REQUEST_FRIEND = 10;
 
     private FriendStore.RequestService mRequestService;
     private FriendStore.ZaloRequestService mZaloRequestService;
@@ -148,7 +148,7 @@ public class FriendRepository implements FriendStore.Repository {
         Observable<List<ZaloFriend>> observableFriendLocal = getFriendLocal()
                 .filter(zaloFriends -> !Lists.isEmptyOrNull(zaloFriends));
 
-        Observable<List<ZaloFriend>> observableZaloApi = fetchZaloFriends()
+        Observable<List<ZaloFriend>> observableZaloApi = fetchZaloFriendFullInfo()
                 .flatMap(aBoolean -> getFriendLocal());
 
         return Observable.concat(observableFriendLocal, observableZaloApi)
@@ -191,6 +191,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     /**
      * Kiểm tra trong db có friend nào chưa có zalopay thì request
+     * (get zalopayid from zaloid)
      **/
     @Override
     public Observable<Boolean> checkListZaloIdForClient() {
