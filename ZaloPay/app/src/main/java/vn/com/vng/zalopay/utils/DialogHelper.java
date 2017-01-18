@@ -1,12 +1,15 @@
 package vn.com.vng.zalopay.utils;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.view.KeyEvent;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;
-import vn.com.zalopay.wallet.listener.ZPWOnProgressDialogTimeoutListener;
 import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
@@ -201,12 +204,68 @@ public class DialogHelper {
                 btnNames);
     }
 
-    public static void showLoading(Activity activity,
-                                   ZPWOnProgressDialogTimeoutListener listener) {
-        DialogManager.showProcessDialog(activity, listener);
+    private static Dialog mProgressDialog;
+
+    private static boolean isShowingLoading() {
+        return mProgressDialog != null && mProgressDialog.isShowing();
     }
 
     public static void hideLoading() {
-        DialogManager.closeProcessDialog();
+        Timber.d("hideLoading");
+        try {
+            if (isShowingLoading()) {
+                mProgressDialog.dismiss();
+                mProgressDialog = null;
+                Timber.d("hide loading success.");
+            } else {
+                Timber.d("hide loading fail because dialog null or not showing.");
+            }
+        } catch (Exception e) {
+            Timber.w(e, "hideLoading throw exception [%s]", e.getMessage());
+        }
     }
+
+    public static void showLoading(final Activity activity) {
+        Timber.d("showLoading activity[%s]", activity);
+        try {
+            if (activity == null) {
+                return;
+            }
+            if (isShowingLoading()) {
+                if (mProgressDialog.getOwnerActivity() == activity) {
+                    Timber.d("Loading is showing.");
+                    return;
+                } else {
+                    hideLoading();
+                }
+            }
+            mProgressDialog = new SweetAlertDialog(activity,
+                    SweetAlertDialog.PROGRESS_TYPE, R.style.alert_dialog_transparent);
+            mProgressDialog.setOwnerActivity(activity);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        if (!activity.isFinishing()) {
+                            hideLoading();
+                            activity.onBackPressed();
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+            if (!activity.isFinishing()) {
+                Timber.d("show loading success.");
+                mProgressDialog.show();
+                showLoading(activity);
+            } else {
+                Timber.d("show loading fail because activity finishing.");
+            }
+        } catch (Exception e) {
+            Timber.w(e, "showLoading throw exception [%s]", e.getMessage());
+        }
+    }
+
 }

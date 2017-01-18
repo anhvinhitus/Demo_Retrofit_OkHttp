@@ -276,7 +276,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     @Override
     public void showLoading() {
-        DialogHelper.showLoading(getActivity(), null);
+        DialogHelper.showLoading(getActivity());
     }
 
     @Override
