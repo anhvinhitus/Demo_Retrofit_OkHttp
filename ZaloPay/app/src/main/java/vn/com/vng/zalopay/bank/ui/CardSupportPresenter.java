@@ -1,73 +1,35 @@
-package vn.com.vng.zalopay.linkcard.ui;
+package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
-import timber.log.Timber;
-import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.NetworkError;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
-import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
-import vn.com.vng.zalopay.linkcard.models.BankAccount;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
-import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
- * Created by longlv on 1/17/17.
+ * Created by longlv on 10/22/16.
  * *
  */
-class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
+class CardSupportPresenter extends AbstractLinkCardPresenter<ICardSupportView> {
 
     @Inject
-    LinkAccountPresenter(ZaloPayRepository zaloPayRepository,
+    CardSupportPresenter(ZaloPayRepository zaloPayRepository,
                          Navigator navigator,
                          BalanceStore.Repository balanceRepository,
                          TransactionStore.Repository transactionRepository,
                          User user,
-                         SharedPreferences sharedPreferences, EventBus eventBus
+                         SharedPreferences sharedPreferences, EventBus mEventBus
     ) {
-        super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
-                user, sharedPreferences, eventBus);
-    }
-
-    private void getListAccount() {
-        showLoadingView();
-
-    }
-
-    @Override
-    public void resume() {
-        getListAccount();
-    }
-
-    private void onGetLinkAccountSuccess(List<BankAccount> list) {
-        hideLoadingView();
-        mView.setData(list);
-    }
-
-    void removeLinkAccount(BankAccount bankCard) {
-
+        super(zaloPayRepository, navigator, balanceRepository, transactionRepository, user, sharedPreferences, mEventBus);
     }
 
     @Override
@@ -88,15 +50,15 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     @Override
     void onPreComplete() {
-
+        if (mView == null) {
+            return;
+        }
+        mView.onPreComplete();
     }
 
     @Override
     void onAddCardSuccess(DMappedCard mappedCreditCard) {
-        if (mView == null) {
-            return;
-        }
-        mView.onAddAccountSuccess(mappedCreditCard);
+
     }
 
     @Override
@@ -132,5 +94,4 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         mView.hideLoading();
         mView.showNetworkErrorDialog();
     }
-
 }

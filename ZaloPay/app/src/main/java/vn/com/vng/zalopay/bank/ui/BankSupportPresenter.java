@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.linkcard.ui;
+package vn.com.vng.zalopay.bank.ui;
 
 import java.util.ArrayList;
 

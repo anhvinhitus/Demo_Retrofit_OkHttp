@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.linkcard.ui;
+package vn.com.vng.zalopay.bank.ui;
 
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;

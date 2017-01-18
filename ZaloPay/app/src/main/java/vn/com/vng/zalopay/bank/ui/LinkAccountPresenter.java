@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.linkcard.ui;
+package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,30 +6,53 @@ import android.content.SharedPreferences;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
 /**
- * Created by longlv on 10/22/16.
+ * Created by longlv on 1/17/17.
  * *
  */
-class CardSupportPresenter extends AbstractLinkCardPresenter<ICardSupportView> {
+class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     @Inject
-    CardSupportPresenter(ZaloPayRepository zaloPayRepository,
+    LinkAccountPresenter(ZaloPayRepository zaloPayRepository,
                          Navigator navigator,
                          BalanceStore.Repository balanceRepository,
                          TransactionStore.Repository transactionRepository,
                          User user,
-                         SharedPreferences sharedPreferences, EventBus mEventBus
+                         SharedPreferences sharedPreferences, EventBus eventBus
     ) {
-        super(zaloPayRepository, navigator, balanceRepository, transactionRepository, user, sharedPreferences, mEventBus);
+        super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
+                user, sharedPreferences, eventBus);
+    }
+
+    private void getListAccount() {
+        showLoadingView();
+
+    }
+
+    @Override
+    public void resume() {
+        getListAccount();
+    }
+
+    private void onGetLinkAccountSuccess(List<BankAccount> list) {
+        hideLoadingView();
+        mView.setData(list);
+    }
+
+    void removeLinkAccount(BankAccount bankCard) {
+
     }
 
     @Override
@@ -50,15 +73,15 @@ class CardSupportPresenter extends AbstractLinkCardPresenter<ICardSupportView> {
 
     @Override
     void onPreComplete() {
-        if (mView == null) {
-            return;
-        }
-        mView.onPreComplete();
+
     }
 
     @Override
     void onAddCardSuccess(DMappedCard mappedCreditCard) {
-
+        if (mView == null) {
+            return;
+        }
+        mView.onAddAccountSuccess(mappedCreditCard);
     }
 
     @Override
@@ -94,4 +117,5 @@ class CardSupportPresenter extends AbstractLinkCardPresenter<ICardSupportView> {
         mView.hideLoading();
         mView.showNetworkErrorDialog();
     }
+
 }

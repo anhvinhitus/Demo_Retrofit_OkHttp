@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="vn.com.vng.zalopay.linkcard.ui.LinkAccountFragment">
+             tools:context="vn.com.vng.zalopay.bank.ui.LinkAccountFragment">
 
     <include
         layout="@layout/layout_link_account_empty"

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.linkcard.ui;
+package vn.com.vng.zalopay.bank.ui;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -20,8 +20,8 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
-import vn.com.vng.zalopay.linkcard.BankUtils;
-import vn.com.vng.zalopay.linkcard.models.BankCardStyle;
+import vn.com.vng.zalopay.bank.BankUtils;
+import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.utils.BankCardUtil;
 
 /**

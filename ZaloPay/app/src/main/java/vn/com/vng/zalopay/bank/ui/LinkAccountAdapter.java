@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.linkcard.ui;
+package vn.com.vng.zalopay.bank.ui;
 
 import android.content.Context;
 import android.os.Build;
@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.linkcard.models.BankAccount;
+import vn.com.vng.zalopay.bank.models.BankAccount;
 
 /**
  * Created by AnhHieu on 5/10/16.

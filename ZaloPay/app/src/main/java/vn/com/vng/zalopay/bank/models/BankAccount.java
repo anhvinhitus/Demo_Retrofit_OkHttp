@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.linkcard.models;
+package vn.com.vng.zalopay.bank.models;
 
 /**
  * Created by longlv on 1/17/17.

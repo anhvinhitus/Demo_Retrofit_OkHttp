@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.linkcard;
+package vn.com.vng.zalopay.bank;
 
 import android.text.TextUtils;
 
@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.BankCard;
-import vn.com.vng.zalopay.linkcard.models.BankCardStyle;
+import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 
 /**

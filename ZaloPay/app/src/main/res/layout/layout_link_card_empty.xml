@@ -95,7 +95,7 @@
 
             <fragment
                 android:id="@+id/bankSupportFragment"
-                android:name="vn.com.vng.zalopay.linkcard.ui.BankSupportFragment"
+                android:name="vn.com.vng.zalopay.bank.ui.BankSupportFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"/>

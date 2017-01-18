@@ -229,7 +229,7 @@
             android:windowSoftInputMode="" />
 
         <activity
-            android:name=".linkcard.ui.LinkCardActivity"
+            android:name=".bank.ui.LinkCardActivity"
             android:label="@string/title.activity.link.card"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -340,11 +340,11 @@
             android:label="@string/title.activity.tutorial.network.connection" />
 
         <activity
-            android:name=".linkcard.ui.CardSupportActivity"
+            android:name=".bank.ui.CardSupportActivity"
             android:label="@string/title.activity.card.support" />
 
         <activity
-            android:name=".linkcard.ui.NotificationLinkCardActivity"
+            android:name=".bank.ui.NotificationLinkCardActivity"
             android:label="@string/title.activity.tutorial.link.card" />
 
         <activity
@@ -371,7 +371,7 @@
             android:label="@string/title.activity.choose.category" />
 
         <activity
-            android:name=".linkcard.ui.BankAssociateActivity"
+            android:name=".bank.ui.BankAssociateActivity"
             android:label="@string/title_activity_bank_associate" />
 
         <receiver
