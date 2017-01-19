@@ -123,24 +123,30 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
             mLaunchOptions = savedInstanceState.getBundle("launchOptions");
         }
 
-        if (mLaunchOptions == null) {
-            mLaunchOptions = new Bundle();
-        }
-
-        if (appResource != null && appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
-            mLaunchOptions.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
-        }
-
-
-        if (appResource != null && appResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
-            mLaunchOptions.putString("url", BuildConfig.APP22_URL);
-            mLaunchOptions.putString("uid", mUser.zaloPayId);
-            mLaunchOptions.putString("accesstoken", mUser.accesstoken);
-        }
+        buildLaunchOptions(mLaunchOptions);
 
         Timber.d("Starting module: %s", mComponentName);
         Timber.d("appResource [appid: %d - appname: %s]", appResource == null ? 0 : appResource.appid,
                 appResource == null ? "" : appResource.appname);
+    }
+
+
+    private void buildLaunchOptions(Bundle launchOption) {
+        if (launchOption == null) {
+            launchOption = new Bundle();
+        }
+
+        if (appResource != null) {
+            if (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
+                launchOption.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
+            } else if (appResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
+                launchOption.putString("url", BuildConfig.APP22_URL);
+                launchOption.putString("uid", mUser.zaloPayId);
+                launchOption.putString("accesstoken", mUser.accesstoken);
+            }
+        }
+
+        launchOption.putString("environment", BuildConfig.ENVIRONMENT);
     }
 
     @Override
