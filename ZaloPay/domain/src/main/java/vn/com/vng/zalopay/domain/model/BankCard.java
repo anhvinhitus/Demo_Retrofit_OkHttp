@@ -12,16 +12,14 @@ public class BankCard {
     public String first6cardno;
     public String last4cardno;
     public String bankcode;
-    public long expiretime;
 
     public String type;
 
-    public BankCard(String cardname, String first6cardno, String last4cardno, String bankcode, long expiretime) {
+    public BankCard(String cardname, String first6cardno, String last4cardno, String bankcode) {
         this.cardname = cardname;
         this.first6cardno = first6cardno;
         this.last4cardno = last4cardno;
         this.bankcode = bankcode;
-        this.expiretime = expiretime;
     }
 
     @Override

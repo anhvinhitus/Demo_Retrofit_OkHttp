@@ -22,7 +22,7 @@ public class AppConfigEntityDataMapper {
     public BankCard transform(CardEntity card) {
         BankCard bankCard = null;
         if (card != null) {
-            bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode, 0);
+            bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode);
         }
         return bankCard;
     }

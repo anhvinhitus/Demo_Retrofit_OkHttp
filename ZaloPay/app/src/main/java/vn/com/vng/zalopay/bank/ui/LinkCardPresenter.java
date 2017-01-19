@@ -35,6 +35,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
@@ -64,7 +65,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
-                List<DMappedCard> mapCardLis = CShareData.getInstance().getMappedCardList(user.zaloPayId);
+                List<DMappedCard> mapCardLis = CShareData.getInstance().getMappedCardList(mUser.zaloPayId);
                 return transform(mapCardLis);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -76,7 +77,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         BankCard bankCard = null;
 
         if (card != null) {
-            bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode, card.expiretime);
+            bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode);
             try {
                 Timber.d("transform card.first6cardno:%s", card.first6cardno);
                 bankCard.type = detectCardType(card.bankcode, card.first6cardno);
@@ -125,12 +126,12 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         mapCard.last4cardno = bankCard.last4cardno;
         mapCard.bankcode = bankCard.bankcode;
 
-        if (user == null) {
+        if (mUser == null) {
             showErrorView("Thông tin người dùng không hợp lệ.");
             return;
         }
-        params.accessToken = user.accesstoken;
-        params.userID = String.valueOf(user.zaloPayId);
+        params.accessToken = mUser.accesstoken;
+        params.userID = String.valueOf(mUser.zaloPayId);
         params.mapCard = mapCard;
 
         WalletSDKApplication.removeCardMap(params, new RemoveMapCardListener());
@@ -147,7 +148,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             hideLoadingView();
             if (mapCard != null) {
                 BankCard bankCard = new BankCard(mapCard.cardname, mapCard.first6cardno,
-                        mapCard.last4cardno, mapCard.bankcode, mapCard.expiretime);
+                        mapCard.last4cardno, mapCard.bankcode);
                 mView.removeData(bankCard);
             }
         }
@@ -220,7 +221,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     }
 
     @Override
-    void onAddCardSuccess(DMappedCard mappedCreditCard) {
+    void onAddCardSuccess(DBaseMap mappedCreditCard) {
         if (mView == null) {
             return;
         }
@@ -270,21 +271,21 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             return ECardType.PBIDV.toString();
         } else if (bankcode.equals(ECardType.PVCB.toString())) {
             return ECardType.PVCB.toString();
-        } else if (bankcode.equals(ECardType.PEIB.toString())) {
-            return ECardType.PEIB.toString();
         } else if (bankcode.equals(ECardType.PSCB.toString())) {
             return ECardType.PSCB.toString();
+        /*} else if (bankcode.equals(ECardType.PEIB.toString())) {
+            return ECardType.PEIB.toString();
         } else if (bankcode.equals(ECardType.PAGB.toString())) {
             return ECardType.PAGB.toString();
         } else if (bankcode.equals(ECardType.PTPB.toString())) {
-            return ECardType.PTPB.toString();
+            return ECardType.PTPB.toString();*/
         } else if (bankcode.equals(ECardType.UNDEFINE.toString())) {
             return ECardType.UNDEFINE.toString();
         } else {
             try {
                 UserInfo userInfo = new UserInfo();
-                userInfo.zaloPayUserId = user.zaloPayId;
-                userInfo.accessToken = user.accesstoken;
+                userInfo.zaloPayUserId = mUser.zaloPayId;
+                userInfo.accessToken = mUser.accesstoken;
                 return CShareData.getInstance().setUserInfo(userInfo).
                         detectCardType(first6cardno).toString();
             } catch (Exception e) {

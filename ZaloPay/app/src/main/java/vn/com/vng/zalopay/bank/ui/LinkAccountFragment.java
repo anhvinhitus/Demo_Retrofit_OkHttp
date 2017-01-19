@@ -7,16 +7,21 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,7 +51,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @OnClick(R.id.btn_add_account)
     public void onClickAddBankAccount() {
-        mPresenter.addLinkCard();
+        mPresenter.showListBankSupportLinkAcc();
     }
 
     @Inject
@@ -91,6 +96,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mPresenter.attachView(this);
     }
 
     @Override
@@ -119,8 +125,56 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     }
 
     @Override
-    public void onAddAccountSuccess(DMappedCard mappedCreditCard) {
+    public void onAddAccountSuccess(DBaseMap mappedCreditCard) {
 
     }
 
+    @Override
+    public void showListBankDialog(ArrayList<ZPCard> cardSupportList) {
+        Timber.d("show list bank dialog.");
+        ListBankDialog listBankDialog = ListBankDialog.newInstance(cardSupportList);
+        listBankDialog.show(getChildFragmentManager(), ListBankDialog.TAG);
+    }
+
+    @Override
+    public void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener) {
+        if (!isAdded()) {
+            return;
+        }
+        super.showRetryDialog(message, listener);
+    }
+
+    @Override
+    public void onEventUpdateVersion(boolean forceUpdate, String latestVersion, String message) {
+        Timber.d("cardSupportHashMap forceUpdate [%s] latestVersion [%s] message [%s]",
+                forceUpdate, latestVersion, message);
+        if (!isAdded()) {
+            return;
+        }
+        AppVersionUtils.handleEventUpdateVersion(getActivity(), forceUpdate, latestVersion, message);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.resume();
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        mPresenter.detachView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        mPresenter.destroy();
+        super.onDestroy();
+    }
 }

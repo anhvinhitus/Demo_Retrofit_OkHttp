@@ -38,11 +38,14 @@
             android:layout_marginTop="@dimen/spacing.medium"
             android:text="@string/select_bank_to_link_account"/>
 
-        <FrameLayout
-            android:id="@+id/custom_content"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listBankRecyclerView"
+            style="@style/RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:fadingEdge="none"
+            android:overScrollMode="never"
+            android:paddingTop="@dimen/spacing.medium"/>
     </LinearLayout>
 
     <View
@@ -51,28 +54,14 @@
         android:layout_height="1dp"
         android:background="@color/line"/>
 
-    <FrameLayout
+    <TextView
+        android:id="@+id/cancel_button"
+        style="@style/dialog_blue_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:gravity="right"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/zpw_padding_10"
-        android:paddingLeft="@dimen/zpw_padding_8"
-        android:paddingRight="@dimen/zpw_padding_8"
-        android:paddingTop="@dimen/zpw_padding_5">
-
-        <TextView
-            android:id="@+id/cancel_button"
-            style="@style/dialog_blue_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingBottom="@dimen/zpw_padding_6"
-            android:paddingLeft="@dimen/zpw_padding_15"
-            android:paddingRight="@dimen/zpw_padding_15"
-            android:paddingTop="@dimen/zpw_padding_6"
-            android:text="@string/txt_close"/>
-    </FrameLayout>
+        android:layout_gravity="center"
+        android:paddingBottom="@dimen/spacing.medium"
+        android:paddingTop="@dimen/spacing.medium.s"
+        android:text="@string/txt_close"/>
 
 </LinearLayout>

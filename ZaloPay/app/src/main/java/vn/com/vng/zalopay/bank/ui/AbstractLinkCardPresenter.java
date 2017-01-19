@@ -22,6 +22,7 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
@@ -34,7 +35,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     private PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
 
-    User user;
+    User mUser;
 
     private SharedPreferences mSharedPreferences;
 
@@ -46,7 +47,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     abstract void onPreComplete();
 
-    abstract void onAddCardSuccess(DMappedCard mappedCreditCard);
+    abstract void onAddCardSuccess(DBaseMap mappedCreditCard);
 
     abstract void showLoadingView();
 
@@ -63,7 +64,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                               User user,
                               SharedPreferences sharedPreferences, EventBus eventBus) {
         mNavigator = navigator;
-        this.user = user;
+        this.mUser = user;
         mSharedPreferences = sharedPreferences;
         this.mEventBus = eventBus;
         paymentWrapper = new PaymentWrapperBuilder()
@@ -87,7 +88,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         if (getContext() == null) {
             return;
         }
-        if (user.profilelevel < 2) {
+        if (mUser.profilelevel < 2) {
             mNavigator.startUpdateProfileLevel2Activity(getContext());
         } else {
             paymentWrapper.linkCard(getActivity());
@@ -116,7 +117,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 Timber.d("onResponseSuccess paymentInfo null");
                 return;
             }
-            onAddCardSuccess(paymentInfo.mappedCreditCard);
+            onAddCardSuccess(paymentInfo.mapBank);
         }
 
         @Override

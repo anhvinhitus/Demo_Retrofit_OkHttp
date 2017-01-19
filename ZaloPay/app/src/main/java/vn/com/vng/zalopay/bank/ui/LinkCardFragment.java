@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
@@ -233,16 +234,16 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     @Override
-    public void onAddCardSuccess(DMappedCard card) {
+    public void onAddCardSuccess(DBaseMap card) {
         Timber.d("onAddCardSuccess card: %s", card);
         if (card == null) {
             return;
         }
-        BankCard bankCard = new BankCard(card.cardname, card.first6cardno,
-                card.last4cardno, card.bankcode, card.expiretime);
+        BankCard bankCard = new BankCard(card.getCardKey(), card.getFirstNumber(),
+                card.getLastNumber(), card.bankcode);
         try {
-            Timber.d("onAddCardSuccess first6CardNo: %s", card.first6cardno);
-            bankCard.type = mPresenter.detectCardType(card.bankcode, card.first6cardno);
+            Timber.d("onAddCardSuccess first6CardNo: %s", card.getFirstNumber());
+            bankCard.type = mPresenter.detectCardType(card.bankcode, card.getFirstNumber());
             Timber.d("onAddCardSuccess bankCard.type: %s", bankCard.type);
         } catch (Exception e) {
             Timber.w(e, "onAddCardSuccess detectCardType exception [%s]", e.getMessage());

@@ -6,6 +6,7 @@ import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
 /**
@@ -22,7 +23,7 @@ interface ILinkCardView extends ILoadDataView {
 
     void removeData(BankCard bankCard);
 
-    void onAddCardSuccess(DMappedCard card);
+    void onAddCardSuccess(DBaseMap card);
 
     void showWarningView(String error);
 }

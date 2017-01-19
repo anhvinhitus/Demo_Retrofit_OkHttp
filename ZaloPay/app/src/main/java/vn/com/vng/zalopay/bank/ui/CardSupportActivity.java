@@ -11,7 +11,8 @@ import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 
-public class CardSupportActivity extends BaseToolBarActivity implements ICardSupportView {
+public class
+CardSupportActivity extends BaseToolBarActivity implements ICardSupportView {
 
     @Inject
     CardSupportPresenter mPresenter;

@@ -194,7 +194,7 @@ public class PaymentWrapper {
         //Require reset forceChannelIds & mappedCreditCard before continue payment
         if (mPendingOrder != null) {
             mPendingOrder.forceChannelIds = null;
-            mPendingOrder.mappedCreditCard = null;
+            mPendingOrder.mapBank = null;
         }
         callPayAPI(mActivity, mPendingOrder, mPendingChannel);
     }

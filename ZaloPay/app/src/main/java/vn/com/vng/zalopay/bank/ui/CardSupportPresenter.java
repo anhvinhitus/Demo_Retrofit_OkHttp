@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
 /**
@@ -57,7 +58,7 @@ class CardSupportPresenter extends AbstractLinkCardPresenter<ICardSupportView> {
     }
 
     @Override
-    void onAddCardSuccess(DMappedCard mappedCreditCard) {
+    void onAddCardSuccess(DBaseMap mappedCreditCard) {
 
     }
 
