@@ -80,11 +80,8 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     @Override
     public Observable<List<TransHistory>> getTransactionsFail(int pageIndex, int count) {
-        if (count <= 0) {
-            return Observable.just(new ArrayList<>());
-        }
-        if (pageIndex < 0) {
-            return Observable.just(new ArrayList<>());
+        if (pageIndex < 0 || count <= 0) {
+            return Observable.just(Collections.emptyList());
         }
 
         Observable<List<TransHistoryEntity>> _observableTransLocal = getTransactionHistoryLocal(pageIndex, count, TRANSACTION_STATUS_FAIL)
@@ -290,9 +287,9 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> fetchTransactionHistoryOldest(long threshold) {
-        Observable<Boolean> observableOldestSuccess = fetchTransactionHistoryOldestSuccess(threshold).doOnError(throwable -> Observable.empty());
-        Observable<Boolean> observableOldestFail = fetchTransactionHistoryOldestFail(threshold).doOnError(throwable -> Observable.empty());
+    public Observable<Boolean> fetchTransactionHistoryOldest(long thresholdTime) {
+        Observable<Boolean> observableOldestSuccess = fetchTransactionHistoryOldestSuccess(thresholdTime).doOnError(throwable -> Observable.empty());
+        Observable<Boolean> observableOldestFail = fetchTransactionHistoryOldestFail(thresholdTime).doOnError(throwable -> Observable.empty());
 
         return Observable.zip(observableOldestSuccess, observableOldestFail,
                 (result1, result2) -> result1 && result2);
@@ -359,11 +356,11 @@ public class TransactionRepository implements TransactionStore.Repository {
      */
     @Override
     public Observable<TransHistory> reloadTransactionHistory(long transId, long time) {
-        long timestamp = time - 5000;
+        long timestamp = time + 5000;
         Timber.d("reloadTransactionHistory: transactionId %s  timeStamp %s", transId, timestamp);
-        Observable<List<TransHistoryEntity>> observableSuccess = fetchTransactionToBackup(timestamp, 5, TRANSACTION_STATUS_SUCCESS)
+        Observable<List<TransHistoryEntity>> observableSuccess = fetchTransactionToBackup(timestamp, TRANSACTION_LENGTH, TRANSACTION_STATUS_SUCCESS)
                 .onErrorResumeNext(throwable -> Observable.just(Collections.emptyList()));
-        Observable<List<TransHistoryEntity>> observableFail = fetchTransactionToBackup(timestamp, 5, TRANSACTION_STATUS_FAIL)
+        Observable<List<TransHistoryEntity>> observableFail = fetchTransactionToBackup(timestamp, TRANSACTION_LENGTH, TRANSACTION_STATUS_FAIL)
                 .onErrorResumeNext(throwable -> Observable.just(Collections.emptyList()));
 
         return Observable
@@ -374,7 +371,8 @@ public class TransactionRepository implements TransactionStore.Repository {
                         return entity;
                     }
                     return findTransaction(entitiesFail, transId);
-                }).map(entity -> {
+                })
+                .map(entity -> {
                     if (entity != null) {
                         mLocalStorage.putBackup(entity);
                         return mDataMapper.transform(entity);
@@ -404,7 +402,7 @@ public class TransactionRepository implements TransactionStore.Repository {
 
     private Observable<List<TransHistoryEntity>> fetchTransactionToBackup(long timestamp, int length, int statusType) {
         return mRequestService.getTransactionHistories(mUser.zaloPayId, mUser.accesstoken, timestamp, length,
-                TRANSACTION_ORDER_LATEST, statusType)
+                TRANSACTION_ORDER_OLDEST, statusType)
                 .map(response -> response.data);
     }
 }
