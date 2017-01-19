@@ -29,4 +29,9 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowBackground">@layout/activity_splash_background</item>
     </style>
+
+    <style name="AppTheme.Payment.RedPacket">
+        <item name="android:windowBackground">@drawable/layer_redpacket_background</item>
+        <item name="android:statusBarColor">@color/red_packet</item>
+    </style>
 </resources>
