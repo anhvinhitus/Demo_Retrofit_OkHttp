@@ -168,6 +168,7 @@ public class UserConfigImpl implements UserConfig {
         editor.remove(Constants.PREF_USER_IDENTITY_NUMBER);
         editor.remove(Constants.PREF_USER_ZALOPAY_NAME);
         editor.remove(Constants.PREF_WAITING_APPROVE_PROFILE_LEVEL3);
+        editor.remove(Constants.PREF_USE_PROTECT_PROFILE);
         editor.apply();
     }
 

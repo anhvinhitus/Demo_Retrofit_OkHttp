@@ -77,7 +77,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 public class Navigator implements INavigator {
     private final int MIN_PROFILE_LEVEL = 2;
 
-    private UserConfig userConfig;
+    private UserConfig mUserConfig;
 
     private long lastTimeCheckPassword = 0;
 
@@ -89,7 +89,7 @@ public class Navigator implements INavigator {
     @Inject
     public Navigator(UserConfig userConfig) {
         //empty
-        this.userConfig = userConfig;
+        this.mUserConfig = userConfig;
     }
 
     public void startLoginActivityForResult(ExternalCallSplashScreenActivity act, int requestCode, Uri data) {
@@ -200,8 +200,8 @@ public class Navigator implements INavigator {
 
     public void startMiniAppActivity(Activity activity, String moduleName) {
         if (ModuleName.RED_PACKET.equals(moduleName)) {
-            if (userConfig.hasCurrentUser()) {
-                if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+            if (mUserConfig.hasCurrentUser()) {
+                if (mUserConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
                     showUpdateProfileInfoDialog(activity);
                     return;
                 }
@@ -216,17 +216,17 @@ public class Navigator implements INavigator {
     }
 
     public void startLinkCardActivity(Context context, Bundle bundle, boolean isFinishActivity) {
-        if (!userConfig.hasCurrentUser()) {
+        if (!mUserConfig.hasCurrentUser()) {
             return;
         }
 
-        if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+        if (mUserConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
             showUpdateProfileInfoDialog(context);
         } else {
             int numberCard = 0;
             try {
                 List<DMappedCard> mapCardLis = CShareData.getInstance()
-                        .getMappedCardList(userConfig.getCurrentUser().zaloPayId);
+                        .getMappedCardList(mUserConfig.getCurrentUser().zaloPayId);
                 numberCard = mapCardLis.size();
             } catch (Exception ex) {
                 Timber.w(ex, "startLinkCardActivity getMappedCardList exception");
@@ -305,7 +305,7 @@ public class Navigator implements INavigator {
 
     @Override
     public void startProfileInfoActivity(Context context) {
-        if (!userConfig.hasCurrentUser()) {
+        if (!mUserConfig.hasCurrentUser()) {
             return;
         }
 
@@ -332,11 +332,11 @@ public class Navigator implements INavigator {
     }
 
     public void startTransferMoneyActivity(Activity activity) {
-        if (!userConfig.hasCurrentUser()) {
+        if (!mUserConfig.hasCurrentUser()) {
             return;
         }
 
-        if (userConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
+        if (mUserConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
             showUpdateProfileInfoDialog(activity);
         } else {
             Intent intent = new Intent(activity, TransferHomeActivity.class);
@@ -375,7 +375,7 @@ public class Navigator implements INavigator {
     }
 
     public void startUpdateProfile3Activity(Context context, boolean focusIdentity) {
-        if (userConfig.hasCurrentUser() && userConfig.getCurrentUser().profilelevel == MIN_PROFILE_LEVEL) {
+        if (mUserConfig.hasCurrentUser() && mUserConfig.getCurrentUser().profilelevel == MIN_PROFILE_LEVEL) {
             Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
             intent.putExtra("focusIdentity", focusIdentity);
             context.startActivity(intent);
@@ -436,7 +436,7 @@ public class Navigator implements INavigator {
     }
 
     public void startTransactionHistoryList(Context context) {
-        if (!userConfig.hasCurrentUser()) {
+        if (!mUserConfig.hasCurrentUser()) {
             return;
         }
         Intent intent = getIntentMiniAppActivity(context, ModuleName.TRANSACTION_LOGS, new HashMap<String, String>());
@@ -507,12 +507,12 @@ public class Navigator implements INavigator {
     }
 
     private boolean shouldShowPinDialog() {
-        boolean useProtect = mPreferences.getBoolean(Constants.PREF_USE_PROTECT_PROFILE, true);
+        boolean useProtect = mUserConfig.isUseProtectAccount();
         if (!useProtect) {
             return false;
         }
 
-        int profileLevel = userConfig.getCurrentUser().profilelevel;
+        int profileLevel = mUserConfig.getCurrentUser().profilelevel;
         long now = System.currentTimeMillis();
         return (now - lastTimeCheckPassword >= INTERVAL_CHECK_PASSWORD
                 && profileLevel >= MIN_PROFILE_LEVEL);
@@ -570,7 +570,7 @@ public class Navigator implements INavigator {
         if (channel == 2) {
             try {
                 List<DMappedCard> mapCardLis = CShareData.getInstance()
-                        .getMappedCardList(userConfig.getCurrentUser().zaloPayId);
+                        .getMappedCardList(mUserConfig.getCurrentUser().zaloPayId);
                 if (mapCardLis == null || mapCardLis.size() == 0) {
                     Helpers.promiseResolveSuccess(promise, null);
                     return true;
