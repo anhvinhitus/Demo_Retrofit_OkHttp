@@ -128,4 +128,6 @@
     <color name="transfer_font_green">#008fe5</color>
     <color name="profile_font_gray">#848d99</color>
     <!--Menu icon color END-->
+
+    <color name="red_packet">#D84E43</color>
 </resources>

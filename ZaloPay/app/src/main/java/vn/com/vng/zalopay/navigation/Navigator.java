@@ -455,14 +455,14 @@ public class Navigator implements INavigator {
     }
 
     private Intent getIntentMiniAppActivity(Context context, String moduleName, Map<String, String> launchOptions) {
-      /*  Intent intent;
+        Intent intent;
         if (moduleName.equals(ModuleName.RED_PACKET)) {
             intent = new Intent(context, RedPacketApplicationActivity.class);
         } else {
             intent = new Intent(context, MiniApplicationActivity.class);
-        }*/
+        }
 
-        Intent intent = new Intent(context, MiniApplicationActivity.class);
+        //  Intent intent = new Intent(context, MiniApplicationActivity.class);
         intent.putExtra("moduleName", moduleName);
         Bundle options = new Bundle();
         for (Map.Entry<String, String> e : launchOptions.entrySet()) {

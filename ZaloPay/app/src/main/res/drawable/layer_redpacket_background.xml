@@ -3,13 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:opacity="opaque">
-    <item android:drawable="@color/red" />
+    <item android:drawable="@color/red_packet" />
+
     <item
         android:drawable="@color/splash_bg"
         android:top="@dimen/payment.actionbar.height" />
-    <item android:top="0dp">
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/ic_activity_loading" />
-    </item>
+
 </layer-list>
