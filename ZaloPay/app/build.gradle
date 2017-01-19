@@ -154,6 +154,7 @@ android {
             buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"https://comerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
+            buildConfigField 'String', 'ENVIRONMENT', '"production"'
         }
 
         sandbox {
@@ -169,6 +170,7 @@ android {
             buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
+            buildConfigField 'String', 'ENVIRONMENT', '"sandbox"'
         }
 
         staging {
@@ -184,6 +186,7 @@ android {
             buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"http://stgcomerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-3"'
+            buildConfigField 'String', 'ENVIRONMENT', '"staging"'
         }
 
         internalProduction {
@@ -199,6 +202,7 @@ android {
             buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"https://comerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
+            buildConfigField 'String', 'ENVIRONMENT', '"production"'
         }
 
         internalSandbox {
@@ -214,6 +218,7 @@ android {
             buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
+            buildConfigField 'String', 'ENVIRONMENT', '"sandbox"'
         }
 
         internalStaging {
@@ -229,6 +234,7 @@ android {
             buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"http://stgcomerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-3"'
+            buildConfigField 'String', 'ENVIRONMENT', '"staging"'
         }
 
         iapProduction {
@@ -245,6 +251,7 @@ android {
             buildConfigField 'String', 'REDPACKET_HOST', '"https://rpe.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"https://comerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
+            buildConfigField 'String', 'ENVIRONMENT', '"production"'
         }
 
         iapSandbox {
@@ -261,6 +268,7 @@ android {
             buildConfigField 'String', 'REDPACKET_HOST', '"https://sandbox.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
+            buildConfigField 'String', 'ENVIRONMENT', '"sandbox"'
         }
 
         iapStaging {
@@ -277,6 +285,7 @@ android {
             buildConfigField 'String', 'REDPACKET_HOST', '"https://stgrpe.zalopay.com.vn/"'
             buildConfigField 'String', 'APP22_URL', '"http://stgcomerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-3"'
+            buildConfigField 'String', 'ENVIRONMENT', '"staging"'
         }
     }
 
