@@ -146,7 +146,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
             }
         }
 
-        launchOption.putString("environment", BuildConfig.ENVIRONMENT);
+        launchOption.putInt("environment", BuildConfig.ENVIRONMENT);
     }
 
     @Override
