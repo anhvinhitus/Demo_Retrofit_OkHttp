@@ -115,12 +115,15 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
 
         if (savedInstanceState == null) {
             Intent intent = getIntent();
-
             appResource = intent.getParcelableExtra("appResource");
             mLaunchOptions = intent.getBundleExtra("launchOptions");
         } else {
             appResource = savedInstanceState.getParcelable("appResource");
             mLaunchOptions = savedInstanceState.getBundle("launchOptions");
+        }
+
+        if (mLaunchOptions == null) {
+            mLaunchOptions = new Bundle();
         }
 
         buildLaunchOptions(mLaunchOptions);
@@ -130,12 +133,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 appResource == null ? "" : appResource.appname);
     }
 
-
     private void buildLaunchOptions(Bundle launchOption) {
-        if (launchOption == null) {
-            launchOption = new Bundle();
-        }
-
         if (appResource != null) {
             if (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
                 launchOption.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
