@@ -14,10 +14,10 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/zpw_padding_20"
-        android:paddingLeft="@dimen/zpw_padding_24"
-        android:paddingRight="@dimen/zpw_padding_24"
-        android:paddingTop="@dimen/zpw_padding_15">
+        android:paddingBottom="@dimen/spacing.medium.l"
+        android:paddingLeft="@dimen/spacing.large.t"
+        android:paddingRight="@dimen/spacing.large.t"
+        android:paddingTop="@dimen/spacing.medium">
 
         <ImageView
             android:id="@+id/custom_image"
@@ -54,14 +54,28 @@
         android:layout_height="1dp"
         android:background="@color/line"/>
 
-    <TextView
-        android:id="@+id/cancel_button"
-        style="@style/dialog_blue_button"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingBottom="@dimen/spacing.medium"
-        android:paddingTop="@dimen/spacing.medium.s"
-        android:text="@string/txt_close"/>
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/spacing.tiny"
+        android:paddingLeft="@dimen/spacing.small"
+        android:paddingRight="@dimen/spacing.small"
+        android:paddingTop="@dimen/spacing.tiny">
+
+        <TextView
+            android:id="@+id/cancel_button"
+            style="@style/dialog_blue_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:paddingBottom="@dimen/spacing.tiny"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:paddingTop="@dimen/spacing.tiny"
+            android:text="@string/txt_close"/>
+    </FrameLayout>
 
 </LinearLayout>
