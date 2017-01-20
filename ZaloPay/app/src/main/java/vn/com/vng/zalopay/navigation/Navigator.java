@@ -56,6 +56,7 @@ import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
+import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
