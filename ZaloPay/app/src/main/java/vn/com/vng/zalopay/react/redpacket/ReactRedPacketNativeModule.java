@@ -460,7 +460,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                         @Override
                         public void onNext(List<PackageInBundle> packageInBundles) {
                             WritableArray array = DataMapper.transform(packageInBundles);
-                            promise.resolve(array);
+                            Helpers.promiseResolveSuccess(promise, array);
                         }
 
                     });
