@@ -48,6 +48,7 @@
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="2dp"
                 android:layout_marginRight="48dp"
+                android:layout_marginEnd="48dp"
                 android:orientation="horizontal" />
 
             <TextView
@@ -55,8 +56,9 @@
                 style="@style/TextView.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:layout_marginBottom="-4dp"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginBottom="2dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:gravity="center"
                 android:minHeight="36dp"
