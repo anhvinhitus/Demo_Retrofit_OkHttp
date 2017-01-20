@@ -7,20 +7,29 @@ import android.content.SharedPreferences;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAccount;
+import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -88,14 +97,48 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         };
     }
 
-    private void getListAccount() {
-        //showLoadingView();
+    private void getMapBankAccount() {
+        showLoadingView();
+        Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankAccount>>() {
+            @Override
+            public List<BankAccount> call() throws Exception {
+                List<DBankAccount> mapCardLis = CShareData.getInstance().getMapBankAccountList(mUser.zaloPayId);
+                return transform(mapCardLis);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GetLinkedAccountSubscriber());
+        mSubscription.add(subscription);
+    }
 
+    private List<BankAccount> transform(List<DBankAccount> bankAccounts) {
+        if (Lists.isEmptyOrNull(bankAccounts)) return Collections.emptyList();
+
+        List<BankAccount> list = new ArrayList<>();
+        for (DBankAccount dBankAccount : bankAccounts) {
+            BankAccount bankAccount = transform(dBankAccount);
+            if (bankAccount != null) {
+                list.add(bankAccount);
+            }
+        }
+        return list;
+    }
+
+    private BankAccount transform(DBankAccount dBankAccount) {
+        if (dBankAccount == null) {
+            return null;
+        }
+
+        //bankCode [ZPVCB] cardKey[160525000004003ZPVCB] cardType[ZPVCB]
+        return new BankAccount(dBankAccount.firstaccountno,
+                dBankAccount.lastaccountno,
+                dBankAccount.getFirstNumber(),
+                dBankAccount.getLastNumber(),
+                dBankAccount.bankcode);
     }
 
     @Override
     public void resume() {
-        getListAccount();
+        getMapBankAccount();
     }
 
     void showListBankSupportLinkAcc() {
@@ -107,9 +150,9 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         CShareData.getInstance().setUserInfo(userInfo).getCardSupportList(mGetCardSupportListListener);
     }
 
-    private void onGetLinkAccountSuccess(List<BankAccount> list) {
+    private void onGetLinkedAccountSuccess(List<BankAccount> list) {
         hideLoadingView();
-        mView.setData(list);
+        mView.refreshLinkedAccount(list);
     }
 
     void removeLinkAccount(BankAccount bankCard) {
@@ -197,4 +240,33 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         mView.showNetworkErrorDialog();
     }
 
+    void linkAccount(ZPCard zpCard) {
+        Timber.d("linkAccount card[%s]", zpCard);
+        if (zpCard == null) {
+            return;
+        }
+
+    }
+
+    private class GetLinkedAccountSubscriber extends DefaultSubscriber<List<BankAccount>> {
+        @Override
+        public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+
+            Timber.e(e, "LinkAccountSubscriber ");
+        }
+
+        @Override
+        public void onNext(List<BankAccount> bankAccounts) {
+            /*ArrayList<BankAccount> tmp = new ArrayList<>();
+            tmp.add(new BankAccount("A", "Nguyễn Văn", "213134", "1231", "123PSCB"));
+            tmp.add(new BankAccount("B", "Nguyễn Văn", "123456", "4321", "ZPVCB"));
+            tmp.add(new BankAccount("C", "Nguyễn Văn", "432100", "6789", "123PVTB"));*/
+            onGetLinkedAccountSuccess(bankAccounts);
+        }
+    }
 }

@@ -41,6 +41,7 @@ public interface Constants {
     String ARG_URL = "url";
     String ARG_AUTO_LOAD_DATA = "auto_load_data";
     String ARG_BANK_LIST = "auto_load_data";
+    String ARG_BANK = "bank";
 
     //DMappedCard: model of zalo payment sdk
 
@@ -64,6 +65,7 @@ public interface Constants {
     int REQUEST_CODE_DEPOSIT = 128;
     int REQUEST_CODE_UPDATE_PROFILE_LEVEL_2 = 129;
     int REQUEST_CODE_SYSTEM_SETTINGS = 130;
+    int REQUEST_CODE_BANK_DIALOG = 131;
 
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
     String ARG_SHOW_NOTIFICATION_LINK_CARD = "show_notification_link_card";

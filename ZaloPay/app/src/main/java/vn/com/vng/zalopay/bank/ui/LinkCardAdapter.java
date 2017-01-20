@@ -19,10 +19,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
-import vn.com.vng.zalopay.utils.BankCardUtil;
+import vn.com.vng.zalopay.domain.model.BankCard;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -120,7 +119,7 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
         public void bindView(final BankCard bankCard, boolean isLastItem) {
             Timber.d("bindView bankCard.type:%s", bankCard.type);
             bindBankCard(mRoot, imgLogo, bankCard, true);
-            String bankCardNumber = BankCardUtil.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno);
+            String bankCardNumber = BankUtils.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno);
             mCardNumber.setText(Html.fromHtml(bankCardNumber));
             setMargin(isLastItem);
         }

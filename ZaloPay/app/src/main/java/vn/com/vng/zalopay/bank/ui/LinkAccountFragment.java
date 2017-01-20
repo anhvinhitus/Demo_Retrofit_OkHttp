@@ -1,10 +1,14 @@
 package vn.com.vng.zalopay.bank.ui;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -15,6 +19,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -91,12 +96,29 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mAdapter = new LinkAccountAdapter(getContext());
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
+        if (animator != null) {
+            if (animator instanceof SimpleItemAnimator) {
+                ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+            }
+        }
+        mRecyclerView.setAdapter(mAdapter);
+
+        mBankSupportFragment = (BankSupportFragment)
+                getChildFragmentManager().findFragmentById(R.id.bankSupportFragment);
+        initBottomSheet();
+    }
+
+    private void initBottomSheet() {
+
     }
 
     @Override
@@ -114,9 +136,44 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
         super.showErrorDialog(message, null);
     }
 
-    @Override
-    public void setData(List<BankAccount> list) {
+    private void showOrHideLayoutEmpty() {
+        if (mAdapter == null || mAdapter.getItemCount() <= 0) {
+            showLayoutEmpty();
+        } else {
+            hideLayoutEmpty();
+        }
+    }
 
+    private void showLayoutEmpty() {
+        if (mBankSupportFragment.getCountLinkCardSupport() <= 0
+                || mBankSupportFragment.getCountLinkAccountSupport() <= 0) {
+            mBankSupportFragment.getCardSupport();
+        }
+        mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
+        mLayoutContent.setVisibility(View.GONE);
+    }
+
+    private void hideLayoutEmpty() {
+        mLayoutLinkCardEmpty.setVisibility(View.GONE);
+        mLayoutContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void refreshLinkedAccount(List<BankAccount> bankAccounts) {
+        mAdapter.setData(bankAccounts);
+        showOrHideLayoutEmpty();
+    }
+
+    @Override
+    public void insertData(BankAccount bankAccounts) {
+        mAdapter.insert(bankAccounts);
+        showOrHideLayoutEmpty();
+    }
+
+    @Override
+    public void removeData(BankAccount bankAccounts) {
+        mAdapter.remove(bankAccounts);
+        showOrHideLayoutEmpty();
     }
 
     @Override
@@ -133,6 +190,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     public void showListBankDialog(ArrayList<ZPCard> cardSupportList) {
         Timber.d("show list bank dialog.");
         ListBankDialog listBankDialog = ListBankDialog.newInstance(cardSupportList);
+        listBankDialog.setTargetFragment(this, Constants.REQUEST_CODE_BANK_DIALOG);
         listBankDialog.show(getChildFragmentManager(), ListBankDialog.TAG);
     }
 
@@ -152,6 +210,20 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
             return;
         }
         AppVersionUtils.handleEventUpdateVersion(getActivity(), forceUpdate, latestVersion, message);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_BANK_DIALOG) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data == null) {
+                    return;
+                }
+                ZPCard zpCard = data.getParcelableExtra(Constants.ARG_BANK);
+                mPresenter.linkAccount(zpCard);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

@@ -79,9 +79,11 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         if (card != null) {
             bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode);
             try {
-                Timber.d("transform card.first6cardno:%s", card.first6cardno);
                 bankCard.type = detectCardType(card.bankcode, card.first6cardno);
                 Timber.d("transform bankCard.type:%s", bankCard.type);
+                Timber.d("transform cardname:%s", card.cardname);
+                Timber.d("transform first:%s", card.first6cardno);
+                Timber.d("transform last:%s", card.last4cardno);
             } catch (Exception e) {
                 Timber.e(e, "transform DMappedCard to BankCard exception [%s]", e.getMessage());
             }
@@ -262,36 +264,4 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         mView.showNetworkErrorDialog();
     }
 
-    String detectCardType(String bankcode, String first6cardno) {
-        if (TextUtils.isEmpty(bankcode)) {
-            return ECardType.UNDEFINE.toString();
-        } else if (bankcode.equals(ECardType.PVTB.toString())) {
-            return ECardType.PVTB.toString();
-        } else if (bankcode.equals(ECardType.PBIDV.toString())) {
-            return ECardType.PBIDV.toString();
-        } else if (bankcode.equals(ECardType.PVCB.toString())) {
-            return ECardType.PVCB.toString();
-        } else if (bankcode.equals(ECardType.PSCB.toString())) {
-            return ECardType.PSCB.toString();
-        /*} else if (bankcode.equals(ECardType.PEIB.toString())) {
-            return ECardType.PEIB.toString();
-        } else if (bankcode.equals(ECardType.PAGB.toString())) {
-            return ECardType.PAGB.toString();
-        } else if (bankcode.equals(ECardType.PTPB.toString())) {
-            return ECardType.PTPB.toString();*/
-        } else if (bankcode.equals(ECardType.UNDEFINE.toString())) {
-            return ECardType.UNDEFINE.toString();
-        } else {
-            try {
-                UserInfo userInfo = new UserInfo();
-                userInfo.zaloPayUserId = mUser.zaloPayId;
-                userInfo.accessToken = mUser.accesstoken;
-                return CShareData.getInstance().setUserInfo(userInfo).
-                        detectCardType(first6cardno).toString();
-            } catch (Exception e) {
-                Timber.w(e, "detectCardType exception [%s]", e.getMessage());
-            }
-        }
-        return ECardType.UNDEFINE.toString();
-    }
 }

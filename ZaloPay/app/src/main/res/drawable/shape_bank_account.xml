@@ -5,7 +5,8 @@
         android:width="@dimen/bank.link.account.line.width"
         android:height="@dimen/bank.link.account.height"/>
     <corners
-        android:topLeftRadius="@dimen/bank.link.account.border"
-        android:topRightRadius="@dimen/bank.link.account.border"/>
-    <stroke android:color="@color/olive"/>
+        android:bottomLeftRadius="@dimen/bank.link.account.border"
+        android:topLeftRadius="@dimen/bank.link.account.border"/>
+
+    <solid android:color="@color/bg_line_sacombank"/>
 </shape>

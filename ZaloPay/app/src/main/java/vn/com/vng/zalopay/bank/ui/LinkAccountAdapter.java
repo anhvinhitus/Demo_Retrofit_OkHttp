@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.bank.ui;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,14 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
-import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankAccount;
+import vn.com.vng.zalopay.bank.models.BankAccountStyle;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -25,47 +26,18 @@ import vn.com.vng.zalopay.bank.models.BankAccount;
  */
 class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.ViewHolder> {
 
-    private OnClickBankAccountListener listener;
-
-    public LinkAccountAdapter(Context context, OnClickBankAccountListener listener) {
+    LinkAccountAdapter(Context context) {
         super(context);
-        this.listener = listener;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.row_bank_account_layout, parent, false), onItemClickListener);
+        return new ViewHolder(mInflater.inflate(R.layout.row_bank_account_layout, parent, false));
     }
-
-    private OnItemClickListener onItemClickListener = new OnItemClickListener() {
-        @Override
-        public void onListItemClick(View anchor, int position) {
-            if (listener == null) {
-                return;
-            }
-
-            int id = anchor.getId();
-
-            if (id == R.id.root) {
-                BankAccount bankAccount = getItem(position);
-                if (bankAccount != null) {
-                    listener.onClickMenu(bankAccount);
-                }
-            }
-        }
-
-        @Override
-        public boolean onListItemLongClick(View anchor, int position) {
-            return false;
-        }
-    };
-
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
-        onItemClickListener = null;
-        listener = null;
         Timber.i("Detached");
     }
 
@@ -89,30 +61,23 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         @BindView(R.id.root)
         View mRoot;
 
+        @BindView(R.id.line)
+        View mLineVertical;
+
         @BindView(R.id.iv_logo)
-        ImageView imgLogo;
+        ImageView mImgLogo;
 
-        @BindView(R.id.tv_num_acc)
-        TextView mCardNumber;
+        @BindView(R.id.tvAccountName)
+        TextView mTvAccountName;
 
-        OnItemClickListener listener;
-
-        public ViewHolder(View itemView, OnItemClickListener listener) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            this.listener = listener;
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick(R.id.root)
-        public void onClickMore(View v) {
-            if (listener != null) {
-                listener.onListItemClick(v, getAdapterPosition());
-            }
-        }
-
         public void bindView(final BankAccount bankAccount, boolean isLastItem) {
-            Timber.d("bindView type:%s", bankAccount.type);
-            bindBankAccount(mRoot, imgLogo, bankAccount, true);
+            mTvAccountName.setText(bankAccount.getAccountNo());
+            bindBankAccount(mLineVertical, mImgLogo, bankAccount);
             setMargin(isLastItem);
         }
 
@@ -149,13 +114,14 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         }
     }
 
-    public void bindBankAccount(View mRoot, ImageView imgLogo, BankAccount bankAccount, boolean borderTopOnly) {
-        /*BankImageSetting bankImageSetting = getBankCardStyle(bankAccount);
-        setBankIcon(imgLogo, bankImageSetting.bankIcon);
-        setBankBackground(mRoot, bankImageSetting, borderTopOnly);*/
+    private void bindBankAccount(View lineVertical, ImageView imgLogo, BankAccount bankAccount) {
+        BankAccountStyle bankAccountStyle = BankUtils.getBankAccountStyle(bankAccount);
+        setLineStyle(lineVertical, bankAccountStyle.mLineColor);
+        setBankIcon(imgLogo, bankAccountStyle.mBankIcon);
     }
 
-    interface OnClickBankAccountListener {
-        void onClickMenu(BankAccount bankAccount);
+    private void setLineStyle(View lineVertical, int lineColor) {
+        GradientDrawable bgShape = (GradientDrawable) lineVertical.getBackground();
+        bgShape.setColor(getColorFromResource(lineColor));
     }
 }

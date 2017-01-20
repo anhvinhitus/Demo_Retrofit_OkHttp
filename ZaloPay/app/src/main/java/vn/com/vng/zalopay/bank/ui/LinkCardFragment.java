@@ -25,13 +25,12 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.BankCardUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
@@ -329,7 +328,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         }
         TextView tvCardNum = (TextView) mBottomSheetDialog.findViewById(R.id.tv_num_acc);
         if (mCurrentBankCard != null && tvCardNum != null) {
-            tvCardNum.setText(BankCardUtil.formatBankCardNumber(mCurrentBankCard.first6cardno, mCurrentBankCard.last4cardno));
+            tvCardNum.setText(BankUtils.formatBankCardNumber(mCurrentBankCard.first6cardno, mCurrentBankCard.last4cardno));
         }
         initBottomSheet();
         mBottomSheetDialog.show();

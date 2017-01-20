@@ -20,7 +20,11 @@ interface ILinkAccountView extends ILoadDataView {
 
     Activity getActivity();
 
-    void setData(List<BankAccount> list);
+    void refreshLinkedAccount(List<BankAccount> bankAccounts);
+
+    void insertData(BankAccount bankAccounts);
+
+    void removeData(BankAccount bankAccounts);
 
     void removeLinkAccount(BankAccount bankAccount);
 

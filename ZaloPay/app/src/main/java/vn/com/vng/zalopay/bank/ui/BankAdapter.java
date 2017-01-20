@@ -7,12 +7,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
+import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.bank.listener.OnClickBankListener;
+import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
@@ -22,22 +27,27 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
  */
 class BankAdapter extends AbsRecyclerAdapter<ZPCard, BankAdapter.ViewHolder> {
 
+    private OnClickBankListener mListener;
     private int mColumnCount;
 
-    BankAdapter(Context context, List<ZPCard> cards, int columnCount) {
+    BankAdapter(Context context, List<ZPCard> cards, int columnCount, OnClickBankListener listener) {
         super(context);
         mColumnCount = columnCount;
+        mListener = listener;
         insertItems(cards);
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(mInflater.inflate(R.layout.row_bank_layout, parent, false), onItemClickListener);
     }
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.row_bank_layout, parent, false));
+        onItemClickListener = null;
+        mListener = null;
+        Timber.i("Detached");
     }
 
     @Override
@@ -71,13 +81,46 @@ class BankAdapter extends AbsRecyclerAdapter<ZPCard, BankAdapter.ViewHolder> {
         return list.indexOf(item) >= 0;
     }
 
+    private OnItemClickListener onItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onListItemClick(View anchor, int position) {
+            if (mListener == null) {
+                return;
+            }
+
+            int id = anchor.getId();
+
+            if (id == R.id.root) {
+                ZPCard zpCard = getItem(position);
+                if (zpCard != null) {
+                    mListener.onClickBankItem(zpCard);
+                }
+            }
+        }
+
+        @Override
+        public boolean onListItemLongClick(View anchor, int position) {
+            return false;
+        }
+    };
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.iv_logo)
         ImageView mLogoView;
 
-        public ViewHolder(View itemView) {
+        @OnClick(R.id.itemLayout)
+        public void onClickRootView(View v) {
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onListItemClick(v, getAdapterPosition());
+            }
+        }
+
+        OnItemClickListener mOnItemClickListener;
+
+        public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
+            mOnItemClickListener = listener;
             ButterKnife.bind(this, itemView);
         }
 
@@ -90,4 +133,5 @@ class BankAdapter extends AbsRecyclerAdapter<ZPCard, BankAdapter.ViewHolder> {
             mLogoView.setVisibility(View.VISIBLE);
         }
     }
+
 }

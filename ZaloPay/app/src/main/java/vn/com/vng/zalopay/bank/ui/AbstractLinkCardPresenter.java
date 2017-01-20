@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.bank.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -22,8 +23,10 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
@@ -146,5 +149,38 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         public void onNotEnoughMoney() {
 
         }
+    }
+
+    String detectCardType(String bankcode, String first6cardno) {
+        if (TextUtils.isEmpty(bankcode)) {
+            return ECardType.UNDEFINE.toString();
+        } else if (bankcode.equals(ECardType.PVTB.toString())) {
+            return ECardType.PVTB.toString();
+        } else if (bankcode.equals(ECardType.PBIDV.toString())) {
+            return ECardType.PBIDV.toString();
+        } else if (bankcode.equals(ECardType.PVCB.toString())) {
+            return ECardType.PVCB.toString();
+        } else if (bankcode.equals(ECardType.PSCB.toString())) {
+            return ECardType.PSCB.toString();
+        /*} else if (bankcode.equals(ECardType.PEIB.toString())) {
+            return ECardType.PEIB.toString();
+        } else if (bankcode.equals(ECardType.PAGB.toString())) {
+            return ECardType.PAGB.toString();
+        } else if (bankcode.equals(ECardType.PTPB.toString())) {
+            return ECardType.PTPB.toString();*/
+        } else if (bankcode.equals(ECardType.UNDEFINE.toString())) {
+            return ECardType.UNDEFINE.toString();
+        } else {
+            try {
+                UserInfo userInfo = new UserInfo();
+                userInfo.zaloPayUserId = mUser.zaloPayId;
+                userInfo.accessToken = mUser.accesstoken;
+                return CShareData.getInstance().setUserInfo(userInfo).
+                        detectCardType(first6cardno).toString();
+            } catch (Exception e) {
+                Timber.w(e, "detectCardType exception [%s]", e.getMessage());
+            }
+        }
+        return ECardType.UNDEFINE.toString();
     }
 }
