@@ -63,6 +63,8 @@ ext {
 
     CircularRevealVersion = "1.0.5"
 
+    dialogPlusVersion   =  "1.11@aar"
+
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
             dagger                 : "com.google.dagger:dagger:${daggerVersion}",
@@ -112,7 +114,9 @@ ext {
 
             wire_runtime           : "com.squareup.wire:wire-runtime:${wireRuntimeVersion}",
 
-            circularreveal         : "com.github.ozodrukh:CircularReveal:${CircularRevealVersion}"
+            circularreveal         : "com.github.ozodrukh:CircularReveal:${CircularRevealVersion}",
+
+            dialogplus             : "com.orhanobut:dialogplus:${dialogPlusVersion}"
     ]
 
     testingLibraries = [
