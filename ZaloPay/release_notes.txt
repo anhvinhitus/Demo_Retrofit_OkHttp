@@ -1,0 +1,2 @@
+ZaloPay (v2.8.0) - Released on 2017-01-21
+- fixed UI
