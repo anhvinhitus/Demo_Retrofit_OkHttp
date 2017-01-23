@@ -355,4 +355,11 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         ToastUtil.showToast(this, message);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (paymentService != null) {
+            paymentService.onActivityResult(requestCode, resultCode, data);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

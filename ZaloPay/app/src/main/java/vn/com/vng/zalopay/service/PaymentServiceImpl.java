@@ -110,6 +110,13 @@ public class PaymentServiceImpl implements IPaymentService {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (mPaymentWrapper != null) {
+            mPaymentWrapper.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
         private final Promise mPromise;
 
@@ -150,7 +157,12 @@ public class PaymentServiceImpl implements IPaymentService {
 
         @Override
         public void onNotEnoughMoney() {
-            navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
+            if (mPaymentWrapper == null || mPaymentWrapper.mActivity == null) {
+                navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
+            } else {
+                Timber.d("onNotEnoughMoney, start deposit for result activity");
+                navigator.startDepositForResultActivity(mPaymentWrapper.mActivity, false);
+            }
         }
 
         @Override

@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.react.iap;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import com.facebook.react.bridge.Promise;
 
@@ -18,4 +19,6 @@ public interface IPaymentService {
     void destroyVariable();
 
     void shareMessageToOtherApp(Activity activity, String message);
+
+    void onActivityResult(int requestCode, int resultCode, Intent data);
 }
