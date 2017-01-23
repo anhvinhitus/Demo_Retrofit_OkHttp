@@ -76,6 +76,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig receivePackageGDDaoConfig;
     private final DaoConfig redPacketAppInfoGDDaoConfig;
     private final DaoConfig merchantUserDaoConfig;
+    private final DaoConfig logGDDaoConfig;
 
     private final AppResourceGDDao appResourceGDDao;
     private final PaymentTransTypeGDDao paymentTransTypeGDDao;
@@ -96,6 +97,7 @@ public class DaoSession extends AbstractDaoSession {
     private final ReceivePackageGDDao receivePackageGDDao;
     private final RedPacketAppInfoGDDao redPacketAppInfoGDDao;
     private final MerchantUserDao merchantUserDao;
+    private final LogGDDao logGDDao;
 
     public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -158,6 +160,9 @@ public class DaoSession extends AbstractDaoSession {
         merchantUserDaoConfig = daoConfigMap.get(MerchantUserDao.class).clone();
         merchantUserDaoConfig.initIdentityScope(type);
 
+        logGDDaoConfig = daoConfigMap.get(LogGDDao.class).clone();
+        logGDDaoConfig.initIdentityScope(type);
+
         appResourceGDDao = new AppResourceGDDao(appResourceGDDaoConfig, this);
         paymentTransTypeGDDao = new PaymentTransTypeGDDao(paymentTransTypeGDDaoConfig, this);
         transactionLogDao = new TransactionLogDao(transactionLogDaoConfig, this);
@@ -177,6 +182,7 @@ public class DaoSession extends AbstractDaoSession {
         receivePackageGDDao = new ReceivePackageGDDao(receivePackageGDDaoConfig, this);
         redPacketAppInfoGDDao = new RedPacketAppInfoGDDao(redPacketAppInfoGDDaoConfig, this);
         merchantUserDao = new MerchantUserDao(merchantUserDaoConfig, this);
+        logGDDao = new LogGDDao(logGDDaoConfig, this);
 
         registerDao(AppResourceGD.class, appResourceGDDao);
         registerDao(PaymentTransTypeGD.class, paymentTransTypeGDDao);
@@ -197,6 +203,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(ReceivePackageGD.class, receivePackageGDDao);
         registerDao(RedPacketAppInfoGD.class, redPacketAppInfoGDDao);
         registerDao(MerchantUser.class, merchantUserDao);
+        registerDao(LogGD.class, logGDDao);
     }
     
     public void clear() {
@@ -219,6 +226,7 @@ public class DaoSession extends AbstractDaoSession {
         receivePackageGDDaoConfig.clearIdentityScope();
         redPacketAppInfoGDDaoConfig.clearIdentityScope();
         merchantUserDaoConfig.clearIdentityScope();
+        logGDDaoConfig.clearIdentityScope();
     }
 
     public AppResourceGDDao getAppResourceGDDao() {
@@ -295,6 +303,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public MerchantUserDao getMerchantUserDao() {
         return merchantUserDao;
+    }
+
+    public LogGDDao getLogGDDao() {
+        return logGDDao;
     }
 
 }
