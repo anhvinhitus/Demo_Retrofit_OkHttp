@@ -120,7 +120,7 @@ public class AndroidApplication extends Application {
     private void initializeZaloPayAnalytics() {
         GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
         // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-        final Tracker tracker = analytics.newTracker(R.xml.global_tracker);
+        final Tracker tracker = analytics.newTracker(BuildConfig.GA_Tracker);
 
         ZPAnalytics.addDefaultTracker();
         ZPAnalytics.addTracker(new ZPTrackerGA(tracker));
