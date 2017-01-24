@@ -43,6 +43,7 @@ public class BannerPresenter extends AbstractPresenter<IBannerView> {
     private Navigator mNavigator;
 
     //Banner variable
+    private boolean mIsFirstStartCountDown = true;
     private CountDownTimer mBannerCountDownTimer;
     //avoid case: new & release CountDownTimer continuously
     private Handler mBannerHandle = new Handler();
@@ -100,10 +101,15 @@ public class BannerPresenter extends AbstractPresenter<IBannerView> {
         if (mBannerCountDownTimer != null) {
             return;
         }
+        mIsFirstStartCountDown = true;
         mBannerCountDownTimer = new CountDownTimer(BANNER_MILLIS_IN_FUTURE, BANNER_COUNT_DOWN_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
-//                Timber.d("onTick currentTime [%s]", System.currentTimeMillis());
+//                Timber.d("onTick changeBanner, currentTime[%s]", System.currentTimeMillis());
+                if (mIsFirstStartCountDown) {
+                    mIsFirstStartCountDown = false;
+                    return;
+                }
                 if (mView == null) {
                     return;
                 }
@@ -117,7 +123,6 @@ public class BannerPresenter extends AbstractPresenter<IBannerView> {
             }
         };
         mBannerCountDownTimer.start();
-
     }
 
     private void stopBannerCountDownTimer() {
