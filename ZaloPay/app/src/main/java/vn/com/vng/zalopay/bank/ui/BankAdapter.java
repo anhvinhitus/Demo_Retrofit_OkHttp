@@ -28,11 +28,9 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 class BankAdapter extends AbsRecyclerAdapter<ZPCard, BankAdapter.ViewHolder> {
 
     private OnClickBankListener mListener;
-    private int mColumnCount;
 
-    BankAdapter(Context context, List<ZPCard> cards, int columnCount, OnClickBankListener listener) {
+    BankAdapter(Context context, List<ZPCard> cards, OnClickBankListener listener) {
         super(context);
-        mColumnCount = columnCount;
         mListener = listener;
         insertItems(cards);
     }
@@ -58,9 +56,7 @@ class BankAdapter extends AbsRecyclerAdapter<ZPCard, BankAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        // Lấy số nhỏ nhất chia hết cho 2, lớn hơn itemCount.
-        // Để đảm bảo item empty cuối cùng trong grid có màu khác với màu nền.
-        return ((super.getItemCount() + (mColumnCount - 1)) / mColumnCount) * mColumnCount;
+        return super.getItemCount();
     }
 
     @Override
@@ -89,8 +85,7 @@ class BankAdapter extends AbsRecyclerAdapter<ZPCard, BankAdapter.ViewHolder> {
             }
 
             int id = anchor.getId();
-
-            if (id == R.id.root) {
+            if (id == R.id.itemLayout) {
                 ZPCard zpCard = getItem(position);
                 if (zpCard != null) {
                     mListener.onClickBankItem(zpCard);

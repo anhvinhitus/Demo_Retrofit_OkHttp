@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.authentication.PaymentFingerPrint;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
@@ -22,16 +23,17 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.authentication.PaymentFingerPrint;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.error.CError;
+import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 import vn.com.zalopay.wallet.controller.WalletSDKPayment;
@@ -167,6 +169,43 @@ public class PaymentWrapper {
 
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
             callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_CARD);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "Exception with number format");
+            responseListener.onParameterError("exception");
+        }
+    }
+
+    public void linkAccount(Activity activity, String bankType) {
+        callManagerAccountAPI(activity, bankType, ELinkAccType.LINK);
+    }
+
+    public void unLinkAccount(Activity activity, String bankType) {
+        callManagerAccountAPI(activity, bankType, ELinkAccType.UNLINK);
+    }
+
+    private void callManagerAccountAPI(Activity activity, String bankType, ELinkAccType linkAccType) {
+        User user = AndroidApplication.instance().getUserComponent().currentUser();
+        if (!user.hasZaloPayId()) {
+            Timber.i("Remove link account, zaloPayId is invalid");
+            responseListener.onParameterError("uid");
+            return;
+        }
+        try {
+            LinkAccInfo linkAccInfo = new LinkAccInfo(bankType, linkAccType);
+
+            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+            paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
+            paymentInfo.appTime = System.currentTimeMillis();
+            paymentInfo.linkAccInfo = linkAccInfo;
+
+            // TODO: 1/24/17 by longlv: bypass valid validPaymentInfo for test only
+            paymentInfo.appTime = System.currentTimeMillis();
+            paymentInfo.amount = paymentInfo.appTime;
+            paymentInfo.appTransID = String.valueOf(paymentInfo.appTime);
+            paymentInfo.mac = paymentInfo.appTransID;
+
+            Timber.d("payWithOrder: ZPWPaymentInfo is ready");
+            callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_ACC);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");

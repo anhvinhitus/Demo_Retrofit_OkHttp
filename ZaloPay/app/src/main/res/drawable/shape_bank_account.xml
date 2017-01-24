@@ -2,11 +2,11 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
     <size
-        android:width="@dimen/bank.link.account.line.width"
-        android:height="@dimen/bank.link.account.height"/>
+        android:width="@dimen/link.account.line.width"
+        android:height="@dimen/link.account.height"/>
     <corners
-        android:bottomLeftRadius="@dimen/bank.link.account.border"
-        android:topLeftRadius="@dimen/bank.link.account.border"/>
+        android:bottomLeftRadius="@dimen/link.account.border"
+        android:topLeftRadius="@dimen/link.account.border"/>
 
     <solid android:color="@color/bg_line_sacombank"/>
 </shape>

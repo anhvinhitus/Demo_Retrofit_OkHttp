@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.bank.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +12,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +27,12 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
@@ -35,10 +44,10 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
  * Use the {@link LinkAccountFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LinkAccountFragment extends BaseFragment implements ILinkAccountView {
+public class LinkAccountFragment extends BaseFragment implements ILinkAccountView,
+        OnClickBankAccListener {
 
     private Dialog mBottomSheetDialog;
-    private BankAccount mCurrentBankAccount;
     private LinkAccountAdapter mAdapter;
     private BankSupportFragment mBankSupportFragment;
 
@@ -64,7 +73,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @OnClick(R.id.btn_add_more)
     public void onClickAddMoreBankAccount() {
-
+        mPresenter.showListBankSupportLinkAcc();
     }
 
     public LinkAccountFragment() {
@@ -96,7 +105,16 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAdapter = new LinkAccountAdapter(getContext());
+        mAdapter = new LinkAccountAdapter(getContext(), this);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Timber.d("setUserVisibleHint visible[%s]", isVisibleToUser);
+        if (mPresenter != null && isVisibleToUser) {
+            mPresenter.getMapBankAccount();
+        }
     }
 
     @Override
@@ -114,11 +132,6 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
         mBankSupportFragment = (BankSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.bankSupportFragment);
-        initBottomSheet();
-    }
-
-    private void initBottomSheet() {
-
     }
 
     @Override
@@ -177,18 +190,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     }
 
     @Override
-    public void removeLinkAccount(BankAccount bankAccount) {
-
-    }
-
-    @Override
-    public void onAddAccountSuccess(DBaseMap mappedCreditCard) {
-
-    }
-
-    @Override
     public void showListBankDialog(ArrayList<ZPCard> cardSupportList) {
-        Timber.d("show list bank dialog.");
         ListBankDialog listBankDialog = ListBankDialog.newInstance(cardSupportList);
         listBankDialog.setTargetFragment(this, Constants.REQUEST_CODE_BANK_DIALOG);
         listBankDialog.show(getChildFragmentManager(), ListBankDialog.TAG);
@@ -215,6 +217,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_BANK_DIALOG) {
+                Timber.d("onActivityResult REQUEST_CODE_BANK_DIALOG");
             if (resultCode == Activity.RESULT_OK) {
                 if (data == null) {
                     return;
@@ -228,6 +231,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @Override
     public void onResume() {
+        Timber.d("onResume");
         super.onResume();
         mPresenter.resume();
     }
@@ -248,5 +252,74 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     public void onDestroy() {
         mPresenter.destroy();
         super.onDestroy();
+    }
+
+    private void showBottomSheet(final BankAccount bankAccount) {
+        if (mBottomSheetDialog == null) {
+            mBottomSheetDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar);
+            mBottomSheetDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            mBottomSheetDialog.setContentView(R.layout.bottom_sheet_link_acc_layout);
+            mBottomSheetDialog.setTitle("");
+            final Window window = mBottomSheetDialog.getWindow();
+            if (window != null) {
+                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+        }
+
+        View root = mBottomSheetDialog.findViewById(R.id.root);
+        View layoutRemoveLink = mBottomSheetDialog.findViewById(R.id.layoutRemoveLink);
+        View verticalLine = mBottomSheetDialog.findViewById(R.id.line);
+
+        View.OnClickListener mOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int itemId = v.getId();
+                if (itemId == R.id.layoutRemoveLink) {
+                    showConfirmRemoveSaveCard(bankAccount);
+                    ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
+                } else if (itemId == R.id.root) {
+                    mBottomSheetDialog.dismiss();
+                }
+            }
+        };
+
+        root.setOnClickListener(mOnClickListener);
+        layoutRemoveLink.setOnClickListener(mOnClickListener);
+
+        ImageView imgLogo = (ImageView) mBottomSheetDialog.findViewById(R.id.iv_logo);
+        if (mAdapter != null) {
+            mAdapter.bindBankAccount(verticalLine, imgLogo, bankAccount);
+        }
+
+        TextView tvCardNum = (TextView) mBottomSheetDialog.findViewById(R.id.tv_num_acc);
+        if (bankAccount != null && tvCardNum != null) {
+            tvCardNum.setText(bankAccount.getAccountNo());
+        }
+        mBottomSheetDialog.show();
+    }
+
+    @Override
+    public void onClickBankAccount(BankAccount bankAccount) {
+        showBottomSheet(bankAccount);
+    }
+
+    private void showConfirmRemoveSaveCard(final BankAccount bankAccount) {
+        super.showConfirmDialog(getString(R.string.txt_confirm_remove_account),
+                getString(R.string.btn_confirm),
+                getString(R.string.btn_cancel),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onOKevent() {
+                        mPresenter.removeLinkAccount(bankAccount);
+                        ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
+                        mBottomSheetDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onCancelEvent() {
+                    }
+                });
     }
 }

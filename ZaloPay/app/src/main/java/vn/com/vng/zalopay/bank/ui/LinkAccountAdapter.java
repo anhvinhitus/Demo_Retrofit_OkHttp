@@ -11,12 +11,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
+import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
+import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.bank.models.BankAccountStyle;
 
@@ -26,13 +29,17 @@ import vn.com.vng.zalopay.bank.models.BankAccountStyle;
  */
 class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.ViewHolder> {
 
-    LinkAccountAdapter(Context context) {
+    private OnClickBankAccListener mListener;
+
+    LinkAccountAdapter(Context context, OnClickBankAccListener listener) {
         super(context);
+        mListener = listener;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(mInflater.inflate(R.layout.row_bank_account_layout, parent, false));
+        return new ViewHolder(mInflater.inflate(R.layout.row_bank_account_layout, parent, false),
+                onItemClickListener);
     }
 
     @Override
@@ -52,6 +59,30 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         }
     }
 
+    private OnItemClickListener onItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onListItemClick(View anchor, int position) {
+            if (mListener == null) {
+                return;
+            }
+
+            int id = anchor.getId();
+
+            if (id == R.id.root) {
+                BankAccount bankAccount = getItem(position);
+                if (bankAccount != null) {
+                    mListener.onClickBankAccount(bankAccount);
+                }
+            }
+
+        }
+
+        @Override
+        public boolean onListItemLongClick(View anchor, int position) {
+            return false;
+        }
+    };
+
     @Override
     public int getItemCount() {
         return mItems.size();
@@ -70,9 +101,19 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         @BindView(R.id.tvAccountName)
         TextView mTvAccountName;
 
-        public ViewHolder(View itemView) {
+        @OnClick(R.id.root)
+        public void onClickMore(View v) {
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onListItemClick(v, getAdapterPosition());
+            }
+        }
+
+        OnItemClickListener mOnItemClickListener;
+
+        public ViewHolder(View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            mOnItemClickListener = onItemClickListener;
         }
 
         public void bindView(final BankAccount bankAccount, boolean isLastItem) {
@@ -114,7 +155,7 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         }
     }
 
-    private void bindBankAccount(View lineVertical, ImageView imgLogo, BankAccount bankAccount) {
+    public void bindBankAccount(View lineVertical, ImageView imgLogo, BankAccount bankAccount) {
         BankAccountStyle bankAccountStyle = BankUtils.getBankAccountStyle(bankAccount);
         setLineStyle(lineVertical, bankAccountStyle.mLineColor);
         setBankIcon(imgLogo, bankAccountStyle.mBankIcon);

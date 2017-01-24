@@ -118,6 +118,15 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         initBottomSheet();
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Timber.d("setUserVisibleHint visible[%s]", isVisibleToUser);
+        if (mPresenter != null && isVisibleToUser) {
+            mPresenter.getListCard();
+        }
+    }
+
     private void initBottomSheet() {
         if (mBottomSheetDialog == null) {
             mBottomSheetDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar);
@@ -132,13 +141,9 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
             }
 
             View root = mBottomSheetDialog.findViewById(R.id.root);
-            View layoutMoneySource = mBottomSheetDialog.findViewById(R.id.layoutMoneySource);
-            View layoutDetail = mBottomSheetDialog.findViewById(R.id.layoutDetail);
             View layoutRemoveLink = mBottomSheetDialog.findViewById(R.id.layoutRemoveLink);
 
             root.setOnClickListener(this);
-            layoutMoneySource.setOnClickListener(this);
-            layoutDetail.setOnClickListener(this);
             layoutRemoveLink.setOnClickListener(this);
         }
 
@@ -184,6 +189,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @Override
     public void onResume() {
+        Timber.d("onResume");
         super.onResume();
         mPresenter.resume();
     }
@@ -292,11 +298,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @Override
     public void onClick(View v) {
         int itemId = v.getId();
-        if (itemId == R.id.layoutMoneySource) {
-            mBottomSheetDialog.dismiss();
-        } else if (itemId == R.id.layoutDetail) {
-            mBottomSheetDialog.dismiss();
-        } else if (itemId == R.id.layoutRemoveLink) {
+        if (itemId == R.id.layoutRemoveLink) {
             showConfirmRemoveSaveCard();
             ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
         } else if (itemId == R.id.root) {

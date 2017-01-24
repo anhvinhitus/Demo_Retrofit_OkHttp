@@ -59,7 +59,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                 user, sharedPreferences, eventBus);
     }
 
-    private void getListCard() {
+    void getListCard() {
         showLoadingView();
         Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankCard>>() {
             @Override

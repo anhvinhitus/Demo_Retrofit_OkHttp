@@ -144,11 +144,10 @@
     <string name="link_account_title">Ngân hàng hỗ trợ liên kết tài khoản</string>
     <string name="txt_link_card_success">Liên kết thẻ thành công.</string>
     <string name="txt_link_card_fail">Liên kết thẻ thất bại.</string>
-    <string name="txt_link_card_money_source">Chọn làm nguồn tiền chính</string>
-    <string name="txt_link_card_view_detail">Xem chi tiết</string>
-    <string name="txt_link_card_remove_link">Xóa thẻ</string>
+    <string name="txt_remove_link">Hủy Liên Kết</string>
     <string name="txt_link_card_empty">Chưa có thẻ nào được liên kết</string>
     <string name="txt_confirm_remove_card">Bạn có muốn hủy thông tin thẻ đã liên kết này không?</string>
+    <string name="txt_confirm_remove_account">Bạn có muốn hủy thông tin tài khoản đã liên kết này không?</string>
     <string name="tutorial_link_card_note_1">Thẻ vừa thanh toán đã được liên kết vào tài khoản Zalo Pay của bạn.</string>
     <string name="tutorial_link_card_note_2">Bạn có thể sử dụng thẻ này vào các lần thanh toán sau mà không cần nhập số thẻ.</string>
     <string name="tutorial_link_card_note_3">Thông tin thẻ được bảo mật theo tiêu chuẩn PCI-DSS và quy định của ngân hàng.</string>

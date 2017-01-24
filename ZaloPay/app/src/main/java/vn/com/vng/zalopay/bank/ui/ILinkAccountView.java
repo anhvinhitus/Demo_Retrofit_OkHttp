@@ -26,13 +26,11 @@ interface ILinkAccountView extends ILoadDataView {
 
     void removeData(BankAccount bankAccounts);
 
-    void removeLinkAccount(BankAccount bankAccount);
-
-    void onAddAccountSuccess(DBaseMap mappedCreditCard);
-
     void showListBankDialog(ArrayList<ZPCard> cardSupportList);
 
     void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener);
 
     void onEventUpdateVersion(boolean forceUpdate, String latestVersion, String message);
+
+    boolean getUserVisibleHint();
 }

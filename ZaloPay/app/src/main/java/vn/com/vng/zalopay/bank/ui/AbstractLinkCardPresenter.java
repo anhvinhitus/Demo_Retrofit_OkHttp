@@ -35,7 +35,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  */
 
 abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
-    private PaymentWrapper paymentWrapper;
+    protected PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
 
     User mUser;

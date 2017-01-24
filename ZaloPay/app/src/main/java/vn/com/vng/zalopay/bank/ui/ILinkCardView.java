@@ -26,4 +26,6 @@ interface ILinkCardView extends ILoadDataView {
     void onAddCardSuccess(DBaseMap card);
 
     void showWarningView(String error);
+
+    boolean getUserVisibleHint();
 }

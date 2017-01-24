@@ -68,14 +68,19 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                 }
                 ArrayList<ZPCard> cards = new ArrayList<>();
                 for (ZPCard card : cardSupportList) {
-                    if (card == null || card.isBankAccount()) {
-                        showErrorView("Chưa có ngân hàng hỗ trợ liên kết tài khoản.");
-                        return;
+                    if (card == null || !card.isBankAccount()) {
+                        continue;
                     }
                     cards.add(card);
                 }
-                if (mView != null) {
-                    mView.showListBankDialog(cards);
+                if (Lists.isEmptyOrNull(cards)) {
+                    showErrorView("Chưa có ngân hàng hỗ trợ liên kết tài khoản.");
+                } else  if (cards.size() == 1) {
+                    linkAccount(cards.get(0));
+                } else {
+                    if (mView != null) {
+                        mView.showListBankDialog(cards);
+                    }
                 }
             }
 
@@ -97,7 +102,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         };
     }
 
-    private void getMapBankAccount() {
+    void getMapBankAccount() {
         showLoadingView();
         Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankAccount>>() {
             @Override
@@ -138,7 +143,9 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     @Override
     public void resume() {
-        getMapBankAccount();
+        if (mView != null && mView.getUserVisibleHint()) {
+            getMapBankAccount();
+        }
     }
 
     void showListBankSupportLinkAcc() {
@@ -155,8 +162,20 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         mView.refreshLinkedAccount(list);
     }
 
-    void removeLinkAccount(BankAccount bankCard) {
+    void linkAccount(ZPCard zpCard) {
+        Timber.d("linkAccount card[%s]", zpCard);
+        if (paymentWrapper == null || mView == null || zpCard == null) {
+            return;
+        }
+        showLoadingView();
+        paymentWrapper.linkAccount(mView.getActivity(), zpCard.getCardCode());
+    }
 
+    void removeLinkAccount(BankAccount bankAccount) {
+        if (paymentWrapper == null || mView == null || bankAccount == null) {
+            return;
+        }
+        paymentWrapper.unLinkAccount(mView.getActivity(), bankAccount.mBankCode);
     }
 
     @Override
@@ -185,7 +204,13 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         if (mView == null) {
             return;
         }
-        mView.onAddAccountSuccess(mappedCreditCard);
+        if (mappedCreditCard != null) {
+            BankAccount bankAccount = new BankAccount("", "",
+                    mappedCreditCard.getFirstNumber(),
+                    mappedCreditCard.getLastNumber(),
+                    mappedCreditCard.bankcode);
+            mView.insertData(bankAccount);
+        }
     }
 
 
@@ -238,14 +263,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
         mView.hideLoading();
         mView.showNetworkErrorDialog();
-    }
-
-    void linkAccount(ZPCard zpCard) {
-        Timber.d("linkAccount card[%s]", zpCard);
-        if (zpCard == null) {
-            return;
-        }
-
     }
 
     private class GetLinkedAccountSubscriber extends DefaultSubscriber<List<BankAccount>> {
