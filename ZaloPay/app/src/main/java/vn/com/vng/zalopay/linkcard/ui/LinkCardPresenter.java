@@ -53,8 +53,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                       BalanceStore.Repository balanceRepository,
                       TransactionStore.Repository transactionRepository,
                       User user,
-                      SharedPreferences sharedPreferences, EventBus eventBus
-    ) {
+                      SharedPreferences sharedPreferences, EventBus eventBus) {
         super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
                 user, sharedPreferences, eventBus);
     }

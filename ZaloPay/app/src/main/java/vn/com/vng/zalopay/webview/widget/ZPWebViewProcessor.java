@@ -306,4 +306,12 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         mWebViewListener = null;
     }
 
+    public boolean onBackPress() {
+        if(mWebView != null && mWebView.canGoBack()) {
+            mWebView.goBack();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
