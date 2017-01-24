@@ -170,8 +170,8 @@ public class NotificationHelper {
                 mEventBus.post(notify);
                 skipStorage = true;
                 break;
-            case NotificationType.UPDATE_PLATFORMINFO:
-                refreshGatewayInfo();
+            case NotificationType.RESET_PIN:
+                resetPin();
                 break;
             case NotificationType.LINK_CARD_EXPIRED:
                 removeLinkCard(notify);
@@ -514,6 +514,11 @@ public class NotificationHelper {
                         return filter;
                     }
                 });
+    }
+
+    private void resetPin() {
+        refreshGatewayInfo();
+        mUserConfig.removeFingerprint();
     }
 
 }

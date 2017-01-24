@@ -23,7 +23,7 @@ public class NotificationType {
     public static final int REFUND_TRANSACTION_BANK = 106;
     public static final int RETRY_TRANSACTION = 107;
     public static final int APP_P2P_NOTIFICATION = 109;
-    public static final int UPDATE_PLATFORMINFO = 110;
+    public static final int RESET_PIN = 110;
     public static final int NOTIFICATION_RECEIVE_RED_PACKET = 111;
     public static final int RECOVERY_MONEY = 10;
     public static final int MERCHANT_TRANSFER = 11;
