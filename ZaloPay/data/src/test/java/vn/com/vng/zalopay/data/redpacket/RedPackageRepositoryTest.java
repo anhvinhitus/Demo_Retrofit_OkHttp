@@ -98,7 +98,7 @@ public class RedPackageRepositoryTest {
 
         baseResponse = new BaseResponse();
         baseResponse.err = 1;
-        baseResponse.message="";
+        baseResponse.message = "";
 
         submitOpenPackageResponse = new SubmitOpenPackageResponse();
         submitOpenPackageResponse.zptransid = 123456;
@@ -115,7 +115,7 @@ public class RedPackageRepositoryTest {
         sentBundleListResponse.totalOfSentAmount = 1000000L;
         sentBundleListResponse.totalOfSentBundle = 5L;
         sentBundleListResponse.bundleResponseList = new ArrayList<>();
-        for(int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++) {
             SentBundleResponse sentBundleResponse = new SentBundleResponse();
             sentBundleResponse.bundleid = 123 + i;
             sentBundleResponse.createtime = 100L + Long.valueOf(i);
@@ -148,7 +148,7 @@ public class RedPackageRepositoryTest {
         getReceivePackageResponse.totalOfRevPackage = 3L;
         getReceivePackageResponse.numOfLuckiestDraw = 2L;
         getReceivePackageResponse.receivePackageResponses = new ArrayList<>();
-        for(int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++) {
             ReceivePackageResponse receivePackageResponse = new ReceivePackageResponse();
             receivePackageResponse.amount = 100000;
             receivePackageResponse.bundleid = 123 + i;
@@ -166,7 +166,7 @@ public class RedPackageRepositoryTest {
 
         sentPackageInBundleResponse = new SentPackageInBundleResponse();
         sentPackageInBundleResponse.packageResponses = new ArrayList<>();
-        for(int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++) {
             PackageInBundleResponse packageInBundleResponse = new PackageInBundleResponse();
             packageInBundleResponse.amount = 100000;
             packageInBundleResponse.bundleid = 123 + i;
@@ -259,6 +259,7 @@ public class RedPackageRepositoryTest {
 
         @Override
         public Observable<RedPacketAppInfoResponse> getAppInfo(@Query("checksum") String checksum, @Query("userid") String zalopayid, @Query("accesstoken") String accesstoken) {
+            System.out.println("checksum " + checksum);
             return Observable.just(redPacketAppInfoResponse);
         }
 
@@ -308,7 +309,7 @@ public class RedPackageRepositoryTest {
         entity.zaloID = "zaloId";
         entity.zaloName = "name";
         entity.zaloPayID = "id";
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             entities.add(entity);
         }
 
@@ -381,7 +382,7 @@ public class RedPackageRepositoryTest {
         mLocalStorage.putSentBundleSummary(sentBundle);
 
         int inputSize = 20;
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             int j = i + 1;
             SentBundleGD sentBundleGD = new SentBundleGD();
             sentBundleGD.id = 1L + j;
@@ -427,7 +428,7 @@ public class RedPackageRepositoryTest {
         mLocalStorage.putSentBundleSummary(sentBundleSummaryDB);
 
         int inputSize = 20;
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             int j = i + 1;
             SentBundleGD sentBundleGD = new SentBundleGD();
             sentBundleGD.id = 1L + j;
@@ -450,7 +451,7 @@ public class RedPackageRepositoryTest {
         tmp.totalofsentamount = sentBundleSummaryDB.totalOfSentAmount;
         tmp.totalofsentbundle = sentBundleSummaryDB.totalOfSentBundle;
         tmp.sentbundlelist = new ArrayList<>();
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             int j = i + 1;
             SentBundle sentBundle = new SentBundle();
             sentBundle.bundleID = 1L + j;
@@ -503,7 +504,7 @@ public class RedPackageRepositoryTest {
         mLocalStorage.putReceivePacketSummary(receivePacket);
 
         int inputSize = 20;
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
             receivePackageGD.id = 1L + i;
             receivePackageGD.bundleID = 1L + i;
@@ -529,7 +530,7 @@ public class RedPackageRepositoryTest {
         tmp.totalofrevpackage = receivePacket.totalOfRevPackage;
         tmp.numofluckiestdraw = receivePacket.totalOfLuckiestDraw;
         tmp.revpackageList = new ArrayList<>();
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             ReceivePackage receivePackage = new ReceivePackage();
             receivePackage.packageID = 1 + i;
             receivePackage.bundleID = 1 + i;
@@ -612,7 +613,7 @@ public class RedPackageRepositoryTest {
         final List<PackageInBundle> results = new ArrayList<>();
         List<PackageInBundleGD> packageInBundleList = new ArrayList<PackageInBundleGD>();
 
-        for(int i = 0; i < 25; i++) {
+        for (int i = 0; i < 25; i++) {
             PackageInBundleGD packageInBundleGD = new PackageInBundleGD();
             packageInBundleGD.id = 1L + i;
             packageInBundleGD.bundleID = 1L;
@@ -632,7 +633,7 @@ public class RedPackageRepositoryTest {
 
         mRepository.getPacketsInBundle(100).subscribe(new DefaultObserver<>(results));
 
-        for(int i = 0; i < results.size(); i++) {
+        for (int i = 0; i < results.size(); i++) {
             assertEquals(packageInBundleList.get(i), results.get(i));
         }
     }
@@ -732,7 +733,7 @@ public class RedPackageRepositoryTest {
 
         mRepository.getRedPacketAppInfo().subscribe(new CustomObserver<>(redPacketAppInfos));
 
-        Assert.assertEquals("getRedPacketAppInfo with update and not having checksum", 0, redPacketAppInfos.size());
+        Assert.assertEquals("getRedPacketAppInfo with update and not having checksum", 1, redPacketAppInfos.size());
     }
 
     @Test
@@ -901,7 +902,7 @@ public class RedPackageRepositoryTest {
 
         Assert.assertEquals("totalOfSentAmount", p1.totalOfSentAmount, p2.totalofsentamount);
         Assert.assertEquals("totalOfSentBundle", p1.totalOfSentBundle, p2.totalofsentbundle);
-        if (p1.bundleResponseList.size() == 0 && p2.sentbundlelist.size()!= 0) {
+        if (p1.bundleResponseList.size() == 0 && p2.sentbundlelist.size() != 0) {
             Assert.fail("Compare null and non-null bundleResponseList");
             return;
         }
@@ -909,7 +910,7 @@ public class RedPackageRepositoryTest {
             Assert.fail("Compare null and non-null bundleResponseList");
             return;
         }
-        for(int i = 0; i < p2.sentbundlelist.size(); i++) {
+        for (int i = 0; i < p2.sentbundlelist.size(); i++) {
             Assert.assertEquals("bundleid", p1.bundleResponseList.get(indexOfp1).bundleid,
                     p2.sentbundlelist.get(i).bundleID);
             Assert.assertEquals("createtime", p1.bundleResponseList.get(indexOfp1).createtime,
@@ -955,7 +956,7 @@ public class RedPackageRepositoryTest {
 //            Assert.fail("Compare null and non-null object");
 //            return;
 //        }
-        for(int i = 0; i < p2.revpackageList.size(); i++) {
+        for (int i = 0; i < p2.revpackageList.size(); i++) {
             System.out.print(p1.receivePackageResponses.get(indexOfp1).createtime + " - " + p2.revpackageList.get(i).createTime + "\n");
             Assert.assertEquals("amount", p1.receivePackageResponses.get(indexOfp1).amount,
                     p2.revpackageList.get(i).amount);
@@ -998,10 +999,9 @@ public class RedPackageRepositoryTest {
         Assert.assertEquals("sendMessage", b1.sendMessage, b2.sendMessage);
         Assert.assertEquals("revZaloPayID", b1.revZaloPayID, b2.revZaloPayID);
         Assert.assertEquals("revZaloID", (long) b1.revZaloID, b2.revZaloID);
-        if(b1.isLuckiest == 1) {
+        if (b1.isLuckiest == 1) {
             Assert.assertEquals("isLuckiest", true, b2.isLuckiest);
-        }
-        else if(b1.isLuckiest == 0) {
+        } else if (b1.isLuckiest == 0) {
             Assert.assertEquals("isLuckiest", false, b2.isLuckiest);
         }
         Assert.assertEquals("revFullName", b1.revFullName, b2.revFullName);
@@ -1058,7 +1058,7 @@ public class RedPackageRepositoryTest {
             Assert.fail("Compare null and non-null object");
             return;
         }
-        for(int i = 0; i < b2.revpackageList.size(); i++) {
+        for (int i = 0; i < b2.revpackageList.size(); i++) {
             Assert.assertEquals("amount", b1.receivePackageResponses.get(i).amount,
                     b2.revpackageList.get(i).amount);
             Assert.assertEquals("bundleID", b1.receivePackageResponses.get(i).bundleid,
@@ -1097,7 +1097,7 @@ public class RedPackageRepositoryTest {
 
         Assert.assertEquals("totalOfSentAmount", p1.totalOfSentAmount, p2.totalofsentamount);
         Assert.assertEquals("totalOfSentBundle", p1.totalOfSentBundle, p2.totalofsentbundle);
-        if (p1.bundleResponseList.size() == 0 && p2.sentbundlelist.size()!= 0) {
+        if (p1.bundleResponseList.size() == 0 && p2.sentbundlelist.size() != 0) {
             Assert.fail("Compare null and non-null bundleResponseList");
             return;
         }
@@ -1106,7 +1106,7 @@ public class RedPackageRepositoryTest {
             Assert.fail("Compare null and non-null bundleResponseList");
             return;
         }
-        for(int i = 0; i < p2.sentbundlelist.size(); i++) {
+        for (int i = 0; i < p2.sentbundlelist.size(); i++) {
             Assert.assertEquals("bundleid", p1.bundleResponseList.get(i).bundleid,
                     p2.sentbundlelist.get(i).bundleID);
             Assert.assertEquals("createtime", p1.bundleResponseList.get(i).createtime,
@@ -1141,7 +1141,7 @@ public class RedPackageRepositoryTest {
 
         Assert.assertEquals("totalOfSentAmount", p1.totalofsentamount, p2.totalofsentamount);
         Assert.assertEquals("totalOfSentBundle", p1.totalofsentbundle, p2.totalofsentbundle);
-        if (p1.sentbundlelist.size() == 0 && p2.sentbundlelist.size()!= 0) {
+        if (p1.sentbundlelist.size() == 0 && p2.sentbundlelist.size() != 0) {
             Assert.fail("Compare null and non-null bundleResponseList");
             return;
         }
@@ -1149,7 +1149,7 @@ public class RedPackageRepositoryTest {
             Assert.fail("Compare null and non-null bundleResponseList");
             return;
         }
-        for(int i = 0; i < p2.sentbundlelist.size(); i++) {
+        for (int i = 0; i < p2.sentbundlelist.size(); i++) {
             Assert.assertEquals("bundleid", p1.sentbundlelist.get(indexOfp1).bundleID,
                     p2.sentbundlelist.get(i).bundleID);
             Assert.assertEquals("createtime", p1.sentbundlelist.get(indexOfp1).createTime,
@@ -1195,7 +1195,7 @@ public class RedPackageRepositoryTest {
 //            Assert.fail("Compare null and non-null object");
 //            return;
 //        }
-        for(int i = 0; i < p2.revpackageList.size(); i++) {
+        for (int i = 0; i < p2.revpackageList.size(); i++) {
             Assert.assertEquals("amount", p1.revpackageList.get(indexOfp1).amount,
                     p2.revpackageList.get(i).amount);
             Assert.assertEquals("bundleid", p1.revpackageList.get(indexOfp1).bundleID,

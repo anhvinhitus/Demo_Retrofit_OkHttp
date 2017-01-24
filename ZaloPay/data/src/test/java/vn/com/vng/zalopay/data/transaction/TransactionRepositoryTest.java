@@ -429,7 +429,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
                 null, EventBus.getDefault());
 
         mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
-        assertElementEquals(result.get(0), entities.get((int)id - 1));
+        assertElementEquals(result.get(0), entities.get((int) id - 1));
     }
 
     @Test
@@ -484,7 +484,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
                 mRequestService, EventBus.getDefault());
 
         mRepository.getTransaction(id).subscribe(new CustomObserver<>(result));
-        assertElementEquals(result.get(0), entities.get((int)id - 1));
+        assertElementEquals(result.get(0), entities.get((int) id - 1));
     }
 
     @Test
@@ -624,7 +624,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, null,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
@@ -674,7 +674,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, null,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
@@ -724,7 +724,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
 
         transactionHistoryResponse.data = entities;
         mRequestService = new RequestServiceImpl();
-        mRepository = new TransactionRepository(mMapper, mUser, null,
+        mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
@@ -757,7 +757,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         long time = transactionHistoryResponse.data.get(3).reqdate;
 
         mRepository.fetchTransactionHistoryOldest(time).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("fetchTransactionHistoryOldestWithThresholdTime" , true, result.get(0));
+        Assert.assertEquals("fetchTransactionHistoryOldestWithThresholdTime", true, result.get(0));
     }
 
     @Test
@@ -772,7 +772,7 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         long time = 0;
 
         mRepository.fetchTransactionHistoryOldest(time).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("fetchTransactionHistoryOldest with time equal 0" , 0, result.size());
+        Assert.assertEquals("fetchTransactionHistoryOldest with time equal 0", 0, result.size());
     }
 
     @Test
@@ -813,11 +813,13 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
         mRepository = new TransactionRepository(mMapper, mUser, mLocalStorage,
                 mRequestService, EventBus.getDefault());
 
-        final List<Boolean> result = new ArrayList<Boolean>();
-        long time = transactionHistoryResponse.data.get(19).reqdate;
 
-        mRepository.reloadTransactionHistory(time).subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("reloadTransactionHistoryWithTime", true, result.get(0));
+        TransHistoryEntity entity = entities.get(19);
+        long time = entity.reqdate;
+
+        final List<TransHistory> result = new ArrayList<>();
+        mRepository.reloadTransactionHistory(entity.transid, time).subscribe(new CustomObserver<>(result));
+        Assert.assertEquals("reloadTransactionHistoryWithTime", true, !result.isEmpty());
     }
 
     private void assertElementEquals(TransHistory b1, TransHistoryEntity b2) {
