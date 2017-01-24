@@ -90,7 +90,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         if (TextUtils.isEmpty(zaloPayName)) {
             tvZaloPayName.setText(getString(R.string.zalopay_name_not_update));
         } else {
-            tvZaloPayName.setText(zaloPayName);
+            tvZaloPayName.setText(String.format(getString(R.string.account_format), zaloPayName));
         }
     }
 
