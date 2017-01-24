@@ -1,23 +1,25 @@
 package vn.com.vng.zalopay.utils;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import vn.com.vng.zalopay.data.ApptransidLogLocalStorage;
+import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogLocalStorage;
+import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.cache.model.ApptransidLogGD;
-import vn.com.zalopay.wallet.utils.Log;
 
 /**
  * Created by khattn on 1/23/17.
  */
 
 public class TrackLogs {
-    ApptransidLogLocalStorage mLocalStorage;
+    private final ApptransidLogStore.LocalStorage mLocalStorage;
 
     @Inject
-    TrackLogs(ApptransidLogLocalStorage logLocalStorage) {
+    TrackLogs(ApptransidLogStore.LocalStorage logLocalStorage) {
         this.mLocalStorage = logLocalStorage;
     }
 
