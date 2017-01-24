@@ -1,21 +1,24 @@
 package vn.com.vng.zalopay.utils;
 
-import android.support.annotation.NonNull;
-
+import java.util.HashMap;
 import java.util.Map;
 
-import vn.com.vng.zalopay.data.LogLocalStorage;
-import vn.com.vng.zalopay.data.cache.model.LogGD;
+import javax.inject.Inject;
+
+import vn.com.vng.zalopay.data.ApptransidLogLocalStorage;
+import vn.com.vng.zalopay.data.cache.model.ApptransidLogGD;
+import vn.com.zalopay.wallet.utils.Log;
 
 /**
  * Created by khattn on 1/23/17.
  */
 
 public class TrackLogs {
-    LogLocalStorage mLocalStorage;
+    ApptransidLogLocalStorage mLocalStorage;
 
-    public TrackLogs(@NonNull LogLocalStorage logLocalStorage) {
-        mLocalStorage = logLocalStorage;
+    @Inject
+    TrackLogs(ApptransidLogLocalStorage logLocalStorage) {
+        this.mLocalStorage = logLocalStorage;
     }
 
     public void trackLog(String apptransid, int appid, int step, int step_result, int pcmid, int transtype,
@@ -34,10 +37,11 @@ public class TrackLogs {
                 .setSource(source);
 
         mLocalStorage.put(transform(eventBuilder.build()));
+        Log.d("TEST", "trackLog: " + transform(mLocalStorage.get(apptransid)).toString());
     }
 
-    private LogGD transform(Map<String, String> data) {
-        LogGD log = new LogGD();
+    private ApptransidLogGD transform(Map<String, String> data) {
+        ApptransidLogGD log = new ApptransidLogGD();
 
         log.apptransid = data.get("apptransid");
         log.appid = Integer.parseInt(data.get("appid"));
@@ -49,6 +53,23 @@ public class TrackLogs {
         log.sdk_result = Integer.parseInt(data.get("sdk_result"));
         log.server_result = Integer.parseInt(data.get("server_result"));
         log.source = data.get("source");
+
+        return log;
+    }
+
+    private Map<String, String> transform(ApptransidLogGD data) {
+        Map<String, String> log = new HashMap<>();
+
+        log.put("apptransid", data.apptransid);
+        log.put("appid", String.valueOf(data.appid));
+        log.put("step", String.valueOf(data.step));
+        log.put("step_result", String.valueOf(data.step_result));
+        log.put("pcmid", String.valueOf(data.pcmid));
+        log.put("transtype", String.valueOf(data.transtype));
+        log.put("transid", String.valueOf(data.transid));
+        log.put("sdk_result", String.valueOf(data.sdk_result));
+        log.put("server_result", String.valueOf(data.server_result));
+        log.put("source", data.source);
 
         return log;
     }

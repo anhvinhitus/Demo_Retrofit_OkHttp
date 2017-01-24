@@ -40,7 +40,7 @@ public class DaoMaster extends AbstractDaoMaster {
         ReceivePackageGDDao.createTable(db, ifNotExists);
         RedPacketAppInfoGDDao.createTable(db, ifNotExists);
         MerchantUserDao.createTable(db, ifNotExists);
-        LogGDDao.createTable(db, ifNotExists);
+        ApptransidLogGDDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -64,7 +64,7 @@ public class DaoMaster extends AbstractDaoMaster {
         ReceivePackageGDDao.dropTable(db, ifExists);
         RedPacketAppInfoGDDao.dropTable(db, ifExists);
         MerchantUserDao.dropTable(db, ifExists);
-        LogGDDao.dropTable(db, ifExists);
+        ApptransidLogGDDao.dropTable(db, ifExists);
     }
 
     /**
@@ -102,7 +102,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(ReceivePackageGDDao.class);
         registerDaoClass(RedPacketAppInfoGDDao.class);
         registerDaoClass(MerchantUserDao.class);
-        registerDaoClass(LogGDDao.class);
+        registerDaoClass(ApptransidLogGDDao.class);
     }
 
     public DaoSession newSession() {
