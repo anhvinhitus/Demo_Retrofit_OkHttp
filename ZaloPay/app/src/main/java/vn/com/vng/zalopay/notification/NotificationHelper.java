@@ -170,7 +170,7 @@ public class NotificationHelper {
                 mEventBus.post(notify);
                 skipStorage = true;
                 break;
-            case NotificationType.RESET_PIN:
+            case NotificationType.RESET_PAYMENT_PASSWORD:
                 resetPin();
                 break;
             case NotificationType.LINK_CARD_EXPIRED:
