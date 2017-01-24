@@ -1,23 +1,21 @@
 package vn.com.vng.zalopay.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.support.annotation.NonNull;
+
 import java.util.Map;
 
-import timber.log.Timber;
-import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
-import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.LogLocalStorage;
 import vn.com.vng.zalopay.data.cache.model.LogGD;
-import vn.com.vng.zalopay.data.cache.model.LogGDDao;
 
 /**
  * Created by khattn on 1/23/17.
  */
 
-public class TrackLogs extends SqlBaseScopeImpl {
+public class TrackLogs {
+    LogLocalStorage mLocalStorage;
 
-    public TrackLogs(DaoSession daoSession) {
-        super(daoSession);
+    public TrackLogs(@NonNull LogLocalStorage logLocalStorage) {
+        mLocalStorage = logLocalStorage;
     }
 
     public void trackLog(String apptransid, int appid, int step, int step_result, int pcmid, int transtype,
@@ -35,34 +33,7 @@ public class TrackLogs extends SqlBaseScopeImpl {
                 .setServerResult(server_result)
                 .setSource(source);
 
-        put(transform(eventBuilder.build()));
-    }
-
-    public void put(LogGD val) {
-        if (val == null) {
-            return;
-        }
-        try {
-            getDaoSession().getLogGDDao().insertOrReplace(val);
-        } catch (Exception e) {
-            Timber.d(e, "Insert log error");
-            return;
-        }
-    }
-
-    private LogGD get(String apptransid) {
-        List<LogGD> list = new ArrayList<>();
-        if (apptransid != null) {
-            list = getDaoSession().getLogGDDao()
-                    .queryBuilder()
-                    .where(LogGDDao.Properties.Apptransid.eq(apptransid))
-                    .list();
-        }
-        if (list == null || list.size() <= 0) {
-            return null;
-        } else {
-            return list.get(0);
-        }
+        mLocalStorage.put(transform(eventBuilder.build()));
     }
 
     private LogGD transform(Map<String, String> data) {
