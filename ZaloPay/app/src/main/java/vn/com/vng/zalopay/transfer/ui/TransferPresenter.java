@@ -224,13 +224,13 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private void onCreateWalletOrderError(Throwable e) {
-        if (mView == null || mView.getContext() == null) {
+        if (mView == null) {
             return;
         }
         if (e instanceof NetworkConnectionException) {
             mView.showNetworkErrorDialog();
         } else {
-            String message = ErrorMessageFactory.create(mView.getContext(), e);
+            String message = ErrorMessageFactory.create(applicationContext, e);
             mView.showError(message);
         }
         hideLoading();
@@ -272,7 +272,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
     @Override
     public void resume() {
-        checkShowBtnContinue();
     }
 
     /**
@@ -399,6 +398,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         if (mView == null) {
             return;
         }
+        Timber.d("checkShowBtnContinue amount %s zalopayId %s", mTransaction.amount, mTransaction.zaloPayId);
 
         if (mTransaction.amount <= 0) {
             mView.setEnableBtnContinue(false);
