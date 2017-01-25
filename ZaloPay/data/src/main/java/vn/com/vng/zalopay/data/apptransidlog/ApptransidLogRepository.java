@@ -23,7 +23,7 @@ public class ApptransidLogRepository implements ApptransidLogStore.Repository {
     @Override
     public Observable<Void> put(ApptransidLogGD val) {
         return ObservableHelper.makeObservable(() -> {
-            mLocalStorage.put(val);
+            mLocalStorage.updateLog(val);
             return null;
         });
     }

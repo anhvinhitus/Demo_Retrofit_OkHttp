@@ -40,26 +40,7 @@ public class TrackLogs {
                 .setSource(source);
 
 //        mRepository.remove(apptransid).subscribe();
-        mRepository.get(apptransid).subscribe(new Observer<ApptransidLogGD>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(ApptransidLogGD apptransidLogGD) {
-                if(apptransidLogGD != null) {
-                    mRepository.put(transform(eventBuilder.build(), apptransidLogGD)).subscribe();
-                } else {
-                    mRepository.put(transform(eventBuilder.build(), new ApptransidLogGD())).subscribe();
-                }
-            }
-        });
+        mRepository.put(transform(eventBuilder.build())).subscribe();
 //        mRepository.get(apptransid).subscribe(new Observer<ApptransidLogGD>() {
 //            @Override
 //            public void onCompleted() {
@@ -79,7 +60,8 @@ public class TrackLogs {
 //        });
     }
 
-    private ApptransidLogGD transform(Map<String, String> data, ApptransidLogGD log) {
+    private ApptransidLogGD transform(Map<String, String> data) {
+        ApptransidLogGD log = new ApptransidLogGD();
 
         for (Map.Entry<String, String> entry: data.entrySet()) {
             String key = entry.getKey();

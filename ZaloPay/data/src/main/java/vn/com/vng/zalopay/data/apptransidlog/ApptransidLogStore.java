@@ -17,9 +17,9 @@ import vn.com.zalopay.analytics.ZPEvents;
 public interface ApptransidLogStore {
     interface LocalStorage {
 
-        void put(ApptransidLogGD val);
-
         ApptransidLogGD get(String apptransid);
+
+        void updateLog(ApptransidLogGD newLog);
 
         void delete(String apptransid);
     }
