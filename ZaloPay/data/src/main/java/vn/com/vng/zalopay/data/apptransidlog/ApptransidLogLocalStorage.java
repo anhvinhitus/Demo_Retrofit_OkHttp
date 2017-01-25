@@ -46,4 +46,14 @@ public class ApptransidLogLocalStorage extends SqlBaseScopeImpl implements Apptr
         }
         return list.get(0);
     }
+
+    @Override
+    public void delete(String apptransid) {
+        try {
+            getDaoSession().getApptransidLogGDDao().deleteByKeyInTx(apptransid);
+        } catch (Exception e) {
+            Timber.d(e, "Delete log error");
+            return;
+        }
+    }
 }

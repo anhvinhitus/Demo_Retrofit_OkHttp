@@ -20,19 +20,27 @@ public interface ApptransidLogStore {
         void put(ApptransidLogGD val);
 
         ApptransidLogGD get(String apptransid);
+
+        void delete(String apptransid);
     }
 
-//    interface RequestService {
-//
+    interface RequestService {
+
 //        @API_NAME(ZPEvents.API_REDPACKAGE_CREATEBUNDLEORDER)
 //        @FormUrlEncoded
 //        @POST(Constants.REDPACKET_API.SUBMITTOSENDBUNDLE)
 //        Observable<BaseResponse> submitLog(@Field("apptransid") String appTransId, @Field("appid") int appId, @Field("step") int step, @Field("step_result") int stepResult, @Field("pcmid") int pcmId, @Field("transtype") int transType, @Field("transid") long transId, @Field("sdk_result") int sdkResult, @Field("server_result") int serverResult, @Field("source") String source);
-//
-//    }
-//
-//    interface Repository {
-//
+
+    }
+
+    interface Repository {
+
+        Observable<Void> put(ApptransidLogGD val);
+
+        Observable<ApptransidLogGD> get(String apptransid);
+
+        Observable<Void> remove(String apptransid);
+
 //        Observable<Boolean> submitLog(String apptransid);
-//    }
+    }
 }

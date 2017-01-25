@@ -23,16 +23,16 @@ public class UserApptransidLogModule {
         return new ApptransidLogLocalStorage(session);
     }
 
-//    @UserScope
-//    @Provides
-//    ApptransidLogStore.Repository provideApptransidLogRepository(ApptransidLogStore.RequestService requestService,
-//                                                       ApptransidLogStore.LocalStorage localStorage) {
-//        return new ApptransidLogRepository(requestService, localStorage);
-//    }
-//
-//    @Provides
-//    @UserScope
-//    ApptransidLogStore.RequestService providesApptransidLogService(@Named("retrofitRedPacketApi") Retrofit retrofit) {
-//        return retrofit.create(ApptransidLogStore.RequestService.class);
-//    }
+    @UserScope
+    @Provides
+    ApptransidLogStore.Repository provideApptransidLogRepository(ApptransidLogStore.RequestService requestService,
+                                                       ApptransidLogStore.LocalStorage localStorage) {
+        return new ApptransidLogRepository(requestService, localStorage);
+    }
+
+    @Provides
+    @UserScope
+    ApptransidLogStore.RequestService providesApptransidLogService(@Named("retrofitRedPacketApi") Retrofit retrofit) {
+        return retrofit.create(ApptransidLogStore.RequestService.class);
+    }
 }
