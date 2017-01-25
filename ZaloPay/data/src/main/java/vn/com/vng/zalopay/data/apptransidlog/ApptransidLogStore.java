@@ -1,10 +1,13 @@
 package vn.com.vng.zalopay.data.apptransidlog;
 
+import java.util.Map;
+
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.api.entity.ApptransidLogEntity;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.model.ApptransidLogGD;
 import vn.com.vng.zalopay.data.net.adapter.API_NAME;
@@ -35,9 +38,9 @@ public interface ApptransidLogStore {
 
     interface Repository {
 
-        Observable<Void> put(ApptransidLogGD val);
+        Observable<Void> put(Map<String, String> val);
 
-        Observable<ApptransidLogGD> get(String apptransid);
+        Observable<ApptransidLogEntity> get(String apptransid);
 
         Observable<Void> remove(String apptransid);
 

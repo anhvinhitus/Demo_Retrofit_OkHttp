@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Observer;
+import vn.com.vng.zalopay.data.api.entity.ApptransidLogEntity;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogLocalStorage;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.cache.model.ApptransidLogGD;
@@ -40,8 +41,8 @@ public class TrackLogs {
                 .setSource(source);
 
 //        mRepository.remove(apptransid).subscribe();
-        mRepository.put(transform(eventBuilder.build())).subscribe();
-//        mRepository.get(apptransid).subscribe(new Observer<ApptransidLogGD>() {
+        mRepository.put(eventBuilder.build()).subscribe();
+//        mRepository.get(apptransid).subscribe(new Observer<ApptransidLogEntity>() {
 //            @Override
 //            public void onCompleted() {
 //
@@ -53,58 +54,14 @@ public class TrackLogs {
 //            }
 //
 //            @Override
-//            public void onNext(ApptransidLogGD apptransidLogGD) {
+//            public void onNext(ApptransidLogEntity apptransidLog) {
 //                Log.d("TEST", "trackLog: ");
-//                Log.d("TEST", "trackLogValue: " + transform(apptransidLogGD).toString());
+//                Log.d("TEST", "trackLogValue: " + transform(apptransidLog).toString());
 //            }
 //        });
     }
 
-    private ApptransidLogGD transform(Map<String, String> data) {
-        ApptransidLogGD log = new ApptransidLogGD();
-
-        for (Map.Entry<String, String> entry: data.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-            switch (key) {
-                case "apptransid":
-                    log.apptransid = value;
-                    break;
-                case "appid":
-                    log.appid = Integer.valueOf(value);
-                    break;
-                case "step":
-                    log.step = Integer.valueOf(value);
-                    break;
-                case "step_result":
-                    log.step_result = Integer.valueOf(value);
-                    break;
-                case "pcmid":
-                    log.pcmid = Integer.valueOf(value);
-                    break;
-                case "transtype":
-                    log.transtype = Integer.valueOf(value);
-                    break;
-                case "transid":
-                    log.transid = Long.valueOf(value);
-                    break;
-                case "sdk_result":
-                    log.sdk_result = Integer.valueOf(value);
-                    break;
-                case "server_result":
-                    log.server_result = Integer.valueOf(value);
-                    break;
-                case "source":
-                    log.source = value;
-                    break;
-            }
-        }
-
-        return log;
-    }
-
-//    private Map<String, String> transform(ApptransidLogGD data) {
+//    private Map<String, String> transform(ApptransidLogEntity data) {
 //        Map<String, String> log = new HashMap<>();
 //
 //        log.put("apptransid", data.apptransid);

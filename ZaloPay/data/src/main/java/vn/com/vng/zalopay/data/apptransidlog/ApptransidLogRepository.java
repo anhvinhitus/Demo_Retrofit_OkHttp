@@ -1,11 +1,11 @@
 package vn.com.vng.zalopay.data.apptransidlog;
 
-import rx.Observable;
-import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.cache.model.ApptransidLogGD;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
+import java.util.Map;
 
-import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
+import rx.Observable;
+import vn.com.vng.zalopay.data.api.entity.ApptransidLogEntity;
+import vn.com.vng.zalopay.data.api.entity.mapper.ApptransidLogEntityDataMapper;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 
 /**
  * Created by khattn on 1/24/17.
@@ -14,23 +14,28 @@ import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 public class ApptransidLogRepository implements ApptransidLogStore.Repository {
     private final ApptransidLogStore.RequestService mRequestService;
     private final ApptransidLogStore.LocalStorage mLocalStorage;
+    private final ApptransidLogEntityDataMapper mMapper;
 
-    public ApptransidLogRepository(ApptransidLogStore.RequestService mRequestService, ApptransidLogStore.LocalStorage mLocalStorage) {
+    public ApptransidLogRepository(ApptransidLogStore.RequestService mRequestService,
+                                   ApptransidLogStore.LocalStorage mLocalStorage,
+                                   ApptransidLogEntityDataMapper mMapper) {
         this.mRequestService = mRequestService;
         this.mLocalStorage = mLocalStorage;
+        this.mMapper = mMapper;
     }
 
     @Override
-    public Observable<Void> put(ApptransidLogGD val) {
+    public Observable<Void> put(Map<String, String> val) {
         return ObservableHelper.makeObservable(() -> {
-            mLocalStorage.updateLog(val);
+            mLocalStorage.updateLog(mMapper.transform(val));
             return null;
         });
     }
 
     @Override
-    public Observable<ApptransidLogGD> get(String apptransid) {
-        return ObservableHelper.makeObservable(() -> mLocalStorage.get(apptransid));
+    public Observable<ApptransidLogEntity> get(String apptransid) {
+        return ObservableHelper.makeObservable(() -> mLocalStorage.get(apptransid))
+                .map(mMapper::transform);
     }
 
     @Override

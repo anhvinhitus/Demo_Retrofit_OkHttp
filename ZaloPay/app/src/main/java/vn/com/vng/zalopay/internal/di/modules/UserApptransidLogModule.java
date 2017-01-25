@@ -5,6 +5,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
+import vn.com.vng.zalopay.data.api.entity.mapper.ApptransidLogEntityDataMapper;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogLocalStorage;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogRepository;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
@@ -26,8 +27,9 @@ public class UserApptransidLogModule {
     @UserScope
     @Provides
     ApptransidLogStore.Repository provideApptransidLogRepository(ApptransidLogStore.RequestService requestService,
-                                                       ApptransidLogStore.LocalStorage localStorage) {
-        return new ApptransidLogRepository(requestService, localStorage);
+                                                                 ApptransidLogStore.LocalStorage localStorage,
+                                                                 ApptransidLogEntityDataMapper mapper) {
+        return new ApptransidLogRepository(requestService, localStorage, mapper);
     }
 
     @Provides
