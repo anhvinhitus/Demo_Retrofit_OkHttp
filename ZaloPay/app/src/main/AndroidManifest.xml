@@ -203,6 +203,10 @@
             android:name=".webview.ui.WebViewActivity"
             android:configChanges="orientation|screenSize" />
 
+        <activity
+            android:name=".webapp.WebAppActivity"
+            android:configChanges="orientation|screenSize" />
+
         <!-- Tích hợp Crashlytics -->
         <meta-data
             android:name="io.fabric.ApiKey"
