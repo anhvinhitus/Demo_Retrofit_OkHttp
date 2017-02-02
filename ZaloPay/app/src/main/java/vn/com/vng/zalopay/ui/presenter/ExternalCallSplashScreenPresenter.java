@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -60,8 +61,13 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         }
 
         Timber.d("Launching with action: %s", action);
-        if ("vn.zalopay.intent.action.SEND_MONEY".equals(action)) {
-            if (handleZaloIntegration(intent)) {
+//        if ("vn.zalopay.intent.action.SEND_MONEY".equals(action)) {
+//            if (handleZaloIntegration(intent)) {
+//                return;
+//            }
+//        }
+        if (action == Intent.ACTION_VIEW) {
+            if (handleZaloIntegration(intent.getData())) {
                 return;
             }
         }
@@ -81,22 +87,49 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         }
     }
 
-    private boolean handleZaloIntegration(Intent intent) {
+//    private boolean handleZaloIntegration(Intent intent) {
+//        if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
+//            return false;
+//        }
+//
+//        String appId = intent.getStringExtra("android.intent.extra.APPID");
+//        String receiverId = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_ID");
+//        String receiverName = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_NAME");
+//        String receiverAvatar = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_AVATAR");
+//        String type = intent.getStringExtra("vn.zalopay.intent.extra.TYPE");
+//
+//        Timber.d("Processing send money on behalf of Zalo request");
+//        RecentTransaction item = new RecentTransaction();
+//        item.zaloId = Long.parseLong(receiverId);
+//        item.displayName = receiverName;
+//        item.avatar = receiverAvatar;
+//
+//        Bundle bundle = new Bundle();
+//        bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);
+//        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
+//        mNavigator.startTransferActivity(mView.getContext(), bundle, true);
+//        finish();
+//        return true;
+//    }
+
+    private boolean handleZaloIntegration(Uri data) {
         if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
             return false;
         }
 
-        String appId = intent.getStringExtra("android.intent.extra.APPID");
-        String receiverId = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_ID");
-        String receiverName = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_NAME");
-        String receiverAvatar = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_AVATAR");
-        String type = intent.getStringExtra("vn.zalopay.intent.extra.TYPE");
+        String accesstoken = data.getQueryParameter("accesstoken");
+        String senderId = data.getQueryParameter("sender");
+        String receiverId = data.getQueryParameter("receiver");
+
+        if (accesstoken == null) {
+            Timber.d("start login activity");
+            mNavigator.startLoginActivityForResult((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data);
+            return false;
+        }
 
         Timber.d("Processing send money on behalf of Zalo request");
         RecentTransaction item = new RecentTransaction();
         item.zaloId = Long.parseLong(receiverId);
-        item.displayName = receiverName;
-        item.avatar = receiverAvatar;
 
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);
