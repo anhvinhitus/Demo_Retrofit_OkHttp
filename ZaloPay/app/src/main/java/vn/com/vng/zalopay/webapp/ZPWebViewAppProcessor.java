@@ -24,6 +24,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.model.DialogType;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 public class ZPWebViewAppProcessor extends WebViewClient {
 
@@ -316,11 +317,17 @@ public class ZPWebViewAppProcessor extends WebViewClient {
                 String message = object.optString("message");
                 String buttonLabel = object.optString("button");
 
-                mWebViewListener.showDialog(DialogType.NOTIFICATION_TYPE, title, message, buttonLabel);
+                mWebViewListener.showDialog(SweetAlertDialog.NORMAL_TYPE, title, message, buttonLabel);
 
             } catch (JSONException e) {
                 Timber.d(e, "Exception while parsing arguments");
             }
+            return;
+        }
+
+        if ("closeWindow".equalsIgnoreCase(functionName)) {
+            mWebViewListener.finishActivity();
+            return;
         }
     }
 }

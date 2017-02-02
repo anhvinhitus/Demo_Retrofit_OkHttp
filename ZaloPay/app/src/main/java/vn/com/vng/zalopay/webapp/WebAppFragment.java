@@ -20,10 +20,12 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**
  * Created by chucvv on 8/28/16.
@@ -188,8 +190,18 @@ public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcesso
     }
 
     @Override
-    public void showDialog(int dialogType, String title, String message, String buttonLabel) {
-        Helpers.showDialog(getActivity(), dialogType, title, message, Collections.singletonList(buttonLabel).toArray(new String[0]));
+    public void showDialog(final int dialogType, final String title, final String message, final String buttonLabel) {
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                DialogHelper.showCustomDialog(getActivity(),
+                        dialogType,
+                        title,
+                        message,
+                        null,
+                        Collections.singletonList(buttonLabel).toArray(new String[0]));
+            }
+        });
     }
 
     public void showLoading() {
