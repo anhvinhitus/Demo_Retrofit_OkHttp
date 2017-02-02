@@ -25,4 +25,6 @@ public interface INavigator {
     Intent intentPaymentApp(Context context, AppResource appResource, Map<String, String> launchOptions);
 
     boolean promptPIN(Context context, int channel, Promise promise);
+
+    void startWebAppActivity(Context context, String url);
 }

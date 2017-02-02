@@ -10,11 +10,15 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
+import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
@@ -181,6 +185,11 @@ public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcesso
 
     public void hideLoading() {
         super.hideProgressDialog();
+    }
+
+    @Override
+    public void showDialog(int dialogType, String title, String message, String buttonLabel) {
+        Helpers.showDialog(getActivity(), dialogType, title, message, Collections.singletonList(buttonLabel).toArray(new String[0]));
     }
 
     public void showLoading() {

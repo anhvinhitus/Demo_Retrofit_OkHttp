@@ -214,7 +214,23 @@ public class Helpers {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
-                showDialogInUIThread(activity, dialogType, title, message, btnNames, promise);
+                showDialogInUIThread(activity, dialogType, title, message, convert(btnNames), promise);
+            }
+        });
+    }
+
+    public static void showDialog(final Activity activity, final int dialogType,
+                                  final String title, final String message, final String[] btnNames
+                                  ) {
+        Timber.d("React call showDialog, dialogType[%s] title[%s] message[%s]",
+                dialogType, title, message);
+        if (btnNames == null || btnNames.length <= 0) {
+            return;
+        }
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                showDialogInUIThread(activity, dialogType, title, message, btnNames, null);
             }
         });
     }
@@ -223,7 +239,7 @@ public class Helpers {
                                              int dialogType,
                                              String title,
                                              String message,
-                                             ReadableArray btnNames,
+                                             String[] btnNames,
                                              final Promise promise) {
         if (dialogType == DialogType.NO_INTERNET_TYPE) {
             DialogHelper.showNetworkErrorDialog(activity, new SweetDialogSimpleEventListener(promise, 0));
@@ -267,7 +283,7 @@ public class Helpers {
                             Helpers.promiseResolve(promise, i);
                         }
                     },
-                    convert(btnNames));
+                    btnNames);
         }
     }
 

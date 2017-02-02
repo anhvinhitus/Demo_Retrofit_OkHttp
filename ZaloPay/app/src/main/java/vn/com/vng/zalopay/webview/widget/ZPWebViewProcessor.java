@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.webapp.JavascriptInterface;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
 
 public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCallback.INavigationListener {

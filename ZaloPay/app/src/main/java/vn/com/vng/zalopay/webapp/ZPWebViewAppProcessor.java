@@ -14,10 +14,15 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.react.Helpers;
+import vn.com.vng.zalopay.react.model.DialogType;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
 
 public class ZPWebViewAppProcessor extends WebViewClient {
@@ -35,6 +40,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         mWebView = pWebView;
         mWebViewListener = webViewListener;
         mWebView.setWebViewClient(this);
+        mWebView.addJavascriptInterface(this, "ZaloPayJSBridge");
     }
 
     public void start(final String pUrl, final Activity pActivity) {
@@ -244,6 +250,8 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         void showLoading();
 
         void hideLoading();
+
+        void showDialog(int dialogType, String title, String message, String buttonLabel);
     }
 
     public void onPause() {
@@ -290,6 +298,29 @@ public class ZPWebViewAppProcessor extends WebViewClient {
             return true;
         } else {
             return false;
+        }
+    }
+
+    @android.webkit.JavascriptInterface
+    void call(String functionName, String arguments, String callback) {
+        Timber.d("Invoke function: %s, params: %s, callback: %s", functionName, arguments, callback);
+        if (TextUtils.isEmpty(functionName)) {
+            return;
+        }
+
+        if ("alert".equalsIgnoreCase(functionName)) {
+            try {
+                JSONObject object = new JSONObject(arguments);
+                // {"title":"Hello","message":"ABC 123","button":"OK"}
+                String title = object.optString("title");
+                String message = object.optString("message");
+                String buttonLabel = object.optString("button");
+
+                mWebViewListener.showDialog(DialogType.NOTIFICATION_TYPE, title, message, buttonLabel);
+
+            } catch (JSONException e) {
+                Timber.d(e, "Exception while parsing arguments");
+            }
         }
     }
 }

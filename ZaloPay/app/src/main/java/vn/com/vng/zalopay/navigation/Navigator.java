@@ -59,6 +59,7 @@ import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
 import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
+import vn.com.vng.zalopay.webapp.WebAppActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 import vn.com.vng.zalopay.webview.ui.WebViewActivity;
@@ -503,6 +504,12 @@ public class Navigator implements INavigator {
         Intent intent = new Intent(context, ServiceWebViewActivity.class);
         intent.putExtra(WebViewConstants.APPGAMEPAYINFO, appGamePayInfo);
         intent.putExtra(WebViewConstants.WEBURL, host);
+        context.startActivity(intent);
+    }
+
+    public void startWebAppActivity(Context context, String url) {
+        Intent intent = new Intent(context, WebAppActivity.class);
+        intent.putExtra(Constants.ARG_URL, url);
         context.startActivity(intent);
     }
 

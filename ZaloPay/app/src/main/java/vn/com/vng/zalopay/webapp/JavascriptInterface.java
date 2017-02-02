@@ -11,4 +11,9 @@ public class JavascriptInterface {
     void sayHello(String name) {
         Timber.d("Hello %s", name);
     }
+
+    @android.webkit.JavascriptInterface
+    void call(String functionName, String arguments, String callback) {
+        Timber.d("Invoke function: %s, params: %s, callback: %s", functionName, arguments, callback);
+    }
 }
