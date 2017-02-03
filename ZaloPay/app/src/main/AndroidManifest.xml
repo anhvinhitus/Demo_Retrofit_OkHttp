@@ -130,6 +130,11 @@
                     android:host="otp"
                     android:scheme="zalopay" />
 
+                <data
+                    android:pathPrefix="/transfer"
+                    android:host="app"
+                    android:scheme="zalopay-zapi-28" />
+
             </intent-filter>
 
         </activity-alias>

@@ -34,7 +34,7 @@ import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
 public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExternalCallSplashScreenView> {
 
     private static final int LOGIN_REQUEST_CODE = 100;
-    private static final int ZALO_INTEGRATION_LOGIN_REQUEST_CODE = 100;
+    private static final int ZALO_INTEGRATION_LOGIN_REQUEST_CODE = 101;
 
     private UserConfig mUserConfig;
 
@@ -62,13 +62,6 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         }
 
         Timber.d("Launching with action: %s", action);
-        if ("vn.zalopay.intent.action.SEND_MONEY".equals(action)) {
-            handleZaloIntegration(intent.getData(), true);
-        }
-//        if (Intent.ACTION_VIEW.equals(action)) {
-//            handleZaloIntegration(intent.getData(), true);
-//        }
-
         if (Intent.ACTION_VIEW.equals(action)) {
             handleDeepLink(intent.getData());
         }
@@ -148,9 +141,16 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
         String scheme = data.getScheme();
         String host = data.getHost();
+        String pathPrefix = data.getPath();
 
         if (scheme.equalsIgnoreCase("zalopay-1") && host.equalsIgnoreCase("post")) {
             pay(data, false);
+        } else if (scheme.equalsIgnoreCase("zalopay-zapi-28")) {
+
+            if (host.equalsIgnoreCase("app") && pathPrefix.equalsIgnoreCase("/transfer")) {
+                handleZaloIntegration(data, true);
+            }
+
         } else if (scheme.equalsIgnoreCase("zalopay")) {
 
             if (host.equalsIgnoreCase("zalopay.vn")) {
