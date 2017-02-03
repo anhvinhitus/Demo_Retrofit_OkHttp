@@ -34,6 +34,7 @@ import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
 public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExternalCallSplashScreenView> {
 
     private static final int LOGIN_REQUEST_CODE = 100;
+    private static final int ZALO_INTEGRATION_LOGIN_REQUEST_CODE = 100;
 
     private UserConfig mUserConfig;
 
@@ -61,16 +62,12 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         }
 
         Timber.d("Launching with action: %s", action);
-//        if ("vn.zalopay.intent.action.SEND_MONEY".equals(action)) {
-//            if (handleZaloIntegration(intent)) {
-//                return;
-//            }
-//        }
-        if (action == Intent.ACTION_VIEW) {
-            if (handleZaloIntegration(intent.getData())) {
-                return;
-            }
+        if ("vn.zalopay.intent.action.SEND_MONEY".equals(action)) {
+            handleZaloIntegration(intent.getData(), true);
         }
+//        if (Intent.ACTION_VIEW.equals(action)) {
+//            handleZaloIntegration(intent.getData(), true);
+//        }
 
         if (Intent.ACTION_VIEW.equals(action)) {
             handleDeepLink(intent.getData());
@@ -79,12 +76,15 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult: requestCode [%s] resultCode [%s]", requestCode, resultCode);
-        if (requestCode == LOGIN_REQUEST_CODE &&
-                resultCode == Activity.RESULT_OK) {
-            handleAppToAppPayment(data.getData());
-        } else {
-            finish();
+        if (resultCode == Activity.RESULT_OK) {
+            if(requestCode == LOGIN_REQUEST_CODE) {
+                handleAppToAppPayment(data.getData());
+            } else if(requestCode == ZALO_INTEGRATION_LOGIN_REQUEST_CODE) {
+                handleZaloIntegration(data.getData(), false);
+            }
         }
+
+        finish();
     }
 
 //    private boolean handleZaloIntegration(Intent intent) {
@@ -112,19 +112,19 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 //        return true;
 //    }
 
-    private boolean handleZaloIntegration(Uri data) {
+    private void handleZaloIntegration(Uri data, boolean shouldLogin) {
         if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
-            return false;
+            return;
         }
 
         String accesstoken = data.getQueryParameter("accesstoken");
         String senderId = data.getQueryParameter("sender");
         String receiverId = data.getQueryParameter("receiver");
 
-        if (accesstoken == null) {
+        if (accesstoken == null && shouldLogin == true) {
             Timber.d("start login activity");
-            mNavigator.startLoginActivityForResult((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data);
-            return false;
+            mNavigator.startLoginActivityForResult((ExternalCallSplashScreenActivity) mView.getContext(), ZALO_INTEGRATION_LOGIN_REQUEST_CODE, data);
+            return;
         }
 
         Timber.d("Processing send money on behalf of Zalo request");
@@ -136,7 +136,6 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
         mNavigator.startTransferActivity(mView.getContext(), bundle, true);
         finish();
-        return true;
     }
 
     private void handleDeepLink(Uri data) {

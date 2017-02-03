@@ -146,6 +146,12 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 mTransaction.avatar,
                 mTransaction.zaloPayName);
 
+        if (TextUtils.isEmpty(mTransaction.displayName)
+                || TextUtils.isEmpty(mTransaction.avatar)
+                || TextUtils.isEmpty(mTransaction.zaloPayName)) {
+            getUserInfoByZaloPayId(mTransaction.zaloPayId);
+        }
+
         checkShowBtnContinue();
     }
 
@@ -341,13 +347,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 mTransaction.avatar,
                 mTransaction.zaloPayName);
 
-        if (TextUtils.isEmpty(mTransaction.displayName)
-                || TextUtils.isEmpty(mTransaction.avatar)
-                || TextUtils.isEmpty(mTransaction.zaloPayName)) {
-            showLoading();
-            getUserInfoByZaloPayId(mTransaction.zaloPayId);
-        }
-
         initCurrentState();
         checkShowBtnContinue();
         ensureHaveProfile();
@@ -364,6 +363,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         if (TextUtils.isEmpty(zaloPayId)) {
             return;
         }
+        showLoading();
         Timber.d("getUserInfoByZaloPayId zaloPayId [%s]", zaloPayId);
         Subscription subscription = accountRepository.getUserInfoByZaloPayId(zaloPayId)
                 .subscribeOn(Schedulers.io())
