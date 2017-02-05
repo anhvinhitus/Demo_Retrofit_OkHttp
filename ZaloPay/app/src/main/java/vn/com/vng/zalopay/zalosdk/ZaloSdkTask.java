@@ -5,6 +5,7 @@ import android.content.Context;
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.concurrent.TimeUnit;
@@ -59,8 +60,14 @@ final class ZaloSdkTask {
                 .subscribe(new DefaultSubscriber<Long>() {
                     @Override
                     public void onCompleted() {
+                        JSONObject result = new JSONObject();
+                        try {
+                            result.put("timeout", 1);
+                        } catch (Exception ignore) {
+                        }
+
                         if (callback != null) {
-                            callback.onResult(null);
+                            callback.onResult(result);
                         }
                         callback = null;
                     }

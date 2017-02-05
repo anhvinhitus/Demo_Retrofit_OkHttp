@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -66,6 +67,13 @@ public class FriendRequestService implements FriendStore.ZaloRequestService {
         if (arg0 == null) {
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onError(new GetZaloFriendException(pageIndex, new NullPointerException()));
+            }
+            return;
+        }
+
+        if (arg0.has("timeout")) {
+            if (!subscriber.isUnsubscribed()) {
+                subscriber.onError(new TimeoutException());
             }
             return;
         }

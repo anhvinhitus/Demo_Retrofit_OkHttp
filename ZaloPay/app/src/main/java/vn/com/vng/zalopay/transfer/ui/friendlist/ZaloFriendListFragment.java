@@ -182,7 +182,7 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     public void showError(String message) {
 
         if (mAdapter.getCount() > 0) {
-            showToast(message);
+            //     showToast(message);
         } else {
             mTvEmptyView.setText(message);
             mEmtpyView.setVisibility(View.GONE);
