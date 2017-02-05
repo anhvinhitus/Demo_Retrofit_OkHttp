@@ -16,6 +16,7 @@ import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.DynamicUrlService;
 import vn.com.vng.zalopay.data.exception.FormatException;
+import vn.com.vng.zalopay.network.BaseNetworkInterceptor;
 import vn.com.vng.zalopay.react.model.RawContentHttp;
 
 /**
@@ -96,7 +97,11 @@ public class NetworkServiceImpl implements NetworkService {
 
         }
         if (content.hasKey("query")) {
-            rawContentHttp.query = toMap(content.getMap("query"));
+            Map<String, String> queries = toMap(content.getMap("query"));
+            if (queries != null) {
+                removeUnusedParameter(queries);
+            }
+            rawContentHttp.query = queries;
         }
 
         if (content.hasKey("body")) {
@@ -160,5 +165,17 @@ public class NetworkServiceImpl implements NetworkService {
         }
 
         return String.valueOf(result); //maybe `null`
+    }
+
+    private void removeUnusedParameter(Map<String, String> parameters) {
+        parameters.remove(BaseNetworkInterceptor.PLATFORM_PARAMETER);
+        parameters.remove(BaseNetworkInterceptor.DEVICE_ID_PARAMETER);
+        parameters.remove(BaseNetworkInterceptor.DEVICE_MODEL_PARAMETER);
+        parameters.remove(BaseNetworkInterceptor.OS_VERSION_PARAMETER);
+        parameters.remove(BaseNetworkInterceptor.APPLICATION_VERSION_PARAMETER);
+        parameters.remove(BaseNetworkInterceptor.PAYMENT_SDK_VERSION_PARAMETER);
+        parameters.remove(BaseNetworkInterceptor.DISTSRC_PARAMETER);
+        parameters.remove(BaseNetworkInterceptor.MNO_PARAMETER);
+        parameters.remove(BaseNetworkInterceptor.CONNECTION_TYPE_PARAMETER);
     }
 }

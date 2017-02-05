@@ -16,6 +16,16 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 
 public class BaseNetworkInterceptor implements Interceptor {
 
+    public static final String PLATFORM_PARAMETER = "platform";
+    public static final String DEVICE_ID_PARAMETER = "deviceID";
+    public static final String DEVICE_MODEL_PARAMETER = "deviceModel";
+    public static final String OS_VERSION_PARAMETER = "osVer";
+    public static final String APPLICATION_VERSION_PARAMETER = "appversion";
+    public static final String PAYMENT_SDK_VERSION_PARAMETER = "sdkVer";
+    public static final String DISTSRC_PARAMETER = "distSrc";
+    public static final String MNO_PARAMETER = "mno";
+    public static final String CONNECTION_TYPE_PARAMETER = "connType";
+
     private final String DEVICE_ID = AndroidUtils.getUUID();
     private final String DEVICE_MODEL = AndroidUtils.getDeviceManufacturer();
     private final String DEVICE_VERSION = AndroidUtils.getAndroidVersion();
@@ -26,15 +36,15 @@ public class BaseNetworkInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         HttpUrl url = request.url().newBuilder()
-                .addQueryParameter("platform", "android")
-                .addQueryParameter("deviceID", DEVICE_ID)
-                .addQueryParameter("deviceModel", DEVICE_MODEL)
-                .addQueryParameter("osVer", DEVICE_VERSION)
-                .addQueryParameter("appversion", BuildConfig.VERSION_NAME)
-                .addQueryParameter("sdkVer", vn.com.zalopay.wallet.BuildConfig.VERSION_NAME)
-                .addQueryParameter("distSrc", "")
-                .addQueryParameter("mno", CARRIER_NAME)
-                .addQueryParameter("connType", CONNECTION_TYPE)
+                .addQueryParameter(PLATFORM_PARAMETER, "android")
+                .addQueryParameter(DEVICE_ID_PARAMETER, DEVICE_ID)
+                .addQueryParameter(DEVICE_MODEL_PARAMETER, DEVICE_MODEL)
+                .addQueryParameter(OS_VERSION_PARAMETER, DEVICE_VERSION)
+                .addQueryParameter(APPLICATION_VERSION_PARAMETER, BuildConfig.VERSION_NAME)
+                .addQueryParameter(PAYMENT_SDK_VERSION_PARAMETER, vn.com.zalopay.wallet.BuildConfig.VERSION_NAME)
+                .addQueryParameter(DISTSRC_PARAMETER, "")
+                .addQueryParameter(MNO_PARAMETER, CARRIER_NAME)
+                .addQueryParameter(CONNECTION_TYPE_PARAMETER, CONNECTION_TYPE)
                 .build();
         request = request.newBuilder().url(url).build();
         return chain.proceed(request);
