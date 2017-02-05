@@ -70,7 +70,7 @@ public class NotificationHelper {
     private final EventBus mEventBus;
     private final UserConfig mUserConfig;
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private List<Long> mListPacketIdToRecovery = new ArrayList<>();
 
     @Inject
@@ -171,7 +171,7 @@ public class NotificationHelper {
                 skipStorage = true;
                 break;
             case NotificationType.RESET_PAYMENT_PASSWORD:
-                resetPin();
+                resetPaymentPassword();
                 break;
             case NotificationType.LINK_CARD_EXPIRED:
                 removeLinkCard(notify);
@@ -195,7 +195,7 @@ public class NotificationHelper {
                         Timber.d("insert db error conflict MTAID, MTUID %s", e.getClass().getCanonicalName());
                     }
                 });
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     private void shouldMarkRead(NotificationData notify) {
@@ -243,7 +243,7 @@ public class NotificationHelper {
             Subscription subscription = mRedPacketRepository.addReceivedRedPacket(packageid, bundleid, senderName, senderAvatar, message)
                     .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<>());
-            compositeSubscription.add(subscription);
+            mCompositeSubscription.add(subscription);
 
             if (addToRecovery) {
                 mListPacketIdToRecovery.add(packageid);
@@ -311,7 +311,7 @@ public class NotificationHelper {
         Subscription subscription = mTransactionRepository.updateTransactionStatusSuccess(notify.transid)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
 
@@ -325,7 +325,7 @@ public class NotificationHelper {
                     Subscription subscription = mAccountRepository.getUserProfileLevelCloud()
                             .subscribeOn(Schedulers.io())
                             .subscribe(new DefaultSubscriber<Boolean>());
-                    compositeSubscription.add(subscription);
+                    mCompositeSubscription.add(subscription);
                 }
             }
         } catch (Exception ex) {
@@ -340,7 +340,7 @@ public class NotificationHelper {
         Subscription subscription = mNotifyRepository.totalNotificationUnRead()
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     /**
@@ -396,7 +396,7 @@ public class NotificationHelper {
                                     message);
                         }
                     });
-            compositeSubscription.add(subscription);
+            mCompositeSubscription.add(subscription);
         }
     }
 
@@ -422,14 +422,14 @@ public class NotificationHelper {
         Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistoryLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
-        compositeSubscription.add(subscriptionSuccess);
+        mCompositeSubscription.add(subscriptionSuccess);
     }
 
     private void updateBalance() {
         Subscription subscription = mBalanceRepository.updateBalance()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     protected UserComponent getUserComponent() {
@@ -479,7 +479,7 @@ public class NotificationHelper {
                         mListPacketIdToRecovery.clear();
                     }
                 });
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     void recoveryTransaction() {
@@ -500,7 +500,7 @@ public class NotificationHelper {
                 })
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>());
-        compositeSubscription.add(subscription);
+        mCompositeSubscription.add(subscription);
     }
 
     Observable<Long> getOldestTimeRecoveryNotification(final boolean isFirst) {
@@ -516,7 +516,7 @@ public class NotificationHelper {
                 });
     }
 
-    private void resetPin() {
+    private void resetPaymentPassword() {
         refreshGatewayInfo();
         mUserConfig.removeFingerprint();
     }
