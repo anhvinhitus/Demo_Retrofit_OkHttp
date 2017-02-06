@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
 
 /**
@@ -153,6 +154,7 @@ public class NotificationRepository implements NotificationStore.Repository {
                 .doOnNext(aVoid -> {
                     mLocalStorage.setRecovery(true);
                     saveTimeRecovery(notify);
+                    mEventBus.post(new NotificationChangeEvent(Enums.NotificationState.UNREAD.getId()));
                 });
     }
 

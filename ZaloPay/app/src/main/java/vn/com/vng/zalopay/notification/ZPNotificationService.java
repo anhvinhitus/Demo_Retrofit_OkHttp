@@ -273,7 +273,6 @@ public class ZPNotificationService implements OnReceiverMessageListener {
     }
 
     private void recoveryData() {
-        mEventBus.post(new NotificationChangeEvent(1));
         this.recoveryTransaction();
         this.recoveryRedPacketStatus();
     }
