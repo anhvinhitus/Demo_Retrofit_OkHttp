@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.ws.connection;
 
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 
@@ -27,7 +28,6 @@ public abstract class Connection {
         Connected
     }
 
-    private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
     public static final int TYPE_FIELD_LENGTH = 1;
     public static final int LENGTH_FIELD_LENGTH = 4;
     public static final int HEADER_LENGTH = TYPE_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
@@ -35,6 +35,9 @@ public abstract class Connection {
     private final List<OnReceiverMessageListener> listCallBack = new ArrayList<>();
 
     Connection() {
+        HandlerThread messageThread = new HandlerThread("message-thread");
+        messageThread.start();
+        messageHandler = new MessageHandler(messageThread.getLooper(), this);
     }
 
     public abstract void connect();
@@ -93,7 +96,7 @@ public abstract class Connection {
         messageHandler = null;
     }
 
-    private Handler messageHandler = new MessageHandler(Looper.getMainLooper(), this);
+    private Handler messageHandler;
 
     private static class MessageHandler extends Handler {
         private WeakReference<Connection> mConnection;

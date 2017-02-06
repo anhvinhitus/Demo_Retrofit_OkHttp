@@ -64,6 +64,7 @@ public class WsConnection extends Connection {
     private NextState mNextConnectionState = NextState.DISCONNECT;
 
     public WsConnection(String host, int port, Context context, Parser parser, User user) {
+        super();
         if (host == null || port < 0 || port > 65535) {
             throw new IllegalArgumentException("host=" + host + ", port=" + port);
         }
