@@ -7,7 +7,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  * *
  */
 
-interface IBankAssociateView extends ILoadDataView {
+interface ILinkBankView extends ILoadDataView {
 
     boolean setCurrentPage(int pageIndex);
 }

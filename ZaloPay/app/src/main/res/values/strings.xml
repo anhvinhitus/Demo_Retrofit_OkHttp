@@ -115,7 +115,7 @@
     <string name="title.activity.feedback">Gửi báo lỗi</string>
     <string name="title.activity.request.support">Yêu cầu hỗ trợ</string>
     <string name="title.activity.choose.category">Phân loại</string>
-    <string name="title_activity_bank_associate">Ngân hàng</string>
+    <string name="title_activity_link_bank">Ngân hàng</string>
     <!--Activity lable END-->
 
     <string name="label_qr_to_pay">Hướng camera vào mã QR để thanh toán</string>

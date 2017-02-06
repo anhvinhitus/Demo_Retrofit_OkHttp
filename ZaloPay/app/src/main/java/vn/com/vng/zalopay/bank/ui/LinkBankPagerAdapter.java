@@ -11,10 +11,10 @@ import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
  * *
  */
 
-class BankAssociatePagerAdapter extends AbsFragmentPagerAdapter {
+class LinkBankPagerAdapter extends AbsFragmentPagerAdapter {
     private Bundle mBundle;
 
-    BankAssociatePagerAdapter(FragmentManager fm, Bundle bundle) {
+    LinkBankPagerAdapter(FragmentManager fm, Bundle bundle) {
         super(fm);
         mBundle = bundle;
     }

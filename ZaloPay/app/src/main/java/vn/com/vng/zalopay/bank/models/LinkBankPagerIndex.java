@@ -5,12 +5,12 @@ package vn.com.vng.zalopay.bank.models;
  * *
  */
 
-public enum BankAssociatePagerIndex {
+public enum LinkBankPagerIndex {
     LINK_CARD(0), LINK_ACCOUNT(1);
 
     private int value;
 
-    BankAssociatePagerIndex(int value) {
+    LinkBankPagerIndex(int value) {
         this.value = value;
     }
 

@@ -11,7 +11,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
-import vn.com.vng.zalopay.bank.models.BankAssociatePagerIndex;
+import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -26,21 +26,21 @@ import vn.com.zalopay.wallet.merchant.CShareData;
  * *
  */
 
-class BankAssociatePresenter implements IPresenter<IBankAssociateView> {
+class LinkBankPresenter implements IPresenter<ILinkBankView> {
 
-    IBankAssociateView mView;
+    ILinkBankView mView;
 
     @Inject
     User mUser;
 
     @Inject
-    BankAssociatePresenter() {
+    LinkBankPresenter() {
 
     }
 
     @Override
-    public void attachView(IBankAssociateView iBankAssociateView) {
-        mView = iBankAssociateView;
+    public void attachView(ILinkBankView linkBankView) {
+        mView = linkBankView;
     }
 
     void initPageStart(Bundle bundle) {
@@ -69,19 +69,19 @@ class BankAssociatePresenter implements IPresenter<IBankAssociateView> {
      * Reference: https://gitlab.com/zalopay/bugs/issues/273
      */
     void changePageInContext() {
-        ObservableHelper.makeObservable(new Callable<BankAssociatePagerIndex>() {
+        ObservableHelper.makeObservable(new Callable<LinkBankPagerIndex>() {
             @Override
-            public BankAssociatePagerIndex call() throws Exception {
+            public LinkBankPagerIndex call() throws Exception {
                 List<DMappedCard> mapCardList = CShareData.getInstance().getMappedCardList(mUser.zaloPayId);
                 List<DBankAccount> mapAccList = CShareData.getInstance().getMapBankAccountList(mUser.zaloPayId);
                 if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
-                    return BankAssociatePagerIndex.LINK_CARD;
+                    return LinkBankPagerIndex.LINK_CARD;
                 } else if (!Lists.isEmptyOrNull(mapCardList)) {
-                    return BankAssociatePagerIndex.LINK_CARD;
+                    return LinkBankPagerIndex.LINK_CARD;
                 } else if (!Lists.isEmptyOrNull(mapAccList)) {
-                    return BankAssociatePagerIndex.LINK_ACCOUNT;
+                    return LinkBankPagerIndex.LINK_ACCOUNT;
                 } else {
-                    return BankAssociatePagerIndex.LINK_CARD;
+                    return LinkBankPagerIndex.LINK_CARD;
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -109,14 +109,14 @@ class BankAssociatePresenter implements IPresenter<IBankAssociateView> {
 
     }
 
-    private class ChangePageInContextSubscriber extends DefaultSubscriber<BankAssociatePagerIndex> {
+    private class ChangePageInContextSubscriber extends DefaultSubscriber<LinkBankPagerIndex> {
 
         @Override
-        public void onNext(BankAssociatePagerIndex pageInContext) {
+        public void onNext(LinkBankPagerIndex pageInContext) {
             if (mView == null || pageInContext == null) {
                 return;
             }
-            mView.setCurrentPage(BankAssociatePagerIndex.LINK_ACCOUNT.getValue());
+            mView.setCurrentPage(LinkBankPagerIndex.LINK_ACCOUNT.getValue());
         }
 
         @Override

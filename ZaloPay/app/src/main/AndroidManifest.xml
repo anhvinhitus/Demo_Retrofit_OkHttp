@@ -371,8 +371,8 @@
             android:label="@string/title.activity.choose.category" />
 
         <activity
-            android:name=".bank.ui.BankAssociateActivity"
-            android:label="@string/title_activity_bank_associate" />
+            android:name=".bank.ui.LinkBankActivity"
+            android:label="@string/title_activity_link_bank" />
 
         <receiver
             android:name=".receivers.BootCompletedReceiver"

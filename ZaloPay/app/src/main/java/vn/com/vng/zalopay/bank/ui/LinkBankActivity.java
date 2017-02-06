@@ -9,12 +9,11 @@ import android.support.v4.view.ViewPager;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
-public class BankAssociateActivity extends BaseToolBarActivity implements IBankAssociateView {
+public class LinkBankActivity extends BaseToolBarActivity implements ILinkBankView {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -24,7 +23,7 @@ public class BankAssociateActivity extends BaseToolBarActivity implements IBankA
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    private BankAssociatePagerAdapter mSectionsPagerAdapter;
+    private LinkBankPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -32,7 +31,7 @@ public class BankAssociateActivity extends BaseToolBarActivity implements IBankA
     private ViewPager mViewPager;
 
     @Inject
-    BankAssociatePresenter mPresenter;
+    LinkBankPresenter mPresenter;
 
     @Override
     public BaseFragment getFragmentToHost() {
@@ -46,7 +45,7 @@ public class BankAssociateActivity extends BaseToolBarActivity implements IBankA
 
     @Override
     protected int getResLayoutId() {
-        return R.layout.activity_bank_associate;
+        return R.layout.activity_link_bank;
     }
 
     @Override
@@ -59,7 +58,7 @@ public class BankAssociateActivity extends BaseToolBarActivity implements IBankA
         if (getIntent() != null) {
             bundle = getIntent().getExtras();
         }
-        mSectionsPagerAdapter = new BankAssociatePagerAdapter(getSupportFragmentManager(), bundle);
+        mSectionsPagerAdapter = new LinkBankPagerAdapter(getSupportFragmentManager(), bundle);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);

@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
-import vn.com.vng.zalopay.bank.ui.BankAssociateActivity;
+import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.bank.ui.ListBankDialog;
 import vn.com.vng.zalopay.bank.ui.BankSupportLinkCardDialog;
 import vn.com.vng.zalopay.banner.ui.fragment.BannerFragment;
@@ -208,5 +208,5 @@ public interface UserComponent {
 
     void inject(AccountSupportWithdrawFragment fragment);
 
-    void inject(BankAssociateActivity a);
+    void inject(LinkBankActivity a);
 }
