@@ -149,7 +149,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
             bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);
             bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
             mNavigator.startTransferActivity(mView.getContext(), bundle, true);
-            shouldFinishCurrentActivity = false;
+            shouldFinishCurrentActivity = true;
         } finally {
             Timber.d("should finish current activity [%s] ", shouldFinishCurrentActivity);
             if (shouldFinishCurrentActivity) {
