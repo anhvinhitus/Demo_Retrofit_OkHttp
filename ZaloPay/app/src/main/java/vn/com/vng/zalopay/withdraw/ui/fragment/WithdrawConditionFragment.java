@@ -15,13 +15,13 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.bank.models.BankAssociatePagerIndex;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.withdraw.models.BankType;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
 
@@ -61,17 +61,17 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
 
     @OnClick(R.id.tvAddCard)
     public void onClickAddCard() {
-        startLinkCardActivity(0);
+        startLinkCardActivity(BankAssociatePagerIndex.LINK_CARD);
     }
 
     @OnClick(R.id.tvAddAccount)
     public void onClickAddAccount() {
-        startLinkCardActivity(1);
+        startLinkCardActivity(BankAssociatePagerIndex.LINK_ACCOUNT);
     }
 
-    private void startLinkCardActivity(int pageIndex) {
+    private void startLinkCardActivity(BankAssociatePagerIndex pageIndex) {
         Bundle bundle = new Bundle();
-        bundle.putInt(Constants.ARG_PAGE_INDEX, pageIndex);
+        bundle.putInt(Constants.ARG_PAGE_INDEX, pageIndex.getValue());
         navigator.startLinkCardActivity(getContext(), bundle, false);
     }
 

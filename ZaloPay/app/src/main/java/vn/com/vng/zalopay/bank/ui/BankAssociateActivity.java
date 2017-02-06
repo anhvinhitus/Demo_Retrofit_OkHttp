@@ -1,9 +1,12 @@
 package vn.com.vng.zalopay.bank.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
@@ -11,7 +14,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
-public class BankAssociateActivity extends BaseToolBarActivity {
+public class BankAssociateActivity extends BaseToolBarActivity implements IBankAssociateView {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -28,9 +31,17 @@ public class BankAssociateActivity extends BaseToolBarActivity {
      */
     private ViewPager mViewPager;
 
+    @Inject
+    BankAssociatePresenter mPresenter;
+
     @Override
     public BaseFragment getFragmentToHost() {
         return null;
+    }
+
+    @Override
+    protected void setupActivityComponent() {
+        getUserComponent().inject(this);
     }
 
     @Override
@@ -41,7 +52,7 @@ public class BankAssociateActivity extends BaseToolBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mPresenter.attachView(this);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         Bundle bundle = null;
@@ -57,19 +68,63 @@ public class BankAssociateActivity extends BaseToolBarActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        updateCurrentPage(bundle);
+        mPresenter.initPageStart(bundle);
     }
 
-    private void updateCurrentPage(Bundle bundle) {
-        Timber.d("update current page bundle[%s]", bundle);
-        if (bundle == null) {
-            return;
+    @Override
+    public boolean setCurrentPage(int pageIndex) {
+        if (mViewPager == null || mSectionsPagerAdapter == null) {
+            return false;
         }
-        int pageIndex = bundle.getInt(Constants.ARG_PAGE_INDEX);
-        Timber.d("update current page [%s]", pageIndex);
+        Timber.d("Change current page to index[%s]", pageIndex);
         if (pageIndex >= 0 && pageIndex < mSectionsPagerAdapter.getCount()) {
             mViewPager.setCurrentItem(pageIndex);
+            return true;
         }
+        return false;
     }
 
+    @Override
+    public void onPause() {
+        mPresenter.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.resume();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        mPresenter.detachView();
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.destroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+        super.showErrorDialog(message);
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
 }
