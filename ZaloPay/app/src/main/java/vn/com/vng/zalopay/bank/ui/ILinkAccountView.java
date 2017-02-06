@@ -30,7 +30,7 @@ interface ILinkAccountView extends ILoadDataView {
 
     void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener);
 
-    void onEventUpdateVersion(boolean forceUpdate, String latestVersion, String message);
+    void onUpdateVersion(boolean forceUpdate, String latestVersion, String message);
 
     boolean getUserVisibleHint();
 }

@@ -12,6 +12,7 @@
         android:id="@+id/layoutContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/text.support.height"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -48,5 +49,28 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/button.text.size"/>
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cardSupportLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/text.support.height"
+        android:layout_gravity="bottom|center_horizontal"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.zalopay.ui.widget.IconFont
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_green"
+            app:iconName="@string/linkaccount_info"
+            app:iconSize="@dimen/font_size_balance_manager_question"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="@string/bank.support.link.card"
+            android:textColor="@color/text_green"/>
     </LinearLayout>
 </FrameLayout>

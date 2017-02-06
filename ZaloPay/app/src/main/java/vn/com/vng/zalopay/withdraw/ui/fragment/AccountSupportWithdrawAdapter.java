@@ -18,12 +18,12 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.withdraw.models.BankSupportWithdraw;
 
 /**
- * Created by longlv on 12/02/16.
+ * Created by longlv on 1/04/17.
  * *
  */
-class CardSupportWithdrawAdapter extends AbsRecyclerAdapter<BankSupportWithdraw, CardSupportWithdrawAdapter.ViewHolder> {
+class AccountSupportWithdrawAdapter extends AbsRecyclerAdapter<BankSupportWithdraw, AccountSupportWithdrawAdapter.ViewHolder> {
 
-    CardSupportWithdrawAdapter(Context context) {
+    AccountSupportWithdrawAdapter(Context context) {
         super(context);
     }
 

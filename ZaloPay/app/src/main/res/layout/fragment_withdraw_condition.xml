@@ -1,207 +1,275 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical"
-    tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/ScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background"
+            android:orientation="vertical"
+            tools:context="vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background.note"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing.medium">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/withdraw_miss_condition"
-            android:textColor="@color/txt_item_main"
-            android:textSize="@dimen/textsize.text.main"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/spacing.tiny"
-            android:text="@string/withdraw_condition_note"
-            android:textColor="@color/txt_item_main"
-            android:textSize="13sp" />
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            style="@style/TextView.Group.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing.small"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingTop="@dimen/spacing.large.t"
-            android:text="@string/user_info"
-            android:textAllCaps="true" />
-
-        <TextView
-            android:id="@+id/tvUpdateProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:paddingBottom="@dimen/spacing.small"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:paddingTop="@dimen/spacing.large.t"
-            android:text="@string/txt_update"
-            android:textColor="@color/colorPrimary" />
-    </FrameLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:layout_height="match_parent"
+        android:background="@color/background"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvUserNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing.medium"
-            android:layout_marginRight="@dimen/spacing.medium"
-            android:layout_marginTop="@dimen/spacing.medium.t"
-            android:text="@string/withdraw_condition_user_note"
-            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:minHeight="50dp"
-            android:orientation="horizontal">
+            android:background="@color/background.note"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing.medium">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/withdraw_miss_condition"
+                android:textColor="@color/txt_item_main"
+                android:textSize="@dimen/textsize.text.main"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/spacing.tiny"
+                android:text="@string/withdraw_condition_note"
+                android:textColor="@color/txt_item_main"
+                android:textSize="13sp"/>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/TextView.Group.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing.small"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingTop="@dimen/spacing.large.t"
+                android:text="@string/user_info"
+                android:textAllCaps="true"/>
+
+            <TextView
+                android:id="@+id/tvUpdateProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:paddingBottom="@dimen/spacing.small"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium"
+                android:paddingTop="@dimen/spacing.large.t"
+                android:text="@string/txt_update"
+                android:textColor="@color/colorPrimary"/>
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvUserNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing.medium"
+                android:layout_marginRight="@dimen/spacing.medium"
+                android:layout_marginTop="@dimen/spacing.medium.t"
+                android:text="@string/withdraw_condition_user_note"
+                android:textSize="13sp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.5"
-                android:gravity="center_vertical"
+                android:baselineAligned="false"
+                android:minHeight="50dp"
                 android:orientation="horizontal">
 
-                <CheckBox
-                    android:id="@+id/chkPhone"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="@dimen/spacing.medium"
-                    android:button="@drawable/checkbox"
-                    android:checked="false"
-                    android:clickable="false"
-                    android:gravity="center" />
-
-                <TextView
-                    style="@style/TextView.Title.Default"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lines="1"
-                    android:text="@string/hint_phone" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.5"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <CheckBox
-                    android:id="@+id/chkPin"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:button="@drawable/checkbox"
-                    android:clickable="false"
-                    android:gravity="center" />
-
-                <TextView
-                    style="@style/TextView.Title.Default"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="@dimen/spacing.medium"
-                    android:text="@string/withdraw_condition_pin" />
+                    android:layout_weight="0.5"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/chkPhone"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="@dimen/spacing.medium"
+                        android:button="@drawable/checkbox"
+                        android:checked="false"
+                        android:clickable="false"
+                        android:gravity="center"/>
+
+                    <TextView
+                        style="@style/TextView.Title.Default"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:lines="1"
+                        android:text="@string/hint_phone"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.5"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/chkPin"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_vertical"
+                        android:button="@drawable/checkbox"
+                        android:clickable="false"
+                        android:gravity="center"/>
+
+                    <TextView
+                        style="@style/TextView.Title.Default"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="@dimen/spacing.medium"
+                        android:text="@string/withdraw_condition_pin"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/TextView.Group.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing.small"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingTop="@dimen/spacing.large.t"
+                android:text="@string/txt_home_link_card"
+                android:textAllCaps="true"/>
+
+            <TextView
+                android:id="@+id/tvAddCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:paddingBottom="@dimen/spacing.small"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium"
+                android:paddingTop="@dimen/spacing.large.t"
+                android:text="@string/add"
+                android:textColor="@color/colorPrimary"/>
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvCardNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing.medium"
+                android:layout_marginRight="@dimen/spacing.medium"
+                android:layout_marginTop="@dimen/spacing.medium.t"
+                android:text="@string/withdraw_condition_card_note"
+                android:textSize="13sp"/>
+
+            <fragment
+                android:id="@+id/cardSupportWithdrawFragment"
+                android:name="vn.com.vng.zalopay.withdraw.ui.fragment.CardSupportWithdrawFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/TextView.Group.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing.small"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingTop="@dimen/spacing.large.t"
+                android:text="@string/txt_home_link_account"
+                android:textAllCaps="true"/>
+
+            <TextView
+                android:id="@+id/tvAddAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:paddingBottom="@dimen/spacing.small"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium"
+                android:paddingTop="@dimen/spacing.large.t"
+                android:text="@string/add"
+                android:textColor="@color/colorPrimary"/>
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvAccountNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing.medium"
+                android:layout_marginRight="@dimen/spacing.medium"
+                android:layout_marginTop="@dimen/spacing.medium.t"
+                android:text="@string/withdraw_condition_account_note"
+                android:textSize="13sp"/>
+
+            <fragment
+                android:id="@+id/accSupportWithdrawFragment"
+                android:name="vn.com.vng.zalopay.withdraw.ui.fragment.AccountSupportWithdrawFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate"/>
+
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            style="@style/TextView.Group.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing.small"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingTop="@dimen/spacing.large.t"
-            android:text="@string/txt_home_link_card"
-            android:textAllCaps="true" />
-
-        <TextView
-            android:id="@+id/tvSaveCard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:paddingBottom="@dimen/spacing.small"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:paddingTop="@dimen/spacing.large.t"
-            android:text="@string/add.card"
-            android:textColor="@color/colorPrimary" />
-    </FrameLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvCardNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing.medium"
-            android:layout_marginRight="@dimen/spacing.medium"
-            android:layout_marginTop="@dimen/spacing.medium.t"
-            android:text="@string/withdraw_condition_card_note"
-            android:textSize="13sp" />
-
-        <fragment
-            android:id="@+id/cardSupportWithdrawFragment"
-            android:name="vn.com.vng.zalopay.withdraw.ui.fragment.CardSupportWithdrawFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
-
-</LinearLayout>
+</ScrollView>

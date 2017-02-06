@@ -37,7 +37,6 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.bank.ui.CardSupportActivity;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.bank.ui.BankAssociateActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
@@ -238,14 +237,14 @@ public class Navigator implements INavigator {
                 intent.putExtras(bundle);
             }
             if (numberCard <= 0) {
-                context.startActivity(intentLinkCard(context));
+                context.startActivity(intent);
                 if (isFinishActivity) {
                     ((Activity) context).finish();
                 }
             } else if (shouldShowPinDialog()) {
-                showPinDialog(context, intentLinkCard(context), isFinishActivity);
+                showPinDialog(context, intent, isFinishActivity);
             } else {
-                context.startActivity(intentLinkCard(context));
+                context.startActivity(intent);
                 if (isFinishActivity) {
                     ((Activity) context).finish();
                 }
@@ -606,11 +605,6 @@ public class Navigator implements INavigator {
 
     public void startTutorialConnectInternetActivity(Context context) {
         Intent intent = new Intent(context, TutorialConnectInternetActivity.class);
-        context.startActivity(intent);
-    }
-
-    public void startCardSupportActivity(Context context) {
-        Intent intent = new Intent(context, CardSupportActivity.class);
         context.startActivity(intent);
     }
 

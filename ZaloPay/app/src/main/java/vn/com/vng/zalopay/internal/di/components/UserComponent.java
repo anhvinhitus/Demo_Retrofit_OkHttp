@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.bank.ui.ListBankDialog;
+import vn.com.vng.zalopay.bank.ui.BankSupportLinkCardDialog;
 import vn.com.vng.zalopay.banner.ui.fragment.BannerFragment;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
@@ -41,7 +42,6 @@ import vn.com.vng.zalopay.internal.di.modules.UserPresenterModule;
 import vn.com.vng.zalopay.internal.di.modules.UserRedPacketModule;
 import vn.com.vng.zalopay.internal.di.modules.UserTransactionModule;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
-import vn.com.vng.zalopay.bank.ui.CardSupportActivity;
 import vn.com.vng.zalopay.bank.ui.LinkCardFragment;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardFragment;
 import vn.com.vng.zalopay.notification.NotificationHelper;
@@ -67,6 +67,7 @@ import vn.com.vng.zalopay.warningrooted.WarningRootedFragment;
 import vn.com.vng.zalopay.webapp.WebAppFragment;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
+import vn.com.vng.zalopay.withdraw.ui.fragment.AccountSupportWithdrawFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.CardSupportWithdrawFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawConditionFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
@@ -180,8 +181,6 @@ public interface UserComponent {
 
     void inject(WarningRootedFragment f);
 
-    void inject(CardSupportActivity a);
-
     void inject(HandleInAppPayment obj);
 
     void inject(CardSupportWithdrawFragment f);
@@ -203,4 +202,8 @@ public interface UserComponent {
     void inject(ListBankDialog f);
 
     void inject(WebAppFragment f);
+
+    void inject(BankSupportLinkCardDialog f);
+
+    void inject(AccountSupportWithdrawFragment fragment);
 }

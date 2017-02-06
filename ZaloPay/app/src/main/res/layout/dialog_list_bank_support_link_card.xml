@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sweetDialogRootView"
+    android:layout_width="@dimen/alert_width"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/spacing.medium.l"
+        android:paddingLeft="@dimen/spacing.large.t"
+        android:paddingRight="@dimen/spacing.large.t"
+        android:paddingTop="@dimen/spacing.medium">
+
+        <ImageView
+            android:id="@+id/custom_image"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_information"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/content_text"
+            style="@style/TextView.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing.medium"
+            android:text="@string/list_bank_support_link_card"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listBankRecyclerView"
+            style="@style/RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fadingEdge="none"
+            android:overScrollMode="never"
+            android:paddingTop="@dimen/spacing.medium"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/spacing.tiny"
+        android:paddingLeft="@dimen/spacing.small"
+        android:paddingRight="@dimen/spacing.small"
+        android:paddingTop="@dimen/spacing.tiny">
+
+        <TextView
+            android:id="@+id/cancel_button"
+            style="@style/dialog_blue_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:paddingBottom="@dimen/spacing.tiny"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:paddingTop="@dimen/spacing.tiny"
+            android:text="@string/txt_close"/>
+    </FrameLayout>
+
+</LinearLayout>

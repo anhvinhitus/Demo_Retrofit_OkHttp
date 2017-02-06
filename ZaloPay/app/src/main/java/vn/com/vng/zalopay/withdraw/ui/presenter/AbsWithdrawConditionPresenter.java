@@ -41,7 +41,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
                         if (listenerValid == null) {
                             return;
                         }
-                        listenerValid.onSuccess(list, validLinkCard(list));
+                        listenerValid.onSuccess(list, validLinkCard(list) || validLinkAccount(list));
                     }
 
                     @Override
@@ -73,6 +73,11 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
         } catch (Exception e) {
             Timber.w(e, "Get mapped card exception: %s", e.getMessage());
         }
+        return false;
+    }
+
+    // TODO: 2/4/17 - longlv: waiting PaymentSDK to add validLinkAccount
+    private boolean validLinkAccount(List<BankConfig> bankConfigs) {
         return false;
     }
 

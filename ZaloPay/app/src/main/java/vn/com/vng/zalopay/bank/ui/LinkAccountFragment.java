@@ -33,7 +33,6 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
@@ -65,7 +64,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @OnClick(R.id.btn_add_account)
     public void onClickAddBankAccount() {
-        mPresenter.showListBankSupportLinkAcc();
+        mPresenter.getListBankSupport();
     }
 
     @Inject
@@ -73,7 +72,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @OnClick(R.id.btn_add_more)
     public void onClickAddMoreBankAccount() {
-        mPresenter.showListBankSupportLinkAcc();
+        mPresenter.getListBankSupport();
     }
 
     public LinkAccountFragment() {
@@ -202,16 +201,6 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
             return;
         }
         super.showRetryDialog(message, listener);
-    }
-
-    @Override
-    public void onEventUpdateVersion(boolean forceUpdate, String latestVersion, String message) {
-        Timber.d("cardSupportHashMap forceUpdate [%s] latestVersion [%s] message [%s]",
-                forceUpdate, latestVersion, message);
-        if (!isAdded()) {
-            return;
-        }
-        AppVersionUtils.handleEventUpdateVersion(getActivity(), forceUpdate, latestVersion, message);
     }
 
     @Override

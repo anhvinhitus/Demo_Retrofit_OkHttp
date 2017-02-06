@@ -7,11 +7,11 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
  * *
  */
 
-public class CardSupportWithdraw {
+public class BankSupportWithdraw {
     public BankConfig mBankConfig;
     public boolean mIsMapped;
 
-    public CardSupportWithdraw(BankConfig bankConfig, boolean isMapped) {
+    public BankSupportWithdraw(BankConfig bankConfig, boolean isMapped) {
         mBankConfig = bankConfig;
         mIsMapped = isMapped;
     }

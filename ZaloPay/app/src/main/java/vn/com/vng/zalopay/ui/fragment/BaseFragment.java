@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -85,6 +86,15 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onLowMemory() {
         super.onLowMemory();
+    }
+
+    public void onUpdateVersion(boolean forceUpdate, String latestVersion, String message) {
+        Timber.d("forceUpdate [%s] latestVersion [%s] message [%s]",
+                forceUpdate, latestVersion, message);
+        if (!isAdded()) {
+            return;
+        }
+        AppVersionUtils.handleEventUpdateVersion(getActivity(), forceUpdate, latestVersion, message);
     }
 
     public void showSnackbar(int message, View.OnClickListener listener) {

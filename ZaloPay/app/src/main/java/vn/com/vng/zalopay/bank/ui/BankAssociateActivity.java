@@ -5,6 +5,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -54,5 +56,20 @@ public class BankAssociateActivity extends BaseToolBarActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        updateCurrentPage(bundle);
     }
+
+    private void updateCurrentPage(Bundle bundle) {
+        Timber.d("update current page bundle[%s]", bundle);
+        if (bundle == null) {
+            return;
+        }
+        int pageIndex = bundle.getInt(Constants.ARG_PAGE_INDEX);
+        Timber.d("update current page [%s]", pageIndex);
+        if (pageIndex >= 0 && pageIndex < mSectionsPagerAdapter.getCount()) {
+            mViewPager.setCurrentItem(pageIndex);
+        }
+    }
+
 }

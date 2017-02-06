@@ -7,7 +7,10 @@ import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
@@ -25,9 +28,11 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.merchant.entities.ZPCard;
+import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 /**
  * Created by longlv on 10/25/16.
@@ -37,6 +42,7 @@ import vn.com.zalopay.wallet.merchant.CShareData;
 abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     protected PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
+    private IGetCardSupportListListener mGetCardSupportListListener;
 
     User mUser;
 
@@ -60,6 +66,12 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     abstract void showNetworkErrorDialog();
 
+    abstract void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener);
+
+    abstract void onUpdateVersion(boolean forceUpdate, String latestVersion, String message);
+
+    abstract void onGetCardSupportSuccess(ArrayList<ZPCard> cardSupportList);
+
     AbstractLinkCardPresenter(ZaloPayRepository zaloPayRepository,
                               Navigator navigator,
                               BalanceStore.Repository balanceRepository,
@@ -76,7 +88,46 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
                 .build();
+
+        mGetCardSupportListListener = new IGetCardSupportListListener() {
+            @Override
+            public void onProcess() {
+                Timber.d("getCardSupportList onProcess");
+            }
+
+            @Override
+            public void onComplete(ArrayList<ZPCard> cardSupportList) {
+                Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
+                hideLoadingView();
+                onGetCardSupportSuccess(cardSupportList);
+            }
+
+            @Override
+            public void onError(String pErrorMess) {
+                Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
+                hideLoadingView();
+                showRetryDialog(getContext().getString(R.string.exception_generic),
+                        new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+
+                            }
+
+                            @Override
+                            public void onOKevent() {
+                                getListBankSupport();
+                            }
+                        });
+            }
+
+            @Override
+            public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
+                hideLoadingView();
+                onUpdateVersion(forceUpdate, latestVersion, message);
+            }
+        };
     }
+
 
     @Override
     public void destroy() {
@@ -85,6 +136,15 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         GlobalData.initApplication(null);
 
         super.destroy();
+    }
+
+    void getListBankSupport() {
+        Timber.d("Show list bank that support link account.");
+        showLoadingView();
+        UserInfo userInfo = new UserInfo();
+        userInfo.zaloPayUserId = mUser.zaloPayId;
+        userInfo.accessToken = mUser.accesstoken;
+        CShareData.getInstance().setUserInfo(userInfo).getCardSupportList(mGetCardSupportListListener);
     }
 
     void addLinkCard() {

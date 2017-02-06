@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -57,6 +59,20 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.cardSupportLayout)
+    View mCardSupportLayout;
+
+    @OnClick(R.id.cardSupportLayout)
+    public void onClickBankSupport() {
+        mPresenter.getListBankSupport();
+    }
+
+    @Override
+    public void showListBankSupportDialog(ArrayList<ZPCard> cardSupportList) {
+        BankSupportLinkCardDialog dialog = BankSupportLinkCardDialog.newInstance(cardSupportList);
+        dialog.show(getChildFragmentManager(), BankSupportLinkCardDialog.TAG);
+    }
+
     @OnClick(R.id.btn_add_card)
     public void onClickAddBankCard() {
         mPresenter.addLinkCard();
@@ -64,7 +80,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @OnClick(R.id.btn_add_more)
     public void onClickAddMoreBankCard() {
-        navigator.startCardSupportActivity(getContext());
+        mPresenter.addLinkCard();
         ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_TAPADDCARD);
     }
 
@@ -175,11 +191,13 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         }
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
         mLayoutContent.setVisibility(View.GONE);
+        mCardSupportLayout.setVisibility(View.GONE);
     }
 
     private void hideLinkCardEmpty() {
         mLayoutLinkCardEmpty.setVisibility(View.GONE);
         mLayoutContent.setVisibility(View.VISIBLE);
+        mCardSupportLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -48,7 +48,9 @@
     <string name="transfer.to.mobile">Đến số điện thoại di động</string>
     <string name="transfer.to.atm.visa">Đến số thẻ ATM / VISA</string>
     <string name="transfer.to.bank.account">Đến tài khoản ngân hàng</string>
-
+    <string name="bank.support.link.card">Ngân hàng hỗ trợ liên kết thẻ</string>
+    <string name="link.card.bank.support.empty">Chưa có ngân hàng hỗ trợ liên kết thẻ</string>
+    <string name="link.account.bank.support.empty">Chưa có ngân hàng hỗ trợ liên kết tài khoản</string>
     <string name="login_with_zalo">Đăng nhập với Zalo</string>
 
     <string name="appid">19240466928203470</string>
@@ -153,6 +155,7 @@
     <string name="tutorial_link_card_note_3">Thông tin thẻ được bảo mật theo tiêu chuẩn PCI-DSS và quy định của ngân hàng.</string>
 
     <string name="txt_home_link_card">Liên Kết Thẻ</string>
+    <string name="txt_home_link_account">Liên Kết Tài Khoản</string>
     <string name="txt_home_scantopay">Trả Tiền</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -170,7 +173,7 @@
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
     <string name="link_card_more">Thêm Liên Kết Thẻ</string>
-    <string name="add.card">Thêm thẻ</string>
+    <string name="add">Thêm</string>
     <string name="link.card">Liên Kết Thẻ</string>
     <string name="link.account">Liên Kết Tài Khoản</string>
     <string name="link_acc_more">Thêm Liên Kết Tài Khoản</string>
@@ -356,6 +359,7 @@
     <string name="withdraw_condition_note">Để sử dụng được tính năng rút tiền, bạn cần phải cập nhật các thông tin sau:</string>
     <string name="withdraw_condition_user_note">Cần cập nhật đầy đủ các thông tin sau:</string>
     <string name="withdraw_condition_card_note">Cần liên kết một trong các thẻ ATM nội địa:</string>
+    <string name="withdraw_condition_account_note">Cần liên kết một trong các tài khoản:</string>
     <string name="withdraw_condition_pin">Mật khẩu thanh toán</string>
     <string name="withdraw_description">Rút tiền về thẻ đã liên kết</string>
 
@@ -485,6 +489,7 @@
     <string name="tutorial.fingerprint.unavailable">Vào \'Cài đặt -> Bảo mật -> Vân tay\' và đăng ký ít nhất một dấu vân tay</string>
     <string name="enter.password.to.continue">Nhập mật khẩu thanh toán để tiếp tục</string>
     <string name="select_bank_to_link_account">Chọn ngân hàng để liên kết tài khoản:</string>
+    <string name="list_bank_support_link_card">Các thẻ ngân hàng được Zalo Pay hỗ trợ</string>
     <string name="confirm.on.fingerprint.message">Xác nhận sử dụng vân tay thay cho mật khẩu thanh toán</string>
 
 </resources>

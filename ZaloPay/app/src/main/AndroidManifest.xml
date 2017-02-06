@@ -238,11 +238,6 @@
             android:windowSoftInputMode="" />
 
         <activity
-            android:name=".bank.ui.LinkCardActivity"
-            android:label="@string/title.activity.link.card"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
             android:name=".protect.ui.ProtectAccountActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/title.activity.protect.account"
@@ -347,10 +342,6 @@
         <activity
             android:name=".ui.activity.TutorialConnectInternetActivity"
             android:label="@string/title.activity.tutorial.network.connection" />
-
-        <activity
-            android:name=".bank.ui.CardSupportActivity"
-            android:label="@string/title.activity.card.support" />
 
         <activity
             android:name=".bank.ui.NotificationLinkCardActivity"

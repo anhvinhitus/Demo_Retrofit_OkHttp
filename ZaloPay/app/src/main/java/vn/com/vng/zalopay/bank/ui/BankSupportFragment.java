@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -189,8 +190,23 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
             return;
         }
         hideProgressDialog();
-        refreshLinkCardList(cardSupportList);
-        refreshLinkAccountList(cardSupportList);
+        if (Lists.isEmptyOrNull(cardSupportList)) {
+            return;
+        }
+        List<ZPCard> listSupportLinkCard = new ArrayList<>();
+        List<ZPCard> listSupportLinkAccount = new ArrayList<>();
+        for (ZPCard card: cardSupportList) {
+            if (card == null) {
+                continue;
+            }
+            if (card.isBankAccount()) {
+                listSupportLinkAccount.add(card);
+            } else {
+                listSupportLinkCard.add(card);
+            }
+        }
+        refreshLinkCardList(listSupportLinkCard);
+        refreshLinkAccountList(listSupportLinkAccount);
     }
 
     private void refreshLinkCardList(List<ZPCard> cardSupportList) {

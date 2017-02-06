@@ -42,6 +42,7 @@ public interface Constants {
     String ARG_AUTO_LOAD_DATA = "auto_load_data";
     String ARG_BANK_LIST = "auto_load_data";
     String ARG_BANK = "bank";
+    String ARG_PAGE_INDEX = "page_index";
 
     //DMappedCard: model of zalo payment sdk
 

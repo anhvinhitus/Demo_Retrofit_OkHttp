@@ -37,10 +37,11 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
+import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * Created by AnhHieu on 5/11/16.
@@ -183,6 +184,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
         @Override
         public void onError(Throwable e) {
+            hideLoadingView();
             if (ResponseHelper.shouldIgnoreError(e)) {
                 // simply ignore the error
                 // because it is handled from event subscribers
@@ -194,8 +196,10 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
         @Override
         public void onNext(List<BankCard> bankCards) {
-//            ArrayList<BankCard> tmp = new ArrayList<>();
-//            tmp.add(new BankCard("Nguyen Van A", "213134", "1231", "123VCB",234324234));
+            /*ArrayList<BankCard> tmp = new ArrayList<>();
+            BankCard vcbCard = new BankCard("Nguyen Van A", "686868", "1231", ECardType.PVCB.toString());
+            vcbCard.type = vcbCard.bankcode;
+            tmp.add(vcbCard);*/
             LinkCardPresenter.this.onGetLinkCardSuccess(bankCards);
         }
     }
@@ -254,6 +258,14 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         mView.showError(message);
     }
 
+    private void showErrorView(int msgResource) {
+        if (mView == null || mView.getContext() == null) {
+            return;
+        }
+        mView.hideLoading();
+        mView.showError(getContext().getString(msgResource));
+    }
+
     @Override
     void showNetworkErrorDialog() {
         if (mView == null) {
@@ -261,6 +273,44 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         }
         mView.hideLoading();
         mView.showNetworkErrorDialog();
+    }
+
+    @Override
+    void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener) {
+        if (mView == null) {
+            return;
+        }
+        mView.showRetryDialog(message, listener);
+    }
+
+    @Override
+    void onUpdateVersion(boolean forceUpdate, String latestVersion, String message) {
+        if (mView == null) {
+            return;
+        }
+        mView.onUpdateVersion(forceUpdate, latestVersion, message);
+    }
+
+    @Override
+    void onGetCardSupportSuccess(ArrayList<ZPCard> cardSupportList) {
+        Timber.d("on Get Card Support Success");
+        if (cardSupportList == null || cardSupportList.size() <= 0) {
+            return;
+        }
+        ArrayList<ZPCard> cards = new ArrayList<>();
+        for (ZPCard card : cardSupportList) {
+            if (card == null || card.isBankAccount()) {
+                continue;
+            }
+            cards.add(card);
+        }
+        if (Lists.isEmptyOrNull(cards)) {
+            showErrorView(R.string.link_card_bank_support_empty);
+        } else {
+            if (mView != null) {
+                mView.showListBankSupportDialog(cards);
+            }
+        }
     }
 
 }

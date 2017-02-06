@@ -110,4 +110,6 @@
     <dimen name="link.account.height">104dp</dimen>
     <dimen name="link.account.line.width">4dp</dimen>
     <dimen name="link.account.border">8dp</dimen>
+
+    <dimen name="text.support.height">26dp</dimen>
 </resources>

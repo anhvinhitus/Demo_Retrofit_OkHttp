@@ -30,19 +30,15 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
-import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 /**
  * Created by longlv on 1/17/17.
  * *
  */
 class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
-
-    private IGetCardSupportListListener mGetCardSupportListListener;
 
     @Inject
     LinkAccountPresenter(ZaloPayRepository zaloPayRepository,
@@ -53,53 +49,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                          SharedPreferences sharedPreferences, EventBus eventBus) {
         super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
                 user, sharedPreferences, eventBus);
-        mGetCardSupportListListener = new IGetCardSupportListListener() {
-            @Override
-            public void onProcess() {
-                Timber.d("getCardSupportList onProcess");
-            }
 
-            @Override
-            public void onComplete(ArrayList<ZPCard> cardSupportList) {
-                Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
-                hideLoadingView();
-                if (cardSupportList == null || cardSupportList.size() <= 0) {
-                    return;
-                }
-                ArrayList<ZPCard> cards = new ArrayList<>();
-                for (ZPCard card : cardSupportList) {
-                    if (card == null || !card.isBankAccount()) {
-                        continue;
-                    }
-                    cards.add(card);
-                }
-                if (Lists.isEmptyOrNull(cards)) {
-                    showErrorView("Chưa có ngân hàng hỗ trợ liên kết tài khoản.");
-                } else  if (cards.size() == 1) {
-                    linkAccount(cards.get(0));
-                } else {
-                    if (mView != null) {
-                        mView.showListBankDialog(cards);
-                    }
-                }
-            }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
-                hideLoadingView();
-                showRetryDialog();
-            }
-
-            @Override
-            public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
-                hideLoadingView();
-                if (mView == null) {
-                    return;
-                }
-                mView.onEventUpdateVersion(forceUpdate, latestVersion, message);
-            }
-        };
     }
 
     void getMapBankAccount() {
@@ -148,25 +98,16 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
     }
 
-    void showListBankSupportLinkAcc() {
-        Timber.d("Show list bank that support link account.");
-        showLoadingView();
-        UserInfo userInfo = new UserInfo();
-        userInfo.zaloPayUserId = mUser.zaloPayId;
-        userInfo.accessToken = mUser.accesstoken;
-        CShareData.getInstance().setUserInfo(userInfo).getCardSupportList(mGetCardSupportListListener);
-    }
-
     private void onGetLinkedAccountSuccess(List<BankAccount> list) {
         hideLoadingView();
         mView.refreshLinkedAccount(list);
     }
 
     void linkAccount(ZPCard zpCard) {
-        Timber.d("linkAccount card[%s]", zpCard);
         if (paymentWrapper == null || mView == null || zpCard == null) {
             return;
         }
+        Timber.d("linkAccount card[%s]", zpCard.getCardCode());
         showLoadingView();
         paymentWrapper.linkAccount(mView.getActivity(), zpCard.getCardCode());
     }
@@ -213,24 +154,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
     }
 
-
-    private void showRetryDialog() {
-        if (mView == null) {
-            return;
-        }
-        mView.showRetryDialog(mView.getContext().getString(R.string.exception_generic), new ZPWOnEventConfirmDialogListener() {
-            @Override
-            public void onCancelEvent() {
-
-            }
-
-            @Override
-            public void onOKevent() {
-                showListBankSupportLinkAcc();
-            }
-        });
-    }
-
     @Override
     protected void showLoadingView() {
         if (mView == null) {
@@ -256,6 +179,14 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         mView.showError(message);
     }
 
+    private void showErrorView(int msgResource) {
+        if (mView == null || mView.getContext() == null) {
+            return;
+        }
+        mView.hideLoading();
+        mView.showError(getContext().getString(msgResource));
+    }
+
     @Override
     void showNetworkErrorDialog() {
         if (mView == null) {
@@ -263,6 +194,45 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
         mView.hideLoading();
         mView.showNetworkErrorDialog();
+    }
+
+    @Override
+    void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener) {
+        if (mView == null) {
+            return;
+        }
+        mView.showRetryDialog(message, listener);
+    }
+
+    @Override
+    void onUpdateVersion(boolean forceUpdate, String latestVersion, String message) {
+        if (mView == null) {
+            return;
+        }
+        mView.onUpdateVersion(forceUpdate, latestVersion, message);
+    }
+
+    @Override
+    void onGetCardSupportSuccess(ArrayList<ZPCard> cardSupportList) {
+        if (cardSupportList == null || cardSupportList.size() <= 0) {
+            return;
+        }
+        ArrayList<ZPCard> cards = new ArrayList<>();
+        for (ZPCard card : cardSupportList) {
+            if (card == null || !card.isBankAccount()) {
+                continue;
+            }
+            cards.add(card);
+        }
+        if (Lists.isEmptyOrNull(cards)) {
+            showErrorView(R.string.link_card_bank_support_empty);
+        } else if (cards.size() == 1) {
+            linkAccount(cards.get(0));
+        } else {
+            if (mView != null) {
+                mView.showListBankDialog(cards);
+            }
+        }
     }
 
     private class GetLinkedAccountSubscriber extends DefaultSubscriber<List<BankAccount>> {
