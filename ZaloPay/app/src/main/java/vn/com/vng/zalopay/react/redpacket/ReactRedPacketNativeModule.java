@@ -535,6 +535,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getAppInfo(final Promise promise) {
         Subscription subscription = mRedPacketRepository.getRedPacketAppInfo()
+                .subscribeOn(Schedulers.io())
                 .subscribe(new RedPacketSubscriber<RedPacketAppInfo>(promise) {
                     @Override
                     public void onNext(RedPacketAppInfo redPacketAppInfo) {
