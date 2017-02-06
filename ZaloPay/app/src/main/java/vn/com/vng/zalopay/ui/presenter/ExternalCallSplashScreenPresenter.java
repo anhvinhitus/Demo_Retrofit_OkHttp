@@ -80,35 +80,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         finish();
     }
 
-//    private boolean handleZaloIntegration(Intent intent) {
-//        if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
-//            return false;
-//        }
-//
-//        String appId = intent.getStringExtra("android.intent.extra.APPID");
-//        String receiverId = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_ID");
-//        String receiverName = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_NAME");
-//        String receiverAvatar = intent.getStringExtra("vn.zalopay.intent.extra.RECEIVER_AVATAR");
-//        String type = intent.getStringExtra("vn.zalopay.intent.extra.TYPE");
-//
-//        Timber.d("Processing send money on behalf of Zalo request");
-//        RecentTransaction item = new RecentTransaction();
-//        item.zaloId = Long.parseLong(receiverId);
-//        item.displayName = receiverName;
-//        item.avatar = receiverAvatar;
-//
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);
-//        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
-//        mNavigator.startTransferActivity(mView.getContext(), bundle, true);
-//        finish();
-//        return true;
-//    }
-
     private void handleZaloIntegration(Uri data, boolean shouldLogin) {
-        if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
-            return;
-        }
 
         String accesstoken = data.getQueryParameter("accesstoken");
         String senderId = data.getQueryParameter("sender");
