@@ -86,7 +86,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         String senderId = data.getQueryParameter("sender");
         String receiverId = data.getQueryParameter("receiver");
 
-        if (accesstoken == null && shouldLogin == true) {
+        if (!mUserConfig.hasCurrentUser() || accesstoken == null && shouldLogin == true) {
             Timber.d("start login activity");
             mNavigator.startLoginActivityForResult((ExternalCallSplashScreenActivity) mView.getContext(), ZALO_INTEGRATION_LOGIN_REQUEST_CODE, data);
             return;
