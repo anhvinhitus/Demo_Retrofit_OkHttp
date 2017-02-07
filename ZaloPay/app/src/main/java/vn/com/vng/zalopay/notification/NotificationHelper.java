@@ -131,6 +131,10 @@ public class NotificationHelper {
     }
 
     void processNotification(NotificationData notify) {
+        processNotification(notify, false);
+    }
+
+    void processNotification(NotificationData notify, boolean isNotificationRecovery) {
         if (notify == null) {
             return;
         }
@@ -144,12 +148,10 @@ public class NotificationHelper {
 
         switch (notificationType) {
             case NotificationType.UPDATE_PROFILE_LEVEL_OK:
-                updateProfilePermission(notify);
-                mUserConfig.setWaitingApproveProfileLevel3(false);
-                refreshGatewayInfo();
+                updateLevelProfile(notify, true);
                 break;
             case NotificationType.UPDATE_PROFILE_LEVEL_FAILED:
-                mUserConfig.setWaitingApproveProfileLevel3(false);
+                updateLevelProfile(notify, false);
                 break;
             case NotificationType.SEND_RED_PACKET:
                 extractRedPacketFromNotification(notify, false);
@@ -196,6 +198,15 @@ public class NotificationHelper {
                     }
                 });
         mCompositeSubscription.add(subscription);
+    }
+
+    private void updateLevelProfile(NotificationData notify, boolean isSuccess) {
+        if (isSuccess) {
+            updateProfilePermission(notify);
+            refreshGatewayInfo();
+        }
+
+        mUserConfig.setWaitingApproveProfileLevel3(false);
     }
 
     private void shouldMarkRead(NotificationData notify) {
@@ -377,6 +388,7 @@ public class NotificationHelper {
                     message);
         } else {
             Subscription subscription = mNotifyRepository.isNotificationExisted(embedDataGcm.mtaid, embedDataGcm.mtuid)
+                    .subscribeOn(Schedulers.io())
                     .subscribe(new DefaultSubscriber<Boolean>() {
                         @Override
                         public void onNext(Boolean isExisted) {
