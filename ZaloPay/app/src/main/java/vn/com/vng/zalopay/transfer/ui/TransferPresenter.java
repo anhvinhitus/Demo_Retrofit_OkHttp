@@ -11,8 +11,10 @@ import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
@@ -21,8 +23,9 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
+import vn.com.vng.zalopay.data.exception.GenericException;
+import vn.com.vng.zalopay.data.exception.ItemNotFoundException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -30,8 +33,8 @@ import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
+import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
@@ -71,7 +74,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
     private User mUser;
     private final ZaloPayRepository mZaloPayRepository;
-    private final AccountStore.Repository accountRepository;
+    private final FriendStore.Repository mFriendRepository;
+
     private final Navigator mNavigator;
     private final TransferStore.Repository mTransferRepository;
     private Context applicationContext;
@@ -84,14 +88,14 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                       BalanceStore.Repository balanceRepository,
                       ZaloPayRepository zaloPayRepository,
                       TransactionStore.Repository transactionRepository,
-                      final AccountStore.Repository accountRepository,
                       Navigator navigator,
                       TransferStore.Repository transferRepository,
-                      Context applicationContext, EventBus eventBus, ZaloSdkApi zaloSdkApi) {
+                      Context applicationContext, EventBus eventBus, ZaloSdkApi zaloSdkApi,
+                      FriendStore.Repository friendRepository
+    ) {
 
         this.mUser = user;
         this.mZaloPayRepository = zaloPayRepository;
-        this.accountRepository = accountRepository;
         this.mNavigator = navigator;
         this.mTransferRepository = transferRepository;
         this.applicationContext = applicationContext;
@@ -107,6 +111,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 .setRedirectListener(new PaymentRedirectListener())
                 .build();
         mZaloSdkApi = zaloSdkApi;
+        this.mFriendRepository = friendRepository;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -117,7 +122,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
-    private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
+   /* private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
         @Override
         public void onNext(MappingZaloAndZaloPay mappingZaloAndZaloPay) {
             TransferPresenter.this.onGetMappingUserSuccess(mappingZaloAndZaloPay);
@@ -153,9 +158,9 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
 
         checkShowBtnContinue();
-    }
+    }*/
 
-    private void onGetMappingUserError(Throwable e) {
+   /* private void onGetMappingUserError(Throwable e) {
         if (ResponseHelper.shouldIgnoreError(e)) {
             // simply ignore the error because it is handled from event subscribers
             return;
@@ -170,19 +175,75 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             return;
         }
         showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
-    }
+    }*/
 
-    private void getUserMapping(long zaloId) {
-        Timber.d("getUserMapping zaloId [%s]", zaloId);
+    private void getUserInfo(long zaloId) {
+        Timber.d("getUserInfo zaloId [%s]", zaloId);
         if (zaloId <= 0 || mView == null) {
             return;
         }
-        showLoading();
-        Subscription subscription = accountRepository.getUserInfo(zaloId, 1)
+
+        Subscription subscription = mFriendRepository.getUserInfo(zaloId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetUserInfoSubscriber());
+                .subscribe(new ZaloPayUserSubscriber());
         mSubscription.add(subscription);
+    }
+
+
+    private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
+        @Override
+        public void onStart() {
+            showLoading();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                return;
+            }
+
+            if (mView == null) {
+                return;
+            }
+            hideLoading();
+            String message = ErrorMessageFactory.create(applicationContext, e);
+
+            if (e instanceof NetworkConnectionException) {
+                showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
+                return;
+            }
+
+            showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
+        }
+
+        @Override
+        public void onNext(Person person) {
+            Timber.d("onNext displayName %s avatar %s", person.displayName, person.avatar);
+
+            if (!TextUtils.isEmpty(person.avatar)) {
+                mTransaction.avatar = person.avatar;
+            }
+
+            if (!TextUtils.isEmpty(person.displayName)) {
+                mTransaction.displayName = person.displayName;
+            }
+
+            if (!TextUtils.isEmpty(person.zalopayname)) {
+                mTransaction.zaloPayName = person.zalopayname;
+            }
+
+            mTransaction.zaloPayId = person.zaloPayId;
+            mTransaction.zaloPayName = person.zalopayname;
+            mTransaction.phoneNumber = PhoneUtil.formatPhoneNumber(person.phonenumber);
+
+            if (mView == null) {
+                return;
+            }
+
+            hideLoading();
+            mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
+        }
     }
 
     public void transferMoney() {
@@ -338,7 +399,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 mTransaction.zaloPayId, mTransaction.zaloPayName);
         if (TextUtils.isEmpty(mTransaction.zaloPayId)
                 || TextUtils.isEmpty(mTransaction.zaloPayName)) {
-            getUserMapping(mTransaction.zaloId);
+            getUserInfo(mTransaction.zaloId);
         }
 
         initLimitAmount();
@@ -357,19 +418,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         if (TextUtils.isEmpty(mUser.displayName)) {
             mZaloSdkApi.getProfile();
         }
-    }
-
-    private void getUserInfoByZaloPayId(String zaloPayId) {
-        if (TextUtils.isEmpty(zaloPayId)) {
-            return;
-        }
-        showLoading();
-        Timber.d("getUserInfoByZaloPayId zaloPayId [%s]", zaloPayId);
-        Subscription subscription = accountRepository.getUserInfoByZaloPayId(zaloPayId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new UserInfoSubscriber(mTransaction, mView, this));
-        mSubscription.add(subscription);
     }
 
     private void initLimitAmount() {
@@ -492,7 +540,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    private static class UserInfoSubscriber extends DefaultSubscriber<Person> {
+  /*  private static class UserInfoSubscriber extends DefaultSubscriber<Person> {
         private final RecentTransaction mTransaction;
         private ITransferView mTransferView;
         private WeakReference<TransferPresenter> mPresenterWeakReference;
@@ -560,7 +608,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
             mPresenterWeakReference.get().hideLoading();
         }
-    }
+    }*/
 
     private void showLoading() {
         if (mView == null) {

@@ -13,13 +13,18 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.R;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
+import vn.com.vng.zalopay.data.exception.GenericException;
+import vn.com.vng.zalopay.data.exception.UserNotFoundException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
+import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 
@@ -198,7 +203,7 @@ public class FriendRepository implements FriendStore.Repository {
         return makeObservable(() -> mLocalStorage.getZaloUserWithoutZaloPayId())
                 .map(this::transformZpId)
                 .filter(s -> !TextUtils.isEmpty(s))
-                .flatMap(this::fetchZaloPayId)
+                .flatMap(this::fetchZaloPayUserByZaloId)
                 .map(entities -> Boolean.TRUE);
     }
 
@@ -219,34 +224,7 @@ public class FriendRepository implements FriendStore.Repository {
         return builder.toString();
     }
 
-  /*   private String mPreviousZaloId = null;
- private void checklistzaloidforclient(String zaloidlist, Subscriber<? super List<ZaloPayUserEntity>> subscriber, int deep) {
-        Timber.d("check list zaloid for client %s deep %s", zaloidlist, deep);
-        Subscription subscription = fetchZaloPayId(zaloidlist)
-                .doOnNext(entities -> {
-
-                    if (subscriber.isUnsubscribed()) {
-                        return;
-                    }
-
-                    List<ZaloUserEntity> mList = mLocalStorage.getZaloFriendWithoutZpId();
-                    Timber.d("list zalo need merge %s ", Lists.isEmptyOrNull(mList) ? 0 : mList.size());
-                    String mNextZaloIdList = transformZpId(mList);
-                    if (TextUtils.isEmpty(mNextZaloIdList) || mNextZaloIdList.equals(mPreviousZaloId)) {
-                        Timber.d("Check list zaloid or client on Complete");
-                        subscriber.onCompleted();
-                    } else {
-                        mPreviousZaloId = mNextZaloIdList;
-                        checklistzaloidforclient(mNextZaloIdList, subscriber, deep + 1);
-                    }
-                })
-                .doOnTerminate(() -> mPreviousZaloId = null)
-                .subscribe(subscriber::onNext, subscriber::onError);
-    }
-*/
-
-
-    private Observable<List<ZaloPayUserEntity>> fetchZaloPayId(String zaloidlist) {
+    private Observable<List<ZaloPayUserEntity>> fetchZaloPayUserByZaloId(String zaloidlist) {
         Timber.d("fetch zalopay info: zaloids [%s]", zaloidlist);
         return mRequestService.checklistzaloidforclient(mUser.zaloPayId, mUser.accesstoken, zaloidlist)
                 .map(response -> response.userList)
@@ -300,7 +278,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     private Observable<List<RedPacketUserEntity>> fetchListUserZaloPay(List<Long> listUserWithoutId, List<Long> listZaloId) {
         Timber.d("fetchListUserZaloPay [%s]", listUserWithoutId.size());
-        return fetchZaloPayId(Strings.joinWithDelimiter(",", listUserWithoutId))
+        return fetchZaloPayUserByZaloId(Strings.joinWithDelimiter(",", listUserWithoutId))
                 .onErrorResumeNext(throwable -> Observable.just(new ArrayList<>()))
                 .flatMap(entities -> getListUserZaloPayLocal(listZaloId));
     }
@@ -339,5 +317,47 @@ public class FriendRepository implements FriendStore.Repository {
                     Timber.d("fetch zalo friend cursor full info call");
                     return getZaloFriendsCursorLocal();
                 });
+    }
+
+    @Override
+    public Observable<Person> getUserInfo(long zaloid) {
+        return fetchZaloPayUserByZaloId(String.valueOf(zaloid))
+                .flatMap(entities -> {
+                    if (Lists.isEmptyOrNull(entities)) {
+                        return Observable.error(new UserNotFoundException());
+                    }
+
+                    ZaloPayUserEntity entity = entities.get(0);
+                    if (entity.status == NetworkError.USER_NOT_EXIST) {
+                        return Observable.error(new UserNotFoundException());
+                    } else if (entity.status == NetworkError.ZPW_ACCOUNT_SUSPENDED) {
+                        return Observable.error(new GenericException(R.string.exception_zpw_account_suspended));
+                    } else if (TextUtils.isEmpty(entity.userid)) {
+                        return Observable.error(new UserNotFoundException());
+                    }
+
+                    return Observable.just(transform(entity));
+                });
+    }
+
+    private Person transform(ZaloPayUserEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        Person person = new Person(entity.userid);
+        try {
+            person.zaloId = Long.valueOf(entity.zaloid);
+        } catch (NumberFormatException e) {
+            Timber.e(e, "transform: zalopayId %s zaloid %s", entity.userid, entity.zaloid);
+        }
+
+        person.avatar = entity.avatar;
+        person.displayName = entity.displayName;
+        person.zalopayname = entity.zalopayname;
+        person.phonenumber = entity.phonenumber;
+        person.status = entity.status;
+
+        return person;
     }
 }

@@ -19,7 +19,13 @@ public class ZaloPayUserEntity {
     @SerializedName("zalopayname")
     public String zalopayname;
     @SerializedName("status")
-    public long status;
+    public long status; // = 1 exist
+
+    @SerializedName("displayName")
+    public String displayName;
+
+    @SerializedName("avatar")
+    public String avatar;
 
     @Override
     public boolean equals(Object o) {

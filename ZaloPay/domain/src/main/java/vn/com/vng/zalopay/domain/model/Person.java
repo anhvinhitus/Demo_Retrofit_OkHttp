@@ -20,6 +20,8 @@ public class Person {
     public int userGender = 1;
     public long phonenumber;
 
+    public long status;
+
     public Person(String zaloPayId) {
         this.zaloPayId = zaloPayId;
         validateZaloPayId();
@@ -46,7 +48,6 @@ public class Person {
     }
 
     /**
-     *
      * @return true if has valid zaloPayId, i.e. non-empty, is number, and larger than zero
      */
     public boolean hasZaloPayId() {

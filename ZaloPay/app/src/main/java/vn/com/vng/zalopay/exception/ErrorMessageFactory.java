@@ -19,13 +19,14 @@ import vn.com.vng.zalopay.data.exception.GenericException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
+import vn.com.vng.zalopay.data.exception.UserNotFoundException;
 
 public class ErrorMessageFactory {
 
     private ErrorMessageFactory() {
         //empty
     }
-    
+
     public static String create(Context context, Throwable exception) {
         if (context == null) {
             return null;
@@ -56,7 +57,11 @@ public class ErrorMessageFactory {
         } else if (exception instanceof ServerMaintainException) {
             message = null;
         } else if (exception instanceof GenericException) {
-            message = exception.getMessage();
+            if (((GenericException) exception).mMessageRes > 0) {
+                message = context.getString(((GenericException) exception).mMessageRes);
+            } else {
+                message = exception.getMessage();
+            }
         }
 
         return message;

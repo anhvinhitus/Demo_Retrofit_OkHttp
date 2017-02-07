@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.exception;
 
+import android.support.annotation.StringRes;
+
 /**
  * Created by hieuvm on 12/24/16.
  */
@@ -7,6 +9,11 @@ package vn.com.vng.zalopay.data.exception;
 public class GenericException extends Throwable {
 
     public int mErrorCode = -1;
+    public int mMessageRes;
+
+    public GenericException(@StringRes int message) {
+        this.mMessageRes = message;
+    }
 
     public GenericException(String message) {
         super(message);

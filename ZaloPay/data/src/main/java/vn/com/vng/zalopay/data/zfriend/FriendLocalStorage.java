@@ -156,11 +156,11 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
 
     @Nullable
     @Override
-    public ZaloPayUserEntity getZaloPayUser(String zalopayId) {
+    public ZaloPayUserEntity getZaloPayUserByZaloPayId(String zalopayId) {
         if (TextUtils.isEmpty(zalopayId)) {
             return null;
-
         }
+
         List<ZaloPayUserEntity> list = getZaloPayUsers(Collections.singletonList(zalopayId));
         if (Lists.isEmptyOrNull(list)) {
             return null;
@@ -306,5 +306,12 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         builder.append(' ');
         builder.append(orderBy());
         return builder.toString();
+    }
+
+
+    @Nullable
+    @Override
+    public ZaloPayUserEntity getZaloPayUserByZaloId(long zaloId) {
+        return null;
     }
 }

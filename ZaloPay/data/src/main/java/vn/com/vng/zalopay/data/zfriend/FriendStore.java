@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.data.api.response.ListUserExistResponse;
 import vn.com.vng.zalopay.data.cache.SqlBaseScope;
 import vn.com.vng.zalopay.data.net.adapter.API_NAME;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
+import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -50,7 +51,10 @@ public interface FriendStore {
         List<ZaloPayUserEntity> getZaloPayUsers(List<String> zalopayids);
 
         @Nullable
-        ZaloPayUserEntity getZaloPayUser(String zalopayId);
+        ZaloPayUserEntity getZaloPayUserByZaloPayId(String zalopayId);
+
+        @Nullable
+        ZaloPayUserEntity getZaloPayUserByZaloId(long zaloId);
 
         @NonNull
         List<RedPacketUserEntity> getRedPacketUsersEntity(List<Long> zaloids);
@@ -110,9 +114,10 @@ public interface FriendStore {
 
         Observable<Boolean> syncContact();
 
-
         Observable<Boolean> fetchZaloFriendFullInfo();
 
         Observable<Cursor> fetchZaloFriendCursorFullInfo();
+
+        Observable<Person> getUserInfo(long zaloid);
     }
 }

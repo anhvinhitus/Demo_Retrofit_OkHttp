@@ -17,11 +17,9 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.GetUserInfoByZPIDResponse;
 import vn.com.vng.zalopay.data.api.response.GetUserInfoByZPNameResponse;
-import vn.com.vng.zalopay.data.api.response.MappingZaloAndZaloPayResponse;
 import vn.com.vng.zalopay.data.api.response.UpdateProfileResponse;
 import vn.com.vng.zalopay.data.api.response.UserProfileLevelResponse;
 import vn.com.vng.zalopay.data.net.adapter.API_NAME;
-import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
 import vn.com.vng.zalopay.domain.model.ProfileLevel2;
@@ -42,13 +40,13 @@ public interface AccountStore {
 
         void saveProfileInfo3(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg);
 
-        Map<String,String> getProfileInfo3();
+        Map<String, String> getProfileInfo3();
 
-        Map<String,String> getProfileLevel2();
+        Map<String, String> getProfileLevel2();
 
         void saveProfileInfo2(String phoneNumber, boolean receiveOtp);
 
-        Map<String,String> getChangePinState();
+        Map<String, String> getChangePinState();
 
         void saveChangePinState(boolean receiveOtp);
     }
@@ -69,10 +67,6 @@ public interface AccountStore {
         @FormUrlEncoded
         @POST(Constants.UM_API.RECOVERYPIN)
         Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("oldpin") String oldPin, @Field("pin") String newPin, @Field("otp") String otp);
-
-        @API_NAME(ZPEvents.API_UM_GETUSERINFO)
-        @GET(Constants.UM_API.GETUSERINFO)
-        Observable<MappingZaloAndZaloPayResponse> getuserinfo(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("loginuid") long zaloId, @Query("systemlogin") int systemlogin);
 
         @API_NAME(ZPEvents.API_UM_GETUSERPROFILELEVEL)
         @GET(Constants.UM_API.GETUSERPROFILELEVEL)
@@ -127,9 +121,6 @@ public interface AccountStore {
         Observable<Boolean> recoveryPin(String pin, String oldPin);
 
         Observable<Boolean> verifyRecoveryPin(String otp);
-
-
-        Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin);
 
         Observable<Person> getUserInfoByZaloPayId(String zaloPayId);
 

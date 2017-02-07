@@ -16,7 +16,6 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.Constants;
-import vn.com.vng.zalopay.domain.model.MappingZaloAndZaloPay;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.ProfileInfo3;
 import vn.com.vng.zalopay.domain.model.ProfileLevel2;
@@ -122,7 +121,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 .map(baseResponse -> Boolean.TRUE);
     }
 
-    @Override
+  /*  @Override
     public Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin) {
         return mRequestService.getuserinfo(mUser.zaloPayId, mUser.accesstoken, zaloId, systemLogin)
                 .map(response -> {
@@ -142,7 +141,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                     mappingZaloAndZaloPay.zaloPayName = response.zalopayname;
                     return mappingZaloAndZaloPay;
                 });
-    }
+    }*/
 
     @Override
     public Observable<Person> getUserInfoByZaloPayId(String zaloPayId) {
