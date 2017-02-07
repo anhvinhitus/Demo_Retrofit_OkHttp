@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import com.google.gson.JsonObject;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
@@ -35,6 +36,8 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
+import vn.com.vng.zalopay.data.qrcode.QRCodeStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -71,12 +74,14 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
     private final Navigator mNavigator;
     private final User mUser;
 
+    private QRCodeStore.Repository mQRCodeRepository;
     private PaymentWrapper paymentWrapper;
 
     @Inject
     QRCodePresenter(BalanceStore.Repository balanceRepository,
                     ZaloPayRepository zaloPayRepository,
                     TransactionStore.Repository transactionRepository,
+                    QRCodeStore.Repository qrCodeRepository,
                     Context applicationContext,
                     Navigator navigator,
                     User user) {
@@ -84,6 +89,7 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         mApplicationContext = applicationContext;
         mNavigator = navigator;
         mUser = user;
+        mQRCodeRepository = qrCodeRepository;
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
@@ -110,21 +116,42 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         }
     }
 
-    public void pay(String jsonString) {
-        pay(jsonString, false);
+    private void showNetworkErrorAndResumeAfterDismiss() {
+        if (mView == null) {
+            return;
+        }
+        mView.showNetworkErrorDialog(new ZPWOnSweetDialogListener() {
+            @Override
+            public void onClickDiaLog(int i) {
+                mView.resumeScanner();
+            }
+        });
+    }
+
+    void handleResult(String scanResult) {
+        if (TextUtils.isEmpty(scanResult)) {
+            Timber.i("Empty QR code");
+            resumeScanningAfterWrongQR();
+        } else if (AndroidUtils.isHttpRequest(scanResult)) {
+            payViaUrl(scanResult);
+        } else {
+            pay(scanResult, false);
+        }
+    }
+
+    private void payViaUrl(String url) {
+        showLoadingView();
+        Subscription subscription = mQRCodeRepository.getPaymentInfo(url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new GetPaymentInfoSubscribe(url));
+        mSubscription.add(subscription);
     }
 
     private void pay(String jsonString, boolean fromPhotoLibrary) {
         Timber.d("start to process paying QR code: %s, from lib: %s", jsonString, fromPhotoLibrary);
         if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
-            if (mView != null) {
-                mView.showNetworkErrorDialog(new ZPWOnSweetDialogListener() {
-                    @Override
-                    public void onClickDiaLog(int i) {
-                        mView.resumeScanner();
-                    }
-                });
-            }
+            showNetworkErrorAndResumeAfterDismiss();
             return;
         }
 
@@ -462,6 +489,38 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
             }
             Timber.d("startUpdateProfileLevel");
             mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
+        }
+    }
+
+    private class GetPaymentInfoSubscribe extends DefaultSubscriber<JsonObject> {
+
+        private String mUrl;
+
+        GetPaymentInfoSubscribe(String url) {
+            this.mUrl = url;
+        }
+
+        @Override
+        public void onNext(JsonObject jsonObject) {
+            hideLoadingView();
+            if (jsonObject == null || TextUtils.isEmpty(jsonObject.toString())) {
+                mView.showError(mView.getContext().getString(R.string.data_invalid));
+                return;
+            }
+            pay(jsonObject.toString(), false);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Timber.d("Get payment info error [%s]", e);
+            hideLoadingView();
+            if (e instanceof NetworkConnectionException) {
+                showNetworkErrorAndResumeAfterDismiss();
+            } else {
+                if (mView != null && mView.getContext() != null) {
+                    mNavigator.startWebAppActivity(mView.getContext(), mUrl);
+                }
+            }
         }
     }
 }

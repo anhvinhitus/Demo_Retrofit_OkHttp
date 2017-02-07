@@ -62,10 +62,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -1144,5 +1147,12 @@ public class AndroidUtils {
         if (Looper.getMainLooper() != Looper.myLooper()) {
             throw new IllegalStateException("Must be called from the main thread.");
         }
+    }
+
+    public static boolean isHttpRequest(String input) {
+        String URL_REGEX = "^((https?|http)://|www\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
+        Pattern pattern = Pattern.compile(URL_REGEX);
+        Matcher matcher = pattern.matcher(input);
+        return matcher.find();
     }
 }
