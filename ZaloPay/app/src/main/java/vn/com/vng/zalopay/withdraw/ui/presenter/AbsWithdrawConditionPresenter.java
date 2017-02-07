@@ -6,9 +6,11 @@ import android.text.TextUtils;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
@@ -54,16 +56,16 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
                 });
     }
 
-    private boolean validLinkCard(List<BankConfig> listCardSupportWithdraw) {
+    private boolean validLinkCard(List<BankConfig> bankConfigs) {
         User user = mUser;
         try {
-            if (listCardSupportWithdraw == null || listCardSupportWithdraw.isEmpty()) {
+            if (bankConfigs == null || bankConfigs.isEmpty()) {
                 return false;
             }
             List<DMappedCard> mappedCardList = CShareData.getInstance().getMappedCardList(user.zaloPayId);
-            for (int j = 0; j < listCardSupportWithdraw.size(); j++) {
-                BankConfig bankConfig = listCardSupportWithdraw.get(j);
-                if (bankConfig == null) {
+            for (int j = 0; j < bankConfigs.size(); j++) {
+                BankConfig bankConfig = bankConfigs.get(j);
+                if (bankConfig == null || bankConfig.isBankAccount()) {
                     continue;
                 }
                 if (existInMappedCard(mappedCardList, bankConfig.code)) {
@@ -76,16 +78,30 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
         return false;
     }
 
-    // TODO: 2/4/17 - longlv: waiting PaymentSDK to add validLinkAccount
     private boolean validLinkAccount(List<BankConfig> bankConfigs) {
+        User user = mUser;
+        try {
+            if (bankConfigs == null || bankConfigs.isEmpty()) {
+                return false;
+            }
+            List<DBankAccount> mappedAccounts = CShareData.getInstance().getMapBankAccountList(user.zaloPayId);
+            for (int j = 0; j < bankConfigs.size(); j++) {
+                BankConfig bankConfig = bankConfigs.get(j);
+                if (bankConfig == null || !bankConfig.isBankAccount()) {
+                    continue;
+                }
+                if (existInMappedAccount(mappedAccounts, bankConfig.code)) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            Timber.w(e, "Get mapped card exception: %s", e.getMessage());
+        }
         return false;
     }
 
     private boolean existInMappedCard(List<DMappedCard> userCardList, String bankCode) {
-        if (userCardList == null || userCardList.size() <= 0) {
-            return false;
-        }
-        if (TextUtils.isEmpty(bankCode)) {
+        if (Lists.isEmptyOrNull(userCardList) || TextUtils.isEmpty(bankCode)) {
             return false;
         }
         for (int j = 0; j < userCardList.size(); j++) {
@@ -94,6 +110,22 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
                 continue;
             }
             if (bankCode.equals(mappedCard.bankcode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean existInMappedAccount(List<DBankAccount> bankAccounts, String bankCode) {
+        if (Lists.isEmptyOrNull(bankAccounts) || TextUtils.isEmpty(bankCode)) {
+            return false;
+        }
+        for (int j = 0; j < bankAccounts.size(); j++) {
+            DBankAccount bankAccount = bankAccounts.get(j);
+            if (bankAccount == null) {
+                continue;
+            }
+            if (bankCode.equals(bankAccount.bankcode)) {
                 return true;
             }
         }

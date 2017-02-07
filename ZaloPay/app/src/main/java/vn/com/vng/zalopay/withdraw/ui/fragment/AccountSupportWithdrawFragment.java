@@ -85,12 +85,11 @@ public class AccountSupportWithdrawFragment extends BaseFragment {
     }
 
     public void refreshAccountSupportList(List<BankConfig> accountSupportList) {
-        Timber.d("refreshListCardSupport accSupportList[%s]", accountSupportList);
         if (mAdapter == null) {
             return;
         }
 
-        // TODO: 2/4/17 - longlv: waiting PaymentSDK to change getMapBankAccountList -> getMappedAccount.
+        Timber.d("refreshListCardSupport accSupportList[%s]", accountSupportList);
         List<DBankAccount> mappedAccountList = CShareData.getInstance().getMapBankAccountList(mUser.zaloPayId);
         mAdapter.setData(mergeData(accountSupportList, mappedAccountList));
         mAdapter.notifyDataSetChanged();

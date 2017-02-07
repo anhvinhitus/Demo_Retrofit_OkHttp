@@ -18,7 +18,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.withdraw.models.BankType;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -150,15 +149,14 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         List<BankConfig> listSupportLinkCard = new ArrayList<>();
         List<BankConfig> listSupportLinkAccount = new ArrayList<>();
         if (!Lists.isEmptyOrNull(list)) {
-            for (BankConfig bankConfig: list) {
+            for (BankConfig bankConfig : list) {
                 if (bankConfig == null) {
                     continue;
                 }
-                Timber.d("bank type[%s]", bankConfig.banktype);
-                if (bankConfig.banktype == BankType.SUPPORT_LINK_CARD.getValue()) {
-                    listSupportLinkCard.add(bankConfig);
-                } else if (bankConfig.banktype == BankType.SUPPORT_LINK_ACCOUNT.getValue()) {
+                if (bankConfig.isBankAccount()) {
                     listSupportLinkAccount.add(bankConfig);
+                } else {
+                    listSupportLinkCard.add(bankConfig);
                 }
             }
         }

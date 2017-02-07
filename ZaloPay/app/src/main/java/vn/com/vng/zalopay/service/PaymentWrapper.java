@@ -152,7 +152,6 @@ public class PaymentWrapper {
     }
 
     public void linkCard(Activity activity) {
-        Timber.d("linkCard Start");
         User user = AndroidApplication.instance().getUserComponent().currentUser();
         if (!user.hasZaloPayId()) {
             Timber.i("payWithOrder: zaloPayId is invalid");
@@ -165,9 +164,6 @@ public class PaymentWrapper {
             paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
 
-            Timber.d("payWithOrder: ZPWPaymentInfo is ready");
-
-//        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
             callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_CARD);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
@@ -198,13 +194,6 @@ public class PaymentWrapper {
             paymentInfo.appTime = System.currentTimeMillis();
             paymentInfo.linkAccInfo = linkAccInfo;
 
-            // TODO: 1/24/17 by longlv: bypass valid validPaymentInfo for test only
-            paymentInfo.appTime = System.currentTimeMillis();
-            paymentInfo.amount = paymentInfo.appTime;
-            paymentInfo.appTransID = String.valueOf(paymentInfo.appTime);
-            paymentInfo.mac = paymentInfo.appTransID;
-
-            Timber.d("payWithOrder: ZPWPaymentInfo is ready");
             callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_ACC);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
@@ -316,7 +305,9 @@ public class PaymentWrapper {
             paymentInfo.userInfo.balance = balanceRepository.currentBalance();
         }
 
-        if (paymentChannel != EPaymentChannel.LINK_CARD && !validPaymentInfo(paymentInfo)) {
+        if (paymentChannel != EPaymentChannel.LINK_CARD
+                && paymentChannel != EPaymentChannel.LINK_ACC
+                && !validPaymentInfo(paymentInfo)) {
             responseListener.onAppError(owner.getString(R.string.data_invalid_try_again));
             Exception e = new Exception(
                     String.format("PaymentInfo is invalid, appId[%s] transId[%s] amount[%s] appTime[%s]  mac[%s]",
