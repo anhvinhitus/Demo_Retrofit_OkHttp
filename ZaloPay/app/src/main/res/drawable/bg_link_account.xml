@@ -2,8 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
     <corners
-        android:topLeftRadius="@dimen/border_link_card"
-        android:topRightRadius="@dimen/border_link_card"/>
+        android:radius="@dimen/border_link_card"/>
 
     <solid android:color="@color/white"/>
 </shape>

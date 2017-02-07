@@ -133,11 +133,13 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         } else {
             validLinkCard(new IListenerValid() {
                 @Override
-                public void onSuccess(List<BankConfig> list, boolean isValid) {
+                public void onSuccess(List<BankConfig> list,
+                                      boolean isValidLinkCard,
+                                      boolean isValidLinkAccount) {
                     if (mView == null || mView.getContext() == null) {
                         return;
                     }
-                    if (isValid) {
+                    if (isValidLinkCard || isValidLinkAccount) {
                         mNavigator.startWithdrawActivity(mView.getContext());
                     } else {
                         mNavigator.startWithdrawConditionActivity(mView.getContext());

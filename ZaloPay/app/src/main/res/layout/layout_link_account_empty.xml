@@ -21,15 +21,30 @@
             android:paddingBottom="@dimen/spacing.medium"
             android:paddingTop="@dimen/spacing.medium">
 
-            <TextView
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:layout_marginRight="@dimen/spacing.medium"
-                android:text="@string/not_link_account"
-                android:textColor="@color/txt_item_main"
-                android:textSize="@dimen/textsize.text.main"
-                android:textStyle="bold"/>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.zalopay.ui.widget.IconFont
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    app:iconName="@string/linkaccount_info"
+                    app:iconSize="@dimen/font_size_icon_in_text_large"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.small"
+                    android:text="@string/not_link_account"
+                    android:textColor="@color/txt_item_main"
+                    android:textSize="@dimen/textsize.text.main"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"

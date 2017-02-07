@@ -43,7 +43,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
                         if (listenerValid == null) {
                             return;
                         }
-                        listenerValid.onSuccess(list, validLinkCard(list) || validLinkAccount(list));
+                        listenerValid.onSuccess(list, validLinkCard(list), validLinkAccount(list));
                     }
 
                     @Override
@@ -133,7 +133,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
     }
 
     public interface IListenerValid {
-        void onSuccess(List<BankConfig> list, boolean isValid);
+        void onSuccess(List<BankConfig> list, boolean isValidLinkCard, boolean isValidLinkAccount);
 
         void onError(String error);
     }

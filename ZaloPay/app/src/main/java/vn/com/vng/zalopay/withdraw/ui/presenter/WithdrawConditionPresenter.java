@@ -28,20 +28,21 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
         mNavigator = navigator;
         mIListenerValid = new IListenerValid() {
             @Override
-            public void onSuccess(List<BankConfig> list, boolean isValid) {
-                if (isValid) {
-                    if (mView == null) {
-                        return;
+            public void onSuccess(List<BankConfig> list, boolean isValidLinkCard, boolean isValidLinkAccount) {
+                hideLoading();
+                if (isValidProfile() && (isValidLinkCard || isValidLinkAccount)) {
+                    if (mView != null && mView.getActivity() != null) {
+                        mNavigator.startWithdrawActivityAndFinish(mView.getActivity());
                     }
-                    if (isValidProfile() && mView.getActivity() != null) {
-                        mNavigator.startWithdrawActivity(mView.getActivity());
-                        mView.getActivity().finish();
-                        return;
+                } else {
+                    if (isValidLinkCard) {
+                        hideLinkCardNote();
                     }
-                    mView.hideCardNote();
-                    mView.hideLoading();
+                    if (isValidLinkAccount) {
+                        hideLinkAccountNote();
+                    }
+                    refreshLinkCard(list);
                 }
-                refreshLinkCard(list);
             }
 
             @Override
@@ -74,7 +75,6 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
         final boolean isProfileValid = isValidProfile();
         mView.setProfileValid(isProfileValid);
 
-
         validLinkCard(mIListenerValid);
     }
 
@@ -104,5 +104,23 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
             return;
         }
         mView.refreshListCardSupport(list);
+    }
+
+    private void hideLinkCardNote() {
+        if (mView != null) {
+            mView.hideLinkCardNote();
+        }
+    }
+
+    private void hideLinkAccountNote() {
+        if (mView != null) {
+            mView.hideLinkAccountNote();
+        }
+    }
+
+    private void hideLoading() {
+        if (mView != null) {
+            mView.hideLoading();
+        }
     }
 }

@@ -38,6 +38,9 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @BindView(R.id.tvCardNote)
     View tvCardNote;
 
+    @BindView(R.id.tvAccountNote)
+    View tvAddAccount;
+
     @BindView(R.id.tvUserNote)
     View tvUserNote;
 
@@ -168,8 +171,14 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         }
     }
 
-    public void hideCardNote() {
+    @Override
+    public void hideLinkCardNote() {
         tvCardNote.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideLinkAccountNote() {
+        tvAddAccount.setVisibility(View.GONE);
     }
 
     @Override

@@ -19,7 +19,9 @@ public interface IWithdrawConditionView extends ILoadDataView {
 
     void refreshListCardSupport(List<BankConfig> list);
 
-    void hideCardNote();
+    void hideLinkCardNote();
+
+    void hideLinkAccountNote();
 
     void showConfirmDialog(String message, ZPWOnEventConfirmDialogListener listener);
 }

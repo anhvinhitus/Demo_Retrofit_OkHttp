@@ -427,6 +427,12 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    public void startWithdrawActivityAndFinish(Activity activity) {
+        Intent intent = new Intent(activity, WithdrawActivity.class);
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
     public void startTransactionDetail(Context context, String transid) {
         Map<String, String> launchOptions = new HashMap<>();
         launchOptions.put("view", "history");
