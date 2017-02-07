@@ -124,7 +124,9 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         boolean shouldFinishCurrentActivity = true;
         try {
             if (TextUtils.isEmpty(senderId) ||
-                    TextUtils.isEmpty(receiverId)) {
+                    !TextUtils.isDigitsOnly(senderId) ||
+                    TextUtils.isEmpty(receiverId) ||
+                    !TextUtils.isDigitsOnly(receiverId)) {
                 return;
             }
 
@@ -139,7 +141,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
             payment.initialize();
             if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
                 Timber.d("need get balance");
-                payment.start();
+                payment.getBalance();
             }
 
             Timber.d("Processing send money on behalf of Zalo request");

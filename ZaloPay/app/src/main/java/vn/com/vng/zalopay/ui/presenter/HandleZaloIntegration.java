@@ -25,7 +25,7 @@ public class HandleZaloIntegration {
         AndroidApplication.instance().getUserComponent().inject(this);
     }
 
-    void start() {
+    void getBalance() {
         Subscription subscription = mBalanceRepository.balance()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
