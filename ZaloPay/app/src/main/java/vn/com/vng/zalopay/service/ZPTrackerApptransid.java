@@ -1,6 +1,4 @@
-package vn.com.vng.zalopay.utils;
-
-import android.util.Log;
+package vn.com.vng.zalopay.service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,23 +7,32 @@ import javax.inject.Inject;
 
 import rx.Observer;
 import vn.com.vng.zalopay.data.api.entity.ApptransidLogEntity;
-import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogLocalStorage;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
-import vn.com.vng.zalopay.data.cache.model.ApptransidLogGD;
+import vn.com.vng.zalopay.utils.ApptransidLogWriter;
+import vn.com.vng.zalopay.utils.TrackBuilders;
+import vn.com.zalopay.analytics.ZPTracker;
+import vn.com.zalopay.wallet.utils.Log;
 
 /**
  * Created by khattn on 1/23/17.
  */
 
-public class TrackLogs {
-    private final ApptransidLogStore.Repository mRepository;
+public class ZPTrackerApptransid {
 
-    @Inject
-    TrackLogs(ApptransidLogStore.Repository logLocalStorage) {
-        this.mRepository = logLocalStorage;
+    private static ApptransidLogWriter mWriter;
+
+    public static void initialize(ApptransidLogWriter apptransidLogWriter) {
+        mWriter = apptransidLogWriter;
     }
 
-    public void trackLog(String apptransid, int appid, int step, int step_result, int pcmid, int transtype,
+//    private static ApptransidLogStore.Repository mRepository;
+//
+//    @Inject
+//    ZPTrackerApptransid(ApptransidLogStore.Repository logLocalStorage) {
+//        this.mRepository = logLocalStorage;
+//    }
+
+    public static void trackEvent(String apptransid, int appid, int step, int step_result, int pcmid, int transtype,
                            long transid, int sdk_result, int server_result, String source) {
 
         final TrackBuilders.AppTransIdBuilder eventBuilder = new TrackBuilders.AppTransIdBuilder()
@@ -40,8 +47,9 @@ public class TrackLogs {
                 .setServerResult(server_result)
                 .setSource(source);
 
+        mWriter.writeLog(eventBuilder.build(), apptransid);
 //        mRepository.remove(apptransid).subscribe();
-        mRepository.put(eventBuilder.build()).subscribe();
+//        mRepository.put(eventBuilder.build()).subscribe();
 //        mRepository.get(apptransid).subscribe(new Observer<ApptransidLogEntity>() {
 //            @Override
 //            public void onCompleted() {
@@ -55,13 +63,12 @@ public class TrackLogs {
 //
 //            @Override
 //            public void onNext(ApptransidLogEntity apptransidLog) {
-//                Log.d("TEST", "trackLog: ");
-//                Log.d("TEST", "trackLogValue: " + transform(apptransidLog).toString());
+//                Log.d("TEST", "trackLog: " + transform(apptransidLog).toString());
 //            }
 //        });
     }
 
-//    private Map<String, String> transform(ApptransidLogEntity data) {
+//    private static Map<String, String> transform(ApptransidLogEntity data) {
 //        Map<String, String> log = new HashMap<>();
 //
 //        log.put("apptransid", data.apptransid);
