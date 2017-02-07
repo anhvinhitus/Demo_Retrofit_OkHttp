@@ -32,7 +32,9 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.service.ZPTrackerAnswers;
+import vn.com.vng.zalopay.service.ZPTrackerApptransid;
 import vn.com.vng.zalopay.service.ZPTrackerGA;
+import vn.com.vng.zalopay.utils.ApptransidLogWriter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
@@ -87,6 +89,8 @@ public class AndroidApplication extends Application {
 
         initAppComponent();
 
+        initializeTrackLog();
+
         Timber.d("onCreate %s", appComponent);
         ZaloSDKApplication.wrap(this);
         if (!BuildConfig.DEBUG) {
@@ -125,6 +129,10 @@ public class AndroidApplication extends Application {
         ZPAnalytics.addDefaultTracker();
         ZPAnalytics.addTracker(new ZPTrackerGA(tracker));
         ZPAnalytics.addTracker(new ZPTrackerAnswers());
+    }
+
+    private void initializeTrackLog() {
+        ZPTrackerApptransid.initialize(new ApptransidLogWriter(appComponent.appTransIdLogRepository()));
     }
 
     private void initializeFresco() {

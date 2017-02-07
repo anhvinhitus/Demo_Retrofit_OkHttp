@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.internal.di.modules;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -17,14 +18,15 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
  */
 
 @Module
-public class UserApptransidLogModule {
-    @UserScope
+public class AppTransIdLogModule {
+
+    @Singleton
     @Provides
     ApptransidLogStore.LocalStorage provideApptransidLogLocalStorage(@Named("daosession") DaoSession session) {
         return new ApptransidLogLocalStorage(session);
     }
 
-    @UserScope
+    @Singleton
     @Provides
     ApptransidLogStore.Repository provideApptransidLogRepository(ApptransidLogStore.RequestService requestService,
                                                                  ApptransidLogStore.LocalStorage localStorage,
@@ -32,9 +34,10 @@ public class UserApptransidLogModule {
         return new ApptransidLogRepository(requestService, localStorage, mapper);
     }
 
+    @Singleton
     @Provides
-    @UserScope
     ApptransidLogStore.RequestService providesApptransidLogService(@Named("retrofitRedPacketApi") Retrofit retrofit) {
         return retrofit.create(ApptransidLogStore.RequestService.class);
     }
+
 }
