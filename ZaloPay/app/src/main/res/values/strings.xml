@@ -482,7 +482,7 @@
     <string name="total">Tổng cộng</string>
     <string name="avatar">Ảnh của bạn</string>
     <string name="zero.currency">0 VND</string>
-    <string name="account_holders">Chủ TK:</string>
+    <string name="account_holders">Số ĐT:</string>
     <string name="tutorial.keyguard.secure.disable">Khóa màn hình chưa được thiết thập.\nVào \'Cài đặt -> Bảo mật -> Vân tay\' để thiết lập xác thực vân tay</string>
     <string name="tutorial.fingerprint.unavailable">Vào \'Cài đặt -> Bảo mật -> Vân tay\' và đăng ký ít nhất một dấu vân tay</string>
     <string name="enter.password.to.continue">Nhập mật khẩu thanh toán để tiếp tục</string>
