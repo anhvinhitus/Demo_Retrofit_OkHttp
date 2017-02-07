@@ -2,6 +2,7 @@
 <resources>
     <dimen name="spacing.tiny.s">2dp</dimen>
     <dimen name="spacing.tiny">4dp</dimen>
+    <dimen name="spacing.small.t">6dp</dimen>
     <dimen name="spacing.small">8dp</dimen>
     <dimen name="spacing.medium.t">10dp</dimen>
     <dimen name="spacing.medium.s">12dp</dimen>

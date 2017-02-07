@@ -13,8 +13,8 @@
     <dimen name="font_size_profile_icon">20dp</dimen>
     <dimen name="font_size_feedback_camera">20dp</dimen>
     <dimen name="font_size_link_card_add">18dp</dimen>
-    <dimen name="font_size_icon_in_text_large">20dp</dimen>
-    <dimen name="font_size_icon_in_text">14dp</dimen>
+    <dimen name="font_size_icon_in_text_large">18dp</dimen>
+    <dimen name="font_size_icon_in_text">12dp</dimen>
 
     <dimen name="textsize.card.number">18sp</dimen>
     <dimen name="textsize.text.main">15sp</dimen>
