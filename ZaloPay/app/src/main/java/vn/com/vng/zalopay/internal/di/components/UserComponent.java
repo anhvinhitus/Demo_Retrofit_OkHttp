@@ -64,6 +64,7 @@ import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.HandleInAppPayment;
+import vn.com.vng.zalopay.ui.presenter.HandleZaloIntegration;
 import vn.com.vng.zalopay.warningrooted.WarningRootedFragment;
 import vn.com.vng.zalopay.webapp.WebAppFragment;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
@@ -183,6 +184,8 @@ public interface UserComponent {
     void inject(WarningRootedFragment f);
 
     void inject(HandleInAppPayment obj);
+
+    void inject(HandleZaloIntegration obj);
 
     void inject(CardSupportWithdrawFragment f);
 

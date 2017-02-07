@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -136,9 +135,11 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
                 return;
             }
 
+            HandleZaloIntegration payment = new HandleZaloIntegration();
+            payment.initialize();
             if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
                 Timber.d("need get balance");
-
+                payment.start();
             }
 
             Timber.d("Processing send money on behalf of Zalo request");
