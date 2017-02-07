@@ -34,7 +34,6 @@ import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.service.ZPTrackerAnswers;
 import vn.com.vng.zalopay.service.ZPTrackerApptransid;
 import vn.com.vng.zalopay.service.ZPTrackerGA;
-import vn.com.vng.zalopay.utils.ApptransidLogWriter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
@@ -132,7 +131,7 @@ public class AndroidApplication extends Application {
     }
 
     private void initializeTrackLog() {
-        ZPTrackerApptransid.initialize(new ApptransidLogWriter(appComponent.appTransIdLogRepository()));
+        new ZPTrackerApptransid(appComponent.appTransIdLogRepository());
     }
 
     private void initializeFresco() {
