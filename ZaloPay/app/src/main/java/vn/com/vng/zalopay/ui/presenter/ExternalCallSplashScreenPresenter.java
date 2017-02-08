@@ -164,7 +164,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
             if (ownerZaloId != sender) {
                 Timber.d("show dialog: %s", ((Activity) mView.getContext()).isFinishing());
-                yesNoDialog((Activity) mView.getContext(), mApplicationContext.getString(R.string.confirm_change_account),
+                mDialog = DialogHelper.yesNoDialog((Activity) mView.getContext(), mApplicationContext.getString(R.string.confirm_change_account),
                         mApplicationContext.getString(R.string.accept), mApplicationContext.getString(R.string.cancel),
                         new ZPWOnEventConfirmDialogListener() {
                             @Override
@@ -180,6 +180,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
                                         ZALO_INTEGRATION_LOGIN_REQUEST_CODE, data, sender, accesstoken);
                             }
                         });
+                mDialog.show();
                 shouldFinishCurrentActivity = false;
                 return;
             }
@@ -187,15 +188,15 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
             HandleZaloIntegration payment = new HandleZaloIntegration();
             payment.initialize();
             payment.getBalance();
-/*
-            if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
-                Timber.d("need get balance");
-                 payment.getBalance();
-          }*/
+
+
+            if (mView == null) {
+                return;
+            }
 
             Timber.d("Processing send money on behalf of Zalo request");
             RecentTransaction item = new RecentTransaction();
-            item.zaloId = Long.parseLong(receiverId);
+            item.zaloId = receiver;
 
             Bundle bundle = new Bundle();
             bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);
@@ -211,38 +212,6 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
     }
 
     private SweetAlertDialog mDialog;
-
-    private void yesNoDialog(Activity pActivity, String pMessage, String pOKButton, String pCancelButton, final ZPWOnEventConfirmDialogListener callback) {
-        mDialog = new SweetAlertDialog(pActivity);
-        mDialog.setContentHtmlText(pMessage);
-        mDialog.setCancelText(pCancelButton);
-        mDialog.setConfirmText(pOKButton);
-        mDialog.setTitleText(pActivity.getString(vn.com.zalopay.wallet.R.string.dialog_title_confirm));
-        mDialog.showCancelButton(true);
-        mDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-            public void onClick(SweetAlertDialog sDialog) {
-                if (sDialog != null) {
-                    sDialog.dismiss();
-                }
-
-                if (callback != null) {
-                    callback.onCancelEvent();
-                }
-
-            }
-        }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-            public void onClick(SweetAlertDialog sDialog) {
-                if (sDialog != null) {
-                    sDialog.dismiss();
-                }
-
-                if (callback != null) {
-                    callback.onOKevent();
-                }
-
-            }
-        }).show();
-    }
 
     private boolean handleOTPDeepLink(Uri data) {
         if (!mUserConfig.hasCurrentUser()) {

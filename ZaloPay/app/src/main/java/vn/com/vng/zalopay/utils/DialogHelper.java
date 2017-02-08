@@ -267,4 +267,37 @@ public class DialogHelper {
         }
     }
 
+
+    public static SweetAlertDialog yesNoDialog(Activity pActivity, String pMessage, String pOKButton, String pCancelButton, final ZPWOnEventConfirmDialogListener callback) {
+        SweetAlertDialog mDialog = new SweetAlertDialog(pActivity);
+        mDialog.setContentHtmlText(pMessage);
+        mDialog.setCancelText(pCancelButton);
+        mDialog.setConfirmText(pOKButton);
+        mDialog.setTitleText(pActivity.getString(vn.com.zalopay.wallet.R.string.dialog_title_confirm));
+        mDialog.showCancelButton(true);
+        mDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            public void onClick(SweetAlertDialog sDialog) {
+                if (sDialog != null) {
+                    sDialog.dismiss();
+                }
+
+                if (callback != null) {
+                    callback.onCancelEvent();
+                }
+
+            }
+        }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            public void onClick(SweetAlertDialog sDialog) {
+                if (sDialog != null) {
+                    sDialog.dismiss();
+                }
+
+                if (callback != null) {
+                    callback.onOKevent();
+                }
+
+            }
+        });
+        return mDialog;
+    }
 }
