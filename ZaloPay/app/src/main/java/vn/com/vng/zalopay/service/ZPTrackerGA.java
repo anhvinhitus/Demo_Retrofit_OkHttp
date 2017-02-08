@@ -58,4 +58,11 @@ public class ZPTrackerGA implements ZPTracker {
             .setVariable(ZPEvents.actionFromEventId(eventId))
             .build());
     }
+
+    @Override
+    public void trackApptransidEvent(String apptransid, int appid, int step, int step_result,
+                                     int pcmid, int transtype, long transid, int sdk_result,
+                                     int server_result, String source) {
+
+    }
 }

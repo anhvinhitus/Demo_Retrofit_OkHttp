@@ -73,6 +73,13 @@ public class ZaloPayEventLogWriter implements ZPTracker {
         log(EVENTTYPE_TIMING, eventId, value);
     }
 
+    @Override
+    public void trackApptransidEvent(String apptransid, int appid, int step, int step_result,
+                                     int pcmid, int transtype, long transid, int sdk_result,
+                                     int server_result, String source) {
+
+    }
+
     private void log(int eventType, int eventId, long value) {
         String lineValue = String.format("%d, %d, %d, %d", eventType, eventId, value, System.currentTimeMillis());
         String expectedFileName = getFileName();

@@ -88,7 +88,7 @@ public class AndroidApplication extends Application {
 
         initAppComponent();
 
-        initializeTrackLog();
+        initializeTrackApptransid();
 
         Timber.d("onCreate %s", appComponent);
         ZaloSDKApplication.wrap(this);
@@ -130,8 +130,8 @@ public class AndroidApplication extends Application {
         ZPAnalytics.addTracker(new ZPTrackerAnswers());
     }
 
-    private void initializeTrackLog() {
-        new ZPTrackerApptransid(appComponent.appTransIdLogRepository());
+    private void initializeTrackApptransid() {
+        ZPAnalytics.addTracker(new ZPTrackerApptransid(appComponent.appTransIdLogRepository()));
     }
 
     private void initializeFresco() {

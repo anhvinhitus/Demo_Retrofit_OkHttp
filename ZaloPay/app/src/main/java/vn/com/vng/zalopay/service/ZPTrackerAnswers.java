@@ -40,4 +40,11 @@ public class ZPTrackerAnswers implements ZPTracker {
                 .putCustomAttribute("value", value);
         Answers.getInstance().logCustom(event);
     }
+
+    @Override
+    public void trackApptransidEvent(String apptransid, int appid, int step, int step_result,
+                                     int pcmid, int transtype, long transid, int sdk_result,
+                                     int server_result, String source) {
+
+    }
 }
