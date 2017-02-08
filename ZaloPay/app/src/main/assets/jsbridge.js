@@ -77,6 +77,10 @@ function initializeWebBridge() {
       resp.func && this.trigger(resp.func, resp.param, resp.clientId);
     }
   }
+
+  var readyEvent = document.createEvent('Events');
+  readyEvent.initEvent('AlipayJSBridgeReady', false, false);
+  document.dispatchEvent(readyEvent);
 };
 
 
