@@ -66,6 +66,8 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
         if (parentAct.equals(ExternalCallSplashScreenActivity.class.getSimpleName())) {
             loginPresenter.setData(data.getData());
+            loginPresenter.setZaloAuthCode(data.getLongExtra("zaloid", 0),
+                    data.getStringExtra("zauthcode"));
         }
     }
 

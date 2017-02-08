@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
@@ -51,6 +52,8 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     private ApplicationSession mApplicationSession;
     private GlobalEventHandlingService mGlobalEventService;
     private Uri mData;
+    private long zaloId;
+    private String zalooauthcode;
 
     private final AppResourceStore.Repository mAppResourceRepository;
 
@@ -110,6 +113,11 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         this.mData = data;
     }
 
+    public void setZaloAuthCode(long zuid, String zalooauthcode) {
+        this.zaloId = zuid;
+        this.zalooauthcode = zalooauthcode;
+    }
+
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         try {
             ZaloSDK.Instance.onActivityResult(activity, requestCode, resultCode, data);
@@ -119,14 +127,21 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     }
 
     public void loginZalo(Activity activity) {
-        if (NetworkHelper.isNetworkAvailable(mApplicationContext)) {
-            try {
-                ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, mLoginListener);
-            } catch (Exception e) {
-                Timber.w(e, "Authenticate to login zalo throw exception.");
-            }
-        } else {
+        if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
             showNetworkError();
+            return;
+        }
+
+        if (zaloId > 0 && !TextUtils.isEmpty(zalooauthcode)) {
+            mUserConfig.saveUserInfo(zaloId, "", "", 0, 0);
+            loginPayment(zaloId, zalooauthcode);
+            return;
+        }
+
+        try {
+            ZaloSDK.Instance.authenticate(activity, LoginVia.APP_OR_WEB, mLoginListener);
+        } catch (Exception e) {
+            Timber.w(e, "Authenticate to login zalo throw exception.");
         }
     }
 
@@ -183,7 +198,6 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     }
 
     private void loginPayment(long zuid, String zalooauthcode) {
-        showLoadingView();
         Subscription subscriptionLogin = mPassportRepository.login(zuid, zalooauthcode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -240,6 +254,11 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     }
 
     private final class LoginPaymentSubscriber extends DefaultSubscriber<User> {
+
+        @Override
+        public void onStart() {
+            showLoadingView();
+        }
 
         @Override
         public void onNext(User user) {

@@ -8,6 +8,8 @@ import rx.Observable;
 public interface ApplicationSession {
     void clearUserSession();
 
+    void clearUserSessionWithoutSignOut();
+
     Observable<Boolean> clearMerchant();
 
     void clearAllUserDB();

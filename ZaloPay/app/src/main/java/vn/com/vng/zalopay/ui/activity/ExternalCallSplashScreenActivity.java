@@ -3,10 +3,12 @@ package vn.com.vng.zalopay.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.ExternalCallSplashScreenPresenter;
 import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
@@ -37,6 +39,10 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
         Timber.d("onCreate new ExternalCallSplashScreenActivity");
         mPresenter.attachView(this);
         mPresenter.handleIntent(getIntent());
+        View view = findViewById(R.id.fragment_container);
+        if (view != null) {
+            view.setBackgroundResource(R.color.background);
+        }
     }
 
     @Override

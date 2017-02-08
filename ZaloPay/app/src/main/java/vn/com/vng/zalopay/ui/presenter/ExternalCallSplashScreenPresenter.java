@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,17 +16,25 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.exception.ArgumentException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
+import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by hieuvm on 12/4/16.
@@ -42,14 +52,19 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
     private EventBus mEventBus;
 
     private Navigator mNavigator;
+    private Context mApplicationContext;
+
+    private ApplicationSession mApplicationSession;
 
     @Inject
-    public ExternalCallSplashScreenPresenter(UserConfig userConfig, ApplicationState applicationState,
-                                             EventBus eventBus, Navigator navigator) {
+    public ExternalCallSplashScreenPresenter(Context context, UserConfig userConfig, ApplicationState applicationState,
+                                             EventBus eventBus, Navigator navigator, ApplicationSession applicationSession) {
         this.mUserConfig = userConfig;
         this.mApplicationState = applicationState;
         this.mEventBus = eventBus;
         this.mNavigator = navigator;
+        this.mApplicationContext = context;
+        this.mApplicationSession = applicationSession;
     }
 
     public void handleIntent(Intent intent) {
@@ -69,9 +84,9 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         Timber.d("onActivityResult: requestCode [%s] resultCode [%s]", requestCode, resultCode);
         if (resultCode == Activity.RESULT_OK) {
-            if(requestCode == LOGIN_REQUEST_CODE) {
+            if (requestCode == LOGIN_REQUEST_CODE) {
                 handleAppToAppPayment(data.getData());
-            } else if(requestCode == ZALO_INTEGRATION_LOGIN_REQUEST_CODE) {
+            } else if (requestCode == ZALO_INTEGRATION_LOGIN_REQUEST_CODE) {
                 handleZaloIntegration(data.getData());
             }
         }
@@ -115,34 +130,68 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         }
     }
 
-    private void handleZaloIntegration(Uri data) {
+    private void handleZaloIntegration(final Uri data) {
 
-        String accesstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ACCESSTOKEN);
+        final String accesstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ACCESSTOKEN);
         String senderId = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.SENDER);
         String receiverId = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.RECEIVER);
 
         boolean shouldFinishCurrentActivity = true;
         try {
-            if (TextUtils.isEmpty(senderId) ||
-                    !TextUtils.isDigitsOnly(senderId) ||
-                    TextUtils.isEmpty(receiverId) ||
-                    !TextUtils.isDigitsOnly(receiverId)) {
+
+            final long sender;
+            long receiver;
+
+            try {
+                sender = Long.valueOf(senderId);
+                receiver = Long.valueOf(receiverId);
+            } catch (NumberFormatException e) {
+                Timber.e(e, "Argument is invalid senderId [%s] receiverId [%s]", senderId, receiverId);
                 return;
             }
 
             if (!mUserConfig.hasCurrentUser()) {
                 Timber.d("start login activity");
-                mNavigator.startLoginActivityForResult((ExternalCallSplashScreenActivity) mView.getContext(), ZALO_INTEGRATION_LOGIN_REQUEST_CODE, data);
+                mNavigator.startLoginActivityForResult((ExternalCallSplashScreenActivity) mView.getContext(), ZALO_INTEGRATION_LOGIN_REQUEST_CODE,
+                        data, sender, accesstoken);
+                shouldFinishCurrentActivity = false;
+                return;
+            }
+
+            long ownerZaloId = mUserConfig.getZaloId();
+
+            Timber.d("sender %s receiver %s ownerZaloId %s", sender, receiver, ownerZaloId);
+
+            if (ownerZaloId != sender) {
+                Timber.d("show dialog: %s", ((Activity) mView.getContext()).isFinishing());
+                yesNoDialog((Activity) mView.getContext(), mApplicationContext.getString(R.string.confirm_change_account),
+                        mApplicationContext.getString(R.string.accept), mApplicationContext.getString(R.string.cancel),
+                        new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+                                finish();
+                            }
+
+                            @Override
+                            public void onOKevent() {
+                                Timber.d("Change account");
+                                mApplicationSession.clearUserSessionWithoutSignOut();
+                                mNavigator.startLoginActivityForResult((ExternalCallSplashScreenActivity) mView.getContext(),
+                                        ZALO_INTEGRATION_LOGIN_REQUEST_CODE, data, sender, accesstoken);
+                            }
+                        });
                 shouldFinishCurrentActivity = false;
                 return;
             }
 
             HandleZaloIntegration payment = new HandleZaloIntegration();
             payment.initialize();
+            payment.getBalance();
+/*
             if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
                 Timber.d("need get balance");
-                payment.getBalance();
-            }
+                 payment.getBalance();
+          }*/
 
             Timber.d("Processing send money on behalf of Zalo request");
             RecentTransaction item = new RecentTransaction();
@@ -159,6 +208,40 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
                 finish();
             }
         }
+    }
+
+    private SweetAlertDialog mDialog;
+
+    private void yesNoDialog(Activity pActivity, String pMessage, String pOKButton, String pCancelButton, final ZPWOnEventConfirmDialogListener callback) {
+        mDialog = new SweetAlertDialog(pActivity);
+        mDialog.setContentHtmlText(pMessage);
+        mDialog.setCancelText(pCancelButton);
+        mDialog.setConfirmText(pOKButton);
+        mDialog.setTitleText(pActivity.getString(vn.com.zalopay.wallet.R.string.dialog_title_confirm));
+        mDialog.showCancelButton(true);
+        mDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            public void onClick(SweetAlertDialog sDialog) {
+                if (sDialog != null) {
+                    sDialog.dismiss();
+                }
+
+                if (callback != null) {
+                    callback.onCancelEvent();
+                }
+
+            }
+        }).setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            public void onClick(SweetAlertDialog sDialog) {
+                if (sDialog != null) {
+                    sDialog.dismiss();
+                }
+
+                if (callback != null) {
+                    callback.onOKevent();
+                }
+
+            }
+        }).show();
     }
 
     private boolean handleOTPDeepLink(Uri data) {
@@ -241,6 +324,11 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
     }
 
     private void finish() {
+
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
+
         if (mView != null) {
             ((Activity) mView.getContext()).finish();
         }

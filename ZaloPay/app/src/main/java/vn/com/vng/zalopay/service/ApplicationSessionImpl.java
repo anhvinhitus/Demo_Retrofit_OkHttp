@@ -57,26 +57,8 @@ public class ApplicationSessionImpl implements ApplicationSession {
      */
     @Override
     public void clearUserSession() {
-        eventBus.removeAllStickyEvents();
-        eventBus.post(new SignOutEvent());
-        //cancel notification
-        NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
-        nm.cancelAll();
 
-        taskLogout().subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
-
-        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-
-        // move to login
-        ZaloSDK.Instance.unauthenticate();
-
-        // clear current user DB
-        UserConfig userConfig = applicationComponent.userConfig();
-        userConfig.clearConfig();
-        userConfig.setCurrentUser(null);
-
-        AndroidApplication.instance().releaseUserComponent();
+        clearUserSessionWithoutSignOut();
 
         if (TextUtils.isEmpty(mLoginMessage)) {
             navigator.startLoginActivity(applicationContext, true);
@@ -173,5 +155,30 @@ public class ApplicationSessionImpl implements ApplicationSession {
                 return Boolean.TRUE;
             }
         });
+    }
+
+    @Override
+    public void clearUserSessionWithoutSignOut() {
+        eventBus.removeAllStickyEvents();
+        eventBus.post(new SignOutEvent());
+        //cancel notification
+        NotificationManagerCompat nm = NotificationManagerCompat.from(applicationContext);
+        nm.cancelAll();
+
+        taskLogout().subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+
+        // move to login
+        ZaloSDK.Instance.unauthenticate();
+
+        // clear current user DB
+        UserConfig userConfig = applicationComponent.userConfig();
+        userConfig.clearConfig();
+        userConfig.setCurrentUser(null);
+
+        AndroidApplication.instance().releaseUserComponent();
+
     }
 }

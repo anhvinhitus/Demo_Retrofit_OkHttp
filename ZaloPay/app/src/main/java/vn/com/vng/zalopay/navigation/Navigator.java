@@ -93,9 +93,18 @@ public class Navigator implements INavigator {
     }
 
     public void startLoginActivityForResult(ExternalCallSplashScreenActivity act, int requestCode, Uri data) {
+        startLoginActivityForResult(act, requestCode, data, 0, "");
+    }
+
+    public void startLoginActivityForResult(ExternalCallSplashScreenActivity act, int requestCode, Uri data, long zaloid, String authCode) {
         Intent intent = new Intent(act, LoginZaloActivity.class);
         intent.setData(data);
         intent.putExtra("parentAct", act.getClass().getSimpleName());
+        if (zaloid > 0 && !TextUtils.isEmpty(authCode)) {
+            intent.putExtra("zaloid", zaloid);
+            intent.putExtra("zauthcode", authCode);
+        }
+
         act.startActivityForResult(intent, requestCode);
     }
 
