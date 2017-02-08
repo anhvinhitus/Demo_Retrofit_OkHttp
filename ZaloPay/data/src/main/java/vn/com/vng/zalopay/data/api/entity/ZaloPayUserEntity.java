@@ -21,7 +21,7 @@ public class ZaloPayUserEntity {
     @SerializedName("status")
     public long status; // = 1 exist
 
-    @SerializedName("displayName")
+    @SerializedName("displayname")
     public String displayName;
 
     @SerializedName("avatar")
