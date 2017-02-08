@@ -41,6 +41,15 @@ public class ZPAnalytics {
         }
     }
 
+    public static void trackApptransidEvent(String apptransid, int appid, int step, int step_result,
+                                            int pcmid, int transtype, long transid, int sdk_result,
+                                            int server_result, String source) {
+        for (ZPTracker tracker : sTrackerList) {
+            tracker.trackApptransidEvent(apptransid, appid, step, step_result,
+                    pcmid, transtype, transid, sdk_result, server_result, source);
+        }
+    }
+
     public static void addTracker(ZPTracker tracker) {
         if (sTrackerList.contains(tracker)) {
             return;
@@ -85,6 +94,15 @@ public class ZPAnalytics {
         @Override
         public void trackTiming(int eventId, long value) {
             Timber.tag("ZPAnalytics").d("Timing [%s-%s]", eventId, value);
+        }
+
+        @Override
+        public void trackApptransidEvent(String apptransid, int appid, int step, int step_result,
+                                         int pcmid, int transtype, long transid, int sdk_result,
+                                         int server_result, String source) {
+            Timber.tag("ZPAnalytics").d("Apptransid Event [%s-%s-%s-%s-%s-%s-%s-%s-%s-%s]",
+                    apptransid, appid, step, step_result, pcmid, transtype, transid,
+                    sdk_result, server_result, source);
         }
     }
 }
