@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.bank.ui;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
@@ -12,18 +11,16 @@ import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
  */
 
 class LinkBankPagerAdapter extends AbsFragmentPagerAdapter {
-    private Bundle mBundle;
 
-    LinkBankPagerAdapter(FragmentManager fm, Bundle bundle) {
+    LinkBankPagerAdapter(FragmentManager fm) {
         super(fm);
-        mBundle = bundle;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return LinkCardFragment.newInstance(mBundle);
+                return LinkCardFragment.newInstance();
             case 1:
                 return LinkAccountFragment.newInstance();
             default:

@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -30,7 +31,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -107,12 +108,23 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
         mAdapter = new LinkAccountAdapter(getContext(), this);
     }
 
+    Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mPresenter != null) {
+                mPresenter.getMapBankAccount();
+            }
+        }
+    };
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         Timber.d("setUserVisibleHint visible[%s]", isVisibleToUser);
-        if (mPresenter != null && isVisibleToUser) {
-            mPresenter.getMapBankAccount();
+        if (isVisibleToUser) {
+            AndroidUtils.runOnUIThread(mRunnable, 200);
+        } else {
+            AndroidUtils.cancelRunOnUIThread(mRunnable);
         }
     }
 
@@ -128,9 +140,19 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
             }
         }
         mRecyclerView.setAdapter(mAdapter);
+        initBankSupportFragment();
+    }
 
-        mBankSupportFragment = (BankSupportFragment)
-                getChildFragmentManager().findFragmentById(R.id.bankSupportFragment);
+    private void initBankSupportFragment() {
+        if (getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount) == null) {
+            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+            mBankSupportFragment = BankSupportFragment.newInstance(false);
+            ft.replace(R.id.fragmentInLinkAccount, mBankSupportFragment);
+            ft.commit();
+        } else {
+            mBankSupportFragment = (BankSupportFragment)
+                    getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount);
+        }
     }
 
     @Override
@@ -157,6 +179,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     }
 
     private void showLayoutEmpty() {
+        Timber.d("Show layout link account empty.");
         if (mBankSupportFragment.getCountLinkCardSupport() <= 0
                 || mBankSupportFragment.getCountLinkAccountSupport() <= 0) {
             mBankSupportFragment.getCardSupport();
@@ -206,7 +229,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_BANK_DIALOG) {
-                Timber.d("onActivityResult REQUEST_CODE_BANK_DIALOG");
+            Timber.d("onActivityResult REQUEST_CODE_BANK_DIALOG");
             if (resultCode == Activity.RESULT_OK) {
                 if (data == null) {
                     return;
@@ -239,6 +262,10 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @Override
     public void onDestroy() {
+        if (mRunnable != null) {
+            AndroidUtils.cancelRunOnUIThread(mRunnable);
+            mRunnable = null;
+        }
         mPresenter.destroy();
         super.onDestroy();
     }

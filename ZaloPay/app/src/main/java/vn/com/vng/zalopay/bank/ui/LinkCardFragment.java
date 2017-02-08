@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -29,6 +30,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -90,10 +92,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 //    @BindView(R.id.progressContainer)
 //    View mLoadingView;
 
-    public static LinkCardFragment newInstance(Bundle bundle) {
-        LinkCardFragment fragment = new LinkCardFragment();
-        fragment.setArguments(bundle);
-        return fragment;
+    public static LinkCardFragment newInstance() {
+        return new LinkCardFragment();
     }
 
     @Override
@@ -129,17 +129,39 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 //        mRecyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
         mRecyclerView.setAdapter(mAdapter);
 
-        mBankSupportFragment = (BankSupportFragment)
-                getChildFragmentManager().findFragmentById(R.id.bankSupportFragment);
+        initBankSupportFragment();
         initBottomSheet();
     }
 
+    private void initBankSupportFragment() {
+        if (getFragmentManager().findFragmentById(R.id.fragmentInLinkCard) == null) {
+            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+            mBankSupportFragment = BankSupportFragment.newInstance(false);
+            ft.replace(R.id.fragmentInLinkCard, mBankSupportFragment);
+            ft.commit();
+        } else {
+            mBankSupportFragment = (BankSupportFragment)
+                    getFragmentManager().findFragmentById(R.id.fragmentInLinkCard);
+        }
+    }
+
+    Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mPresenter != null) {
+                mPresenter.getListCard();
+            }
+        }
+    };
+
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
+    public void setUserVisibleHint(final boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         Timber.d("setUserVisibleHint visible[%s]", isVisibleToUser);
-        if (mPresenter != null && isVisibleToUser) {
-            mPresenter.getListCard();
+        if (isVisibleToUser) {
+            AndroidUtils.runOnUIThread(mRunnable, 200);
+        } else {
+            AndroidUtils.cancelRunOnUIThread(mRunnable);
         }
     }
 
@@ -185,6 +207,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     private void showLinkCardEmpty() {
+        Timber.d("Show layout link card empty.");
         if (mBankSupportFragment.getCountLinkCardSupport() <= 0
                 || mBankSupportFragment.getCountLinkAccountSupport() <= 0) {
             mBankSupportFragment.getCardSupport();
@@ -233,6 +256,10 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @Override
     public void onDestroy() {
+        if (mRunnable != null) {
+            AndroidUtils.cancelRunOnUIThread(mRunnable);
+            mRunnable = null;
+        }
         mPresenter.destroy();
         if (mBottomSheetDialog != null && mBottomSheetDialog.isShowing()) {
             mBottomSheetDialog.dismiss();

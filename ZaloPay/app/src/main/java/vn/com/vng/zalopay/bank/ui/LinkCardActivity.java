@@ -11,6 +11,6 @@ public class LinkCardActivity extends BaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {
-        return LinkCardFragment.newInstance(getIntent().getExtras());
+        return LinkCardFragment.newInstance();
     }
 }

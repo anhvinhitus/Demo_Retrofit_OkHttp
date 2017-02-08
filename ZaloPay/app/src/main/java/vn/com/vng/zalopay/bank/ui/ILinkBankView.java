@@ -9,5 +9,5 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 interface ILinkBankView extends ILoadDataView {
 
-    boolean setCurrentPage(int pageIndex);
+    boolean initViewPager(int pageIndex);
 }

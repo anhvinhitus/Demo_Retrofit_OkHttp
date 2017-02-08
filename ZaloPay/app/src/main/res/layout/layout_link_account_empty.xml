@@ -108,9 +108,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <fragment
-                android:id="@+id/bankSupportFragment"
-                android:name="vn.com.vng.zalopay.bank.ui.BankSupportFragment"
+            <FrameLayout
+                android:id="@+id/fragmentInLinkAccount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"/>
