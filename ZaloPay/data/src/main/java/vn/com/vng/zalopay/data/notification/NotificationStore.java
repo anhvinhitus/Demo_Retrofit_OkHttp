@@ -117,5 +117,7 @@ public interface NotificationStore {
         Observable<Boolean> removeNotifyByMsgId(int mtuid, int mtaid);
 
         Boolean isRecovery();
+
+        Boolean isNotifyExisted(long mtaid, long mtuid);
     }
 }

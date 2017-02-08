@@ -154,6 +154,7 @@ public class NotificationRepository implements NotificationStore.Repository {
                 .doOnNext(aVoid -> {
                     mLocalStorage.setRecovery(true);
                     saveTimeRecovery(notify);
+                    Timber.d("post NotificationChangeEvent recovery");
                     mEventBus.post(new NotificationChangeEvent(Enums.NotificationState.UNREAD.getId()));
                 });
     }
@@ -168,6 +169,11 @@ public class NotificationRepository implements NotificationStore.Repository {
 
     public Observable<Boolean> isNotificationExisted(long mtaid, long mtuid) {
         return ObservableHelper.makeObservable(() -> mLocalStorage.isNotificationExisted(mtaid, mtuid));
+    }
+
+    @Override
+    public Boolean isNotifyExisted(long mtaid, long mtuid) {
+        return mLocalStorage.isNotificationExisted(mtaid, mtuid);
     }
 
     @Override

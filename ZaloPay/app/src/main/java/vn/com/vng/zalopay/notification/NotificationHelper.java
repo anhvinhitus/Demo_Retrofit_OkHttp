@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -135,11 +136,16 @@ public class NotificationHelper {
     }
 
     void processNotification(NotificationData notify, boolean isNotificationRecovery) {
+
         if (notify == null) {
             return;
         }
+        Timber.d("processNotification: %s %s", notify.message, isNotificationRecovery);
 
-        this.shouldUpdateTransAndBalance(notify);
+        if (!isNotificationRecovery) {
+            this.shouldUpdateTransAndBalance(notify);
+        }
+
         this.shouldMarkRead(notify);
 
         boolean skipStorage = false;
@@ -160,14 +166,27 @@ public class NotificationHelper {
                 updateTransactionStatus(notify);
                 break;
             case NotificationType.DONATE_MONEY:
+                if (isNotificationRecovery) {
+                    break;
+                }
+
                 showAlertNotification(notify, mContext.getString(R.string.donate_money));
                 break;
             case NotificationType.MONEY_TRANSFER:
+                if (isNotificationRecovery) {
+                    break;
+                }
+
                 if (!notify.isRead()) {
                     mEventBus.post(notify);
                 }
+
                 break;
             case NotificationType.APP_P2P_NOTIFICATION:
+
+                if (isNotificationRecovery) {
+                    break;
+                }
                 // post notification and skip write to db
                 mEventBus.post(notify);
                 skipStorage = true;
@@ -179,11 +198,15 @@ public class NotificationHelper {
                 removeLinkCard(notify);
                 break;
             case NotificationType.MERCHANT_BILL:
+                if (isNotificationRecovery) {
+                    break;
+                }
+
                 payOrderFromNotify(notify);
                 break;
         }
 
-        if (!skipStorage) {
+        if (!skipStorage && !isNotificationRecovery) {
             this.putNotification(notify);
         }
     }
@@ -191,12 +214,7 @@ public class NotificationHelper {
     private void putNotification(NotificationData notify) {
         Subscription subscription = mNotifyRepository.putNotify(notify)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Long>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d("insert db error conflict MTAID, MTUID %s", e.getClass().getCanonicalName());
-                    }
-                });
+                .subscribe(new DefaultSubscriber<Long>());
         mCompositeSubscription.add(subscription);
     }
 
@@ -452,33 +470,37 @@ public class NotificationHelper {
         mEventBus.post(new RefreshPaymentSdkEvent());
     }
 
-    private void processRecoveryNotification(List<NotificationData> listMessage) {
-        if (Lists.isEmptyOrNull(listMessage)) {
-            return;
-        }
-        for (NotificationData notify : listMessage) {
-            if (notify == null) {
-                continue;
-            }
-            this.shouldMarkRead(notify);
-            int notificationType = (int) notify.notificationtype;
-
-            switch (notificationType) {
-                case NotificationType.SEND_RED_PACKET:
-                    extractRedPacketFromNotification(notify, true);
-                    break;
-            }
-        }
-    }
-
-    Observable<Void> recoveryNotification(List<NotificationData> listMessage) {
+    /**
+     * Kiểm tra từng notify, Nếu notify đã tồn tại trong db thì không thực hiện process.
+     * Sau đó save all notify
+     */
+    public Observable<Void> recoveryNotification(final List<NotificationData> listMessage) {
         Timber.d("Recovery notification size [%s]", listMessage.size());
-        processRecoveryNotification(listMessage);
-        return mNotifyRepository.recoveryNotify(listMessage);
+        return Observable.from(listMessage)
+                .filter(new Func1<NotificationData, Boolean>() {
+                    @Override
+                    public Boolean call(NotificationData notify) {
+                        return !mNotifyRepository.isNotifyExisted(notify.mtaid, notify.mtuid);
+                    }
+                })
+                .doOnNext(new Action1<NotificationData>() {
+                    @Override
+                    public void call(NotificationData notify) {
+                        Timber.d("process notify recovery %s", notify);
+                        processNotification(notify, true);
+                    }
+                })
+                .lastOrDefault(new NotificationData())
+                .flatMap(new Func1<NotificationData, Observable<Void>>() {
+                    @Override
+                    public Observable<Void> call(NotificationData notify) {
+                        return mNotifyRepository.recoveryNotify(listMessage);
+                    }
+                });
     }
 
-    void recoveryRedPacketStatus() {
-        if (mListPacketIdToRecovery == null || mListPacketIdToRecovery.isEmpty()) {
+    public void recoveryRedPacketStatus() {
+        if (Lists.isEmptyOrNull(mListPacketIdToRecovery)) {
             return;
         }
 
@@ -494,7 +516,7 @@ public class NotificationHelper {
         mCompositeSubscription.add(subscription);
     }
 
-    void recoveryTransaction() {
+    public void recoveryTransaction() {
         Timber.d("recovery Transaction");
         Subscription subscription = mNotifyRepository.getOldestTimeNotification()
                 .filter(new Func1<Long, Boolean>() {
@@ -515,7 +537,7 @@ public class NotificationHelper {
         mCompositeSubscription.add(subscription);
     }
 
-    Observable<Long> getOldestTimeRecoveryNotification(final boolean isFirst) {
+    public Observable<Long> getOldestTimeRecoveryNotification(final boolean isFirst) {
         return mNotifyRepository.getOldestTimeRecoveryNotification()
                 .filter(new Func1<Long, Boolean>() {
                     @Override
