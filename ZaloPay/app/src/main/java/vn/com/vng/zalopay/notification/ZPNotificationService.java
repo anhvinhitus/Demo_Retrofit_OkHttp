@@ -168,6 +168,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
     @Override
     public void onReceiverEvent(Event event) {
+        Timber.d("Notification message: [mtuid: %s]", event.mtuid);
         if (event instanceof AuthenticationData) {
             AuthenticationData authenticationData = (AuthenticationData) event;
             if (authenticationData.result != NetworkError.SUCCESSFUL) {

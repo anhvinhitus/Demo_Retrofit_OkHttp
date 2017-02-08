@@ -16,11 +16,15 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Vector;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 
-public class ZPWebViewApp extends WebView {
+public class ZPWebViewApp extends WebView implements IWebView {
 
     public ZPWebViewApp(Context context) {
         super(context);
@@ -45,7 +49,7 @@ public class ZPWebViewApp extends WebView {
         settings.setDomStorageEnabled(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setUserAgentString(
-                "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36 ZaloPayClient/2.8");
+                "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36 ZaloPayClient/2.8 AlipayClient/10.0");
 
         settings.setBlockNetworkImage(false);
         settings.setLoadWithOverviewMode(true);
@@ -167,5 +171,29 @@ public class ZPWebViewApp extends WebView {
             allCookieField.add(singleCookieField[0]);
         }
         return allCookieField;
+    }
+
+    @Override
+    public void invokeJS(WebMessage message) {
+        if (message == null) {
+            return;
+        }
+        try {
+            JSONObject jsParam = new JSONObject();
+            jsParam.put("clientId", message.messageId);
+            jsParam.put("func", message.functionName);
+            jsParam.put("param", message.data);
+            jsParam.put("msgType", message.messageType);
+            jsParam.put("keepCallback", message.keepCallback);
+            final String jsInvoker = String.format("AlipayJSBridge._invokeJS('%s')", new Object[]{jsParam.toString()});
+            AndroidUtils.runOnUIThread(new Runnable() {
+                @Override
+                public void run() {
+                    runScript(jsInvoker, null);
+                }
+            });
+        } catch (JSONException e) {
+            Timber.d(e, "Exception while executing JS");
+        }
     }
 }

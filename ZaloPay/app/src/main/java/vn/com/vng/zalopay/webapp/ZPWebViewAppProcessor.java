@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.webapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -19,10 +20,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
 
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.react.Helpers;
-import vn.com.vng.zalopay.react.model.DialogType;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -35,6 +38,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
 
     private ZPWebViewApp mWebView = null;
     private IWebViewListener mWebViewListener;
+    private WebAppCommunicationHandler mCommunicationHandler;
 
     public ZPWebViewAppProcessor(ZPWebViewApp pWebView,
                                  IWebViewListener webViewListener) {
@@ -42,6 +46,9 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         mWebViewListener = webViewListener;
         mWebView.setWebViewClient(this);
         mWebView.addJavascriptInterface(this, "ZaloPayJSBridge");
+        mWebView.addJavascriptInterface(this, "AlipayJSBridge");
+
+        mCommunicationHandler = new WebAppCommunicationHandler(pWebView, webViewListener);
     }
 
     public void start(final String pUrl, final Activity pActivity) {
@@ -51,7 +58,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         mHasError = false;
         mLoadPageFinished = false;
         mCurrentUrl = pUrl;
-        Timber.d("start load url[%s]", pUrl);
+        Timber.d("start load url [%s]", pUrl);
         mWebView.loadUrl(pUrl);
     }
 
@@ -79,12 +86,29 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         mLoadPageFinished = true;
         hideLoading();
         injectScriptFile("webapp.js");
-
-        super.onPageFinished(view, url);
+        injectScriptFile("jsbridge.js");
+        mWebView.runScript("initializeWebBridge();", null);
 
         mCurrentUrl = url;
         showWebView();
+
+        super.onPageFinished(view, url);
     }
+//
+//    private void executeScriptFile(String scriptFile) {
+//        InputStream input;
+//        try {
+//            input = mWebView.getContext().getAssets().open(scriptFile);
+//            byte[] buffer = new byte[input.available()];
+//            input.read(buffer);
+//            input.close();
+//            // byte buffer into a string
+//            String text = new String(buffer);
+//            mWebView.runScript(text, null);
+//        } catch (IOException e) {
+//            Timber.w(e, "Exception");
+//        }
+//    }
 
     private void injectScriptFile(String scriptFile) {
         InputStream input;
@@ -99,7 +123,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
             mWebView.loadUrl("javascript:(function() {" +
                     "var parent = document.getElementsByTagName('head').item(0);" +
                     "var script = document.createElement('script');" +
-                    "script.type = 'text/javascript';" +
+                    "script.messageType = 'text/javascript';" +
                     // Tell the browser to BASE64-decode the string into your script
                     "script.innerHTML = window.atob('" + endcoded + "');" +
                     "parent.appendChild(script);" +
@@ -174,13 +198,13 @@ public class ZPWebViewAppProcessor extends WebViewClient {
             return false;
         }
         String url = request.getUrl().toString();
-        Timber.d("shouldOverrideUrlLoading  uri[%s]", url);
+        Timber.d("shouldOverrideUrlLoading  uri [%s]", url);
         return !TextUtils.isEmpty(url) && shouldOverrideUrlLoading(view, url);
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Timber.d("shouldOverrideUrlLoading url[%s]", url);
+        Timber.d("shouldOverrideUrlLoading url [%s]", url);
         //use case for url
         if (TextUtils.isEmpty(url)) {
             return true;
@@ -253,6 +277,8 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         void hideLoading();
 
         void showDialog(int dialogType, String title, String message, String buttonLabel);
+
+        Context getContext();
     }
 
     public void onPause() {
@@ -291,6 +317,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         mWebView.destroy();
 
         mWebViewListener = null;
+        mCommunicationHandler.cleanup();
     }
 
     public boolean onBackPress() {
@@ -303,31 +330,16 @@ public class ZPWebViewAppProcessor extends WebViewClient {
     }
 
     @android.webkit.JavascriptInterface
-    void call(String functionName, String arguments, String callback) {
-        Timber.d("Invoke function: %s, params: %s, callback: %s", functionName, arguments, callback);
-        if (TextUtils.isEmpty(functionName)) {
+    void callNativeFunction(String a1, String messageData) {
+        Timber.d("Invoke function with data: %s", messageData);
+        if (TextUtils.isEmpty(messageData)) {
             return;
         }
 
-        if ("alert".equalsIgnoreCase(functionName)) {
-            try {
-                JSONObject object = new JSONObject(arguments);
-                // {"title":"Hello","message":"ABC 123","button":"OK"}
-                String title = object.optString("title");
-                String message = object.optString("message");
-                String buttonLabel = object.optString("button");
+        // message = {"func":"vibrate","param":{"duration":3000},"msgType":"call","clientId":"14865289272660.004411039873957634"}
 
-                mWebViewListener.showDialog(SweetAlertDialog.NORMAL_TYPE, title, message, buttonLabel);
-
-            } catch (JSONException e) {
-                Timber.d(e, "Exception while parsing arguments");
-            }
-            return;
-        }
-
-        if ("closeWindow".equalsIgnoreCase(functionName)) {
-            mWebViewListener.finishActivity();
-            return;
-        }
+        // preHandleWebMessage(messageData);
+        mCommunicationHandler.preHandleWebMessage(messageData);
     }
+
 }
