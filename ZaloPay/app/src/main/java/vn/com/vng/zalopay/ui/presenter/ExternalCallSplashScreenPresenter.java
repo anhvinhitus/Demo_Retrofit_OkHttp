@@ -106,12 +106,19 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         String host = data.getHost();
         String pathPrefix = data.getPath();
 
+        if (TextUtils.isEmpty(scheme) || TextUtils.isEmpty(host)) {
+            finish();
+            return;
+        }
+
         if (scheme.equalsIgnoreCase("zalopay-1") && host.equalsIgnoreCase("post")) {
             pay(data, false);
         } else if (scheme.equalsIgnoreCase("zalopay-zapi-28")) {
 
-            if (host.equalsIgnoreCase("app") && pathPrefix.equalsIgnoreCase("/transfer")) {
+            if (host.equalsIgnoreCase("app") && "/transfer".equalsIgnoreCase(pathPrefix)) {
                 handleZaloIntegration(data);
+            } else {
+                finish();
             }
 
         } else if (scheme.equalsIgnoreCase("zalopay")) {
