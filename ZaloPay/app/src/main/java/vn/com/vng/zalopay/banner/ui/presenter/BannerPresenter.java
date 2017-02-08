@@ -16,6 +16,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.banner.ui.view.IBannerView;
@@ -26,7 +27,6 @@ import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by longlv on 12/14/16.
@@ -149,7 +149,7 @@ public class BannerPresenter extends AbstractPresenter<IBannerView> {
     private void getBanners() {
         Timber.d("getBanners");
         try {
-            List<DBanner> banners = CShareData.getInstance().getBannerList();
+            List<DBanner> banners = CShareDataWrapper.getBannerList();
             if (banners != null && banners.size() > 1) {
                 startBannerCountDownTimer();
             } else {

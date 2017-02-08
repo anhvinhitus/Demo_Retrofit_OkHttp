@@ -20,6 +20,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -53,7 +54,6 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
@@ -424,8 +424,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         long mMinAmount = 0;
         long mMaxAmount = 0;
         try {
-            mMinAmount = CShareData.getInstance().getMinTranferValue();
-            mMaxAmount = CShareData.getInstance().getMaxTranferValue();
+            mMinAmount = CShareDataWrapper.getMinTranferValue();
+            mMaxAmount = CShareDataWrapper.getMaxTranferValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
         }

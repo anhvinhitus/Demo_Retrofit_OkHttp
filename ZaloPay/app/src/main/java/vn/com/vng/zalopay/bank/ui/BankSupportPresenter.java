@@ -6,11 +6,11 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
@@ -42,12 +42,10 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
 
             @Override
             public void onComplete(ArrayList<ZPCard> cardSupportList) {
-                if (mView == null) {
-                    return;
-                }
-
                 Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
-                mView.refreshBankSupports(cardSupportList);
+                if (mView != null) {
+                    mView.refreshBankSupports(cardSupportList);
+                }
             }
 
             @Override
@@ -59,10 +57,9 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
 
             @Override
             public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
-                if (mView == null) {
-                    return;
+                if (mView != null) {
+                    mView.onEventUpdateVersion(forceUpdate, latestVersion, message);
                 }
-                mView.onEventUpdateVersion(forceUpdate, latestVersion, message);
             }
         };
     }
@@ -73,7 +70,7 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;
-        CShareData.getInstance().setUserInfo(userInfo).getCardSupportList(mGetCardSupportListListener);
+        CShareDataWrapper.getCardSupportList(userInfo, mGetCardSupportListListener);
     }
 
     @Override

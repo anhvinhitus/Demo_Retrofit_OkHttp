@@ -6,13 +6,13 @@ import android.text.TextUtils;
 import java.util.List;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
 
 /**
@@ -35,8 +35,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
     }
 
     protected void validLinkCard(final IListenerValid listenerValid) {
-        CShareData.getInstance()
-                .getWithDrawBankList(new IGetWithDrawBankList() {
+        CShareDataWrapper.getWithDrawBankList(new IGetWithDrawBankList() {
                     @Override
                     public void onComplete(List<BankConfig> list) {
                         Timber.d("validLinkCard onComplete");
@@ -62,7 +61,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
             if (bankConfigs == null || bankConfigs.isEmpty()) {
                 return false;
             }
-            List<DMappedCard> mappedCardList = CShareData.getInstance().getMappedCardList(user.zaloPayId);
+            List<DMappedCard> mappedCardList = CShareDataWrapper.getMappedCardList(user.zaloPayId);
             for (int j = 0; j < bankConfigs.size(); j++) {
                 BankConfig bankConfig = bankConfigs.get(j);
                 if (bankConfig == null || bankConfig.isBankAccount()) {
@@ -84,7 +83,7 @@ public abstract class AbsWithdrawConditionPresenter<View> extends AbstractPresen
             if (bankConfigs == null || bankConfigs.isEmpty()) {
                 return false;
             }
-            List<DBankAccount> mappedAccounts = CShareData.getInstance().getMapBankAccountList(user.zaloPayId);
+            List<DBankAccount> mappedAccounts = CShareDataWrapper.getMapBankAccountList(user.zaloPayId);
             for (int j = 0; j < bankConfigs.size(); j++) {
                 BankConfig bankConfig = bankConfigs.get(j);
                 if (bankConfig == null || !bankConfig.isBankAccount()) {

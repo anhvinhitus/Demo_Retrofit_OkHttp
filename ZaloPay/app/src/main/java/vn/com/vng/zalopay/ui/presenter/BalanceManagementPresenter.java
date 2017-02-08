@@ -18,6 +18,7 @@ import rx.Subscription;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -29,7 +30,6 @@ import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
 
 /**
@@ -74,7 +74,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
 
     @Override
     public void destroy() {
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         GlobalData.initApplication(null);
 
         super.destroy();
@@ -103,7 +103,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     }
 
     private boolean isMaintainWithdraw() {
-        WDMaintenance wdMaintenance = CShareData.getInstance().getWithdrawMaintenance();
+        WDMaintenance wdMaintenance = CShareDataWrapper.getWithdrawMaintenance();
         if (wdMaintenance == null || !wdMaintenance.ismaintainwithdraw) {
             return false;
         }

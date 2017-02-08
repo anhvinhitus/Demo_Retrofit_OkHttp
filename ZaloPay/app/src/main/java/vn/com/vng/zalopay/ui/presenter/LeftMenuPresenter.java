@@ -12,6 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
@@ -22,7 +23,6 @@ import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/11/16.
@@ -109,7 +109,7 @@ public class LeftMenuPresenter extends AbstractPresenter<ILeftMenuView> {
 
         List<MenuItem> listItem = MenuItemUtil.getMenuItems();
         try {
-            boolean isEnableDeposit = CShareData.getInstance().isEnableDeposite();
+            boolean isEnableDeposit = CShareDataWrapper.isEnableDeposite();
             if (!isEnableDeposit) {
                 listItem.remove(new MenuItem(MenuItemUtil.DEPOSIT_ID));
             }

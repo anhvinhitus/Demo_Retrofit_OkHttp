@@ -20,11 +20,11 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.balancetopup.ui.view.IBalanceTopupView;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.BalanceTopupPresenter;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -82,10 +82,8 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
         long minDepositAmount = 0;
         long maxDepositAmount = 0;
         try {
-            minDepositAmount = CShareData.getInstance()
-                    .getMinDepositValue();
-            maxDepositAmount = CShareData.getInstance()
-                    .getMaxDepositValue();
+            minDepositAmount = CShareDataWrapper.getMinDepositValue();
+            maxDepositAmount = CShareDataWrapper.getMaxDepositValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
         }
@@ -134,7 +132,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
     @Override
     public void onDestroy() {
         mPresenter.destroy();
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         super.onDestroy();
     }
 

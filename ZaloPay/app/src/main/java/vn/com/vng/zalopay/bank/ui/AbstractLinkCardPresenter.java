@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
@@ -30,7 +31,6 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
@@ -132,7 +132,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     @Override
     public void destroy() {
         //release cache
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         GlobalData.initApplication(null);
 
         super.destroy();
@@ -144,7 +144,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;
-        CShareData.getInstance().setUserInfo(userInfo).getCardSupportList(mGetCardSupportListListener);
+        CShareDataWrapper.getCardSupportList(userInfo, mGetCardSupportListListener);
     }
 
     void addLinkCard() {
@@ -235,8 +235,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 UserInfo userInfo = new UserInfo();
                 userInfo.zaloPayUserId = mUser.zaloPayId;
                 userInfo.accessToken = mUser.accesstoken;
-                return CShareData.getInstance().setUserInfo(userInfo).
-                        detectCardType(first6cardno).toString();
+                return CShareDataWrapper.detectCardType(userInfo, first6cardno).toString();
             } catch (Exception e) {
                 Timber.w(e, "detectCardType exception [%s]", e.getMessage());
             }

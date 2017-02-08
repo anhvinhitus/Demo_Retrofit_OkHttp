@@ -14,11 +14,11 @@ import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 8/29/16.
@@ -90,8 +90,8 @@ public class SetAmountFragment extends BaseFragment {
         long mMinAmount = 0;
         long mMaxAmount = 0;
         try {
-            mMinAmount = CShareData.getInstance().getMinTranferValue();
-            mMaxAmount = CShareData.getInstance().getMaxTranferValue();
+            mMinAmount = CShareDataWrapper.getMinTranferValue();
+            mMaxAmount = CShareDataWrapper.getMaxTranferValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max deposit from paymentSDK exception: [%s]", e.getMessage());
         }

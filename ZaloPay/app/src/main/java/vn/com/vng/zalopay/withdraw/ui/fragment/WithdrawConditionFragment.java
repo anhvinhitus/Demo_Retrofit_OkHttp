@@ -15,6 +15,7 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -22,7 +23,6 @@ import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawConditionPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -206,7 +206,7 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @Override
     public void onDestroy() {
         mPresenter.destroy();
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         super.onDestroy();
     }
 

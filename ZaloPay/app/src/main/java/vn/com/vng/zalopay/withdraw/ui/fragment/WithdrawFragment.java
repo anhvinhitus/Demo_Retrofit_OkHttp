@@ -14,12 +14,12 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.withdraw.ui.presenter.WithdrawPresenter;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -70,8 +70,8 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
 
     private void initLimitAmount() {
         try {
-            minWithdrawAmount = CShareData.getInstance().getMinWithDrawValue();
-            maxWithdrawAmount = CShareData.getInstance().getMaxWithDrawValue();
+            minWithdrawAmount = CShareDataWrapper.getMinWithDrawValue();
+            maxWithdrawAmount = CShareDataWrapper.getMaxWithDrawValue();
         } catch (Exception e) {
             Timber.w(e, "Get min/max withdraw from paymentSDK exception: [%s]", e.getMessage());
         }
@@ -111,7 +111,7 @@ public class WithdrawFragment extends BaseFragment implements IWithdrawView {
     @Override
     public void onDestroy() {
         mPresenter.destroy();
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         super.onDestroy();
     }
 

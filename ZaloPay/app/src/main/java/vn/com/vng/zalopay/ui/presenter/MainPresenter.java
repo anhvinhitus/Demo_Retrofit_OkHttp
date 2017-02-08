@@ -26,6 +26,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
@@ -66,7 +67,6 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -191,7 +191,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         mEventBus.unregister(this);
         unsubscribeIfNotNull(mRefPlatformSubscription);
         GlobalData.initApplication(null);
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
         super.detachView();
     }
@@ -309,7 +309,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     private void beginAutoRefreshPlatform() {
         unsubscribeIfNotNull(mRefPlatformSubscription);
 
-        mRefPlatformSubscription = Observable.just(CShareData.getInstance().getPlatformInfoExpiredTime())
+        mRefPlatformSubscription = Observable.just(CShareDataWrapper.getPlatformInfoExpiredTime())
                 .flatMap(new Func1<Long, Observable<Long>>() {
                     @Override
                     public Observable<Long> call(Long var) {

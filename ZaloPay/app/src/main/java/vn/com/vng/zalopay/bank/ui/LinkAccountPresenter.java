@@ -18,6 +18,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -31,7 +32,6 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
@@ -49,7 +49,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                          SharedPreferences sharedPreferences, EventBus eventBus) {
         super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
                 user, sharedPreferences, eventBus);
-
     }
 
     void getMapBankAccount() {
@@ -57,7 +56,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankAccount>>() {
             @Override
             public List<BankAccount> call() throws Exception {
-                List<DBankAccount> mapCardLis = CShareData.getInstance().getMapBankAccountList(mUser.zaloPayId);
+                List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
                 return transform(mapCardLis);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

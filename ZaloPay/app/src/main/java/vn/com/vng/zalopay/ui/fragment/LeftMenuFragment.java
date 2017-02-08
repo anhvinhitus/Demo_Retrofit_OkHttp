@@ -21,6 +21,7 @@ import butterknife.BindView;
 import butterknife.OnItemClick;
 import butterknife.internal.DebouncingOnClickListener;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
@@ -29,7 +30,6 @@ import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
 import vn.com.vng.zalopay.utils.ImageLoader;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -111,7 +111,7 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
 
     @Override
     public void onDestroy() {
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         super.onDestroy();
         presenter.destroy();
     }
@@ -156,7 +156,7 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
     @Override
     public void onDestroyView() {
         presenter.detachView();
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         super.onDestroyView();
     }
 

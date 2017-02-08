@@ -16,12 +16,12 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.withdraw.models.BankSupportWithdraw;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,7 +90,7 @@ public class CardSupportWithdrawFragment extends BaseFragment {
             return;
         }
 
-        List<DMappedCard> mappedCardList = CShareData.getInstance().getMappedCardList(mUser.zaloPayId);
+        List<DMappedCard> mappedCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
         mAdapter.setData(mergeData(cardSupportList, mappedCardList));
         mAdapter.notifyDataSetChanged();
     }
@@ -132,7 +132,7 @@ public class CardSupportWithdrawFragment extends BaseFragment {
 
     @Override
     public void onDestroy() {
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         super.onDestroy();
     }
 }

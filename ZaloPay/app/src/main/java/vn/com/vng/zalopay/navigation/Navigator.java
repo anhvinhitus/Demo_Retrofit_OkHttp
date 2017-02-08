@@ -35,6 +35,8 @@ import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.ui.LinkCardActivity;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -67,7 +69,6 @@ import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /*
@@ -234,7 +235,7 @@ public class Navigator implements INavigator {
         } else {
             int numberCard = 0;
             try {
-                List<DMappedCard> mapCardLis = CShareData.getInstance()
+                List<DMappedCard> mapCardLis = CShareDataWrapper
                         .getMappedCardList(mUserConfig.getCurrentUser().zaloPayId);
                 numberCard = mapCardLis.size();
             } catch (Exception ex) {
@@ -590,7 +591,7 @@ public class Navigator implements INavigator {
 
         if (channel == 2) {
             try {
-                List<DMappedCard> mapCardLis = CShareData.getInstance()
+                List<DMappedCard> mapCardLis = CShareDataWrapper
                         .getMappedCardList(mUserConfig.getCurrentUser().zaloPayId);
                 if (mapCardLis == null || mapCardLis.size() == 0) {
                     Helpers.promiseResolveSuccess(promise, null);

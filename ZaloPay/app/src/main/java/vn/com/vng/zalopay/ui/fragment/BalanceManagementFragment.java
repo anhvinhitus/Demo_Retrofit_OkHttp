@@ -17,13 +17,13 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BalanceManagementPresenter;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * A simple {@link BaseFragment} subclass.
@@ -114,7 +114,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
 
     private void checkShowHideDeposit() {
         try {
-            boolean isEnableDeposit = CShareData.getInstance().isEnableDeposite();
+            boolean isEnableDeposit = CShareDataWrapper.isEnableDeposite();
             if (isEnableDeposit) {
                 layoutDeposit.setVisibility(View.VISIBLE);
                 viewSeparate.setVisibility(View.VISIBLE);
@@ -163,7 +163,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     @Override
     public void onDestroy() {
         mPresenter.destroy();
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         super.onDestroy();
     }
 

@@ -19,6 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -34,13 +35,11 @@ import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
@@ -65,7 +64,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankCard>>() {
             @Override
             public List<BankCard> call() throws Exception {
-                List<DMappedCard> mapCardLis = CShareData.getInstance().getMappedCardList(mUser.zaloPayId);
+                List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
                 return transform(mapCardLis);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
@@ -110,7 +109,9 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
     @Override
     public void resume() {
-        getListCard();
+        if (mView != null && mView.getUserVisibleHint()) {
+            getListCard();
+        }
     }
 
     private void onGetLinkCardSuccess(List<BankCard> list) {

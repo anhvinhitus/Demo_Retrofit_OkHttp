@@ -11,6 +11,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -19,7 +20,6 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.merchant.CShareData;
 
 /**
  * Created by longlv on 2/6/17.
@@ -57,7 +57,7 @@ class LinkBankPresenter implements IPresenter<ILinkBankView> {
             return false;
         }
         int pageIndex = bundle.getInt(Constants.ARG_PAGE_INDEX, -1);
-        return mView.setCurrentPage(pageIndex);
+        return mView.initViewPager(pageIndex);
     }
 
     /**
@@ -72,8 +72,8 @@ class LinkBankPresenter implements IPresenter<ILinkBankView> {
         ObservableHelper.makeObservable(new Callable<LinkBankPagerIndex>() {
             @Override
             public LinkBankPagerIndex call() throws Exception {
-                List<DMappedCard> mapCardList = CShareData.getInstance().getMappedCardList(mUser.zaloPayId);
-                List<DBankAccount> mapAccList = CShareData.getInstance().getMapBankAccountList(mUser.zaloPayId);
+                List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+                List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
                 if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
                     return LinkBankPagerIndex.LINK_CARD;
                 } else if (!Lists.isEmptyOrNull(mapCardList)) {
@@ -113,10 +113,9 @@ class LinkBankPresenter implements IPresenter<ILinkBankView> {
 
         @Override
         public void onNext(LinkBankPagerIndex pageInContext) {
-            if (mView == null || pageInContext == null) {
-                return;
+            if (mView != null && pageInContext != null) {
+                mView.initViewPager(pageInContext.getValue());
             }
-            mView.setCurrentPage(LinkBankPagerIndex.LINK_ACCOUNT.getValue());
         }
 
         @Override

@@ -16,12 +16,12 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
@@ -168,7 +168,7 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
         mLinkCardAdapter = null;
         mLinkAccAdapter = null;
         //release cache
-        CShareData.dispose();
+        CShareDataWrapper.dispose();
         GlobalData.initApplication(null);
         mPresenter.destroy();
         super.onDestroy();
@@ -187,10 +187,12 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
     @Override
     public void refreshBankSupports(List<ZPCard> cardSupportList) {
         if (!isAdded()) {
+            Timber.d("Refresh Bank Supports error because fragment didn't add.");
             return;
         }
         hideProgressDialog();
         if (Lists.isEmptyOrNull(cardSupportList)) {
+            Timber.d("Refresh Bank Supports error because list card null/empty.");
             return;
         }
         List<ZPCard> listSupportLinkCard = new ArrayList<>();
