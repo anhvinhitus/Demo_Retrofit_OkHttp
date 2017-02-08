@@ -11,66 +11,79 @@
     <LinearLayout
         android:id="@+id/layoutContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/text.support.height"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/listView"
-            style="@style/RecyclerView"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1.0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/listView"
+                    style="@style/RecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"/>
+
+                <LinearLayout
+                    android:id="@+id/btn_add_more"
+                    style="@style/Button.Default.New"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button.height"
+                    android:layout_marginBottom="@dimen/button.margin.bottom"
+                    android:layout_marginTop="@dimen/button.margin.top.min"
+                    android:layout_weight="0.0"
+                    android:orientation="horizontal">
+
+                    <com.zalopay.ui.widget.IconFont
+                        android:id="@+id/iconInsideApp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        app:iconName="@string/linkaccount_add"
+                        app:iconSize="@dimen/font_size_link_card_add"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing.small"
+                        android:text="@string/link_card_more"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/button.text.size"/>
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/btn_add_more"
-            style="@style/Button.Default.New"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/button.height"
-            android:layout_marginBottom="@dimen/button.margin.bottom"
-            android:layout_marginTop="@dimen/button.margin.top.min"
+            android:id="@+id/cardSupportLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
             android:layout_weight="0.0"
-            android:orientation="horizontal">
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/text.support.margin.normal">
 
             <com.zalopay.ui.widget.IconFont
-                android:id="@+id/iconInsideApp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                app:iconName="@string/linkaccount_add"
-                app:iconSize="@dimen/font_size_link_card_add"/>
+                android:textColor="@color/text_green"
+                app:iconName="@string/linkaccount_info"
+                app:iconSize="@dimen/font_size_balance_manager_question"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.small"
-                android:text="@string/link_card_more"
-                android:textColor="@color/white"
-                android:textSize="@dimen/button.text.size"/>
+                android:layout_marginLeft="8dp"
+                android:text="@string/bank.support.link.card"
+                android:textColor="@color/text_green"/>
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/cardSupportLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/text.support.height"
-        android:layout_gravity="bottom|center_horizontal"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <com.zalopay.ui.widget.IconFont
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_green"
-            app:iconName="@string/linkaccount_info"
-            app:iconSize="@dimen/font_size_balance_manager_question"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:text="@string/bank.support.link.card"
-            android:textColor="@color/text_green"/>
     </LinearLayout>
 </FrameLayout>

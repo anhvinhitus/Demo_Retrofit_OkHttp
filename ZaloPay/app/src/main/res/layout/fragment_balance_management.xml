@@ -177,7 +177,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom|center_horizontal"
-        android:paddingBottom="@dimen/text.support.height">
+        android:paddingBottom="@dimen/text.support.margin.normal">
 
         <LinearLayout
             android:layout_width="wrap_content"

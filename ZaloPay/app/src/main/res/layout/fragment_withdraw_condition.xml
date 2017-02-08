@@ -241,79 +241,85 @@
             android:layout_height="@dimen/separate"
             android:background="@color/separate"/>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/TextView.Group.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/spacing.small"
-                android:paddingLeft="@dimen/spacing.medium"
-                android:paddingTop="@dimen/spacing.large.t"
-                android:text="@string/txt_home_link_account"
-                android:textAllCaps="true"/>
-
-            <LinearLayout
-                android:id="@+id/tvAddAccount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/spacing.small"
-                android:paddingLeft="@dimen/spacing.medium"
-                android:paddingRight="@dimen/spacing.medium"
-                android:paddingTop="@dimen/spacing.large.t">
-
-                <com.zalopay.ui.widget.IconFont
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    app:iconName="@string/linkaccount_add"
-                    app:iconSize="@dimen/font_size_icon_in_text"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing.small.t"
-                    android:text="@string/add"
-                    android:textColor="@color/colorPrimary"/>
-            </LinearLayout>
-        </FrameLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separate"
-            android:background="@color/separate"/>
-
         <LinearLayout
+            android:id="@+id/layoutLinkAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvAccountNote"
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/TextView.Group.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/spacing.small"
+                    android:paddingLeft="@dimen/spacing.medium"
+                    android:paddingTop="@dimen/spacing.large.t"
+                    android:text="@string/txt_home_link_account"
+                    android:textAllCaps="true"/>
+
+                <LinearLayout
+                    android:id="@+id/tvAddAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/spacing.small"
+                    android:paddingLeft="@dimen/spacing.medium"
+                    android:paddingRight="@dimen/spacing.medium"
+                    android:paddingTop="@dimen/spacing.large.t">
+
+                    <com.zalopay.ui.widget.IconFont
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimary"
+                        app:iconName="@string/linkaccount_add"
+                        app:iconSize="@dimen/font_size_icon_in_text"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing.small.t"
+                        android:text="@string/add"
+                        android:textColor="@color/colorPrimary"/>
+                </LinearLayout>
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:background="@color/separate"/>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_marginRight="@dimen/spacing.medium"
-                android:layout_marginTop="@dimen/spacing.medium.t"
-                android:text="@string/withdraw_condition_account_note"
-                android:textSize="13sp"/>
+                android:background="@color/white"
+                android:orientation="vertical">
 
-            <fragment
-                android:id="@+id/accSupportWithdrawFragment"
-                android:name="vn.com.vng.zalopay.withdraw.ui.fragment.AccountSupportWithdrawFragment"
+                <TextView
+                    android:id="@+id/tvAccountNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing.medium"
+                    android:layout_marginRight="@dimen/spacing.medium"
+                    android:layout_marginTop="@dimen/spacing.medium.t"
+                    android:text="@string/withdraw_condition_account_note"
+                    android:textSize="13sp"/>
+
+                <fragment
+                    android:id="@+id/accSupportWithdrawFragment"
+                    android:name="vn.com.vng.zalopay.withdraw.ui.fragment.AccountSupportWithdrawFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="@dimen/separate"
+                android:background="@color/separate"/>
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separate"
-            android:background="@color/separate"/>
-
     </LinearLayout>
 </ScrollView>

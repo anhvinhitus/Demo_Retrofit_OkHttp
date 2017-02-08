@@ -38,6 +38,9 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     @BindView(R.id.tvCardNote)
     View tvCardNote;
 
+    @BindView(R.id.layoutLinkAccount)
+    View layoutLinkAccount;
+
     @BindView(R.id.tvAccountNote)
     View tvAddAccount;
 
@@ -166,8 +169,13 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
         if (mCardSupportFragment != null) {
             mCardSupportFragment.refreshCardSupportList(listSupportLinkCard);
         }
-        if (mAccSupportWithdrawFragment != null) {
-            mAccSupportWithdrawFragment.refreshAccountSupportList(listSupportLinkAccount);
+        if (Lists.isEmptyOrNull(listSupportLinkAccount)) {
+            layoutLinkAccount.setVisibility(View.GONE);
+        } else {
+            layoutLinkAccount.setVisibility(View.VISIBLE);
+            if (mAccSupportWithdrawFragment != null) {
+                mAccSupportWithdrawFragment.refreshAccountSupportList(listSupportLinkAccount);
+            }
         }
     }
 

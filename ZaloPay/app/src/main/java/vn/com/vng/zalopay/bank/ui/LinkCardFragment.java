@@ -191,13 +191,20 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         }
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
         mLayoutContent.setVisibility(View.GONE);
-        mCardSupportLayout.setVisibility(View.GONE);
     }
 
     private void hideLinkCardEmpty() {
+        if (mAdapter != null) {
+            float paddingBottom;
+            if (mAdapter.getItemCount() >= 3) {
+                paddingBottom = getResources().getDimension(R.dimen.text_support_margin_small);
+            } else {
+                paddingBottom = getResources().getDimension(R.dimen.text_support_margin_normal);
+            }
+            mCardSupportLayout.setPadding(0, 0, 0, (int) paddingBottom);
+        }
         mLayoutLinkCardEmpty.setVisibility(View.GONE);
         mLayoutContent.setVisibility(View.VISIBLE);
-        mCardSupportLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

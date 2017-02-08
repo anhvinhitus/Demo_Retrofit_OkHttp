@@ -36,7 +36,7 @@
     <dimen name="app_padding">10dp</dimen>
     <dimen name="border">10dp</dimen>
     <dimen name="border_link_card">8dp</dimen>
-    <dimen name="border_link_account">4dp</dimen>
+    <dimen name="border_link_account">2dp</dimen>
 
     <dimen name="content_horizontal_padding">16dp</dimen>
     <dimen name="content_vertical_padding">16dp</dimen>
@@ -113,5 +113,6 @@
     <dimen name="link.account.line.width">4dp</dimen>
     <dimen name="link.account.border">8dp</dimen>
 
-    <dimen name="text.support.height">26dp</dimen>
+    <dimen name="text.support.margin.normal">24dp</dimen>
+    <dimen name="text.support.margin.small">10dp</dimen>
 </resources>
