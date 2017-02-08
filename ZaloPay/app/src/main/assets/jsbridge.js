@@ -1,10 +1,10 @@
 var callbackPool = {};
 
 function initializeWebBridge() {
-  console.log('execute to inject script');
+  console.log('execute to initializeWebBridge');
 
   // call
-  AlipayJSBridge.call = function (func, param, callback) {
+  ZaloPayJSBridge.call = function (func, param, callback) {
     if ('string' !== typeof func) {
       return;
     }
@@ -25,22 +25,22 @@ function initializeWebBridge() {
       msgType: 'call',
       clientId: clientId
     });
-    console.log("AlipayJSBridge.callNativeFunction: " + invokeMsg);
-    AlipayJSBridge.callNativeFunction("call", invokeMsg);
+    console.log("ZaloPayJSBridge.callNativeFunction: " + invokeMsg);
+    ZaloPayJSBridge.callNativeFunction("call", invokeMsg);
   }
 
   // callback
-  AlipayJSBridge.callback = function (clientId, param) {
+  ZaloPayJSBridge.callback = function (clientId, param) {
     var invokeMsg = JSON.stringify({
       clientId: clientId,
       param: param
     });
-    console.log("AlipayJSBridge.callNativeFunction: " + invokeMsg);
-    AlipayJSBridge.callNativeFunction("callback", invokeMsg);
+    console.log("ZaloPayJSBridge.callNativeFunction: " + invokeMsg);
+    ZaloPayJSBridge.callNativeFunction("callback", invokeMsg);
   }
 
   // trigger
-  AlipayJSBridge.trigger = function (name, param, clientId) {
+  ZaloPayJSBridge.trigger = function (name, param, clientId) {
     if (name) {
       var evt = document.createEvent('Events');
       evt.initEvent(name, false, true);
@@ -52,15 +52,15 @@ function initializeWebBridge() {
       evt.clientId = clientId;
       var prevent = !document.dispatchEvent(evt);
       if (clientId && name === 'back') {
-        AlipayJSBridge.callback(clientId, {prevent: prevent});
+        ZaloPayJSBridge.callback(clientId, {prevent: prevent});
       }if (clientId && name === 'firePullToRefresh') {
-        AlipayJSBridge.callback(clientId, {prevent: prevent});
+        ZaloPayJSBridge.callback(clientId, {prevent: prevent});
       }
     }
   }
 
   // _invokeJS
-  AlipayJSBridge._invokeJS = function (resp) {
+  ZaloPayJSBridge._invokeJS = function (resp) {
     resp = JSON.parse(resp);
     console.log("invokeJS msgType " + resp.msgType + " func " + resp.func);
     if (resp.msgType === 'callback') {
@@ -79,7 +79,7 @@ function initializeWebBridge() {
   }
 
   var readyEvent = document.createEvent('Events');
-  readyEvent.initEvent('AlipayJSBridgeReady', false, false);
+  readyEvent.initEvent('ZaloPayJSBridgeReady', false, false);
   document.dispatchEvent(readyEvent);
 };
 

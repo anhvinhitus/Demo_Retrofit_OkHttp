@@ -46,7 +46,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         mWebViewListener = webViewListener;
         mWebView.setWebViewClient(this);
         mWebView.addJavascriptInterface(this, "ZaloPayJSBridge");
-        mWebView.addJavascriptInterface(this, "AlipayJSBridge");
+        //mWebView.addJavascriptInterface(this, "AlipayJSBridge");
 
         mCommunicationHandler = new WebAppCommunicationHandler(pWebView, webViewListener);
     }

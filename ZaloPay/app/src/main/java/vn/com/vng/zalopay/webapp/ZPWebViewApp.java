@@ -49,7 +49,7 @@ public class ZPWebViewApp extends WebView implements IWebView {
         settings.setDomStorageEnabled(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setUserAgentString(
-                "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36 ZaloPayClient/2.8 AlipayClient/10.0");
+                "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36 ZaloPayClient/2.8");
 
         settings.setBlockNetworkImage(false);
         settings.setLoadWithOverviewMode(true);
@@ -185,7 +185,7 @@ public class ZPWebViewApp extends WebView implements IWebView {
             jsParam.put("param", message.data);
             jsParam.put("msgType", message.messageType);
             jsParam.put("keepCallback", message.keepCallback);
-            final String jsInvoker = String.format("AlipayJSBridge._invokeJS('%s')", new Object[]{jsParam.toString()});
+            final String jsInvoker = String.format("ZaloPayJSBridge._invokeJS('%s')", new Object[]{jsParam.toString()});
             AndroidUtils.runOnUIThread(new Runnable() {
                 @Override
                 public void run() {
