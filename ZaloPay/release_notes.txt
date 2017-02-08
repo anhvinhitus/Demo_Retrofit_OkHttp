@@ -1,2 +1,4 @@
-ZaloPay (v2.8.0) - Released on 2017-01-21
-- fixed UI
+ZaloPay (v2.8.0) - Released on 2017-02-08
+- Update Zalo Integration
+- Sửa recovery notification.
+- Update UI: Liên Kết Thẻ, Điều kiện rút tiền.
