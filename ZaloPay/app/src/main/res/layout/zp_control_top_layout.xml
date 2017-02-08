@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            app:iconName="@string/header_linkbank"
+            app:iconName="@string/header_linkcard"
             app:iconSize="@dimen/font_size_home_function" />
 
         <TextView
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing.small"
             android:gravity="center"
-            android:text="@string/txt_home_bank"
+            android:text="@string/txt_home_link_card"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="@dimen/font_size_normal" />

@@ -154,7 +154,6 @@
     <string name="tutorial_link_card_note_2">Bạn có thể sử dụng thẻ này vào các lần thanh toán sau mà không cần nhập số thẻ.</string>
     <string name="tutorial_link_card_note_3">Thông tin thẻ được bảo mật theo tiêu chuẩn PCI-DSS và quy định của ngân hàng.</string>
 
-    <string name="txt_home_bank">Ngân Hàng</string>
     <string name="txt_home_link_card">Liên Kết Thẻ</string>
     <string name="txt_home_link_account">Liên Kết Tài Khoản</string>
     <string name="txt_home_scantopay">Trả Tiền</string>

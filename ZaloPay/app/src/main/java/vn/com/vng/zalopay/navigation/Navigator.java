@@ -34,11 +34,11 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
+import vn.com.vng.zalopay.bank.ui.LinkCardActivity;
+import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
-import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.react.Helpers;
@@ -394,7 +394,7 @@ public class Navigator implements INavigator {
 
     @Override
     public Intent intentLinkCard(Context context) {
-        return new Intent(context, LinkBankActivity.class);
+        return new Intent(context, LinkCardActivity.class);
     }
 
     @Override
