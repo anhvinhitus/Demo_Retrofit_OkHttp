@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.webapp;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,28 +11,29 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Arrays;
+import org.json.JSONObject;
+
 import java.util.Collections;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
-import vn.com.vng.zalopay.react.Helpers;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.vng.zalopay.webview.widget.ZPWebView;
-import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**
  * Created by chucvv on 8/28/16.
  * Fragment
  */
-public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcessor.IWebViewListener {
+public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcessor.IWebViewListener,
+            IWebAppView {
 
     protected ZPWebViewAppProcessor mWebViewProcessor;
 
@@ -44,6 +46,9 @@ public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcesso
         fragment.setArguments(bundle);
         return fragment;
     }
+
+    @Inject
+    WebAppPresenter mPresenter;
 
     @Override
     protected void setupFragmentComponent() {
@@ -72,7 +77,7 @@ public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcesso
     }
 
     protected void initPresenter(View view) {
-
+        mPresenter.attachView(this);
     }
 
     protected void loadDefaultWebView() {
@@ -223,7 +228,7 @@ public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcesso
     @Override
     public void onResume() {
         super.onResume();
-
+        mPresenter.resume();
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onResume();
         }
@@ -232,6 +237,7 @@ public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcesso
 
     @Override
     public void onPause() {
+        mPresenter.pause();
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onPause();
         }
@@ -240,6 +246,7 @@ public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcesso
 
     @Override
     public void onDestroyView() {
+        mPresenter.detachView();
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onDestroyView();
         }
@@ -248,6 +255,7 @@ public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcesso
 
     @Override
     public void onDestroy() {
+        mPresenter.destroy();
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onDestroy();
         }
@@ -287,6 +295,11 @@ public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcesso
     }
 
     @Override
+    public void pay(JSONObject jsonObject, PaymentWrapper.IResponseListener listener) {
+        mPresenter.pay(jsonObject, listener);
+    }
+
+    @Override
     public void payOrder(final String url) {
     }
 
@@ -301,5 +314,10 @@ public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcesso
             return;
         }
         getActivity().finish();
+    }
+
+    @Override
+    public Fragment getFragment() {
+        return this;
     }
 }

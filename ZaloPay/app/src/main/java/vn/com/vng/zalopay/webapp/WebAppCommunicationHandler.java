@@ -12,6 +12,9 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -48,40 +51,8 @@ class WebAppCommunicationHandler {
             webMessage.data = param;
             webMessage.functionName = functionName;
 
-            ObservableHelper.makeObservable(new Callable<JSONObject>() {
-                @Override
-                public JSONObject call() throws Exception {
-                    return processMessage(webMessage);
-                }
-            })
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new Subscriber<JSONObject>() {
-
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            JSONObject result = new JSONObject();
-
-                            try {
-                                result.put("error", 1);
-                                result.put("errorMessage", e.getMessage());
-                            } catch (JSONException ez) {
-
-                            }
-
-                            callback(webMessage, result);
-                        }
-
-                        @Override
-                        public void onNext(JSONObject jsonObject) {
-                            callback(webMessage, jsonObject);
-                        }
-                    });
-        } catch (JSONException e) {
+            processMessage(webMessage);
+        } catch (Exception e) {
             Timber.d(e, "Exception while parsing arguments");
         }
     }
@@ -99,46 +70,139 @@ class WebAppCommunicationHandler {
         }
     }
 
-    private JSONObject processMessage(WebMessage message) throws Exception {
-
+    private void processMessage(WebMessage message) throws Exception {
         if ("alert".equalsIgnoreCase(message.functionName)) {
-            // {"title":"Hello","message":"ABC 123","button":"OK"}
-            String title = message.data.optString("title");
-            String content = message.data.optString("message");
-            String buttonLabel = message.data.optString("button");
-
-            if (mWebViewListener != null) {
-                mWebViewListener.showDialog(SweetAlertDialog.NORMAL_TYPE, title, content, buttonLabel);
-            }
-            return successObject();
+            showDialog(message);
+        } else if ("closeWindow".equalsIgnoreCase(message.functionName)) {
+            finishActivity(message);
+        } else if ("vibrate".equalsIgnoreCase(message.functionName)) {
+            vibrator(message);
+        } else if ("payOrder".equalsIgnoreCase(message.functionName)) {
+            pay(message);
+        } else {
+            callback(message, failObject("Unknown function"));
         }
+    }
 
-        if ("closeWindow".equalsIgnoreCase(message.functionName)) {
-            if (mWebViewListener != null) {
-                mWebViewListener.finishActivity();
-            }
-            return successObject();
+    private void pay(final WebMessage message) {
+        if (message == null) {
+            return;
         }
-
-        if ("vibrate".equalsIgnoreCase(message.functionName)) {
-            if (message.data != null) {
-                int duration = message.data.optInt("duration", 0);
-                if (duration == 0) {
-                    duration = 500;
+        if (mWebViewListener == null) {
+            callback(message, failObject("Missing webview listener."));
+        } else {
+            mWebViewListener.pay(message.data, new PaymentWrapper.IResponseListener() {
+                @Override
+                public void onParameterError(String param) {
+                    callback(message, failObject(param));
                 }
 
-                Vibrator v = (Vibrator) mWebViewListener.getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                // Vibrate for 500 milliseconds
-                v.vibrate(duration);
-            }
+                @Override
+                public void onResponseError(PaymentError status) {
+                    callback(message, failObject(PaymentError.getErrorMessage(status)));
+                }
 
-            return successObject();
+                @Override
+                public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                    callback(message, successObject());
+                }
+
+                @Override
+                public void onResponseTokenInvalid() {
+                    callback(message, failObject("Token invalid."));
+                }
+
+                @Override
+                public void onAppError(String msg) {
+                    callback(message, failObject(msg));
+                }
+
+                @Override
+                public void onNotEnoughMoney() {
+                    callback(message, failObject("Not enough money."));
+                }
+
+                @Override
+                public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
+
+                }
+            });
         }
+    }
 
+    private void finishActivity(final WebMessage message) {
+        if (mWebViewListener != null) {
+            mWebViewListener.finishActivity();
+        }
+        callback(message, successObject());
+    }
+
+    private void showDialog(final WebMessage message) {
+        // {"title":"Hello","message":"ABC 123","button":"OK"}
+        String title = message.data.optString("title");
+        String content = message.data.optString("message");
+        String buttonLabel = message.data.optString("button");
+
+        if (mWebViewListener != null) {
+            mWebViewListener.showDialog(SweetAlertDialog.NORMAL_TYPE, title, content, buttonLabel);
+        }
+        callback(message, successObject());
+    }
+
+    private void vibrator(final WebMessage message) {
+        ObservableHelper.makeObservable(new Callable<JSONObject>() {
+            @Override
+            public JSONObject call() throws Exception {
+                if (message.data != null) {
+                    int duration = message.data.optInt("duration", 0);
+                    if (duration == 0) {
+                        duration = 500;
+                    }
+
+                    Vibrator v = (Vibrator) mWebViewListener.getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    // Vibrate for 500 milliseconds
+                    v.vibrate(duration);
+                }
+                return successObject();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<JSONObject>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        JSONObject result = new JSONObject();
+
+                        try {
+                            result.put("error", 1);
+                            result.put("errorMessage", e.getMessage());
+                        } catch (JSONException ez) {
+
+                        }
+
+                        callback(message, result);
+                    }
+
+                    @Override
+                    public void onNext(JSONObject jsonObject) {
+                        callback(message, jsonObject);
+                    }
+                });
+    }
+
+    private JSONObject failObject(String message) {
         JSONObject result = new JSONObject();
+        try {
+            result.put("error", 1);
+            result.put("errorMessage", message);
+        } catch (JSONException ez) {
 
-        result.put("error", 1);
-        result.put("errorMessage", "Unknown function");
+        }
 
         return result;
     }

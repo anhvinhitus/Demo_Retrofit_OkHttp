@@ -26,6 +26,7 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -263,6 +264,8 @@ public class ZPWebViewAppProcessor extends WebViewClient {
     }
 
     public interface IWebViewListener {
+
+        void pay(JSONObject jsonObject, PaymentWrapper.IResponseListener listener);
 
         void payOrder(String url);
 

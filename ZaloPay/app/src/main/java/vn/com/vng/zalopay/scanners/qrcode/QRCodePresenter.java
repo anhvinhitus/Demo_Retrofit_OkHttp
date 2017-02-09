@@ -47,6 +47,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.ZPTransaction;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -57,6 +58,7 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.PaymentHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -272,46 +274,22 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
 
     private boolean zpTransaction(JSONObject jsonObject) throws IllegalArgumentException {
         Timber.d("Trying with zptranstoken");
-        long appId = jsonObject.optInt(Constants.APPID);
-        Timber.d("AppID: %d", appId);
-        String transactionToken = jsonObject.optString(Constants.ZPTRANSTOKEN);
-        Timber.d("Transtoken: %s", transactionToken);
-        if (appId < 0 || TextUtils.isEmpty(transactionToken)) {
-            return false;
+        ZPTransaction zpTransaction = new ZPTransaction(jsonObject);
+        boolean isValidZPTransaction = zpTransaction.isValid();
+        if (isValidZPTransaction) {
+            paymentWrapper.payWithToken(mView.getActivity(), zpTransaction.appId, zpTransaction.transactionToken);
         }
-        paymentWrapper.payWithToken(mView.getActivity(), appId, transactionToken);
-        return true;
+        return isValidZPTransaction;
     }
 
     private boolean orderTransaction(JSONObject jsonOrder) throws JSONException, IllegalArgumentException {
         Order order = new Order(jsonOrder);
-        if (order.appid < 0) {
-            return false;
+        boolean isValidOrder = PaymentHelper.validOrder(order);
+        if (isValidOrder) {
+            paymentWrapper.payWithOrder(mView.getActivity(), order);
+            hideLoadingView();
         }
-        if (TextUtils.isEmpty(order.apptransid)) {
-            return false;
-        }
-        if (TextUtils.isEmpty(order.appuser)) {
-            return false;
-        }
-        if (order.apptime <= 0) {
-            return false;
-        }
-        if (TextUtils.isEmpty(order.item)) {
-            return false;
-        }
-        if (order.amount < 0) {
-            return false;
-        }
-        if (TextUtils.isEmpty(order.description)) {
-            return false;
-        }
-        if (TextUtils.isEmpty(order.mac)) {
-            return false;
-        }
-        paymentWrapper.payWithOrder(mView.getActivity(), order);
-        hideLoadingView();
-        return true;
+        return isValidOrder;
     }
 
     private void qrDataInvalid() {
