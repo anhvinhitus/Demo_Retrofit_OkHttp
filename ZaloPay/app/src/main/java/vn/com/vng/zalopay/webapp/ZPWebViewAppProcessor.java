@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
 
 public class ZPWebViewAppProcessor extends WebViewClient {
@@ -38,7 +36,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         mWebView = pWebView;
         mWebViewListener = webViewListener;
         mWebView.setWebViewClient(this);
-        mWebView.addJavascriptInterface(this, "ZaloPayJSBridge");
+        mWebView.addJavascriptInterface(new ZPJavaScriptInterface(), "ZaloPayJSBridge");
         //mWebView.addJavascriptInterface(this, "AlipayJSBridge");
 
         mCommunicationHandler = new WebAppCommunicationHandler(pWebView, webViewListener);
@@ -295,7 +293,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
     }
 
     public boolean onBackPress() {
-        if(mWebView != null && mWebView.canGoBack()) {
+        if (mWebView != null && mWebView.canGoBack()) {
             mWebView.goBack();
             return true;
         } else {
@@ -303,17 +301,19 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         }
     }
 
-    @android.webkit.JavascriptInterface
-    void callNativeFunction(String a1, String messageData) {
-        Timber.d("Invoke function with data: %s", messageData);
-        if (TextUtils.isEmpty(messageData)) {
-            return;
+    public class ZPJavaScriptInterface implements AbsJavaScriptInterface {
+
+        @android.webkit.JavascriptInterface
+        public void callNativeFunction(String a1, String messageData) {
+            Timber.d("Invoke function with data: %s", messageData);
+            if (TextUtils.isEmpty(messageData)) {
+                return;
+            }
+
+            // message = {"func":"vibrate","param":{"duration":3000},"msgType":"call","clientId":"14865289272660.004411039873957634"}
+
+            // preHandleWebMessage(messageData);
+            mCommunicationHandler.preHandleWebMessage(messageData);
         }
-
-        // message = {"func":"vibrate","param":{"duration":3000},"msgType":"call","clientId":"14865289272660.004411039873957634"}
-
-        // preHandleWebMessage(messageData);
-        mCommunicationHandler.preHandleWebMessage(messageData);
     }
-
 }
