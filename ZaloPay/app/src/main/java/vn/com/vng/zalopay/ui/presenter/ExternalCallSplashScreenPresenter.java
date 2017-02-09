@@ -196,7 +196,6 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
             payment.initialize();
             payment.getBalance();
 
-
             if (mView == null) {
                 return;
             }

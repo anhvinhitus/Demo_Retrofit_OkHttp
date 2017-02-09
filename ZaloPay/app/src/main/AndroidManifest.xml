@@ -131,8 +131,8 @@
                     android:scheme="zalopay" />
 
                 <data
-                    android:pathPrefix="/transfer"
                     android:host="app"
+                    android:pathPrefix="/transfer"
                     android:scheme="zalopay-zapi-28" />
 
             </intent-filter>
@@ -321,7 +321,9 @@
             android:label="@string/title.activity.zalopay.contact" />
         <activity
             android:name=".transfer.ui.TransferActivity"
-            android:label="@string/title.activity.transfer.to" />
+            android:label="@string/title.activity.transfer.to"
+            android:launchMode="singleTask"
+            android:taskAffinity="" />
         <activity
             android:name=".ui.activity.BalanceManagementActivity"
             android:label="@string/title.activity.withdraw.home" />
