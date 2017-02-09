@@ -26,17 +26,17 @@ class WebAppCommunicationHandler {
     private IWebView mWebView;
     private IWebViewListener mWebViewListener;
 
-    public WebAppCommunicationHandler(IWebView webView, IWebViewListener webViewListener) {
+    WebAppCommunicationHandler(IWebView webView, IWebViewListener webViewListener) {
         mWebViewListener = webViewListener;
         mWebView = webView;
     }
 
-    public void cleanup() {
+    void cleanup() {
         mWebView = null;
         mWebViewListener = null;
     }
 
-    public void preHandleWebMessage(String messageData) {
+    void preHandleWebMessage(String messageData) {
         try {
             JSONObject object = new JSONObject(messageData);
 
