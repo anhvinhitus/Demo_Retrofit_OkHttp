@@ -17,14 +17,12 @@ public class ZPTransaction {
     public long appId;
     public String transactionToken;
 
-    public ZPTransaction(JSONObject jsonObject) throws IllegalArgumentException {
-        long appId = jsonObject.optInt(Constants.APPID);
-        Timber.d("AppID: %d", appId);
-        String transactionToken = jsonObject.optString(Constants.ZPTRANSTOKEN);
-        Timber.d("Transtoken: %s", transactionToken);
+    public ZPTransaction(JSONObject jsonObject) {
+        appId = jsonObject.optInt(Constants.APPID);
+        transactionToken = jsonObject.optString(Constants.ZPTRANSTOKEN);
     }
 
     public boolean isValid() {
-        return !(appId < 0 || TextUtils.isEmpty(transactionToken));
+        return appId > 0 && !TextUtils.isEmpty(transactionToken);
     }
 }
