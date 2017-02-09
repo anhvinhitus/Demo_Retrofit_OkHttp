@@ -16,7 +16,7 @@ import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 
 /**
  * Created by longlv on 2/8/17.
- * *
+ * Wrapper CShareData of PaymentSDK.
  */
 
 public class CShareDataWrapper {
