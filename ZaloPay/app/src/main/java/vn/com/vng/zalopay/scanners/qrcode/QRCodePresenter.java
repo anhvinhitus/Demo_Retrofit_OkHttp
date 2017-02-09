@@ -164,34 +164,45 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         }
 
         Timber.d("about to process payment with order: %s", jsonString);
+        showLoadingView();
+
+        JSONObject data;
         try {
-            showLoadingView();
-
-            JSONObject data = new JSONObject(jsonString);
-
-            int type = data.optInt("type", -1);
-            if (type == vn.com.vng.zalopay.Constants.QRCode.RECEIVE_MONEY) {
-                if (tryTransferMoney(data)) {
-                    if (fromPhotoLibrary) {
-                        ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
-                    } else {
-                        ZPAnalytics.trackEvent(ZPEvents.SCANQR_MONEYTRANSFER);
-                    }
-                    return;
-                }
-            }
-
-            if (zpTransaction(data)) {
-                return;
-            }
-
-            if (orderTransaction(data)) {
-                return;
-            }
-        } catch (JSONException | IllegalArgumentException e) {
-            Timber.i("Invalid JSON input: %s", e.getMessage());
+            data = new JSONObject(jsonString);
+        } catch (JSONException e) {
+            Timber.i(e, "Invalid JSON input");
+            resumeScanningAfterWrongQR();
+            return;
         }
+
+        if (transferMoney(data, fromPhotoLibrary)) {
+            return;
+        }
+
+        if (zpTransaction(data)) {
+            return;
+        }
+
+        if (orderTransaction(data)) {
+            return;
+        }
+
         resumeScanningAfterWrongQR();
+    }
+
+    private boolean transferMoney(JSONObject data, boolean fromPhotoLibrary) {
+        int type = data.optInt("type", -1);
+        if (type == vn.com.vng.zalopay.Constants.QRCode.RECEIVE_MONEY) {
+            if (tryTransferMoney(data)) {
+                if (fromPhotoLibrary) {
+                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
+                } else {
+                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_MONEYTRANSFER);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     private void resumeScanningAfterWrongQR() {
@@ -272,19 +283,21 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         mNavigator.startTransferActivity(mView.getContext(), bundle, false);
     }
 
-    private boolean zpTransaction(JSONObject jsonObject) throws IllegalArgumentException {
-        Timber.d("Trying with zptranstoken");
+    private boolean zpTransaction(JSONObject jsonObject) {
+
         ZPTransaction zpTransaction = new ZPTransaction(jsonObject);
         boolean isValidZPTransaction = zpTransaction.isValid();
+
+        Timber.d("Trying with zptranstoken %s ", isValidZPTransaction);
         if (isValidZPTransaction) {
             paymentWrapper.payWithToken(mView.getActivity(), zpTransaction.appId, zpTransaction.transactionToken);
         }
         return isValidZPTransaction;
     }
 
-    private boolean orderTransaction(JSONObject jsonOrder) throws JSONException, IllegalArgumentException {
+    private boolean orderTransaction(JSONObject jsonOrder) {
         Order order = new Order(jsonOrder);
-        boolean isValidOrder = PaymentHelper.validOrder(order);
+        boolean isValidOrder = order.isValid();
         if (isValidOrder) {
             paymentWrapper.payWithOrder(mView.getActivity(), order);
             hideLoadingView();

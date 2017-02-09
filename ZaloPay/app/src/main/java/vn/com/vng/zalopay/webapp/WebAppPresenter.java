@@ -73,10 +73,11 @@ class WebAppPresenter extends AbstractPresenter<IWebAppView> {
         }
     }
 
-    private boolean zpTransaction(JSONObject jsonObject) throws IllegalArgumentException {
+    private boolean zpTransaction(JSONObject jsonObject) {
         Timber.d("Trying with zptranstoken");
         ZPTransaction zpTransaction = new ZPTransaction(jsonObject);
         boolean isValidZPTransaction = zpTransaction.isValid();
+        Timber.d("zpTransaction: %s", isValidZPTransaction);
         if (isValidZPTransaction) {
             paymentWrapper.payWithToken(mView.getActivity(), zpTransaction.appId, zpTransaction.transactionToken);
         }
@@ -85,7 +86,7 @@ class WebAppPresenter extends AbstractPresenter<IWebAppView> {
 
     private boolean orderTransaction(JSONObject jsonOrder) throws JSONException, IllegalArgumentException {
         Order order = new Order(jsonOrder);
-        boolean isValidOrder = PaymentHelper.validOrder(order);
+        boolean isValidOrder = order.isValid();
         if (isValidOrder) {
             paymentWrapper.payWithOrder(mView.getActivity(), order);
             hideLoadingView();

@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.domain.model;
 
+import android.text.TextUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,26 +45,29 @@ public class Order extends AbstractData {
         this(new JSONObject(jsonString));
     }
 
-    public Order(JSONObject jsonObject) throws JSONException {
-        appid = (long)jsonObject.getDouble(Constants.APPID);
-        if (jsonObject.has(Constants.ZPTRANSTOKEN)) {
-            zptranstoken = jsonObject.getString(Constants.ZPTRANSTOKEN);
-        } else {
-            zptranstoken = "";
-        }
-        apptransid = jsonObject.getString(Constants.APPTRANSID);
-        appuser = jsonObject.getString(Constants.APPUSER);
-        apptime = Long.parseLong(jsonObject.getString(Constants.APPTIME));
-        amount = Long.parseLong(jsonObject.getString(Constants.AMOUNT));
-        item = jsonObject.getString(Constants.ITEM);
-        description = jsonObject.getString(Constants.DESCRIPTION);
-        embeddata = jsonObject.getString(Constants.EMBEDDATA);
-        mac = jsonObject.getString(Constants.MAC);
-        if (jsonObject.has(Constants.ZPTRANSTOKEN)) {
-            payoption = jsonObject.getString(Constants.CHARGEINFO);
-        } else {
-            payoption = "";
-        }
+    public Order(JSONObject jsonObject) {
+        appid = jsonObject.optLong(Constants.APPID);
+        zptranstoken = jsonObject.optString(Constants.ZPTRANSTOKEN);
+        apptransid = jsonObject.optString(Constants.APPTRANSID);
+        appuser = jsonObject.optString(Constants.APPUSER);
+        apptime = jsonObject.optLong(Constants.APPTIME);
+        amount = jsonObject.optLong(Constants.AMOUNT);
+        item = jsonObject.optString(Constants.ITEM);
+        description = jsonObject.optString(Constants.DESCRIPTION);
+        embeddata = jsonObject.optString(Constants.EMBEDDATA);
+        mac = jsonObject.optString(Constants.MAC);
+        payoption = jsonObject.optString(Constants.CHARGEINFO);
+    }
+
+    public boolean isValid() {
+        return this.appid >= 0
+                && !TextUtils.isEmpty(this.apptransid)
+                && !TextUtils.isEmpty(this.appuser)
+                && this.apptime > 0
+                && !TextUtils.isEmpty(this.item)
+                && this.amount >= 0
+                && !TextUtils.isEmpty(this.description)
+                && !TextUtils.isEmpty(this.mac);
     }
 
     @Override
