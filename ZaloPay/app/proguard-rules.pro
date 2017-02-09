@@ -466,3 +466,14 @@ native <methods>;
 ## Jackson
 -keepnames class com.fasterxml.jackson.** { *; }
 -dontwarn com.fasterxml.jackson.databind.**
+
+## JS
+#-keepclassmembers class * {
+#    @android.webkit.JavascriptInterface <methods>;
+#}
+-keep public class * implements vn.com.vng.zalopay.webapp.AbsJavaScriptInterface
+-keepclassmembers class * implements vn.com.vng.zalopay.webapp.AbsJavaScriptInterface {
+    public *;
+}
+## For API 17+
+#-keepattributes JavascriptInterface
