@@ -1,9 +1,7 @@
-ZaloPay (v2.8.0 - build 163) - Released on 2017-02-09
-- Quét QR với Zing Pay url
-- Fix Zalo Integration
-
-
-ZaloPay (v2.8.0 - build 162) - Released on 2017-02-08
-- Update Zalo Integration
+ZaloPay (v2.9.0 - build 180) - Released on 2017-02-09
+- Hỗ trợ ngân hàng vietcombank.
+- Thêm Zalo Integration
 - Sửa recovery notification.
 - Update UI: Liên Kết Thẻ, Điều kiện rút tiền.
+- Quét QR với Zing Pay url
+
