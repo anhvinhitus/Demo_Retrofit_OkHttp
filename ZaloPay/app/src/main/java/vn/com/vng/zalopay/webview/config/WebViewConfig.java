@@ -1,17 +1,23 @@
 package vn.com.vng.zalopay.webview.config;
 
+import vn.com.vng.zalopay.utils.RootUtils;
+
 public class WebViewConfig {
 
-    public static final String getWebViewUrl(String host) {
-        return host + "?muid=%s&maccesstoken=%s&appid=%d";
+    public static String getWebViewUrl(String host) {
+        return host + "?muid=%s&maccesstoken=%s&appid=%d" + addParameterIsRoot();
     }
 
-    public static final String getResultWebViewUrl(String host) {
-        return host + "/result/?apptransid=%s&muid=%s&maccesstoken=%s";
+    public static String getResultWebViewUrl(String host) {
+        return host + "/result/?apptransid=%s&muid=%s&maccesstoken=%s" + addParameterIsRoot();
     }
 
-    public static final String getHistoryWebViewUrl(String host) {
-        return host + "/history/?muid=%s&maccesstoken=%s";
+    public static String getHistoryWebViewUrl(String host) {
+        return host + "/history/?muid=%s&maccesstoken=%s" + addParameterIsRoot();
+    }
+
+    private static String addParameterIsRoot() {
+        return "&isroot=" + RootUtils.isDeviceRooted();
     }
 
     public static final String URL_TO_APP = "zalopay-1://backtoapp";
