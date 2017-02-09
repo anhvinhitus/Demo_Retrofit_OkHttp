@@ -122,9 +122,11 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
 
         // Query contact information from Contact provider
         Cursor cur = cr.query(contactURI, null, null, null, null);
+        String displayName = "";
         try {
             if (cur != null && cur.getCount() > 0) {
                 bExistedContact = true;
+                displayName = cur.getString(cur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
             }
         } catch (Exception e) {
             //empty
@@ -134,7 +136,7 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
             }
         }
 
-        resultCallback.invoke(bExistedContact);
+        resultCallback.invoke(bExistedContact, displayName);
     }
 
     @ReactMethod
