@@ -24,9 +24,9 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 class WebAppCommunicationHandler {
     private IWebView mWebView;
-    private ZPWebViewAppProcessor.IWebViewListener mWebViewListener;
+    private IWebViewListener mWebViewListener;
 
-    public WebAppCommunicationHandler(IWebView webView, ZPWebViewAppProcessor.IWebViewListener webViewListener) {
+    public WebAppCommunicationHandler(IWebView webView, IWebViewListener webViewListener) {
         mWebViewListener = webViewListener;
         mWebView = webView;
     }

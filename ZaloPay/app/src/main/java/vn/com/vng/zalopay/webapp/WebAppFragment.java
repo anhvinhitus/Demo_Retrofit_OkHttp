@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONObject;
-
 import java.util.Collections;
 
 import javax.inject.Inject;
@@ -32,8 +31,7 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
  * Created by chucvv on 8/28/16.
  * Fragment
  */
-public class WebAppFragment extends BaseFragment implements ZPWebViewAppProcessor.IWebViewListener,
-            IWebAppView {
+public class WebAppFragment extends BaseFragment implements IWebViewListener, IWebAppView {
 
     protected ZPWebViewAppProcessor mWebViewProcessor;
 

@@ -1,7 +1,6 @@
-var callbackPool = {};
-
 function initializeWebBridge() {
   console.log('execute to initializeWebBridge');
+  ZaloPayJSBridge.callbackPool = ZaloPayJSBridge.callbackPool || {};
 
   // call
   ZaloPayJSBridge.call = function (func, param, callback) {
@@ -17,8 +16,9 @@ function initializeWebBridge() {
     }
     var clientId = '' + new Date().getTime()+(Math.random());
     if ('function' === typeof callback) {
-      callbackPool[clientId] = callback;
+      ZaloPayJSBridge.callbackPool[clientId] = callback;
     }
+
     var invokeMsg = JSON.stringify({
       func: func,
       param: param,
@@ -62,11 +62,11 @@ function initializeWebBridge() {
   // _invokeJS
   ZaloPayJSBridge._invokeJS = function (resp) {
     resp = JSON.parse(resp);
-    console.log("invokeJS msgType " + resp.msgType + " func " + resp.func);
+    console.log("invokeJS msgType " + resp.msgType + " func " + resp.func + " clientId " + resp.clientId);
     if (resp.msgType === 'callback') {
-      var func = callbackPool[resp.clientId];
+      var func = ZaloPayJSBridge.callbackPool[resp.clientId];
       if (!(typeof resp.keepCallback == 'boolean' && resp.keepCallback)) {
-        delete callbackPool[resp.clientId];
+        delete ZaloPayJSBridge.callbackPool[resp.clientId];
       }
       if ('function' === typeof func) {
         setTimeout(function () {

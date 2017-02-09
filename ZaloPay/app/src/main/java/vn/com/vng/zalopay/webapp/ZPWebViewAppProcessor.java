@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.webapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -15,20 +14,13 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.Callable;
 
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.webview.config.WebViewConfig;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 public class ZPWebViewAppProcessor extends WebViewClient {
 
@@ -261,27 +253,6 @@ public class ZPWebViewAppProcessor extends WebViewClient {
 
     public String getCurrentUrl() {
         return mCurrentUrl;
-    }
-
-    public interface IWebViewListener {
-
-        void pay(JSONObject jsonObject, PaymentWrapper.IResponseListener listener);
-
-        void payOrder(String url);
-
-        void logout();
-
-        void finishActivity();
-
-        void showError(int errorCode);
-
-        void showLoading();
-
-        void hideLoading();
-
-        void showDialog(int dialogType, String title, String message, String buttonLabel);
-
-        Context getContext();
     }
 
     public void onPause() {
