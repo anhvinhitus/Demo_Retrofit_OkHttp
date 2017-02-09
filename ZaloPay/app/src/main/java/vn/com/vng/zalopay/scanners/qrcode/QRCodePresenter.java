@@ -130,14 +130,14 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         });
     }
 
-    void handleResult(String scanResult) {
+    void handleResult(String scanResult, boolean fromPhotoLibrary) {
         if (TextUtils.isEmpty(scanResult)) {
             Timber.i("Empty QR code");
             resumeScanningAfterWrongQR();
         } else if (AndroidUtils.isHttpRequest(scanResult)) {
             payViaUrl(scanResult);
         } else {
-            pay(scanResult, false);
+            pay(scanResult, fromPhotoLibrary);
         }
     }
 
@@ -374,7 +374,7 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
                             ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOQRCODE);
                             resumeScanningAfterWrongQR();
                         } else {
-                            pay(decoded, true);
+                            handleResult(decoded, true);
                         }
                     }
 
