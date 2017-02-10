@@ -301,7 +301,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         }
     }
 
-    public class ZPJavaScriptInterface implements AbsJavaScriptInterface {
+    public class ZPJavaScriptInterface implements AbstractJavaScriptInterface {
 
         @android.webkit.JavascriptInterface
         public void callNativeFunction(String a1, String messageData) {

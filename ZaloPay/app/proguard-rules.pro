@@ -471,8 +471,8 @@ native <methods>;
 #-keepclassmembers class * {
 #    @android.webkit.JavascriptInterface <methods>;
 #}
--keep public class * implements vn.com.vng.zalopay.webapp.AbsJavaScriptInterface
--keepclassmembers class * implements vn.com.vng.zalopay.webapp.AbsJavaScriptInterface {
+-keep public class * implements vn.com.vng.zalopay.webapp.AbstractJavaScriptInterface
+-keepclassmembers class * implements vn.com.vng.zalopay.webapp.AbstractJavaScriptInterface {
     public *;
 }
 ## For API 17+

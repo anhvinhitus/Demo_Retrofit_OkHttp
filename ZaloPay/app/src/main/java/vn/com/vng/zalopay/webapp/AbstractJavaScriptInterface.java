@@ -5,5 +5,5 @@ package vn.com.vng.zalopay.webapp;
  * Abstract JavaScriptInterface for proguard.
  */
 
-public interface AbsJavaScriptInterface {
+public interface AbstractJavaScriptInterface {
 }
