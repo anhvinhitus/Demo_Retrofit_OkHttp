@@ -6,6 +6,7 @@
     <string name="header_payqrcode">header_payqrcode</string>
     <string name="header_overbalance">header_overbalance</string>
     <string name="header_linkcard">header_linkcard</string>
+    <string name="header_linkbank">header_linkbank</string>
     <!--HomePage END-->
 
     <!--Menu START-->
