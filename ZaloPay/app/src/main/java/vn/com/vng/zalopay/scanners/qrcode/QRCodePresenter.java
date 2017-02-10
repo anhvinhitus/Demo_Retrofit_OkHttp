@@ -495,7 +495,7 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         public void onNext(JsonObject jsonObject) {
             hideLoadingView();
             if (jsonObject == null || TextUtils.isEmpty(jsonObject.toString())) {
-                mView.showError(mView.getContext().getString(R.string.data_invalid));
+                qrDataInvalid();
                 return;
             }
             pay(jsonObject.toString(), false);
@@ -508,10 +508,12 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
             if (e instanceof NetworkConnectionException) {
                 showNetworkErrorAndResumeAfterDismiss();
             } else {
-                if (mView != null && mView.getContext() != null) {
+                /*if (mView != null && mView.getContext() != null) {
                     mNavigator.startWebAppActivity(mView.getContext(), mUrl);
-                }
+                }*/
+                qrDataInvalid();
             }
         }
     }
+
 }
