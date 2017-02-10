@@ -1,11 +1,13 @@
 package vn.com.vng.zalopay.scanners.qrcode;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -43,18 +45,12 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.util.Utils;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.model.ZPTransaction;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
-import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
-import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.vng.zalopay.ui.presenter.AbstractPaymentPresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -68,14 +64,13 @@ import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
  * Controller for QR code scanning
  */
 
-public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
+public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView> {
 
     private final Context mApplicationContext;
     private final Navigator mNavigator;
     private final User mUser;
 
     private QRCodeStore.Repository mQRCodeRepository;
-    private PaymentWrapper paymentWrapper;
 
     @Inject
     QRCodePresenter(BalanceStore.Repository balanceRepository,
@@ -85,18 +80,12 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
                     Context applicationContext,
                     Navigator navigator,
                     User user) {
+        super(balanceRepository, zaloPayRepository, transactionRepository, navigator);
         Timber.d("New instance of QRCodePresenter");
         mApplicationContext = applicationContext;
         mNavigator = navigator;
         mUser = user;
         mQRCodeRepository = qrCodeRepository;
-        paymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(balanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(transactionRepository)
-                .setResponseListener(new PaymentResponseListener())
-                .setRedirectListener(new PaymentRedirectListener())
-                .build();
     }
 
     @Override
@@ -114,6 +103,22 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         if (mView != null) {
             mView.hideLoading();
         }
+    }
+
+    @Override
+    public Activity getActivity() {
+        if (mView != null) {
+            return mView.getActivity();
+        }
+        return null;
+    }
+
+    @Override
+    public Fragment getFragment() {
+        if (mView != null) {
+            return mView.getFragment();
+        }
+        return null;
     }
 
     private void showNetworkErrorAndResumeAfterDismiss() {
@@ -182,6 +187,7 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         }
 
         if (orderTransaction(data)) {
+            hideLoadingView();
             return;
         }
 
@@ -281,28 +287,6 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         mNavigator.startTransferActivity(mView.getContext(), bundle, false);
     }
 
-    private boolean zpTransaction(JSONObject jsonObject) {
-
-        ZPTransaction zpTransaction = new ZPTransaction(jsonObject);
-        boolean isValidZPTransaction = zpTransaction.isValid();
-
-        Timber.d("Trying with zptranstoken %s ", isValidZPTransaction);
-        if (isValidZPTransaction) {
-            paymentWrapper.payWithToken(mView.getActivity(), zpTransaction.appId, zpTransaction.transactionToken);
-        }
-        return isValidZPTransaction;
-    }
-
-    private boolean orderTransaction(JSONObject jsonOrder) {
-        Order order = new Order(jsonOrder);
-        boolean isValidOrder = order.isValid();
-        if (isValidOrder) {
-            paymentWrapper.payWithOrder(mView.getActivity(), order);
-            hideLoadingView();
-        }
-        return isValidOrder;
-    }
-
     private void qrDataInvalid() {
         if (mView != null && mView.getContext() != null) {
             mView.showWarningDialog(mView.getContext().getString(R.string.data_invalid),
@@ -399,13 +383,6 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         mSubscription.add(subscription);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (paymentWrapper == null) {
-            return;
-        }
-        paymentWrapper.onActivityResult(requestCode, resultCode, data);
-    }
-
     private void ensureResumeScannerInUIThread() {
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
@@ -415,70 +392,38 @@ public final class QRCodePresenter extends AbstractPresenter<IQRScanView> {
         });
     }
 
-    private class PaymentResponseListener extends DefaultPaymentResponseListener {
-
-        @Override
-        protected ILoadDataView getView() {
-            return mView;
+    @Override
+    public void onPayParameterError(String param) {
+        if (mView == null) {
+            return;
         }
 
-        @Override
-        public void onParameterError(String param) {
-            super.onParameterError(param);
+        if ("token".equalsIgnoreCase(param)) {
+            ZPAnalytics.trackEvent(ZPEvents.SCANQR_NOORDER);
+        }
+        ensureResumeScannerInUIThread();
+    }
 
-            if (mView == null) {
-                return;
-            }
-
-            if ("token".equalsIgnoreCase(param)) {
-                ZPAnalytics.trackEvent(ZPEvents.SCANQR_NOORDER);
-            }
-            ensureResumeScannerInUIThread();
+    @Override
+    public void onPayResponseError(PaymentError paymentError) {
+        if (mView == null) {
+            return;
         }
 
-        @Override
-        public void onResponseError(PaymentError paymentError) {
-            if (mView == null) {
-                return;
-            }
+        hideLoadingView();
+        ensureResumeScannerInUIThread();
+    }
 
-            super.onResponseError(paymentError);
-            hideLoadingView();
-            ensureResumeScannerInUIThread();
-        }
-
-        @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            if (mView != null && mView.getActivity() != null) {
-                mView.getActivity().finish();
-            }
-        }
-
-        @Override
-        public void onAppError(String msg) {
-            super.onAppError(msg);
-            ensureResumeScannerInUIThread();
-        }
-
-        @Override
-        public void onNotEnoughMoney() {
-            if (mView == null || mView.getFragment() == null) {
-                return;
-            }
-
-            mNavigator.startDepositForResultActivity(mView.getFragment());
+    @Override
+    public void onPayResponseSuccess(ZPPaymentResult zpPaymentResult) {
+        if (getActivity() != null) {
+            mView.getActivity().finish();
         }
     }
 
-    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
-        @Override
-        public void startUpdateProfileLevel(String walletTransId) {
-            if (mView == null || mView.getFragment() == null) {
-                return;
-            }
-            Timber.d("startUpdateProfileLevel");
-            mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
-        }
+    @Override
+    public void onPayAppError(String msg) {
+        ensureResumeScannerInUIThread();
     }
 
     private class GetPaymentInfoSubscribe extends DefaultSubscriber<JsonObject> {

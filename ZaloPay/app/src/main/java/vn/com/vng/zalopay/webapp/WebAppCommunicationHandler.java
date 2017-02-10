@@ -12,9 +12,6 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -91,40 +88,15 @@ class WebAppCommunicationHandler {
         if (mWebViewListener == null) {
             callback(message, failObject("Missing webview listener."));
         } else {
-            mWebViewListener.pay(message.data, new PaymentWrapper.IResponseListener() {
+            mWebViewListener.pay(message.data, new IPaymentListener() {
                 @Override
-                public void onParameterError(String param) {
+                public void onPayError(String param) {
                     callback(message, failObject(param));
                 }
 
                 @Override
-                public void onResponseError(PaymentError status) {
-                    callback(message, failObject(PaymentError.getErrorMessage(status)));
-                }
-
-                @Override
-                public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+                public void onPaySuccess() {
                     callback(message, successObject());
-                }
-
-                @Override
-                public void onResponseTokenInvalid() {
-                    callback(message, failObject("Token invalid."));
-                }
-
-                @Override
-                public void onAppError(String msg) {
-                    callback(message, failObject(msg));
-                }
-
-                @Override
-                public void onNotEnoughMoney() {
-                    callback(message, failObject("Not enough money."));
-                }
-
-                @Override
-                public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
-
                 }
             });
         }

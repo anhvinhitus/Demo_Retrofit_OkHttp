@@ -1,6 +1,8 @@
 package vn.com.vng.zalopay.webapp;
 
-import org.json.JSONException;
+import android.app.Activity;
+import android.support.v4.app.Fragment;
+
 import org.json.JSONObject;
 
 import javax.inject.Inject;
@@ -9,18 +11,10 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.domain.model.ZPTransaction;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
-import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
-import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
-import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.vng.zalopay.ui.presenter.AbstractPaymentPresenter;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
@@ -28,27 +22,19 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
  * *
  */
 
-class WebAppPresenter extends AbstractPresenter<IWebAppView> {
-    private PaymentWrapper paymentWrapper;
-    private PaymentWrapper.IResponseListener mResponseListener;
-    @Inject
-    Navigator mNavigator;
+class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
+    private IPaymentListener mResponseListener;
 
     @Inject
-    public WebAppPresenter(BalanceStore.Repository balanceRepository,
-                           ZaloPayRepository zaloPayRepository,
-                           TransactionStore.Repository transactionRepository) {
-        paymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(balanceRepository)
-                .setZaloPayRepository(zaloPayRepository)
-                .setTransactionRepository(transactionRepository)
-                .setResponseListener(new PaymentResponseListener())
-                .setRedirectListener(new PaymentRedirectListener())
-                .build();
+    WebAppPresenter(BalanceStore.Repository balanceRepository,
+                    ZaloPayRepository zaloPayRepository,
+                    TransactionStore.Repository transactionRepository,
+                    Navigator navigator) {
+        super(balanceRepository, zaloPayRepository, transactionRepository, navigator);
     }
 
 
-    public void pay(JSONObject data, PaymentWrapper.IResponseListener listener) {
+    public void pay(JSONObject data, IPaymentListener listener) {
         if (data == null) {
             Timber.i("Pay fail because json is null.");
             return;
@@ -56,7 +42,7 @@ class WebAppPresenter extends AbstractPresenter<IWebAppView> {
         mResponseListener = listener;
         Timber.d("start to process paying order: %s", data.toString());
         if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
-            listener.onResponseError(PaymentError.ERR_CODE_INTERNET);
+            listener.onPayError(PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
             return;
         }
 
@@ -66,31 +52,12 @@ class WebAppPresenter extends AbstractPresenter<IWebAppView> {
                 return;
             }
 
-            orderTransaction(data);
-        } catch (JSONException | IllegalArgumentException e) {
+            if (orderTransaction(data)) {
+                hideLoadingView();
+            }
+        } catch (IllegalArgumentException e) {
             Timber.i("Invalid JSON input: %s", e.getMessage());
         }
-    }
-
-    private boolean zpTransaction(JSONObject jsonObject) {
-        Timber.d("Trying with zptranstoken");
-        ZPTransaction zpTransaction = new ZPTransaction(jsonObject);
-        boolean isValidZPTransaction = zpTransaction.isValid();
-        Timber.d("zpTransaction: %s", isValidZPTransaction);
-        if (isValidZPTransaction) {
-            paymentWrapper.payWithToken(mView.getActivity(), zpTransaction.appId, zpTransaction.transactionToken);
-        }
-        return isValidZPTransaction;
-    }
-
-    private boolean orderTransaction(JSONObject jsonOrder) throws JSONException, IllegalArgumentException {
-        Order order = new Order(jsonOrder);
-        boolean isValidOrder = order.isValid();
-        if (isValidOrder) {
-            paymentWrapper.payWithOrder(mView.getActivity(), order);
-            hideLoadingView();
-        }
-        return isValidOrder;
     }
 
     private void showLoadingView() {
@@ -105,65 +72,47 @@ class WebAppPresenter extends AbstractPresenter<IWebAppView> {
         }
     }
 
-    private class PaymentResponseListener extends DefaultPaymentResponseListener {
-
-        @Override
-        protected ILoadDataView getView() {
-            return mView;
+    @Override
+    public Activity getActivity() {
+        if (mView != null) {
+            mView.getActivity();
         }
+        return null;
+    }
 
-        @Override
-        public void onParameterError(String param) {
-            super.onParameterError(param);
-            if (mResponseListener != null) {
-                mResponseListener.onParameterError(param);
-            }
-
-            if ("token".equalsIgnoreCase(param)) {
-                ZPAnalytics.trackEvent(ZPEvents.SCANQR_NOORDER);
-            }
+    @Override
+    public Fragment getFragment() {
+        if (mView != null) {
+            mView.getFragment();
         }
+        return null;
+    }
 
-        @Override
-        public void onResponseError(PaymentError paymentError) {
-            if (mResponseListener != null) {
-                mResponseListener.onResponseError(paymentError);
-            }
-
-            super.onResponseError(paymentError);
-            hideLoadingView();
-        }
-
-        @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            if (mResponseListener != null) {
-                mResponseListener.onResponseSuccess(zpPaymentResult);
-            }
-        }
-
-        @Override
-        public void onAppError(String msg) {
-            if (mResponseListener != null) {
-                mResponseListener.onAppError(msg);
-            }
-            super.onAppError(msg);
-        }
-
-        @Override
-        public void onNotEnoughMoney() {
-            if (mView != null && mView.getFragment() != null) {
-                mNavigator.startDepositForResultActivity(mView.getFragment());
-            }
+    @Override
+    public void onPayParameterError(String param) {
+        if (mResponseListener != null) {
+            mResponseListener.onPayError(param);
         }
     }
 
-    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
-        @Override
-        public void startUpdateProfileLevel(String walletTransId) {
-            if (mView != null && mView.getFragment() != null) {
-                Timber.d("startUpdateProfileLevel");
-                mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
-            }
+    @Override
+    public void onPayResponseError(PaymentError paymentError) {
+        if (mResponseListener != null) {
+            mResponseListener.onPayError(PaymentError.getErrorMessage(paymentError));
+        }
+    }
+
+    @Override
+    public void onPayResponseSuccess(ZPPaymentResult zpPaymentResult) {
+        if (mResponseListener != null) {
+            mResponseListener.onPaySuccess();
+        }
+    }
+
+    @Override
+    public void onPayAppError(String msg) {
+        if (mResponseListener != null) {
+            mResponseListener.onPayError(msg);
         }
     }
 

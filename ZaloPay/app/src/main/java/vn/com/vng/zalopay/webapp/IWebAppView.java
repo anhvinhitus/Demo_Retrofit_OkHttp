@@ -1,17 +1,12 @@
 package vn.com.vng.zalopay.webapp;
 
-import android.app.Activity;
-import android.support.v4.app.Fragment;
-
-import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.vng.zalopay.ui.presenter.IPaymentDataView;
 
 /**
  * Created by longlv on 2/9/17.
  * *
  */
 
-interface IWebAppView extends ILoadDataView {
+interface IWebAppView extends IPaymentDataView {
 
-    Activity getActivity();
-    Fragment getFragment();
 }

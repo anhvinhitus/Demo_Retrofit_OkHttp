@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.webapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +22,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
-import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -286,6 +286,12 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode, resultCode, data);
+    }
+
     protected void refreshWeb() {
         Timber.d("Request to reload web view");
         hideError();
@@ -293,7 +299,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     }
 
     @Override
-    public void pay(JSONObject jsonObject, PaymentWrapper.IResponseListener listener) {
+    public void pay(JSONObject jsonObject, IPaymentListener listener) {
         mPresenter.pay(jsonObject, listener);
     }
 

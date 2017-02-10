@@ -4,14 +4,12 @@ import android.content.Context;
 
 import org.json.JSONObject;
 
-import vn.com.vng.zalopay.service.PaymentWrapper;
-
 /**
  * Created by huuhoa on 2/9/17.
  * Declare interface for web view listener
  */
 interface IWebViewListener {
-    void pay(JSONObject jsonObject, PaymentWrapper.IResponseListener listener);
+    void pay(JSONObject jsonObject, IPaymentListener listener);
 
     void payOrder(String url);
 
