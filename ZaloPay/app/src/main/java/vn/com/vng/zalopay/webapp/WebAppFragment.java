@@ -1,15 +1,24 @@
 package vn.com.vng.zalopay.webapp;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -17,6 +26,7 @@ import java.util.Collections;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -38,6 +48,8 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     private View layoutRetry;
     private ImageView imgError;
     private TextView tvError;
+
+    private ProgressBar mProgressBar;
 
     public static WebAppFragment newInstance(Bundle bundle) {
         WebAppFragment fragment = new WebAppFragment();
@@ -97,6 +109,21 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     private void initWebView(View rootView) {
         ZPWebViewApp webView = (ZPWebViewApp) rootView.findViewById(R.id.webview);
         mWebViewProcessor = new ZPWebViewAppProcessor(webView, this);
+
+        initProgressBar();
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int progress) {
+                if(progress < 100 && mProgressBar.getVisibility() == ProgressBar.GONE){
+                    mProgressBar.setVisibility(ProgressBar.VISIBLE);
+                }
+
+                mProgressBar.setProgress(progress);
+                if(progress == 100) {
+                    mProgressBar.setVisibility(ProgressBar.GONE);
+                }
+            }
+        });
     }
 
     public void loadUrl(final String pUrl) {
@@ -164,6 +191,34 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         showConfirmExitDialog(timeout);
     }
 
+    public void initProgressBar() {
+        mProgressBar = new ProgressBar(this.getContext(),
+                null, android.R.attr.progressBarStyleHorizontal);
+        mProgressBar.setLayoutParams(new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        mProgressBar.getProgressDrawable().setColorFilter(
+                getResources().getColor(R.color.loading_progress_bar), android.graphics.PorterDuff.Mode.SRC_IN);
+
+        final FrameLayout decorView = (FrameLayout) this.getActivity().getWindow().getDecorView();
+        decorView.addView(mProgressBar);
+
+        ViewTreeObserver observer = mProgressBar.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int actionBarHeight = 0;
+                TypedValue tv = new TypedValue();
+                if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+                {
+                    actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+                }
+
+                View contentView = decorView.findViewById(android.R.id.content);
+                mProgressBar.setY(contentView.getY() + actionBarHeight + 32);
+            }
+        });
+    }
+
     private void showConfirmExitDialog(final long timeout) {
         DialogHelper.showConfirmDialog(getActivity(),
                 getActivity().getResources().getString(R.string.appgame_waiting_loading),
@@ -189,7 +244,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     }
 
     public void hideLoading() {
-        super.hideProgressDialog();
+//        super.hideProgressDialog();
     }
 
     @Override
@@ -208,7 +263,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     }
 
     public void showLoading() {
-        super.showProgressDialogWithTimeout();
+//        super.showProgressDialogWithTimeout();
     }
 
     public void showError(String message) {
