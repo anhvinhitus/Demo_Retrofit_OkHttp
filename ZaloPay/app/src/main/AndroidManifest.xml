@@ -87,6 +87,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity
@@ -120,21 +121,22 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="zalopay-1" />
-
-                <data
-                    android:host="zalopay.vn"
-                    android:scheme="zalopay" />
-
-                <data
-                    android:host="otp"
-                    android:scheme="zalopay" />
-
                 <data
                     android:host="app"
                     android:pathPrefix="/transfer"
                     android:scheme="zalopay-zapi-28" />
 
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="zalopay-1" />
+
+                <data android:scheme="zalopay" />
             </intent-filter>
 
         </activity-alias>
