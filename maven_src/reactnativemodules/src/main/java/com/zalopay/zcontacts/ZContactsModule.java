@@ -126,7 +126,9 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
         try {
             if (cur != null && cur.getCount() > 0) {
                 bExistedContact = true;
-                displayName = cur.getString(cur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                if (cur.moveToFirst()) {
+                    displayName = cur.getString(cur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                }
             }
         } catch (Exception e) {
             //empty
