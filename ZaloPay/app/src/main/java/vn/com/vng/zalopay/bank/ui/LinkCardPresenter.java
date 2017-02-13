@@ -19,7 +19,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -33,6 +32,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -224,6 +224,13 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     @Override
     void onPreComplete() {
 
+    }
+
+    @Override
+    void onNeedLinkAccount() {
+        if (mView != null) {
+            mView.gotoTabLinkAccount();
+        }
     }
 
     @Override

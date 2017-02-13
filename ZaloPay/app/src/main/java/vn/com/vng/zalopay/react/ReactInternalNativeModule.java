@@ -41,6 +41,7 @@ import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
+import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -354,6 +355,12 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 .setBalanceRepository(mBalanceRepository)
                 .setZaloPayRepository(mZaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
+                .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
+                    @Override
+                    public Object getContext() {
+                        return getCurrentActivity();
+                    }
+                })
                 .setResponseListener(new AbsPWResponseListener(getCurrentActivity()) {
                     @Override
                     public void onError(PaymentWrapperException exception) {

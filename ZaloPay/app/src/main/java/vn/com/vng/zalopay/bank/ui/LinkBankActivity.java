@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.bank.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -10,10 +11,12 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
-public class LinkBankActivity extends BaseToolBarActivity implements ILinkBankView {
+public class LinkBankActivity extends BaseToolBarActivity
+        implements ILinkBankView, LinkCardFragment.ILinkCardListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -105,6 +108,12 @@ public class LinkBankActivity extends BaseToolBarActivity implements ILinkBankVi
     }
 
     @Override
+    public void onBackPressed() {
+        getActivity().setResult(Activity.RESULT_CANCELED);
+        super.onBackPressed();
+    }
+
+    @Override
     public void showLoading() {
 
     }
@@ -122,5 +131,16 @@ public class LinkBankActivity extends BaseToolBarActivity implements ILinkBankVi
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void gotoTabLinkAccount() {
+        if (mViewPager == null) {
+            return;
+        }
+        if (mViewPager.getCurrentItem() == LinkBankPagerIndex.LINK_ACCOUNT.getValue()) {
+            return;
+        }
+        mViewPager.setCurrentItem(LinkBankPagerIndex.LINK_ACCOUNT.getValue());
     }
 }

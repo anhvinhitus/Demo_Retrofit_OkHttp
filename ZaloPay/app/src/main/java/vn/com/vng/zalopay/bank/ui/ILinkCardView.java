@@ -37,4 +37,6 @@ interface ILinkCardView extends ILoadDataView {
     void onUpdateVersion(boolean forceUpdate, String latestVersion, String message);
 
     void showListBankSupportDialog(ArrayList<ZPCard> cards);
+
+    void gotoTabLinkAccount();
 }

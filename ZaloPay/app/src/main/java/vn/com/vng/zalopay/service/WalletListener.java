@@ -114,6 +114,17 @@ class WalletListener implements ZPPaymentListener {
                 case ZPC_TRANXSTATUS_NEED_LINKCARD:
                     mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD);
                     break;
+                case ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT:
+                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT);
+                    break;
+                case ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT:
+                    if (mPaymentWrapper.mRedirectListener == null) {
+                        mPaymentWrapper.startLinkAccountActivity();
+                    } else {
+                        mPaymentWrapper.mRedirectListener.startLinkAccountActivity();
+                    }
+                    paymentIsCompleted = false; // will continue after update profile
+                    break;
                 default:
                     mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
                     break;

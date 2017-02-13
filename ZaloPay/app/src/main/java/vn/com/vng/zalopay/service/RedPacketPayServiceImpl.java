@@ -9,10 +9,10 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
-import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.react.redpacket.RedPacketPayListener;
-import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
+import vn.com.vng.zalopay.react.redpacket.RedPacketPayListener;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
@@ -39,7 +39,15 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
                 .setBalanceRepository(mBalanceRepository)
                 .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new PaymentResponseListener(listener, mWeakReference))
-                .setRedirectListener(new PaymentRedirectListener(mWeakReference))
+                .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
+                    @Override
+                    public Object getContext() {
+                        if (mWeakReference == null) {
+                            return null;
+                        }
+                        return mWeakReference.get();
+                    }
+                })
                 .setShowNotificationLinkCard(false)
                 .build();
 
@@ -127,19 +135,4 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         }
     }
 
-    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
-        private final WeakReference<Activity> mMWeakReference;
-
-        public PaymentRedirectListener(WeakReference<Activity> mWeakReference) {
-            mMWeakReference = mWeakReference;
-        }
-
-        @Override
-        public void startUpdateProfileLevel(String walletTransId) {
-            if (mMWeakReference.get() == null) {
-                return;
-            }
-            navigator.startUpdateProfile2ForResult(mMWeakReference.get(), walletTransId);
-        }
-    }
 }

@@ -44,6 +44,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         LinkCardAdapter.OnClickBankCardListener, View.OnClickListener {
 
+    private ILinkCardListener mListener;
     private Dialog mBottomSheetDialog;
     private BankCard mCurrentBankCard;
     private LinkCardAdapter mAdapter;
@@ -75,6 +76,13 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         dialog.show(getChildFragmentManager(), BankSupportLinkCardDialog.TAG);
     }
 
+    @Override
+    public void gotoTabLinkAccount() {
+        if (mListener != null) {
+            mListener.gotoTabLinkAccount();
+        }
+    }
+
     @OnClick(R.id.btn_add_card)
     public void onClickAddBankCard() {
         mPresenter.addLinkCard();
@@ -94,6 +102,20 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     public static LinkCardFragment newInstance() {
         return new LinkCardFragment();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mListener = (ILinkCardListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnReviewSelectedListener");
+        }
     }
 
     @Override
@@ -388,4 +410,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         mBottomSheetDialog.show();
     }
 
+    public interface ILinkCardListener {
+        void gotoTabLinkAccount();
+    }
 }

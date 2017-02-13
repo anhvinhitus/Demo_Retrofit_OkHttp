@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
@@ -22,6 +21,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -55,6 +55,8 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     abstract Context getContext();
 
     abstract void onPreComplete();
+
+    abstract void onNeedLinkAccount();
 
     abstract void onAddCardSuccess(DBaseMap mappedCreditCard);
 
@@ -147,6 +149,17 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         CShareDataWrapper.getCardSupportList(userInfo, mGetCardSupportListListener);
     }
 
+    void addBankAccount() {
+        if (getContext() == null) {
+            return;
+        }
+        if (mUser.profilelevel < 2) {
+            mNavigator.startUpdateProfileLevel2Activity(getContext());
+        } else {
+            getListBankSupport();
+        }
+    }
+
     void addLinkCard() {
         if (getContext() == null) {
             return;
@@ -170,11 +183,16 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         public void onResponseError(PaymentError paymentError) {
             if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                 showNetworkErrorDialog();
+            } else if (paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT) {
+                onNeedLinkAccount();
             }
         }
 
         @Override
         public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            if (zpPaymentResult == null) {
+                return;
+            }
             ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
             if (paymentInfo == null) {
                 Timber.d("onResponseSuccess paymentInfo null");

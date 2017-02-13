@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -29,6 +30,7 @@ import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
+import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
@@ -96,6 +98,12 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new PaymentResponseListener())
+                .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
+                    @Override
+                    public Object getContext() {
+                        return CounterBeaconFragment.this;
+                    }
+                })
                 .build();
         Timber.d("Finish setupFragmentComponent");
     }
@@ -482,5 +490,11 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
             mWareWaveView.setVisibility(View.INVISIBLE);
             mLableView.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mPaymentWrapper.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -67,6 +67,7 @@ public interface Constants {
     int REQUEST_CODE_UPDATE_PROFILE_LEVEL_2 = 129;
     int REQUEST_CODE_SYSTEM_SETTINGS = 130;
     int REQUEST_CODE_BANK_DIALOG = 131;
+    int REQUEST_CODE_LINK_BANK = 132;
 
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
     String ARG_SHOW_NOTIFICATION_LINK_CARD = "show_notification_link_card";

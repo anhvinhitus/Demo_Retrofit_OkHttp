@@ -34,7 +34,7 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -58,6 +58,8 @@ import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
+import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
 import vn.com.vng.zalopay.webapp.WebAppActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
@@ -67,6 +69,7 @@ import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawActivity;
 import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -224,41 +227,94 @@ public class Navigator implements INavigator {
         startLinkCardActivity(context, null, false);
     }
 
-    public void startLinkCardActivity(Context context, Bundle bundle, boolean isFinishActivity) {
-        if (!mUserConfig.hasCurrentUser()) {
+    @Override
+    public void startLinkAccountActivityForResult(final Activity activity) {
+        Timber.d("Start Link  bank for result, activity[%s]", activity);
+        if (activity == null) {
             return;
+        }
+        if (!validUserBeforeLinkBank(activity)) {
+            return;
+        }
+        final Intent intent = intentLinkAccount(activity);
+        if (hasLinkBank() && shouldShowPinDialog()) {
+            showPinDialog(activity, new AuthenticationCallback() {
+                @Override
+                public void onAuthenticated(String password) {
+                    setLastTimeCheckPin(System.currentTimeMillis());
+                    activity.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
+                }
+            });
+        } else {
+            activity.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
+        }
+    }
+
+    @Override
+    public void startLinkAccountActivityForResult(final Fragment fragment) {
+        Timber.d("Start Link  bank for result, fragment[%s]", fragment);
+        if (fragment == null) {
+            return;
+        }
+        if (!validUserBeforeLinkBank(fragment.getContext())) {
+            return;
+        }
+        final Intent intent = intentLinkAccount(fragment.getContext());
+        if (hasLinkBank() && shouldShowPinDialog()) {
+            showPinDialog(fragment.getContext(), new AuthenticationCallback() {
+                @Override
+                public void onAuthenticated(String password) {
+                    setLastTimeCheckPin(System.currentTimeMillis());
+                    fragment.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
+                }
+            });
+        } else {
+            fragment.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
+        }
+    }
+
+    public void startLinkCardActivity(Context context, Bundle bundle, boolean isFinishActivity) {
+        if (!validUserBeforeLinkBank(context)) {
+            return;
+        }
+        Intent intent = intentLinkCard(context);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        if (hasLinkBank() && shouldShowPinDialog()) {
+            showPinDialog(context, intent, isFinishActivity);
+        } else {
+            context.startActivity(intent);
+            if (isFinishActivity) {
+                ((Activity) context).finish();
+            }
+        }
+    }
+
+    private boolean validUserBeforeLinkBank(Context context) {
+        if (!mUserConfig.hasCurrentUser()) {
+            return false;
         }
 
         if (mUserConfig.getCurrentUser().profilelevel < MIN_PROFILE_LEVEL) {
             showUpdateProfileInfoDialog(context);
-        } else {
-            int numberCard = 0;
-            try {
-                List<DMappedCard> mapCardLis = CShareDataWrapper
-                        .getMappedCardList(mUserConfig.getCurrentUser().zaloPayId);
-                numberCard = mapCardLis.size();
-            } catch (Exception ex) {
-                Timber.w(ex, "startLinkCardActivity getMappedCardList exception");
-            }
-
-            Intent intent = intentLinkCard(context);
-            if (bundle != null) {
-                intent.putExtras(bundle);
-            }
-            if (numberCard <= 0) {
-                context.startActivity(intent);
-                if (isFinishActivity) {
-                    ((Activity) context).finish();
-                }
-            } else if (shouldShowPinDialog()) {
-                showPinDialog(context, intent, isFinishActivity);
-            } else {
-                context.startActivity(intent);
-                if (isFinishActivity) {
-                    ((Activity) context).finish();
-                }
-            }
+            return false;
         }
+        return true;
+    }
+
+    private boolean hasLinkBank() {
+        boolean hasLinkBank = false;
+        try {
+            List<DMappedCard> mapCardLis = CShareDataWrapper
+                    .getMappedCardList(mUserConfig.getCurrentUser().zaloPayId);
+            List<DBankAccount> bankAccountList = CShareDataWrapper
+                    .getMapBankAccountList(mUserConfig.getCurrentUser().zaloPayId);
+            hasLinkBank = !Lists.isEmptyOrNull(mapCardLis) || !Lists.isEmptyOrNull(bankAccountList);
+        } catch (Exception ex) {
+            Timber.w(ex, "startLinkCardActivity getMappedCardList exception");
+        }
+        return hasLinkBank;
     }
 
     public void startPaymentApplicationActivity(Context context, AppResource appResource) {
@@ -284,6 +340,7 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    @Override
     public void startUpdateProfile2ForResult(Fragment fragment, String walletTransID) {
         if (fragment == null || fragment.getContext() == null) {
             Timber.w("Cannot start pre-profile activity due to NULL context");
@@ -298,6 +355,7 @@ public class Navigator implements INavigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2);
     }
 
+    @Override
     public void startUpdateProfile2ForResult(Activity activity, String walletTransID) {
         if (activity == null) {
             Timber.w("Cannot start pre-profile activity due to NULL context");
@@ -325,7 +383,7 @@ public class Navigator implements INavigator {
         }
     }
 
-    public Intent intentChangePinActivity(Activity activity) {
+    private Intent intentChangePinActivity(Activity activity) {
         return new Intent(activity, ChangePinActivity.class);
     }
 
@@ -373,16 +431,6 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startTransferActivity(Activity context, Bundle bundle) {
-        Intent intent = new Intent(context, TransferActivity.class);
-        intent.putExtras(bundle);
-        context.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
-    }
-
-    public void startUpdateProfile3Activity(Context context) {
-        startUpdateProfile3Activity(context, false);
-    }
-
     public void startUpdateProfile3Activity(Context context, boolean focusIdentity) {
         if (mUserConfig.hasCurrentUser() && mUserConfig.getCurrentUser().profilelevel == MIN_PROFILE_LEVEL) {
             Intent intent = new Intent(context, UpdateProfileLevel3Activity.class);
@@ -404,6 +452,12 @@ public class Navigator implements INavigator {
     @Override
     public Intent intentLinkCard(Context context) {
         return new Intent(context, LinkBankActivity.class);
+    }
+
+    private Intent intentLinkAccount(Context context) {
+        Intent intent = intentLinkCard(context);
+        intent.putExtra(Constants.ARG_PAGE_INDEX, LinkBankPagerIndex.LINK_ACCOUNT.getValue());
+        return intent;
     }
 
     @Override
@@ -541,6 +595,17 @@ public class Navigator implements INavigator {
 
     private void showPinDialog(Context context, Intent pendingIntent) {
         showPinDialog(context, pendingIntent, false);
+    }
+
+    private void showPinDialog(final Context context, final AuthenticationCallback callback) {
+        AndroidUtils.runOnUIThread(new Runnable() {
+            @Override
+            public void run() {
+                AuthenticationDialog dialog = AuthenticationDialog.newInstance();
+                dialog.setAuthenticationCallback(callback);
+                dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
+            }
+        }, 200);
     }
 
     private void showPinDialog(Context context, Intent pendingIntent, boolean isFinish) {

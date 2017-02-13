@@ -182,7 +182,7 @@ public class PaymentWrapper {
     private void callManagerAccountAPI(Activity activity, String bankType, ELinkAccType linkAccType) {
         User user = AndroidApplication.instance().getUserComponent().currentUser();
         if (!user.hasZaloPayId()) {
-            Timber.i("Remove link account, zaloPayId is invalid");
+            Timber.i("Manager link account, zaloPayId is invalid");
             responseListener.onParameterError("uid");
             return;
         }
@@ -224,6 +224,9 @@ public class PaymentWrapper {
             mPendingOrder.forceChannelIds = null;
             mPendingOrder.mapBank = null;
         }
+        Timber.d("userInfo: [%s]", mPendingOrder.userInfo);
+        Timber.d("userInfo accessToken: [%s]", mPendingOrder.userInfo.accessToken);
+        Timber.d("userInfo zaloPayUserId: [%s]", mPendingOrder.userInfo.zaloPayUserId);
         callPayAPI(mActivity, mPendingOrder, mPendingChannel);
     }
 
@@ -236,8 +239,9 @@ public class PaymentWrapper {
             return;
         }
 
-        if (requestCode == Constants.REQUEST_CODE_DEPOSIT ||
-                requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2) {
+        if (requestCode == Constants.REQUEST_CODE_DEPOSIT
+                || requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2
+                || requestCode == Constants.REQUEST_CODE_LINK_BANK) {
             shouldProcessPendingOrder = true;
         }
 
@@ -396,8 +400,18 @@ public class PaymentWrapper {
         mNavigator.startUpdateProfileLevel2Activity(mActivity, walletTransID);
     }
 
+    void startLinkAccountActivity() {
+        if (mActivity == null) {
+            return;
+        }
+
+        mNavigator.startLinkAccountActivityForResult(mActivity);
+    }
+
     public interface IRedirectListener {
         void startUpdateProfileLevel(String walletTransId);
+
+        void startLinkAccountActivity();
     }
 
     public interface IResponseListener {
@@ -448,6 +462,9 @@ public class PaymentWrapper {
                 mRedirectListener != null) {
             return false;
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE &&
+                mRedirectListener != null) {
+            return false;
+        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT &&
                 mRedirectListener != null) {
             return false;
         }

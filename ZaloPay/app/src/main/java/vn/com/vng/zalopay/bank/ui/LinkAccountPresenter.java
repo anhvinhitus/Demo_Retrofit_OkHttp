@@ -107,8 +107,8 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
             return;
         }
         Timber.d("linkAccount card[%s]", zpCard.getCardCode());
-        showLoadingView();
         paymentWrapper.linkAccount(mView.getActivity(), zpCard.getCardCode());
+        hideLoadingView();
     }
 
     void removeLinkAccount(BankAccount bankAccount) {
@@ -136,6 +136,11 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     @Override
     void onPreComplete() {
+
+    }
+
+    @Override
+    void onNeedLinkAccount() {
 
     }
 

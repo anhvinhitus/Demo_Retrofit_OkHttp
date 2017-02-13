@@ -7,31 +7,21 @@ import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.lang.ref.WeakReference;
-
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.exception.GenericException;
-import vn.com.vng.zalopay.data.exception.ItemNotFoundException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
-import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
@@ -45,11 +35,13 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -108,7 +100,16 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
-                .setRedirectListener(new PaymentRedirectListener())
+                .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
+                    @Override
+                    public Object getContext() {
+                        Timber.d("getContext view[%s]", mView);
+                        if (mView == null) {
+                            return null;
+                        }
+                        return mView.getFragment();
+                    }
+                })
                 .build();
         mZaloSdkApi = zaloSdkApi;
         this.mFriendRepository = friendRepository;
@@ -720,13 +721,4 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
-        @Override
-        public void startUpdateProfileLevel(String walletTransId) {
-            if (mView == null || mView.getFragment() == null) {
-                return;
-            }
-            mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
-        }
-    }
 }

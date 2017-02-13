@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
+import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -177,7 +178,15 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new PaymentResponseListener())
-                .setRedirectListener(new PaymentRedirectListener())
+                .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
+                    @Override
+                    public Object getContext() {
+                        if (mView == null) {
+                            return null;
+                        }
+                        return mView.getFragment();
+                    }
+                })
                 .build();
     }
 
@@ -296,13 +305,4 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
         }
     }
 
-    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
-        @Override
-        public void startUpdateProfileLevel(String walletTransId) {
-            if (mView == null || mView.getFragment() == null) {
-                return;
-            }
-            mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
-        }
-    }
 }

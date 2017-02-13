@@ -89,7 +89,7 @@ public abstract class AbsPWResponseListener implements PaymentWrapper.IResponseL
     @Override
     public void onNotEnoughMoney() {
         if (mAct.get() != null) {
-            mNavigator.startDepositActivity(mAct.get());
+            mNavigator.startDepositForResultActivity(mAct.get(), true);
         }
     }
 
