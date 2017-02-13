@@ -1,10 +1,13 @@
 package vn.com.vng.zalopay.webapp;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
@@ -195,28 +198,47 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
         mProgressBar = new ProgressBar(this.getContext(),
                 null, android.R.attr.progressBarStyleHorizontal);
         mProgressBar.setLayoutParams(new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
-        mProgressBar.getProgressDrawable().setColorFilter(
-                getResources().getColor(R.color.loading_progress_bar), android.graphics.PorterDuff.Mode.SRC_IN);
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                convertToDP(8)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mProgressBar.setProgressTintList(ColorStateList.valueOf(
+                    getResources().getColor(R.color.loading_progress_bar)));
+        } else {
+            mProgressBar.getProgressDrawable().setColorFilter(
+                    getResources().getColor(R.color.loading_progress_bar), PorterDuff.Mode.SRC_IN);
+        }
 
         final FrameLayout decorView = (FrameLayout) this.getActivity().getWindow().getDecorView();
         decorView.addView(mProgressBar);
 
-        ViewTreeObserver observer = mProgressBar.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int actionBarHeight = 0;
-                TypedValue tv = new TypedValue();
-                if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-                {
-                    actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
-                }
+        mProgressBar.setY(getActionBarHeight() + getStatusBarHeight() - convertToDP(3));
+    }
 
-                View contentView = decorView.findViewById(android.R.id.content);
-                mProgressBar.setY(contentView.getY() + actionBarHeight + 32);
-            }
-        });
+    private int convertToDP(int size) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
+    }
+
+    private int getActionBarHeight() {
+        int actionBarHeight = 0;
+        TypedValue typedValue = new TypedValue();
+
+        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data,getResources().getDisplayMetrics());
+        }
+
+        return actionBarHeight;
+    }
+
+    private int getStatusBarHeight() {
+        int statusBarHeight = 0;
+
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+        }
+
+        return statusBarHeight;
     }
 
     private void showConfirmExitDialog(final long timeout) {
