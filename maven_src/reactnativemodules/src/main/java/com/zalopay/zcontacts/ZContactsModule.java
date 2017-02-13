@@ -9,12 +9,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 
 import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactMethod;
 
 /**
@@ -22,9 +23,12 @@ import com.facebook.react.bridge.ReactMethod;
  */
 public class ZContactsModule extends ReactContextBaseJavaModule implements ActivityEventListener {
 
+    private static final int CONTACT_NOT_EXISTED = 0;
+    private static final int CONTACT_EXISTED = 1;
+    private static final int PERMISSION_DENY = 2;
+
     static final int PICK_CONTACT_REQUEST = 1;
     public static final int REQUEST_READ_CONTACT = 102;
-    private boolean hasPermission = true;
 
     private Callback contactSuccessCallback;
     private Callback contactCancelCallback;
@@ -113,6 +117,11 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
         }
     }
 
+    /**
+     * Thay đổi kiểu dữ liệu trả về cho RN nên không dùng hàm này nữa.
+     * Đổi sang method lookupPhoneNumber2
+     */
+    @Deprecated
     @ReactMethod
     public void lookupPhoneNumber(String phoneNumber, Callback resultCallback) {
         boolean bExistedContact = false;
@@ -142,6 +151,46 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
     }
 
     @ReactMethod
+    public void lookupPhoneNumber2(String phoneNumber, Callback resultCallback) {
+
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            resultCallback.invoke(CONTACT_NOT_EXISTED, "");
+            return;
+        }
+
+        if (!checkPermissionReadContact(activity)) {
+            resultCallback.invoke(PERMISSION_DENY, "");
+            return;
+        }
+
+        int bExistedContact = CONTACT_NOT_EXISTED;
+
+        Uri contactURI = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        ContentResolver cr = getReactApplicationContext().getContentResolver();
+
+        // Query contact information from Contact provider
+        Cursor cur = cr.query(contactURI, null, null, null, null);
+        String displayName = "";
+        try {
+            if (cur != null && cur.getCount() > 0) {
+                bExistedContact = CONTACT_EXISTED;
+                if (cur.moveToFirst()) {
+                    displayName = cur.getString(cur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                }
+            }
+        } catch (Exception e) {
+            //empty
+        } finally {
+            if (cur != null) {
+                cur.close();
+            }
+        }
+
+        resultCallback.invoke(bExistedContact, displayName);
+    }
+
+    @ReactMethod
     public void requestReadContact(Callback resultCallback) {
         boolean hasPermission = checkAndRequestPermission(getCurrentActivity());
         if (resultCallback != null) {
@@ -150,6 +199,7 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
     }
 
     public boolean checkAndRequestPermission(Activity activity) {
+        boolean hasPermission = true;
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (activity == null) {
                 hasPermission = false;
@@ -164,6 +214,17 @@ public class ZContactsModule extends ReactContextBaseJavaModule implements Activ
             }
         }
         return hasPermission;
+    }
+
+    private boolean checkPermissionReadContact(@NonNull Activity activity) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
