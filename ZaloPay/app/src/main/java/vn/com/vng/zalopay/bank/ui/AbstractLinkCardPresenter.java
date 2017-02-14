@@ -135,8 +135,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     public void destroy() {
         //release cache
         CShareDataWrapper.dispose();
-        GlobalData.initApplication(null);
-
         super.destroy();
     }
 

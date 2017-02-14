@@ -199,7 +199,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     public void detachView() {
         mEventBus.unregister(this);
         unsubscribeIfNotNull(mRefPlatformSubscription);
-        GlobalData.initApplication(null);
         CShareDataWrapper.dispose();
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
         super.detachView();
