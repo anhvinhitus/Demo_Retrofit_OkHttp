@@ -324,7 +324,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         boolean result = clearUserSession(getString(R.string.exception_zpw_account_suspended));
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
         boolean result = clearUserSession(getString(R.string.exception_token_expired_message));
