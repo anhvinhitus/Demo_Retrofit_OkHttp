@@ -266,7 +266,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     }
 
     public void hideLoading() {
-//        super.hideProgressDialog();
+        super.hideProgressDialog();
     }
 
     @Override
@@ -285,7 +285,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IW
     }
 
     public void showLoading() {
-//        super.showProgressDialogWithTimeout();
+        super.showProgressDialogWithTimeout();
     }
 
     public void showError(String message) {

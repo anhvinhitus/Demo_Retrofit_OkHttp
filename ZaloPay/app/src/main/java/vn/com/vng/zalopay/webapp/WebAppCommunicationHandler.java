@@ -68,7 +68,11 @@ class WebAppCommunicationHandler {
     }
 
     private void processMessage(WebMessage message) throws Exception {
-        if ("alert".equalsIgnoreCase(message.functionName)) {
+        if ("showLoading".equalsIgnoreCase(message.functionName)) {
+            mWebViewListener.showLoading();
+        } else if ("hideLoading".equalsIgnoreCase(message.functionName)) {
+            mWebViewListener.hideLoading();
+        } else if ("alert".equalsIgnoreCase(message.functionName)) {
             showDialog(message);
         } else if ("closeWindow".equalsIgnoreCase(message.functionName)) {
             finishActivity(message);

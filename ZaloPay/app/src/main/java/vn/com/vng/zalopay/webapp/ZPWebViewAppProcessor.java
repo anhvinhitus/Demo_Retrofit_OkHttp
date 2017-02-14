@@ -64,7 +64,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
-        showLoading();
+//        showLoading();
     }
 
     @Override
@@ -75,7 +75,7 @@ public class ZPWebViewAppProcessor extends WebViewClient {
             return;
         }
         mLoadPageFinished = true;
-        hideLoading();
+//        hideLoading();
         injectScriptFile("webapp.js");
         injectScriptFile("jsbridge.js");
         mWebView.runScript("initializeWebBridge();", null);
