@@ -6,10 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.zalopay.ui.widget.util.FileUtil;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -24,18 +28,21 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
+import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.Config;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -56,6 +63,8 @@ import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.vng.zalopay.utils.ConfigUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
@@ -399,12 +408,16 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onDownloadAppEvent(DownloadAppEvent event) {
         Timber.d("onDownloadAppEvent result[%s]", event.isDownloadSuccess);
-        if (!event.isDownloadSuccess) {
+        if (!event.isDownloadSuccess || event.mDownloadInfo == null) {
             return;
         }
-        if (event.mDownloadInfo != null &&
-                event.mDownloadInfo.appid == 22) {
+        if (event.mDownloadInfo.appid == 22) {
             refreshIconFont();
+        } else if (event.mDownloadInfo.appid == 1) {
+            boolean result = ConfigUtil.loadConfigFromResource();
+            if (result) {
+                Timber.d("Load config from resource app 1 successfully.");
+            }
         }
     }
 

@@ -4,20 +4,48 @@ import android.support.annotation.NonNull;
 
 import com.zalopay.ui.widget.edittext.ZPEditTextValidate;
 
-import vn.com.vng.zalopay.utils.ValidateUtil;
+import java.util.ArrayList;
+import java.util.List;
+
+import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.domain.model.PhoneFormat;
 
 /**
  * Created by hieuvm on 11/24/16.
+ * *
  */
 
-public class VNPhoneValidate extends ZPEditTextValidate {
+public class VNPhoneValidate {
 
-    public VNPhoneValidate(@NonNull String errorMessage) {
-        super(errorMessage);
+    private List<ZPEditTextValidate> mValidates;
+
+    public VNPhoneValidate() {
+        mValidates = new ArrayList<>();
+        PhoneFormat phoneFormat = PhoneUtil.getPhoneFormat();
+        if (phoneFormat == null) {
+            return;
+        }
+        mValidates.add(new ZPEditTextValidate(phoneFormat.mUndervalueMessage) {
+            @Override
+            public boolean isValid(@NonNull CharSequence s) {
+                return PhoneUtil.validMinLength(s.toString());
+            }
+        });
+        mValidates.add(new ZPEditTextValidate(phoneFormat.mOvervalueMessage) {
+            @Override
+            public boolean isValid(@NonNull CharSequence s) {
+                return PhoneUtil.validMaxLength(s.toString());
+            }
+        });
+        mValidates.add(new ZPEditTextValidate(phoneFormat.mGeneralMessage) {
+            @Override
+            public boolean isValid(@NonNull CharSequence s) {
+                return PhoneUtil.validPatterns(s.toString());
+            }
+        });
     }
 
-    @Override
-    public boolean isValid(@NonNull CharSequence s) {
-        return ValidateUtil.isMobileNumber(s.toString());
+    public List<ZPEditTextValidate> getValidates() {
+        return mValidates;
     }
 }

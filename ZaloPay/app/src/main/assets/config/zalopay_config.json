@@ -1,0 +1,13 @@
+{
+  "phone_format": {
+    "min_length": 10,
+    "max_length": 11,
+    "patterns": [
+      "(0)([3-9]\\d{8})",
+      "(01)\\d{9}"
+    ],
+    "undervalue_message": "Số điện thoại cần 10 hoặc 11 chữ số",
+    "overvalue_message": "Số điện thoại cần 10 hoặc 11 chữ số",
+    "general_message": "Số điện thoại không hợp lệ"
+  }
+}

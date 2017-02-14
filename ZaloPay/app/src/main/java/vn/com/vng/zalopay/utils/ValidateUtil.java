@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
+import vn.com.vng.zalopay.data.util.PhoneUtil;
+
 /**
  * Created by longlv on 12/9/15.
  */
@@ -56,70 +58,8 @@ public class ValidateUtil {
         }
     }
 
-    public static String checkInputPhoneNumber(String str) {
-        int length = str.length();
-        if (length == 0) {
-            return "Vui lòng nhập số điện thoại";
-        }
-        if (length < 9 || length > 11) {
-            return "Số điện thoại không hợp lệ";
-        }
-        if (!isNumeric(str)) {
-            return "Số điện thoại phải là ký tự số";
-        }
-        length = str.length();
-        Object obj = ((10 == length && str.startsWith("09")) || ((length == 11 && str.startsWith("01")) || ((9 == length && str.startsWith("9")) || (10 == length && str.startsWith("1"))))) ? 1 : null;
-        return obj == null ? "Vui lòng nhập số thuê bao di động" : str.contains(" ") ? "Số điện thoại không chứa khoảng trống" : "OK";
-    }
-
-    public static String removeSpacingMobileNumber(String input) {
-        if (TextUtils.isEmpty(input)) return input;
-        else {
-            input = input.trim();
-            if (input.startsWith("+")) {
-                String inputWithOutPrefix = input.substring(1, input.length());
-                return "+" + inputWithOutPrefix.replaceAll("[^\\d]", "");
-            } else {
-                return input.replaceAll("[^\\d]", "");
-            }
-
-        }
-    }
-
     public static boolean isMobileNumber(String input) {
-        return isMobileNumber(input, false);
-    }
-
-    public static boolean isMobileNumber(String input, boolean acceptSpacingBetweenNumbers) {
-        if (TextUtils.isEmpty(input)) return false;
-        else {
-            String refinedInput = input;
-            if (acceptSpacingBetweenNumbers) {
-                refinedInput = removeSpacingMobileNumber(input);
-            }
-            return refinedInput.matches(getPhoneRegex());
-        }
-    }
-
-    public static String getPhoneRegex() {
-        return "(\\+84|0)(1\\d{9}|9\\d{8}|8\\d{8})";
-    }
-
-    public static String getPhoneWithSpaceRegex() {
-        return "(\\+84|0)(1[\\d\\ \\-]{9,12}|9[\\d\\ \\-]{8,11})";
-    }
-
-    public static String normalizeMobileNumber(String input) {
-        return normalizeMobileNumber(input, false);
-    }
-
-    public static String normalizeMobileNumber(String input, boolean removePlus84) {
-        String refinedInput = removeSpacingMobileNumber(input);
-        if (isMobileNumber(input, true)) {
-            return refinedInput.replaceAll("\\+84", "0");
-        } else {
-            return null;
-        }
+        return PhoneUtil.isMobileNumber(input);
     }
 
     public static int validatePassword(String pass) {

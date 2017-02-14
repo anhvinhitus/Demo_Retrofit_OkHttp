@@ -832,6 +832,14 @@ public class ZPEditText extends AppCompatEditText {
         return this.validators != null && !this.validators.isEmpty();
     }
 
+    public ZPEditText addValidator(List<ZPEditTextValidate> validators) {
+        if (this.validators == null) {
+            this.validators = new ArrayList<>();
+        }
+        this.validators.addAll(validators);
+        return this;
+    }
+
     public ZPEditText addValidator(ZPEditTextValidate validator) {
         if (validators == null) {
             this.validators = new ArrayList<>();

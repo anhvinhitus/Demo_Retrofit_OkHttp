@@ -159,7 +159,8 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
 
-        mEdtPhoneView.addValidator(new VNPhoneValidate(getString(R.string.invalid_phone)));
+        VNPhoneValidate phoneValidate = new VNPhoneValidate();
+        mEdtPhoneView.addValidator(phoneValidate.getValidates());
         mPassCodeView.addTextChangedListener(mPassCodeChange);
         mPassCodeView.setPassCodeFocusChanged(mPassCodeFocusChanged);
 
