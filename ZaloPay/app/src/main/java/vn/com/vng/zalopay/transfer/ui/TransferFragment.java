@@ -43,7 +43,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * Use the {@link TransferFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TransferFragment extends BaseFragment implements ITransferView {
+public class TransferFragment extends BaseFragment implements ITransferView, OnKeyboardStateChangeListener {
 
     public static TransferFragment newInstance(Bundle bundle) {
         TransferFragment fragment = new TransferFragment();
@@ -106,6 +106,7 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         }
 
         mPresenter.attachView(this);
+        mRootView.setOnKeyboardStateListener(this);
 
         mPresenter.initView((ZaloFriend) argument.getParcelable(Constants.ARG_ZALO_FRIEND),
                 (RecentTransaction) argument.getParcelable(Constants.ARG_TRANSFERRECENT),
@@ -114,29 +115,27 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
         mPresenter.setTransferMode(argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT));
 
-        mRootView.setOnKeyboardStateListener(new OnKeyboardStateChangeListener() {
-            @Override
-            public void onKeyBoardShow(int height) {
-                if (mEdtMessageView == null || mScrollView == null) {
-                    return;
-                }
-                Timber.d("onKeyBoardShow: mEdtMessageView.isFocused() %s", mEdtMessageView.isFocused());
-                if (mEdtMessageView.isFocused()) {
-                    mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                    mEdtMessageView.requestFocusFromTouch();
-                } else {
-                    //Scroll down 24dp (height of error text)
-                    mScrollView.scrollBy(0, AndroidUtils.dp(24));
-                }
-            }
-
-            @Override
-            public void onKeyBoardHide() {
-                Timber.d("onKeyBoardHide");
-            }
-        });
-
         mPresenter.onViewCreated();
+    }
+
+    @Override
+    public void onKeyBoardShow(int height) {
+        if (mEdtMessageView == null || mScrollView == null) {
+            return;
+        }
+        Timber.d("onKeyBoardShow: mEdtMessageView.isFocused() %s", mEdtMessageView.isFocused());
+        if (mEdtMessageView.isFocused()) {
+            mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            mEdtMessageView.requestFocusFromTouch();
+        } else {
+            //Scroll down 24dp (height of error text)
+            mScrollView.scrollBy(0, AndroidUtils.dp(24));
+        }
+    }
+
+    @Override
+    public void onKeyBoardHide() {
+        Timber.d("onKeyBoardHide");
     }
 
     @Override
@@ -198,13 +197,16 @@ public class TransferFragment extends BaseFragment implements ITransferView {
 
     @Override
     public void setInitialValue(long currentAmount, String currentMessage) {
-        if (!TextUtils.isEmpty(currentMessage)) {
-            mEdtMessageView.setText(currentMessage);
-        }
+        mEdtMessageView.setText(currentMessage);
+
         if (currentAmount > 0) {
             mAmountView.setText(String.valueOf(currentAmount));
-            mAmountView.setSelection(mAmountView.length());
+        } else {
+            mAmountView.setText("");
         }
+
+        mAmountView.setSelection(mAmountView.length());
+
     }
 
     @Override
@@ -282,7 +284,6 @@ public class TransferFragment extends BaseFragment implements ITransferView {
         if (TextUtils.isEmpty(avatar)) {
             return;
         }
-
         mImageLoader.loadImage(imgAvatar, avatar);
     }
 
@@ -350,5 +351,22 @@ public class TransferFragment extends BaseFragment implements ITransferView {
     @Override
     public void showError(String message) {
         showErrorDialog(message);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) {
+            return;
+        }
+
+        mImageLoader.loadImage(imgAvatar, "");
+        mPresenter.initView((ZaloFriend) bundle.getParcelable(Constants.ARG_ZALO_FRIEND),
+                (RecentTransaction) bundle.getParcelable(Constants.ARG_TRANSFERRECENT),
+                bundle.getLong(Constants.ARG_AMOUNT),
+                bundle.getString(Constants.ARG_MESSAGE));
+
+        mPresenter.onViewCreated();
     }
 }

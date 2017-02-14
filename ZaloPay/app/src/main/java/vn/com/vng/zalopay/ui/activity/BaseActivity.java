@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -319,5 +320,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void showErrorDialog(String message) {
         DialogHelper.showNotificationDialog(getActivity(), message, null);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Fragment activeFragment = getActiveFragment();
+        if (activeFragment instanceof BaseFragment) {
+            ((BaseFragment) activeFragment).onNewIntent(intent);
+        }
     }
 }

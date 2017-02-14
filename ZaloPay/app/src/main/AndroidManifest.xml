@@ -95,6 +95,17 @@
             android:configChanges="keyboardHidden|orientation"
             android:enabled="true"
             android:exported="true"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.Splash" />
+
+        <activity
+            android:name=".share.IntentHandlerActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:enabled="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.Splash" />
 
@@ -102,8 +113,8 @@
             android:name="vn.zalopay.apps.ZaloAppActivityAlias"
             android:exported="true"
             android:label="ZaloAppAlias"
-            android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity"
-            android:theme="@style/AppTheme.NoActionBar.Splash">
+            android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
+
             <intent-filter>
                 <action android:name="vn.zalopay.intent.action.SEND_MONEY" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -113,8 +124,28 @@
         <activity-alias
             android:name="vn.zalopay.apps.ThirdPartyAppActivityAlias"
             android:exported="true"
-            android:label="ThirdPartyAppAlias"
+            android:label="@string/app_name"
             android:targetActivity=".ui.activity.ExternalCallSplashScreenActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="zalopay-1" />
+
+                <data android:scheme="zalopay" />
+            </intent-filter>
+
+        </activity-alias>
+
+        <activity-alias
+            android:name="vn.zalopay.apps.IntentHandlerActivityAlias"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:targetActivity=".share.IntentHandlerActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -126,17 +157,6 @@
                     android:pathPrefix="/transfer"
                     android:scheme="zalopay-zapi-28" />
 
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="zalopay-1" />
-
-                <data android:scheme="zalopay" />
             </intent-filter>
 
         </activity-alias>
@@ -316,11 +336,11 @@
         <activity
             android:name=".transfer.ui.ZaloContactActivity"
             android:label="@string/title.activity.zalopay.contact" />
+
         <activity
             android:name=".transfer.ui.TransferActivity"
-            android:label="@string/title.activity.transfer.to"
-            android:launchMode="singleTask"
-            android:taskAffinity="" />
+            android:label="@string/title.activity.transfer.to" />
+
         <activity
             android:name=".ui.activity.BalanceManagementActivity"
             android:label="@string/title.activity.withdraw.home" />

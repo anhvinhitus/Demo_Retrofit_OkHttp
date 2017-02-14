@@ -11,6 +11,8 @@ import com.crashlytics.android.answers.LoginEvent;
 import com.zing.zalo.zalosdk.oauth.LoginVia;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -223,7 +225,12 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     }
 
     private void onLoginSuccess(User user) {
-        Timber.d("session %s zaloPayId %s", user.accesstoken, user.zaloPayId);
+        Timber.d("onLoginSuccess: %s", mView);
+        if (mView == null) {
+            return;
+        }
+
+        Timber.d("session %s zaloPayId %s data %s", user.accesstoken, user.zaloPayId, mData);
         AndroidApplication.instance().createUserComponent(user);
         if (mData != null) {
             Activity act = mView.getActivity();
@@ -234,8 +241,9 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         } else {
             this.gotoHomeScreen();
         }
-        clearMerchant();
+
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
+        clearMerchant();
     }
 
     private void onLoginError(Throwable e) {
@@ -308,4 +316,6 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(fetchSubscription);
     }
+
+
 }
