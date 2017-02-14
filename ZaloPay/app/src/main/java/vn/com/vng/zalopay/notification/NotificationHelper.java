@@ -34,7 +34,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.AppLifeCycle;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -51,6 +50,7 @@ import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
@@ -203,6 +203,16 @@ public class NotificationHelper {
                 }
 
                 payOrderFromNotify(notify);
+                break;
+            case NotificationType.UNLINK_ACCOUNT:
+                if (!isNotificationRecovery) {
+                    CShareDataWrapper.pushNotificationToSdk(notificationType, notify.message);
+                }
+                break;
+            case NotificationType.LINK_ACCOUNT:
+                if (!isNotificationRecovery) {
+                    CShareDataWrapper.pushNotificationToSdk(notificationType, notify.message);
+                }
                 break;
         }
 

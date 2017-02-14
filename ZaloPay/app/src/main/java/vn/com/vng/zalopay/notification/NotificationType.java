@@ -14,6 +14,8 @@ public class NotificationType {
     public static final int RECEIVE_RED_PACKET = 6;
     public static final int REFUND_RED_PACKET = 7;
     public static final int DONATE_MONEY = 9;
+    public static final int UNLINK_ACCOUNT = 15;
+    public static final int LINK_ACCOUNT = 16;
     public static final int UPDATE_PROFILE_LEVEL_OK = 100;
     public static final int PAYMENT_APP_PROMOTION = 101;
     public static final int UPDATE_PROFILE_LEVEL_FAILED = 102;

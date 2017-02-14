@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.utils;
 
 import java.util.List;
 
+import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
@@ -84,6 +85,10 @@ public class CShareDataWrapper {
 
     public static List<DBanner> getBannerList() {
         return CShareData.getInstance().getBannerList();
+    }
+
+    public static void pushNotificationToSdk(int notificationType, String message) {
+        CShareData.getInstance().pushNotificationToSdk(new ZPWNotification(notificationType, message));
     }
 
     public static void dispose() {
