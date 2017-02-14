@@ -40,4 +40,6 @@ public interface IZaloPayView {
     void enableShowShow(boolean isEnable);
 
     int getAppCount();
+
+    void setRefreshing(boolean val);
 }

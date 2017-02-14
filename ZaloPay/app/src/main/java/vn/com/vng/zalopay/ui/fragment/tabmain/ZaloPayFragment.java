@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.fragment.tabmain;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -19,6 +20,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
 import java.util.List;
@@ -51,7 +53,7 @@ import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
  * Display PaymentApps in Grid layout
  */
 public class ZaloPayFragment extends RuntimePermissionFragment implements ListAppRecyclerAdapter.OnClickAppListener,
-        IZaloPayView {
+        IZaloPayView, SwipeRefreshLayout.OnRefreshListener {
 
     public static ZaloPayFragment newInstance() {
         Bundle args = new Bundle();
@@ -90,6 +92,9 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     * */
     RoundTextView mNotifyView;
 
+    @BindView(R.id.swipeRefresh)
+    MultiSwipeRefreshLayout mSwipeRefreshLayout;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -122,6 +127,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
         setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
                 getString(R.string.check_internet));
+        mSwipeRefreshLayout.setSwipeableChildren(R.id.listView);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
         hideTextAds();
     }
@@ -353,6 +360,16 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
             return;
         }
         mTvInternetConnection.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRefresh() {
+        presenter.getListAppResource();
+    }
+
+    @Override
+    public void setRefreshing(boolean val) {
+        mSwipeRefreshLayout.setRefreshing(val);
     }
 
     static SparseIntArray sActionMap;
