@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minHeight="164dp"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp">
+
+        <ImageView
+            android:id="@+id/fingerprint_icon_decrypt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_touch" />
+
+        <TextView
+            android:id="@+id/fingerprint_description"
+            style="?attr/titleTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:maxLines="2"
+            android:text="@string/suggest.using.fingerprint"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/fingerprint_status_decrypt"
+            style="?attr/titleTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:text="@string/confirm.you.want.to.use.your.fingerprint"
+            android:textColor="@color/c_text_black" />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            style="?attr/titleTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/do.not.ask.again.this.hint" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate" />
+
+    <include layout="@layout/fingerprint_dialog_input_action" />
+
+</LinearLayout>
