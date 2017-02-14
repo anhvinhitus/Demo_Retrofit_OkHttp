@@ -25,6 +25,7 @@ import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
+import vn.com.vng.zalopay.domain.model.Config;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
@@ -34,6 +35,7 @@ import vn.com.vng.zalopay.internal.di.modules.UserModule;
 import vn.com.vng.zalopay.service.ZPTrackerAnswers;
 import vn.com.vng.zalopay.service.ZPTrackerApptransid;
 import vn.com.vng.zalopay.service.ZPTrackerGA;
+import vn.com.vng.zalopay.utils.ConfigUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
@@ -102,6 +104,12 @@ public class AndroidApplication extends Application {
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
 
         initIconFont();
+
+        initConfig();
+    }
+
+    private void initConfig() {
+        ConfigUtil.initConfig(getAssets());
     }
 
     public void initIconFont() {
