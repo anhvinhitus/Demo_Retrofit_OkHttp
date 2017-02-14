@@ -127,7 +127,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mSubscription.add(subscription);
     }
 
-    private void getListAppResource() {
+    public void getListAppResource() {
         Subscription subscription = mAppResourceRepository.getListAppHome()
                 .doOnNext(new Action1<List<AppResource>>() {
                     @Override
@@ -228,6 +228,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
         mView.enableShowShow(isEnableShowShow);
         mView.refreshInsideApps(resources);
+        mView.setRefreshing(false);
     }
 
     private class AppResourceSubscriber extends DefaultSubscriber<List<AppResource>> {
@@ -242,6 +243,11 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         @Override
         public void onError(Throwable e) {
             Timber.d(e, "Get application resource error");
+            if (mView == null) {
+                return;
+            }
+
+            mView.setRefreshing(false);
         }
     }
 
