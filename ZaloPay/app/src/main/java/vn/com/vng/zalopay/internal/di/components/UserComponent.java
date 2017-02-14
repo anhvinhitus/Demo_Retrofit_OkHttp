@@ -14,6 +14,7 @@ import vn.com.vng.zalopay.account.ui.fragment.OtpProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.PinProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.fragment.UpdateProfile3Fragment;
+import vn.com.vng.zalopay.authentication.FingerprintGuildDialog;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.balancetopup.ui.fragment.BalanceTopupFragment;
 import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
@@ -212,4 +213,6 @@ public interface UserComponent {
     void inject(AccountSupportWithdrawFragment fragment);
 
     void inject(LinkBankActivity a);
+
+    void inject(FingerprintGuildDialog d);
 }
