@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
@@ -75,7 +76,7 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         String action = intent.getAction();
         if (TextUtils.isEmpty(action)) {
             Timber.d("Launching with empty action");
-            finish();
+            finish(true);
             return;
         }
 
@@ -91,14 +92,15 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
             if (requestCode == ZALO_INTEGRATION_LOGIN_REQUEST_CODE) {
                 handleZaloIntegration(data.getData());
             }
+        } else {
+            ActivityCompat.finishAffinity((Activity) mView.getContext());
         }
 
-        ActivityCompat.finishAffinity((Activity) mView.getContext());
     }
 
     private void handleDeepLink(Uri data) {
         if (data == null) {
-            finish();
+            finish(true);
             return;
         }
 
@@ -109,7 +111,7 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         String pathPrefix = data.getPath();
 
         if (TextUtils.isEmpty(scheme) || TextUtils.isEmpty(host)) {
-            finish();
+            finish(true);
             return;
         }
 
@@ -118,11 +120,11 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
             if (host.equalsIgnoreCase("app") && "/transfer".equalsIgnoreCase(pathPrefix)) {
                 handleZaloIntegration(data);
             } else {
-                finish();
+                finish(true);
             }
 
         } else {
-            finish();
+            finish(true);
         }
     }
 
@@ -178,21 +180,42 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         } finally {
             Timber.d("should finish current activity [%s] ", shouldFinishCurrentActivity);
             if (shouldFinishCurrentActivity) {
-                finish();
+                finish(false);
             }
         }
     }
 
     private SweetAlertDialog mDialog;
 
-    private void finish() {
+    private void finish(boolean removeTask) {
 
         if (mDialog != null) {
             mDialog.dismiss();
         }
 
-        if (mView != null) {
-            ((Activity) mView.getContext()).finish();
+        if (mView == null) {
+            return;
+        }
+
+        Activity activity = ((Activity) mView.getContext());
+
+        if (!removeTask) {
+            activity.finish();
+            return;
+        }
+
+        if (!activity.isTaskRoot()) {
+            Timber.d("move task to back");
+            activity.moveTaskToBack(true);
+            activity.finish();
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            Timber.d("finish and remove task");
+            activity.finishAndRemoveTask();
+        } else {
+            activity.finish();
         }
     }
 
@@ -207,7 +230,7 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {
-                        finish();
+                        finish(true);
                     }
 
                     @Override

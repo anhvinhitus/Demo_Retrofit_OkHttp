@@ -490,5 +490,8 @@
     <string name="list_bank_support_link_card">Các thẻ ngân hàng được Zalo Pay hỗ trợ</string>
     <string name="confirm.on.fingerprint.message">Xác nhận sử dụng vân tay thay cho mật khẩu thanh toán</string>
     <string name="confirm.change.account">Zalo Pay đang đăng nhập ở một tài khoản khác, bạn có muốn đăng nhập lại?</string>
+    <string name="suggest.using.fingerprint">Gợi ý sử dụng vân tay</string>
+    <string name="confirm.you.want.to.use.your.fingerprint">Bạn muốn sử dụng vân tay thay vì nhập mật khẩu thanh toán?</string>
+    <string name="do.not.ask.again.this.hint">Không hỏi lại gợi ý này</string>
 </resources>
 

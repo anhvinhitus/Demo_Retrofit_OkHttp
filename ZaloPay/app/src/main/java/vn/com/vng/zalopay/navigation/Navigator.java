@@ -100,7 +100,6 @@ public class Navigator implements INavigator {
     public void startLoginActivity(Activity act, int requestCode, Uri data, long zaloid, String authCode) {
         Intent intent = getIntentLogin(act, false);
         intent.setData(data);
-        //  intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("callfrom", "external");
         if (zaloid > 0 && !TextUtils.isEmpty(authCode)) {
             intent.putExtra("zaloid", zaloid);
