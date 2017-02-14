@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.transfer.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -121,61 +122,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
         paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
-
-   /* private final class GetUserInfoSubscriber extends DefaultSubscriber<MappingZaloAndZaloPay> {
-        @Override
-        public void onNext(MappingZaloAndZaloPay mappingZaloAndZaloPay) {
-            TransferPresenter.this.onGetMappingUserSuccess(mappingZaloAndZaloPay);
-        }
-
-        @Override
-        public void onCompleted() {
-            hideLoading();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            TransferPresenter.this.onGetMappingUserError(e);
-        }
-    }
-
-    private void onGetMappingUserSuccess(MappingZaloAndZaloPay userMapZaloAndZaloPay) {
-        if (userMapZaloAndZaloPay == null || mView == null) {
-            return;
-        }
-
-        mTransaction.zaloPayId = userMapZaloAndZaloPay.zaloPayId;
-        mTransaction.zaloPayName = userMapZaloAndZaloPay.zaloPayName;
-        mTransaction.phoneNumber = PhoneUtil.formatPhoneNumber(userMapZaloAndZaloPay.phonenumber);
-        mView.updateReceiverInfo(mTransaction.displayName,
-                mTransaction.avatar,
-                mTransaction.zaloPayName);
-
-        if (TextUtils.isEmpty(mTransaction.displayName)
-                || TextUtils.isEmpty(mTransaction.avatar)
-                || TextUtils.isEmpty(mTransaction.zaloPayName)) {
-            getUserInfoByZaloPayId(mTransaction.zaloPayId);
-        }
-
-        checkShowBtnContinue();
-    }*/
-
-   /* private void onGetMappingUserError(Throwable e) {
-        if (ResponseHelper.shouldIgnoreError(e)) {
-            // simply ignore the error because it is handled from event subscribers
-            return;
-        }
-
-        if (mView == null) {
-            return;
-        }
-        String message = ErrorMessageFactory.create(applicationContext, e);
-        if (e instanceof NetworkConnectionException) {
-            showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
-            return;
-        }
-        showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
-    }*/
 
     private void getUserInfo(long zaloId) {
         Timber.d("getUserInfo zaloId [%s]", zaloId);
@@ -411,7 +357,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         initCurrentState();
         checkShowBtnContinue();
         ensureHaveProfile();
-
     }
 
     private void ensureHaveProfile() {
@@ -540,76 +485,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-  /*  private static class UserInfoSubscriber extends DefaultSubscriber<Person> {
-        private final RecentTransaction mTransaction;
-        private ITransferView mTransferView;
-        private WeakReference<TransferPresenter> mPresenterWeakReference;
-
-        UserInfoSubscriber(RecentTransaction transaction,
-                           ITransferView view,
-                           TransferPresenter presenter) {
-            mTransaction = transaction;
-            mTransferView = view;
-            mPresenterWeakReference = new WeakReference<>(presenter);
-        }
-
-        @Override
-        public void onNext(Person person) {
-            Timber.d("onNext displayName %s avatar %s", person.displayName, person.avatar);
-            if (!TextUtils.isEmpty(person.avatar)) {
-                mTransaction.avatar = person.avatar;
-            }
-            if (!TextUtils.isEmpty(person.displayName)) {
-                mTransaction.displayName = person.displayName;
-            }
-            if (!TextUtils.isEmpty(person.zalopayname)) {
-                mTransaction.zaloPayName = person.zalopayname;
-            }
-
-            mTransferView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                return;
-            }
-            if (mTransferView == null) {
-                return;
-            }
-            if (mPresenterWeakReference.get() == null) {
-                return;
-            }
-
-            String message = ErrorMessageFactory.create(mPresenterWeakReference.get().applicationContext, e);
-            //If USER_NOT_EXIST then finish
-            if (e instanceof BodyException) {
-                int errorCode = ((BodyException) e).errorCode;
-                if (errorCode == NetworkError.USER_NOT_EXIST ||
-                        errorCode == NetworkError.RECEIVER_IS_LOCKED) {
-                    mPresenterWeakReference.get().showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
-                    return;
-                }
-            }
-            if (e instanceof NetworkConnectionException) {
-                if (!NetworkHelper.isNetworkAvailable(mTransferView.getContext())) {
-                    mPresenterWeakReference.get().showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.WARNING_TYPE);
-                    return;
-                }
-            }
-            mTransferView.showError(message);
-        }
-
-        @Override
-        public void onCompleted() {
-            if (mPresenterWeakReference.get() == null) {
-                return;
-            }
-
-            mPresenterWeakReference.get().hideLoading();
-        }
-    }*/
-
     private void showLoading() {
         if (mView == null) {
             return;
@@ -649,7 +524,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             hideLoading();
 
             if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
-                handleFailedTransferZalo(mView.getActivity());
+                handleFailedTransferZalo(mView.getActivity(), paymentError.value());
             }
         }
 
@@ -674,11 +549,14 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             saveTransferRecentToDB();
         }
 
-        private void handleFailedTransferZalo(Activity activity) {
+        private void handleFailedTransferZalo(Activity activity, int code) {
+            Timber.d("handleFailedTransferZalo: ");
             Intent data = new Intent();
-            data.putExtra("code", 2);
+            data.putExtra("code", code);
             activity.setResult(Activity.RESULT_OK, data);
-            activity.finish();
+            if (code != PaymentError.ERR_CODE_USER_CANCEL.value()) {
+                activity.finish();
+            }
         }
 
         private void handleCompletedTransferZalo(Activity activity) {
@@ -687,7 +565,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             data.putExtra("amount", mTransaction.amount);
             data.putExtra("message", mTransaction.message);
             data.putExtra("transactionId", mTransaction.transactionId);
-
+            Timber.d("onResponseSuccess: isTaskRoot %s", activity.isTaskRoot());
             activity.setResult(Activity.RESULT_OK, data);
             activity.finish();
         }

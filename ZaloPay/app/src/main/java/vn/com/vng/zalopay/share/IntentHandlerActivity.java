@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.ui.activity;
+package vn.com.vng.zalopay.share;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,19 +9,17 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.ui.presenter.ExternalCallSplashScreenPresenter;
-import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
 
 /**
- * Created by huuhoa on 11/26/16.
- * Activity for receiving external calls
+ * Created by hieuvm on 2/13/17.
  */
 
-public class ExternalCallSplashScreenActivity extends BaseActivity implements IExternalCallSplashScreenView {
+public class IntentHandlerActivity extends BaseActivity implements IIntentHandlerView {
 
     @Inject
-    ExternalCallSplashScreenPresenter mPresenter;
+    IntentHandlerPresenter mPresenter;
 
     @Override
     protected void setupActivityComponent() {
@@ -66,15 +64,5 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     protected void onDestroy() {
         mPresenter.destroy();
         super.onDestroy();
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
     }
 }

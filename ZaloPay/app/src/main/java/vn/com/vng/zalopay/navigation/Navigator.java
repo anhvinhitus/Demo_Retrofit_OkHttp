@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.Promise;
@@ -35,8 +36,6 @@ import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.ui.LinkCardActivity;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -59,6 +58,7 @@ import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.warningrooted.WarningRootedActivity;
 import vn.com.vng.zalopay.webapp.WebAppActivity;
 import vn.com.vng.zalopay.webview.WebViewConstants;
@@ -93,14 +93,11 @@ public class Navigator implements INavigator {
         this.mUserConfig = userConfig;
     }
 
-    public void startLoginActivityForResult(ExternalCallSplashScreenActivity act, int requestCode, Uri data) {
-        startLoginActivityForResult(act, requestCode, data, 0, "");
-    }
-
-    public void startLoginActivityForResult(ExternalCallSplashScreenActivity act, int requestCode, Uri data, long zaloid, String authCode) {
-        Intent intent = new Intent(act, LoginZaloActivity.class);
+    public void startLoginActivity(Activity act, int requestCode, Uri data, long zaloid, String authCode) {
+        Intent intent = getIntentLogin(act, false);
         intent.setData(data);
-        intent.putExtra("parentAct", act.getClass().getSimpleName());
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("callfrom", "external");
         if (zaloid > 0 && !TextUtils.isEmpty(authCode)) {
             intent.putExtra("zaloid", zaloid);
             intent.putExtra("zauthcode", authCode);
@@ -114,6 +111,11 @@ public class Navigator implements INavigator {
     }
 
     public void startLoginActivity(Context context, boolean clearTop) {
+        Intent intent = getIntentLogin(context, clearTop);
+        context.startActivity(intent);
+    }
+
+    public Intent getIntentLogin(Context context, boolean clearTop) {
         Intent intent = new Intent(context, LoginZaloActivity.class);
         if (clearTop) {
             intent.putExtra("finish", true);
@@ -121,8 +123,7 @@ public class Navigator implements INavigator {
                     Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         }
-
-        context.startActivity(intent);
+        return intent;
     }
 
     public void startHomeActivity(Context context) {
@@ -363,6 +364,13 @@ public class Navigator implements INavigator {
         Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
         intent.putExtras(bundle);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
+    }
+
+    public void startTransferActivity(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, TransferActivity.class);
+        intent.putExtras(bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
     }
 
     public void startTransferActivity(Context context, Bundle bundle, boolean forwardResult) {

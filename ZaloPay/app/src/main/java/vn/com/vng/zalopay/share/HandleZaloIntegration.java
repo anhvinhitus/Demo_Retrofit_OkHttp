@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.ui.presenter;
+package vn.com.vng.zalopay.share;
 
 import javax.inject.Inject;
 

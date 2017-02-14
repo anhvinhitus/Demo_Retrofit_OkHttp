@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.ui.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -283,6 +284,9 @@ public abstract class BaseFragment extends Fragment {
         }
         final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public void onNewIntent(Intent intent) {
     }
 
 }
