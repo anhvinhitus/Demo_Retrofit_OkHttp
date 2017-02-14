@@ -87,7 +87,6 @@ public class WithdrawConditionPresenter extends AbsWithdrawConditionPresenter<IW
     public void destroy() {
         mIListenerValid = null;
         CShareDataWrapper.dispose();
-        GlobalData.initApplication(null);
         super.destroy();
     }
 

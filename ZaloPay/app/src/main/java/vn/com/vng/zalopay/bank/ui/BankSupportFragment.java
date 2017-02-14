@@ -169,7 +169,6 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
         mLinkAccAdapter = null;
         //release cache
         CShareDataWrapper.dispose();
-        GlobalData.initApplication(null);
         mPresenter.destroy();
         super.onDestroy();
     }

@@ -75,8 +75,6 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
     @Override
     public void destroy() {
         CShareDataWrapper.dispose();
-        GlobalData.initApplication(null);
-
         super.destroy();
     }
 

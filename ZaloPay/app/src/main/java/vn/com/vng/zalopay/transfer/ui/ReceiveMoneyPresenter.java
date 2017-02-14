@@ -86,7 +86,6 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
 
     @Override
     public void destroy() {
-        GlobalData.initApplication(null);
         super.destroy();
     }
 
