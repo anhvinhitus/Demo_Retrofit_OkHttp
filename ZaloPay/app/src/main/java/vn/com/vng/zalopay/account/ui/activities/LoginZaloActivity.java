@@ -49,6 +49,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Timber.d("onCreate taskid %s", getTaskId());
         loginPresenter.attachView(this);
         loginPresenter.fetchAppResource();
         handleIntent(getIntent());
