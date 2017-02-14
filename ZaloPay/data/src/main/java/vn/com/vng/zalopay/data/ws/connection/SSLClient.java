@@ -4,10 +4,12 @@ import android.os.Handler;
 import android.os.HandlerThread;
 
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.UnresolvedAddressException;
 
@@ -88,8 +90,17 @@ class SSLClient implements SocketClient {
 
                     postReceivedDataEvent(data);
                 }
+            } catch (EOFException e) {
+                // ignore exception log
+                Timber.d("EndOfFile exception while trying to read from notification socket");
+                postErrorEvent(e);
             } catch (UnresolvedAddressException e) {
-                Timber.w(e, "Unresolved address exception");
+                // ignore exception log
+                Timber.d("Unresolved address exception");
+                postErrorEvent(e);
+            } catch (UnknownHostException e) {
+                // ignore exception log
+                Timber.d("Unknown host exception");
                 postErrorEvent(e);
             } catch (java.net.ConnectException e) {
                 // reduce fatal level
