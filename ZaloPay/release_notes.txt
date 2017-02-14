@@ -1,7 +1,10 @@
+ZaloPay (Sandbox v2.8.0 - build 164) - Released on 2017-02-14
+- Update đổi số điện thoại từ 11 số về 10 số
+- Fix Zalo Integration
+
 ZaloPay (v2.8.0 - build 163) - Released on 2017-02-09
 - Quét QR với Zing Pay url
 - Fix Zalo Integration
-
 
 ZaloPay (v2.8.0 - build 162) - Released on 2017-02-08
 - Update Zalo Integration
