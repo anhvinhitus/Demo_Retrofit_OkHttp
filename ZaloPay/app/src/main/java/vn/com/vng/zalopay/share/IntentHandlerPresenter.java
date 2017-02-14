@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
+
+import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -90,7 +93,7 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
             }
         }
 
-        finish();
+        ActivityCompat.finishAffinity((Activity) mView.getContext());
     }
 
     private void handleDeepLink(Uri data) {
