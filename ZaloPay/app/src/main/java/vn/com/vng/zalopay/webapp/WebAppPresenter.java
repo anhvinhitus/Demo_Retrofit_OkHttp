@@ -1,8 +1,5 @@
 package vn.com.vng.zalopay.webapp;
 
-import android.app.Activity;
-import android.support.v4.app.Fragment;
-
 import org.json.JSONObject;
 
 import javax.inject.Inject;
@@ -70,22 +67,6 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
         if (mView != null) {
             mView.hideLoading();
         }
-    }
-
-    @Override
-    public Activity getActivity() {
-        if (mView != null) {
-            mView.getActivity();
-        }
-        return null;
-    }
-
-    @Override
-    public Fragment getFragment() {
-        if (mView != null) {
-            mView.getFragment();
-        }
-        return null;
     }
 
     @Override

@@ -25,13 +25,9 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
  * Created by longlv on 2/10/17.
  * *
  */
-public abstract class AbstractPaymentPresenter<View extends ILoadDataView> extends AbstractPresenter<View> {
+public abstract class AbstractPaymentPresenter<View extends IPaymentDataView> extends AbstractPresenter<View> {
     protected Navigator mNavigator;
     protected PaymentWrapper paymentWrapper;
-
-    public abstract Activity getActivity();
-
-    public abstract Fragment getFragment();
 
     public abstract void onPayParameterError(String param);
 
@@ -65,7 +61,7 @@ public abstract class AbstractPaymentPresenter<View extends ILoadDataView> exten
         ZPTransaction zpTransaction = new ZPTransaction(jsonObject);
         boolean isValidZPTransaction = zpTransaction.isValid();
 
-        Timber.d("Trying with zptranstoken %s ", isValidZPTransaction);
+        Timber.d("Trying with zptranstoken [%s] activity [%s]", isValidZPTransaction, getActivity());
         if (isValidZPTransaction) {
             paymentWrapper.payWithToken(getActivity(), zpTransaction.appId, zpTransaction.transactionToken);
         }
@@ -125,7 +121,22 @@ public abstract class AbstractPaymentPresenter<View extends ILoadDataView> exten
                 mNavigator.startDepositForResultActivity(getFragment());
             }
         }
+    }
 
+    public Activity getActivity() {
+        if (mView != null) {
+            return mView.getActivity();
+        } else {
+            return null;
+        }
+    }
+
+    public Fragment getFragment() {
+        if (mView != null) {
+            return mView.getFragment();
+        } else {
+            return null;
+        }
     }
 
 }

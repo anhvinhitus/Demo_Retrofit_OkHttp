@@ -1,13 +1,11 @@
 package vn.com.vng.zalopay.scanners.qrcode;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -103,22 +101,6 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         if (mView != null) {
             mView.hideLoading();
         }
-    }
-
-    @Override
-    public Activity getActivity() {
-        if (mView != null) {
-            return mView.getActivity();
-        }
-        return null;
-    }
-
-    @Override
-    public Fragment getFragment() {
-        if (mView != null) {
-            return mView.getFragment();
-        }
-        return null;
     }
 
     private void showNetworkErrorAndResumeAfterDismiss() {
