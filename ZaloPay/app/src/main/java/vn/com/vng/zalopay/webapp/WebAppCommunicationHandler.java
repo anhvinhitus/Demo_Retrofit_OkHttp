@@ -72,7 +72,7 @@ class WebAppCommunicationHandler {
             mWebViewListener.showLoading();
         } else if ("hideLoading".equalsIgnoreCase(message.functionName)) {
             mWebViewListener.hideLoading();
-        } else if ("alert".equalsIgnoreCase(message.functionName)) {
+        } else if ("showDialog".equalsIgnoreCase(message.functionName)) {
             showDialog(message);
         } else if ("closeWindow".equalsIgnoreCase(message.functionName)) {
             finishActivity(message);
