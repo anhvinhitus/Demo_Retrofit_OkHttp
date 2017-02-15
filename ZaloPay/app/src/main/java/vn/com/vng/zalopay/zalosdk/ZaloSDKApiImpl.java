@@ -58,7 +58,7 @@ public class ZaloSDKApiImpl implements ZaloSdkApi {
     }
 
     private void executeNext() {
-        if (AndroidUtils.isMainThead()) {
+        if (AndroidUtils.isMainThread()) {
             Timber.d("executeNext: %s mRunning %s", mTaskList.size(), mRunning);
             if (mTaskList.size() == 0) {
                 return;
