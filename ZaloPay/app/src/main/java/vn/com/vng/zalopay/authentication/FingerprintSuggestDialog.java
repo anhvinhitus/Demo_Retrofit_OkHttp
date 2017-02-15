@@ -69,7 +69,7 @@ public class FingerprintSuggestDialog extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.alert_dialog);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AlertDialogStyle);
     }
 
     @Nullable

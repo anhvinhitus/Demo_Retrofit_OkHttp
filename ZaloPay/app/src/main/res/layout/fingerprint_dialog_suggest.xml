@@ -50,6 +50,8 @@
             style="?attr/titleTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="-4dp"
+            android:layout_marginStart="-4dp"
             android:layout_marginTop="12dp"
             android:text="@string/do.not.ask.again.this.hint" />
 
