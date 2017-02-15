@@ -46,7 +46,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
         try {
             showLoadingView();
             if (zpTransaction(data)) {
-                return;
+                hideLoadingView();
             }
 
             if (orderTransaction(data)) {
