@@ -172,6 +172,10 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
 
             HandleZaloIntegration payment = new HandleZaloIntegration();
             payment.initialize();
+            if (mApplicationState.currentState() != ApplicationState.State.MAIN_SCREEN_CREATED) {
+                Timber.d("need load payment sdk");
+                payment.loadPaymentSdk();
+            }
             payment.getBalance();
 
             Timber.d("Processing send money on behalf of Zalo request");
