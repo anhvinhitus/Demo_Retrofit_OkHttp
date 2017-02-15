@@ -88,6 +88,10 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
 
     public void showSuggestionDialog(Activity activity, String hashPassword) {
 
+        if (activity == null) {
+            return;
+        }
+
         if (!shouldShowSuggestDialog()) {
             return;
         }
