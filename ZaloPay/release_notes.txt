@@ -1,4 +1,4 @@
-ZaloPay (v2.9.0 - build 180) - Released on 2017-02-09
+Zalo Pay (v2.9.0 - build 180) - Released on 2017-02-09
 - Hỗ trợ ngân hàng vietcombank.
 - Thêm Zalo Integration
 - Sửa recovery notification.
