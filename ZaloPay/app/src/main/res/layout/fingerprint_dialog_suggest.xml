@@ -46,6 +46,7 @@
             android:textColor="@color/c_text_black" />
 
         <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/checkBox"
             style="?attr/titleTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

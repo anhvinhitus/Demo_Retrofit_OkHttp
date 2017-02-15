@@ -57,6 +57,8 @@ public interface Constants {
     String PREF_USE_PROTECT_PROFILE = "pref_use_protect_profile";
 
     String PREF_WAITING_APPROVE_PROFILE_LEVEL3 = "pref_waiting_approve_profile_level3";
+    String PREF_LAST_TIME_SHOW_FINGERPRINT_SUGGEST = "pref_time_fingerprint_suggest";
+    String PREF_SHOW_FINGERPRINT_SUGGEST = "pref_show_fingerprint_suggest";
 
     int ZALOPAY_APP_ID = BuildConfig.ZALOPAY_APP_ID;
     int REQUEST_CODE_TRANSFER = 124;

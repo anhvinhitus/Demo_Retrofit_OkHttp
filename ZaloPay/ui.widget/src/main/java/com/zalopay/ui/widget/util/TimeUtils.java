@@ -19,10 +19,10 @@ import com.zalopay.ui.widget.R;
  */
 public class TimeUtils {
 
-    private static final int SECOND = 1000;
-    private static final int MINUTE = 60 * SECOND;
-    private static final int HOUR = 60 * MINUTE;
-    private static final int DAY = 24 * HOUR;
+    public static final int SECOND = 1000;
+    public static final int MINUTE = 60 * SECOND;
+    public static final int HOUR = 60 * MINUTE;
+    public static final int DAY = 24 * HOUR;
 
     public static String getTimeAgo(long time, Context ctx) {
         // TODO: use DateUtils methods instead
