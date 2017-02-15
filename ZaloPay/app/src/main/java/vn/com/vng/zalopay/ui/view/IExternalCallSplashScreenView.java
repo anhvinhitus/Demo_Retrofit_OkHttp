@@ -8,8 +8,4 @@ import android.content.Context;
 
 public interface IExternalCallSplashScreenView {
     Context getContext();
-
-    void showLoading();
-
-    void hideLoading();
 }
