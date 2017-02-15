@@ -259,23 +259,22 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private void saveTransferRecentToDB() {
-        try {
-            if (mTransaction == null) {
-                return;
-            }
-
-            if (TextUtils.isEmpty(mTransaction.displayName)) {
-                return;
-            }
-
-            mTransferRepository.append(mTransaction,
-                    Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString()))
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new DefaultSubscriber<Boolean>());
-
-        } catch (NumberFormatException e) {
-            Timber.w(e, "saveTransferRecentToDB, cast TransactionType exception [%s]", e.getMessage());
+        if (mTransaction == null || TextUtils.isEmpty(mTransaction.displayName)) {
+            return;
         }
+
+        int transactionType;
+
+        try {
+            transactionType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
+        } catch (NumberFormatException e) {
+            Timber.d(e, "parse transaction type");
+            return;
+        }
+
+        Subscription subscription = mTransferRepository.append(mTransaction, transactionType)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
     }
 
     @Override
@@ -531,20 +530,15 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
         @Override
         public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            if (mView == null) {
+            if (mView == null || mView.getActivity() == null) {
                 return;
             }
 
-            if (mView.getActivity() != null) {
-                if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
-                    handleCompletedTransferZalo(mView.getActivity());
-                } else {
-                    mView.getActivity().setResult(Activity.RESULT_OK);
-                    mView.getActivity().finish();
-                }
-            }
-            if (zpPaymentResult == null || zpPaymentResult.paymentInfo == null) {
-                return;
+            if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
+                handleCompletedTransferZalo(mView.getActivity());
+            } else {
+                mView.getActivity().setResult(Activity.RESULT_OK);
+                mView.getActivity().finish();
             }
 
             saveTransferRecentToDB();

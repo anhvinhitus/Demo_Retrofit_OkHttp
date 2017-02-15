@@ -387,7 +387,7 @@ public class AndroidUtils {
         }
     }
 
-    public static boolean isMainThead() {
+    public static boolean isMainThread() {
         boolean ret = false;
         if (Looper.myLooper() == Looper.getMainLooper()) {
             ret = true;

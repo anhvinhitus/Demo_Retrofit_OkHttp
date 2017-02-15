@@ -18,7 +18,6 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.zalopay.apploader.MiniApplicationBaseActivity;
-import com.zalopay.apploader.ReactBasedActivity;
 import com.zalopay.apploader.internal.ModuleName;
 
 import java.util.Arrays;
@@ -51,7 +50,6 @@ import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
@@ -160,7 +158,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
 
 
-                if (AndroidUtils.isMainThead()) {
+                if (AndroidUtils.isMainThread()) {
                     Timber.d("Kiểm tra lại phần này thôi. main thread rùi.");
                 }
 
