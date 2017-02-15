@@ -1,3 +1,7 @@
+ZaloPay (Sandbox v2.8.0 - build 165) - Released on 2017-02-15
+- Add pull refresh list app in home page
+- Add dialog suggest fingerprint
+
 ZaloPay (Sandbox v2.8.0 - build 164) - Released on 2017-02-14
 - Update đổi số điện thoại từ 11 số về 10 số
 - Fix Zalo Integration
