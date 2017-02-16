@@ -321,8 +321,13 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Person> getUserInfo(long zaloid) {
-        return fetchZaloPayUserByZaloId(String.valueOf(zaloid))
+
+        Observable<ZaloPayUserEntity> mCacheObservable = makeObservable(() -> mLocalStorage.getZaloPayUserByZaloId(zaloid))
+                .filter(entity -> entity != null && !TextUtils.isEmpty(entity.userid) && !TextUtils.isEmpty(entity.zalopayname));
+
+        Observable<ZaloPayUserEntity> mFetchObservable = fetchZaloPayUserByZaloId(String.valueOf(zaloid))
                 .flatMap(entities -> {
+                    Timber.d("list fetch zalopay user %s", entities);
                     if (Lists.isEmptyOrNull(entities)) {
                         return Observable.error(new UserNotFoundException());
                     }
@@ -336,9 +341,15 @@ public class FriendRepository implements FriendStore.Repository {
                         return Observable.error(new UserNotFoundException());
                     }
 
-                    return Observable.just(transform(entity));
+                    return Observable.just(entity);
                 });
+
+        return Observable.concat(mCacheObservable, mFetchObservable)
+                .first()
+                .map(this::transform)
+                ;
     }
+
 
     private Person transform(ZaloPayUserEntity entity) {
         if (entity == null) {

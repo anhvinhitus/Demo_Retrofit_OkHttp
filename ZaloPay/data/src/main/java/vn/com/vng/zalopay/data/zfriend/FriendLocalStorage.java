@@ -312,6 +312,12 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     @Nullable
     @Override
     public ZaloPayUserEntity getZaloPayUserByZaloId(long zaloId) {
+        List<ZaloPayProfileGD> list = mZaloPayUserDao.queryBuilder()
+                .where(ZaloPayProfileGDDao.Properties.ZaloId.eq(zaloId)).list();
+        if (!Lists.isEmptyOrNull(list)) {
+            return mDataMapper.transform(list.get(0));
+        }
+
         return null;
     }
 }

@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.ToMany;
 
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 55;
+    private static final int APP_DB_VERSION = 56;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
@@ -136,6 +136,8 @@ public class GreenDaoGenerator {
         zaloPayEntity.addStringProperty("zaloPayId").unique().notNull();
         zaloPayEntity.addLongProperty("status");
         zaloPayEntity.addStringProperty("zaloPayName");
+        zaloPayEntity.addStringProperty("avatar");
+        zaloPayEntity.addStringProperty("displayName");
         return zaloPayEntity;
     }
 

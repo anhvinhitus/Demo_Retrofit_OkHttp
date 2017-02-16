@@ -28,8 +28,10 @@ public class ZaloPayProfileGDDao extends AbstractDao<ZaloPayProfileGD, Long> {
         public final static Property ZaloPayId = new Property(0, String.class, "zaloPayId", false, "ZALO_PAY_ID");
         public final static Property Status = new Property(1, Long.class, "status", false, "STATUS");
         public final static Property ZaloPayName = new Property(2, String.class, "zaloPayName", false, "ZALO_PAY_NAME");
-        public final static Property ZaloId = new Property(3, long.class, "zaloId", true, "ZALO_ID");
-        public final static Property PhoneNumber = new Property(4, Long.class, "phoneNumber", false, "PHONE_NUMBER");
+        public final static Property Avatar = new Property(3, String.class, "avatar", false, "AVATAR");
+        public final static Property DisplayName = new Property(4, String.class, "displayName", false, "DISPLAY_NAME");
+        public final static Property ZaloId = new Property(5, long.class, "zaloId", true, "ZALO_ID");
+        public final static Property PhoneNumber = new Property(6, Long.class, "phoneNumber", false, "PHONE_NUMBER");
     }
 
     private DaoSession daoSession;
@@ -51,8 +53,10 @@ public class ZaloPayProfileGDDao extends AbstractDao<ZaloPayProfileGD, Long> {
                 "\"ZALO_PAY_ID\" TEXT NOT NULL UNIQUE ," + // 0: zaloPayId
                 "\"STATUS\" INTEGER," + // 1: status
                 "\"ZALO_PAY_NAME\" TEXT," + // 2: zaloPayName
-                "\"ZALO_ID\" INTEGER PRIMARY KEY NOT NULL ," + // 3: zaloId
-                "\"PHONE_NUMBER\" INTEGER);"); // 4: phoneNumber
+                "\"AVATAR\" TEXT," + // 3: avatar
+                "\"DISPLAY_NAME\" TEXT," + // 4: displayName
+                "\"ZALO_ID\" INTEGER PRIMARY KEY NOT NULL ," + // 5: zaloId
+                "\"PHONE_NUMBER\" INTEGER);"); // 6: phoneNumber
     }
 
     /** Drops the underlying database table. */
@@ -75,11 +79,21 @@ public class ZaloPayProfileGDDao extends AbstractDao<ZaloPayProfileGD, Long> {
         if (zaloPayName != null) {
             stmt.bindString(3, zaloPayName);
         }
-        stmt.bindLong(4, entity.zaloId);
+ 
+        String avatar = entity.avatar;
+        if (avatar != null) {
+            stmt.bindString(4, avatar);
+        }
+ 
+        String displayName = entity.displayName;
+        if (displayName != null) {
+            stmt.bindString(5, displayName);
+        }
+        stmt.bindLong(6, entity.zaloId);
  
         Long phoneNumber = entity.phoneNumber;
         if (phoneNumber != null) {
-            stmt.bindLong(5, phoneNumber);
+            stmt.bindLong(7, phoneNumber);
         }
     }
 
@@ -97,11 +111,21 @@ public class ZaloPayProfileGDDao extends AbstractDao<ZaloPayProfileGD, Long> {
         if (zaloPayName != null) {
             stmt.bindString(3, zaloPayName);
         }
-        stmt.bindLong(4, entity.zaloId);
+ 
+        String avatar = entity.avatar;
+        if (avatar != null) {
+            stmt.bindString(4, avatar);
+        }
+ 
+        String displayName = entity.displayName;
+        if (displayName != null) {
+            stmt.bindString(5, displayName);
+        }
+        stmt.bindLong(6, entity.zaloId);
  
         Long phoneNumber = entity.phoneNumber;
         if (phoneNumber != null) {
-            stmt.bindLong(5, phoneNumber);
+            stmt.bindLong(7, phoneNumber);
         }
     }
 
@@ -113,7 +137,7 @@ public class ZaloPayProfileGDDao extends AbstractDao<ZaloPayProfileGD, Long> {
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 3);
+        return cursor.getLong(offset + 5);
     }    
 
     @Override
@@ -128,8 +152,10 @@ public class ZaloPayProfileGDDao extends AbstractDao<ZaloPayProfileGD, Long> {
         entity.zaloPayId = cursor.getString(offset + 0);
         entity.status = cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1);
         entity.zaloPayName = cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2);
-        entity.zaloId = cursor.getLong(offset + 3);
-        entity.phoneNumber = cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4);
+        entity.avatar = cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3);
+        entity.displayName = cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4);
+        entity.zaloId = cursor.getLong(offset + 5);
+        entity.phoneNumber = cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6);
      }
     
     @Override
