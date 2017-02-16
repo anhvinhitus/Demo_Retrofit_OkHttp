@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -227,9 +228,17 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         mNavigator.startLoginActivity(act, requestCode, data, zaloid, authCode);
     }
 
-
     private void signInAnotherAccount(final Uri data, final long sender, final String accesstoken) {
-        mDialog = DialogHelper.yesNoDialog((Activity) mView.getContext(), mApplicationContext.getString(R.string.confirm_change_account),
+        String messageFormat = mApplicationContext.getString(R.string.confirm_change_account_format);
+        User user = mUserConfig.getCurrentUser();
+        String message;
+        if (user != null && !TextUtils.isEmpty(user.displayName)) {
+            message = String.format(messageFormat, user.displayName);
+        } else {
+            message = String.format(messageFormat, mApplicationContext.getString(R.string.other_account));
+        }
+
+        mDialog = DialogHelper.yesNoDialog((Activity) mView.getContext(), message,
                 mApplicationContext.getString(R.string.accept), mApplicationContext.getString(R.string.cancel),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
