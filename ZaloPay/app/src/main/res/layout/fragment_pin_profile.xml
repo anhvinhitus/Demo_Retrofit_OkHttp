@@ -51,7 +51,7 @@
                 <FrameLayout
                     android:id="@+id/layoutPin"
                     android:layout_width="match_parent"
-                    android:layout_height="74dp">
+                    android:layout_height="wrap_content">
 
                     <vn.com.vng.zalopay.ui.widget.PassCodeView
                         android:id="@+id/passcodeInput"
@@ -59,6 +59,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:layout_marginLeft="16dp"
+                        zalopay:errorEnabled="false"
                         zalopay:hint="@string/pin"
                         zalopay:length="@integer/pin_length"
                         zalopay:paddingRight="16dp" />
@@ -68,9 +69,10 @@
                     android:id="@+id/edtPhone2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="@dimen/app_padding"
+                    android:layout_marginLeft="@dimen/spacing.medium"
                     android:layout_marginTop="@dimen/spacing.medium"
-                    android:paddingLeft="@dimen/spacing.medium" >
+                    android:gravity="bottom" >
 
                     <com.zalopay.ui.widget.edittext.ClearEditText
                         style="@style/ClearEditText.Default"

@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.zalopay.ui.widget.R;
 
@@ -29,6 +30,8 @@ public class ZPTextInputLayout extends TextInputLayout {
     private boolean mIsRequired = false;
     private boolean mAutoValidate = false;
     private boolean mAutoTrimValue = false;
+
+    private Integer mMarginBottom = null;
 
     public ZPTextInputLayout(Context context) {
         super(context);
@@ -60,6 +63,15 @@ public class ZPTextInputLayout extends TextInputLayout {
                     }
                 }
             }, 1000);
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (mMarginBottom == null) {
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
+            mMarginBottom = layoutParams.bottomMargin;
         }
     }
 
@@ -227,6 +239,39 @@ public class ZPTextInputLayout extends TextInputLayout {
             }
         }
         return true;
+    }
+
+    @Override
+    public void setErrorEnabled(boolean enabled) {
+        super.setErrorEnabled(enabled);
+        repairAfterAdjustIndicatorPadding(enabled);
+    }
+
+    private void repairAfterAdjustIndicatorPadding(boolean enabled) {
+        if (enabled && mMarginBottom != null) {
+            int paddingBottom = getEditText().getPaddingBottom();
+            int temp = mMarginBottom - paddingBottom;
+            Timber.d("setErrorEnabled true, mMarginBottom[%s] temp[%s]", mMarginBottom, temp);
+            if (temp < 0) {
+                temp = 0;
+            }
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
+            layoutParams.setMargins(layoutParams.leftMargin,
+                    layoutParams.topMargin,
+                    layoutParams.rightMargin,
+                    temp);
+            setLayoutParams(layoutParams);
+        } else {
+            Timber.d("setErrorEnabled false, mMarginBottom[%s]", mMarginBottom);
+            if (mMarginBottom != null && mMarginBottom >= 0) {
+                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
+                layoutParams.setMargins(layoutParams.leftMargin,
+                        layoutParams.topMargin,
+                        layoutParams.rightMargin,
+                        mMarginBottom);
+                setLayoutParams(layoutParams);
+            }
+        }
     }
 
     /**

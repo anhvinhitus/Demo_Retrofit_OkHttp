@@ -5,6 +5,7 @@
     </declare-styleable>
 
     <declare-styleable name="PassCodeView">
+        <attr name="errorEnabled" format="boolean" />
         <attr name="length" format="integer" />
         <attr name="hint" format="string" />
         <attr name="note" format="string" />
