@@ -64,22 +64,33 @@
                         zalopay:paddingRight="16dp" />
                 </FrameLayout>
 
-                <FrameLayout
+                <com.zalopay.ui.widget.edittext.ZPTextInputLayout
+                    android:id="@+id/edtPhone2"
                     android:layout_width="match_parent"
-                    android:layout_height="64dp">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="@dimen/spacing.medium"
+                    android:paddingLeft="@dimen/spacing.medium" >
 
-                    <com.zalopay.ui.widget.edittext.ZPEditText
-                        android:id="@+id/edtPhone"
-                        style="@style/ZaloPayEditText"
+                    <com.zalopay.ui.widget.edittext.ClearEditText
+                        style="@style/ClearEditText.Default"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
+                        android:layout_margin="0dp"
                         android:digits="1234567890"
                         android:hint="@string/hint_phone"
+                        android:inputType="number"
                         android:maxLength="@integer/max_length_phone"
-                        zalopay:zlp_autoValidate="false" />
-                </FrameLayout>
+                        android:maxLines="1"
+                        android:textSize="15sp"
+                        android:textStyle="normal" />
+                </com.zalopay.ui.widget.edittext.ZPTextInputLayout>
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/separate"/>
 
             <TextView
                 android:id="@+id/tvTermsOfUser3"
