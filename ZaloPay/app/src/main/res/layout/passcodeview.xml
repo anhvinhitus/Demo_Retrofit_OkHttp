@@ -71,4 +71,12 @@
                 android:textStyle="normal" />
         </FrameLayout>
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvError"
+        style="@style/TextView.Error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="@dimen/textsize.tiny" />
 </LinearLayout>
