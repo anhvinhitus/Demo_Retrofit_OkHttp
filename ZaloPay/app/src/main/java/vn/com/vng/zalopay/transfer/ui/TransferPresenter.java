@@ -145,6 +145,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
         @Override
         public void onError(Throwable e) {
+            Timber.d(e, "get zalopay user error");
+
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }

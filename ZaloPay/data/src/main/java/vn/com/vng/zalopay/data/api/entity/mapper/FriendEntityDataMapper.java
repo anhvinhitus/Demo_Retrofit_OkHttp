@@ -79,16 +79,18 @@ public class FriendEntityDataMapper {
 
         item.zaloPayId = entity.userid;
         item.status = entity.status;
-        try {
-            String phone = PhoneUtil.formatPhoneNumber(entity.phonenumber);
-            if (!TextUtils.isEmpty(phone)) {
-                item.phoneNumber = Long.valueOf(phone);
-            }
-        } catch (Exception e) {
-            Timber.d(e, "transform");
+
+        String phone = PhoneUtil.formatPhoneNumber(entity.phonenumber);
+        if (!TextUtils.isEmpty(phone)) {
+            item.phoneNumber = Long.valueOf(phone);
+        } else {
+            item.phoneNumber = 0L;
         }
 
+
         item.zaloPayName = entity.zalopayname;
+        item.avatar = entity.avatar;
+        item.displayName = entity.displayName;
         return item;
     }
 
@@ -101,8 +103,10 @@ public class FriendEntityDataMapper {
         entity.userid = gd.zaloPayId;
         entity.zaloid = String.valueOf(gd.zaloId);
         entity.zalopayname = gd.zaloPayName;
-        entity.phonenumber = gd.phoneNumber;
+        entity.phonenumber = gd.phoneNumber == null ? 0 : gd.phoneNumber;
         entity.status = gd.status;
+        entity.avatar = gd.avatar;
+        entity.displayName = gd.displayName;
         return entity;
     }
 

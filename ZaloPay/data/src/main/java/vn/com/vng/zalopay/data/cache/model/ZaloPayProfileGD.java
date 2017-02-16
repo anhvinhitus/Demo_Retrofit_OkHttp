@@ -18,6 +18,8 @@ public class ZaloPayProfileGD {
     public String zaloPayId;
     public Long status;
     public String zaloPayName;
+    public String avatar;
+    public String displayName;
 
     @Id
     public long zaloId;
