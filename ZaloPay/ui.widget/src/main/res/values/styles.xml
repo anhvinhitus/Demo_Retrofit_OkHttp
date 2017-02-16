@@ -204,4 +204,11 @@
     <style name="EditText.Passport.Password">
         <item name="android:inputType">textPassword</item>
     </style>
+
+    <style name="ClearEditText.Default" parent="@android:style/Widget.EditText">
+        <item name="android:background">@drawable/bg_edt_default_style</item>
+        <item name="android:paddingBottom">@dimen/spacing.medium.s</item>
+        <item name="android:paddingRight">@dimen/spacing.medium</item>
+        <item name="android:paddingTop">@dimen/spacing.medium.t</item>
+    </style>
 </resources>
