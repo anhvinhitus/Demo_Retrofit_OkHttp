@@ -55,7 +55,7 @@ public class ConfigUtil {
             String jsonConfig = FileUtil.readFileToString(getFileConfigPath(BuildConfig.ZALOPAY_APP_ID));
             return loadConfig(jsonConfig);
         } catch (IOException e) {
-            Timber.e(e, "Read config from resource app 1 throw exception.");
+            Timber.d(e, "Read config from resource app 1 throw exception.");
             return false;
         }
     }
