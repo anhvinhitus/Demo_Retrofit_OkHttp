@@ -1,3 +1,6 @@
+Zalo Pay (Sandbox v2.8.0 - build 166) - Released on 2017-02-16
+- Update Zalo Integration (Cache user zalopay, alert message)
+
 Zalo Pay (Sandbox v2.8.0 - build 165) - Released on 2017-02-15
 - Add pull refresh list app in home page
 - Add dialog suggest fingerprint
