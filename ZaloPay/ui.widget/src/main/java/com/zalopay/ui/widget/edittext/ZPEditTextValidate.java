@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 /**
  * Created by hieuvm on 11/3/16.
+ * *
  */
 
 public abstract class ZPEditTextValidate {

@@ -20,11 +20,8 @@ public class PhoneFormat {
     @SerializedName("patterns")
     public List<String> mPatterns;
 
-    @SerializedName("undervalue_message")
-    public String mUndervalueMessage;
-
-    @SerializedName("overvalue_message")
-    public String mOvervalueMessage;
+    @SerializedName("invalid_length_message")
+    public String mInvalidLengthMessage;
 
     @SerializedName("general_message")
     public String mGeneralMessage;
