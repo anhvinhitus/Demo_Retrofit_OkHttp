@@ -25,16 +25,10 @@ public class VNPhoneValidate {
         if (phoneFormat == null) {
             return;
         }
-        mValidates.add(new ZPEditTextValidate(phoneFormat.mUndervalueMessage) {
+        mValidates.add(new ZPEditTextValidate(phoneFormat.mInvalidLengthMessage) {
             @Override
             public boolean isValid(@NonNull CharSequence s) {
-                return PhoneUtil.validMinLength(s.toString());
-            }
-        });
-        mValidates.add(new ZPEditTextValidate(phoneFormat.mOvervalueMessage) {
-            @Override
-            public boolean isValid(@NonNull CharSequence s) {
-                return PhoneUtil.validMaxLength(s.toString());
+                return PhoneUtil.validLength(s.toString());
             }
         });
         mValidates.add(new ZPEditTextValidate(phoneFormat.mGeneralMessage) {

@@ -51,10 +51,9 @@ public class ZPTextInputLayout extends TextInputLayout {
     }
 
     private void initialize() {
-        Timber.d("initialize editText[%s]", getEditText());
         if (!isInEditMode()) {
             mValidators = new ArrayList<>();
-            this.postDelayed(new Runnable() {
+            this.post(new Runnable() {
                 @Override
                 public void run() {
                     if (!getEditText().isInEditMode()) {
@@ -62,7 +61,7 @@ public class ZPTextInputLayout extends TextInputLayout {
                         initializeFocusChanged();
                     }
                 }
-            }, 1000);
+            });
         }
     }
 
@@ -251,7 +250,6 @@ public class ZPTextInputLayout extends TextInputLayout {
         if (enabled && mMarginBottom != null) {
             int paddingBottom = getEditText().getPaddingBottom();
             int temp = mMarginBottom - paddingBottom;
-            Timber.d("setErrorEnabled true, mMarginBottom[%s] temp[%s]", mMarginBottom, temp);
             if (temp < 0) {
                 temp = 0;
             }
@@ -262,7 +260,6 @@ public class ZPTextInputLayout extends TextInputLayout {
                     temp);
             setLayoutParams(layoutParams);
         } else {
-            Timber.d("setErrorEnabled false, mMarginBottom[%s]", mMarginBottom);
             if (mMarginBottom != null && mMarginBottom >= 0) {
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
                 layoutParams.setMargins(layoutParams.leftMargin,
@@ -282,8 +279,11 @@ public class ZPTextInputLayout extends TextInputLayout {
      * @see #autoTrimValue(boolean)
      */
     public String getText() {
-        if (isAutoTrimEnabled()) return getEditText().getText().toString().trim();
-        else return getEditText().getText().toString();
+        if (isAutoTrimEnabled()) {
+            return getEditText().getText().toString().trim();
+        } else {
+            return getEditText().getText().toString();
+        }
     }
 
     public void setText(String text) {
