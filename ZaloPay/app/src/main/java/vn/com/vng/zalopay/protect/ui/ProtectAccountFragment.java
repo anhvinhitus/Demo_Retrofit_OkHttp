@@ -90,7 +90,7 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
     @OnClick(R.id.vgChangePass)
     public void onClickChangePassword(View v) {
-        navigator.startChangePinActivity(getActivity());
+        navigator.startChangePin(getActivity());
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.util.HashMap;
 
@@ -90,11 +91,11 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
     }
 
     public static boolean isLastActivity(@NonNull String simpleName) {
-        return simpleName.equalsIgnoreCase(mLastActivity);
+        return !TextUtils.isEmpty(mLastActivity) && mLastActivity.endsWith(simpleName);
     }
 
     private void checkCreatedIfRootActivity(Activity activity, Bundle savedInstanceState) {
-       // Timber.d("Created savedInstanceState %s activities %s getUserComponent() %s", savedInstanceState, activities, getUserComponent());
+        // Timber.d("Created savedInstanceState %s activities %s getUserComponent() %s", savedInstanceState, activities, getUserComponent());
 
         if (savedInstanceState == null || !activities.isEmpty()) {
             return;

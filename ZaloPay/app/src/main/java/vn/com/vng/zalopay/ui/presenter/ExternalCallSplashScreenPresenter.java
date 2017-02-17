@@ -13,6 +13,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.app.AppLifeCycle;
@@ -104,15 +106,26 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
         String scheme = data.getScheme();
         String host = data.getHost();
-        String pathPrefix = data.getPath();
+        Timber.d("handleDeepLink: host %s", host);
 
-        if (TextUtils.isEmpty(scheme) || TextUtils.isEmpty(host)) {
+        if (TextUtils.isEmpty(scheme)) {
             finish();
             return;
         }
 
-        if (scheme.equalsIgnoreCase("zalopay-1") && host.equalsIgnoreCase("post")) {
-            pay(data, false);
+        if (TextUtils.isEmpty(host)) {
+            navigateToApp();
+            return;
+        }
+
+        if (scheme.equalsIgnoreCase("zalopay-1")) {
+
+            if (host.equalsIgnoreCase("post")) {
+                pay(data, false);
+            } else {
+                navigateToApp();
+            }
+
         } else if (scheme.equalsIgnoreCase("zalopay")) {
 
             if (host.equalsIgnoreCase("zalopay.vn")) {
@@ -121,15 +134,14 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
                 handleOTPDeepLink(data);
                 finish();
             } else {
-                finish();
+                navigateToApp();
             }
 
-        } else {
-            finish();
         }
     }
 
     private boolean handleOTPDeepLink(Uri data) {
+
         if (!mUserConfig.hasCurrentUser()) {
             return false;
         }
@@ -141,14 +153,23 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
         String otp = list.get(0);
         Timber.d("handleDeepLink: %s", otp);
+
         if (TextUtils.isEmpty(otp) || !TextUtils.isDigitsOnly(otp)) {
             return false;
         }
 
+        int lengthOtp = mApplicationContext.getResources().getInteger(R.integer.max_length_otp);
+
+        if (otp.length() != lengthOtp) {
+            return false;
+        }
+
         if (AppLifeCycle.isLastActivity(ChangePinActivity.class.getSimpleName())) {
-            mNavigator.startChangePinActivity((Activity) mView.getContext(), otp);
+            mNavigator.startChangePin((Activity) mView.getContext(), otp);
         } else if (AppLifeCycle.isLastActivity(UpdateProfileLevel2Activity.class.getSimpleName())) {
-            mNavigator.startUpdateProfileLevel2ActivityWithOtp(mView.getContext(), otp);
+            mNavigator.startUpdateLevel2(mView.getContext(), otp);
+        } else {
+            Timber.d("No subscriber otp");
         }
 
         return true;
@@ -216,6 +237,25 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
     private void startLogin(ExternalCallSplashScreenActivity act, int requestCode, Uri data, long zaloid, String authCode) {
         mNavigator.startLoginActivity(act, requestCode, data, zaloid, authCode);
+    }
+
+    private void navigateToApp() {
+        if (mView == null) {
+            return;
+        }
+        Intent intent;
+        if (mUserConfig.hasCurrentUser()) {
+            intent = mNavigator.intentHomeActivity(mView.getContext(), false);
+
+        } else {
+            intent = mNavigator.getIntentLogin(mView.getContext(), false);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        mView.getContext().startActivity(intent);
+        finish();
     }
 
 }

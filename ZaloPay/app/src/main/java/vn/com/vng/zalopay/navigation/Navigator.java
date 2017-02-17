@@ -134,7 +134,7 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    private Intent intentHomeActivity(Context context, boolean clearTop) {
+    public Intent intentHomeActivity(Context context, boolean clearTop) {
         Intent intent = new Intent(context, MainActivity.class);
 
         if (clearTop) {
@@ -150,11 +150,12 @@ public class Navigator implements INavigator {
         startUpdateProfileLevel2Activity(context, null);
     }
 
-    public void startUpdateProfileLevel2ActivityWithOtp(Context context, String otp) {
+    public void startUpdateLevel2(Context context, @NonNull String otp) {
         Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
-        if (!TextUtils.isEmpty(otp)) {
-            intent.putExtra("otp", otp);
-        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("otp", otp);
         context.startActivity(intent);
     }
 
@@ -330,13 +331,16 @@ public class Navigator implements INavigator {
         return new Intent(activity, ChangePinActivity.class);
     }
 
-    public void startChangePinActivity(Activity activity, String otp) {
+    public void startChangePin(Activity activity, String otp) {
         Intent intent = intentChangePinActivity(activity);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("otp", otp);
         activity.startActivity(intent);
     }
 
-    public void startChangePinActivity(Activity activity) {
+    public void startChangePin(Activity activity) {
         Intent intent = intentChangePinActivity(activity);
         activity.startActivity(intent);
     }
@@ -662,21 +666,6 @@ public class Navigator implements INavigator {
         Intent intent = new Intent(context, ProtectAccountActivity.class);
         context.startActivity(intent);
     }
-
-   /* public void startFeedbackActivityTest(Context context) {
-        Intent intent = new Intent(context, FeedbackActivity.class);
-        intent.putExtra("category", "Nạp Tiền");
-        intent.putExtra("transactionid", "1234567890");
-        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-        intent.putExtra("screenshot", getBytesFromBitmap(bm));
-        context.startActivity(intent);
-    }
-
-    private byte[] getBytesFromBitmap(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-        return stream.toByteArray();
-    }*/
 
     public boolean startEmail(@NonNull Activity activity, @NonNull String emailTo, @Nullable String emailCC,
                               @NonNull String subject, @Nullable String emailText, @Nullable ArrayList<Uri> uris) {

@@ -1,20 +1,26 @@
 package vn.com.vng.zalopay.account.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnPageChange;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.adapter.ChangePinPagerAdapter;
 import vn.com.vng.zalopay.account.ui.presenter.IChangePinPresenter;
 import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
+import vn.com.vng.zalopay.event.ReceiveOTPEvent;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -53,6 +59,9 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
 
     @Inject
     IChangePinPresenter presenter;
+
+    @Inject
+    EventBus mEventBus;
 
     private int mCurrentPage;
 
@@ -112,7 +121,7 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
 
     @Override
     public void onDestroyView() {
-
+        mEventBus.removeStickyEvent(ReceiveOTPEvent.class);
         presenter.detachView();
         super.onDestroyView();
     }
@@ -158,5 +167,14 @@ public class ChangePinContainerFragment extends BaseFragment implements IChangeP
         }
 
         return super.onBackPressed();
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String otp = intent.getStringExtra("otp");
+        if (!TextUtils.isEmpty(otp)) {
+            mEventBus.postSticky(new ReceiveOTPEvent(otp));
+        }
     }
 }
