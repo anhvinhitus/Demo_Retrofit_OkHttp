@@ -6,14 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.zalopay.ui.widget.util.FileUtil;
+import com.zalopay.ui.widget.util.TimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.IOException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -28,21 +26,17 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
-import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.Config;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -71,7 +65,6 @@ import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
@@ -354,6 +347,13 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onPayWithTransToken(final PaymentDataEvent event) {
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - event.timeRequest > 4 * TimeUtils.MINUTE) {
+            Timber.d("pay oder expired time");
+            return;
+        }
+
         if (event.isConfirm) {
             showPayDialogConfirm(event);
         } else {
@@ -485,13 +485,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     }
 
     private void responseToApp(Activity activity, long appId, int returnCode, String returnMessage) {
-       /* // TODO: 12/1/16 kiem tra truong hop user khong du tien thanh toan
-        String responseFormat = "zp-redirect-%s://result?returncode=%s&returnmessage=%s";
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setData(Uri.parse(String.format(Locale.getDefault(), responseFormat, appId, returnCode, returnMessage)));
-        activity.startActivity(intent);*/
-
         Intent data = new Intent();
         data.putExtra("returncode", returnCode);
         data.putExtra("returnMessage", returnMessage);

@@ -121,7 +121,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         if (scheme.equalsIgnoreCase("zalopay-1")) {
 
             if (host.equalsIgnoreCase("post")) {
-                pay(data, false);
+                pay(data);
             } else {
                 navigateToApp();
             }
@@ -175,8 +175,8 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         return true;
     }
 
-    private void pay(Uri data, boolean isAppToApp) {
-        Timber.d("pay with uri [%s] isAppToTpp [%s]", data, isAppToApp);
+    private void pay(Uri data) {
+        Timber.d("pay with uri [%s] isAppToApp [%s]", data);
 
         String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
         String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
@@ -188,9 +188,9 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
             return;
         }
 
-        mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken, isAppToApp));
+        mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken, false));
         Timber.d("post sticky payment");
-        finish();
+        navigateToApp();
     }
 
     private void handleAppToAppPayment(Uri data) {
@@ -250,6 +250,7 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         } else {
             intent = mNavigator.getIntentLogin(mView.getContext(), false);
         }
+
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
