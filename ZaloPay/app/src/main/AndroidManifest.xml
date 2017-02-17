@@ -267,10 +267,8 @@
         <activity
             android:name=".account.ui.activities.UpdateProfileLevel2Activity"
             android:label="@string/title.activity.profile"
-            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-
 
         <activity
             android:name=".account.ui.activities.EditAccountNameActivity"
@@ -310,7 +308,6 @@
         <activity
             android:name=".account.ui.activities.ChangePinActivity"
             android:label="@string/title.activity.change.pin"
-            android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
