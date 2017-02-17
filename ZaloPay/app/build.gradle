@@ -126,7 +126,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ext.betaDistributionEmailsFilePath = 'distribution_emails_release.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
-            // ext.betaDistributionGroupAliasesFilePath='group_aliases.txt'
+            ext.betaDistributionGroupAliasesFilePath = 'group_aliases.txt'
             // ext.betaDistributionNotifications=false //To disable email notifications for all testers:
         }
         debug {
