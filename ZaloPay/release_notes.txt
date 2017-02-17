@@ -1,3 +1,8 @@
+Zalo Pay (Sandbox v2.8.0 - build 167) - Released on 2017-02-17
+- Fix deep link otp, pay order
+- Fix valid phone number.
+- Cập nhật UI cập nhật tài khoản.
+
 Zalo Pay (Sandbox v2.8.0 - build 166) - Released on 2017-02-16
 - Update Zalo Integration (Cache user zalopay, alert message)
 
