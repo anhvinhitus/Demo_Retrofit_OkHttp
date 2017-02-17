@@ -427,7 +427,9 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                 @Override
                 public void run() {
                     Timber.d("refreshIconFont");
-                    mView.refreshIconFont();
+                    if (mView != null) {
+                        mView.refreshIconFont();
+                    }
                 }
             };
         }
