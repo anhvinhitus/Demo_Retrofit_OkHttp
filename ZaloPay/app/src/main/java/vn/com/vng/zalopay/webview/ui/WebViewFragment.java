@@ -244,7 +244,7 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.webapp_menu_main, menu);
+        //inflater.inflate(R.menu.webapp_menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
