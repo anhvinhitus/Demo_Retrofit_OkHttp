@@ -494,7 +494,7 @@
     <string name="confirm.you.want.to.use.your.fingerprint">Bạn muốn sử dụng vân tay thay vì nhập mật khẩu thanh toán?</string>
     <string name="do.not.ask.again.this.hint">Không hỏi lại gợi ý này</string>
     <string name="other.account">khác</string>
-
+	<string name="you.having.a.transaction.in.process">Bạn đang có một giao dịch đang trong quá trình thanh toán. Vui lòng kết thúc thanh toán cho giao dịch đó và thử lại</string>
     <string name="confirm_link_card_to_continue_pay">Cần liên kết thẻ trước khi tiếp tục thanh toán. Bạn có muốn liên kết thẻ không?</string>
 </resources>
 
