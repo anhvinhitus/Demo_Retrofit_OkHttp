@@ -230,6 +230,21 @@ public class PaymentWrapper {
         callPayAPI(mActivity, mPendingOrder, mPendingChannel);
     }
 
+    private void onUpdateProfileAndLinkAcc(int resultCode) {
+        if (resultCode == Activity.RESULT_CANCELED) {
+            if (responseListener != null) {
+                responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
+            }
+            clearPendingOrder();
+        } else {
+            if (mRedirectListener != null) {
+                mRedirectListener.startLinkAccountActivity();
+            } else {
+                startLinkAccountActivity();
+            }
+        }
+    }
+
     /**
      * Handle fragment/activity result
      */
@@ -243,6 +258,9 @@ public class PaymentWrapper {
                 || requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2
                 || requestCode == Constants.REQUEST_CODE_LINK_BANK) {
             shouldProcessPendingOrder = true;
+        } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_BEFORE_LINK_ACC) {
+            onUpdateProfileAndLinkAcc(requestCode);
+            return;
         }
 
         if (shouldProcessPendingOrder && hasPendingOrder()) {
@@ -400,6 +418,13 @@ public class PaymentWrapper {
         mNavigator.startUpdateProfileLevel2Activity(mActivity, walletTransID);
     }
 
+    void startUpdateProfileBeforeLinkAcc() {
+        if (mActivity == null) {
+            return;
+        }
+        mNavigator.startUpdateProfileLevelBeforeLinkAcc(mActivity);
+    }
+
     void startLinkAccountActivity() {
         if (mActivity == null) {
             return;
@@ -412,6 +437,8 @@ public class PaymentWrapper {
         void startUpdateProfileLevel(String walletTransId);
 
         void startLinkAccountActivity();
+
+        void startUpdateProfileBeforeLinkAcc();
     }
 
     public interface IResponseListener {
@@ -465,6 +492,9 @@ public class PaymentWrapper {
                 mRedirectListener != null) {
             return false;
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT &&
+                mRedirectListener != null) {
+            return false;
+        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT &&
                 mRedirectListener != null) {
             return false;
         }

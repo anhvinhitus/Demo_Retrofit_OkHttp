@@ -24,11 +24,11 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
@@ -56,9 +56,9 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     abstract void onPreComplete();
 
-    abstract void onNeedLinkAccount();
-
     abstract void onAddCardSuccess(DBaseMap mappedCreditCard);
+
+    abstract void onPayResponseError(PaymentError paymentError);
 
     abstract void showLoadingView();
 
@@ -130,7 +130,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         };
     }
 
-
     @Override
     public void destroy() {
         //release cache
@@ -158,6 +157,15 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         }
     }
 
+    void linkAccount(ZPCard zpCard) {
+        if (paymentWrapper == null || mView == null || zpCard == null) {
+            return;
+        }
+        Timber.d("linkAccount card[%s]", zpCard.getCardCode());
+        paymentWrapper.linkAccount(getActivity(), zpCard.getCardCode());
+        hideLoadingView();
+    }
+
     void addLinkCard() {
         if (getContext() == null) {
             return;
@@ -181,8 +189,8 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         public void onResponseError(PaymentError paymentError) {
             if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                 showNetworkErrorDialog();
-            } else if (paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT) {
-                onNeedLinkAccount();
+            } else {
+                onPayResponseError(paymentError);
             }
         }
 
@@ -192,7 +200,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 return;
             }
             ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
-            if (paymentInfo == null) {
+            if (paymentInfo == null || paymentInfo.mapBank == null) {
                 Timber.d("onResponseSuccess paymentInfo null");
                 return;
             }

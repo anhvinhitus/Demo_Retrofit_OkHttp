@@ -25,6 +25,10 @@ public interface INavigator {
 
     void startLinkAccountActivityForResult(Fragment fragment);
 
+    void startUpdateProfileLevelBeforeLinkAcc(Activity activity);
+
+    void startUpdateProfileLevelBeforeLinkAcc(Fragment fragment);
+
     void startProfileInfoActivity(Context context);
 
     void startLinkCardActivity(Context context);

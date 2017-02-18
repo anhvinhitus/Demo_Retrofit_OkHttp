@@ -18,7 +18,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -29,6 +28,8 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -102,15 +103,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         mView.refreshLinkedAccount(list);
     }
 
-    void linkAccount(ZPCard zpCard) {
-        if (paymentWrapper == null || mView == null || zpCard == null) {
-            return;
-        }
-        Timber.d("linkAccount card[%s]", zpCard.getCardCode());
-        paymentWrapper.linkAccount(mView.getActivity(), zpCard.getCardCode());
-        hideLoadingView();
-    }
-
     void removeLinkAccount(BankAccount bankAccount) {
         if (paymentWrapper == null || mView == null || bankAccount == null) {
             return;
@@ -140,22 +132,28 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
     }
 
     @Override
-    void onNeedLinkAccount() {
+    void onAddCardSuccess(DBaseMap mappedCreditCard) {
+        if (mView == null || mappedCreditCard == null) {
+            return;
+        }
 
+        String firstAccountNo = "";
+        String lastAccountNo = "";
+        if (mappedCreditCard instanceof DBankAccount) {
+            firstAccountNo = ((DBankAccount) mappedCreditCard).firstaccountno;
+            lastAccountNo = ((DBankAccount) mappedCreditCard).lastaccountno;
+        }
+        BankAccount bankAccount = new BankAccount(firstAccountNo,
+                lastAccountNo,
+                mappedCreditCard.getFirstNumber(),
+                mappedCreditCard.getLastNumber(),
+                mappedCreditCard.bankcode);
+        mView.insertData(bankAccount);
     }
 
     @Override
-    void onAddCardSuccess(DBaseMap mappedCreditCard) {
-        if (mView == null) {
-            return;
-        }
-        if (mappedCreditCard != null) {
-            BankAccount bankAccount = new BankAccount("", "",
-                    mappedCreditCard.getFirstNumber(),
-                    mappedCreditCard.getLastNumber(),
-                    mappedCreditCard.bankcode);
-            mView.insertData(bankAccount);
-        }
+    void onPayResponseError(PaymentError paymentError) {
+
     }
 
     @Override

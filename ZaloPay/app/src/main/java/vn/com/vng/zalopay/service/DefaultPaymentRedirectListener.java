@@ -48,4 +48,18 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
             mNavigator.startLinkAccountActivityForResult((Activity)context);
         }
     }
+
+    @Override
+    public void startUpdateProfileBeforeLinkAcc() {
+        Object context = getContext();
+        Timber.d("startUpdateProfileBeforeLinkAcc context [%s] navigator[%s]", context, mNavigator);
+        if (context == null || mNavigator == null) {
+            return;
+        }
+        if (context instanceof Fragment) {
+            mNavigator.startUpdateProfileLevelBeforeLinkAcc((Fragment) context);
+        } else if (context instanceof Activity) {
+            mNavigator.startUpdateProfileLevelBeforeLinkAcc((Activity)context);
+        }
+    }
 }

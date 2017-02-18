@@ -32,9 +32,11 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
@@ -227,18 +229,25 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     }
 
     @Override
-    void onNeedLinkAccount() {
-        if (mView != null) {
+    void onAddCardSuccess(DBaseMap mapBank) {
+        if (mView == null || mapBank == null) {
+            return;
+        }
+        if (mapBank instanceof DMappedCard) {
+            onAddCardSuccess(mapBank);
+        } else if (mapBank instanceof DBankAccount) {
             mView.gotoTabLinkAccount();
         }
     }
 
     @Override
-    void onAddCardSuccess(DBaseMap mappedCreditCard) {
-        if (mView == null) {
-            return;
+    void onPayResponseError(PaymentError paymentError) {
+        if (paymentError != null &&
+                paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT) {
+            if (mView != null) {
+                mView.gotoTabLinkAccount();
+            }
         }
-        mView.onAddCardSuccess(mappedCreditCard);
     }
 
     @Override

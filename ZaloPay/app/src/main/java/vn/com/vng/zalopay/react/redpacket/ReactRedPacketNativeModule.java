@@ -143,7 +143,8 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                             PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
                 } else if (paymentError == PaymentError.ERR_CODE_MONEY_NOT_ENOUGH
                         || paymentError == PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL
-                        || paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT) {
+                        || paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT
+                        || paymentError == PaymentError.ZPC_UPLEVEL_AND_LINK_ACCOUNT_CONTINUE_PAYMENT) {
                     //not return error to react
                 } else {
                     //PaymentSDK đã hiển thị lỗi -> ko care lỗi này nữa

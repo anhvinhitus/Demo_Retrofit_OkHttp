@@ -125,6 +125,14 @@ class WalletListener implements ZPPaymentListener {
                     }
                     paymentIsCompleted = false; // will continue after update profile
                     break;
+                case ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT:
+                    if (mPaymentWrapper.mRedirectListener == null) {
+                        mPaymentWrapper.startUpdateProfileBeforeLinkAcc();
+                    } else {
+                        mPaymentWrapper.mRedirectListener.startUpdateProfileBeforeLinkAcc();
+                    }
+                    paymentIsCompleted = false; // will continue after update profile
+                    break;
                 default:
                     mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_UNKNOWN);
                     break;
