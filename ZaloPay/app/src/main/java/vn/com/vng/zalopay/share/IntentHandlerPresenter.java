@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.wallet.controller.WalletSDKPayment;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -149,24 +150,23 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
                 return;
             }
 
-            if (!mUserConfig.hasCurrentUser()) {
-                Timber.d("start login activity");
-                startLogin((IntentHandlerActivity) mView.getContext(), ZALO_INTEGRATION_LOGIN_REQUEST_CODE, data, sender, accesstoken);
-                shouldFinishCurrentActivity = false;
-                return;
-            }
-
             if (mView == null) {
                 Timber.d("mView IntentHandler is Null");
                 return;
             }
 
-            long ownerZaloId = mUserConfig.getZaloId();
-            Timber.d("sender %s receiver %s ownerZaloId %s", sender, receiver, ownerZaloId);
 
-            if (ownerZaloId != sender) {
-                Timber.d("show dialog: %s", ((Activity) mView.getContext()).isFinishing());
-                signInAnotherAccount(data, sender, accesstoken);
+            if (shouldSignIn(mView.getContext(), data, sender, accesstoken)) {
+                shouldFinishCurrentActivity = false;
+                return;
+            }
+
+            if (signInAnotherAccount(mView.getContext(), data, sender, accesstoken)) {
+                shouldFinishCurrentActivity = false;
+                return;
+            }
+
+            if (insidePaymentOrder(mView.getContext())) {
                 shouldFinishCurrentActivity = false;
                 return;
             }
@@ -177,9 +177,9 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
                 Timber.d("need load payment sdk");
                 payment.loadPaymentSdk();
             }
+
             payment.getBalance();
 
-            Timber.d("Processing send money on behalf of Zalo request");
             startTransfer(sender, receiver);
             shouldFinishCurrentActivity = true;
         } finally {
@@ -228,17 +228,24 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         mNavigator.startLoginActivity(act, requestCode, data, zaloid, authCode);
     }
 
-    private void signInAnotherAccount(final Uri data, final long sender, final String accesstoken) {
-        String messageFormat = mApplicationContext.getString(R.string.confirm_change_account_format);
+    private boolean signInAnotherAccount(final Context context, final Uri data, final long sender, final String accesstoken) {
+        long ownerZaloId = mUserConfig.getZaloId();
+        Timber.d("sender %s ownerZaloId %s", sender, ownerZaloId);
+
+        if (sender == ownerZaloId) {
+            return false;
+        }
+
+        String messageFormat = context.getString(R.string.confirm_change_account_format);
         User user = mUserConfig.getCurrentUser();
         String message;
         if (user != null && !TextUtils.isEmpty(user.displayName)) {
             message = String.format(messageFormat, user.displayName);
         } else {
-            message = String.format(messageFormat, mApplicationContext.getString(R.string.other_account));
+            message = String.format(messageFormat, context.getString(R.string.other_account));
         }
 
-        mDialog = DialogHelper.yesNoDialog((Activity) mView.getContext(), message,
+        mDialog = DialogHelper.yesNoDialog((Activity) context, message,
                 mApplicationContext.getString(R.string.accept), mApplicationContext.getString(R.string.cancel),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
@@ -250,13 +257,15 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
                     public void onOKevent() {
                         Timber.d("Change account");
                         mApplicationSession.clearUserSessionWithoutSignOut();
-                        startLogin((IntentHandlerActivity) mView.getContext(), ZALO_INTEGRATION_LOGIN_REQUEST_CODE, data, sender, accesstoken);
+                        startLogin((IntentHandlerActivity) context, ZALO_INTEGRATION_LOGIN_REQUEST_CODE, data, sender, accesstoken);
                     }
                 });
         mDialog.show();
+        return true;
     }
 
     private void startTransfer(long sender, long receiver) {
+        Timber.d("startTransfer sender %s receiver %s", sender, receiver);
         RecentTransaction item = new RecentTransaction();
         item.zaloId = receiver;
         Bundle bundle = new Bundle();
@@ -265,9 +274,48 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         mNavigator.startTransferActivity(mView.getContext(), bundle);
     }
 
-    @Override
-    public void destroy() {
-        Timber.d("destroy: call");
-        super.destroy();
+    private boolean insidePaymentOrder(final Context context) {
+
+        if (!WalletSDKPayment.isOpenSdk()) {
+            return false;
+        }
+
+        if (WalletSDKPayment.canCloseSdk()) {
+            try {
+                WalletSDKPayment.closeSdk();
+            } catch (Exception e) {
+                Timber.d(e, "close sdk error");
+            }
+            return false;
+        }
+
+        DialogHelper.showWarningDialog((Activity) context, mApplicationContext.getString(R.string.you_having_a_transaction_in_process), mApplicationContext.getString(R.string.accept),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+                        finish(true);
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        finish(true);
+                    }
+                });
+
+        return true;
+    }
+
+    private boolean shouldSignIn(Context context, Uri data, long sender, String accesstoken) {
+        if (mUserConfig.hasCurrentUser()) {
+            return false;
+        }
+
+        startLogin((IntentHandlerActivity) context, ZALO_INTEGRATION_LOGIN_REQUEST_CODE,
+                data, sender, accesstoken);
+        return true;
+    }
+
+    private void validateTransitionParam(String _sender, String _receiver) {
+
     }
 }
