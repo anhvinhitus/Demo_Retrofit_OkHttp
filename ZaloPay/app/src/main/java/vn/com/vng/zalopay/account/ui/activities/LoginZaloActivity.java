@@ -60,22 +60,16 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
             return;
         }
 
-        String parentAct = data.getStringExtra("callfrom");
-        Timber.d("handleIntent: %s", parentAct);
-        if (TextUtils.isEmpty(parentAct)) {
-            return;
-        }
-
-        if (parentAct.equalsIgnoreCase("external")) {
-            loginPresenter.setData(data.getData());
-            loginPresenter.setZaloAuthCode(data.getLongExtra("zaloid", 0),
-                    data.getStringExtra("zauthcode"));
-        }
+        boolean callFrom = data.getBooleanExtra("callingExternal", false);
+        Timber.d("handleIntent: %s", callFrom);
+        loginPresenter.setCallingExternal(callFrom);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        setIntent(intent);
+
         handleIntent(intent);
     }
 

@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.navigation;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -85,24 +86,37 @@ public class Navigator implements INavigator {
     private static final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
 
     @Inject
-    SharedPreferences mPreferences;
-
-    @Inject
     public Navigator(UserConfig userConfig) {
         //empty
         this.mUserConfig = userConfig;
     }
 
     public void startLoginActivity(Activity act, int requestCode, Uri data, long zaloid, String authCode) {
-        Intent intent = getIntentLogin(act, false);
+        Intent intent = getIntentLoginExternal(act);
         intent.setData(data);
-        intent.putExtra("callfrom", "external");
         if (zaloid > 0 && !TextUtils.isEmpty(authCode)) {
             intent.putExtra("zaloid", zaloid);
             intent.putExtra("zauthcode", authCode);
         }
 
         act.startActivityForResult(intent, requestCode);
+    }
+
+    public void startLoginFromOtherTask(Activity activity, int requestCode, Uri data) {
+
+        Intent i = new Intent();
+        i.setData(data);
+        PendingIntent pendingIntent = activity.createPendingResult(requestCode, i,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        Intent intent = getIntentLoginExternal(activity);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra("pendingResult", pendingIntent);
+        intent.setData(data);
+
+        activity.startActivity(intent);
     }
 
     public void startLoginActivity(Context context) {
@@ -112,6 +126,12 @@ public class Navigator implements INavigator {
     public void startLoginActivity(Context context, boolean clearTop) {
         Intent intent = getIntentLogin(context, clearTop);
         context.startActivity(intent);
+    }
+
+    public Intent getIntentLoginExternal(Context context) {
+        Intent intent = getIntentLogin(context, false);
+        intent.putExtra("callingExternal", true);
+        return intent;
     }
 
     public Intent getIntentLogin(Context context, boolean clearTop) {
