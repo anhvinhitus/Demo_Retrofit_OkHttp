@@ -9,8 +9,8 @@ ext {
     supportVersion = '25.0.0'
     playServiceVersion = "9.6.1"
     //Libraries Version
-    daggerVersion = '2.6'
-    butterKnifeVersion = '8.2.1'
+    daggerVersion = '2.9'
+    butterKnifeVersion = '8.5.1'
     rxJavaVersion = '1.2.4'
     rxAndroidVersion = '1.2.1'
 
@@ -25,7 +25,7 @@ ext {
     retrofitAdapterVersion = '2.1.0'
 
     androidAnnotationsVersion = '21.0.3'
-    timberVersion = '4.3.1'
+    timberVersion = '4.5.1'
     glideVersion = "3.7.0"
     glideOkhttp3IntegrationVersion = "1.4.0@aar"
     eventBusVersion = "3.0.0"
@@ -52,8 +52,6 @@ ext {
     multidexVersion = "1.0.1"
 
     crashlyticsVersion = "2.5.5@aar"
-
-    parcelerVersion = "1.1.5"
 
     zalopayanalyticsVersion = "1.10"
 
@@ -104,9 +102,6 @@ ext {
             play_services_base     : "com.google.android.gms:play-services-base:${playServiceVersion}",
 
             crashlytics            : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
-
-            parceler               : "org.parceler:parceler-api:${parcelerVersion}",
-            parceler_apt           : "org.parceler:parceler:${parcelerVersion}",
 
             zalopay_analytics      : "vn.com.zalopay:analytics:${zalopayanalyticsVersion}",
 
