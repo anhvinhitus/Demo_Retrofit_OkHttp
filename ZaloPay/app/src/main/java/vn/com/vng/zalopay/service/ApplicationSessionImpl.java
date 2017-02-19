@@ -78,7 +78,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
         daoSession.getDataManifestDao().deleteByKey(Constants.MANIFEST_RECOVERY_TIME_NOTIFICATION);
     }
 
-    private void clearMerchantSession() {
+    public void clearMerchantSession() {
         daoSession.getMerchantUserDao().deleteAll();
     }
 
@@ -144,17 +144,6 @@ public class ApplicationSessionImpl implements ApplicationSession {
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         OkHttpClient okHttpClient = applicationComponent.okHttpClient();
         okHttpClient.dispatcher().cancelAll();
-    }
-
-    @Override
-    public Observable<Boolean> clearMerchant() {
-        return ObservableHelper.makeObservable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                clearMerchantSession();
-                return Boolean.TRUE;
-            }
-        });
     }
 
     @Override

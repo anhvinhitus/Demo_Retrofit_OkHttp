@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -102,11 +103,10 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
             return;
         }
 
-        Timber.d("handle deep links [%s]", data);
+        Timber.d("handle deep links [%s]", data.toString());
 
         String scheme = data.getScheme();
         String host = data.getHost();
-        Timber.d("handleDeepLink: host %s", host);
 
         if (TextUtils.isEmpty(scheme)) {
             finish();
@@ -132,7 +132,6 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
                 handleAppToAppPayment(data);
             } else if (host.equalsIgnoreCase("otp")) {
                 handleOTPDeepLink(data);
-                finish();
             } else {
                 navigateToApp();
             }
@@ -142,34 +141,39 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
     private boolean handleOTPDeepLink(Uri data) {
 
-        if (!mUserConfig.hasCurrentUser()) {
-            return false;
-        }
+        try {
 
-        List<String> list = data.getPathSegments();
-        if (Lists.isEmptyOrNull(list)) {
-            return false;
-        }
+            if (!mUserConfig.hasCurrentUser()) {
+                return false;
+            }
 
-        String otp = list.get(0);
-        Timber.d("handleDeepLink: %s", otp);
+            List<String> list = data.getPathSegments();
+            if (Lists.isEmptyOrNull(list)) {
+                return false;
+            }
 
-        if (TextUtils.isEmpty(otp) || !TextUtils.isDigitsOnly(otp)) {
-            return false;
-        }
+            String otp = list.get(0);
+            Timber.d("handleDeepLink: %s", otp);
 
-        int lengthOtp = mApplicationContext.getResources().getInteger(R.integer.max_length_otp);
+            if (TextUtils.isEmpty(otp) || !TextUtils.isDigitsOnly(otp)) {
+                return false;
+            }
 
-        if (otp.length() != lengthOtp) {
-            return false;
-        }
+            int lengthOtp = mApplicationContext.getResources().getInteger(R.integer.max_length_otp);
 
-        if (AppLifeCycle.isLastActivity(ChangePinActivity.class.getSimpleName())) {
-            mNavigator.startChangePin((Activity) mView.getContext(), otp);
-        } else if (AppLifeCycle.isLastActivity(UpdateProfileLevel2Activity.class.getSimpleName())) {
-            mNavigator.startUpdateLevel2(mView.getContext(), otp);
-        } else {
-            Timber.d("No subscriber otp");
+            if (otp.length() != lengthOtp) {
+                return false;
+            }
+
+            if (AppLifeCycle.isLastActivity(ChangePinActivity.class.getSimpleName())) {
+                mNavigator.startChangePin((Activity) mView.getContext(), otp);
+            } else if (AppLifeCycle.isLastActivity(UpdateProfileLevel2Activity.class.getSimpleName())) {
+                mNavigator.startUpdateLevel2(mView.getContext(), otp);
+            } else {
+                Timber.d("No subscriber otp");
+            }
+        } finally {
+            finish();
         }
 
         return true;
@@ -181,33 +185,43 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
         String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
 
-        if (TextUtils.isEmpty(appid) ||
-                !TextUtils.isDigitsOnly(appid) ||
-                TextUtils.isEmpty(zptranstoken)) {
+        if (!validateOrderParams(appid, zptranstoken)) {
             finish();
             return;
         }
 
-        mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken, false));
         Timber.d("post sticky payment");
+        mEventBus.postSticky(new PaymentDataEvent(Long.parseLong(appid), zptranstoken, false));
         navigateToApp();
     }
 
     private void handleAppToAppPayment(Uri data) {
+
+        if (data == null) {
+            Timber.d("URI data is null");
+            return;
+        }
+
+        Timber.d("handle uri %s", data.toString());
+
         String appid = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.APPID);
         String zptranstoken = data.getQueryParameter(vn.com.vng.zalopay.data.Constants.ZPTRANSTOKEN);
 
         boolean shouldFinishCurrentActivity = true;
         try {
-            if (TextUtils.isEmpty(appid) ||
-                    !TextUtils.isDigitsOnly(appid) ||
-                    TextUtils.isEmpty(zptranstoken)) {
+
+            if (!validateOrderParams(appid, zptranstoken)) {
+                return;
+            }
+
+            if (mView == null) {
+                Timber.d("mView is null");
                 return;
             }
 
             if (!mUserConfig.hasCurrentUser()) {
                 Timber.d("start login activity");
-                startLogin((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data, 0, "");
+                startLogin((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data);
                 shouldFinishCurrentActivity = false;
                 return;
             }
@@ -235,8 +249,8 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         }
     }
 
-    private void startLogin(ExternalCallSplashScreenActivity act, int requestCode, Uri data, long zaloid, String authCode) {
-        mNavigator.startLoginActivity(act, requestCode, data, zaloid, authCode);
+    private void startLogin(ExternalCallSplashScreenActivity act, int requestCode, Uri data) {
+        mNavigator.startLoginFromOtherTask(act, requestCode, data);
     }
 
     private void navigateToApp() {
@@ -257,6 +271,12 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
         mView.getContext().startActivity(intent);
         finish();
+    }
+
+    private boolean validateOrderParams(String appid, String zptranstoken) {
+        return !(TextUtils.isEmpty(appid) ||
+                !TextUtils.isDigitsOnly(appid) ||
+                TextUtils.isEmpty(zptranstoken));
     }
 
 }

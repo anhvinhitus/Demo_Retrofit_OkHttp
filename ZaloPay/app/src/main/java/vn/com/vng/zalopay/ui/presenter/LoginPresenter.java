@@ -1,10 +1,12 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
@@ -17,6 +19,7 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -53,9 +56,8 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     private PassportRepository mPassportRepository;
     private ApplicationSession mApplicationSession;
     private GlobalEventHandlingService mGlobalEventService;
-    private Uri mData;
-    private long zaloId;
-    private String zalooauthcode;
+
+    private boolean mIsCallingExternal;
 
     private final AppResourceStore.Repository mAppResourceRepository;
 
@@ -90,8 +92,7 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
 
         Timber.d("resume has current user [%s]", mUserConfig.hasCurrentUser());
         UserComponent userComponent = ((AndroidApplication) mApplicationContext).getUserComponent();
-        // Trường hợp user login ở merchant app sau đó quay lại zalopay
-        // TODO: 12/10/16 kiểm tra lại trường hợp user đang login (chưa kết thúc quá trình đã qua zalopay)
+
         if (mUserConfig.hasCurrentUser() && userComponent != null) {
             Timber.d("go to home screen ignore login screen");
             gotoHomeScreen();
@@ -111,13 +112,8 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         }
     }
 
-    public void setData(Uri data) {
-        this.mData = data;
-    }
-
-    public void setZaloAuthCode(long zuid, String zalooauthcode) {
-        this.zaloId = zuid;
-        this.zalooauthcode = zalooauthcode;
+    public void setCallingExternal(boolean isCallingExternal) {
+        mIsCallingExternal = isCallingExternal;
     }
 
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -129,14 +125,13 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     }
 
     public void loginZalo(Activity activity) {
+
         if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
             showNetworkError();
             return;
         }
 
-        if (zaloId > 0 && !TextUtils.isEmpty(zalooauthcode)) {
-            mUserConfig.saveUserInfo(zaloId, "", "", 0, 0);
-            loginPayment(zaloId, zalooauthcode);
+        if (mIsCallingExternal && loginCallingExternal(activity)) {
             return;
         }
 
@@ -145,6 +140,24 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         } catch (Exception e) {
             Timber.w(e, "Authenticate to login zalo throw exception.");
         }
+    }
+
+    private boolean loginCallingExternal(Activity activity) {
+        Intent intent = activity.getIntent();
+        if (intent == null) {
+            return false;
+        }
+
+        long zaloId = intent.getLongExtra("zaloid", 0);
+        String zaloOAuthCode = intent.getStringExtra("zauthcode");
+
+        if (zaloId > 0 && !TextUtils.isEmpty(zaloOAuthCode)) {
+            mUserConfig.saveUserInfo(zaloId, "", "", 0, 0);
+            loginPayment(zaloId, zaloOAuthCode);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -161,9 +174,6 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
                     errorCode == ZaloErrorCode.RESULTCODE_USER_BACK_BUTTON) {
                 Timber.d("onAuthError User click backpress");
             } else {
-//                if (TextUtils.isEmpty(message)) {
-//                    message = mApplicationContext.getString(R.string.exception_login_zalo_error);
-//                }
                 Timber.w("Authen Zalo error, code: %s message: %s", errorCode, message);
                 message = mApplicationContext.getString(R.string.exception_login_zalo_error);
                 showErrorView(message);
@@ -186,7 +196,6 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         ZPAnalytics.trackEvent(ZPEvents.LOGINSUCCESS_ZALO);
     }
 
-
     private void showLoadingView() {
         if (mView != null) {
             mView.showLoading();
@@ -201,6 +210,12 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
 
     private void loginPayment(long zuid, String zalooauthcode) {
         Subscription subscriptionLogin = mPassportRepository.login(zuid, zalooauthcode)
+                .doOnNext(new Action1<User>() {
+                    @Override
+                    public void call(User user) {
+                        mApplicationSession.clearMerchantSession();
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LoginPaymentSubscriber());
@@ -208,14 +223,15 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     }
 
     private void showErrorView(String message) {
-        mView.showError(message);
+        if (mView != null) {
+            mView.showError(message);
+        }
     }
 
     private void showNetworkError() {
-        if (mView == null) {
-            return;
+        if (mView != null) {
+            mView.showNetworkError();
         }
-        mView.showNetworkError();
     }
 
     private void gotoHomeScreen() {
@@ -230,26 +246,48 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
             return;
         }
 
-        Timber.d("session %s zaloPayId %s data %s", user.accesstoken, user.zaloPayId, mData);
+        Timber.d("session %s zaloPayId %s", user.accesstoken, user.zaloPayId);
         AndroidApplication.instance().createUserComponent(user);
-        if (mData != null) {
-            Activity act = mView.getActivity();
-            Intent intent = new Intent();
-            intent.setData(mData);
-            act.setResult(Activity.RESULT_OK, intent);
-            mView.getActivity().finish();
+
+        if (mIsCallingExternal) {
+            sendResultSuccess(mView.getActivity());
         } else {
-            this.gotoHomeScreen();
+            gotoHomeScreen();
+            ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
         }
 
-        ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);
-        clearMerchant();
+    }
+
+    private void sendResultSuccess(Activity activity) {
+        Intent oldIntent = activity.getIntent();
+        if (oldIntent == null) {
+            activity.finish();
+            return;
+        }
+
+        Intent intent = new Intent();
+        if (oldIntent.getData() != null) {
+            intent.setData(oldIntent.getData());
+        }
+
+        try {
+            PendingIntent pi = oldIntent.getParcelableExtra("pendingResult");
+            if (pi != null) {
+                pi.send(activity, Activity.RESULT_OK, intent);
+            } else {
+                activity.setResult(Activity.RESULT_OK, intent);
+            }
+        } catch (Exception e) {
+            Timber.d(e, "sendResultSuccess: ");
+        } finally {
+            activity.finish();
+        }
+
     }
 
     private void onLoginError(Throwable e) {
         hideLoadingView();
         if (e instanceof InvitationCodeException) {
-            clearMerchant();
             mView.gotoInvitationCode();
             ZPAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
             ZPAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
@@ -278,10 +316,6 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         }
 
         @Override
-        public void onCompleted() {
-        }
-
-        @Override
         public void onError(Throwable e) {
             if (ResponseHelper.shouldIgnoreError(e)) {
                 // simply ignore the error
@@ -298,13 +332,6 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         }
     }
 
-    private void clearMerchant() {
-        Subscription subscription = mApplicationSession.clearMerchant()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
-        mSubscription.add(subscription);
-    }
-
     public void fetchAppResource() {
         Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
                 .subscribeOn(Schedulers.io())
@@ -316,6 +343,5 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(fetchSubscription);
     }
-
 
 }
