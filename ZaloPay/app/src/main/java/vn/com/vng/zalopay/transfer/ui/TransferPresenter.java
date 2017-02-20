@@ -202,7 +202,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 return;
             }
 
-            showLoading();
             mPreviousTransferId = null;
             Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
                     mTransaction.amount,
@@ -219,9 +218,15 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
+
+        @Override
+        public void onStart() {
+            showLoading();
+        }
+
         @Override
         public void onNext(Order order) {
-            Timber.d("CreateWalletOrderSubscriber success with order %s", order);
+            Timber.d("Create order success [%s]", order);
             TransferPresenter.this.onCreateWalletOrderSuccess(order);
         }
 
@@ -242,21 +247,25 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         if (mView == null) {
             return;
         }
+
+        hideLoading();
+
         if (e instanceof NetworkConnectionException) {
             mView.showNetworkErrorDialog();
         } else {
             String message = ErrorMessageFactory.create(applicationContext, e);
             mView.showError(message);
         }
-        hideLoading();
-        mView.setEnableBtnContinue(true);
     }
 
     private void onCreateWalletOrderSuccess(Order order) {
         Timber.d("money transfer order: %s", order.item);
+        if (mView == null) {
+            return;
+        }
+
         paymentWrapper.transfer(mView.getActivity(), order, mTransaction.displayName, mTransaction.avatar, mTransaction.phoneNumber, mTransaction.zaloPayName);
         hideLoading();
-        mView.setEnableBtnContinue(true);
     }
 
     private void saveTransferRecentToDB() {
@@ -312,27 +321,27 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     public void doTransfer(long amount) {
-        if (mTransaction == null) {
+        if (mView == null) {
+            Timber.d("mView is null");
             return;
         }
+
+        if (mTransaction == null) {
+            Timber.d("transaction is null");
+            return;
+        }
+
         mTransaction.amount = amount;
 
         if (mUser.zaloPayId.equals(mTransaction.zaloPayId)) {
-            if (mView != null) {
-                mView.showError(applicationContext.getString(R.string.exception_transfer_for_self));
-            }
+            mView.showError(applicationContext.getString(R.string.exception_transfer_for_self));
             return;
         }
 
         if (mIsUserZaloPay) {
             transferMoney();
-            if (mView != null) {
-                mView.setEnableBtnContinue(false);
-            }
         } else {
-            if (mView != null) {
-                mView.confirmTransferUnRegistryZaloPay();
-            }
+            mView.confirmTransferUnRegistryZaloPay();
         }
     }
 
