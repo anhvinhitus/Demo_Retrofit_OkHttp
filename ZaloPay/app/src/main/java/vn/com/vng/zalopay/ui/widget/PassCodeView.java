@@ -33,23 +33,18 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by longlv on 30/05/2016.
- * *
  */
 public class PassCodeView extends FrameLayout {
 
     private int length;
     private boolean mShowPassCode = false;
     private String mHint = "";
-    private boolean mErrorEnabled = false;
 
     @BindView(R.id.root)
     LinearLayout mRootView;
 
     @BindView(R.id.tvHint)
     TextView mTvHint;
-
-    @BindView(R.id.tvError)
-    TextView mTvError;
 
     @BindView(R.id.editText)
     AppCompatEditText mEditText;
@@ -85,7 +80,6 @@ public class PassCodeView extends FrameLayout {
         float paddingLeft = 0;
         float paddingRight = 0;
         try {
-            mErrorEnabled = typedArray.getBoolean(R.styleable.PassCodeView_errorEnabled, false);
             length = typedArray.getInt(R.styleable.PassCodeView_length, getResources().getInteger(R.integer.pin_length));
             mHint = typedArray.getString(R.styleable.PassCodeView_hint);
             paddingLeft = typedArray.getDimension(R.styleable.PassCodeView_paddingLeft, 0f);
@@ -102,14 +96,6 @@ public class PassCodeView extends FrameLayout {
 
         if (!TextUtils.isEmpty(mHint)) {
             mTvHint.setText(mHint);
-            mTvHint.setVisibility(VISIBLE);
-        } else {
-            mTvHint.setVisibility(GONE);
-        }
-        if (mErrorEnabled) {
-            mTvError.setVisibility(INVISIBLE);
-        } else {
-            mTvError.setVisibility(GONE);
         }
         mTvHint.setPadding((int) paddingLeft, 0, 0, 0);
         mRootView.setPadding((int) paddingLeft, 0, 0, 0);
@@ -201,12 +187,8 @@ public class PassCodeView extends FrameLayout {
 
     private void hideError() {
         Timber.d("hideError");
-        mTvError.setText("");
-        if (mErrorEnabled) {
-            mTvError.setVisibility(INVISIBLE);
-        } else {
-            mTvError.setVisibility(GONE);
-        }
+        mTvHint.setText(mHint);
+        mTvHint.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
         mEditText.setSupportBackgroundTintList(mOriginalTintList);
     }
 
@@ -216,12 +198,12 @@ public class PassCodeView extends FrameLayout {
             return;
         }
 
-        if (error.equals(mTvError.getText().toString())) {
+        if (error.equals(mTvHint.getText().toString())) {
             return;
         }
 
-        mTvError.setText(error);
-        mTvError.setVisibility(VISIBLE);
+        mTvHint.setText(error);
+        mTvHint.setTextColor(Color.RED);
         mEditText.setSupportBackgroundTintList(mErrorColorStateList);
         Timber.d("setError %s", error);
     }

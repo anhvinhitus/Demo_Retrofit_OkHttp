@@ -318,7 +318,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
                     intro.addShape(new RectangleEraser(new ViewTarget(mPassCodeView.getPassCodeView()), AndroidUtils.dp(4f)));
                     intro.addShape(new CircleEraser(new ViewTarget(mPassCodeView.getButtonShow())));
-                    intro.addShape(new RectangleEraser(new ViewTarget(mEdtPhoneView), new Rect(AndroidUtils.dp(4), -AndroidUtils.dp(12), -AndroidUtils.dp(12), 0)));
+                    intro.addShape(new RectangleEraser(new ViewTarget(mEdtPhoneView), new Rect(-AndroidUtils.dp(12), -AndroidUtils.dp(12), -AndroidUtils.dp(12), 0)));
                     intro.show(getActivity());
                 }
             };

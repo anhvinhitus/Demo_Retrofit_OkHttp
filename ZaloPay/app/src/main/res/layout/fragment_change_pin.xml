@@ -33,24 +33,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:paddingBottom="@dimen/app_padding"
             android:paddingTop="12dp">
 
             <vn.com.vng.zalopay.ui.widget.PassCodeView
                 android:id="@+id/passcodeInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
                 zalopay:hint="@string/input.pin.new"
                 zalopay:length="@integer/pin_length"
+                zalopay:paddingLeft="16dp"
                 zalopay:paddingRight="16dp" />
 
         </FrameLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/separate"/>
 
         <TextView
             android:id="@+id/tvContact"

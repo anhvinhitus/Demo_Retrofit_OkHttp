@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.zalopay.ui.widget.R;
 
@@ -31,8 +30,6 @@ public class ZPTextInputLayout extends TextInputLayout {
     private boolean mAutoValidate = false;
     private boolean mAutoTrimValue = false;
 
-    private Integer mMarginBottom = null;
-
     public ZPTextInputLayout(Context context) {
         super(context);
         initialize();
@@ -51,9 +48,10 @@ public class ZPTextInputLayout extends TextInputLayout {
     }
 
     private void initialize() {
+        Timber.d("initialize editText[%s]", getEditText());
         if (!isInEditMode()) {
             mValidators = new ArrayList<>();
-            this.post(new Runnable() {
+            this.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (!getEditText().isInEditMode()) {
@@ -61,16 +59,7 @@ public class ZPTextInputLayout extends TextInputLayout {
                         initializeFocusChanged();
                     }
                 }
-            });
-        }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (mMarginBottom == null) {
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
-            mMarginBottom = layoutParams.bottomMargin;
+            }, 1000);
         }
     }
 
@@ -240,37 +229,6 @@ public class ZPTextInputLayout extends TextInputLayout {
         return true;
     }
 
-    @Override
-    public void setErrorEnabled(boolean enabled) {
-        super.setErrorEnabled(enabled);
-        repairAfterAdjustIndicatorPadding(enabled);
-    }
-
-    private void repairAfterAdjustIndicatorPadding(boolean enabled) {
-        if (enabled && mMarginBottom != null) {
-            int paddingBottom = getEditText().getPaddingBottom();
-            int temp = mMarginBottom - paddingBottom;
-            if (temp < 0) {
-                temp = 0;
-            }
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
-            layoutParams.setMargins(layoutParams.leftMargin,
-                    layoutParams.topMargin,
-                    layoutParams.rightMargin,
-                    temp);
-            setLayoutParams(layoutParams);
-        } else {
-            if (mMarginBottom != null && mMarginBottom >= 0) {
-                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
-                layoutParams.setMargins(layoutParams.leftMargin,
-                        layoutParams.topMargin,
-                        layoutParams.rightMargin,
-                        mMarginBottom);
-                setLayoutParams(layoutParams);
-            }
-        }
-    }
-
     /**
      * Return a String value of the input field.
      * <p>This method will remove white spaces if auto-trimming is enabled.</p>
@@ -279,11 +237,8 @@ public class ZPTextInputLayout extends TextInputLayout {
      * @see #autoTrimValue(boolean)
      */
     public String getText() {
-        if (isAutoTrimEnabled()) {
-            return getEditText().getText().toString().trim();
-        } else {
-            return getEditText().getText().toString();
-        }
+        if (isAutoTrimEnabled()) return getEditText().getText().toString().trim();
+        else return getEditText().getText().toString();
     }
 
     public void setText(String text) {
