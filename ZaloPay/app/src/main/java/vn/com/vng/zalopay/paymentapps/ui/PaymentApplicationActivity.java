@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.paymentapps.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -38,14 +37,13 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
-import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
-import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -303,25 +301,9 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTokenExpired(TokenExpiredEvent event) {
-        Timber.i("SESSION EXPIRED in Screen %s", TAG);
-        boolean result = clearUserSession(getString(R.string.exception_token_expired_message));
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onServerMaintain(ServerMaintainEvent event) {
-        Timber.i("Receive server maintain event");
-
-        String eventMessage = TextUtils.isEmpty(event.getMessage()) ?
-                getString(R.string.exception_server_maintain) : event.getMessage();
-
-        boolean result = clearUserSession(eventMessage);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAccountSuspended(AccountSuspendedException event) {
-        Timber.i("Receive Suspended event");
-        boolean result = clearUserSession(getString(R.string.exception_zpw_account_suspended));
+    public void onThrowToLoginScreen(ThrowToLoginScreenEvent event) {
+        Timber.d("onThrowToLoginScreen: in Screen %s ", TAG);
+        boolean resul = clearUserSession(ErrorMessageFactory.create(this, event.getThrowable()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

@@ -8,7 +8,6 @@ import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -27,10 +26,9 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
-import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
-import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
-import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
+import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -43,7 +41,6 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**
@@ -209,35 +206,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTokenExpired(TokenExpiredEvent event) {
-        Timber.i("SESSION EXPIRED in Screen %s", TAG);
-        boolean result = clearUserSession(getString(R.string.exception_token_expired_message));
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onServerMaintain(ServerMaintainEvent event) {
-        Timber.i("Receive server maintain event");
-        String eventMessage = TextUtils.isEmpty(event.getMessage()) ?
-                getString(R.string.exception_server_maintain) : event.getMessage();
-
-        boolean result = clearUserSession(eventMessage);
-        if (!result) {
-            showCustomDialog(eventMessage,
-                    getString(R.string.txt_close),
-                    SweetAlertDialog.NORMAL_TYPE,
-                    null);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAccountSuspended(AccountSuspendedException event) {
-        Timber.i("Receive server maintain event");
-
-        boolean result = clearUserSession(getString(R.string.exception_zpw_account_suspended));
-
-        if (!result) {
-            showWarningDialog(getString(R.string.exception_zpw_account_suspended), null);
-        }
+    public void onThrowToLoginScreen(ThrowToLoginScreenEvent event) {
+        Timber.d("onThrowToLoginScreen: in Screen %s ", TAG);
+        boolean resul = clearUserSession(ErrorMessageFactory.create(this, event.getThrowable()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

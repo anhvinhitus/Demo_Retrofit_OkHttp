@@ -23,7 +23,8 @@ public class BaseResponse {
     }
 
     public boolean isSessionExpired() {
-        return err == NetworkError.UM_TOKEN_NOT_FOUND || err == NetworkError.UM_TOKEN_EXPIRE || err == NetworkError.TOKEN_INVALID;
+        return err == NetworkError.UM_TOKEN_NOT_FOUND || err == NetworkError.UM_TOKEN_EXPIRE
+                || err == NetworkError.TOKEN_INVALID;
     }
 
     public boolean isServerMaintain() {
@@ -35,6 +36,7 @@ public class BaseResponse {
     }
 
     public boolean isAccountSuspended() {
-        return err == NetworkError.ZPW_ACCOUNT_SUSPENDED;
+        return err == NetworkError.ZPW_ACCOUNT_SUSPENDED
+                || err == NetworkError.USER_IS_LOCKED;
     }
 }

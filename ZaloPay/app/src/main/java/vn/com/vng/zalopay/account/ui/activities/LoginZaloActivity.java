@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -46,10 +47,16 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Inject
     LoginPresenter loginPresenter;
 
+    @Inject
+    GlobalEventHandlingService mGlobalEventService;
+
+    private boolean restarted;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Timber.d("onCreate taskid %s", getTaskId());
+        //Timber.d("onCreate taskid %s", getTaskId());
+        restarted = savedInstanceState != null;
         loginPresenter.attachView(this);
         loginPresenter.fetchAppResource();
         handleIntent(getIntent());
@@ -85,6 +92,12 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (!restarted) {
+            showMessageAtLogin();
+        }
+
+        restarted = true;
         loginPresenter.resume();
     }
 
@@ -176,4 +189,17 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     public Context getContext() {
         return this;
     }
+
+    private void showMessageAtLogin() {
+        GlobalEventHandlingService.Message message = mGlobalEventService.popMessageAtLogin();
+        if (message == null) {
+            return;
+        }
+
+        showCustomDialog(message.content,
+                getString(R.string.txt_close),
+                message.messageType,
+                null);
+    }
+
 }

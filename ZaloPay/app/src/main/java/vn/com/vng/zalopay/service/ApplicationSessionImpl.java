@@ -60,17 +60,16 @@ public class ApplicationSessionImpl implements ApplicationSession {
 
         clearUserSessionWithoutSignOut();
 
-        if (TextUtils.isEmpty(mLoginMessage)) {
-            navigator.startLoginActivity(applicationContext, true);
-        } else {
+        if (!TextUtils.isEmpty(mLoginMessage)) {
             AndroidApplication.instance().getAppComponent().globalEventService()
                     .enqueueMessageAtLogin(
                             SweetAlertDialog.NORMAL_TYPE,
                             applicationContext.getString(R.string.accept),
                             mLoginMessage);
-            navigator.startLoginActivity(applicationContext, true);
-            mLoginMessage = null;
         }
+        
+        navigator.startLoginActivity(applicationContext, true);
+        mLoginMessage = null;
     }
 
     private void resetRecovery() {
