@@ -9,9 +9,11 @@ import java.lang.Override;
 public enum MessageStatus implements WireEnum {
   RECEIVED(1),
 
-  READED(2),
+  READ(2),
 
-  DELETED(3);
+  DELETED(3),
+
+  VIEWED(4);
 
   public static final ProtoAdapter<MessageStatus> ADAPTER = ProtoAdapter.newEnumAdapter(MessageStatus.class);
 
@@ -27,8 +29,9 @@ public enum MessageStatus implements WireEnum {
   public static MessageStatus fromValue(int value) {
     switch (value) {
       case 1: return RECEIVED;
-      case 2: return READED;
+      case 2: return READ;
       case 3: return DELETED;
+      case 4: return VIEWED;
       default: return null;
     }
   }
