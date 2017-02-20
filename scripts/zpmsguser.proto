@@ -1,5 +1,5 @@
 package protobuf;
-option java_package = "vn.com.vng.zalopay.data.ws.protobuf";
+option java_package = "vn.com.vng.zalopay.data.protobuf";
 option java_outer_classname = "ZPMsgProtos";
 
 enum MessageStatus {

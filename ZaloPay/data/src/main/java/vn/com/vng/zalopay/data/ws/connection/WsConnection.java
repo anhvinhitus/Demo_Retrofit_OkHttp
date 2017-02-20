@@ -24,7 +24,7 @@ import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
-import vn.com.vng.zalopay.data.ws.protobuf.ServerMessageType;
+import vn.com.vng.zalopay.data.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;

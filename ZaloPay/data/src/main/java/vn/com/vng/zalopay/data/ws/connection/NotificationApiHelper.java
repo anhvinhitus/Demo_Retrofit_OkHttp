@@ -3,13 +3,13 @@ package vn.com.vng.zalopay.data.ws.connection;
 import android.text.TextUtils;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageConnectionInfo;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageLogin;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageRecoveryRequest;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageStatus;
-import vn.com.vng.zalopay.data.ws.protobuf.MessageType;
-import vn.com.vng.zalopay.data.ws.protobuf.RecoveryOrder;
-import vn.com.vng.zalopay.data.ws.protobuf.StatusMessageClient;
+import vn.com.vng.zalopay.data.protobuf.MessageConnectionInfo;
+import vn.com.vng.zalopay.data.protobuf.MessageLogin;
+import vn.com.vng.zalopay.data.protobuf.MessageRecoveryRequest;
+import vn.com.vng.zalopay.data.protobuf.MessageStatus;
+import vn.com.vng.zalopay.data.protobuf.MessageType;
+import vn.com.vng.zalopay.data.protobuf.RecoveryOrder;
+import vn.com.vng.zalopay.data.protobuf.StatusMessageClient;
 import vn.com.vng.zalopay.domain.Enums;
 
 /**
