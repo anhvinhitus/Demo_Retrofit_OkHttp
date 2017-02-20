@@ -9,6 +9,6 @@ import vn.com.vng.zalopay.data.R;
 public class UserNotFoundException extends GenericException {
 
     public UserNotFoundException() {
-        super(R.string.exception_user_not_existed);
+        super(R.string.exception_receiver_not_existed);
     }
 }
