@@ -56,6 +56,4 @@
 
     <string name="gender">Giới tính</string>
     <string name="birthday">Ngày sinh</string>
-
-    <string name="default_required_validation_message">Thông tin bắt buộc phải nhập</string>
 </resources>
