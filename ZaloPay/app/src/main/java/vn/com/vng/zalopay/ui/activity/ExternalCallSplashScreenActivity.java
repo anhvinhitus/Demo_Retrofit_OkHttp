@@ -1,8 +1,11 @@
 package vn.com.vng.zalopay.ui.activity;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import javax.inject.Inject;
@@ -23,6 +26,9 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     @Inject
     ExternalCallSplashScreenPresenter mPresenter;
 
+    private boolean restarted;
+    private String callingPackage;
+
     @Override
     protected void setupActivityComponent() {
         getAppComponent().inject(this);
@@ -35,14 +41,17 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+        restarted = savedInstanceState != null;
+        initializeCallingPackage(this);
+
         Timber.d("onCreate new ExternalCallSplashScreenActivity");
         mPresenter.attachView(this);
         mPresenter.handleIntent(getIntent());
-        View view = findViewById(R.id.fragment_container);
-        if (view != null) {
-            view.setBackgroundResource(R.color.background);
-        }
+
+
     }
 
     @Override
@@ -66,5 +75,22 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     protected void onDestroy() {
         mPresenter.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (restarted && !TextUtils.isEmpty(callingPackage)) {
+            finish();
+        }
+        restarted = true;
+    }
+
+    private void initializeCallingPackage(final Activity activity) {
+        ComponentName componentName = activity.getCallingActivity();
+        if (componentName == null) {
+            return;
+        }
+        callingPackage = componentName.getPackageName();
     }
 }

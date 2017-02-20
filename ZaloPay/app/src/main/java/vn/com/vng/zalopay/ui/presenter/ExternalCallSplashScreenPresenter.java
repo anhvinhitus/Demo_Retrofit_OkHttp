@@ -25,8 +25,12 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.share.IntentHandlerActivity;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
+import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.wallet.controller.WalletSDKPayment;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by hieuvm on 12/4/16.
@@ -219,9 +223,12 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
                 return;
             }
 
-            if (!mUserConfig.hasCurrentUser()) {
-                Timber.d("start login activity");
-                startLogin((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data);
+            if (shouldSignIn((ExternalCallSplashScreenActivity) mView.getContext(), LOGIN_REQUEST_CODE, data)) {
+                shouldFinishCurrentActivity = false;
+                return;
+            }
+
+            if (insidePaymentOrder(mView.getContext())) {
                 shouldFinishCurrentActivity = false;
                 return;
             }
@@ -277,6 +284,47 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
         return !(TextUtils.isEmpty(appid) ||
                 !TextUtils.isDigitsOnly(appid) ||
                 TextUtils.isEmpty(zptranstoken));
+    }
+
+    private boolean shouldSignIn(ExternalCallSplashScreenActivity activity, int requestCode, Uri data) {
+        if (mUserConfig.hasCurrentUser()) {
+            return false;
+        }
+
+        startLogin(activity, requestCode, data);
+
+        return true;
+    }
+
+    private boolean insidePaymentOrder(final Context context) {
+
+        if (!WalletSDKPayment.isOpenSdk()) {
+            return false;
+        }
+
+        if (WalletSDKPayment.canCloseSdk()) {
+            try {
+                WalletSDKPayment.closeSdk();
+            } catch (Exception e) {
+                Timber.d(e, "close sdk error");
+            }
+            return false;
+        }
+
+        DialogHelper.showWarningDialog((Activity) context, mApplicationContext.getString(R.string.you_having_a_transaction_in_process), mApplicationContext.getString(R.string.accept),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+                        finish();
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        finish();
+                    }
+                });
+
+        return true;
     }
 
 }
