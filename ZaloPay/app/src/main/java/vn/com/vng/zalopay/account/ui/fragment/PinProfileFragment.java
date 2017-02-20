@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.zalopay.ui.widget.KeyboardFrameLayout;
 import com.zalopay.ui.widget.edittext.ZPEditText;
-import com.zalopay.ui.widget.edittext.ZPTextInputLayout;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
 import javax.inject.Inject;
@@ -101,14 +100,19 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     @BindView(R.id.passcodeInput)
     PassCodeView mPassCodeView;
 
-    @BindView(R.id.edtPhone2)
-    ZPTextInputLayout mEdtPhoneView;
+    @BindView(R.id.edtPhone)
+    ZPEditText mEdtPhoneView;
 
     @BindView(R.id.tvTermsOfUser3)
     TextView tvTermsOfUser3;
 
     @BindView(R.id.btnContinue)
     View mBtnContinueView;
+
+    @OnTextChanged(value = R.id.edtPhone, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    public void onTextChangedPhone() {
+        mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
+    }
 
     IPassCodeFocusChanged mPassCodeFocusChanged = new IPassCodeFocusChanged() {
         @Override
@@ -178,40 +182,6 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
         } else {
             showKeyboardPassCode();
         }
-
-        setPhoneNumberListener();
-    }
-
-    private void setPhoneNumberListener() {
-        mEdtPhoneView.setOnTextChanged(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
-            }
-        });
-
-        mEdtPhoneView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Timber.d("onFocusChange focus[%s]", hasFocus);
-                if (hasFocus && mScrollView != null) {
-                    mScrollView.scrollTo(0, mScrollView.getHeight());
-                }
-                if (mBtnContinueView != null) {
-                    mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
-                }
-            }
-        });
     }
 
     @Override
@@ -335,6 +305,17 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     public void updateProfileSuccess(String phone) {
         if (mListener != null) {
             mListener.onUpdatePinSuccess(phone);
+        }
+    }
+
+    @OnFocusChange(R.id.edtPhone)
+    public void onFocusChange(boolean hasFocus) {
+        Timber.d("onFocus phone changed, focus[%s]", hasFocus);
+        if (hasFocus && mScrollView != null) {
+            mScrollView.scrollTo(0, mScrollView.getHeight());
+        }
+        if (mBtnContinueView != null) {
+            mBtnContinueView.setEnabled(mEdtPhoneView.isValid() && mPassCodeView.isValid());
         }
     }
 
