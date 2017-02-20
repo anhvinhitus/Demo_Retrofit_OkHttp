@@ -26,9 +26,7 @@ class CrashlyticsTree extends Timber.Tree {
             return;
         }
 
-        if (t instanceof InvitationCodeException
-                || t instanceof BodyException
-                || t instanceof TokenException
+        if (t instanceof BodyException
                 || t instanceof NetworkConnectionException) {
             return;
         }
