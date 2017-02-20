@@ -113,6 +113,7 @@ public class NetworkError {
     public static final int INCORRECT_PIN = -117;
     public static final int INCORRECT_PIN_LIMIT = -161;
     public static final int OTP_CHANGE_PASSWORF_WRONG = -114;
+    public static final int USER_IS_LOCKED = -124;
 
     public static String getMessage(Context context, int errorCode) {
         int stringResourceId;
@@ -419,6 +420,9 @@ public class NetworkError {
                 break;
             case INVITATION_CODE_INVALID:
                 stringResourceId = R.string.exception_invitation_code_invalid;
+                break;
+            case USER_IS_LOCKED:
+                stringResourceId = R.string.exception_zpw_account_suspended;
                 break;
             default:
                 return null;

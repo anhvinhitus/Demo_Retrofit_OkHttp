@@ -10,8 +10,7 @@ import java.lang.reflect.Type;
 import rx.Observable;
 import rx.Scheduler;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
-import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
-import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
@@ -32,15 +31,19 @@ final class ZaloPayCallAdapter extends BaseCallAdapter {
     @Override
     protected <R> Observable<? extends R> handleServerResponseError(BaseResponse body, BaseResponse baseResponse) {
         if (baseResponse.isSessionExpired()) {
-            EventBus.getDefault().post(new TokenExpiredEvent(baseResponse.err));
-            return Observable.error(new TokenException(baseResponse.message));
+            TokenException exception = new TokenException(baseResponse.err, baseResponse.message);
+            EventBus.getDefault().post(new ThrowToLoginScreenEvent(exception));
+            return Observable.error(exception);
         } else if (baseResponse.isServerMaintain()) {
-            EventBus.getDefault().post(new ServerMaintainEvent(baseResponse.message));
-            return Observable.error(new ServerMaintainException());
+            ServerMaintainException exception = new ServerMaintainException(baseResponse.err, baseResponse.message);
+            EventBus.getDefault().post(new ThrowToLoginScreenEvent(exception));
+            return Observable.error(exception);
         } else if (baseResponse.isInvitationCode()) {
             return Observable.error(new InvitationCodeException(body.err, body));
         } else if (baseResponse.isAccountSuspended()) {
-            return Observable.error(new AccountSuspendedException());
+            AccountSuspendedException exception = new AccountSuspendedException(baseResponse.err, baseResponse.message);
+            EventBus.getDefault().post(new ThrowToLoginScreenEvent(exception));
+            return Observable.error(exception);
         } else {
             return Observable.error(new BodyException(body.err, body.message));
         }

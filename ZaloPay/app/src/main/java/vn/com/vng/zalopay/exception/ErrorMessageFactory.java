@@ -35,14 +35,13 @@ public class ErrorMessageFactory {
 
         if (exception instanceof NetworkConnectionException) {
             message = context.getString(R.string.exception_no_connection);
+        } else if (exception instanceof TokenException) {
+            message = context.getString(R.string.exception_token_expired_message);
         } else if (exception instanceof BodyException) {
             message = exception.getMessage();
             if (TextUtils.isEmpty(message)) {
                 message = NetworkError.getMessage(context, ((BodyException) exception).errorCode);
             }
-        } else if (exception instanceof TokenException) {
-            //message = context.getString(R.string.exception_token_expired_message);
-            message = null;
         } else if (exception instanceof SocketTimeoutException
                 || exception instanceof TimeoutException) {
             message = context.getString(R.string.exception_timeout_message);
@@ -54,8 +53,6 @@ public class ErrorMessageFactory {
             message = context.getString(R.string.exception_no_connection);
         } else if (exception instanceof SSLPeerUnverifiedException) {
             message = context.getString(R.string.exception_no_connection);
-        } else if (exception instanceof ServerMaintainException) {
-            message = null;
         } else if (exception instanceof GenericException) {
             if (((GenericException) exception).mMessageRes > 0) {
                 message = context.getString(((GenericException) exception).mMessageRes);

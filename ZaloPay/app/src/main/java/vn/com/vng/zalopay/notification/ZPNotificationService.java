@@ -25,7 +25,10 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
-import vn.com.vng.zalopay.data.eventbus.TokenExpiredEvent;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
+import vn.com.vng.zalopay.data.exception.ServerMaintainException;
+import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
@@ -172,18 +175,10 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         if (event instanceof AuthenticationData) {
             AuthenticationData authenticationData = (AuthenticationData) event;
             if (authenticationData.result != NetworkError.SUCCESSFUL) {
-                if (authenticationData.code == NetworkError.UM_TOKEN_NOT_FOUND ||
-                        authenticationData.code == NetworkError.UM_TOKEN_EXPIRE ||
-                        authenticationData.code == NetworkError.TOKEN_INVALID) {
-                    // session expired
-                    Timber.d("Session is expired");
-                    // clear user session and logout
-                    mEventBus.post(new TokenExpiredEvent(authenticationData.code));
-                }
+                handlerAuthenticationError(authenticationData);
             } else {
                 Timber.d("Socket authentication succeeded");
                 this.recoveryNotification(true);
-
             }
         } else if (event instanceof NotificationData) {
             if (mNotificationHelper == null) {
@@ -370,6 +365,27 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
     protected UserComponent getUserComponent() {
         return AndroidApplication.instance().getUserComponent();
+    }
+
+    private void handlerAuthenticationError(AuthenticationData authentication) {
+        Timber.d("handlerAuthenticationError: %s", authentication.code);
+        if (authentication.code == NetworkError.UM_TOKEN_NOT_FOUND ||
+                authentication.code == NetworkError.UM_TOKEN_EXPIRE ||
+                authentication.code == NetworkError.TOKEN_INVALID) {
+            // session expired
+            Timber.d("Session is expired");
+            TokenException exception = new TokenException(authentication.code);
+            mEventBus.post(new ThrowToLoginScreenEvent(exception));
+        } else if (authentication.code == NetworkError.SERVER_MAINTAIN) {
+            Timber.d("Server maintain");
+            ServerMaintainException exception = new ServerMaintainException(authentication.code, "");
+            mEventBus.post(new ThrowToLoginScreenEvent(exception));
+        } else if (authentication.code == NetworkError.ZPW_ACCOUNT_SUSPENDED
+                || authentication.code == NetworkError.USER_IS_LOCKED) {
+            Timber.d("Account is locked");
+            AccountSuspendedException exception = new AccountSuspendedException(authentication.code, "");
+            mEventBus.post(new ThrowToLoginScreenEvent(exception));
+        }
     }
 
 }

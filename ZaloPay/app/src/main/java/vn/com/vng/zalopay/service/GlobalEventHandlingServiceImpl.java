@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.service;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -15,9 +14,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.eventbus.ServerMaintainEvent;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
@@ -87,18 +83,6 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         Crashlytics.log(Log.ERROR, "EXCEPTION", String.format("Payment App %d causes exception: %s", event.getAppId(), event.getInnerException().getMessage()));
         Crashlytics.logException(event.getInnerException());
         Answers.getInstance().logCustom(new CustomEvent("EXCEPTION APP " + String.valueOf(event.getAppId())));
-    }
-
-    @Subscribe
-    public void onServerMaintainEvent(ServerMaintainEvent event) {
-        String message;
-        if (TextUtils.isEmpty(event.getMessage())) {
-            message = AndroidApplication.instance().getString(R.string.exception_server_maintain);
-        } else {
-            message = event.getMessage();
-        }
-        String close = AndroidApplication.instance().getString(R.string.accept);
-        enqueueMessageAtLogin(SweetAlertDialog.NORMAL_TYPE, close, message);
     }
 
     @Override

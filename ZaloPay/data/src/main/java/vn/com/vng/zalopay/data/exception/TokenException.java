@@ -3,15 +3,13 @@ package vn.com.vng.zalopay.data.exception;
 /**
  * Created by AnhHieu on 6/14/16.
  */
-public class TokenException extends Throwable {
-    public String message;
+public class TokenException extends BodyException {
 
-    public TokenException(String message) {
-        this.message = message;
+    public TokenException(int error) {
+        super(error);
     }
 
-    @Override
-    public String getMessage() {
-        return message;
+    public TokenException(int error, String message) {
+        super(error, message);
     }
 }

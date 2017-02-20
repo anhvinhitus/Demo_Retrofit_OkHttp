@@ -335,7 +335,9 @@ public class FriendRepository implements FriendStore.Repository {
                     ZaloPayUserEntity entity = entities.get(0);
                     if (entity.status == NetworkError.USER_NOT_EXIST) {
                         return Observable.error(new UserNotFoundException());
-                    } else if (entity.status == NetworkError.ZPW_ACCOUNT_SUSPENDED) {
+                    } else if (entity.status == NetworkError.ZPW_ACCOUNT_SUSPENDED ||
+                            entity.status == NetworkError.RECEIVER_IS_LOCKED ||
+                            entity.status == NetworkError.USER_IS_LOCKED) {
                         return Observable.error(new GenericException(R.string.exception_zpw_account_suspended));
                     } else if (TextUtils.isEmpty(entity.userid)) {
                         return Observable.error(new UserNotFoundException());

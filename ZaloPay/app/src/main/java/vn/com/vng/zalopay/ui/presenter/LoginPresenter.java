@@ -29,8 +29,10 @@ import vn.com.vng.zalopay.account.network.listener.ZaloErrorCode;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.exception.InvitationCodeException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
+import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -43,6 +45,7 @@ import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 3/26/16.
@@ -96,19 +99,6 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         if (mUserConfig.hasCurrentUser() && userComponent != null) {
             Timber.d("go to home screen ignore login screen");
             gotoHomeScreen();
-            return;
-        }
-
-        GlobalEventHandlingService.Message message = mGlobalEventService.popMessageAtLogin();
-        if (message == null) {
-            return;
-        }
-
-        if (mView != null) {
-            mView.showCustomDialog(message.content,
-                    mApplicationContext.getString(R.string.txt_close),
-                    message.messageType,
-                    null);
         }
     }
 
@@ -287,7 +277,12 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
 
     private void onLoginError(Throwable e) {
         hideLoadingView();
-        if (e instanceof InvitationCodeException) {
+
+        if (e instanceof TokenException
+                || e instanceof AccountSuspendedException
+                || e instanceof ServerMaintainException) {
+            showMessageDialog(ErrorMessageFactory.create(mApplicationContext, e));
+        } else if (e instanceof InvitationCodeException) {
             mView.gotoInvitationCode();
             ZPAnalytics.trackEvent(ZPEvents.NEEDINVITATIONCODE);
             ZPAnalytics.trackEvent(ZPEvents.INVITATIONFROMLOGIN);
@@ -296,6 +291,15 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
             String message = ErrorMessageFactory.create(mApplicationContext, e);
             showErrorView(message);
             ZPAnalytics.trackEvent(ZPEvents.LOGINFAILED_API_ERROR);
+        }
+    }
+
+    private void showMessageDialog(String message) {
+        if (mView != null) {
+            mView.showCustomDialog(message,
+                    mApplicationContext.getString(R.string.txt_close),
+                    SweetAlertDialog.NORMAL_TYPE,
+                    null);
         }
     }
 
@@ -317,17 +321,6 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
 
         @Override
         public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-
-                if (e instanceof ServerMaintainException) {
-                    LoginPresenter.this.hideLoadingView();
-                }
-
-                return;
-            }
-
             LoginPresenter.this.onLoginError(e);
         }
     }
