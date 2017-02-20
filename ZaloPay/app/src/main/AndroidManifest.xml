@@ -96,7 +96,7 @@
             android:enabled="true"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar.Splash" />
+            android:theme="@style/AppTheme.ExternalCallSplash" />
 
         <activity
             android:name=".share.IntentHandlerActivity"
