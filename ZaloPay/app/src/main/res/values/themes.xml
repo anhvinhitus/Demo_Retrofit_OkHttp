@@ -121,4 +121,19 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
+    <!-- WebBase application theme. -->
+    <style name="AppTheme.WebApp.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <!-- Parent theme sets colorControlNormal to textColorPrimary. -->
+        <item name="android:textColorPrimary">@color/colorWebAppPrimaryText</item>
+    </style>
+
+    <style name="AppTheme.WebApp" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorWebAppPrimary</item>
+        <item name="colorPrimaryDark">@color/colorWebAppPrimaryDark</item>
+        <item name="colorAccent">@color/colorWebAppAccent</item>
+        <item name="toolbarStyle">@style/Widget.AppCompat.Toolbar</item>
+        <item name="actionBarTheme">@style/AppTheme.WebApp.ActionBar</item>
+    </style>
+
 </resources>

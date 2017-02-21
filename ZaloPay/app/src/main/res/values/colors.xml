@@ -4,6 +4,12 @@
     <color name="colorPrimaryDark">#0072b7</color>
     <color name="colorAccent">#06a1ff</color>
 
+    <color name="colorWebAppPrimary">#ffffff</color>
+    <color name="colorWebAppPrimaryDark">#000</color>
+    <color name="colorWebAppAccent">#eeeeee</color>
+    <color name="colorWebAppPrimaryText">#000</color>
+
+
     <color name="background">#f0f4f6</color>
     <color name="background.note">#d5efff</color>
     <color name="statusBar">#17b5ad</color>

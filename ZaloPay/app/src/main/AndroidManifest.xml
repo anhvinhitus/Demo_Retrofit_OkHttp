@@ -232,7 +232,10 @@
 
         <activity
             android:name=".webapp.WebAppActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.WebApp"
+            android:parentActivityName=".ui.activity.MainActivity" >
+        </activity>
 
         <!-- Tích hợp Crashlytics -->
         <meta-data
