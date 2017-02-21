@@ -20,6 +20,7 @@ import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
@@ -29,6 +30,7 @@ import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by hieuvm on 12/4/16.
+ * *
  */
 
 public class HandleInAppPayment {
@@ -83,42 +85,47 @@ public class HandleInAppPayment {
                 .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new AbsPWResponseListener(mActivity) {
 
-            private String mTransactionId;
+                    private String mTransactionId;
 
-            @Override
-            public void onError(PaymentWrapperException exception) {
-                Activity act = mActivity.get();
-                if (act == null) {
-                    return;
-                }
+                    @Override
+                    protected ILoadDataView getView() {
+                        return null;
+                    }
 
-                Intent data = new Intent();
-                data.putExtra("code", exception.getErrorCode());
+                    @Override
+                    public void onError(PaymentWrapperException exception) {
+                        Activity act = mActivity.get();
+                        if (act == null) {
+                            return;
+                        }
 
-                act.setResult(RESULT_OK, data);
-                act.finish();
-            }
+                        Intent data = new Intent();
+                        data.putExtra("code", exception.getErrorCode());
 
-            @Override
-            public void onCompleted() {
-                Activity act = mActivity.get();
-                if (act == null) {
-                    return;
-                }
+                        act.setResult(RESULT_OK, data);
+                        act.finish();
+                    }
 
-                Intent data = new Intent();
-                data.putExtra("code", 1);
-                data.putExtra("transactionId", mTransactionId);
+                    @Override
+                    public void onCompleted() {
+                        Activity act = mActivity.get();
+                        if (act == null) {
+                            return;
+                        }
 
-                act.setResult(RESULT_OK, data);
-                act.finish();
-            }
+                        Intent data = new Intent();
+                        data.putExtra("code", 1);
+                        data.putExtra("transactionId", mTransactionId);
 
-            @Override
-            public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
-                mTransactionId = pTransId;
-            }
-        }).build();
+                        act.setResult(RESULT_OK, data);
+                        act.finish();
+                    }
+
+                    @Override
+                    public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
+                        mTransactionId = pTransId;
+                    }
+                }).build();
     }
 
 

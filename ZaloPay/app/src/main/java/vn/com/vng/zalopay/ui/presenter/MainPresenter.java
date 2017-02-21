@@ -55,6 +55,7 @@ import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.view.IHomeView;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
@@ -500,6 +501,11 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                 .setZaloPayRepository(mZaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new AbsPWResponseListener(mView.getActivity()) {
+                    @Override
+                    protected ILoadDataView getView() {
+                        return mView;
+                    }
+
                     @Override
                     public void onError(PaymentWrapperException exception) {
                         if (mView == null) {

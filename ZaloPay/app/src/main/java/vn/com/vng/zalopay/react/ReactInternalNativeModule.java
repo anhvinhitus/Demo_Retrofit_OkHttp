@@ -44,6 +44,7 @@ import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.FileDownloader;
@@ -362,6 +363,11 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                     }
                 })
                 .setResponseListener(new AbsPWResponseListener(getCurrentActivity()) {
+                    @Override
+                    protected ILoadDataView getView() {
+                        return null;
+                    }
+
                     @Override
                     public void onError(PaymentWrapperException exception) {
                         hideLoading();

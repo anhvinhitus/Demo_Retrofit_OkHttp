@@ -2,10 +2,12 @@ package vn.com.vng.zalopay.webapp;
 
 import android.content.Context;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
 
 import rx.Subscriber;
@@ -13,7 +15,9 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -91,42 +95,7 @@ class WebAppCommunicationHandler {
         if (mWebViewListener == null) {
             callback(message, failObject("Missing webview listener."));
         } else {
-            mWebViewListener.pay(message.data, new PaymentWrapper.IResponseListener() {
-                @Override
-                public void onParameterError(String param) {
-                    callback(message, failObject(param));
-                }
-
-                @Override
-                public void onResponseError(PaymentError status) {
-                    callback(message, failObject(PaymentError.getErrorMessage(status)));
-                }
-
-                @Override
-                public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-                    callback(message, successObject());
-                }
-
-                @Override
-                public void onResponseTokenInvalid() {
-                    callback(message, failObject("Phiên làm việc đã  hết hạn."));
-                }
-
-                @Override
-                public void onResponseAccountSuspended() {
-                    callback(message, failObject("Tài khoản đang bị khóa."));
-                }
-
-                @Override
-                public void onAppError(String msg) {
-                    callback(message, failObject(msg));
-                }
-
-                @Override
-                public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
-
-                }
-            });
+            mWebViewListener.pay(message.data, new PaymentResponseListener(message));
         }
     }
 
@@ -217,5 +186,39 @@ class WebAppCommunicationHandler {
         }
 
         return result;
+    }
+
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+
+        private WeakReference<WebMessage> mMessage;
+
+        public PaymentResponseListener(@NonNull WebMessage webMessage) {
+            mMessage = new WeakReference<>(webMessage);
+        }
+
+        @Override
+        protected ILoadDataView getView() {
+            return null;
+        }
+
+        @Override
+        public void onParameterError(String param) {
+            callback(mMessage.get(), failObject(param));
+        }
+
+        @Override
+        public void onResponseError(PaymentError status) {
+            callback(mMessage.get(), failObject(PaymentError.getErrorMessage(status)));
+        }
+
+        @Override
+        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
+            callback(mMessage.get(), successObject());
+        }
+
+        @Override
+        public void onAppError(String msg) {
+            callback(mMessage.get(), failObject(msg));
+        }
     }
 }
