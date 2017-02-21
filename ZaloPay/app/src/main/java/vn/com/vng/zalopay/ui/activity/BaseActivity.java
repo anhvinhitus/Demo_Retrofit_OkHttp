@@ -27,6 +27,8 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
@@ -208,13 +210,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onThrowToLoginScreen(ThrowToLoginScreenEvent event) {
         Timber.d("onThrowToLoginScreen: in Screen %s ", TAG);
-        boolean resul = clearUserSession(ErrorMessageFactory.create(this, event.getThrowable()));
+        User user = getAppComponent().userConfig().getCurrentUser();
+        clearUserSession(ErrorMessageFactory.create(this, event.getThrowable(), user));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
-        boolean result = clearUserSession(getString(R.string.exception_token_expired_message));
+        clearUserSession(getString(R.string.exception_token_expired_message));
     }
 
     public boolean clearUserSession(String message) {

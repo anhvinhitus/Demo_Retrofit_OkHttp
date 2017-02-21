@@ -44,4 +44,5 @@
     <string name="exception.open.camera.not.allow">Không có quyền sử dụng camera. Vui lòng cho phép ứng dụng sử dụng camera để tiếp tục</string>
     <string name="exception.otp.invaild">Mã OTP không hợp lệ.</string>
     <string name="exception.send.feedback">Không thể gửi phản hồi</string>
+    <string name="exception.user.is.locked.format">Tài khoản %s đang bị khóa. Vui lòng liên hệ 1900545436 để được trợ giúp</string>
 </resources>
