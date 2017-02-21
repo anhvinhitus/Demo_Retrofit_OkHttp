@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 
 import rx.Observable;
 import rx.Scheduler;
+import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
@@ -32,20 +33,25 @@ final class ZaloPayCallAdapter extends BaseCallAdapter {
     protected <R> Observable<? extends R> handleServerResponseError(BaseResponse body, BaseResponse baseResponse) {
         if (baseResponse.isSessionExpired()) {
             TokenException exception = new TokenException(baseResponse.err, baseResponse.message);
-            EventBus.getDefault().post(new ThrowToLoginScreenEvent(exception));
+            postThrowToLoginScreenEvent(exception);
             return Observable.error(exception);
         } else if (baseResponse.isServerMaintain()) {
             ServerMaintainException exception = new ServerMaintainException(baseResponse.err, baseResponse.message);
-            EventBus.getDefault().post(new ThrowToLoginScreenEvent(exception));
+            postThrowToLoginScreenEvent(exception);
             return Observable.error(exception);
         } else if (baseResponse.isInvitationCode()) {
             return Observable.error(new InvitationCodeException(body.err, body));
         } else if (baseResponse.isAccountSuspended()) {
             AccountSuspendedException exception = new AccountSuspendedException(baseResponse.err, baseResponse.message);
-            EventBus.getDefault().post(new ThrowToLoginScreenEvent(exception));
+            postThrowToLoginScreenEvent(exception);
             return Observable.error(exception);
         } else {
             return Observable.error(new BodyException(body.err, body.message));
         }
+    }
+
+    private void postThrowToLoginScreenEvent(BodyException exception) {
+        Timber.d("Post ThrowToLoginScreenEvent");
+        EventBus.getDefault().postSticky(new ThrowToLoginScreenEvent(exception));
     }
 }

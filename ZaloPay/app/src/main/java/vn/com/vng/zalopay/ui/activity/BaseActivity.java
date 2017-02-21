@@ -207,7 +207,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return AndroidApplication.instance().getUserComponent();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onThrowToLoginScreen(ThrowToLoginScreenEvent event) {
         Timber.d("onThrowToLoginScreen: in Screen %s ", TAG);
         User user = getAppComponent().userConfig().getCurrentUser();

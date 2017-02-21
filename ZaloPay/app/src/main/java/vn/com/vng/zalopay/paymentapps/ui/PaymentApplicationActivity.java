@@ -300,16 +300,17 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         handleException(event.getInnerException());
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onThrowToLoginScreen(ThrowToLoginScreenEvent event) {
         Timber.d("onThrowToLoginScreen: in Screen %s ", TAG);
-        boolean resul = clearUserSession(ErrorMessageFactory.create(this, event.getThrowable()));
+        User user = getAppComponent().userConfig().getCurrentUser();
+        clearUserSession(ErrorMessageFactory.create(this, event.getThrowable(), user));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
-        boolean result = clearUserSession(getString(R.string.exception_token_expired_message));
+        clearUserSession(getString(R.string.exception_token_expired_message));
     }
 
     protected boolean clearUserSession(String message) {
