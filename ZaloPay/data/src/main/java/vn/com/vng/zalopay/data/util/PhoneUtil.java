@@ -42,14 +42,15 @@ public class PhoneUtil {
     }
 
     public static String formatPhoneNumber(String rawNumber) {
-
         if (TextUtils.isEmpty(rawNumber)) {
-            return rawNumber;
+            return "";
         }
 
         String phoneNumber = rawNumber.replaceAll("\\D+", "");
 
-        if (!isMobileNumber(phoneNumber)) {
+        if (TextUtils.isEmpty(phoneNumber)
+                || phoneNumber.length() < 7
+                || phoneNumber.length() > 13) {
             return phoneNumber;
         }
 
