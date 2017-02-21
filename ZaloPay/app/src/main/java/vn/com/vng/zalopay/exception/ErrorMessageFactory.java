@@ -23,6 +23,7 @@ import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.data.exception.UserNotFoundException;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 
 public class ErrorMessageFactory {
@@ -78,7 +79,7 @@ public class ErrorMessageFactory {
             if (!TextUtils.isEmpty(user.zalopayname)) {
                 return String.format(format, user.zalopayname);
             } else if (user.phonenumber > 0) {
-                return String.format(format, user.phonenumber);
+                return String.format(format, PhoneUtil.formatPhoneNumber(user.phonenumber));
             }
         }
 
