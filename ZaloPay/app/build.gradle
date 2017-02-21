@@ -449,7 +449,7 @@ dependencies {
 
     compile libs.fresco
 
-    compile project(path: ':webapp.framework')
+    compile('vn.com.vng:webapp:0.1')
 }
 
 apply plugin: 'com.google.gms.google-services'

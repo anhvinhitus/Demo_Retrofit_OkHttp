@@ -46,6 +46,8 @@
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
 
+    <uses-sdk android:minSdkVersion="16" tools:overrideLibrary="vn.com.vng.webapp.framework"/>
+
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
