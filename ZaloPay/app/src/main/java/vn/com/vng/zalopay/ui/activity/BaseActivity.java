@@ -221,12 +221,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public boolean clearUserSession(String message) {
+        //Remove all sticky event in app
+        eventBus.removeAllStickyEvents();
+        
         if (TAG.equals(LoginZaloActivity.class.getSimpleName())) {
             return false;
         }
-
-        //Remove all sticky event in app
-        eventBus.removeAllStickyEvents();
 
         if (getUserComponent() != null) {
             getUserComponent().userSession().endSession();
