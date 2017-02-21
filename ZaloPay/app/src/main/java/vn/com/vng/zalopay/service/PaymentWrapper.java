@@ -413,6 +413,14 @@ public class PaymentWrapper {
         return paymentInfo;
     }
 
+    void startDepositForResult() {
+        if (mActivity == null) {
+            return;
+        }
+
+        mNavigator.startDepositForResultActivity(mActivity);
+    }
+
     void startUpdateProfile2ForResult(String walletTransID) {
         if (mActivity == null) {
             return;
@@ -439,6 +447,8 @@ public class PaymentWrapper {
     public interface IRedirectListener {
         void startUpdateProfileLevel(String walletTransId);
 
+        void startDepositForResult();
+
         void startLinkAccountActivity();
 
         void startUpdateProfileBeforeLinkAcc();
@@ -454,8 +464,6 @@ public class PaymentWrapper {
         void onResponseTokenInvalid();
 
         void onAppError(String msg);
-
-        void onNotEnoughMoney();
 
         void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId);
     }
@@ -492,11 +500,9 @@ public class PaymentWrapper {
             return false;
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE) {
             return false;
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT &&
-                mRedirectListener != null) {
+        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT) {
             return false;
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT &&
-                mRedirectListener != null) {
+        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT) {
             return false;
         }
         return true;

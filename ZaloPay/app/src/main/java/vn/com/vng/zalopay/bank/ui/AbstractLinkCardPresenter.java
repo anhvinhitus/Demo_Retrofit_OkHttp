@@ -229,10 +229,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             }
         }
 
-        @Override
-        public void onNotEnoughMoney() {
-
-        }
     }
 
     String detectCardType(String bankcode, String first6cardno) {

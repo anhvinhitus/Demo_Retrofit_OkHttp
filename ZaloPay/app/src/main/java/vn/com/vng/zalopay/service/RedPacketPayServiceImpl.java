@@ -42,9 +42,6 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
                 .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
                     @Override
                     public Object getContext() {
-                        if (mWeakReference == null) {
-                            return null;
-                        }
                         return mWeakReference.get();
                     }
                 })
@@ -125,14 +122,6 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
             destroyVariable();
         }
 
-        @Override
-        public void onNotEnoughMoney() {
-            if (mMWeakReference == null || mMWeakReference.get() == null) {
-                navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
-            } else {
-                navigator.startDepositForResultActivity(mMWeakReference.get(), false);
-            }
-        }
     }
 
 }

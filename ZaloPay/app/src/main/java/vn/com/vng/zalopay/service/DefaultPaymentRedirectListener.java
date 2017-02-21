@@ -36,6 +36,20 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
     }
 
     @Override
+    public void startDepositForResult() {
+        Object context = getContext();
+        Timber.d("startDepositForResult context [%s] navigator[%s]", context, mNavigator);
+        if (context == null || mNavigator == null) {
+            return;
+        }
+        if (context instanceof Fragment) {
+            mNavigator.startDepositForResultActivity((Fragment) context);
+        } else if (context instanceof Activity) {
+            mNavigator.startDepositForResultActivity((Activity) context);
+        }
+    }
+
+    @Override
     public void startLinkAccountActivity() {
         Object context = getContext();
         Timber.d("startLinkAccountActivity context [%s] navigator[%s]", context, mNavigator);

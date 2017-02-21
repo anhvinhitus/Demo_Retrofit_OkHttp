@@ -196,14 +196,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 mView.getActivity().finish();
             }
         }
-
-        @Override
-        public void onNotEnoughMoney() {
-            if (mView == null) {
-                return;
-            }
-            mNavigator.startDepositForResultActivity(mView.getFragment());
-        }
     }
 
 }

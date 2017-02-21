@@ -458,10 +458,6 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
             beaconScanner.startScan();
         }
 
-        @Override
-        public void onNotEnoughMoney() {
-            navigator.startDepositActivity(CounterBeaconFragment.this.getContext());
-        }
     }
 
     private void stopAnimation() {

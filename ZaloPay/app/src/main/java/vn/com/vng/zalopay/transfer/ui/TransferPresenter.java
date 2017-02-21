@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.transfer.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -595,13 +594,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             }
         }
 
-        @Override
-        public void onNotEnoughMoney() {
-            if (mView == null) {
-                return;
-            }
-            mNavigator.startDepositForResultActivity(mView.getFragment());
-        }
     }
 
 }

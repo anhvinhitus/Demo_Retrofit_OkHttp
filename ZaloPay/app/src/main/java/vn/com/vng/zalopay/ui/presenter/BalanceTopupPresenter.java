@@ -65,6 +65,9 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
                 .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
                     @Override
                     public Object getContext() {
+                        if (mView == null) {
+                            return null;
+                        }
                         return mView.getFragment();
                     }
                 })
@@ -184,7 +187,5 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
             }
             mEventBus.postSticky(new TokenPaymentExpiredEvent());
         }
-
     }
-
 }

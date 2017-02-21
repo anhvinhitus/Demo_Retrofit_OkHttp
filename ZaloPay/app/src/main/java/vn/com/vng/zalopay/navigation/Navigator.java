@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -129,7 +128,7 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public Intent getIntentLoginExternal(Context context) {
+    private Intent getIntentLoginExternal(Context context) {
         Intent intent = getIntentLogin(context, false);
         intent.putExtra("callingExternal", true);
         return intent;
@@ -167,10 +166,6 @@ public class Navigator implements INavigator {
         return intent;
     }
 
-    public void startUpdateProfileLevel2Activity(Context context) {
-        startUpdateProfileLevel2Activity(context, null);
-    }
-
     public void startUpdateLevel2(Context context, @NonNull String otp) {
         Intent intent = getUpdateProfileLevel2Activity(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -187,10 +182,16 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    @Override
     public void startDepositForResultActivity(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), BalanceTopupActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_DEPOSIT);
+    }
+
+    @Override
+    public void startDepositForResultActivity(Activity activity) {
+        startDepositForResultActivity(activity, false);
     }
 
     public void startDepositForResultActivity(Activity activity, boolean showNotificationLinkCard) {
@@ -379,14 +380,13 @@ public class Navigator implements INavigator {
     }
 
 
-    public void startUpdateProfileLevel2Activity(Context context, String walletTransID) {
+    public void startUpdateProfileLevel2Activity(Context context) {
         if (context == null) {
             Timber.w("Cannot start pre-profile activity due to NULL context");
             return;
         }
 
-        Intent intent = getUpdateProfileLevel2Activity(context, walletTransID);
-
+        Intent intent = getUpdateProfileLevel2Activity(context, null);
         context.startActivity(intent);
     }
 

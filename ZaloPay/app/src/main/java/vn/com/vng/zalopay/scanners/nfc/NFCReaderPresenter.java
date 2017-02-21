@@ -297,12 +297,6 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
 
         }
 
-        @Override
-        public void onNotEnoughMoney() {
-            if (mView != null) {
-                mNavigator.startDepositForResultActivity(mView.getFragment());
-            }
-        }
     }
 
 }

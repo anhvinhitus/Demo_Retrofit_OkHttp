@@ -192,14 +192,6 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
             mView.loadUrl(urlPage);
         }
 
-        @Override
-        public void onNotEnoughMoney() {
-            Timber.d("onNotEnoughMoney");
-            if (mNavigator == null || mView == null || mView.getFragment() == null) {
-                return;
-            }
-            mNavigator.startDepositForResultActivity(mView.getFragment());
-        }
     }
 
 }

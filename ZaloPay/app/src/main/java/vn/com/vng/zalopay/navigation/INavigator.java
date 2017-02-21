@@ -21,6 +21,10 @@ public interface INavigator {
 
     void startUpdateProfile2ForResult(Fragment fragment, String walletTransID);
 
+    void startDepositForResultActivity(Activity activity);
+
+    void startDepositForResultActivity(Fragment fragment);
+
     void startLinkAccountActivityForResult(Activity activity);
 
     void startLinkAccountActivityForResult(Fragment fragment);

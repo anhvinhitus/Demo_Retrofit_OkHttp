@@ -114,13 +114,6 @@ public abstract class AbstractPaymentPresenter<View extends IPaymentDataView> ex
             super.onAppError(msg);
             onPayAppError(msg);
         }
-
-        @Override
-        public void onNotEnoughMoney() {
-            if (getFragment() != null) {
-                mNavigator.startDepositForResultActivity(getFragment());
-            }
-        }
     }
 
     public Activity getActivity() {

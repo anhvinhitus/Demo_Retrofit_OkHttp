@@ -156,11 +156,6 @@ public class PaymentServiceImpl implements IPaymentService {
         }
 
         @Override
-        public void onNotEnoughMoney() {
-            navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
-        }
-
-        @Override
         public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
 
         }
