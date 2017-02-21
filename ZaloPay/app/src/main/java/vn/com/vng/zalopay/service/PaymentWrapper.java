@@ -249,6 +249,7 @@ public class PaymentWrapper {
      * Handle fragment/activity result
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.d("onActivityResult: requestCode[%s] resultCode[%s]", requestCode, resultCode);
         boolean shouldProcessPendingOrder = false;
         if (resultCode != Activity.RESULT_OK && resultCode != Activity.RESULT_CANCELED) {
             return;
