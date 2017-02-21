@@ -64,7 +64,7 @@ class WalletListener implements ZPPaymentListener {
                 case ZPC_TRANXSTATUS_UPGRADE:
                     //Hien update profile level 2
                     if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startUpdateProfileLevel(null);
+                        mPaymentWrapper.startUpdateProfile2ForResult(null);
                     } else {
                         mPaymentWrapper.mRedirectListener.startUpdateProfileLevel(null);
                     }
@@ -79,7 +79,7 @@ class WalletListener implements ZPPaymentListener {
                     }
                     //Hien update profile level 2
                     if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startUpdateProfileLevel(walletTransId);
+                        mPaymentWrapper.startUpdateProfile2ForResult(walletTransId);
                     } else {
                         mPaymentWrapper.mRedirectListener.startUpdateProfileLevel(walletTransId);
                     }
@@ -176,8 +176,6 @@ class WalletListener implements ZPPaymentListener {
                 forceUpdate, latestVersion, msg);
         AppVersionUtils.handleEventUpdateVersion(mPaymentWrapper.mActivity,
                 forceUpdate, latestVersion, msg);
-
-        mPaymentWrapper.cleanup();
     }
 
     @Override

@@ -70,7 +70,7 @@ public class PaymentWrapper {
                    TransactionStore.Repository transactionRepository,
                    IResponseListener responseListener, IRedirectListener redirectListener,
                    boolean showNotificationLinkCard) {
-        Timber.d("Create new instance of PaymentWrapper");
+        Timber.d("Create new instance of PaymentWrapper[%s]", this);
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.responseListener = responseListener;
@@ -216,9 +216,11 @@ public class PaymentWrapper {
 
     private void continuePayPendingOrder() {
         if (!hasPendingOrder()) {
+            Timber.d("continuePayPendingOrder but has not order");
             return;
         }
 
+        Timber.d("continuePayPendingOrder");
         //Require reset forceChannelIds & mappedCreditCard before continue payment
         if (mPendingOrder != null) {
             mPendingOrder.forceChannelIds = null;
@@ -281,7 +283,7 @@ public class PaymentWrapper {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        Timber.d("PaymentWrapper is finalize");
+        Timber.d("PaymentWrapper is finalize [%s]", this);
     }
 
     private UserInfo createUserInfo(String displayName, String avatar, String phoneNumber, String zaloPayName) {
@@ -411,12 +413,12 @@ public class PaymentWrapper {
         return paymentInfo;
     }
 
-    void startUpdateProfileLevel(String walletTransID) {
+    void startUpdateProfile2ForResult(String walletTransID) {
         if (mActivity == null) {
             return;
         }
 
-        mNavigator.startUpdateProfileLevel2Activity(mActivity, walletTransID);
+        mNavigator.startUpdateProfile2ForResult(mActivity, walletTransID);
     }
 
     void startUpdateProfileBeforeLinkAcc() {
@@ -486,11 +488,9 @@ public class PaymentWrapper {
     boolean shouldClearPendingOrder(EPaymentStatus resultStatus) {
         if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
             return false;
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD &&
-                mRedirectListener != null) {
+        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD) {
             return false;
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE &&
-                mRedirectListener != null) {
+        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE) {
             return false;
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT &&
                 mRedirectListener != null) {
@@ -503,6 +503,7 @@ public class PaymentWrapper {
     }
 
     void clearPendingOrder() {
+        Timber.d("clearPendingOrder");
         mPendingOrder = null;
         mPendingChannel = null;
     }
