@@ -5,25 +5,21 @@ import android.content.Context;
 import org.json.JSONObject;
 
 /**
- * Created by huuhoa on 2/9/17.
+ * Created by khattn on 2/20/17.
  * Declare interface for web view listener
  */
-interface IWebViewListener {
+interface IProcessMessageListener {
     void pay(JSONObject jsonObject, IPaymentListener listener);
 
     void payOrder(String url);
 
     void logout();
 
-    void finishActivity();
-
-    void showError(int errorCode);
+    void showDialog(int dialogType, String title, String message, String buttonLabel);
 
     void showLoading();
 
     void hideLoading();
-
-    void showDialog(int dialogType, String title, String message, String buttonLabel);
 
     Context getContext();
 }
