@@ -288,6 +288,11 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
         }
 
         @Override
+        public void onResponseAccountSuspended() {
+
+        }
+
+        @Override
         public void onAppError(String msg) {
 
         }

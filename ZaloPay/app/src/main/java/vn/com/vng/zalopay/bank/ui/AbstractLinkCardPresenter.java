@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -158,7 +160,16 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         }
     }
 
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+
+        @Override
+        protected ILoadDataView getView() {
+            if (mView instanceof ILoadDataView) {
+                return (ILoadDataView)mView;
+            }
+            return null;
+        }
+
         @Override
         public void onParameterError(String param) {
             showErrorView(param);
@@ -179,15 +190,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 return;
             }
             onAddCardSuccess(paymentInfo.mapBank);
-        }
-
-        @Override
-        public void onResponseTokenInvalid() {
-            if (mView == null) {
-                return;
-            }
-
-            mEventBus.postSticky(new TokenPaymentExpiredEvent());
         }
 
         @Override

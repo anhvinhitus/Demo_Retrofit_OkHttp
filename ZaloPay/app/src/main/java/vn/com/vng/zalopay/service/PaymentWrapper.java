@@ -421,6 +421,8 @@ public class PaymentWrapper {
 
         void onResponseTokenInvalid();
 
+        void onResponseAccountSuspended();
+
         void onAppError(String msg);
 
         void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId);

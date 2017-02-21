@@ -109,7 +109,12 @@ class WebAppCommunicationHandler {
 
                 @Override
                 public void onResponseTokenInvalid() {
-                    callback(message, failObject("Token invalid."));
+                    callback(message, failObject("Phiên làm việc đã  hết hạn."));
+                }
+
+                @Override
+                public void onResponseAccountSuspended() {
+                    callback(message, failObject("Tài khoản đang bị khóa."));
                 }
 
                 @Override

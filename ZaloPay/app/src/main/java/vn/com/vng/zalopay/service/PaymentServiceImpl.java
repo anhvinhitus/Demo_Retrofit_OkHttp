@@ -13,7 +13,10 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -65,6 +68,12 @@ public class PaymentServiceImpl implements IPaymentService {
     private void logout() {
         Timber.d("logout");
         mEventBus.postSticky(new TokenPaymentExpiredEvent());
+    }
+
+    private void throwAccountSuspended() {
+        Timber.d("Account Suspended");
+        AccountSuspendedException exception = new AccountSuspendedException(NetworkError.USER_IS_LOCKED, "");
+        mEventBus.postSticky(new ThrowToLoginScreenEvent(exception));
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {
@@ -142,10 +151,16 @@ public class PaymentServiceImpl implements IPaymentService {
 
         @Override
         public void onResponseTokenInvalid() {
-            Timber.d("onResponseTokenInvalid errorCode");
+            Timber.d("Response Token Invalid while paying.");
             /*Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_TOKEN_INVALID.value(),
                     PaymentError.getErrorMessage(PaymentError.ERR_CODE_TOKEN_INVALID));*/
             logout();
+        }
+
+        @Override
+        public void onResponseAccountSuspended() {
+            Timber.d("Response Account Suspended while paying.");
+            throwAccountSuspended();
         }
 
         @Override

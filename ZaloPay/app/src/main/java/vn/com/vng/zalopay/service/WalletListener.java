@@ -61,6 +61,9 @@ class WalletListener implements ZPPaymentListener {
                 case ZPC_TRANXSTATUS_TOKEN_INVALID:
                     mPaymentWrapper.responseListener.onResponseTokenInvalid();
                     break;
+                case ZPC_TRANXSTATUS_LOCK_USER:
+                    mPaymentWrapper.responseListener.onResponseAccountSuspended();
+                    break;
                 case ZPC_TRANXSTATUS_UPGRADE:
                     //Hien update profile level 2
                     if (mPaymentWrapper.mRedirectListener == null) {
