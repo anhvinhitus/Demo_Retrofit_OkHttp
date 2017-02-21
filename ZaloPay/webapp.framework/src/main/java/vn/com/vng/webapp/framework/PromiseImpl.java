@@ -19,6 +19,8 @@ class PromiseImpl implements Promise {
     private String mMessageName;
     private String mMessageId;
 
+    WebMessage mResult = null;
+
     PromiseImpl(WebAppCommunicationHandler webAppCommunicationHandler, String messageName, String messageId) {
         this.mWebAppCommunicationHandlerWeakReference = new WeakReference<>(webAppCommunicationHandler);
         this.mMessageName = messageName;
@@ -55,14 +57,12 @@ class PromiseImpl implements Promise {
             return;
         }
 
-        WebMessage webMessage = new WebMessage();
-        webMessage.data = data;
-        webMessage.functionName = mMessageName;
-        webMessage.messageId = mMessageId;
-        webMessage.messageType = "callback";
-        webMessage.keepCallback = false;
-
-        mWebAppCommunicationHandlerWeakReference.get().callback(webMessage);
+        mResult = new WebMessage();
+        mResult.data = data;
+        mResult.functionName = mMessageName;
+        mResult.messageId = mMessageId;
+        mResult.messageType = "callback";
+        mResult.keepCallback = false;
     }
 
     private JSONObject failObject(String message) {

@@ -86,7 +86,6 @@ public class ZPWebViewAppProcessor extends WebViewClient {
         }
         mLoadPageFinished = true;
 //        hideLoading();
-        injectScriptFile("webapp.js");
         injectScriptFile("jsbridge.js");
         mWebView.runScript("initializeWebBridge();", null);
 

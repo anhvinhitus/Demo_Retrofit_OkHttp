@@ -93,10 +93,10 @@ class WebAppCommunicationHandler {
         }
     }
 
-    private class CallNativeModuleTask extends AsyncTask<String, Void, Void> {
+    private class CallNativeModuleTask extends AsyncTask<String, Void, WebMessage> {
 
         @Override
-        protected Void doInBackground(String ...messageData) {
+        protected WebMessage doInBackground(String ...messageData) {
             try {
                 JSONObject object = new JSONObject(messageData[0]);
 
@@ -111,21 +111,39 @@ class WebAppCommunicationHandler {
 //            webMessage.data = param;
 //            webMessage.functionName = functionName;
 
+                PromiseImpl promise;
                 if (mMessageHandlers.containsKey(functionName)) {
-                    Promise promise = new PromiseImpl(WebAppCommunicationHandler.this, functionName, clientId);
+                    promise = new PromiseImpl(WebAppCommunicationHandler.this, functionName, clientId);
                     NativeModule nativeModule = mMessageHandlers.get(functionName);
                     nativeModule.processMessage(functionName, messageType, param, promise);
                 } else {
                     Timber.i("Unknown/Unsupported function: %s", functionName);
-                    Promise promise = new PromiseImpl(WebAppCommunicationHandler.this, functionName, clientId);
+                    promise = new PromiseImpl(WebAppCommunicationHandler.this, functionName, clientId);
                     promise.reject(404, "Method Not Found");
                 }
+
+                return promise.mResult;
 //            processMessage(webMessage);
             } catch (Exception e) {
                 Timber.d(e, "Exception while parsing arguments");
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(WebMessage webMessage) {
+            super.onPostExecute(webMessage);
+
+            if (webMessage == null) {
+                return;
+            }
+
+            if (mWebView == null) {
+                return;
+            }
+
+            mWebView.invokeJS(webMessage);
         }
     }
 }

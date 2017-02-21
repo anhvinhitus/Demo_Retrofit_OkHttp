@@ -25,23 +25,20 @@ public class ProcessNativeModule implements NativeModule {
     @Override
     public void processMessage(String messageName, String messageType, final JSONObject data, final Promise promise) {
         if (MESSAGE_PAY_ORDER.equalsIgnoreCase(messageName)) {
-            pay(data, promise);
-        }
-        else if (MESSAGE_SHOW_LOADING.equalsIgnoreCase(messageName)) {
+            processPayOrder(data, promise);
+        } else if (MESSAGE_SHOW_LOADING.equalsIgnoreCase(messageName)) {
             if (mProcessMessageListener != null) {
                 mProcessMessageListener.showLoading();
             }
 
             promise.resolve(null);
-        }
-        else if (MESSAGE_HIDE_LOADING.equalsIgnoreCase(messageName)) {
+        } else if (MESSAGE_HIDE_LOADING.equalsIgnoreCase(messageName)) {
             if (mProcessMessageListener != null) {
                 mProcessMessageListener.hideLoading();
             }
 
             promise.resolve(null);
-        }
-        else if (MESSAGE_SHOW_DIALOG.equalsIgnoreCase(messageName)) {
+        } else if (MESSAGE_SHOW_DIALOG.equalsIgnoreCase(messageName)) {
             showDialog(data, promise);
         }
     }
@@ -51,11 +48,11 @@ public class ProcessNativeModule implements NativeModule {
         return new String[] { MESSAGE_PAY_ORDER, MESSAGE_SHOW_LOADING, MESSAGE_HIDE_LOADING, MESSAGE_SHOW_DIALOG,};
     }
 
-    private void pay(final JSONObject data, final Promise promise) {
+    private void processPayOrder(final JSONObject data, final Promise promise) {
         if (mProcessMessageListener == null) {
             promise.reject(1, "Missing webview listener.");
         } else {
-            mProcessMessageListener.pay(data, new IPaymentListener() {
+            mProcessMessageListener.payOrder(data, new IPaymentListener() {
                 @Override
                 public void onPayError(String param) {
                     promise.reject(1, param);

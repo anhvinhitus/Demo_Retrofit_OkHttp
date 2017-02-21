@@ -121,6 +121,13 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
                     mProgressBar.setVisibility(ProgressBar.GONE);
                 }
             }
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+
+                getActivity().setTitle(title);
+            }
         });
     }
 
@@ -341,12 +348,8 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
     }
 
     @Override
-    public void pay(JSONObject jsonObject, IPaymentListener listener) {
+    public void payOrder(JSONObject jsonObject, IPaymentListener listener) {
         mPresenter.pay(jsonObject, listener);
-    }
-
-    @Override
-    public void payOrder(final String url) {
     }
 
     @Override

@@ -9,9 +9,7 @@ import org.json.JSONObject;
  * Declare interface for web view listener
  */
 interface IProcessMessageListener {
-    void pay(JSONObject jsonObject, IPaymentListener listener);
-
-    void payOrder(String url);
+    void payOrder(JSONObject jsonObject, IPaymentListener listener);
 
     void logout();
 

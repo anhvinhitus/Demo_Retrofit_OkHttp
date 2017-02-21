@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.CookieManager;
@@ -189,12 +190,18 @@ public class ZPWebViewApp extends WebView implements IWebView {
             jsParam.put("msgType", message.messageType);
             jsParam.put("keepCallback", message.keepCallback);
             final String jsInvoker = String.format("ZaloPayJSBridge._invokeJS(%s)", Helper.toJSONString(jsParam));
-            Helper.runOnUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    runScript(jsInvoker, null);
-                }
-            });
+
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                // already on main thread
+                runScript(jsInvoker, null);
+            } else {
+                Helper.runOnUIThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runScript(jsInvoker, null);
+                    }
+                });
+            }
         } catch (JSONException e) {
             Timber.d(e, "Exception while executing JS");
         }
