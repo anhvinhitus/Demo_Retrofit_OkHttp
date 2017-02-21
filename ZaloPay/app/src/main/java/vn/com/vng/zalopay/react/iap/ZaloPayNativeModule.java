@@ -202,6 +202,9 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
+        if (mPaymentService != null) {
+            mPaymentService.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     /**

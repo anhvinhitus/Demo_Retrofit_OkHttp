@@ -182,7 +182,7 @@ public class PaymentWrapper {
     private void callManagerAccountAPI(Activity activity, String bankType, ELinkAccType linkAccType) {
         User user = AndroidApplication.instance().getUserComponent().currentUser();
         if (!user.hasZaloPayId()) {
-            Timber.i("Remove link account, zaloPayId is invalid");
+            Timber.i("Manager link account, zaloPayId is invalid");
             responseListener.onParameterError("uid");
             return;
         }
@@ -231,6 +231,7 @@ public class PaymentWrapper {
      * Handle fragment/activity result
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.d("onActivityResult: requestCode[%s] resultCode[%s]", requestCode, resultCode);
         boolean shouldProcessPendingOrder = false;
         if (resultCode != Activity.RESULT_OK && resultCode != Activity.RESULT_CANCELED) {
             return;
