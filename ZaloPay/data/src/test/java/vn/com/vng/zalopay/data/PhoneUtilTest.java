@@ -35,6 +35,8 @@ public class PhoneUtilTest {
         long phoneNumber21 = 99212345634432432L;
         long phoneNumber22 = 992;
 
+        Assert.assertEquals("", PhoneUtil.formatPhoneNumber(""));
+        Assert.assertEquals("2342", PhoneUtil.formatPhoneNumber("test2342abc"));
         Assert.assertEquals("", PhoneUtil.formatPhoneNumber(phoneNumber));
         Assert.assertEquals("", PhoneUtil.formatPhoneNumber(phoneNumber1));
         Assert.assertEquals("0"+ phoneNumber2, PhoneUtil.formatPhoneNumber(phoneNumber2));
