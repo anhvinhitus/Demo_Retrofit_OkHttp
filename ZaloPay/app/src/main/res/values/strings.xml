@@ -79,6 +79,7 @@
     <string name="btn_reload">Tải Lại</string>
     <string name="btn_turn_on_network">Bật Kết Nối</string>
     <string name="btn_send">Gửi</string>
+    <string name="btn_link">Liên Kết</string>
 
     <string name="txt_deposit">Nạp tiền</string>
     <string name="txt_withdraw">Rút tiền</string>
@@ -277,6 +278,7 @@
 
     <string name="otp_invalid">Sai mã OTP.</string>
     <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
+    <string name="update.profile2.success">Cập nhật thông tin thành công.</string>
     <string name="update.profile.success">Thông tin của bạn đã được gửi đi và đang chờ duyệt.</string>
     <string name="waiting.approve.email">Email của bạn đang chờ ban quản trị duyệt.</string>
     <string name="waiting.approve.identity">CMND/Hộ chiếu của bạn đang chờ ban quản trị duyệt.</string>
@@ -495,6 +497,6 @@
     <string name="do.not.ask.again.this.hint">Không hỏi lại gợi ý này</string>
     <string name="other.account">khác</string>
 	<string name="you.having.a.transaction.in.process">Bạn đang có một giao dịch đang trong quá trình thanh toán. Vui lòng kết thúc thanh toán cho giao dịch đó và thử lại</string>
-    <string name="confirm_link_card_to_continue_pay">Cần liên kết thẻ trước khi tiếp tục thanh toán. Bạn có muốn liên kết thẻ không?</string>
+    <string name="confirm_link_card_to_continue_pay"><b>Bước 1:</b> Bạn đã nâng cấp tài khoản thành công.\n<b>Bước 2:</b> Bạn cần liên kết tài khoản để tiếp tục thanh toán.</string>
 </resources>
 

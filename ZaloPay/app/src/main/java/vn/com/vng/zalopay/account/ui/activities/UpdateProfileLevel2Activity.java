@@ -183,24 +183,29 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
     @Override
     public void onConfirmOTPSuccess() {
         Timber.d("onConfirmOTPSucess, walletTransId: %s", walletTransId);
-        showToast("Cập nhật thông tin thành công.");
         presenter.saveUserPhone(mCurrentPhone);
         //Reload PaymentSDK for load new payment permission
         EventBus.getDefault().post(new RefreshPaymentSdkEvent());
         if (needSaveCardBeforeFinish()) {
+            showToastUpdateProfileSuccess();
             Timber.d("Confirm OTP success, in process save card.");
         } else if (mLinkAccAfterUpdateProfile2) {
             showDialogConfirmLinkAccToContinuePay();
         } else if (getActivity() != null && !getActivity().isFinishing()) {
+            showToastUpdateProfileSuccess();
             setResult(RESULT_OK);
             getActivity().finish();
         }
     }
 
+    private void showToastUpdateProfileSuccess() {
+        showToast(getString(R.string.update_profile2_success));
+    }
+
     private void showDialogConfirmLinkAccToContinuePay() {
         DialogHelper.showConfirmDialog(this, getString(R.string.confirm_link_card_to_continue_pay),
-                getString(R.string.btn_continue),
-                getString(R.string.btn_cancel),
+                getString(R.string.btn_link),
+                getString(R.string.txt_close),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {
