@@ -149,7 +149,7 @@ public class MessageParser implements Parser {
 
             notificationData.notificationstate = (Enums.NotificationState.UNREAD.getId());
 
-            if (message.status == MessageStatus.READED.getValue()) {
+            if (message.status == MessageStatus.READ.getValue()) {
                 notificationData.notificationstate = (Enums.NotificationState.READ.getId());
             }
             return notificationData;
