@@ -118,11 +118,6 @@ class WebAppCommunicationHandler {
                 }
 
                 @Override
-                public void onNotEnoughMoney() {
-                    callback(message, failObject("Not enough money."));
-                }
-
-                @Override
                 public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
 
                 }

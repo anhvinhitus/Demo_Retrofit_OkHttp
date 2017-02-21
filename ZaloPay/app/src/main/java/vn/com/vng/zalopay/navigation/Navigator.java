@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 
 import com.facebook.react.bridge.Promise;
@@ -52,7 +50,6 @@ import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
 import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
-import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
@@ -128,7 +125,7 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public Intent getIntentLoginExternal(Context context) {
+    private Intent getIntentLoginExternal(Context context) {
         Intent intent = getIntentLogin(context, false);
         intent.putExtra("callingExternal", true);
         return intent;
@@ -166,10 +163,6 @@ public class Navigator implements INavigator {
         return intent;
     }
 
-    public void startUpdateProfileLevel2Activity(Context context) {
-        startUpdateProfileLevel2Activity(context, null);
-    }
-
     public void startUpdateLevel2(Context context, @NonNull String otp) {
         Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -186,10 +179,16 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
+    @Override
     public void startDepositForResultActivity(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), BalanceTopupActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_DEPOSIT);
+    }
+
+    @Override
+    public void startDepositForResultActivity(Activity activity) {
+        startDepositForResultActivity(activity, false);
     }
 
     public void startDepositForResultActivity(Activity activity, boolean showNotificationLinkCard) {
@@ -292,20 +291,17 @@ public class Navigator implements INavigator {
         }
     }
 
-    public void startUpdateProfileLevel2Activity(Context context, String walletTransID) {
+    public void startUpdateProfileLevel2Activity(Context context) {
         if (context == null) {
             Timber.w("Cannot start pre-profile activity due to NULL context");
             return;
         }
 
         Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
-        if (!TextUtils.isEmpty(walletTransID)) {
-            intent.putExtra(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID, walletTransID);
-        }
-
         context.startActivity(intent);
     }
 
+    @Override
     public void startUpdateProfile2ForResult(Fragment fragment, String walletTransID) {
         if (fragment == null || fragment.getContext() == null) {
             Timber.w("Cannot start pre-profile activity due to NULL context");
@@ -320,6 +316,7 @@ public class Navigator implements INavigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2);
     }
 
+    @Override
     public void startUpdateProfile2ForResult(Activity activity, String walletTransID) {
         if (activity == null) {
             Timber.w("Cannot start pre-profile activity due to NULL context");
@@ -347,7 +344,7 @@ public class Navigator implements INavigator {
         }
     }
 
-    public Intent intentChangePinActivity(Activity activity) {
+    private Intent intentChangePinActivity(Activity activity) {
         return new Intent(activity, ChangePinActivity.class);
     }
 
@@ -405,7 +402,7 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    public void startTransferActivity(Activity context, Bundle bundle) {
+    /*public void startTransferActivity(Activity context, Bundle bundle) {
         Intent intent = new Intent(context, TransferActivity.class);
         intent.putExtras(bundle);
         context.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
@@ -413,7 +410,7 @@ public class Navigator implements INavigator {
 
     public void startUpdateProfile3Activity(Context context) {
         startUpdateProfile3Activity(context, false);
-    }
+    }*/
 
     public void startUpdateProfile3Activity(Context context, boolean focusIdentity) {
         if (mUserConfig.hasCurrentUser() && mUserConfig.getCurrentUser().profilelevel == MIN_PROFILE_LEVEL) {

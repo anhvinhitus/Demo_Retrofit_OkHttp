@@ -39,7 +39,12 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
                 .setBalanceRepository(mBalanceRepository)
                 .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new PaymentResponseListener(listener, mWeakReference))
-                .setRedirectListener(new PaymentRedirectListener(mWeakReference))
+                .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
+                    @Override
+                    public Object getContext() {
+                        return mWeakReference.get();
+                    }
+                })
                 .setShowNotificationLinkCard(false)
                 .build();
 
@@ -117,29 +122,6 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
             destroyVariable();
         }
 
-        @Override
-        public void onNotEnoughMoney() {
-            if (mMWeakReference == null || mMWeakReference.get() == null) {
-                navigator.startDepositActivity(AndroidApplication.instance().getApplicationContext());
-            } else {
-                navigator.startDepositForResultActivity(mMWeakReference.get(), false);
-            }
-        }
     }
 
-    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
-        private final WeakReference<Activity> mMWeakReference;
-
-        public PaymentRedirectListener(WeakReference<Activity> mWeakReference) {
-            mMWeakReference = mWeakReference;
-        }
-
-        @Override
-        public void startUpdateProfileLevel(String walletTransId) {
-            if (mMWeakReference.get() == null) {
-                return;
-            }
-            navigator.startUpdateProfile2ForResult(mMWeakReference.get(), walletTransId);
-        }
-    }
 }

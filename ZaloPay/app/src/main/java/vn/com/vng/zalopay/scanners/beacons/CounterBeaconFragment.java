@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
+import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
@@ -96,6 +97,12 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(mTransactionRepository)
                 .setResponseListener(new PaymentResponseListener())
+                .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
+                    @Override
+                    public Object getContext() {
+                        return CounterBeaconFragment.this;
+                    }
+                })
                 .build();
         Timber.d("Finish setupFragmentComponent");
     }
@@ -450,10 +457,6 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
             beaconScanner.startScan();
         }
 
-        @Override
-        public void onNotEnoughMoney() {
-            navigator.startDepositActivity(CounterBeaconFragment.this.getContext());
-        }
     }
 
     private void stopAnimation() {

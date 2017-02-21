@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
@@ -61,7 +62,15 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
-                .setRedirectListener(new PaymentRedirectListener())
+                .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
+                    @Override
+                    public Object getContext() {
+                        if (mView == null) {
+                            return null;
+                        }
+                        return mView.getFragment();
+                    }
+                })
                 .build();
         mEventBus = eventBus;
     }
@@ -177,16 +186,6 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
                 return;
             }
             mEventBus.postSticky(new TokenPaymentExpiredEvent());
-        }
-    }
-
-    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
-        @Override
-        public void startUpdateProfileLevel(String walletTransId) {
-            if (mView == null || mView.getFragment() == null) {
-                return;
-            }
-            mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
         }
     }
 }

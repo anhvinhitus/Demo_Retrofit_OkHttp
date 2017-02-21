@@ -391,6 +391,14 @@ public class PaymentWrapper {
         return paymentInfo;
     }
 
+    void startDepositForResult() {
+        if (mActivity == null) {
+            return;
+        }
+
+        mNavigator.startDepositForResultActivity(mActivity);
+    }
+
     void startUpdateProfile2ForResult(String walletTransID) {
         if (mActivity == null) {
             return;
@@ -401,6 +409,7 @@ public class PaymentWrapper {
 
     public interface IRedirectListener {
         void startUpdateProfileLevel(String walletTransId);
+        void startDepositForResult();
     }
 
     public interface IResponseListener {
@@ -413,8 +422,6 @@ public class PaymentWrapper {
         void onResponseTokenInvalid();
 
         void onAppError(String msg);
-
-        void onNotEnoughMoney();
 
         void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId);
     }

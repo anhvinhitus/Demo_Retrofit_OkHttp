@@ -25,6 +25,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
@@ -67,7 +68,15 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
-                .setRedirectListener(new PaymentRedirectListener())
+                .setRedirectListener(new DefaultPaymentRedirectListener(mNavigator) {
+                    @Override
+                    public Object getContext() {
+                        if (mView == null) {
+                            return null;
+                        }
+                        return mView.getFragment();
+                    }
+                })
                 .build();
     }
 
@@ -188,22 +197,5 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
             }
         }
 
-        @Override
-        public void onNotEnoughMoney() {
-            if (mView == null) {
-                return;
-            }
-            mNavigator.startDepositForResultActivity(mView.getFragment());
-        }
-    }
-
-    private class PaymentRedirectListener implements PaymentWrapper.IRedirectListener {
-        @Override
-        public void startUpdateProfileLevel(String walletTransId) {
-            if (mView == null || mView.getFragment() == null) {
-                return;
-            }
-            mNavigator.startUpdateProfile2ForResult(mView.getFragment(), walletTransId);
-        }
     }
 }

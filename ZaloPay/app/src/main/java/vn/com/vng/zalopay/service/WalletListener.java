@@ -88,8 +88,12 @@ class WalletListener implements ZPPaymentListener {
                     paymentIsCompleted = false; // will continue after update profile
                     break;
                 case ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH:
+                    if (mPaymentWrapper.mRedirectListener == null) {
+                        mPaymentWrapper.startDepositForResult();
+                    } else {
+                        mPaymentWrapper.mRedirectListener.startDepositForResult();
+                    }
                     mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_MONEY_NOT_ENOUGH);
-                    mPaymentWrapper.responseListener.onNotEnoughMoney();
 
                     paymentIsCompleted = false; // will continue after update profile
                     break;

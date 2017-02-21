@@ -91,11 +91,6 @@ public abstract class DefaultPaymentResponseListener implements PaymentWrapper.I
     }
 
     @Override
-    public void onNotEnoughMoney() {
-
-    }
-
-    @Override
     public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
 
     }
