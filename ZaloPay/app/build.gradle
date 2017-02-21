@@ -448,6 +448,8 @@ dependencies {
     compile project(':zalopay.feedback')
 
     compile libs.fresco
+
+    compile project(path: ':webapp.framework')
 }
 
 apply plugin: 'com.google.gms.google-services'
