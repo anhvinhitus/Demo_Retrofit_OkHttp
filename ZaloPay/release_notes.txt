@@ -1,3 +1,9 @@
+Zalo Pay (Sandbox v2.8.0 - build 168) - Released on 2017-02-21
+- Update Zalo Integration (Case đang ở trạng thái thanh toán)
+- Refactor phần token expired, Thêm mã lỗi  user_is_locked (-124)
+- Refactor, Update logic tiếp tục thanh toán khi: cập nhật profile, nạp tiền, liên kết thẻ.
+- Fix bug QC báo, fabric
+
 Zalo Pay (Sandbox v2.8.0 - build 167) - Released on 2017-02-17
 - Fix deep link otp, pay order
 - Fix valid phone number.
