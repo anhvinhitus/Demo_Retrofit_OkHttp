@@ -129,13 +129,17 @@ abstract class AbsQrScanFragment extends RuntimePermissionFragment implements Ca
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         pause();
+        super.onDestroyView();
     }
 
     @Override
     public void previewSized() {
         Timber.d("previewSized");
+        if (!isAdded()) {
+            return;
+        }
+
         if (getViewfinder() != null) {
             getViewfinder().resumeScanLine();
         }
@@ -144,6 +148,10 @@ abstract class AbsQrScanFragment extends RuntimePermissionFragment implements Ca
     @Override
     public void previewStarted() {
         Timber.d("previewStarted");
+        if (!isAdded()) {
+            return;
+        }
+
         if (getViewfinder() != null) {
             getViewfinder().resumeScanLine();
         }
@@ -152,6 +160,11 @@ abstract class AbsQrScanFragment extends RuntimePermissionFragment implements Ca
     @Override
     public void previewStopped() {
         Timber.d("previewStopped");
+
+        if (!isAdded()) {
+            return;
+        }
+
         if (getViewfinder() != null) {
             getViewfinder().stopScanLine();
         }
@@ -164,6 +177,11 @@ abstract class AbsQrScanFragment extends RuntimePermissionFragment implements Ca
     @Override
     public void cameraError(Exception error) {
         Timber.d(error, "cameraError");
+
+        if (!isAdded()) {
+            return;
+        }
+
         if (!isPermissionGranted(Manifest.permission.CAMERA)) {
             showCameraError(R.string.exception_open_camera_not_allow);
             return;
