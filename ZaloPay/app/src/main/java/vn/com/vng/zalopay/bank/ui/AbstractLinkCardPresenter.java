@@ -15,12 +15,13 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -28,7 +29,6 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
@@ -179,7 +179,16 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         }
     }
 
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+
+        @Override
+        protected ILoadDataView getView() {
+            if (mView instanceof ILoadDataView) {
+                return (ILoadDataView) mView;
+            }
+            return null;
+        }
+
         @Override
         public void onParameterError(String param) {
             showErrorView(param);
@@ -205,15 +214,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 return;
             }
             onAddCardSuccess(paymentInfo.mapBank);
-        }
-
-        @Override
-        public void onResponseTokenInvalid() {
-            if (mView == null) {
-                return;
-            }
-
-            mEventBus.postSticky(new TokenPaymentExpiredEvent());
         }
 
         @Override

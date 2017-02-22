@@ -5,6 +5,9 @@ import android.text.TextUtils;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -65,12 +68,16 @@ public abstract class DefaultPaymentResponseListener implements PaymentWrapper.I
     @Override
     public void onResponseTokenInvalid() {
         Timber.d("onResponseTokenInvalid - cleanup and logout");
-        if (getView() == null) {
-            return;
-        }
-
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         applicationComponent.eventBus().postSticky(new TokenPaymentExpiredEvent());
+    }
+
+    @Override
+    public void onResponseAccountSuspended() {
+        Timber.d("onResponseAccountSuspended - cleanup and logout");
+        AccountSuspendedException exception = new AccountSuspendedException(NetworkError.USER_IS_LOCKED, "");
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+        applicationComponent.eventBus().postSticky(new ThrowToLoginScreenEvent(exception));
     }
 
     @Override

@@ -6,9 +6,14 @@ import android.content.Intent;
 import java.lang.ref.WeakReference;
 
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
@@ -111,7 +116,15 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
 
         @Override
         public void onResponseTokenInvalid() {
+            ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+            applicationComponent.eventBus().postSticky(new TokenPaymentExpiredEvent());
+        }
 
+        @Override
+        public void onResponseAccountSuspended() {
+            AccountSuspendedException exception = new AccountSuspendedException(NetworkError.USER_IS_LOCKED, "");
+            ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+            applicationComponent.eventBus().postSticky(new ThrowToLoginScreenEvent(exception));
         }
 
         @Override

@@ -20,12 +20,17 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
@@ -350,7 +355,7 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
             if (!isAdded()) {
                 return;
             }
-            
+
             Timber.i("Error in getting order information for transaction %s", device.paymentRecord.transactionToken);
             OrderCache cache = mTransactionCache.get(device.paymentRecord.transactionToken);
             cache.status = OrderCache.STATUS_ERROR;
@@ -448,7 +453,17 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
 
         @Override
         public void onResponseTokenInvalid() {
-            Timber.d("Invalid token");
+            Timber.d("onResponseTokenInvalid - cleanup and logout");
+            ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+            applicationComponent.eventBus().postSticky(new TokenPaymentExpiredEvent());
+        }
+
+        @Override
+        public void onResponseAccountSuspended() {
+            Timber.d("onResponseAccountSuspended - cleanup and logout");
+            AccountSuspendedException exception = new AccountSuspendedException(NetworkError.USER_IS_LOCKED, "");
+            ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+            applicationComponent.eventBus().postSticky(new ThrowToLoginScreenEvent(exception));
         }
 
         @Override

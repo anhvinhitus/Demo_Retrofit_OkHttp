@@ -7,13 +7,18 @@ import java.lang.ref.WeakReference;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
+import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
+import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
  * Created by hieuvm on 12/1/16.
+ * *
  */
 
 public abstract class AbsPWResponseListener implements PaymentWrapper.IResponseListener {
@@ -67,12 +72,15 @@ public abstract class AbsPWResponseListener implements PaymentWrapper.IResponseL
 
     @Override
     public void onResponseTokenInvalid() {
-        Activity activity = mAct.get();
-        if (activity == null) {
-            return;
-        }
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+        applicationComponent.eventBus().postSticky(new TokenPaymentExpiredEvent());
+    }
 
-        this.onError(new PaymentWrapperException(NetworkError.TOKEN_INVALID, activity.getString(R.string.exception_token_expired_message)));
+    @Override
+    public void onResponseAccountSuspended() {
+        AccountSuspendedException exception = new AccountSuspendedException(NetworkError.USER_IS_LOCKED, "");
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
+        applicationComponent.eventBus().postSticky(new ThrowToLoginScreenEvent(exception));
     }
 
     @Override
