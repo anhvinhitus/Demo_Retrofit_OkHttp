@@ -49,9 +49,6 @@ public class UpdateProfile3Presenter extends AbstractPresenter<IUpdateProfile3Vi
                                final Uri fimgPath,
                                final Uri bimgPath,
                                final Uri avatarPath) {
-
-        mView.showLoading();
-
         update(identityNumber, email, fimgPath, bimgPath, avatarPath);
     }
 
@@ -114,19 +111,31 @@ public class UpdateProfile3Presenter extends AbstractPresenter<IUpdateProfile3Vi
     }
 
     private void onUpdateError(Throwable e) {
-        if (e instanceof BodyException) {
-            if (((BodyException) e).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
-                mView.showError(ErrorMessageFactory.create(mApplicationContext, e));
-                mView.waitingApproveProfileLevel3();
-                return;
-            }
+        if (mView == null) {
+            return;
         }
+
         mView.hideLoading();
         String message = ErrorMessageFactory.create(mApplicationContext, e);
         mView.showError(message);
+
+        if (e instanceof BodyException) {
+            if (((BodyException) e).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
+                mView.finish();
+            }
+        }
+
     }
 
     private final class UpdateSubscriber extends DefaultSubscriber<Boolean> {
+
+        @Override
+        public void onStart() {
+            if (mView != null) {
+                mView.showLoading();
+            }
+        }
+
         @Override
         public void onNext(Boolean aBoolean) {
             if (aBoolean) {
