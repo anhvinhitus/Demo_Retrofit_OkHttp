@@ -137,8 +137,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 launchOption.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
             } else if (appResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
                 launchOption.putString("url", BuildConfig.APP22_URL);
-                launchOption.putString("uid", mUser.zaloPayId);
-                launchOption.putString("accesstoken", mUser.accesstoken);
             }
         }
 
