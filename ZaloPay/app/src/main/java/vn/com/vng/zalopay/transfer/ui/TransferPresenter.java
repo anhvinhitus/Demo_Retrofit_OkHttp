@@ -195,26 +195,22 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     public void transferMoney() {
-        if (mUser.profilelevel < 2) {
-            mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
-        } else {
-            if (mTransaction.amount <= 0) {
-                return;
-            }
-
-            mPreviousTransferId = null;
-            Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
-                    mTransaction.amount,
-                    ETransactionType.WALLET_TRANSFER.toString(),
-                    "1;" + mTransaction.zaloPayId,
-                    mTransaction.message,
-                    mTransaction.displayName)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new CreateWalletOrderSubscriber());
-
-            mSubscription.add(subscription);
+        if (mTransaction.amount <= 0) {
+            return;
         }
+
+        mPreviousTransferId = null;
+        Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
+                mTransaction.amount,
+                ETransactionType.WALLET_TRANSFER.toString(),
+                "1;" + mTransaction.zaloPayId,
+                mTransaction.message,
+                mTransaction.displayName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CreateWalletOrderSubscriber());
+
+        mSubscription.add(subscription);
     }
 
     private final class CreateWalletOrderSubscriber extends DefaultSubscriber<Order> {
