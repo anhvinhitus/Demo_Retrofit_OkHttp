@@ -361,9 +361,10 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     @Override
-    public void waitingApproveProfileLevel3() {
-        hideLoading();
-        getActivity().finish();
+    public void finish() {
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     private void showBottomSheetDialog(final int requestCode) {

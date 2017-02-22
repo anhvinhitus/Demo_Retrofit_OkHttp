@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.account.ui.view;
 
 /**
  * Created by AnhHieu on 7/1/16.
- *
  */
 public interface IUpdateProfile3View {
     void showLoading();
@@ -11,7 +10,7 @@ public interface IUpdateProfile3View {
 
     void updateSuccess();
 
-    void waitingApproveProfileLevel3();
+    void finish();
 
     void showError(String message);
 
