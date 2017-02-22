@@ -18,6 +18,8 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.react.redpacket.RedPacketPayListener;
+import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
@@ -43,7 +45,7 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         this.paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(mBalanceRepository)
                 .setTransactionRepository(mTransactionRepository)
-                .setResponseListener(new PaymentResponseListener(listener, mWeakReference))
+                .setResponseListener(new PaymentResponseListener(listener))
                 .setRedirectListener(new DefaultPaymentRedirectListener(navigator) {
                     @Override
                     public Object getContext() {
@@ -79,13 +81,16 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
         paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
         private final RedPacketPayListener mListener;
-        private final WeakReference<Activity> mMWeakReference;
 
-        public PaymentResponseListener(RedPacketPayListener listener, WeakReference<Activity> mWeakReference) {
+        public PaymentResponseListener(RedPacketPayListener listener) {
             mListener = listener;
-            mMWeakReference = mWeakReference;
+        }
+
+        @Override
+        protected ILoadDataView getView() {
+            return null;
         }
 
         @Override
@@ -107,24 +112,6 @@ public class RedPacketPayServiceImpl implements IRedPacketPayService {
             if (mListener != null) {
                 mListener.onResponseSuccess(null);
             }
-        }
-
-        @Override
-        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-
-        }
-
-        @Override
-        public void onResponseTokenInvalid() {
-            ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-            applicationComponent.eventBus().postSticky(new TokenPaymentExpiredEvent());
-        }
-
-        @Override
-        public void onResponseAccountSuspended() {
-            AccountSuspendedException exception = new AccountSuspendedException(NetworkError.USER_IS_LOCKED, "");
-            ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-            applicationComponent.eventBus().postSticky(new ThrowToLoginScreenEvent(exception));
         }
 
         @Override

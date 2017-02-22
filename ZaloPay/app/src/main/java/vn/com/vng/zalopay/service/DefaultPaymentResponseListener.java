@@ -54,8 +54,8 @@ public abstract class DefaultPaymentResponseListener implements PaymentWrapper.I
             return;
         }
 
+        view.hideLoading();
         if (status == PaymentError.ERR_CODE_INTERNET) {
-            view.hideLoading();
             view.showNetworkErrorDialog();
         }
     }

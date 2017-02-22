@@ -36,9 +36,11 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.widget.RippleBackground;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -428,7 +430,12 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
         }
     }
 
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+        @Override
+        protected ILoadDataView getView() {
+            return null;
+        }
+
         @Override
         public void onParameterError(String param) {
 //                        showToast("Error in parameter: " + param);
@@ -444,26 +451,6 @@ public class CounterBeaconFragment extends RuntimePermissionFragment implements 
         @Override
         public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
             CounterBeaconFragment.this.getActivity().finish();
-        }
-
-        @Override
-        public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
-
-        }
-
-        @Override
-        public void onResponseTokenInvalid() {
-            Timber.d("onResponseTokenInvalid - cleanup and logout");
-            ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-            applicationComponent.eventBus().postSticky(new TokenPaymentExpiredEvent());
-        }
-
-        @Override
-        public void onResponseAccountSuspended() {
-            Timber.d("onResponseAccountSuspended - cleanup and logout");
-            AccountSuspendedException exception = new AccountSuspendedException(NetworkError.USER_IS_LOCKED, "");
-            ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-            applicationComponent.eventBus().postSticky(new ThrowToLoginScreenEvent(exception));
         }
 
         @Override

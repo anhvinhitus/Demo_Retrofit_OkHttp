@@ -27,9 +27,11 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.scanners.models.PaymentRecord;
 import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
@@ -264,7 +266,12 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
         }
     }
 
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
+        @Override
+        protected ILoadDataView getView() {
+            return null;
+        }
+
         @Override
         public void onParameterError(String param) {
             //mNFCStatus.setText("Tham số hoá đơn không hợp lệ");
@@ -283,22 +290,7 @@ final class NFCReaderPresenter extends AbstractPresenter<NfcView> {
         }
 
         @Override
-        public void onResponseTokenInvalid() {
-
-        }
-
-        @Override
-        public void onResponseAccountSuspended() {
-
-        }
-
-        @Override
         public void onAppError(String msg) {
-
-        }
-
-        @Override
-        public void onPreComplete(boolean isSuccessful, String pTransId, String pAppTransId) {
 
         }
 

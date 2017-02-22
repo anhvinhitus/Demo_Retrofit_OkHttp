@@ -5,26 +5,21 @@ import android.content.Intent;
 
 import com.facebook.react.bridge.Promise;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.Locale;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
-import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.Order;
-import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 /**
@@ -38,18 +33,15 @@ public class PaymentServiceImpl implements IPaymentService {
     private final TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper mPaymentWrapper;
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
-    private final EventBus mEventBus;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public PaymentServiceImpl(MerchantStore.Repository zaloPayIAPRepository,
                               BalanceStore.Repository balanceRepository,
-                              TransactionStore.Repository transactionRepository,
-                              EventBus eventBus) {
+                              TransactionStore.Repository transactionRepository) {
         this.mMerchantRepository = zaloPayIAPRepository;
         this.mBalanceRepository = balanceRepository;
         this.mTransactionRepository = transactionRepository;
-        this.mEventBus = eventBus;
     }
 
     @Override
@@ -63,17 +55,6 @@ public class PaymentServiceImpl implements IPaymentService {
                 .build();
 
         this.mPaymentWrapper.payWithOrder(activity, order);
-    }
-
-    private void logout() {
-        Timber.d("logout");
-        mEventBus.postSticky(new TokenPaymentExpiredEvent());
-    }
-
-    private void throwAccountSuspended() {
-        Timber.d("Account Suspended");
-        AccountSuspendedException exception = new AccountSuspendedException(NetworkError.USER_IS_LOCKED, "");
-        mEventBus.postSticky(new ThrowToLoginScreenEvent(exception));
     }
 
     private void unsubscribeIfNotNull(CompositeSubscription subscription) {
@@ -126,11 +107,16 @@ public class PaymentServiceImpl implements IPaymentService {
         }
     }
 
-    private class PaymentResponseListener implements PaymentWrapper.IResponseListener {
+    private class PaymentResponseListener extends DefaultPaymentResponseListener {
         private final Promise mPromise;
 
         public PaymentResponseListener(Promise promise) {
             mPromise = promise;
+        }
+
+        @Override
+        protected ILoadDataView getView() {
+            return null;
         }
 
         @Override
@@ -150,29 +136,10 @@ public class PaymentServiceImpl implements IPaymentService {
         }
 
         @Override
-        public void onResponseTokenInvalid() {
-            Timber.d("Response Token Invalid while paying.");
-            /*Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_TOKEN_INVALID.value(),
-                    PaymentError.getErrorMessage(PaymentError.ERR_CODE_TOKEN_INVALID));*/
-            logout();
-        }
-
-        @Override
-        public void onResponseAccountSuspended() {
-            Timber.d("Response Account Suspended while paying.");
-            throwAccountSuspended();
-        }
-
-        @Override
         public void onAppError(String msg) {
             Helpers.promiseResolveError(mPromise, PaymentError.ERR_CODE_SYSTEM.value(),
                     PaymentError.getErrorMessage(PaymentError.ERR_CODE_SYSTEM));
             destroyVariable();
-        }
-
-        @Override
-        public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
-
         }
     }
 }
