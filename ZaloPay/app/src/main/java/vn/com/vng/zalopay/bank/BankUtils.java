@@ -32,6 +32,7 @@ public class BankUtils {
         mBankSettings.put(ECardType.PBIDV.toString(), new BankCardStyle(R.drawable.ic_bidv, R.color.bg_bidv_start, R.color.bg_bidv_end));
         mBankSettings.put(ECardType.PVCB.toString(), new BankCardStyle(R.drawable.ic_vietcombank, R.color.bg_vietcombank_start, R.color.bg_vietcombank_end));
         mBankSettings.put(ECardType.PSCB.toString(), new BankCardStyle(R.drawable.ic_sacombank, R.color.bg_sacombank_start, R.color.bg_sacombank_end));
+        mBankSettings.put(ECardType.PSGCB.toString(), new BankCardStyle(R.drawable.ic_sgcb, R.color.bg_commercialbank_start, R.color.bg_commercialbank_end));
         /*mBankSettings.put(ECardType.PEIB.toString(), new BankCardStyle(R.drawable.ic_eximbank, R.color.bg_eximbank_start, R.color.bg_eximbank_end));
         mBankSettings.put(ECardType.PAGB.toString(), new BankCardStyle(R.drawable.ic_agribank, R.color.bg_agribank_start, R.color.bg_agribank_end));
         mBankSettings.put(ECardType.PTPB.toString(), new BankCardStyle(R.drawable.ic_tpbank, R.color.bg_tpbank_start, R.color.bg_tpbank_end));*/

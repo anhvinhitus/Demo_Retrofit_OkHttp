@@ -202,7 +202,13 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             /*ArrayList<BankCard> tmp = new ArrayList<>();
             BankCard vcbCard = new BankCard("Nguyen Van A", "686868", "1231", ECardType.PVCB.toString());
             vcbCard.type = vcbCard.bankcode;
-            tmp.add(vcbCard);*/
+            tmp.add(vcbCard);
+            BankCard sCard = new BankCard("Nguyen Van W", "970403", "1234", ECardType.PSCB.toString());
+            sCard.type = sCard.bankcode;
+            tmp.add(sCard);
+            BankCard sgCard = new BankCard("Nguyen Van S", "157979", "9999", ECardType.PSGCB.toString());
+            sgCard.type = sgCard.bankcode;
+            tmp.add(sgCard);*/
             LinkCardPresenter.this.onGetLinkCardSuccess(bankCards);
         }
     }
