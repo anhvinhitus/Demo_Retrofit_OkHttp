@@ -71,7 +71,6 @@ class WalletListener implements ZPPaymentListener {
                     } else {
                         mPaymentWrapper.mRedirectListener.startUpdateProfileLevel(null);
                     }
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
 
                     paymentIsCompleted = false; // will continue after update profile
                     break;
@@ -86,7 +85,6 @@ class WalletListener implements ZPPaymentListener {
                     } else {
                         mPaymentWrapper.mRedirectListener.startUpdateProfileLevel(walletTransId);
                     }
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_UPGRADE_PROFILE_LEVEL);
 
                     paymentIsCompleted = false; // will continue after update profile
                     break;
@@ -96,7 +94,6 @@ class WalletListener implements ZPPaymentListener {
                     } else {
                         mPaymentWrapper.mRedirectListener.startDepositForResult();
                     }
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_CODE_MONEY_NOT_ENOUGH);
 
                     paymentIsCompleted = false; // will continue after update profile
                     break;
