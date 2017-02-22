@@ -101,6 +101,8 @@
     <color name="bg_shb_end">#ffc601</color>
     <color name="bg_sacombank_start">#0b6198</color>
     <color name="bg_sacombank_end">#047dbb</color>
+    <color name="bg_commercialbank_start">#269144</color>
+    <color name="bg_commercialbank_end">#47cf27</color>
     <color name="bg_mb_start">#0066b4</color>
     <color name="bg_mb_end">#1472d1</color>
     <color name="bg_maritimebank_start">#afb5b5</color>
