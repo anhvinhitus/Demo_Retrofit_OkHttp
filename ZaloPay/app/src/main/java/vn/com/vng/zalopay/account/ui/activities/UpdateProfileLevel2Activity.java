@@ -203,13 +203,13 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
     }
 
     private void showDialogConfirmLinkAccToContinuePay() {
-        DialogHelper.showConfirmDialog(this, getString(R.string.confirm_link_card_to_continue_pay),
+        DialogHelper.showNoticeDialog(this, getString(R.string.confirm_link_card_to_continue_pay),
                 getString(R.string.btn_link),
-                getString(R.string.txt_close),
+                getString(R.string.btn_cancel_transaction),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override
                     public void onCancelEvent() {
-                        finishActivityWithResult(RESULT_CANCELED);
+                        finishActivityWithResult(Constants.RESULT_END_PAYMENT);
                     }
 
                     @Override

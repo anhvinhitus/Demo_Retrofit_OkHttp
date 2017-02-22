@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -87,8 +88,10 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
      * @return A new instance of fragment LinkAccountFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LinkAccountFragment newInstance() {
-        return new LinkAccountFragment();
+    public static LinkAccountFragment newInstance(Bundle bundle) {
+        LinkAccountFragment fragment = new LinkAccountFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -132,6 +135,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
+        mPresenter.initData(getArguments());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
         if (animator != null) {
@@ -224,6 +228,27 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
             return;
         }
         super.showRetryDialog(message, listener);
+    }
+
+    @Override
+    public void showConfirmPayAfterLinkAcc() {
+        DialogHelper.showNoticeDialog(getActivity(),
+                getString(R.string.confirm_continue_pay),
+                getString(R.string.btn_continue),
+                getString(R.string.btn_cancel_transaction),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+                        getActivity().setResult(Constants.RESULT_END_PAYMENT);
+                        getActivity().finish();
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().finish();
+                    }
+                });
     }
 
     @Override

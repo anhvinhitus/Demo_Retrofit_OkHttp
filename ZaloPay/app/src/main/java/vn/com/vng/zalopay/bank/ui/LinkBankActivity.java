@@ -54,15 +54,15 @@ public class LinkBankActivity extends BaseToolBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter.attachView(this);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new LinkBankPagerAdapter(getSupportFragmentManager());
-
         Bundle bundle = null;
         if (getIntent() != null) {
             bundle = getIntent().getExtras();
         }
+        mPresenter.attachView(this);
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new LinkBankPagerAdapter(getSupportFragmentManager(), bundle);
+
         mPresenter.initPageStart(bundle);
     }
 

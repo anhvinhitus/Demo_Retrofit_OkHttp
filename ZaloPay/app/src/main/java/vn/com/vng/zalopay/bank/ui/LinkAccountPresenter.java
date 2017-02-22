@@ -133,22 +133,22 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     @Override
     void onAddCardSuccess(DBaseMap mappedCreditCard) {
-        if (mView == null || mappedCreditCard == null) {
+        if (mView == null || !(mappedCreditCard instanceof DBankAccount)) {
             return;
         }
 
-        String firstAccountNo = "";
-        String lastAccountNo = "";
-        if (mappedCreditCard instanceof DBankAccount) {
-            firstAccountNo = ((DBankAccount) mappedCreditCard).firstaccountno;
-            lastAccountNo = ((DBankAccount) mappedCreditCard).lastaccountno;
-        }
+        String firstAccountNo = ((DBankAccount) mappedCreditCard).firstaccountno;
+        String lastAccountNo = ((DBankAccount) mappedCreditCard).lastaccountno;
         BankAccount bankAccount = new BankAccount(firstAccountNo,
                 lastAccountNo,
                 mappedCreditCard.getFirstNumber(),
                 mappedCreditCard.getLastNumber(),
                 mappedCreditCard.bankcode);
         mView.insertData(bankAccount);
+
+        if (mPayAfterLinkAcc) {
+            mView.showConfirmPayAfterLinkAcc();
+        }
     }
 
     @Override

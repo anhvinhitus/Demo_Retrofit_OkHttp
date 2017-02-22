@@ -254,6 +254,9 @@ public class PaymentWrapper {
         Timber.d("onActivityResult: requestCode[%s] resultCode[%s]", requestCode, resultCode);
         boolean shouldProcessPendingOrder = false;
         if (resultCode != Activity.RESULT_OK && resultCode != Activity.RESULT_CANCELED) {
+            if (resultCode == Constants.RESULT_END_PAYMENT) {
+                responseListener.onResponseError(PaymentError.ERR_CODE_USER_CANCEL);
+            }
             return;
         }
 
@@ -262,8 +265,12 @@ public class PaymentWrapper {
                 || requestCode == Constants.REQUEST_CODE_LINK_BANK) {
             shouldProcessPendingOrder = true;
         } else if (requestCode == Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_BEFORE_LINK_ACC) {
-            onUpdateProfileAndLinkAcc(requestCode);
-            return;
+            if (resultCode == Activity.RESULT_CANCELED) {
+                shouldProcessPendingOrder = true;
+            } else {
+                onUpdateProfileAndLinkAcc(requestCode);
+                return;
+            }
         }
 
         if (shouldProcessPendingOrder && hasPendingOrder()) {

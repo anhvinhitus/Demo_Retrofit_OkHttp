@@ -100,8 +100,10 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 //    @BindView(R.id.progressContainer)
 //    View mLoadingView;
 
-    public static LinkCardFragment newInstance() {
-        return new LinkCardFragment();
+    public static LinkCardFragment newInstance(Bundle bundle) {
+        LinkCardFragment fragment = new LinkCardFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override

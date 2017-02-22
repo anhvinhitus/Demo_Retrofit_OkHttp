@@ -43,7 +43,10 @@ public interface Constants {
     String ARG_BANK_LIST = "auto_load_data";
     String ARG_BANK = "bank";
     String ARG_PAGE_INDEX = "page_index";
+    String ARG_CONTINUE_PAY_AFTER_LINK_ACC = "continue_pay_after_link_acc";
     String ARG_UPDATE_PROFILE2_AND_LINK_ACC = "link_acc_after_update_profile2";
+
+    int RESULT_END_PAYMENT = -2;
 
     //DMappedCard: model of zalo payment sdk
 

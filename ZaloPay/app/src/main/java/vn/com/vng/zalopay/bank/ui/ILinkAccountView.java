@@ -33,4 +33,6 @@ interface ILinkAccountView extends ILoadDataView {
     void onUpdateVersion(boolean forceUpdate, String latestVersion, String message);
 
     boolean getUserVisibleHint();
+
+    void showConfirmPayAfterLinkAcc();
 }

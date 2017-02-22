@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.bank.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -10,6 +11,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -43,6 +45,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     protected PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
     private IGetCardSupportListListener mGetCardSupportListListener;
+    boolean mPayAfterLinkAcc;
 
     User mUser;
 
@@ -135,6 +138,13 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         //release cache
         CShareDataWrapper.dispose();
         super.destroy();
+    }
+
+    void initData(Bundle bundle) {
+        if (bundle == null) {
+            return;
+        }
+        mPayAfterLinkAcc = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_ACC);
     }
 
     void getListBankSupport() {

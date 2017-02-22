@@ -257,7 +257,7 @@ public class Navigator implements INavigator {
         if (!validUserBeforeLinkBank(activity)) {
             return;
         }
-        final Intent intent = intentLinkAccount(activity);
+        final Intent intent = intentLinkAccount(activity, true);
         if (hasLinkBank() && shouldShowPinDialog()) {
             showPinDialog(activity, new AuthenticationCallback() {
                 @Override
@@ -280,7 +280,7 @@ public class Navigator implements INavigator {
         if (!validUserBeforeLinkBank(fragment.getContext())) {
             return;
         }
-        final Intent intent = intentLinkAccount(fragment.getContext());
+        final Intent intent = intentLinkAccount(fragment.getContext(), true);
         if (hasLinkBank() && shouldShowPinDialog()) {
             showPinDialog(fragment.getContext(), new AuthenticationCallback() {
                 @Override
@@ -508,9 +508,10 @@ public class Navigator implements INavigator {
         return new Intent(context, LinkBankActivity.class);
     }
 
-    private Intent intentLinkAccount(Context context) {
+    private Intent intentLinkAccount(Context context, boolean continuePayment) {
         Intent intent = intentLinkCard(context);
         intent.putExtra(Constants.ARG_PAGE_INDEX, LinkBankPagerIndex.LINK_ACCOUNT.getValue());
+        intent.putExtra(Constants.ARG_CONTINUE_PAY_AFTER_LINK_ACC, continuePayment);
         return intent;
     }
 
