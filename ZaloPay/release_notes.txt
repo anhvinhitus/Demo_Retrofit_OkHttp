@@ -1,3 +1,7 @@
+Zalo Pay (Sandbox v2.8.0 - build 169) - Released on 2017-02-22
+- Add style: Sai Gon Commercial Bank
+- Fix update password fingerprint
+
 Zalo Pay (Sandbox v2.8.0 - build 168) - Released on 2017-02-21
 - Update Zalo Integration (Case đang ở trạng thái thanh toán)
 - Refactor phần token expired, Thêm mã lỗi  user_is_locked (-124)
