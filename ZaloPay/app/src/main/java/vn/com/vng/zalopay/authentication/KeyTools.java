@@ -239,12 +239,11 @@ public class KeyTools {
 
 
     private boolean shouldUpdatePassword(String oldPassword, String newPassword) {
-        if (TextUtils.isEmpty(newPassword)
-                || TextUtils.isEmpty(oldPassword)) {
+        if (TextUtils.isEmpty(newPassword)) {
             return false;
         }
 
-        return !oldPassword.equals(newPassword);
+        return !newPassword.equals(oldPassword);
     }
 
     public boolean isHavePassword() {

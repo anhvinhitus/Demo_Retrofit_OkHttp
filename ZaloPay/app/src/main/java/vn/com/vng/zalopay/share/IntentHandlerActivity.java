@@ -34,14 +34,12 @@ public class IntentHandlerActivity extends BaseActivity implements IIntentHandle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Timber.d("onCreate taskid %s", getTaskId());
         mPresenter.attachView(this);
         mPresenter.handleIntent(getIntent());
         View view = findViewById(R.id.fragment_container);
         if (view != null) {
             view.setBackgroundResource(R.color.background);
         }
-        Timber.d("onCreate: ");
     }
 
     @Override
@@ -63,14 +61,7 @@ public class IntentHandlerActivity extends BaseActivity implements IIntentHandle
 
     @Override
     protected void onDestroy() {
-        Timber.d("onDestroy: ");
         mPresenter.destroy();
         super.onDestroy();
-    }
-
-    @Override
-    public void finish() {
-        Timber.d("finish: ");
-        super.finish();
     }
 }
