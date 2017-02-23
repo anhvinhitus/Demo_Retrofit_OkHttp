@@ -29,6 +29,7 @@ public class NotificationType {
     public static final int NOTIFICATION_RECEIVE_RED_PACKET = 111;
     public static final int RECOVERY_MONEY = 10;
     public static final int MERCHANT_TRANSFER = 11;
+    public static final int DEPOSIT_FROM_WEB_VCB_SUCCESS = 12;
     public static final int LINK_CARD_EXPIRED = 112;
     public static final int MERCHANT_BILL = 113; //Thanh toán đơn hàng
 
@@ -45,7 +46,8 @@ public class NotificationType {
                 notificationType == REFUND_TRANSACTION_BANK ||
                 notificationType == DONATE_MONEY ||
                 notificationType == RECOVERY_MONEY ||
-                notificationType == MERCHANT_TRANSFER
+                notificationType == MERCHANT_TRANSFER ||
+                notificationType == DEPOSIT_FROM_WEB_VCB_SUCCESS
                 ;
     }
 
@@ -65,3 +67,4 @@ public class NotificationType {
 
 
 }
+
