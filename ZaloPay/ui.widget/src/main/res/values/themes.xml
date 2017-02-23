@@ -63,6 +63,12 @@
         <item name="android:background">#FAFAFA</item>
     </style>
 
+    <style name="Toolbar_White" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlNormal">@android:color/black</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
     <style name="Toolbar_Light" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="searchViewStyle">@style/AppTheme.SearchView</item>
         <item name="colorControlNormal">@android:color/black</item>
