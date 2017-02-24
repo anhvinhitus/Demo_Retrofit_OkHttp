@@ -23,7 +23,7 @@ public class WebAppActivity extends BaseToolBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final Drawable backArrow = getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp);
+        final Drawable backArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
         backArrow.setColorFilter(getResources().getColor(R.color.colorWebAppPrimaryText), PorterDuff.Mode.SRC_ATOP);
         getToolbar().setNavigationIcon(backArrow);
     }
