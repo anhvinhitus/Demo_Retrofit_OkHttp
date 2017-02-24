@@ -233,6 +233,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        navigator.showSuggestionDialog(getActivity());
     }
 
     @Override
