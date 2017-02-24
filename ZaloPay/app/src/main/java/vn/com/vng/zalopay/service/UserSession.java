@@ -28,6 +28,9 @@ import vn.com.vng.zalopay.notification.ZPNotificationService;
 
 public class UserSession {
 
+    public static long mLastTimeCheckPassword = 0;
+    public static String mHashPassword;
+
     private Context mContext;
     private User mUser;
     private EventBus mEventBus;
@@ -78,6 +81,8 @@ public class UserSession {
     public void endSession() {
         Timber.d("endSession");
         mEventBus.unregister(this);
+        mLastTimeCheckPassword = 0;
+        mHashPassword = null;
         mNotifyService.destroy();
         mCompositeSubscription.clear();
         userInitialized = false;

@@ -49,6 +49,7 @@ import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
+import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
@@ -89,10 +90,6 @@ public class Navigator implements INavigator {
     private UserConfig mUserConfig;
 
     private SharedPreferences mPreferences;
-
-    private long lastTimeCheckPassword = 0;
-
-    private String mHashPassword;
 
     @Inject
     public Navigator(UserConfig userConfig, SharedPreferences preferences) {
@@ -653,7 +650,7 @@ public class Navigator implements INavigator {
 
         int profileLevel = mUserConfig.getCurrentUser().profilelevel;
         long now = System.currentTimeMillis();
-        return (now - lastTimeCheckPassword >= INTERVAL_CHECK_PASSWORD
+        return (now - UserSession.mLastTimeCheckPassword >= INTERVAL_CHECK_PASSWORD
                 && profileLevel >= MIN_PROFILE_LEVEL);
     }
 
@@ -679,8 +676,8 @@ public class Navigator implements INavigator {
         dialog.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
-                mHashPassword = password;
-                setLastTimeCheckPin(System.currentTimeMillis());
+                UserSession.mHashPassword = password;
+                UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
             }
         });
         dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
@@ -691,11 +688,10 @@ public class Navigator implements INavigator {
         dialog.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
-                mHashPassword = password;
+                UserSession.mHashPassword = password;
+                UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
                 Timber.d("onPinSuccess resolve true");
                 Helpers.promiseResolveSuccess(promise, null);
-                setLastTimeCheckPin(System.currentTimeMillis());
-
                 showSuggestionDialog(((Activity) context));
             }
 
@@ -705,13 +701,6 @@ public class Navigator implements INavigator {
             }
         });
         dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
-    }
-
-    /**
-     * Set thời gian cuối cùng authen thành công, time là milliseconds
-     */
-    public void setLastTimeCheckPin(long time) {
-        lastTimeCheckPassword = time;
     }
 
     @Override
@@ -838,7 +827,7 @@ public class Navigator implements INavigator {
     }
 
     public void showSuggestionDialog(Activity activity, String hashPassword) {
-        mHashPassword = hashPassword;
+        UserSession.mHashPassword = hashPassword;
         showSuggestionDialog(activity);
     }
 
@@ -848,7 +837,7 @@ public class Navigator implements INavigator {
         }
 
         FingerprintSuggestDialog dialog = new FingerprintSuggestDialog();
-        dialog.setPassword(mHashPassword);
+        dialog.setPassword(UserSession.mHashPassword);
         dialog.show(activity.getFragmentManager(), FingerprintSuggestDialog.TAG);
         mPreferences.edit()
                 .putLong(Constants.PREF_LAST_TIME_SHOW_FINGERPRINT_SUGGEST, System.currentTimeMillis())
@@ -858,7 +847,7 @@ public class Navigator implements INavigator {
 
     private boolean shouldShowSuggestDialog() {
 
-        if (TextUtils.isEmpty(mHashPassword)) {
+        if (TextUtils.isEmpty(UserSession.mHashPassword)) {
             return false;
         }
 
@@ -888,10 +877,5 @@ public class Navigator implements INavigator {
         }
 
         return true;
-    }
-
-    public void cleanUp() {
-        mHashPassword = null;
-        lastTimeCheckPassword = 0;
     }
 }

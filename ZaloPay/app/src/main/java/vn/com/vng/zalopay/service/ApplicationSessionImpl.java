@@ -98,9 +98,6 @@ public class ApplicationSessionImpl implements ApplicationSession {
                 clearMerchantSession();
                 deleteInstanceID();
                 resetRecovery();
-
-                navigator.cleanUp();
-
                 return Boolean.TRUE;
             }
         });
