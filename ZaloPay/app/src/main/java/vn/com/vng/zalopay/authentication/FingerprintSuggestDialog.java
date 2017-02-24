@@ -124,17 +124,9 @@ public class FingerprintSuggestDialog extends DialogFragment {
     @Override
     public void onDestroyView() {
         Timber.d("onDestroyView: ");
+        saveConfigShowSuggest();
         mUnbinder.unbind();
         super.onDestroyView();
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        Timber.d("onDismiss: ");
-        mPreferences.edit()
-                .putBoolean(Constants.PREF_SHOW_FINGERPRINT_SUGGEST, !mShowSuggestCheckBox.isChecked())
-                .apply();
-        super.onDismiss(dialog);
     }
 
     @OnClick(R.id.cancel_button)
@@ -147,6 +139,12 @@ public class FingerprintSuggestDialog extends DialogFragment {
         Timber.d("onSecondClick: %s", mHashPassword);
         mKeytool.updatePassword(mHashPassword);
         dismiss();
+    }
+
+    private void saveConfigShowSuggest() {
+        mPreferences.edit()
+                .putBoolean(Constants.PREF_SHOW_FINGERPRINT_SUGGEST, !mShowSuggestCheckBox.isChecked())
+                .apply();
     }
 
     public void setPassword(String hashPassword) {
