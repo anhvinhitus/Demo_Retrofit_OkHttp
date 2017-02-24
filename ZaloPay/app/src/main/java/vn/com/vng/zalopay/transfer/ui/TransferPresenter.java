@@ -9,6 +9,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -18,8 +19,10 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.repository.AccountRepositoryImpl;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
@@ -74,6 +77,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     private final TransferNotificationHelper mTransferNotificationHelper;
     private final EventBus mEventBus;
     private final ZaloSdkApi mZaloSdkApi;
+    private final AccountStore.Repository mAccountRepository;
 
     @Inject
     TransferPresenter(final User user, NotificationStore.Repository notificationRepository,
@@ -83,7 +87,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                       Navigator navigator,
                       TransferStore.Repository transferRepository,
                       Context applicationContext, EventBus eventBus, ZaloSdkApi zaloSdkApi,
-                      FriendStore.Repository friendRepository
+                      FriendStore.Repository friendRepository,
+                      AccountStore.Repository mAccountRepository
     ) {
 
         this.mUser = user;
@@ -91,6 +96,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         this.mNavigator = navigator;
         this.mTransferRepository = transferRepository;
         this.applicationContext = applicationContext;
+        this.mAccountRepository = mAccountRepository;
 
         this.mEventBus = eventBus;
         mTransferNotificationHelper = new TransferNotificationHelper(notificationRepository, user);
@@ -123,13 +129,16 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void getUserInfo(long zaloId) {
-        Timber.d("getUserInfo zaloId [%s]", zaloId);
-        if (zaloId <= 0 || mView == null) {
+    private void getUserInfo(long zaloId, String zaloPayId) {
+        Timber.d("getUserInfo zaloId [%s] zaloPayId [%s]", zaloId, zaloPayId);
+        if (zaloId <= 0 && TextUtils.isEmpty(zaloPayId)) {
             return;
         }
 
-        Subscription subscription = mFriendRepository.getUserInfo(zaloId)
+        Observable<Person> observable = zaloId <= 0 ? mAccountRepository.getUserInfoByZaloPayId(zaloPayId)
+                : mFriendRepository.getUserInfo(zaloId);
+
+        Subscription subscription = observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ZaloPayUserSubscriber());
@@ -351,7 +360,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 mTransaction.zaloPayId, mTransaction.zaloPayName);
         if (TextUtils.isEmpty(mTransaction.zaloPayId)
                 || TextUtils.isEmpty(mTransaction.zaloPayName)) {
-            getUserInfo(mTransaction.zaloId);
+            getUserInfo(mTransaction.zaloId, mTransaction.zaloPayId);
         }
 
         initLimitAmount();
