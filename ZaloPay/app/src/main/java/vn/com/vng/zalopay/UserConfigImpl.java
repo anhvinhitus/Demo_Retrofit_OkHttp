@@ -360,6 +360,5 @@ public class UserConfigImpl implements UserConfig {
         editor.putString(Constants.PREF_KEY_PASSWORD, passwordBase64);
         editor.putString(Constants.PREF_KEY_PASSWORD_IV, iv);
         editor.apply();
-
     }
 }

@@ -67,7 +67,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
                             applicationContext.getString(R.string.accept),
                             mLoginMessage);
         }
-        
+
         navigator.startLoginActivity(applicationContext, true);
         mLoginMessage = null;
     }
@@ -99,7 +99,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
                 deleteInstanceID();
                 resetRecovery();
 
-                navigator.setLastTimeCheckPin(0);
+                navigator.cleanUp();
 
                 return Boolean.TRUE;
             }

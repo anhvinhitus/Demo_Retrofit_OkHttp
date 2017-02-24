@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.bridge.Promise;
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.ui.widget.util.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
@@ -33,6 +36,8 @@ import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel3Activity;
 import vn.com.vng.zalopay.authentication.AuthenticationCallback;
 import vn.com.vng.zalopay.authentication.AuthenticationDialog;
+import vn.com.vng.zalopay.authentication.FingerprintSuggestDialog;
+import vn.com.vng.zalopay.authentication.FingerprintUtil;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
@@ -77,18 +82,22 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 * */
 @Singleton
 public class Navigator implements INavigator {
-    private final int MIN_PROFILE_LEVEL = 2;
+
+    private static final int MIN_PROFILE_LEVEL = 2;
+    private static final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
 
     private UserConfig mUserConfig;
 
+    private SharedPreferences mPreferences;
+
     private long lastTimeCheckPassword = 0;
 
-    private static final long INTERVAL_CHECK_PASSWORD = 5 * 60 * 1000;
+    private String mHashPassword;
 
     @Inject
-    public Navigator(UserConfig userConfig) {
-        //empty
+    public Navigator(UserConfig userConfig, SharedPreferences preferences) {
         this.mUserConfig = userConfig;
+        this.mPreferences = preferences;
     }
 
     public void startLoginActivity(Activity act, int requestCode, Uri data, long zaloid, String authCode) {
@@ -670,20 +679,24 @@ public class Navigator implements INavigator {
         dialog.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
+                mHashPassword = password;
                 setLastTimeCheckPin(System.currentTimeMillis());
             }
         });
         dialog.show(((Activity) context).getFragmentManager(), AuthenticationDialog.TAG);
     }
 
-    private void showPinDialog(Context context, final Promise promise) {
+    private void showPinDialog(final Context context, final Promise promise) {
         AuthenticationDialog dialog = AuthenticationDialog.newInstance();
         dialog.setAuthenticationCallback(new AuthenticationCallback() {
             @Override
             public void onAuthenticated(String password) {
+                mHashPassword = password;
                 Timber.d("onPinSuccess resolve true");
                 Helpers.promiseResolveSuccess(promise, null);
                 setLastTimeCheckPin(System.currentTimeMillis());
+
+                showSuggestionDialog(((Activity) context));
             }
 
             @Override
@@ -822,5 +835,63 @@ public class Navigator implements INavigator {
         }
 
         return false;
+    }
+
+    public void showSuggestionDialog(Activity activity, String hashPassword) {
+        mHashPassword = hashPassword;
+        showSuggestionDialog(activity);
+    }
+
+    public void showSuggestionDialog(Activity activity) {
+        if (!shouldShowSuggestDialog()) {
+            return;
+        }
+
+        FingerprintSuggestDialog dialog = new FingerprintSuggestDialog();
+        dialog.setPassword(mHashPassword);
+        dialog.show(activity.getFragmentManager(), FingerprintSuggestDialog.TAG);
+        mPreferences.edit()
+                .putLong(Constants.PREF_LAST_TIME_SHOW_FINGERPRINT_SUGGEST, System.currentTimeMillis())
+                .apply();
+    }
+
+
+    private boolean shouldShowSuggestDialog() {
+
+        if (TextUtils.isEmpty(mHashPassword)) {
+            return false;
+        }
+
+        if (!mPreferences.getBoolean(Constants.PREF_SHOW_FINGERPRINT_SUGGEST, true)) {
+            Timber.d("not show fingerprint suggest");
+            return false;
+        }
+
+        if (!FingerprintUtil.isFingerprintAuthAvailable(AndroidApplication.instance())) {
+            Timber.d("fingerprint not available");
+            return false;
+        }
+
+        String password = mUserConfig.getEncryptedPassword();
+
+        if (!TextUtils.isEmpty(password)) {
+            Timber.d("using fingerprint");
+            return false;
+        }
+
+        long lastTime = mPreferences.getLong(Constants.PREF_LAST_TIME_SHOW_FINGERPRINT_SUGGEST, 0);
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - lastTime < TimeUtils.DAY) {
+            Timber.d("less than one day");
+            return false;
+        }
+
+        return true;
+    }
+
+    public void cleanUp() {
+        mHashPassword = null;
+        lastTimeCheckPassword = 0;
     }
 }

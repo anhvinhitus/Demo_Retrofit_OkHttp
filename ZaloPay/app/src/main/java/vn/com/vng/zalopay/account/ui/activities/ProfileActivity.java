@@ -110,6 +110,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        navigator.showSuggestionDialog(this);
     }
 
     private void initView() {

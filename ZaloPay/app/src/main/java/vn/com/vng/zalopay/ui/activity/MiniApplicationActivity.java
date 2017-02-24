@@ -47,6 +47,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.ReactInternalPackage;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
@@ -97,7 +98,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     AppResourceStore.Repository appRepository;
 
     @Inject
-    INavigator navigator;
+    Navigator navigator;
 
     @Inject
     ReactNativeHostable mReactNativeHostable;
@@ -117,7 +118,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.shouldMarkAllNotify();
+        handleScene(getMainComponentName());
     }
 
     @Nullable
@@ -148,8 +149,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     @Override
     protected void initArgs(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            Intent intent = getIntent();
-            mLaunchOptions = intent.getBundleExtra("launchOptions");
+            mLaunchOptions = getIntent().getBundleExtra("launchOptions");
         } else {
             mLaunchOptions = savedInstanceState.getBundle("launchOptions");
         }
@@ -308,12 +308,18 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         ToastUtil.showToast(this, message);
     }
 
-    private void shouldMarkAllNotify() {
-        if (ModuleName.NOTIFICATIONS.equals(getMainComponentName())) {
-            Subscription subscription = notificationRepository.markViewAllNotify()
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new DefaultSubscriber<Boolean>());
-            mCompositeSubscription.add(subscription);
+    private void markAllNotify() {
+        Subscription subscription = notificationRepository.markViewAllNotify()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<Boolean>());
+        mCompositeSubscription.add(subscription);
+    }
+
+    private void handleScene(String moduleName) {
+        if (ModuleName.NOTIFICATIONS.equals(moduleName)) {
+            markAllNotify();
+        } else if (ModuleName.TRANSACTION_LOGS.equals(moduleName)) {
+            navigator.showSuggestionDialog(this);
         }
     }
 }
