@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.webapp;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
@@ -23,8 +24,8 @@ public class WebAppActivity extends BaseToolBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final Drawable backArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
-        backArrow.setColorFilter(getResources().getColor(R.color.colorWebAppPrimaryText), PorterDuff.Mode.SRC_ATOP);
+        final Drawable backArrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back);
+        backArrow.setColorFilter(ContextCompat.getColor(this, R.color.colorWebAppPrimaryText), PorterDuff.Mode.SRC_ATOP);
         getToolbar().setNavigationIcon(backArrow);
     }
 }
