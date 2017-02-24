@@ -160,7 +160,7 @@ public class NotificationHelper {
                 updateLevelProfile(notify, false);
                 break;
             case NotificationType.SEND_RED_PACKET:
-                extractRedPacketFromNotification(notify, false);
+                extractRedPacketFromNotification(notify, isNotificationRecovery);
                 break;
             case NotificationType.RETRY_TRANSACTION:
                 updateTransactionStatus(notify);
