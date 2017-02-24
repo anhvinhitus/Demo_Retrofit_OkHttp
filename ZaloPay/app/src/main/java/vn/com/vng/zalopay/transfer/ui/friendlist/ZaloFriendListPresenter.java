@@ -100,7 +100,7 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
             return;
         }
 
-        if (zaloFriend.usingApp) {
+        if (zaloFriend.status == 1) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(Constants.ARG_ZALO_FRIEND, zaloFriend);
             mNavigator.startTransferActivity(fragment, bundle);
