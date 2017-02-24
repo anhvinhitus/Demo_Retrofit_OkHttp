@@ -102,6 +102,7 @@ public class FriendRepository implements FriendStore.Repository {
             zaloFriend.usingApp = cursor.getInt(ColumnIndex.USING_APP) == 1;
             zaloFriend.zaloPayId = cursor.getString(cursor.getColumnIndex(ColumnIndex.ZALOPAY_ID));
             zaloFriend.normalizeDisplayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_FULL_TEXT_SEARCH));
+            zaloFriend.status = cursor.getInt(cursor.getColumnIndex(ColumnIndex.STATUS));
             return zaloFriend;
         } catch (Exception e) {
             Timber.d(e, "Transform friend exception");
