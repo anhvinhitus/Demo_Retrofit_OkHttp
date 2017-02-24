@@ -233,9 +233,7 @@
         <activity
             android:name=".webapp.WebAppActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.WebApp"
-            android:parentActivityName=".ui.activity.MainActivity" >
-        </activity>
+            android:theme="@style/AppTheme.WebApp" />
 
         <!-- Tích hợp Crashlytics -->
         <meta-data
