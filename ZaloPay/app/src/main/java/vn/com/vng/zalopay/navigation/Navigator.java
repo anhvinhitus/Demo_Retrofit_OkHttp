@@ -268,7 +268,8 @@ public class Navigator implements INavigator {
             showPinDialog(activity, new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {
-                    setLastTimeCheckPin(System.currentTimeMillis());
+                    UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
+                    UserSession.mHashPassword = password;
                     activity.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
                 }
             });
@@ -291,7 +292,8 @@ public class Navigator implements INavigator {
             showPinDialog(fragment.getContext(), new AuthenticationCallback() {
                 @Override
                 public void onAuthenticated(String password) {
-                    setLastTimeCheckPin(System.currentTimeMillis());
+                    UserSession.mLastTimeCheckPassword = System.currentTimeMillis();
+                    UserSession.mHashPassword = password;
                     fragment.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
                 }
             });
