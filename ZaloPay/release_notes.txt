@@ -1,3 +1,9 @@
+Zalo Pay (Sandbox v2.8.0 - build 171) - Released on 2017-02-24
+- Fix status friend
+- Fix status red packet
+- Fix loop sdk report
+- Fix card color 
+
 Zalo Pay (Sandbox v2.8.0 - build 170) - Released on 2017-02-22
 - Remove uid, accessToken app 22
 
