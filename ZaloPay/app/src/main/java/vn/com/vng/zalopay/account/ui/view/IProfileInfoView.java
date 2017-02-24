@@ -10,8 +10,6 @@ public interface IProfileInfoView {
 
     void setZaloPayName(String zaloPayName);
 
-    void setBalance(long balance);
-
     void showError(String message);
 }
 

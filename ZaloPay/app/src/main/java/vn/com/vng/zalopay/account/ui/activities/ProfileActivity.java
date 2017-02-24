@@ -27,7 +27,7 @@ import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
-public class ProfileActivity extends BaseToolBarActivity implements IProfileInfoView {
+public class ProfileActivity extends BaseToolBarActivity implements IProfileInfoView, AppBarLayout.OnOffsetChangedListener {
 
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
@@ -37,9 +37,6 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
 
     @Inject
     ProfileInfoPresenter presenter;
-
-    @Inject
-    UserConfig userConfig;
 
     @BindView(R.id.layoutUser)
     View layoutUser;
@@ -121,31 +118,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         getToolbar().setTitleTextColor(Color.TRANSPARENT);
 
         mCollapsingToolbarLayout.setTitleEnabled(false);
-
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isVisible = true;
-            int scrollRange = -1;
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (ProfileActivity.this.isFinishing()) {
-                    return;
-                }
-
-                float alpha = 1 + ((float) verticalOffset / mAppBarLayout.getTotalScrollRange());
-                //Timber.d("onOffsetChanged verticalOffset %s alpha %s", verticalOffset, alpha);
-                layoutUser.setAlpha(alpha);
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    getToolbar().setTitleTextColor(Color.WHITE);
-                    isVisible = true;
-                } else if (isVisible) {
-                    getToolbar().setTitleTextColor(Color.TRANSPARENT);
-                    isVisible = false;
-                }
-            }
-        });
+        mAppBarLayout.addOnOffsetChangedListener(this);
     }
 
     @Override
@@ -160,8 +133,33 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
         presenter.pause();
     }
 
+    boolean isVisible = true;
+    int scrollRange = -1;
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        if (isFinishing()) {
+            return;
+        }
+
+        float alpha = 1 + ((float) verticalOffset / mAppBarLayout.getTotalScrollRange());
+        layoutUser.setAlpha(alpha);
+        if (scrollRange == -1) {
+            scrollRange = appBarLayout.getTotalScrollRange();
+        }
+        if (scrollRange + verticalOffset == 0) {
+            getToolbar().setTitleTextColor(Color.WHITE);
+            isVisible = true;
+        } else if (isVisible) {
+            getToolbar().setTitleTextColor(Color.TRANSPARENT);
+            isVisible = false;
+        }
+    }
+
+
     @Override
     public void onDestroy() {
+        mAppBarLayout.removeOnOffsetChangedListener(this);
         presenter.destroy();
         super.onDestroy();
     }
@@ -169,10 +167,6 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
     @Override
     public void showError(String message) {
         super.showToast(message);
-    }
-
-    @Override
-    public void setBalance(long balance) {
     }
 }
 
