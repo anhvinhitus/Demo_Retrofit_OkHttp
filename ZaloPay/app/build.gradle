@@ -29,13 +29,18 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
+// allows the developer to set minSdk at build in order to take
+// advantage of faster build times leveraging ART in API 21+ without
+// losing much needed lint checks
+def minSdk = hasProperty('minSdk') ? minSdk : cfg.minSdk
+
 android {
     compileSdkVersion cfg.compileVersion
     buildToolsVersion cfg.buildToolsVersion
 
     defaultConfig {
         applicationId "vn.com.vng.zalopay"
-        minSdkVersion cfg.minSdk
+        minSdkVersion minSdk
         targetSdkVersion cfg.targetSdk
         versionCode 190
         versionName "2.9.0"
