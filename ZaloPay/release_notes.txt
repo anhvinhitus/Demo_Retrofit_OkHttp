@@ -1,3 +1,6 @@
+Zalo Pay (Sandbox v2.9.0 - build 190) - Released on 2017-02-27
+- Build sandbox
+
 Zalo Pay (v2.9.0 - build 180) - Released on 2017-02-09
 - Hỗ trợ ngân hàng vietcombank.
 - Thêm Zalo Integration
