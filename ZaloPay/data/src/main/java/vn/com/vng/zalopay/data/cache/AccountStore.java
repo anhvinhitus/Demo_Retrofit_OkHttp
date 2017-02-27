@@ -112,7 +112,7 @@ public interface AccountStore {
 
     interface Repository {
 
-        Observable<Boolean> validatePin(String pin);
+        Observable<String> validatePin(String pin);
 
         Observable<Boolean> updateUserProfileLevel2(String pin, String phoneNumber);
 

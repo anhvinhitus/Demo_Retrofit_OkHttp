@@ -321,10 +321,14 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> validatePin(String pin) {
-        pin = sha256Base(pin);
-        return mRequestService.validatePin(pin, mUser.zaloPayId, mUser.accesstoken)
+    public Observable<String> validatePin(String pin) {
+        return ObservableHelper.makeObservable(() -> sha256Base(pin))
+                .flatMap(this::validateHashPassword);
+    }
+
+    private Observable<String> validateHashPassword(String hashPassword) {
+        return mRequestService.validatePin(hashPassword, mUser.zaloPayId, mUser.accesstoken)
                 .map(BaseResponse::isSuccessfulResponse)
-                ;
+                .map(aBoolean -> hashPassword);
     }
 }
