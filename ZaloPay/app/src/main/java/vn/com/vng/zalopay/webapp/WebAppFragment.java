@@ -1,9 +1,15 @@
 package vn.com.vng.zalopay.webapp;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,13 +20,20 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.zalopay.ui.widget.IconFont;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.webapp.framework.IWebViewListener;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
@@ -112,7 +125,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 Timber.d("WebLoading progress: %s", progress);
-                if(progress < 100 && mProgressBar.getVisibility() == ProgressBar.GONE) {
+                if (progress < 100 && mProgressBar.getVisibility() == ProgressBar.GONE) {
                     mProgressBar.setVisibility(ProgressBar.VISIBLE);
                 }
 
@@ -279,7 +292,6 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onResume();
         }
-
     }
 
     @Override
@@ -319,20 +331,20 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.webapp_menu_main, menu);
+        inflater.inflate(R.menu.webapp_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        Timber.d("onOptionsItemSelected: %s", id);
-        if (id == R.id.webapp_action_refresh) {
-            refreshWeb();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        MenuItem menuItem = menu.findItem(R.id.action_settings);
+        View view = menuItem.getActionView();
+        IconFont mIcon = (IconFont) view.findViewById(R.id.imgSettings);
+        mIcon.setIcon(R.string.webapp_3point_android);
+        mIcon.setIconColor(ContextCompat.getColor(this.getContext(), R.color.colorWebAppPrimaryText));
+        view.setOnClickListener(new DebouncingOnClickListener() {
+            @Override
+            public void doClick(View v) {
+                showBottomSheetDialog();
+            }
+        });
     }
 
     @Override
@@ -365,8 +377,80 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         getActivity().finish();
     }
 
+    private void setClipboard(Context context, String text) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setText(text);
+        } else {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", text);
+            clipboard.setPrimaryClip(clip);
+        }
+    }
+
+    private void shareOnZalo(Context context) {
+        List<Intent> targetShareIntents = new ArrayList<>();
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(shareIntent, 0);
+
+        if (!resolveInfos.isEmpty()) {
+            for (ResolveInfo resolveInfo : resolveInfos) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                if (packageName.contains("zalo")) {
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName(packageName, resolveInfo.activityInfo.name));
+                    intent.setAction(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, mWebViewProcessor.getCurrentUrl());
+                    intent.setPackage(packageName);
+                    targetShareIntents.add(intent);
+                }
+            }
+
+            if (!targetShareIntents.isEmpty()) {
+                Intent chooserIntent = Intent.createChooser(targetShareIntents.remove(0), "Choose app to share");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetShareIntents.toArray(new Parcelable[]{}));
+                startActivity(chooserIntent);
+            }
+        }
+    }
+
     @Override
     public Fragment getFragment() {
         return this;
     }
+
+    private void showBottomSheetDialog() {
+        final ItemBottomSheetDialogFragment dialog = ItemBottomSheetDialogFragment.newInstance();
+        dialog.setOnClickListener(new ItemBottomSheetDialogFragment.OnClickListener() {
+            @Override
+            public void onClickCopyURL() {
+                setClipboard(getContext(), mWebViewProcessor.getCurrentUrl());
+                Toast.makeText(getContext(), "Đã sao chép vào clipboard", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onClickRefresh() {
+                refreshWeb();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onClickOpenInBrowser() {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(mWebViewProcessor.getCurrentUrl()));
+                startActivity(browserIntent);
+            }
+
+            @Override
+            public void onClickShareOnZalo() {
+                shareOnZalo(getContext());
+            }
+        });
+        dialog.show(getChildFragmentManager(), "bottomsheet");
+    }
 }
+
