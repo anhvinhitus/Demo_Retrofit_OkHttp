@@ -4,14 +4,14 @@ BUILD_TYPE=$1
 
 if [ "$BUILD_TYPE" = "staging" ]
 then
-	./gradlew assembleStagingRelease 
+	./gradlew clean assembleStagingRelease
 	./gradlew crashlyticsUploadDistributionStagingRelease
 elif [ "$BUILD_TYPE" = "production" ]
 then
-	./gradlew assembleProductionRelease 
+	./gradlew clean assembleProductionRelease
 	./gradlew crashlyticsUploadDistributionProductionRelease
 else 
-	./gradlew assembleSandboxRelease 
+	./gradlew clean assembleSandboxRelease
 	./gradlew crashlyticsUploadDistributionSandboxRelease
 fi
 
