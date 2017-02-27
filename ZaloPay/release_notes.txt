@@ -1,3 +1,6 @@
+Zalo Pay (Staging v2.8.0 - build 174) - Released on 2017-02-27
+- Skip suggestion fingerprint for red packet channel
+
 Zalo Pay (Staging v2.8.0 - build 173) - Released on 2017-02-24
 - Build Staging
 
