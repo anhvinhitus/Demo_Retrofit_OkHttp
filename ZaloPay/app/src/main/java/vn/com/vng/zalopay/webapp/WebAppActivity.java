@@ -1,13 +1,13 @@
 package vn.com.vng.zalopay.webapp;
 
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.RequiresApi;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.IconFontDrawable;
 
 public class WebAppActivity extends BaseToolBarActivity {
     @Override
@@ -20,12 +20,16 @@ public class WebAppActivity extends BaseToolBarActivity {
         return R.layout.activity_common_actionbar_white;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final Drawable backArrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back);
-        backArrow.setColorFilter(ContextCompat.getColor(this, R.color.colorWebAppPrimaryText), PorterDuff.Mode.SRC_ATOP);
-        getToolbar().setNavigationIcon(backArrow);
+        getToolbar().setNavigationIcon(
+                new IconFontDrawable(this)
+                        .setIcon(R.string.general_backandroid)
+                        .setResourcesColor(R.color.colorWebAppPrimaryText)
+                        .setDpSize(18)
+        );
     }
 }
