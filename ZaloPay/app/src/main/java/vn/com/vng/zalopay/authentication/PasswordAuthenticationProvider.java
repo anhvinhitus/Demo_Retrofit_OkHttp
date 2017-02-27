@@ -37,7 +37,7 @@ public class PasswordAuthenticationProvider implements AuthenticationProvider {
         Subscription subscription = mAccountRepository.validatePin(password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ValidatePinSubscriber(password));
+                .subscribe(new ValidatePinSubscriber());
         mCompositeSubscription.add(subscription);
     }
 
@@ -58,13 +58,7 @@ public class PasswordAuthenticationProvider implements AuthenticationProvider {
         mCallback = callback;
     }
 
-    private final class ValidatePinSubscriber extends DefaultSubscriber<Boolean> {
-
-        public String password;
-
-        ValidatePinSubscriber(String password) {
-            this.password = password;
-        }
+    private final class ValidatePinSubscriber extends DefaultSubscriber<String> {
 
         @Override
         public void onError(Throwable e) {
@@ -74,9 +68,9 @@ public class PasswordAuthenticationProvider implements AuthenticationProvider {
         }
 
         @Override
-        public void onCompleted() {
+        public void onNext(String hashPassword) {
             if (mCallback != null) {
-                mCallback.onAuthenticated(password);
+                mCallback.onAuthenticated(hashPassword);
             }
         }
     }
