@@ -68,6 +68,15 @@
         "code": "\ue965", 
         "rawcode": 59749
     }, 
+    "webapp_refresh": {
+        "colors": [
+            {
+                "fill": "rgb(104, 104, 113)"
+            }
+        ], 
+        "code": "\ue914", 
+        "rawcode": 59668
+    }, 
     "menu_feedback": {
         "colors": [
             {
@@ -137,14 +146,23 @@
         "code": "\ue970", 
         "rawcode": 59760
     }, 
-    "general_history": {
+    "webapp_copyurl": {
+        "colors": [
+            {
+                "fill": "rgb(104, 104, 113)"
+            }
+        ], 
+        "code": "\ue913", 
+        "rawcode": 59667
+    }, 
+    "webapp_3point_android": {
         "colors": [
             {
                 "fill": "rgb(255, 255, 255)"
             }
         ], 
-        "code": "\ue960", 
-        "rawcode": 59744
+        "code": "\ue910", 
+        "rawcode": 59664
     }, 
     "paymoney_bluetooth": {
         "colors": [
@@ -163,6 +181,15 @@
         ], 
         "code": "\ue950", 
         "rawcode": 59728
+    }, 
+    "webapp_3point_ios": {
+        "colors": [
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue911", 
+        "rawcode": 59665
     }, 
     "profile_lock": {
         "colors": [
@@ -736,6 +763,15 @@
         "code": "\ue901", 
         "rawcode": 59649
     }, 
+    "general_history": {
+        "colors": [
+            {
+                "fill": "rgb(255, 255, 255)"
+            }
+        ], 
+        "code": "\ue960", 
+        "rawcode": 59744
+    }, 
     "general_backandroid": {
         "colors": [
             {
@@ -948,21 +984,12 @@
         ], 
         "rawcode": 59692
     }, 
-    "general_notconnect": {
+    "showshow_type": {
         "colors": [
-            {
-                "fill": "rgb(176, 218, 244)"
-            }, 
-            {
-                "fill": "rgb(44, 76, 128)"
-            }
+            {}
         ], 
-        "code": "\ue99d", 
-        "codes": [
-            59805, 
-            59806
-        ], 
-        "rawcode": 59805
+        "code": "\ue93e", 
+        "rawcode": 59710
     }, 
     "menu_infomation": {
         "colors": [
@@ -1182,6 +1209,15 @@
         "code": "\ue9d6", 
         "rawcode": 59862
     }, 
+    "showshow_logodefault": {
+        "colors": [
+            {
+                "fill": "rgb(199, 199, 204)"
+            }
+        ], 
+        "code": "\ue90f", 
+        "rawcode": 59663
+    }, 
     "showshow_vnd": {
         "colors": [
             {}
@@ -1216,6 +1252,15 @@
         "code": "\ue957", 
         "rawcode": 59735
     }, 
+    "webapp_browser": {
+        "colors": [
+            {
+                "fill": "rgb(104, 104, 113)"
+            }
+        ], 
+        "code": "\ue912", 
+        "rawcode": 59666
+    }, 
     "merchant_copy": {
         "colors": [
             {
@@ -1225,12 +1270,21 @@
         "code": "\ue98b", 
         "rawcode": 59787
     }, 
-    "showshow_type": {
+    "general_notconnect": {
         "colors": [
-            {}
+            {
+                "fill": "rgb(176, 218, 244)"
+            }, 
+            {
+                "fill": "rgb(44, 76, 128)"
+            }
         ], 
-        "code": "\ue93e", 
-        "rawcode": 59710
+        "code": "\ue99d", 
+        "codes": [
+            59805, 
+            59806
+        ], 
+        "rawcode": 59805
     }, 
     "notify_linkcard": {
         "colors": [
