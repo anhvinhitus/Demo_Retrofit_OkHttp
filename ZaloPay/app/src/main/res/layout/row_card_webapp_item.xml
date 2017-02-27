@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWebAppBottomSheet"
+    android:baselineAligned="false"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="@dimen/avatar_size_small"
+        android:layout_height="@dimen/avatar_size_small"
+        android:adjustViewBounds="true"
+        android:background="@drawable/bg_webapp_item"
+        android:padding="@dimen/border"
+        android:scaleType="centerInside"
+        android:visibility="gone" />
+
+    <com.zalopay.ui.widget.IconFont
+        android:id="@+id/if_icon"
+        android:layout_width="@dimen/avatar_size_small"
+        android:layout_height="@dimen/avatar_size_small"
+        android:adjustViewBounds="true"
+        android:background="@drawable/bg_webapp_item"
+        android:gravity="center"
+        android:visibility="gone"
+        app:iconSize="@dimen/font_size_webapp_icon" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/TextView.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing.medium.t"
+        android:gravity="top|center_horizontal"
+        android:lines="2"
+        android:maxLines="2"
+        android:textColor="@color/colorWebAppBottomSheetText"
+        android:textSize="@dimen/textsize.tiny.s"
+        tools:text="@string/transfer.money" />
+</LinearLayout>
+
+

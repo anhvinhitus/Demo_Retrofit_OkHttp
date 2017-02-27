@@ -500,5 +500,7 @@
 	<string name="you.having.a.transaction.in.process">Bạn đang có một giao dịch đang trong quá trình thanh toán. Vui lòng kết thúc thanh toán cho giao dịch đó và thử lại</string>
     <string name="confirm_link_card_to_continue_pay"><![CDATA[Bạn đã cập nhật Mật khẩu thanh toán thành công. Bạn có muốn <b>Liên kết tài khoản ngân hàng</b> để tiếp tục giao dịch trước?<br><br><b>Bước 1:</b> <u>Cập nhật Mật khẩu thanh toán</u>.<br><b>Bước 2:</b> Liên kết tài khoản ngân hàng.]]></string>
     <string name="confirm_continue_pay"><![CDATA[Bạn đã <b>Liên kết tài khoản ngân hàng</b> thành công. Bạn có muốn tiếp tục giao dịch trước?]]></string>
+
+    <string name="webapp_intro_bottomsheet">Được cung cấp bởi tiki.vn</string>
 </resources>
 

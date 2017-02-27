@@ -7,7 +7,9 @@
     <dimen name="spacing.medium.t">10dp</dimen>
     <dimen name="spacing.medium.s">12dp</dimen>
     <dimen name="spacing.medium">16dp</dimen>
+    <dimen name="spacing.medium.m">18dp</dimen>
     <dimen name="spacing.medium.l">20dp</dimen>
+    <dimen name="spacing.medium.h">22dp</dimen>
     <dimen name="spacing.large.t">24dp</dimen>
     <dimen name="spacing.large.s">28dp</dimen>
     <dimen name="spacing.large">32dp</dimen>
