@@ -502,5 +502,11 @@
     <string name="confirm_continue_pay"><![CDATA[Bạn đã <b>Liên kết tài khoản ngân hàng</b> thành công. Bạn có muốn tiếp tục giao dịch trước?]]></string>
 
     <string name="webapp_intro_bottomsheet">Được cung cấp bởi tiki.vn</string>
+    <string name="webapp_share_on_zalo">Chia sẻ trên Zalo</string>
+    <string name="webapp_copy_url">Sao chép URL</string>
+    <string name="webapp_refresh">Làm mới</string>
+    <string name="webapp_open_in_browser">Mở trong trình duyệt</string>
+
+    <string name="copy_clipboard">Đã sao chép vào clipboard</string>
 </resources>
 

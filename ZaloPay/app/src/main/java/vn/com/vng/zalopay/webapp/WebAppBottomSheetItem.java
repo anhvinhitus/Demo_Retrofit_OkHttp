@@ -8,34 +8,34 @@ public class WebAppBottomSheetItem {
     public int id;
     public Integer iconResource;
     public Integer iconColor;
-    public String title;
+    public int resStrId;
     public int resImgId;
 
     public WebAppBottomSheetItem(int id) {
         this.id = id;
     }
 
-    public WebAppBottomSheetItem(int id, String title) {
+    public WebAppBottomSheetItem(int id, int title) {
         this.id = id;
-        this.title = title;
+        this.resStrId = title;
         this.iconResource = null;
         this.iconColor = null;
     }
 
-    public WebAppBottomSheetItem(int id, String title, int resImgId) {
+    public WebAppBottomSheetItem(int id, int title, int resImgId) {
         this.id = id;
-        this.title = title;
+        this.resStrId = title;
         this.resImgId = resImgId;
         this.iconResource = null;
         this.iconColor = null;
     }
 
     public WebAppBottomSheetItem(int id,
-                    String title,
+                    int title,
                     Integer iconResource,
                     Integer iconColor) {
         this.id = id;
-        this.title = title;
+        this.resStrId = title;
         this.iconResource = iconResource;
         this.iconColor = iconColor;
     }

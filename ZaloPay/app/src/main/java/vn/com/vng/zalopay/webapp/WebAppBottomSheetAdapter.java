@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.webapp;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +97,7 @@ public class WebAppBottomSheetAdapter extends AbsRecyclerAdapter<WebAppBottomShe
         }
 
         void bindView(WebAppBottomSheetItem item) {
-            mName.setText(item.title);
+            mName.setText(getContext().getResources().getText(item.resStrId));
             if(item.iconResource != null) {
                 mIcon.setIcon(item.iconResource);
                 mIcon.setIconColor(item.iconColor);
