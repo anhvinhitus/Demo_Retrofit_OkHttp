@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.os.Parcelable;
 import android.widget.Toast;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,14 +17,14 @@ import vn.com.vng.zalopay.R;
  * Created by khattn on 2/27/17.
  */
 
-public class WebAppBottomSheetPresenter {
+final class WebAppBottomSheetPresenter {
     private Context mContext;
 
-    public WebAppBottomSheetPresenter(Context context) {
+    WebAppBottomSheetPresenter(Context context) {
         mContext = context;
     }
 
-    public void handleClickShareOnZalo(String currentUrl) {
+    void handleClickShareOnZalo(String currentUrl) {
         List<Intent> targetShareIntents = new ArrayList<>();
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
@@ -55,25 +53,14 @@ public class WebAppBottomSheetPresenter {
         }
     }
 
-    public void handleClickCopyURL(String currentUrl) {
+    void handleClickCopyURL(String currentUrl) {
         setClipboard(mContext, currentUrl);
         Toast.makeText(mContext, mContext.getResources().getText(R.string.copy_clipboard), Toast.LENGTH_SHORT).show();
     }
 
-    public void handleClickOpenInBrowser(String currentUrl) {
+    void handleClickOpenInBrowser(String currentUrl) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
         mContext.startActivity(browserIntent);
-    }
-
-    public String getDomainName(String url) throws URISyntaxException {
-        URI uri = new URI(url);
-        String domain = uri.getHost();
-//        domain = domain.startsWith("www.") ? domain.substring(4) : domain;
-        if(domain != null) {
-            return domain.replaceAll(".*\\.(?=.*\\.)", "");
-        }
-
-        return "";
     }
 
     private void setClipboard(Context context, String text) {

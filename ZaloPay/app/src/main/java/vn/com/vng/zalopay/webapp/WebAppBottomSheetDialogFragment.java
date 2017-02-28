@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.util.Strings;
 
 /**
  * Created by khattn on 2/21/17.
@@ -94,7 +95,7 @@ public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment i
     private void setIntroText(View view) {
         try {
             String description = String.format(getString(R.string.webapp_intro_bottomsheet),
-                    mPresenter.getDomainName(mCurrentUrl));
+                    Strings.getDomainName(mCurrentUrl));
             TextView introText = (TextView) view.findViewById(R.id.tv_intro);
             introText.setText(description);
         } catch (URISyntaxException e) {
