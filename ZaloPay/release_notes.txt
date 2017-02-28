@@ -1,3 +1,6 @@
+Zalo Pay (Production v2.8.0 - build 178) - Released on 2017-02-28
+- Build production
+
 Zalo Pay (Staging v2.8.0 - build 177) - Released on 2017-02-28
 - Update SDK (getCardKey replace last 4 number)
 
