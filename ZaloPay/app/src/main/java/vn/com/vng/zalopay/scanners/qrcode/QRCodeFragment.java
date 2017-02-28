@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.TimeUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -123,17 +125,25 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     @Override
     public void onResume() {
         super.onResume();
-        if (getUserVisibleHint() && !mSelectedImageInGallery) {
-            hideLoading();
-            startAndCheckPermissionOnce();
-        }
+        AndroidUtils.runOnUIThread(mRunnableScan, 200);
     }
+
+    Runnable mRunnableScan = new Runnable() {
+        @Override
+        public void run() {
+            if (getUserVisibleHint() && !mSelectedImageInGallery) {
+                hideLoading();
+                startAndCheckPermissionOnce();
+            }
+        }
+    };
 
     @Override
     public void onPause() {
         super.onPause();
         pause();
         mSelectedImageInGallery = false;
+        AndroidUtils.cancelRunOnUIThread(mRunnableScan);
     }
 
     private void startAndCheckPermissionOnce() {
@@ -192,6 +202,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
     @Override
     public void onStopFragment() {
+        Timber.d("onStopFragment: ");
         pause();
     }
 
@@ -233,6 +244,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
             }
         }
         qrCodePresenter.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
