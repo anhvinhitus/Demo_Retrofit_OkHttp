@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.ColorRes;
+import android.support.annotation.Dimension;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
@@ -247,7 +248,7 @@ public class AndroidUtils {
      * Get color string from color resource.
      * @return color string (format #f0f0f0)
      */
-    public static String getColorFromResource(int colorResource) {
+    public static String getColorFromResource(@ColorRes int colorResource) {
         if (colorResource == 0) {
             return null;
         }
