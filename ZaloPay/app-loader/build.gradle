@@ -39,8 +39,12 @@ buildscript {
 
     dependencies {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'me.tatarka:gradle-retrolambda:3.5.0'
+        classpath "me.tatarka:gradle-retrolambda:${lambdaVersion}"
     }
+}
+
+retrolambda {
+    javaVersion JavaVersion.VERSION_1_7
 }
 
 dependencies {

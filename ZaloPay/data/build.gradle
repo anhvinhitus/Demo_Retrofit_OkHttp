@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.5.0'
+        classpath "me.tatarka:gradle-retrolambda:${lambdaVersion}"
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
@@ -60,6 +60,10 @@ android {
     }
 }
 
+retrolambda {
+    javaVersion JavaVersion.VERSION_1_7
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     def libs = rootProject.ext.libraries
@@ -86,15 +90,10 @@ dependencies {
     compile libs.timber
     compile libs.eventbus
     compile libs.gson
-//    compile libs.cbor
     compile libs.wire_runtime
     compile libs.zalopay_analytics
 
     compile project(':domain')
     compile project(':zalopay.feedback')
 
-    // compile 'io.netty:netty-all:4.1.0.CR4'
-//    compile libs.netty_codec
-//    compile libs.netty_transport
-    //compile libs.protobuf
 }

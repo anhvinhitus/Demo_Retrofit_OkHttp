@@ -61,7 +61,9 @@ ext {
 
     CircularRevealVersion = "1.0.5"
 
-    dialogPlusVersion   =  "1.11@aar"
+    dialogPlusVersion = "1.11@aar"
+
+    lambdaVersion = "3.2.5"
 
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",

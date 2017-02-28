@@ -13,7 +13,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:3.5.0'
+        classpath "me.tatarka:gradle-retrolambda:${lambdaVersion}"
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:0.4'
         // The Fabric Gradle plugin uses an open ended version to react
