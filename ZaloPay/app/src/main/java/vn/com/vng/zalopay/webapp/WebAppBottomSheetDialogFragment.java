@@ -10,7 +10,9 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
+import java.net.URISyntaxException;
 import java.util.List;
 
 import vn.com.vng.zalopay.R;
@@ -23,9 +25,9 @@ public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment i
         WebAppBottomSheetAdapter.OnClickItemListener {
     private final static int COLUMN_COUNT = 5;
 
-    RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
     private WebAppBottomSheetAdapter mAdapter;
-    private IWebAppBottomSheet mPresenter;
+    private WebAppBottomSheetPresenter mPresenter;
     private String mCurrentUrl;
 
     public static WebAppBottomSheetDialogFragment newInstance() {
@@ -60,7 +62,11 @@ public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment i
         View contentView = View.inflate(getContext(), R.layout.bottom_sheet_webapp, null);
         dialog.setContentView(contentView);
 
+        mPresenter = new WebAppBottomSheetPresenter(getContext());
+        mCurrentUrl = getArguments().getString("currenturl");
+
         initRecyclerView(contentView);
+        setIntroText(contentView);
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();
         CoordinatorLayout.Behavior behavior = params.getBehavior();
@@ -68,8 +74,6 @@ public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment i
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
         }
-
-        mPresenter = new WebAppBottomSheetPresenter(getContext());
     }
 
     @Override
@@ -80,12 +84,22 @@ public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment i
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mCurrentUrl = getArguments().getString("currenturl");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    private void setIntroText(View view) {
+        try {
+            String description = String.format(getString(R.string.webapp_intro_bottomsheet),
+                    mPresenter.getDomainName(mCurrentUrl));
+            TextView introText = (TextView) view.findViewById(R.id.tv_intro);
+            introText.setText(description);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initRecyclerView(View view) {

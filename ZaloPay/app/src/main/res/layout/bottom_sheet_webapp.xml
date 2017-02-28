@@ -12,6 +12,7 @@
     android:paddingTop="@dimen/spacing.medium.s">
 
     <TextView
+        android:id="@+id/tv_intro"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="@string/webapp_intro_bottomsheet"
