@@ -68,6 +68,7 @@ public class AppResource implements Parcelable {
         return result;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -87,18 +88,18 @@ public class AppResource implements Parcelable {
     }
 
     protected AppResource(Parcel in) {
-        this.appid = in.readInt();
+        this.appid = in.readLong();
         this.appname = in.readString();
         this.checksum = in.readString();
-        this.status = in.readInt();
+        this.status = in.readLong();
         this.urlImage = in.readString();
-        this.appType = in.readInt();
+        this.appType = in.readLong();
         this.webUrl = in.readString();
         this.iconName = in.readString();
         this.iconColor = in.readString();
     }
 
-    public static final Parcelable.Creator<AppResource> CREATOR = new Parcelable.Creator<AppResource>() {
+    public static final Creator<AppResource> CREATOR = new Creator<AppResource>() {
         @Override
         public AppResource createFromParcel(Parcel source) {
             return new AppResource(source);

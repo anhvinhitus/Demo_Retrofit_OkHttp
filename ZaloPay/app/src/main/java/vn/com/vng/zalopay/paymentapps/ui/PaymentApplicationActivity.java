@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.paymentapps.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.BV.LinearGradient.LinearGradientPackage;
@@ -112,9 +111,11 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         mComponentName = ModuleName.PAYMENT_MAIN;
 
         if (savedInstanceState == null) {
-            Intent intent = getIntent();
-            appResource = intent.getParcelableExtra("appResource");
-            mLaunchOptions = intent.getBundleExtra("launchOptions");
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                appResource = extras.getParcelable("appResource");
+                mLaunchOptions = extras.getBundle("launchOptions");
+            }
         } else {
             appResource = savedInstanceState.getParcelable("appResource");
             mLaunchOptions = savedInstanceState.getBundle("launchOptions");
