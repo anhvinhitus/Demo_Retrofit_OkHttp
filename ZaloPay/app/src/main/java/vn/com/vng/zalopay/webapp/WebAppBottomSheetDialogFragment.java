@@ -13,33 +13,24 @@ import android.view.View;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
 
 /**
  * Created by khattn on 2/21/17.
  */
 
-public class ItemBottomSheetDialogFragment extends BottomSheetDialogFragment implements
+public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment implements
         WebAppBottomSheetAdapter.OnClickItemListener {
     private final static int COLUMN_COUNT = 5;
 
     RecyclerView mRecyclerView;
     private WebAppBottomSheetAdapter mAdapter;
+    private IWebAppBottomSheet mPresenter;
+    private String mCurrentUrl;
 
-    public interface OnClickListener {
-        void onClickCopyURL();
-
-        void onClickRefresh();
-
-        void onClickOpenInBrowser();
-
-        void onClickShareOnZalo();
-    }
-
-    public static ItemBottomSheetDialogFragment newInstance() {
+    public static WebAppBottomSheetDialogFragment newInstance() {
         Bundle args = new Bundle();
-        ItemBottomSheetDialogFragment fragment = new ItemBottomSheetDialogFragment();
+        WebAppBottomSheetDialogFragment fragment = new WebAppBottomSheetDialogFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,10 +60,7 @@ public class ItemBottomSheetDialogFragment extends BottomSheetDialogFragment imp
         View contentView = View.inflate(getContext(), R.layout.bottom_sheet_webapp, null);
         dialog.setContentView(contentView);
 
-        ButterKnife.bind(this, contentView);
-        mRecyclerView = (RecyclerView) contentView.findViewById(R.id.recyclerview);
-
-        initRecyclerView();
+        initRecyclerView(contentView);
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();
         CoordinatorLayout.Behavior behavior = params.getBehavior();
@@ -80,6 +68,8 @@ public class ItemBottomSheetDialogFragment extends BottomSheetDialogFragment imp
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
         }
+
+        mPresenter = new WebAppBottomSheetPresenter(getContext());
     }
 
     @Override
@@ -90,21 +80,16 @@ public class ItemBottomSheetDialogFragment extends BottomSheetDialogFragment imp
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-    }
-
-    private ItemBottomSheetDialogFragment.OnClickListener listener;
-
-    public void setOnClickListener(ItemBottomSheetDialogFragment.OnClickListener listener) {
-        this.listener = listener;
+        mCurrentUrl = getArguments().getString("currenturl");
     }
 
     @Override
     public void onDestroyView() {
-        this.listener = null;
         super.onDestroyView();
     }
 
-    private void initRecyclerView() {
+    private void initRecyclerView(View view) {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         mAdapter = new WebAppBottomSheetAdapter(getContext(), this);
 
         mRecyclerView.setHasFixedSize(true);
@@ -126,16 +111,18 @@ public class ItemBottomSheetDialogFragment extends BottomSheetDialogFragment imp
         int id = mAdapter.getItem(position).id;
         switch (id) {
             case WebAppBottomSheetItemUtil.COPY_URL:
-                listener.onClickCopyURL();
+                mPresenter.handleClickCopyURL(mCurrentUrl);
+                dismiss();
                 break;
             case WebAppBottomSheetItemUtil.REFRESH:
-                listener.onClickRefresh();
+                ((WebAppFragment) getParentFragment()).refreshWeb();
+                dismiss();
                 break;
             case WebAppBottomSheetItemUtil.OPEN_IN_BROWSER:
-                listener.onClickOpenInBrowser();
+                mPresenter.handleClickOpenInBrowser(mCurrentUrl);
                 break;
             case WebAppBottomSheetItemUtil.SHARE_ON_ZALO:
-                listener.onClickShareOnZalo();
+                mPresenter.handleClickShareOnZalo(mCurrentUrl);
                 break;
         }
     }
