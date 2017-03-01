@@ -4,50 +4,17 @@
     <string name="loremipsum"></string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
 
     <string name="action_settings">Settings</string>
 
-    <string name="zalopay">Zalo Pay</string>
-    <string name="me">Tôi</string>
-    <string name="more">Thêm</string>
     <string name="notification">Thông báo</string>
-    <string name="transaction">Giao dịch</string>
 
     <string name="overbalance">Số Dư</string>
 
     <string name="transfer.money">Chuyển Tiền</string>
-    <string name="recharge.money.phone">Nạp Tiền \nĐiện Thoại</string>
-    <string name="bill">Hoá đơn</string>
-    <string name="electric.bill">Thanh Toán \nTiền Điện</string>
-    <string name="internet.bill">Internet/TV</string>
-    <string name="water.bill">Tiền nước</string>
     <string name="red.envelope">Lì Xì</string>
-    <string name="collect.money">Gom tiền</string>
-    <string name="other.services">Dịch vụ khác</string>
-    <string name="card.bank">Thẻ ngân hàng</string>
     <string name="scan.qr.code">Quét mã QR</string>
-    <string name="topup">Topup</string>
-    <string name="recharge.game">Nạp game</string>
-    <string name="recharge.phone">Nạp ĐT</string>
-    <string name="other">Khác</string>
-    <string name="tel_card">Thẻ cào</string>
-    <string name="buy.phone.card">Thẻ ĐT</string>
     <string name="receive.money">Nhận Tiền</string>
-    <string name="service">Dịch Vụ</string>
-    <string name="transfer.to.mobile">Đến số điện thoại di động</string>
-    <string name="transfer.to.atm.visa">Đến số thẻ ATM / VISA</string>
-    <string name="transfer.to.bank.account">Đến tài khoản ngân hàng</string>
     <string name="bank.support.link.card">Ngân hàng hỗ trợ liên kết thẻ</string>
     <string name="link.card.bank.support.empty">Chưa có ngân hàng hỗ trợ liên kết thẻ</string>
     <string name="link.account.bank.support.empty">Chưa có ngân hàng hỗ trợ liên kết tài khoản</string>
@@ -56,16 +23,10 @@
     <string name="appid">19240466928203470</string>
     <string name="zalo_appid">zalo-19240466928203470</string>
 
-
-    <string name="title_activity_login">Đăng nhập</string>
-
-    <string name="cards">Nguồn nạp</string>
     <string name="amount">Số tiền</string>
-    <string name="amount_vnd"> (VND)</string>
     <string name="vnd"> VND</string>
     <string name="hint_amount">Số tiền (VND)</string>
     <string name="hint_message">Lời nhắn</string>
-    <string name="note">Ghi chú</string>
 
     <string name="btn_update">Cập Nhật</string>
     <string name="btn_continue">Tiếp Tục</string>
@@ -92,12 +53,9 @@
 
     <!--Activity lable START-->
     <string name="title_activity_balance_topup">Nạp tiền</string>
-    <string name="title_activity_confirm_transaction">Xác nhận giao dịch</string>
 
     <string name="title.activity.profile">Thông tin cá nhân</string>
     <string name="title_activity_qr_code">Quét mã QR để thanh toán</string>
-    <string name="title.activity.link.card">Quản lý thẻ</string>
-    <string name="title.activity.add.card">Thêm thẻ</string>
     <string name="title.activity.transfer">Chuyển tiền</string>
     <string name="title.activity.transfer.to">Chuyển tiền đến</string>
     <string name="title.activity.zalopay.contact">Danh bạ</string>
@@ -110,7 +68,6 @@
     <string name="title.activity.withdraw.condition">Điều kiện rút tiền</string>
     <string name="title.activity.my.qr">Nhận tiền</string>
     <string name="title.activity.tutorial.network.connection">Hướng dẫn kết nối mạng</string>
-    <string name="title.activity.card.support">Quản lý thẻ</string>
     <string name="title.activity.tutorial.link.card">Thông Báo</string>
     <string name="title.activity.warning.root">Cảnh báo</string>
     <string name="title.activity.protect.account">Thiết lập bảo vệ tài khoản</string>
@@ -124,14 +81,6 @@
     <string name="label_invitation_code">Nhập mã kích hoạt ứng dụng.\nĐể có mã kích hoạt, liên hệ hotro@zalopay.vn</string>
 
     <!--Left Menu lable START-->
-    <string name="txt_leftmenu_home">Trang Chủ</string>
-    <string name="txt_leftmenu_notification">Thông Báo</string>
-    <string name="txt_leftmenu_scan_qrcode">Quét Mã QR</string>
-    <string name="txt_leftmenu_transfer">Chuyển Tiền</string>
-    <string name="txt_leftmenu_transaction_history">Lịch Sử Thanh Toán</string>
-    <string name="txt_leftmenu_faq">FAQ</string>
-    <string name="txt_leftmenu_contact">Liên Hệ Hỗ Trợ</string>
-    <string name="txt_leftmenu_app_info">Thông Tin Ứng Dụng</string>
     <string name="txt_leftmenu_sigout">Đăng Xuất</string>
     <!--Left Menu lable END-->
 
@@ -149,7 +98,6 @@
     <string name="txt_link_card_success">Liên kết thẻ thành công.</string>
     <string name="txt_link_card_fail">Liên kết thẻ thất bại.</string>
     <string name="txt_remove_link">Hủy Liên Kết</string>
-    <string name="txt_link_card_empty">Chưa có thẻ nào được liên kết</string>
     <string name="txt_confirm_remove_card">Bạn có muốn hủy thông tin thẻ đã liên kết này không?</string>
     <string name="txt_confirm_remove_account">Bạn có muốn hủy thông tin tài khoản đã liên kết này không?</string>
     <string name="tutorial_link_card_note_1">Thẻ vừa thanh toán đã được liên kết vào tài khoản Zalo Pay của bạn.</string>
@@ -164,15 +112,12 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="save.card.description">Xác thực liên kết thẻ</string>
-
     <string name="action_notifications">Thông báo</string>
 
     <string name="title_min_money">Tối thiểu %s</string>
     <string name="min_money">Số tiền tối thiểu %s</string>
     <string name="max_money">Số tiền không được vượt quá %s</string>
     <string name="valid_money">Số tiền phải là bội số của 10.000 VND</string>
-    <string name="input_amount">Nhập số tiền</string>
 
     <string name="pressed_back_to_exit">Bấm Back một lần nữa để đóng ứng dụng</string>
     <string name="link_card_more">Thêm Liên Kết Thẻ</string>
@@ -180,69 +125,28 @@
     <string name="link.card">Liên Kết Thẻ</string>
     <string name="link.account">Liên Kết Tài Khoản</string>
     <string name="link_acc_more">Thêm Liên Kết Tài Khoản</string>
-    <string name="alert_processing">Đang xử lý</string>
 
-    <string name="hint_birthday">Năm sinh</string>
-    <string name="note_transaction">Hãy nhập những thông tin bên dưới để giao dịch và thanh toán được AN TOÀN:</string>
-    <string name="hint_cmnd">CMND</string>
-    <string name="invalid_cmnd">Bạn chưa nhập CMND</string>
     <string name="hint_phone">Số điện thoại</string>
-    <string name="invalid_phone_empty">Bạn chưa nhập số điện thoại</string>
-    <string name="invalid_phone">Số điện thoại không hợp lệ</string>
-    <string name="note_phone">Dùng để liên lạc với bạn khi cần thiết</string>
     <string name="hint_email">Email</string>
-    <string name="invalid_email_empty">Bạn chưa nhập email</string>
-    <string name="invalid_email">Email không hợp lệ</string>
-    <string name="note_email">Để lấy lại mật khẩu, thông tin khuyến mại</string>
-    <string name="hint_zalopay_name">Zalo Pay ID</string>
-    <string name="valid_zalopay_name">Zalo Pay ID hợp lệ</string>
-    <string name="invalid_zalopay_name">Zalo Pay ID đã được sử dụng</string>
-    <string name="note_zalopay_name">Zalo Pay ID là chuỗi ký tự bao gồm các ký tự từ a->z, các số 0&#8211;9, không phân biệt chữ hoa, chữ thường.</string>
-    <string name="invalid__zalopay_name">Zalo Pay ID không hợp lệ</string>
     <string name="phone_support">1900 54 54 36</string>
-    <string name="terms_of_use_1">Để bảo đảm quyền lợi tốt nhất cho khách hàng, Quý khách vui lòng cập nhật đầy đủ mục thông tin cá nhân.</string>
-    <string name="terms_of_use_2">Nếu mất SIM, Quý khách gọi ngay %s đế khoá TK Zalo Pay</string>
     <string name="agree.term.of.use">Tôi đã đọc và đồng ý với %s của Zalo Pay</string>
     <string name="term.of.use">thỏa thuận sử dụng</string>
-    <string name="invalid_amount_empty">Bạn chưa nhập số tiền</string>
-    <string name="invalid_transfer_msg_empty">Bạn chưa nhập lời nhắn</string>
-
-    <string name="invalid_otp_empty">Bạn chưa nhập OTP</string>
-    <string name="invalid_otp">OTP không hợp lệ.</string>
 
     <string name="pin_title">Tạo mật khẩu để thanh toán bằng số dư hoặc thẻ đã liên kết</string>
-    <string name="hint_pin">Mật khẩu thanh toán</string>
     <string name="invalid_pin">Nhập vào mật khẩu thanh toán 6 số</string>
-    <string name="pin.mismatch">Mật khẩu thanh toán không khớp</string>
     <string name="pin.not.change">Mật khẩu thanh toán mới và cũ phải khác nhau</string>
-    <string name="note_pin">Là mã bí mật khi thực hiện thanh toán hoặc giao dịch</string>
-    <string name="hint_pin_compare">Nhập lại mật khẩu thanh toán</string>
-    <string name="invalid_pin_compare">Mật khẩu thanh toán không trùng nhau</string>
-
-    <string name="invalid_fullname_empty">Bạn chưa nhập họ tên</string>
-    <string name="invalid_address_empty">Bạn chưa nhập địa chỉ</string>
 
     <string name="manager_card">Quản lý thẻ</string>
-    <string name="my_qr_code">Mã QR của tôi</string>
 
     <string name="personal">Cá nhân</string>
     <string name="user_info">Thông tin cá nhân</string>
-    <string name="sigout_and_delete_db">Thoát và xóa dữ liệu</string>
-    <string name="title_activity_edit_profile">Thông tin cá nhân</string>
-    <string name="reset_passcode">Thiết lập lại mật khẩu thanh toán.</string>
 
     <string name="not_update">Chưa cập nhật</string>
     <string name="waiting_approve">Đang chờ duyệt</string>
     <string name="cmnd_passpost">CMND/Hộ chiếu</string>
-    <string name="address">Địa chỉ</string>
-    <string name="zalo_id">Zalo ID</string>
     <string name="zalopay_id">Mã định danh</string>
 
-    <string name="hint_fullname">Họ tên</string>
-
-    <string name="show_passcode">Hiện mật khẩu thanh toán?</string>
     <string name="title_activity_scan_to_pay">Trả tiền</string>
-    <string name="btn_emulate_nfc">Giả lập Nfc</string>
 
     <string name="show">Hiện</string>
     <string name="hide">Ẩn</string>
@@ -250,34 +154,18 @@
     <string name="hint_otp">Mã OTP</string>
     <string name="otp_note">Mã OTP được gửi qua SMS đến điện thoại của bạn</string>
 
-    <string name="receiver_start_record">Start record</string>
-    <string name="receiver_end_record">End Record</string>
-    <string name="record_impossible">Unfortunately, it is not possible to record calls in this device. (Usually because another application/service is using the microphone in the background)</string>
-    <string name="recording">Recording</string>
-    <string name="recording_ticker">Recording is now Starting</string>
-    <string name="recording_text">If recording was enabled, recording should have started, if not you can enable recording in the application, the phone will stop the recording when the conversation ends</string>
-
-    <string name="btn_start_scan_sound">Start scan</string>
-    <string name="btn_stop_scan_sound">Stop scan</string>
-
     <string name="transfer_acc_zalopay">Bạn bè Zalo</string>
-    <string name="transfer_atm_visa">Đến số thẻ ATM/VISA</string>
     <string name="transaction_recent">Giao dịch gần đây</string>
     <string name="hint_zalo_contact">Nhập tên để tìm</string>
 
     <string name="deposit">Nạp tiền vào tài khoản</string>
 
-    <string name="notify.from.zalopay">Bạn nhận được tin nhắn từ Zalo Pay</string>
     <string name="you.have.unread.messages">Bạn có %s thông báo chưa đọc.</string>
-    <string name="not_update_phone">Chưa cập nhật SĐT</string>
     <string name="not_update_zalopay_id">Chưa cập nhật Zalo Pay ID</string>
-
-    <string name="txt_no_data">Không có dữ liệu</string>
 
     <string name="txt_input_userinfo">Cập nhật</string>
     <string name="txt_need_input_userinfo">Hãy cập nhật thông tin để sử dụng tính năng này</string>
 
-    <string name="otp_invalid">Sai mã OTP.</string>
     <string name="transfer_money_note">Bạn có thể dùng tính năng Chuyển tiền để trả tiền hoặc cho bạn bè vay tiền</string>
     <string name="update.profile2.success">Cập nhật thông tin thành công.</string>
     <string name="update.profile.success">Thông tin của bạn đã được gửi đi và đang chờ duyệt.</string>
@@ -287,7 +175,6 @@
     <string name="accept">Đồng ý</string>
     <string name="cancel">Huỷ</string>
     <string name="confirm">Xác Nhận</string>
-    <string name="slogan">Thanh toán trong <font size='18'>2</font> giây</string>
 
     <string name="lbl.identify.front">Mặt trước</string>
     <string name="lbl.identify.back">Mặt sau</string>
@@ -312,15 +199,6 @@
     <string name="describe_request_support_count">Mô tả (%s/64) (bắt buộc)</string>
     <string name="describe_request_support">Nhập thông tin cần hỗ trợ (bắt buộc)</string>
 
-    <!-- Link CARDS START-->
-    <string name="intro.title.step1">BƯỚC 1</string>
-    <string name="intro.content.step1">Nhập thông tin thẻ\n Gồm: Số thẻ, tên chủ thẻ.</string>
-    <string name="intro.title.step2">BƯỚC 2</string>
-    <string name="intro.content.step2">Zalo Pay sẽ chuyển <font size='16'><b>20.000</b></font> <font size='12'>VND</font> từ tài\n khoản thẻ vào tài khoản Zalo Pay của bạn\n để kiểm tra tính hợp lệ của thẻ.</string>
-    <string name="intro.title.step3">CHẤP NHẬN THẺ</string>
-    <string name="intro.content.step3">Zalo Pay hỗ trợ các thẻ ATM nội địa và\n thẻ tín dụng.</string>
-    <!-- Link CARDS END-->
-
     <!-- Intro App Start-->
     <string name="intro.app.title.step1">ĐĂNG NHẬP VỚI ZALO</string>
     <string name="intro.app.content.step1">Không cần đăng ký mới\n Đăng nhập dễ dàng với tài khoản Zalo.</string>
@@ -338,8 +216,6 @@
     <string name="account_name">Zalo Pay ID</string>
     <string name="more_info_acc_zalopay">Tìm hiểu thêm về tài khoản Zalo Pay</string>
 
-    <string name="text_check">Kiểm tra</string>
-    <string name="warning_update_zalopay_name">Zalo Pay ID được tạo một lần duy nhất và không được thay đổi.\nBạn có chắc muốn dùng tên này không?</string>
     <string name="lbl.edit.account.name">Zalo Pay ID để nhận/chuyển khoản cho bạn bè nhanh nhất</string>
     <string name="hint.edit.account">Zalo Pay ID bao gồm:</string>
     <string name="hint.edit.account1">Độ dài từ 4 &#8211; 24 ký tự (gồm chữ và số)</string>
@@ -369,45 +245,31 @@
 
     <string name="account_existed">Zalo Pay ID đã được sử dụng</string>
 
-    <string name="vietin_bank">Vietinbank</string>
-    <string name="sacombank_bank">Sacombank</string>
     <string name="alert.need.update.phone">Vui lòng cập nhật số điện thoại trước.</string>
     <string name="alert.need.update.level.2">Vui lòng cập nhật số điện thoại trước khi cập nhật email và CMND/Hộ chiếu.</string>
 
-    <string name="miss_browser">Vui lòng kiểm tra lại trình duyệt web trên thiết bị của bạn</string>
     <string name="miss_playstore">Vui lòng kiểm tra lại google play store trên thiết bị của bạn</string>
-    <string name="new_version">Phiên bản mới</string>
     <string name="need_update_to_use">Cần nâng cấp phiên bản Zalo Pay mới nhất để tiếp tục sử dụng ứng dụng</string>
     <string name="recommend_update_to_use">Ứng dụng Zalo Pay đã có phiên bản mới. Hãy cập nhật để trải nghiệm những tính năng mới nhất</string>
     <string name="view.detail">Xem chi tiết</string>
 
-    <string name="update_to_use">Nâng cấp phiên bản Zalo Pay mới nhất để sử dụng tính năng này.</string>
-
     <string name="withdraw.exceed.balance">Số tiền rút vượt quá số dư</string>
 
-    <string name="transfer.message.maxlength">Lời nhắn không được vượt quá 36 ký tự.</string>
-    <string name="pin.old">Mật khẩu thanh toán cũ</string>
-    <string name="pin.new">Mật khẩu thanh toán mới</string>
     <string name="input.pin">Nhập mật khẩu thanh toán</string>
     <string name="input.pin.old">Nhập mật khẩu thanh toán cũ</string>
     <string name="input.pin.new">Nhập mật khẩu thanh toán mới</string>
     <string name="pin">Mật khẩu thanh toán</string>
     <string name="input.pin.to.access">Nhập mật khẩu thanh toán để truy cập</string>
-    <string name="reset_pin">Tạo lại mật khẩu thanh toán</string>
-    <string name="reset_pin_error">Tạo lại mật khẩu thanh toán thất bại.</string>
     <string name="reset_pin_success">Tạo lại mật khẩu thanh toán thành công.</string>
 
     <!--WebView Resource Start-->
     <string name="appgame_alert_input_error">Dữ liệu giao dịch không hợp lệ</string>
-    <string name="appgame_alert_error_start_channel">Không thể khởi tạo cổng giao dịch</string>
     <string name="appgame_waiting_loading">Đang tải trang.\nBạn có muốn tiếp tục đợi?</string>
-    <string name="appgame_error_loading">Tải trang thất bại.Vui lòng thử lại sau ít phút</string>
     <string name="load_data_error">Không tải được nội dung</string>
     <string name="delete">Xoá</string>
     <!--WebView Resource End-->
 
     <string name="donate_money">Tặng tiền</string>
-    <string name="recovery_money">Thu hồi tiền</string>
 
     <string name="account.format">Zalo Pay ID: %s</string>
     <string name="phone.format">Số ĐT: %s</string>
@@ -426,7 +288,6 @@
     <string name="friends.use.zalopay">Bạn bè sử dụng zalo pay</string>
     <string name="friends.not.use.zalopay">Bạn bè chưa sử dụng zalo pay</string>
     <string name="account.not.use.zalopay">%1$s chưa sử dụng Zalo Pay\n \nBạn hãy mời %2$s sử dụng Zalo Pay để chuyển tiền nhanh chóng và dễ dàng.</string>
-    <string name="you.pay.success">Bạn vừa thanh toán thành công một món hàng</string>
     <string name="Generate_qrcode_error">Sinh mã QR thất bại.</string>
     <string name="data_invalid">Dữ liệu không hợp lệ.</string>
     <string name="lbl.confirm.pay.order">Bạn có muốn thực hiện thanh toán đơn hàng này không?</string>
@@ -443,14 +304,10 @@
 
     <!-- Start Fingerprint-->
     <string name="use_password">Nhập mật khẩu</string>
-    <string name="password">Mật khẩu</string>
-    <string name="fingerprint_description">Quyét vân tay để quá trình hoàn tất</string>
     <string name="fingerprint_decrypt_title">Xác thực vân tay</string>
     <string name="fingerprint_status_decrypt">Quét dấu vân tay để truy cập thông tin</string>
-    <string name="fingerprint_description1">Xác nhận vân tay để tiếp tục</string>
     <!--Confirm your fingerprint now-->
     <string name="fingerprint_hint">Xác nhận vân tay của bạn ngay</string>
-    <string name="password_description">Nhập mật khẩu thanh toán để tiếp tục</string>
     <string name="fingerprint_not_recognized">Không nhận diện được dấu vân tay</string>
     <string name="fingerprint_success">Xác thực thành công</string>
     <string name="confirm.off.fingerprint.message">Bạn có muốn tắt thiết lập bảo vệ bằng vân tay?</string>
@@ -479,7 +336,6 @@
     <string name="cancel.transfer.money">hủy chuyển tiền</string>
     <string name="lbl.qr.code.transfer.money.for.me">Quét mã QR để chuyển tiền cho tôi mà không cần kết bạn</string>
     <string name="input.phone.number">Nhập số điện thoại</string>
-    <string name="nfc">Nfc</string>
     <string name="take.a.picture">Chụp Hình</string>
     <string name="image.gallery">Thư viện hình ảnh</string>
     <string name="total">Tổng cộng</string>
@@ -488,7 +344,6 @@
     <string name="account_holders">Số ĐT:</string>
     <string name="tutorial.keyguard.secure.disable">Khóa màn hình chưa được thiết thập.\nVào \'Cài đặt -> Bảo mật -> Vân tay\' để thiết lập xác thực vân tay</string>
     <string name="tutorial.fingerprint.unavailable">Vào \'Cài đặt -> Bảo mật -> Vân tay\' và đăng ký ít nhất một dấu vân tay</string>
-    <string name="enter.password.to.continue">Nhập mật khẩu thanh toán để tiếp tục</string>
     <string name="select_bank_to_link_account">Chọn ngân hàng để liên kết tài khoản:</string>
     <string name="list_bank_support_link_card">Các thẻ ngân hàng được Zalo Pay hỗ trợ</string>
     <string name="confirm.on.fingerprint.message">Xác nhận sử dụng vân tay thay cho mật khẩu thanh toán</string>

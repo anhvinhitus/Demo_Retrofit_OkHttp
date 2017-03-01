@@ -2,11 +2,7 @@ package vn.com.vng.zalopay.webview.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.webkit.ValueCallback;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -240,24 +236,6 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         } else {
             return super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //inflater.inflate(R.menu.webapp_menu_main, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        Timber.d("onOptionsItemSelected: %s", id);
-        if (id == R.id.webapp_action_refresh) {
-            refreshWeb();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     protected void refreshWeb() {

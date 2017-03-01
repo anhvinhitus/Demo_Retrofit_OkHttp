@@ -227,7 +227,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
             cards.add(card);
         }
         if (Lists.isEmptyOrNull(cards)) {
-            showErrorView(R.string.link_card_bank_support_empty);
+            showErrorView(R.string.link_account_bank_support_empty);
         } else if (cards.size() == 1) {
             linkAccount(cards.get(0));
         } else {
