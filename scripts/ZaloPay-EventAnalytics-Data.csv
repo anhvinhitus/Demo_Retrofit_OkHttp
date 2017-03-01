@@ -196,3 +196,10 @@ EventId,Category,Action
 2504,Timing ESALE,esale_api_v4_carddetail
 2505,Timing ESALE,esale_api_v4_getproviders
 2506,Timing ESALE,esale_api_v4_querybill
+2600,Zalo Integration,Zalo_Launch_28
+2601,Zalo Integration,Zalo_Back
+2602,Zalo Integration,Zalo_NotLogin
+2603,Zalo Integration,Zalo_Payment_Completed
+2604,Zalo Integration,Zalo_Receiver_Not_Found
+2605,Zalo Integration,Zalo_Payment_IsInProgress
+2606,Zalo Integration,Zalo_Payment_IsInCompleted

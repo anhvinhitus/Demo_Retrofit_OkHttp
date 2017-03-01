@@ -201,6 +201,13 @@ public class ZPEvents {
     public static final int ESALE_API_V4_CARDDETAIL = 2504;
     public static final int ESALE_API_V4_GETPROVIDERS = 2505;
     public static final int ESALE_API_V4_QUERYBILL = 2506;
+    public static final int ZALO_LAUNCH_28 = 2600;
+    public static final int ZALO_BACK = 2601;
+    public static final int ZALO_NOTLOGIN = 2602;
+    public static final int ZALO_PAYMENT_COMPLETED = 2603;
+    public static final int ZALO_RECEIVER_NOT_FOUND = 2604;
+    public static final int ZALO_PAYMENT_ISINPROGRESS = 2605;
+    public static final int ZALO_PAYMENT_ISINCOMPLETED = 2606;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -598,6 +605,20 @@ public class ZPEvents {
                 return "esale_api_v4_getproviders";
             case ESALE_API_V4_QUERYBILL:
                 return "esale_api_v4_querybill";
+            case ZALO_LAUNCH_28:
+                return "Zalo_Launch_28";
+            case ZALO_BACK:
+                return "Zalo_Back";
+            case ZALO_NOTLOGIN:
+                return "Zalo_NotLogin";
+            case ZALO_PAYMENT_COMPLETED:
+                return "Zalo_Payment_Completed";
+            case ZALO_RECEIVER_NOT_FOUND:
+                return "Zalo_Receiver_Not_Found";
+            case ZALO_PAYMENT_ISINPROGRESS:
+                return "Zalo_Payment_IsInProgress";
+            case ZALO_PAYMENT_ISINCOMPLETED:
+                return "Zalo_Payment_IsInCompleted";
             default:
                 return "DefaultAction";
         }
@@ -999,6 +1020,20 @@ public class ZPEvents {
                 return "Timing ESALE";
             case ESALE_API_V4_QUERYBILL:
                 return "Timing ESALE";
+            case ZALO_LAUNCH_28:
+                return "Zalo Integration";
+            case ZALO_BACK:
+                return "Zalo Integration";
+            case ZALO_NOTLOGIN:
+                return "Zalo Integration";
+            case ZALO_PAYMENT_COMPLETED:
+                return "Zalo Integration";
+            case ZALO_RECEIVER_NOT_FOUND:
+                return "Zalo Integration";
+            case ZALO_PAYMENT_ISINPROGRESS:
+                return "Zalo Integration";
+            case ZALO_PAYMENT_ISINCOMPLETED:
+                return "Zalo Integration";
             default:
                 return "DefaultCategory";
         }
