@@ -294,6 +294,16 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void mapBankAccout() {
+        navigator.startLinkAccountActivity(getReactApplicationContext());
+    }
+
+    @ReactMethod
+    public void removeBankAccout() {
+        navigator.startLinkAccountActivity(getReactApplicationContext());
+    }
+
     private void removeNotify(long notifyId) {
         Timber.d("removeNotify: %s", notifyId);
         Subscription subscription = mNotificationRepository.removeNotify(notifyId)

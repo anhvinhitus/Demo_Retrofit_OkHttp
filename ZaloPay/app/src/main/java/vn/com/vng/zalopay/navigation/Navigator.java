@@ -250,8 +250,16 @@ public class Navigator implements INavigator {
         activity.startActivity(intent);
     }
 
+    @Override
     public void startLinkCardActivity(Context context) {
         startLinkCardActivity(context, null, false);
+    }
+
+    @Override
+    public void startLinkAccountActivity(Context context) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.ARG_PAGE_INDEX, LinkBankPagerIndex.LINK_ACCOUNT.getValue());
+        startLinkCardActivity(context, bundle, false);
     }
 
     @Override

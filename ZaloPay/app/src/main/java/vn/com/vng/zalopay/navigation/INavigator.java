@@ -37,6 +37,8 @@ public interface INavigator {
 
     void startLinkCardActivity(Context context);
 
+    void startLinkAccountActivity(Context context);
+
     Intent intentProfile(Context context);
 
     Intent intentLinkCard(Context context);
