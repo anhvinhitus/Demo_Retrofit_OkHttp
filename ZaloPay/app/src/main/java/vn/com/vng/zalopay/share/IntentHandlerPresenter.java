@@ -205,26 +205,7 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
             return;
         }
 
-        Activity activity = ((Activity) mView.getContext());
-
-        if (!removeTask) {
-            activity.finish();
-            return;
-        }
-
-        if (!activity.isTaskRoot()) {
-            Timber.d("move task to back");
-            activity.moveTaskToBack(true);
-            activity.finish();
-            return;
-        }
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            Timber.d("finish and remove task");
-            activity.finishAndRemoveTask();
-        } else {
-            activity.finish();
-        }
+        mView.finishActivity(removeTask);
     }
 
     private void startLogin(IntentHandlerActivity act, int requestCode, Uri data, long zaloid, String authCode) {

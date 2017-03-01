@@ -7,5 +7,6 @@ import android.content.Context;
  */
 
 interface IIntentHandlerView {
+    void finishActivity(boolean removeTask);
     Context getContext();
 }

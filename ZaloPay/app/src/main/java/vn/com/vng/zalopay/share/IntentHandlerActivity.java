@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.share;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -55,14 +57,36 @@ public class IntentHandlerActivity extends BaseActivity implements IIntentHandle
     }
 
     @Override
-    public Context getContext() {
-        return this;
-    }
-
-    @Override
     protected void onDestroy() {
         mPresenter.detachView();
         mPresenter.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void finishActivity(boolean removeTask) {
+        if (!removeTask) {
+            this.finish();
+            return;
+        }
+
+        if (!isTaskRoot()) {
+            Timber.d("move task to back");
+            this.moveTaskToBack(true);
+            this.finish();
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            Timber.d("finish and remove task");
+            this.finishAndRemoveTask();
+        } else {
+            this.finish();
+        }
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 }
