@@ -189,7 +189,7 @@ public class KeyTools {
         return encrypt(secret, true);
     }
 
-    public boolean encrypt(String secret, boolean isSha256) {
+    private boolean encrypt(String secret, boolean isSha256) {
         if (!FingerprintProvider.checkAndroidMVersion()) {
             return false;
         }

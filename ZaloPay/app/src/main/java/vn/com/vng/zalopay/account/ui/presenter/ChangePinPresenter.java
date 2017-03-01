@@ -115,7 +115,7 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
                     @Override
                     public void call(Boolean aBoolean) {
                         if (!TextUtils.isEmpty(mNewPassword) && mKeyTools.isHavePassword()) {
-                            boolean encrypt = mKeyTools.encrypt(mNewPassword, false);
+                            boolean encrypt = mKeyTools.encrypt(mNewPassword);
                             Timber.d("encrypt result %s", encrypt);
                         }
                     }
