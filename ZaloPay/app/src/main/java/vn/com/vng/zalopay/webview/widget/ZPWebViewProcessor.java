@@ -201,6 +201,9 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         } else {
             if (url.contains(WebViewConfig.URL_LOGIN_ZALO)) {
                 clearCookieZalo();
+            } else if (url.contains(WebViewConfig.URL_LOGIN_FACEBOOK)
+                    || url.contains(WebViewConfig.URL_LOGIN_FACEBOOK_MOBILE)) {
+                clearCookieFacebook();
             }
             view.loadUrl(url);
         }
@@ -212,7 +215,15 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         if (mWebView == null) {
             return;
         }
-        mWebView.clearCookies("oauth.zaloapp.com");
+        mWebView.clearCookies(WebViewConfig.COOKIE_LOGIN_ZALO);
+    }
+
+    private void clearCookieFacebook() {
+        if (mWebView == null) {
+            return;
+        }
+        mWebView.clearCookies(WebViewConfig.COOKIE_FACEBOOK);
+        mWebView.clearCookies(WebViewConfig.COOKIE_FACEBOOK_MOBILE);
     }
 
     public void onDestroy() {
