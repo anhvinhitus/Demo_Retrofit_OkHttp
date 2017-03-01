@@ -61,6 +61,7 @@ public class IntentHandlerActivity extends BaseActivity implements IIntentHandle
 
     @Override
     protected void onDestroy() {
+        mPresenter.detachView();
         mPresenter.destroy();
         super.onDestroy();
     }
