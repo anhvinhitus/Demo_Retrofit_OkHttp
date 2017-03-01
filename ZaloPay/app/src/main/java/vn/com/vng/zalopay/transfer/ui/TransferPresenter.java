@@ -126,6 +126,10 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             return;
         }
 
+        if(requestCode == Constants.REQUEST_CODE_DEPOSIT && mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
+            ZPAnalytics.trackEvent(ZPEvents.ZALO_BACK);
+        }
+
         paymentWrapper.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -169,6 +173,10 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             if (e instanceof NetworkConnectionException) {
                 showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
                 return;
+            }
+
+            if(mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
+                ZPAnalytics.trackEvent(ZPEvents.ZALO_RECEIVER_NOT_FOUND);
             }
 
             showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.ERROR_TYPE);
@@ -576,6 +584,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             data.putExtra("message", mTransaction.message);
             data.putExtra("transactionId", mTransaction.transactionId);
             Timber.d("onResponseSuccess: isTaskRoot %s", activity.isTaskRoot());
+            ZPAnalytics.trackEvent(ZPEvents.ZALO_PAYMENT_COMPLETED);
             activity.setResult(Activity.RESULT_OK, data);
             activity.finish();
         }
