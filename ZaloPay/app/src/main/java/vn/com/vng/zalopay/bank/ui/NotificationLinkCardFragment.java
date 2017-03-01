@@ -38,7 +38,7 @@ public class NotificationLinkCardFragment extends BaseFragment {
 
     @OnClick(R.id.btnManagerCard)
     public void onCLickManagerCard() {
-        navigator.startLinkCardActivity(getContext(), null, true);
+        navigator.startLinkCardActivityAndFinish(getContext());
     }
 
     public NotificationLinkCardFragment() {

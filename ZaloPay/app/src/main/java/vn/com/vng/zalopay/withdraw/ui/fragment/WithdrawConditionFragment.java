@@ -75,9 +75,11 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
     }
 
     private void startLinkCardActivity(LinkBankPagerIndex pageIndex) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(Constants.ARG_PAGE_INDEX, pageIndex.getValue());
-        navigator.startLinkCardActivity(getContext(), bundle, false);
+        if (pageIndex == LinkBankPagerIndex.LINK_ACCOUNT) {
+            navigator.startLinkAccountActivity(getContext());
+        } else {
+            navigator.startLinkCardActivity(getContext());
+        }
     }
 
     public WithdrawConditionFragment() {

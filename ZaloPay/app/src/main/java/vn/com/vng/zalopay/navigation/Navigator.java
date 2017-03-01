@@ -255,6 +255,10 @@ public class Navigator implements INavigator {
         startLinkCardActivity(context, null, false);
     }
 
+    public void startLinkCardActivityAndFinish(Context context) {
+        startLinkCardActivity(context, null, true);
+    }
+
     @Override
     public void startLinkAccountActivity(Context context) {
         Bundle bundle = new Bundle();
@@ -310,7 +314,7 @@ public class Navigator implements INavigator {
         }
     }
 
-    public void startLinkCardActivity(Context context, Bundle bundle, boolean isFinishActivity) {
+    private void startLinkCardActivity(Context context, Bundle bundle, boolean isFinishActivity) {
         if (!validUserBeforeLinkBank(context)) {
             return;
         }
