@@ -101,16 +101,16 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
 
     @Override
     public void changePin(String oldPin, String newPin) {
-        Subscription subscription = mAccountRepository.recoveryPin(oldPin, newPin)
+        Subscription subscription = mAccountRepository.changePassword(oldPin, newPin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ChangePinSubscriber(newPin));
+                .subscribe(new ChangePinSubscriber());
         mSubscription.add(subscription);
     }
 
     @Override
     public void verify(String otp) {
-        Subscription subscription = mAccountRepository.verifyRecoveryPin(otp)
+        Subscription subscription = mAccountRepository.verifyChangePassword(otp)
                 .doOnNext(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
@@ -128,8 +128,14 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
 
     private void onChangePinSuccess(String newPassword) {
         this.mNewPassword = newPassword;
-        mChangePinView.hideLoading();
-        mView.nextPage();
+
+        if (mChangePinView != null) {
+            mChangePinView.hideLoading();
+        }
+
+        if (mView != null) {
+            mView.nextPage();
+        }
     }
 
     private void onChangePinError(Throwable e) {
@@ -200,13 +206,7 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
         mView.onVerifySuccess();
     }
 
-    private class ChangePinSubscriber extends DefaultSubscriber<Boolean> {
-
-        private String mNewPassword;
-
-        public ChangePinSubscriber(String password) {
-            mNewPassword = password;
-        }
+    private class ChangePinSubscriber extends DefaultSubscriber<String> {
 
         @Override
         public void onStart() {
@@ -216,8 +216,8 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
         }
 
         @Override
-        public void onNext(Boolean aBoolean) {
-            ChangePinPresenter.this.onChangePinSuccess(mNewPassword);
+        public void onNext(String hashPassword) {
+            ChangePinPresenter.this.onChangePinSuccess(hashPassword);
         }
 
         @Override

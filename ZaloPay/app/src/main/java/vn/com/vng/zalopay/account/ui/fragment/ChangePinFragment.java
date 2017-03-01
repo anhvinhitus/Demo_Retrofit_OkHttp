@@ -165,16 +165,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
 
     @Override
     public void requestFocusOldPin() {
-        Timber.d("requestFocusOldPin");
-        if (mOldPassCodeView != null) {
-            mOldPassCodeView.getEditText().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mOldPassCodeView.requestFocusView();
-                    AndroidUtils.showKeyboard(mOldPassCodeView.getEditText());
-                }
-            }, 250);
-        }
+        showKeyboard();
     }
 
     @Override

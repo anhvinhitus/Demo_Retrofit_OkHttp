@@ -118,9 +118,9 @@ public interface AccountStore {
 
         Observable<Boolean> verifyOTPProfile(String otp);
 
-        Observable<Boolean> recoveryPin(String pin, String oldPin);
+        Observable<String> changePassword(String newPassword, String oldPassword);
 
-        Observable<Boolean> verifyRecoveryPin(String otp);
+        Observable<Boolean> verifyChangePassword(String otp);
 
         Observable<Person> getUserInfoByZaloPayId(String zaloPayId);
 

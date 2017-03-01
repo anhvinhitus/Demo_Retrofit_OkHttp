@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.repository;
 
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import java.io.File;
 import java.util.Map;
@@ -104,44 +105,26 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 .map(BaseResponse::isSuccessfulResponse);
     }
 
-    @Override
-    public Observable<Boolean> recoveryPin(String oldPin, String newPin) {
-        oldPin = sha256Base(oldPin);
-        newPin = sha256Base(newPin);
 
-        return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, oldPin, newPin, null)
-                .flatMap(baseResponse -> saveChangePinState(true))
-                .map(baseResponse -> Boolean.TRUE);
+    /**
+     * Trả về mật khẩu mới đã được mã hóa.
+     */
+    @Override
+    public Observable<String> changePassword(String oldPin, String newPin) {
+        return ObservableHelper.makeObservable(() -> new Pair<>(sha256Base(oldPin), sha256Base(newPin)))
+                .flatMap(pair ->
+                        mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, pair.first, pair.second, null)
+                                .doOnNext(baseResponse -> mLocalStore.saveChangePinState(true))
+                                .map(baseResponse -> pair.second))
+                ;
     }
 
     @Override
-    public Observable<Boolean> verifyRecoveryPin(String otp) {
+    public Observable<Boolean> verifyChangePassword(String otp) {
         return mRequestService.recoverypin(mUser.zaloPayId, mUser.accesstoken, null, null, otp)
                 .flatMap(baseResponse -> resetChangePinState())
                 .map(baseResponse -> Boolean.TRUE);
     }
-
-  /*  @Override
-    public Observable<MappingZaloAndZaloPay> getUserInfo(long zaloId, int systemLogin) {
-        return mRequestService.getuserinfo(mUser.zaloPayId, mUser.accesstoken, zaloId, systemLogin)
-                .map(response -> {
-                    //If person exist in cache then update cache
-                    Person person = mLocalStore.getById(response.userid);
-                    if (person != null) {
-                        person.zaloId = zaloId;
-                        person.phonenumber = response.phonenumber;
-                        person.zalopayname = response.zalopayname;
-                        mLocalStore.put(person);
-                    }
-
-                    MappingZaloAndZaloPay mappingZaloAndZaloPay = new MappingZaloAndZaloPay();
-                    mappingZaloAndZaloPay.zaloId = zaloId;
-                    mappingZaloAndZaloPay.zaloPayId = response.userid;
-                    mappingZaloAndZaloPay.phonenumber = response.phonenumber;
-                    mappingZaloAndZaloPay.zaloPayName = response.zalopayname;
-                    return mappingZaloAndZaloPay;
-                });
-    }*/
 
     @Override
     public Observable<Person> getUserInfoByZaloPayId(String zaloPayId) {
