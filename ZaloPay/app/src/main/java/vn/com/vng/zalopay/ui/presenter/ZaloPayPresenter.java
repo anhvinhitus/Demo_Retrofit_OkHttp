@@ -55,7 +55,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     private AppResourceStore.Repository mAppResourceRepository;
     private NotificationStore.Repository mNotificationRepository;
     private Navigator mNavigator;
-
+    public final int mNumberTopApp = 6;
     private Context mContext;
 
     private long mLastTimeRefreshApp;
@@ -350,4 +350,29 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
+
+
+    public List<AppResource> getTopAndBottomApp(List<AppResource> pFullListApp , boolean pKey)
+    {
+        List<AppResource> mNewListApp = new ArrayList<>();
+        if(pFullListApp.size() <= mNumberTopApp)
+        {
+            return pFullListApp;
+        }
+        if (pKey )
+        {
+            for(int i = 0 ; i < mNumberTopApp; i++)
+            {
+                mNewListApp.add(pFullListApp.get(i));
+            }
+        }else
+        {
+            for(int i = mNumberTopApp ; i < pFullListApp.size(); i++)
+            {
+                mNewListApp.add(pFullListApp.get(i));
+            }
+        }
+        return mNewListApp;
+    }
+
 }
