@@ -30,11 +30,10 @@ public class WebViewConfig {
 
     public static final String COOKIE_LOGIN_ZALO = "oauth.zaloapp.com";
 
-    public static final String URL_LOGIN_FACEBOOK = "https://facebook.com";
+    public static final String HTTP_LOGIN_FACEBOOK = "http://www.facebook.com/dialog/oauth";
 
-    public static final String URL_LOGIN_FACEBOOK_MOBILE = "https://m.facebook.com";
+    public static final String HTTPS_LOGIN_FACEBOOK = "http://www.facebook.com/dialog/oauth";
 
     public static final String COOKIE_FACEBOOK = "facebook.com";
 
-    public static final String COOKIE_FACEBOOK_MOBILE = "m.facebook.com";
 }

@@ -84,6 +84,7 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         super.onPageFinished(view, url);
 
         mCurrentUrl = url;
+        mWebView.addHost(mCurrentUrl);
         showWebView();
     }
 
@@ -142,6 +143,7 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         return mIsPageValid;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -179,6 +181,7 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         return !TextUtils.isEmpty(url) && shouldOverrideUrlLoading(view, url);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         Timber.d("shouldOverrideUrlLoading url[%s]", url);
@@ -201,8 +204,8 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
         } else {
             if (url.contains(WebViewConfig.URL_LOGIN_ZALO)) {
                 clearCookieZalo();
-            } else if (url.contains(WebViewConfig.URL_LOGIN_FACEBOOK)
-                    || url.contains(WebViewConfig.URL_LOGIN_FACEBOOK_MOBILE)) {
+            } else if (url.contains(WebViewConfig.HTTP_LOGIN_FACEBOOK)
+                    || url.contains(WebViewConfig.HTTPS_LOGIN_FACEBOOK)) {
                 clearCookieFacebook();
             }
             view.loadUrl(url);
@@ -223,7 +226,6 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
             return;
         }
         mWebView.clearCookies(WebViewConfig.COOKIE_FACEBOOK);
-        mWebView.clearCookies(WebViewConfig.COOKIE_FACEBOOK_MOBILE);
     }
 
     public void onDestroy() {
@@ -318,7 +320,7 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
     }
 
     public boolean onBackPress() {
-        if(mWebView != null && mWebView.canGoBack()) {
+        if (mWebView != null && mWebView.canGoBack()) {
             mWebView.goBack();
             return true;
         } else {
