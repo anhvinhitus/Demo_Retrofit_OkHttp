@@ -16,7 +16,6 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
@@ -58,8 +57,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     private Navigator mNavigator;
 
     private Context mContext;
-
-    private int numberCallAppResource;
 
     private long mLastTimeRefreshApp;
 
@@ -129,12 +126,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     public void getListAppResource() {
         Subscription subscription = mAppResourceRepository.getListAppHome()
-                .doOnNext(new Action1<List<AppResource>>() {
-                    @Override
-                    public void call(List<AppResource> appResources) {
-                        getListMerchantUser(appResources);
-                    }
-                })
+                .doOnNext(this::getListMerchantUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
@@ -213,9 +205,12 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     }
 
     private void onGetAppResourceSuccess(List<AppResource> resources) {
+        Timber.d("get app resource success - size [%s]", resources.size());
 
-        numberCallAppResource++;
-        Timber.d("get app resource call: %s", numberCallAppResource);
+        if (mView == null) {
+            return;
+        }
+
         mLastTimeRefreshApp = System.currentTimeMillis() / 1000;
 
         AppResource showhow = getAppResource(Constants.SHOW_SHOW);
@@ -236,8 +231,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         @Override
         public void onNext(List<AppResource> appResources) {
             ZaloPayPresenter.this.onGetAppResourceSuccess(appResources);
-            Timber.d("AppResource %s", appResources.size());
-
         }
 
         @Override
@@ -274,6 +267,10 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWsConnectionChanged(WsConnectionEvent event) {
+        if (mView == null) {
+            return;
+        }
+
         if (event.isConnect) {
             mView.hideNetworkError();
         } else {
@@ -340,12 +337,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
         Timber.d("Fetch list application");
         Subscription subscription = mAppResourceRepository.fetchListAppHome()
-                .doOnNext(new Action1<List<AppResource>>() {
-                    @Override
-                    public void call(List<AppResource> appResources) {
-                        getListMerchantUser(appResources);
-                    }
-                })
+                .doOnNext(this::getListMerchantUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());

@@ -146,24 +146,23 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
                 });
     }
 
+    private MenuItem mShowShowMenuItem;
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        int menuRes = isEnableShowShow ? R.menu.menu_main_2 : R.menu.menu_main;
-        inflater.inflate(menuRes, menu);
-
+        inflater.inflate(R.menu.menu_main_2, menu);
         MenuItem menuItem = menu.findItem(R.id.action_notifications);
         View view = menuItem.getActionView();
-        mNotifyView = (RoundTextView) view.findViewById(R.id.tvNotificationCount);
         view.setOnClickListener(new DebouncingOnClickListener() {
             @Override
             public void doClick(View v) {
-                navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
-                ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
+                onOptionsItemSelected(menuItem);
             }
         });
-        if (presenter != null) {
-            presenter.getTotalNotification(0);
-        }
+
+        mNotifyView = (RoundTextView) view.findViewById(R.id.tvNotificationCount);
+
+        mShowShowMenuItem = menu.findItem(R.id.action_showshow);
     }
 
     @Override
@@ -172,6 +171,9 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         if (id == R.id.action_showshow) {
             presenter.startPaymentApp(getAppResource(Constants.SHOW_SHOW));
             return true;
+        } else if (id == R.id.action_notifications) {
+            navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
+            ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
         }
 
         return super.onOptionsItemSelected(item);
@@ -280,12 +282,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public void enableShowShow(boolean isEnableShowShow) {
-        if (this.isEnableShowShow == isEnableShowShow) {
-            Timber.d("Enable ShowShow not change.");
-            return;
-        }
-        this.isEnableShowShow = isEnableShowShow;
-        getActivity().invalidateOptionsMenu();
+        mShowShowMenuItem.setVisible(isEnableShowShow);
     }
 
     @Override
