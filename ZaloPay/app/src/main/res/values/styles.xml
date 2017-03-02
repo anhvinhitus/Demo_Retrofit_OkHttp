@@ -267,4 +267,10 @@
         <item name="android:background">@color/white</item>
         <item name="android:minHeight">60dp</item>
     </style>
+
+    <style name="Widget.Design.TabLayout.LinkBank" parent="android:Widget">
+        <item name="tabGravity">fill</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabMaxWidth">0dp</item>
+    </style>
 </resources>
