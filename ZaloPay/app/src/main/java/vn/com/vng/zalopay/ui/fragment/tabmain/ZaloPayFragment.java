@@ -282,7 +282,9 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public void enableShowShow(boolean isEnableShowShow) {
-        mShowShowMenuItem.setVisible(isEnableShowShow);
+        if (mShowShowMenuItem != null) {
+            mShowShowMenuItem.setVisible(isEnableShowShow);
+        }
     }
 
     @Override
