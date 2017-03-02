@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.webview.widget;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
@@ -15,11 +14,17 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.Lists;
 
 public class ZPWebView extends WebView {
+    private List<String> mHosts;
+    private Map<String, String> mCookiesMap = new HashMap<>();
 
     public ZPWebView(Context context) {
         super(context);
@@ -73,7 +78,7 @@ public class ZPWebView extends WebView {
                 return true;
             }
         });
-
+        mHosts = new ArrayList<>();
     }
 
     public void runScript(String scriptContent, ValueCallback<String> resultCallback) {
@@ -86,91 +91,85 @@ public class ZPWebView extends WebView {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    public void clearCookies(String url) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Timber.d("Using clearCookies code for API >= [%s]", String.valueOf(Build.VERSION_CODES.LOLLIPOP));
-            clearCookieByUrl(url);
-            clearSessionCookie();
-            CookieManager.getInstance().flush();
-        } else {
-            Timber.d("Using clearCookies code for API < [%s]", String.valueOf(Build.VERSION_CODES.LOLLIPOP));
-            CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(getContext());
-            cookieSyncMngr.startSync();
-            clearCookieByUrl(url);
-            clearSessionCookie();
-            cookieSyncMngr.stopSync();
-            cookieSyncMngr.sync();
+    private void saveCookies(String rejectUrl) {
+        if (Lists.isEmptyOrNull(mHosts)) {
+            return;
+        }
+        for (String host : mHosts) {
+            if (TextUtils.isEmpty(host) || host.equals(rejectUrl)) {
+                continue;
+            }
+            mCookiesMap.put(host, CookieManager.getInstance().getCookie(host));
         }
     }
 
-    private void clearCookieByUrl(String url) {
+    private void restoreCookies() {
+        if (mCookiesMap == null || mCookiesMap.size() <= 0) {
+            return;
+        }
+        for (Map.Entry<String, String> entry : mCookiesMap.entrySet()) {
+            if (entry == null
+                    || TextUtils.isEmpty(entry.getKey())
+                    || TextUtils.isEmpty(entry.getValue())) {
+                continue;
+            }
+            CookieManager.getInstance().setCookie(entry.getKey(), entry.getValue());
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    public void clearCookies(String url) {
+        saveCookies(url);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Timber.d("Using clearCookies code for API >= [%s] url [%s]",
+//                    String.valueOf(Build.VERSION_CODES.LOLLIPOP), url);
+            clearAllCookies();
+            clearSessionCookie();
+            CookieManager.getInstance().flush();
+        } else {
+//            Timber.d("Using clearCookies code for API < [%s] url [%s]",
+//                    String.valueOf(Build.VERSION_CODES.LOLLIPOP), url);
+            CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(getContext());
+            cookieSyncManager.startSync();
+            clearAllCookies();
+            clearSessionCookie();
+            cookieSyncManager.stopSync();
+            cookieSyncManager.sync();
+        }
+        restoreCookies();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void clearAllCookies() {
+        CookieManager cookieManager = CookieManager.getInstance();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            cookieManager.removeAllCookies(null);
+        } else {
+            cookieManager.removeAllCookie();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void clearSessionCookie() {
+        CookieManager cookieManager = CookieManager.getInstance();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            cookieManager.removeSessionCookies(value ->
+                    Timber.d("clearSessionCookie result [%s]", value));
+        } else {
+            cookieManager.removeSessionCookie();
+        }
+    }
+
+    public void addHost(String url) {
         if (TextUtils.isEmpty(url)) {
             return;
         }
         Uri uri = Uri.parse(url);
         String host = uri.getHost();
-        Timber.d("clearCookieByUrl host [%s]", host);
-        clearCookieByUrlInternal(url);
-        clearCookieByUrlInternal("http://." + host);
-        clearCookieByUrlInternal("https://." + host);
-    }
-
-    @SuppressWarnings("deprecation")
-    private void clearSessionCookie() {
-        CookieManager pCookieManager = CookieManager.getInstance();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            pCookieManager.removeSessionCookies(new ValueCallback<Boolean>() {
-                @Override
-                public void onReceiveValue(Boolean value) {
-                    Timber.d("clearCookieByUrlInternal removeSessionCookies [%s]", value);
-                }
-            });
-        } else {
-            pCookieManager.removeSessionCookie();
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void clearCookieByUrlInternal(String url) {
-        if (TextUtils.isEmpty(url)) {
+        if (TextUtils.isEmpty(host) || "null".equals(host)) {
             return;
         }
-        CookieManager pCookieManager = CookieManager.getInstance();
-        String cookieString = pCookieManager.getCookie(url);
-        //Timber.d("clearCookieByUrlInternal cookieString [%s]", cookieString);
-        Vector<String> cookie = getCookieNamesByUrl(cookieString);
-        if (cookie == null || cookie.isEmpty()) {
-            return;
-        }
-        for (int i = 0; i < cookie.size(); i++) {
-            //Timber.d("clearCookieByUrlInternal cookie [%s]", cookie.get(i));
-            pCookieManager.setCookie(url, cookie.get(i) + "=");
-        }
-    }
-
-    private Vector<String> getCookieNamesByUrl(String cookie) {
-        //Timber.d("getCookieNamesByUrl cookie [%s]", cookie);
-        if (TextUtils.isEmpty(cookie)) {
-            return null;
-        }
-        String[] cookieField = cookie.split(";");
-        int len = cookieField.length;
-        for (int i = 0; i < len; i++) {
-            cookieField[i] = cookieField[i].trim();
-        }
-        Vector<String> allCookieField = new Vector<>();
-        for (String aCookieField : cookieField) {
-            //Timber.d("getCookieNamesByUrl cookie [%s]", aCookieField);
-            if (TextUtils.isEmpty(aCookieField)) {
-                continue;
-            }
-            if (!aCookieField.contains("=")) {
-                continue;
-            }
-            String[] singleCookieField = aCookieField.split("=");
-            allCookieField.add(singleCookieField[0]);
-        }
-        return allCookieField;
+        Timber.d("addHost[%s]", host);
+        mHosts.add(host);
     }
 }
