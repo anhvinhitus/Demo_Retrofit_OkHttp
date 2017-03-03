@@ -4,6 +4,8 @@
         <attr name="typefaceAsset" format="string"/>
         <attr name="iconName" format="string"/>
         <attr name="iconSize" format="dimension" />
+        <attr name="iconColor" format="reference" />
+        <attr name="iconLocation" format="string" />
     </declare-styleable>
 
     <!--ATTR DEFAULT APPLICATION-->

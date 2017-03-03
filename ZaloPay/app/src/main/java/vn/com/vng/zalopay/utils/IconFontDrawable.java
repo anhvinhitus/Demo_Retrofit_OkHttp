@@ -10,6 +10,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
 
@@ -37,7 +38,7 @@ public class IconFontDrawable extends Drawable {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setTextAlign(Paint.Align.CENTER);
         mPaint.setUnderlineText(false);
-        mPaint.setColor(Color.WHITE);
+        mPaint.setColor(Color.BLACK);
         mPaint.setAntiAlias(true);
 
         setTypeface();
@@ -65,7 +66,7 @@ public class IconFontDrawable extends Drawable {
     }
 
     public IconFontDrawable setResourcesColor(int colorRes) {
-        mPaint.setColor(mContext.getResources().getColor(colorRes));
+        mPaint.setColor(ContextCompat.getColor(mContext, colorRes));
         invalidateSelf();
         return this;
     }
@@ -84,10 +85,11 @@ public class IconFontDrawable extends Drawable {
     public void draw(Canvas canvas) {
         mPaint.setTextSize(getBounds().height());
         Rect textBounds = new Rect();
-        String textValue = mText;
-        mPaint.getTextBounds(textValue, 0, 1, textBounds);
-        float textBottom = (getBounds().height() - textBounds.height()) / 2f + textBounds.height() - textBounds.bottom;
-        canvas.drawText(textValue, getBounds().width() / 2f, textBottom, mPaint);
+        if(mText != null) {
+            mPaint.getTextBounds(mText, 0, 1, textBounds);
+            float textBottom = (getBounds().height() - textBounds.height()) / 2f + textBounds.height() - textBounds.bottom;
+            canvas.drawText(mText, getBounds().width() / 2f, textBottom, mPaint);
+        }
     }
 
     @Override
