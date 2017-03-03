@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -110,7 +111,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
             daoSession.clear();
             Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
             for (AbstractDao<?, ?> dao : daoCollection) {
-                if (dao != null) {
+                if (dao != null && !(dao instanceof AppResourceGDDao)) {
                     dao.deleteAll();
                 }
             }
