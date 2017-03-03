@@ -3,10 +3,14 @@ package vn.com.vng.zalopay.webview.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -29,6 +33,9 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     private View layoutRetry;
     private ImageView imgError;
     private TextView tvError;
+
+    @BindView(R.id.progressBar)
+    ProgressBar mProgressBar;
 
     public static WebViewFragment newInstance(Bundle bundle) {
         WebViewFragment fragment = new WebViewFragment();
@@ -85,6 +92,27 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     private void initWebView(View rootView) {
         ZPWebView webView = (ZPWebView) rootView.findViewById(R.id.webview);
         mWebViewProcessor = new ZPWebViewProcessor(webView, this);
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int progress) {
+                Timber.d("WebLoading progress: %s", progress);
+                if (progress < 100 && mProgressBar.getVisibility() == ProgressBar.GONE) {
+                    mProgressBar.setVisibility(ProgressBar.VISIBLE);
+                }
+
+                mProgressBar.setProgress(progress);
+                if (progress >= 100) {
+                    mProgressBar.setVisibility(ProgressBar.GONE);
+                }
+            }
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+
+                getActivity().setTitle(title);
+            }
+        });
     }
 
     public void loadUrl(final String pUrl) {

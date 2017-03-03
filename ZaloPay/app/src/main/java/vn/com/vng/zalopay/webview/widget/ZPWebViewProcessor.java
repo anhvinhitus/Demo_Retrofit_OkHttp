@@ -59,7 +59,7 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
-        showLoading();
+//        showLoading();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ZPWebViewProcessor extends WebViewClient implements GetNavigationCa
             return;
         }
         mLoadPageFinished = true;
-        hideLoading();
+//        hideLoading();
         injectScriptFile("webapp.js");
 
         mWebView.runScript("webapp_hideHeaderZalo()", new ValueCallback<String>() {
