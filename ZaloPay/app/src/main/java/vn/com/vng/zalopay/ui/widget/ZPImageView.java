@@ -13,6 +13,7 @@ import java.io.File;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 
@@ -55,8 +56,8 @@ public class ZPImageView extends ImageView {
     }
 
     private void setDrawable(String fileName) {
-        Timber.d("setDrawable fileName [%s]", fileName);
         if (TextUtils.isEmpty(fileName)) {
+            Timber.d("setDrawable fail, fileName null or empty.");
             return;
         }
 
@@ -66,7 +67,12 @@ public class ZPImageView extends ImageView {
         Uri imageUri = Uri.parse(filePath);
         setImageURI(imageUri);*/
 
-        String pathName = ResourceHelper.getResource(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName) + ".png";
+        if (!fileName.endsWith(Constants.FILE_PNG)) {
+            fileName+= Constants.FILE_PNG;
+        }
+
+        String pathName = ResourceHelper.getResource(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName);
+        Timber.d("setDrawable pathName [%s]", pathName);
         try {
             File file = new File(pathName);
             if (file.exists()) {
