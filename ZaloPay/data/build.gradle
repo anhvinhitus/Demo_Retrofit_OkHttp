@@ -95,6 +95,4 @@ dependencies {
 
     compile project(':domain')
     compile project(':zalopay.feedback')
-
-    compile 'com.google.guava:guava:20.0'
 }
