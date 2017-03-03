@@ -33,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <LinearLayout
@@ -40,13 +41,13 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/listView"
-            style="@style/RecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="true"
-            android:clipToPadding="false" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/listView"
+                style="@style/RecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="true"
+                android:clipToPadding="false" />
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"

@@ -141,8 +141,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
         setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
                 getString(R.string.check_internet));
-        mSwipeRefreshLayout.setSwipeableChildren(R.id.listView);
-        mSwipeRefreshLayout.setSwipeableChildren(R.id.listViewBottom);
+        mSwipeRefreshLayout.setSwipeableChildren(R.id.scrollView);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         hideTextAds();
