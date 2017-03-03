@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                app:fileName="ic_cover"
+                app:fileName="app_ic_profile_cover"
                 app:layout_collapseMode="parallax" />
 
             <include
