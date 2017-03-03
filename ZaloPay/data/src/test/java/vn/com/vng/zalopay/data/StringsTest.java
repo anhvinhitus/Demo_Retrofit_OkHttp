@@ -88,28 +88,44 @@ public class StringsTest {
         String string9 = "http://example.co.uk";
         String string10 = "http://sub1.somesite3.com";
         String string11 = "http://1.2.com";
-        String string12 = "http://a.b.c.d";
+        String string12 = "https://example.zpdemo.github.io/";
+        String string13 = "http://www.zalopay.com.vn";
+        String string14 = "https://bbc.co.uk/vietnamese";
+        String string15 = "https://www.google.com";
+        String string16 = "https://github.com/segunfamisa/bottom-navigation-demo";
+        String string17 = "https://gitlab.zalopay.vn/zalopay-apps/app-ios";
+        String string18 = "https://developer.android.com/studio/profile/optimize-ui.html";
+        String string19 = "https://x.y.z.com/";
 
-        Assert.assertEquals("github.io", Strings.getDomainName(string1));
+        Assert.assertEquals("zpdemo.github.io", Strings.getDomainName(string1));
         Assert.assertEquals("facebook.com", Strings.getDomainName(string2));
         Assert.assertEquals("google.com", Strings.getDomainName(string3));
         Assert.assertEquals("stackoverflow.com", Strings.getDomainName(string4));
         Assert.assertEquals("hopperspot.com", Strings.getDomainName(string5));
-        Assert.assertEquals("blogspot.com", Strings.getDomainName(string6));
-        Assert.assertEquals("blogspot.com", Strings.getDomainName(string7));
+        Assert.assertEquals("wwwsupernatural-brasil.blogspot.com", Strings.getDomainName(string6));
+        Assert.assertEquals("zoyanailpolish.blogspot.com", Strings.getDomainName(string7));
         Assert.assertEquals("socialrating.it", Strings.getDomainName(string8));
-        Assert.assertEquals("co.uk", Strings.getDomainName(string9));
+        Assert.assertEquals("example.co.uk", Strings.getDomainName(string9));
         Assert.assertEquals("somesite3.com", Strings.getDomainName(string10));
         Assert.assertEquals("2.com", Strings.getDomainName(string11));
-        Assert.assertEquals("c.d", Strings.getDomainName(string12));
+        Assert.assertEquals("zpdemo.github.io", Strings.getDomainName(string12));
+        Assert.assertEquals("zalopay.com.vn", Strings.getDomainName(string13));
+        Assert.assertEquals("bbc.co.uk", Strings.getDomainName(string14));
+        Assert.assertEquals("google.com", Strings.getDomainName(string15));
+        Assert.assertEquals("github.com", Strings.getDomainName(string16));
+        Assert.assertEquals("zalopay.vn", Strings.getDomainName(string17));
+        Assert.assertEquals("android.com", Strings.getDomainName(string18));
+        Assert.assertEquals("z.com", Strings.getDomainName(string19));
     }
 
     @Test
     public void testInvalidGetDomainName() throws Exception {
         String invalid1 = "zpdemo.github.io/vibrate.html";
         String invalid2 = "www.qr-code-generator.com";
+        String invalid3 = "http://a.b.c.d";
 
         Assert.assertEquals("", Strings.getDomainName(invalid1));
         Assert.assertEquals("", Strings.getDomainName(invalid2));
+        Assert.assertEquals("", Strings.getDomainName(invalid3));
     }
 }
