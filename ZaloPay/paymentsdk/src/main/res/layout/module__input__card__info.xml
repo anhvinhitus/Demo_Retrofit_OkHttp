@@ -1,0 +1,73 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linearlayout_input_local_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/card_field_container_pager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/viewpager_height"
+            android:orientation="horizontal"></android.support.v4.view.ViewPager>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout_authenticate_local_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/zpw_title_padding_bottom"
+            android:layout_marginLeft="@dimen/zpw_padding_left_right"
+            android:text="@string/zpw_string_title_confirm_transaction"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/text_color_grey" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupAuthenType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/zpw_bg_top_bottom_side_border"
+            android:orientation="horizontal"
+            android:padding="@dimen/payment_displayInfo_padding"
+            android:paddingLeft="@dimen/zpw_padding_left_right">
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/radioButtonSmS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:enabled="true"
+                android:text="@string/zpw_string_sms"
+                android:textColor="@color/text_color_bold"
+                android:theme="@style/PaymentRadioButton" />
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/radioButtonToken"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/zpw_string_token"
+                android:textColor="@color/text_color_bold"
+                android:theme="@style/PaymentRadioButton" />
+            />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="zpsdk_white">#fff</color>
+    <color name="channel_unpressed">#00000000</color>
+    <color name="channel_pressed">#e0e4e9</color>
+
+    <color name="color_indicator">#9077777a</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="pin_color_bolder">#acb3ba</color>
+
+    <color name="bg_card_border">#F0F4F7</color>
+    <!-- COLOR NEW -->
+    <color name="background_zalopay">#f0f4f6</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="dark_transparent">#e3e6e7</color>
+
+    <color name="color_primary">#008fe5</color>
+    <color name="color_primary_transparent">#90008fe5</color>
+    <color name="color_primary_disable">#7fc7f2</color>
+    <color name="color_button_pressed">#0174af</color>
+    <color name="red_color_primary">#d84e43</color>
+    <color name="red_color_primary_transparent">#90d84e43</color>
+    <color name="red_color_primary_disable">#d84e43</color>
+
+    <color name="color_bg_header_popup">#018fe5</color>
+
+    <color name="white_transparent">#30FFFFFF</color>
+
+    <color name="background">#f0f4f6</color>
+
+    <color name="yellow_bg_popup_error">#ffffc1</color>
+
+    <color name="text_color">#acb3ba</color>
+    <color name="text_color_extra">#bfc6ce</color>
+
+    <color name="text_color_bold">#24272b</color>
+    <color name="text_color_primary">#008fe5</color>
+    <color name="text_color_grey">#727f8c</color>
+    <color name="text_color_red">#df302e</color>
+    <color name="text_color_red_blur">#50df302e</color>
+
+    <color name="grey">#e1e1e1</color>
+    <color name="grey_transparent">#40e1e1e1</color>
+    <color name="xgrey">#cccccc</color>
+    <color name="line">#e5e5e8</color>
+    <color name="button_disable">#c7c7cc</color>
+
+    <color name="button_green">#06bf04</color>
+
+    <color name="path_green_color">#06be04</color>
+    <color name="path_red_color">#df302e</color>
+
+    <color name="border">#e3e6e7</color>
+
+    <color name="holo_red_light">#df302e</color>
+    <!-- Color dialog -->
+    <color name="float_transparent">#00000000</color>
+    <color name="sweet_dialog_bg_color">#FFFFFF</color>
+    <color name="button_text_color">#FFFFFF</color>
+    <color name="gray_btn_bg_color">#D0D0D0</color>
+    <color name="gray_btn_bg_pressed_color">#B6B6B6</color>
+    <color name="blue_btn_bg_color">#AEDEF4</color>
+    <color name="blue_btn_bg_pressed_color">#008fe5</color>
+    <color name="red_btn_bg_color">#DD6B55</color>
+    <color name="red_btn_bg_pressed_color">#CD5B55</color>
+    <color name="error_stroke_color">#F27474</color>
+    <color name="success_stroke_color">#A5DC86</color>
+    <color name="trans_success_stroke_color">#33A5DC86</color>
+    <color name="warning_stroke_color">#F8BB86</color>
+    <color name="text_color_dl">#575757</color>
+    <color name="material_blue_grey_80">#ff37474f</color>
+    <color name="material_blue_grey_90">#ff263238</color>
+    <color name="material_blue_grey_95">#ff21272b</color>
+    <color name="material_deep_teal_20">#ff80cbc4</color>
+    <color name="material_deep_teal_50">#ff009688</color>
+
+    <!--color Card View-->
+    <color name="green_continue">#1fc055</color>
+    <color name="chip_color">#d4edfa</color>
+    <color name="chip_inner_color">#e0e4e4</color>
+    <color name="chip_yellow_color">#fbe191</color>
+    <color name="chip_yellow_inner_color">#eed280</color>
+    <color name="background_logo_card_default">#afb5b5</color>
+    <color name="purple_color">#5515a9</color>
+    <color name="purple_color_gradient">#651dc4</color>
+
+    <color name="green_color">#108b4c</color>
+    <color name="green_color_gradient">#1caf57</color>
+
+    <color name="blue_color">#5D8BF2</color>
+    <color name="blue_color_gradient">#3545AE</color>
+
+    <color name="pink_color">#d04c84</color>
+    <color name="pink_color_gradient">#d04882</color>
+
+    <color name="brown_color">#800000</color>
+    <color name="brown_color_gradient">#A52A2A</color>
+
+    <color name="default_color">#a1a7a7</color>
+    <color name="default_color_gradient">#464848</color>
+    <color name="default_color_text_normal">#c1c1c1</color>
+    <color name="default_color_text_highline">#4387f6</color>
+    <color name="default_color_text_selected">#ffffff</color>
+
+    <color name="visa_color_start">#eed86f</color>
+    <color name="visa_color_end">#bf903f</color>
+    <color name="visa_color_text_normal">#fff0ab</color>
+    <color name="visa_color_text_highline">#4486f6</color>
+    <color name="visa_color_text_selected">#ffffff</color>
+
+    <color name="master_color_start">#555177</color>
+    <color name="master_color_end">#2d294e</color>
+    <color name="master_color_text_normal">#8d86bf</color>
+    <color name="master_color_text_highline">#129d5a</color>
+    <color name="master_color_text_selected">#ffffff</color>
+
+    <color name="viettin_color_start">#d7d8d3</color>
+    <color name="viettin_color_end">#777b7b</color>
+    <color name="viettin_color_text_normal">#d7d6d6</color>
+    <color name="viettin_color_text_highline">#4387f6</color>
+    <color name="viettin_color_text_selected">#ffffff</color>
+
+    <color name="sacom_color_start">#0474bb</color>
+    <color name="sacom_color_end">#0b6198</color>
+    <color name="sacom_color_text_normal">#5db1e5</color>
+    <color name="sacom_color_text_highline">#f6b501</color>
+    <color name="sacom_color_text_selected">#ffffff</color>
+
+    <color name="commercial_color_start">#269144</color>
+    <color name="commercial_color_end">#47cf27</color>
+    <color name="commercial_color_text_normal">#d7d6d6</color>
+    <color name="commercial_color_text_highline">#f6b501</color>
+    <color name="commercial_color_text_selected">#ffffff</color>
+
+    <color name="bidv_color_start">#010044</color>
+    <color name="bidv_color_end">#1b2f7b</color>
+    <color name="bidv_color_text_normal">#d7d6d6</color>
+    <color name="bidv_color_text_highline">#f6b501</color>
+    <color name="bidv_color_text_selected">#ffffff</color>
+
+    <color name="jcb_color_start">#0474bb</color>
+    <color name="jcb_color_end">#0b6198</color>
+    <color name="jcb_color_text_normal">#d7d6d6</color>
+    <color name="jcb_color_text_highline">#5db1e5</color>
+    <color name="jcb_color_text_selected">#ffffff</color>
+
+    <color name="background_zalopay_support">#80000000</color>
+
+    <color name="overlay_light">#F8F8F8</color>
+
+</resources>

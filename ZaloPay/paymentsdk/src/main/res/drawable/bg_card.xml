@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Non focused states -->
+    <item>
+        <shape android:shape="rectangle">
+            <stroke android:width="1dp" android:color="@color/bg_card_border" />
+            <padding android:bottom="@dimen/zpw_card_support_bank_image_padding" android:top="@dimen/zpw_card_support_bank_image_padding" />
+            <corners android:radius="3dp" />
+        </shape>
+    </item>
+</selector>

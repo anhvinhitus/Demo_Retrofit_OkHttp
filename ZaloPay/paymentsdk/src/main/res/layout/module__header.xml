@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/zpw_actionbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/color_primary">
+
+    <vn.com.zalopay.wallet.view.custom.VRippleView
+        android:id="@+id/zpsdk_exit_ctl"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentLeft="true"
+        android:paddingLeft="@dimen/zpw_topbar_padding"
+        android:paddingRight="@dimen/zpw_topbar_padding"
+        android:scaleType="center"
+        android:src="@drawable/ic_back" />
+
+    <TextView
+        android:id="@+id/payment_method_name"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/zpw_padding_left_header"
+        android:layout_marginRight="3dp"
+        android:layout_toRightOf="@+id/zpsdk_exit_ctl"
+        android:gravity="left|center_vertical"
+        android:singleLine="true"
+        android:text="@string/walletsdk_string_bar_title"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white" />
+
+    <vn.com.zalopay.wallet.view.custom.ZPWRippleButton
+        android:id="@+id/zpw_rippleview_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:background="@drawable/zpw_bg_button"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="@dimen/zpw_topbar_padding"
+        android:paddingRight="@dimen/zpw_header_label_margin"
+        android:text="@string/zpw_button_submit_text"
+        android:textColor="@color/white"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <!--
+    <Button
+        android:id="@+id/zpw_rippleview_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/zpw_bg_button"
+        android:gravity="center"
+        android:paddingLeft="@dimen/zpw_topbar_padding"
+        android:paddingRight="@dimen/zpw_header_label_margin"
+        android:text="@string/zpw_button_submit_text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white"
+        android:visibility="gone" />
+        -->
+
+</RelativeLayout>

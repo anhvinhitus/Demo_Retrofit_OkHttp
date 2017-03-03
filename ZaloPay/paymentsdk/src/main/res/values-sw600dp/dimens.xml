@@ -1,0 +1,15 @@
+<resources>
+    <dimen name="zpw_pin_view_textsize">6sp</dimen>
+
+    <dimen name="zpw_card_support_bank_padding">12dp</dimen>
+    <dimen name="switch_card_layout_min_height">90dp</dimen>
+    <dimen name="button_size">50dp</dimen>
+    <dimen name="min_button_offset">10dp</dimen>
+    <dimen name="logo_width_normal">60dp</dimen>
+    <dimen name="logo_height_normal">30dp</dimen>
+    <dimen name="zpw_text_size_cvv">16sp</dimen>
+    <dimen name="zpw_text_size_pass">18sp</dimen>
+    <dimen name="zpw_success_icon">120dp</dimen>
+    <dimen name="zpw_fail_icon">120dp</dimen>
+    <dimen name="zpw_text_size_dot">18sp</dimen>
+</resources>

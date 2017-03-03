@@ -446,7 +446,6 @@ dependencies {
     compile(libs.react_native) {
         exclude module: 'bolts-android'
     }
-    compile(name: 'WALLET-release', ext: 'aar')
     compile(name: 'zdk-v2.1.1106', ext: 'aar')
 //    compile(name: 'soundtranscoder-release', ext: 'aar')
 
@@ -457,6 +456,8 @@ dependencies {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }
     compile project(':zalopay.feedback')
+
+    compile project(':paymentsdk')
 
     compile libs.fresco
 

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/snackbar_rootview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/snackbar_error_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/zpw_padding_10"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/snackbar_text_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/snackbar_text_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
+                android:textColor="@color/text_color_grey"
+                android:textSize="@dimen/zpw_text_size_medium" />
+
+            <TextView
+                android:id="@+id/snackbar_text_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
+                android:textColor="@color/text_color_grey"
+                android:textSize="@dimen/zpw_text_size_medium_m" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/snackbar_text_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/snackbar_text_group"
+            android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
+            android:textColor="@color/color_primary"
+            android:textSize="@dimen/zpw_text_size_medium_m" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/snackbar_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|start"
+        android:layout_marginBottom="@dimen/zpw_padding_10"
+        android:layout_marginTop="@dimen/zpw_padding_20"
+        android:ellipsize="end"
+        android:gravity="left"
+        android:singleLine="true"
+        android:text="@string/zpw_string_title_select_bank"
+        android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
+        android:textColor="@color/text_color_grey"
+        android:textSize="@dimen/zpw_text_size_header" />
+
+    <View
+        android:id="@+id/snackbar_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zpw_line_height"
+        android:background="@color/dark_transparent" />
+
+    <GridView
+        android:id="@+id/gridBank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/zpw_padding_10"
+        android:layout_marginTop="@dimen/zpw_padding_10"
+        android:gravity="bottom"
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:verticalSpacing="@dimen/zpw_padding_15" />
+
+</LinearLayout>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/zpw_bg_top_bottom_side_border">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/relative_issue_date_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:hint="@string/zpw_string_issue_date_hint"
+        android:tag="@string/zpw_string_issue_date_hint"
+        android:theme="@style/TextLabelHint">
+
+        <vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText
+            android:id="@+id/edittext_issue_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/txt_bottom_default_style"
+            android:imeOptions="actionDone|flagNoExtractUi"
+            android:inputType="number"
+            android:maxLength="@integer/maximum_character_field_visa_valid_date"
+            android:maxLines="1"
+            android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+            android:paddingLeft="@dimen/margin_small"
+            android:paddingRight="@dimen/margin_small"
+            android:paddingTop="@dimen/zpw_edittext_padding_top"
+            android:textSize="@dimen/sdk_form_input_size" />
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

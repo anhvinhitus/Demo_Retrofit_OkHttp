@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_zalopay_support"
+    android:clickable="true"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/layout_spview_animation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/group_button_background"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/question_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:drawableRight="@drawable/ic_zp_faq"
+                android:gravity="center|left"
+                android:minHeight="@dimen/zpw_support_button_min_height"
+                android:paddingLeft="@dimen/zpw_padding_10"
+                android:paddingRight="@dimen/zpw_padding_10"
+                android:text="@string/zpw_support_question"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_submit_button_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/zpw_line_height"
+                android:background="@color/line"></View>
+
+            <TextView
+                android:id="@+id/support_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:drawableRight="@drawable/ic_baoloi"
+                android:gravity="center|left"
+                android:minHeight="@dimen/zpw_support_button_min_height"
+                android:paddingLeft="@dimen/zpw_padding_10"
+                android:paddingRight="@dimen/zpw_padding_10"
+                android:text="@string/zpw_get_support"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_submit_button_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/zpw_line_height"
+                android:background="@color/line"></View>
+
+            <TextView
+                android:id="@+id/cancel_spview_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center|left"
+                android:minHeight="@dimen/zpw_support_button_min_height"
+                android:paddingLeft="@dimen/zpw_padding_10"
+                android:paddingRight="@dimen/zpw_padding_10"
+                android:text="@string/zpw_support_btn_cancel"
+                android:textColor="@color/text_color_primary"
+                android:textSize="@dimen/zpw_submit_button_text_size" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>
+

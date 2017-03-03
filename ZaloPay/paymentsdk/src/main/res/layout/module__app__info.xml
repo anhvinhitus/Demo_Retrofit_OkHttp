@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/linkcard_channel_desc_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:paddingLeft="@dimen/zpw_padding_app_info_left_right"
+        android:paddingRight="@dimen/zpw_padding_app_info_left_right"
+        android:paddingTop="@dimen/zpw_padding_10"
+        android:textColor="@color/text_color_grey"
+        android:textSize="@dimen/zpw_text_size_medium"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/app_info_linerlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpw_bg_top_bottom_side_border"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zpw_line_height"
+            android:background="@color/dark_transparent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/zpw_padding_10"
+            android:paddingLeft="@dimen/zpw_padding_app_info_left_right"
+            android:paddingRight="@dimen/zpw_padding_app_info_left_right"
+            android:paddingTop="@dimen/zpw_padding_10">
+
+            <TextView
+                android:id="@+id/zalosdk_bill_info_ctl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:singleLine="true"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_medium"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/zpw_padding_row">
+
+                <vn.com.zalopay.wallet.view.custom.EllipsizingTextView
+                    android:id="@+id/item_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/payment_amout_wrapper"
+                    android:ellipsize="end"
+                    android:gravity="bottom"
+                    android:singleLine="true"
+                    android:textColor="@color/text_color_grey"
+                    android:textSize="@dimen/zpw_text_size_medium" />
+
+                <LinearLayout
+                    android:id="@+id/payment_amout_wrapper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="@dimen/zpw_padding_text_right"
+                    android:layout_marginTop="-4dp">
+
+                    <TextView
+                        android:id="@+id/payment_method_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:text="100"
+                        android:textColor="@color/text_color_bold"
+                        android:textSize="@dimen/zpw_text_size_big" />
+
+                    <TextView
+                        android:id="@+id/payment_currency_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/zpw_padding_text_vnd"
+                        android:gravity="bottom"
+                        android:text="@string/zpw_string_payment_currency_label"
+                        android:textColor="@color/text_color_bold"
+                        android:textSize="@dimen/zpw_text_size_small" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/zpw_fee_view_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/zpw_padding_row"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="@string/zpw_string_title_fee"
+                    android:textColor="@color/text_color_grey"
+                    android:textSize="@dimen/zpw_text_size_medium" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="@dimen/zpw_padding_text_right">
+
+                    <TextView
+                        android:id="@+id/zpw_payment_channel_fee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100"
+                        android:textColor="@color/text_color_bold"
+                        android:textSize="@dimen/zpw_text_size_big" />
+
+                    <TextView
+                        android:id="@+id/view_fee_vnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/zpw_padding_text_vnd"
+                        android:text="@string/zpw_string_payment_currency_label"
+                        android:textColor="@color/text_color_bold"
+                        android:textSize="@dimen/zpw_text_size_small" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/zpw_total_view_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/zpw_padding_row"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="@string/zpw_string_title_total_pay"
+                    android:textColor="@color/text_color_grey"
+                    android:textSize="@dimen/zpw_text_size_medium" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="@dimen/zpw_padding_text_right">
+
+                    <TextView
+                        android:id="@+id/zpw_payment_channel_total_pay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_color_bold"
+                        android:textSize="@dimen/zpw_text_size_supper_big" />
+
+                    <TextView
+                        android:id="@+id/view_totalpay_vnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/zpw_padding_text_vnd"
+                        android:text="@string/zpw_string_payment_currency_label"
+                        android:textColor="@color/text_color_bold"
+                        android:textSize="@dimen/zpw_text_size_small" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

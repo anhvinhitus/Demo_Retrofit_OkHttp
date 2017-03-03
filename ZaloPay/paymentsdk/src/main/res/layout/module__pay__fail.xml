@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_info_finish"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/zpw_padding_10"
+        android:paddingRight="@dimen/zpw_padding_5">
+
+        <ImageView
+            android:id="@+id/zpw_payment_fail_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/zpw_margin_bottom_supper_supper_label"
+            android:layout_marginTop="@dimen/zpw_margin_top_supper_supper_label" />
+
+        <TextView
+            android:id="@+id/zpw_payment_fail_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/zpw_margin_16"
+            android:text="@string/zpw_string_payment_fail_transaction"
+            android:textColor="@color/text_color_bold"
+            android:textSize="@dimen/zpw_text_size_big" />
+
+        <TextView
+            android:id="@+id/zpw_textview_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/zpw_margin_top_supper_supper_label"
+            android:gravity="center"
+            android:paddingLeft="@dimen/zpw_padding_10"
+            android:paddingRight="@dimen/zpw_padding_10"
+            android:textColor="@color/text_color_red"
+            android:textSize="@dimen/zpw_text_size_medium" />
+
+    </LinearLayout>
+</RelativeLayout>

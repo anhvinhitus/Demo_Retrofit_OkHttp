@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_sweet_shadow"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imInfoIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/zpw_padding_5"
+        android:layout_marginTop="@dimen/zpw_padding_20"
+        android:src="@drawable/ic_information" />
+
+    <TextView
+        android:id="@+id/cardsupport_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/zpw_card_support_bank_padding"
+        android:layout_marginTop="@dimen/zpw_card_support_bank_padding"
+        android:text="@string/zpw_string_title_select_card"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/text_color_bold" />
+
+    <GridView
+        android:id="@+id/gridViewCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/zpw_card_support_bank_padding"
+        android:background="@color/white"
+        android:gravity="center"
+        android:horizontalSpacing="@dimen/zpw_card_support_bank_space"
+        android:numColumns="2"
+        android:scrollbars="none"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="@dimen/zpw_card_support_bank_space" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zpw_line_height"
+        android:background="@color/dark_transparent" />
+
+    <vn.com.zalopay.wallet.view.custom.ZPWRippleButton
+        android:id="@+id/rippleButtonSelectBank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="center"
+        android:paddingBottom="@dimen/zpw_padding_button"
+        android:paddingLeft="@dimen/zpw_padding_15"
+        android:paddingRight="@dimen/zpw_padding_15"
+        android:paddingTop="@dimen/zpw_padding_button"
+        android:text="@string/dialog_close_button"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/color_primary" />
+
+</LinearLayout>

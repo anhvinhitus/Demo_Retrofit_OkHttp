@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="zpw_text_size_cvv">18sp</dimen>
+    <dimen name="zpw_text_size_pass">18sp</dimen>
+    <dimen name="zpw_text_size_dot">15sp</dimen>
+</resources>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/supperRootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:elevation="4dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/zpsdk_header"
+            layout="@layout/module__header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            android:id="@+id/zpsdk_transfer_info"
+            layout="@layout/module_transfer_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/zpsdk_app_info"
+            layout="@layout/module__app__info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:id="@+id/title_payment_method"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/zpw_title_padding_bottom"
+            android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
+            android:layout_marginTop="@dimen/zpw_padding_title_top"
+            android:text="@string/zpw_string_title_payment_gateway"
+            android:textColor="@color/text_color_grey"
+            android:textSize="@dimen/zpw_text_size_medium_m" />
+
+        <ListView
+            android:id="@+id/zpw_channel_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/zpw_bg_top_bottom_side_border"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:scrollbars="none" />
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
+

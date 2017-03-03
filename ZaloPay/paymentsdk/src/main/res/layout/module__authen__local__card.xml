@@ -1,0 +1,127 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/zpw_account_layout_api"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/zpw_padding_to_app_info"
+            android:background="@drawable/zpw_bg_top_bottom_side_border"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/textLayoutOtp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/zpw_row_padding_top"
+                android:tag="@string/zpw_string_otp_hint"
+                android:theme="@style/TextLabelHint">
+
+                <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
+                    android:id="@+id/edittext_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/txt_bottom_default_style"
+                    android:hint="@string/zpw_string_otp_hint"
+                    android:imeOptions="actionDone|flagNoExtractUi"
+                    android:inputType="number|textNoSuggestions"
+                    android:maxLength="@integer/maximum_character_field_opt_length"
+                    android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                    android:paddingLeft="@dimen/zpw_padding_left_right"
+                    android:paddingRight="@dimen/zpw_padding_left_right"
+                    android:paddingTop="@dimen/zpw_edittext_padding_top"
+                    android:privateImeOptions="nm"
+                    android:singleLine="true"
+                    android:textSize="@dimen/sdk_form_input_size"
+                    android:textStyle="normal" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/textLayoutToken"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/zpw_row_padding_top"
+                android:tag="@string/zpw_string_token_hint"
+                android:theme="@style/TextLabelHint"
+                android:visibility="gone">
+
+                <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
+                    android:id="@+id/edittext_token"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/txt_bottom_default_style"
+                    android:hint="@string/zpw_string_token_hint"
+                    android:imeOptions="actionDone|flagNoExtractUi"
+                    android:inputType="textVisiblePassword"
+                    android:maxLength="@integer/maximum_character_field_token_length"
+                    android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                    android:paddingLeft="@dimen/zpw_padding_left_right"
+                    android:paddingRight="@dimen/zpw_padding_left_right"
+                    android:paddingTop="@dimen/zpw_edittext_padding_top"
+                    android:singleLine="true"
+                    android:textSize="@dimen/sdk_form_input_size"
+                    android:textStyle="normal"
+                    android:visibility="gone" />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearlayout_selection_authen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/zpw_title_padding_bottom"
+                android:layout_marginTop="@dimen/zpw_padding_title_top"
+                android:paddingLeft="@dimen/zpw_row_start_padding"
+                android:text="@string/zpw_string_title_confirm_transaction"
+                android:textAllCaps="true"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/text_color_grey" />
+
+            <RadioGroup
+                android:id="@+id/radioGroupAuthenSmsToken"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/zpw_bg_top_bottom_side_border"
+                android:orientation="horizontal"
+                android:padding="@dimen/payment_displayInfo_padding"
+                android:paddingLeft="@dimen/zpw_row_start_padding">
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/radioSelectionSmS"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:enabled="true"
+                    android:text="@string/zpw_string_sms"
+                    android:textColor="@color/text_color_bold"
+                    android:theme="@style/PaymentRadioButton" />
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/radioSelectionToken"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/zpw_string_token"
+                    android:textColor="@color/text_color_bold"
+                    android:theme="@style/PaymentRadioButton" />
+                />
+
+            </RadioGroup>
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

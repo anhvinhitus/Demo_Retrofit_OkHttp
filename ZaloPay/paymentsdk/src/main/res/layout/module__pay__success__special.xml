@@ -1,0 +1,220 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/credit_card_holder_success"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="@dimen/zpw_padding_appinfo_top_bottom">
+
+        <ImageView
+            android:id="@+id/zpw_imageview_success_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/zpw_padding_5" />
+
+        <TextView
+            android:id="@+id/zpw_textview_title_transaction_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/zpw_string_service_status"
+            android:textColor="@color/button_green"
+            android:textSize="@dimen/zpw_text_size_medium" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/zpw_bg_top_bottom_side_border"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/zpw_padding_20"
+        android:paddingTop="3dp">
+
+        <TextView
+            android:id="@+id/zpw_payment_success_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/zpw_padding_20"
+            android:text="@string/zpw_transaction_pay_success_status"
+            android:textColor="@color/text_color_grey"
+            android:textSize="@dimen/zpw_text_size_medium" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/zpw_padding_10"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/zpw_textview_transaction_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/zpw_margin_top_medium_label"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_big_m" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="@dimen/preview_margin"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="@string/zpw_string_vnd_success"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_big_x" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="@dimen/zpw_padding_left_right"
+            android:layout_marginRight="@dimen/zpw_padding_left_right"
+            android:background="@color/dark_transparent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/zpw_padding_left_right"
+            android:layout_marginRight="@dimen/zpw_padding_left_right"
+            android:layout_marginTop="@dimen/zpw_padding_10"
+            android:gravity="bottom"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="@string/zpw_string_service_title"
+                android:textColor="@color/text_color_grey"
+                android:textSize="@dimen/zpw_text_size_medium" />
+
+            <TextView
+                android:id="@+id/zpw_textview_transaction_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="right"
+                android:singleLine="true"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_medium" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/zpw_padding_left_right"
+            android:layout_marginRight="@dimen/zpw_padding_left_right"
+            android:layout_marginTop="@dimen/zpw_padding_top_bottom"
+            android:gravity="bottom"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="@string/zpw_string_service_status_title"
+                android:textColor="@color/text_color_grey"
+                android:textSize="@dimen/zpw_text_size_medium" />
+
+            <TextView
+                android:id="@+id/zpw_textview_transaction_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="right"
+                android:singleLine="true"
+                android:text="@string/zpw_string_service_transaction_success"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_medium" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/zpw_padding_left_right"
+            android:layout_marginRight="@dimen/zpw_padding_left_right"
+            android:layout_marginTop="@dimen/zpw_padding_top_bottom"
+            android:gravity="bottom"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="@string/zpw_string_service_time_title"
+                android:textColor="@color/text_color_grey"
+                android:textSize="@dimen/zpw_text_size_medium" />
+
+            <TextView
+                android:id="@+id/zpw_textview_transaction_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="right"
+                android:singleLine="true"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_medium" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/zpw_padding_left_right"
+            android:layout_marginRight="@dimen/zpw_padding_left_right"
+            android:layout_marginTop="@dimen/zpw_padding_top_bottom"
+            android:gravity="bottom"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="@string/zpw_string_service_transaction_title"
+                android:textColor="@color/text_color_grey"
+                android:textSize="@dimen/zpw_text_size_medium" />
+
+            <TextView
+                android:id="@+id/zpw_textview_transaction_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="right"
+                android:singleLine="true"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_medium" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

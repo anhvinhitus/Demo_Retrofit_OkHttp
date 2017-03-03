@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_linkacc_margin_bottom_group_input"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_register_AccNumberDefault"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zpw_pin_view_height"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spn_register_AccNumberDefault"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:src="@drawable/ic_zp_arrow" />-->
+
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/spn_register_PhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chọn hình thức nhận OTP"
+            android:visibility="gone" />
+
+        <Spinner
+            android:id="@+id/spn_register_OTPValidType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Số điện thoại nhận OTP: " />
+
+            <TextView
+                android:id="@+id/tv_register_phone_receive_OTP"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0935***296" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zpw_line_height"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:background="@color/line" />
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/il_register_AccNumberDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:hint="@string/zpw_string_linkacc_accNumDef_hint"
+            android:paddingTop="@dimen/margin_small"
+            android:tag="@string/zpw_string_linkacc_accNumDef_hint"
+            android:theme="@style/TextLabelHint">
+
+            <EditText
+                android:id="@+id/edt_register_AccNumberDefault"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:background="@drawable/txt_bottom_default_style"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:inputType="text|textVisiblePassword"
+                android:longClickable="false"
+                android:maxLength="@integer/maximum_character_field_vcb_password"
+                android:maxLines="1"
+                android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                android:paddingRight="@dimen/margin_small"
+                android:paddingTop="@dimen/zpw_edittext_padding_top"
+                android:textSize="@dimen/sdk_form_input_card_number_size" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:hint="@string/zpw_string_linkacc_phone_hint"
+            android:paddingTop="@dimen/margin_small"
+            android:tag="@string/zpw_string_linkacc_phone_hint"
+            android:theme="@style/TextLabelHint">
+
+            <EditText
+                android:id="@+id/edt_register_PhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:background="@drawable/txt_bottom_default_style"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:inputType="text|textVisiblePassword"
+                android:longClickable="false"
+                android:maxLength="@integer/maximum_character_field_vcb_password"
+                android:maxLines="1"
+                android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                android:paddingRight="@dimen/margin_small"
+                android:paddingTop="@dimen/zpw_edittext_padding_top"
+                android:textSize="@dimen/sdk_form_input_card_number_size" />
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:hint="@string/zpw_string_linkacc_captcha_hint"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/margin_small"
+                android:tag="@string/zpw_string_linkacc_captcha_hint"
+                android:theme="@style/TextLabelHint">
+
+                <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
+                    android:id="@+id/edt_register_captcha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:background="@drawable/txt_bottom_default_style"
+                    android:imeOptions="actionDone|flagNoExtractUi"
+                    android:inputType="textCapCharacters|textVisiblePassword"
+                    android:longClickable="false"
+                    android:maxLength="@integer/maximum_character_field_vcb_captcha"
+                    android:maxLines="1"
+                    android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                    android:paddingRight="@dimen/margin_small"
+                    android:paddingTop="@dimen/zpw_edittext_padding_top"
+                    android:textSize="@dimen/sdk_form_input_card_number_size" />
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="@dimen/zpw_line_height"
+                    android:layout_height="@dimen/margin_small"
+                    android:background="@color/white" />
+
+                <View
+                    android:layout_width="@dimen/zpw_line_height"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/line" />
+
+                <View
+                    android:layout_width="@dimen/zpw_line_height"
+                    android:layout_height="@dimen/margin_small"
+                    android:background="@color/white" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_register_captcha"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:paddingLeft="@dimen/padding_large"
+                android:paddingRight="@dimen/padding_large"
+                android:visibility="gone" />
+
+            <WebView
+                android:id="@+id/web_register_captcha"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zpw_line_height"
+            android:background="@color/line" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn loại ví điện tử"
+        android:visibility="gone" />
+
+    <Spinner
+        android:id="@+id/spn_register_WalletType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</LinearLayout>

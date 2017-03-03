@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/previous"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/switch_button_margin"
+        android:layout_toLeftOf="@+id/dotView"
+        android:background="@drawable/button_pre_disable"
+        android:enabled="false" />
+
+    <LinearLayout
+        android:id="@+id/dotView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal" />
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/switch_button_margin"
+        android:layout_toRightOf="@+id/dotView"
+        android:background="@drawable/button_next" />
+</RelativeLayout>

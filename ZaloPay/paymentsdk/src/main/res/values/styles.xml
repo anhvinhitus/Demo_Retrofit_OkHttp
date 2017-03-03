@@ -1,0 +1,123 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="WalletTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary</item>
+    </style>
+
+    <!--
+    <style name="ReadWalletTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/red_color_primary</item>
+        <item name="colorPrimaryDark">@color/red_color_primary</item>
+        <item name="android:textColorHint">@color/text_color</item>
+        <item name="colorControlActivated">@color/red_color_primary</item>
+    </style>
+    -->
+
+    <style name="TextLabelHint" parent="ThemeOverlay.AppCompat.Light">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="colorControlActivated">@color/color_primary</item>
+        <item name="colorAccent">@color/color_primary</item>
+        <item name="android:textColorHint">@color/text_color</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:typeface">sans</item>
+    </style>
+
+    <style name="PaymentRadioButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/text_color</item>
+        <item name="colorControlActivated">@color/color_primary</item>
+    </style>
+
+    <declare-styleable name="VPaymentCheckBox">
+        <attr name="stroke__border_width" format="dimension" />
+        <attr name="stroke_color" format="color" />
+        <attr name="circle_color" format="color" />
+    </declare-styleable>
+
+    <style name="alert_dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowBackground">@drawable/dialog_sweet_shadow</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.2</item>
+    </style>
+
+    <style name="alert_dialog_transparent" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.01</item>
+    </style>
+
+    <style name="dialog_blue_button" parent="Widget.AppCompat.ActionButton">
+        <item name="android:textSize">@dimen/zpw_text_size_big_x</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:textColor">@color/color_primary</item>
+    </style>
+
+    <style name="submit_button">
+        <item name="android:radius">@dimen/indicator_button_border</item>
+    </style>
+
+    <style name="spinner_style">
+        <item name="android:popupBackground">@color/white</item>
+        <item name="android:divider">@color/color_primary</item>
+        <item name="android:dividerHeight">2dp</item>
+    </style>
+
+    <style name="GridPasswordView" />
+
+    <style name="GridPasswordView.TextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="GridPasswordView.EditText" parent="GridPasswordView.TextView">
+        <item name="android:cursorVisible">false</item>
+    </style>
+
+    <style name="GridPasswordView.Divider">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
+    </style>
+
+    <!--Style Card View-->
+    <declare-styleable name="creditcard">
+        <attr name="cvv" format="integer" />
+        <attr name="card_holder_name" format="string" />
+        <attr name="card_expiration" format="string" />
+        <attr name="card_number" format="string" />
+        <attr name="card_side" format="enum">
+            <enum name="front" value="1" />
+            <enum name="back" value="0" />
+        </attr>
+    </declare-styleable>
+
+    <style name="appCompatStyle" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/transparent</item>
+        <item name="colorControlActivated">@color/blue_color</item>
+        <item name="android:editTextStyle">@style/editTextStyle</item>
+    </style>
+
+
+    <!-- changes the default text colour for the EditTexts -->
+    <style name="editTextStyle" parent="android:style/Widget.EditText">
+        <item name="android:textColor">@color/blue_btn_bg_pressed_color</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+    </style>
+</resources>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vn.com.zalopay.wallet.view.custom.ZPWRippleLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/zpw_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:mrl_rippleAlpha="0.2"
+    app:mrl_rippleColor="@color/color_primary_transparent"
+    app:mrl_rippleHover="true"
+    app:mrl_rippleOverlay="true">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
+            android:layout_toLeftOf="@+id/zpw_channel_next_icon"
+            android:paddingBottom="@dimen/zpw_item_listview_padding_top_bottom"
+            android:paddingTop="@dimen/zpw_item_listview_padding_top_bottom">
+
+            <ImageView
+                android:id="@+id/zpw_channel_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:scaleType="fitXY" />
+
+            <LinearLayout
+                android:id="@+id/zpw_layout_channel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/zpw_channel_name_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/text_color_bold"
+                    android:textSize="@dimen/zpw_text_size_medium" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_right">
+
+                    <TextView
+                        android:id="@+id/zpw_channel_fee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_color_grey"
+                        android:textSize="@dimen/zpw_text_size_medium_small" />
+
+                    <TextView
+                        android:id="@+id/zpw_title_vnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/zpw_padding_text_vnd"
+                        android:text="@string/zpw_string_vnd"
+                        android:textColor="@color/text_color_grey"
+                        android:textSize="@dimen/text_size_vnd" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/zpw_channel_next_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/zpw_item_listview_padding_left_right" />
+
+        <View
+            android:id="@+id/zpw_line_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/zpw_line_height"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/zpw_item_listview_padding_left_line"
+            android:background="@color/dark_transparent" />
+    </RelativeLayout>
+
+</vn.com.zalopay.wallet.view.custom.ZPWRippleLayout>

@@ -1,0 +1,277 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <vn.com.zalopay.wallet.business.webview.atm.BankWebView
+        android:id="@+id/webviewParser"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="top"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background">
+
+        <LinearLayout
+            android:id="@+id/zpw_account_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/zpw_account_list_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/zpw_padding_top_bottom"
+                    android:layout_marginTop="@dimen/zpw_padding_to_app_info"
+                    android:paddingLeft="@dimen/zpw_padding_left_right"
+                    android:text="@string/zpw_string_tittle_account_list"
+                    android:textColor="@color/text_color"
+                    android:textSize="@dimen/zpw_text_size_medium" />
+
+                <ListView
+                    android:id="@+id/zpw_account_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/zpw_bg_top_bottom_side_border"
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+                    android:scrollbars="none"
+                    android:visibility="gone" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/zpw_bg_top_bottom_side_border"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/zpsdk_acc_name_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/zpw_padding_left_right"
+                        android:paddingTop="@dimen/zpw_row_padding_top"
+                        android:theme="@style/TextLabelHint"
+                        android:visibility="gone">
+
+                        <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
+                            android:id="@+id/zpsdk_acc_name_ctl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/txt_bottom_default_style"
+                            android:imeOptions="actionNext|flagNoExtractUi"
+                            android:inputType="textCapCharacters|textVisiblePassword"
+                            android:maxLength="@integer/maximum_character_field_acc_name_length"
+                            android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                            android:paddingRight="@dimen/zpw_padding_left_right"
+                            android:paddingTop="@dimen/zpw_edittext_padding_top"
+                            android:singleLine="true"
+                            android:textSize="@dimen/sdk_form_input_size"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/zpsdk_acc_password_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/zpw_row_padding_top"
+                        android:theme="@style/TextLabelHint"
+                        android:visibility="gone">
+
+                        <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
+                            android:id="@+id/zpsdk_acc_password_ctl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/txt_bottom_default_style"
+                            android:imeOptions="actionNext|flagNoExtractUi"
+                            android:inputType="textPassword"
+                            android:maxLength="@integer/maximum_character_field_acc_password_length"
+                            android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                            android:paddingLeft="@dimen/zpw_padding_left_right"
+                            android:paddingRight="@dimen/zpw_padding_left_right"
+                            android:paddingTop="@dimen/zpw_edittext_padding_top"
+                            android:singleLine="true"
+                            android:textSize="@dimen/sdk_form_input_size"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/zpsdk_card_password_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:hint="@string/zpw_string_cardpassword_hint"
+                        android:tag="@string/zpw_string_cardpassword_hint"
+                        android:theme="@style/TextLabelHint"
+                        android:visibility="gone">
+
+                        <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
+                            android:id="@+id/zpsdk_card_password_ctl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/txt_bottom_default_style"
+                            android:gravity="center_vertical"
+                            android:imeOptions="actionDone|flagNoExtractUi"
+                            android:inputType="textPassword"
+                            android:maxLength="@integer/maximum_character_field_card_password"
+                            android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                            android:paddingLeft="@dimen/zpw_padding_left_right"
+                            android:paddingRight="@dimen/zpw_padding_left_right"
+                            android:paddingTop="@dimen/zpw_edittext_padding_top"
+                            android:privateImeOptions="nm"
+                            android:singleLine="true"
+                            android:textSize="@dimen/sdk_form_input_size"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/zpsdk_otp_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:hint="@string/zpw_string_otp_hint"
+                        android:tag="@string/zpw_string_otp_hint"
+                        android:theme="@style/TextLabelHint"
+                        android:visibility="gone">
+
+                        <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
+                            android:id="@+id/zpsdk_otp_ctl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/txt_bottom_default_style"
+                            android:imeOptions="actionDone|flagNoExtractUi"
+                            android:inputType="number|textNoSuggestions"
+                            android:maxLength="@integer/maximum_character_field_opt_length"
+                            android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                            android:paddingLeft="@dimen/zpw_padding_left_right"
+                            android:paddingRight="@dimen/zpw_padding_left_right"
+                            android:paddingTop="@dimen/zpw_edittext_padding_top"
+                            android:privateImeOptions="nm"
+                            android:singleLine="true"
+                            android:textSize="@dimen/sdk_form_input_size"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/captcha_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/zpsdk_captchar_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="@string/zpw_string_captcha"
+                            android:paddingTop="@dimen/zpw_row_padding_top"
+                            android:tag="@string/zpw_string_captcha"
+                            android:theme="@style/TextLabelHint">
+
+                            <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
+                                android:id="@+id/zpsdk_captchar_ctl"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:background="@drawable/txt_bottom_default_style"
+                                android:gravity="center_vertical"
+                                android:imeOptions="actionGo|flagNoExtractUi"
+                                android:inputType="text|textVisiblePassword|textNoSuggestions"
+                                android:maxLength="@integer/maximum_character_field_captcha_length"
+                                android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                                android:paddingLeft="@dimen/zpw_padding_left_right"
+                                android:paddingRight="@dimen/zpw_padding_left_right"
+                                android:paddingTop="@dimen/zpw_edittext_padding_top"
+                                android:privateImeOptions="nm"
+                                android:singleLine="true"
+                                android:textSize="@dimen/sdk_form_input_size"
+                                android:visibility="gone" />
+                        </android.support.design.widget.TextInputLayout>
+
+                        <ImageView
+                            android:id="@+id/zpsdk_captchar_img_ctl"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:background="@drawable/txt_bottom_default_focused"
+                            android:scaleType="fitCenter" />
+
+                        <FrameLayout
+                            android:id="@+id/zpsdk_captchar_wv_frame"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="right"
+                            android:visibility="gone">
+
+                            <WebView
+                                android:id="@+id/zpsdk_captchar_wv_ctl"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:scrollbars="none" />
+                        </FrameLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtOtpInstruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/zpw_padding_left_right"
+                android:layout_marginRight="@dimen/zpw_padding_left_right"
+                android:layout_marginTop="@dimen/zpw_item_listview_padding_top_bottom"
+                android:gravity="center"
+                android:text="@string/zpw_otp_instruction"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/zpw_text_size_medium"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

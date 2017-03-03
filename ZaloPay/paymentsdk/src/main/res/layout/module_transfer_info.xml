@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/zpw_bg_top_bottom_side_border"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/zpw_line_height">
+
+    <LinearLayout
+        android:id="@+id/transfer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/zpw_padding_app_info_left_right"
+        android:layout_marginTop="@dimen/zpw_padding_app_info_left_right"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/zpw_wallet_transfer_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/zpw_padding_app_info_left_right"
+            android:layout_marginRight="@dimen/zpw_padding_app_info_left_right"
+            android:gravity="center"
+            android:textColor="@color/text_color_bold"
+            android:textSize="@dimen/zpw_text_size_medium" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom|center">
+
+            <TextView
+                android:id="@+id/zpw_wallet_transfer_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:gravity="bottom"
+                android:singleLine="true"
+                android:text="0"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_supper_big"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/zpw_wallet_transfer_vnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="@dimen/zpw_margin_left"
+                android:layout_marginTop="2dp"
+                android:gravity="bottom"
+                android:singleLine="true"
+                android:text="@string/zpw_string_payment_currency_label"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_medium_small" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zpw_line_height"
+        android:layout_marginLeft="@dimen/zpw_padding_app_info_left_right"
+        android:layout_marginRight="@dimen/zpw_padding_app_info_left_right"
+        android:background="@color/dark_transparent" />
+
+    <LinearLayout
+        android:id="@+id/zpw_userinfo_view_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/zpsdk_user_info"
+            layout="@layout/module_user_transfer_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

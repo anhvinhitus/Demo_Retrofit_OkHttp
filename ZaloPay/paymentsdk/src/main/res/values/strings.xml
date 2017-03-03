@@ -1,0 +1,528 @@
+<resources>
+    <string name="app_name">Zalo Pay</string>
+    <string name="zpw_redpackage_app_id">6</string>
+
+    <string name="allow_use_fingerprint_feature">1</string>
+    <string name="allow_use_tracking_timing">1</string>
+    <string name="allow_use_send_log_on_transactionfail">1</string>
+
+
+    <string name="time_to_live_transaction">7</string>
+
+    <string name="zpw_string_merchant_creditcard_3ds_url_prefix">pay/success?orderNo</string>
+    <string name="zpw_string_pay_domain">123pay.vn</string>
+
+    <string name="zpw_string_error_code_name_not_resolved">net::ERR_NAME_NOT_RESOLVED</string>
+    <string name="zpw_string_error_code_timeout">net::ERR_TIMED_OUT</string>
+    <string name="zpw_string_error_code_disconnected">net::ERR_INTERNET_DISCONNECTED</string>
+
+    <string name="zpw_string_error_friendlymessage_name_not_resolved">Lỗi không phân giải được domain.\n Vui lòng thử lại!</string>
+    <string name="zpw_string_error_friendlymessage_timeout">Lỗi tải trang timeout.\n Vui lòng thử lại!</string>
+    <string name="zpw_string_error_friendlymessage_end_transaction">Giao dịch đã kết thúc. Vui lòng thực hiện lại giao dịch!</string>
+
+    <string name="percent_ontablet">0.5</string>
+    <string name="percent_ondefault">0.8</string>
+
+    <string name="cardview_rate">1.6</string>
+    <!-- font name on bundle -->
+    <string name="zpw_font_regular">Roboto-Regular</string>
+    <string name="zpw_font_medium">Roboto-Medium</string>
+    <string name="zpw_font_unisec">UnisectVnu</string>
+
+    <string name="zpw_string_transaction_expired">Thời gian giao dịch hết hiệu lực.\nVui lòng thực hiện lại giao dịch!</string>
+    <string name="zpw_string_params_wrong">Thông tin thanh toán không hợp lệ.</string>
+    <string name="zpw_not_allow_payment_app">Ứng dụng chưa được phép giao dịch.\nVui lòng chọn ứng dụng khác.</string>
+    <string name="zpw_save_credit_card">%s ••• </string>
+    <string name="zpw_save_credit_card_atm">Thẻ %s ••• </string>
+    <string name="zpw_save_credit_card_default">Thẻ đã liên kết ••• </string>
+    <string name="zpw_string_all_channel_maintenance">Kênh thanh toán đang bảo trì.</string>
+
+    <string name="zpw_string_alert_min_amount_input">Số tiền giao dịch tối thiểu là %s VND</string>
+    <string name="zpw_string_alert_max_amount_input">Số tiền giao dịch tối đa là %s VND</string>
+
+    <string name="zingpaysdk_alert_transaction_success">Thanh toán thành công</string>
+    <string name="zingpaysdk_alert_processing">Xử lý giao dịch</string>
+    <string name="zingpaysdk_alert_checking">Kiểm tra giao dịch</string>
+    <string name="zingpaysdk_alert_processing_otp">Kiểm tra mật khẩu giao dịch</string>
+    <string name="zingpaysdk_alert_processing_bank">Xử lý với ngân hàng</string>
+    <string name="zingpaysdk_alert_get_status">Nhận kết quả  giao dịch</string>
+    <string name="zingpaysdk_alert_process_view">Tạo màn hình</string>
+    <string name="zingpaysdk_alert_transition_screen">Chuyển trang</string>
+    <string name="zingpaysdk_alert_processing_check_app_info">Kiểm tra thông tin ứng dụng</string>
+    <string name="zingpaysdk_alert_processing_loading_resource">Khởi tạo dữ liệu ứng dụng</string>
+    <string name="zingpaysdk_confirm_quit">Giao dịch sẽ bị hủy.\nBạn thật sự muốn thoát ?</string>
+    <string name="zingpaysdk_confirm_quit_rescan_qrcode">Giao dịch sẽ bị hủy,cần tạo lại giao dịch từ đầu.\n Bạn thật sự muốn thoát ?</string>
+
+    <string name="zpw_confirm_quit_loadsite">Bạn đã chọn BACK nhưng giao dịch vẫn đang xử lý.\nBạn thật sự muốn thoát?</string>
+
+    <string name="zpw_string_load_website_timeout_message">Dữ liệu chưa tải xong, vui lòng kiểm tra lại kết nối mạng!</string>
+
+    <string name="zingpaysdk_alert_processing_ask_to_retry">Giao dịch vẫn còn đang xử lý.\nBạn có muốn thử lại?</string>
+    <string name="zingpaysdk_alert_error_networking_ask_to_retry">Không thể kết nối tới Zalo Pay, vui lòng kiểm tra kết nối mạng.\nBạn có muốn thử lại?</string>
+
+    <string name="zpw_error_transaction_duplicate_message">Giao dịch chưa hoàn thành.\nVui lòng thực hiện lại giao dịch...!</string>
+
+    <string name="zingpaysdk_alert_processing_get_status_fail">Vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Thanh Toán sau ít phút</string>
+    <string name="zingpaysdk_alert_processing_get_status_linkcard_fail">Vui lòng kiểm tra kết quả trong phần Liên Kết Thẻ sau ít phút</string>
+
+    <string name="zingpaysdk_alert_no_connection">Không có kết nối internet.\nVui lòng kiểm tra kết nối mạng!</string>
+    <string name="zingpaysdk_alert_network_error">Vui lòng kiểm tra kết nối mạng và thử lại!</string>
+    <string name="zpw_alert_networking_off_in_transaction">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại giao dịch</string>
+
+    <string name="zpw_alert_network_error_getappinfo">Mạng không ổn định, không kiểm tra được thông tin.\nVui lòng kiểm tra lại kết nối mạng</string>
+
+    <string name="zpw_alert_networking_error_check_status">Vui lòng xem lịch sử để kiểm tra trạng thái giao dịch</string>
+
+    <string name="zpw_alert_process_error">Lỗi xử lý dữ liệu.Vui lòng xem lịch sử để kiểm tra trạng thái giao dịch</string>
+
+    <string name="zpw_alert_order_not_submit">Mạng không ổn định, giao dịch chưa được gửi đi. Vui lòng kiểm tra kết nối mạng và thử lại!</string>
+
+    <string name="zingpaysdk_alert_input_error">Dữ liệu giao dịch không hợp lệ</string>
+    <string name="zpw_error_paymentinfo">Dữ liệu giao dịch không còn hiệu lực.\nVui lòng thực hiện lại giao dịch.</string>
+    <string name="zingpaysdk_alert_context_error">Ngữ cảnh ứng dụng đã kết thúc.\nVui lòng đóng ứng dụng và khởi động lại ứng dụng để thực hiện lại!</string>
+
+    <!--alert no interet-->
+    <string name="zingpaysdk_alert_title_nointernet">HƯỚNG DẪN</string>
+    <string name="zingpaysdk_alert_content_nointernet"><![CDATA[<b>Bật Wi-fi</b>: Chọn "<b>Settings</b>" (cài đặt) -" <b>Wi-fi</b>" và chọn mạng Wi-fi có sẵn.<br></br> <br></br><b>Bật 3G</b>: Chọn "<b>Settings</b>" (cài đặt) - "<b>Mobile Networks</b>" (di động) và bật "<b>Mobile Data</b>" (dữ lệu di động).]]></string>
+
+    <string name="zpw_string_alert_permission_sms_not_allow">Bạn đã không cấp quyền nhận tin nhắn !\nỨng dụng sẽ không thể tự động nhận tin nhắn khi có OTP ngân hàng tới.</string>
+
+    <string name="zpw_string_error_storage">Thiết bị của bạn không đủ dung lượng để lưu trữ dữ liệu ứng dụng.\nVui lòng thử lại sau khi đã giải phóng không gian vùng nhớ!</string>
+
+    <string name="zingpaysdk_alert_network_error_download_resource">Không thể tải dữ liệu ứng dụng.\nVui lòng kiểm tra kết nối mạng hoặc thử lại sau vài phút!</string>
+
+    <string name="zpw_string_error_parse_web">Không thể xử lý với ngân hàng, có thể do ngân hàng đang bảo trì.\nXin bạn vui lòng quay lại sau ít phút!</string>
+
+    <string name="zpw_string_alert_submit_order">Đang gửi hóa đơn</string>
+
+    <string name="zingpaysdk_missing_mac_info">Thông tin đơn hàng không hợp lệ.</string>
+    <string name="zingpaysdk_missing_app_pmt_info">Thiếu thông tin đơn hàng.</string>
+    <string name="zingpaysdk_missing_app_user">Thiếu thông tin user trong paymen info.</string>
+    <string name="zingpaysdk_invalid_app_trans">Thiếu thông tin trong paymen info.</string>
+    <string name="zingpaysdk_invalid_app_time">Thời gian không hợp lệ.</string>
+    <string name="zingpaysdk_invalid_app_amount">Số tiền không hợp lệ.</string>
+    <string name="zingpaysdk_invalid_user_id_user_name">Thông tin tài khoản Zalo Pay không hợp lệ</string>
+    <string name="zingpaysdk_invalid_token">Token không hợp lệ</string>
+
+    <string name="zalopay_invalid_app_id">App id không hợp lệ</string>
+
+    <string name="zpw_conf_gwinfo_app_list">gwinfo_app_list_id</string>
+    <string name="zingpaysdk_conf_gwinfo_expired_time">gwinfo_expired_time</string>
+    <string name="zingpaysdk_conf_gwinfo_enable_deposite">gwinfo_enable_deposite</string>
+    <string name="zingpaysdk_conf_gwinfo_banner_list">gwinfo_banner_list</string>
+    <string name="zingpaysdk_conf_gwinfo_approve_inside_app">gwinfo_approve_inside_app</string>
+    <string name="zingpaysdk_conf_gwinfo_sdk_checksum">checksum_sdk</string>
+    <string name="zingpaysdk_conf_gwinfo_cardinfo_checksum">checksum_cardinfo</string>
+    <string name="zingpaysdk_conf_gwinfo_bankaccount_checksum">checksum_bankaccount</string>
+    <string name="zingpaysdk_conf_gwinfo_sdk_ver">checksum_sdk_ver</string>
+    <string name="zpw_current_user_id">current_user_id</string>
+    <string name="zingpaysdk_conf_gwinfo_unzip_path">unzip_path</string>
+    <string name="zingpaysdk_conf_gwinfo_res_ver">resource_version</string>
+    <string name="zingpaysdk_conf_gwinfo_udid">unit_device_id</string>
+    <string name="zingpaysdk_pin_encrypted">pin_encrypted</string>
+    <string name="zpw_resource_url">zpw_resource_url</string>
+    <string name="zpw_conf_gwinfo_maintenance_withdraw">zpw_conf_gwinfo_maintenance_withdraw</string>
+    <string name="zpw_conf_gwinfo_expired_time_duration">gwinfo_expired_time_duration</string>
+
+    <string name="zingpaysdk_conf_gwinfo_channel_link_acc">2000</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_link_card">1000</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_wallet_transfer">1001</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_withdraw">1002</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_atm">39</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_credit_card">36</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_bankaccount">37</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_zalopay">38</string>
+
+    <string name="zpw_conf_wallet_linkcard_desc">Zalo Pay sẽ chuyển %s VND từ TK thẻ vào TK Zalo Pay của bạn để kiểm tra tính hợp lệ.</string>
+    <string name="zpw_conf_wallet_amount">20000</string>
+    <string name="zpw_conf_wallet_id">1</string>
+
+    <string name="zingpaysdk_conf_gwinfo_channel_list">channel_list_</string>
+    <string name="zingpaysdk_conf_gwinfo_channel_prefix">channel_</string>
+
+    <string name="zpw_config_platform_info_app">app_</string>
+
+    <string name="zpw_conf_gwinfo_mapped_card_list">mapped_card_</string>
+    <string name="zpw_conf_gwinfo_mapped_card_info">mapped_card_list_</string>
+
+    <string name="zpw_conf_gwinfo_bank_account_list">bank_account_list_</string>
+
+    <string name="walletsdk_string_bar_title">Thanh toán</string>
+
+    <string name="zpw_string_pay_title">Nạp tiền</string>
+
+    <string name="zpw_string_tranfer_title">Chuyển tiền</string>
+
+    <string name="zpw_string_withdraw_title">Rút tiền</string>
+
+    <string name="zingpaysdk_intent_key_channel">zpsdk_channel</string>
+
+    <string name="zingpaysdk_pmc_name_zalopay">Tài khoản Zalo Pay</string>
+
+    <string name="zpw_string_zalopay_balance_error_label">Số dư không đủ</string>
+    <string name="zpw_string_zalopay_balance_label">Số dư</string>
+
+    <string name="zpw_string_atm_method_name">Thẻ nội địa</string>
+    <string name="zpw_string_credit_card_method_name">Thẻ tín dụng</string>
+    <string name="zpw_string_credit_card_link">Liên kết thẻ</string>
+    <string name="zpw_string_zalopay_wallet_method_name">Tài khoản Zalo Pay</string>
+
+    <string name="zpw_button_submit_text">Tiếp Tục</string>
+    <string name="zpw_string_card_number_hint">Nhập số thẻ</string>
+    <string name="zpw_string_card_name_hint">Nhập tên chủ thẻ</string>
+    <string name="zpw_string_issue_date_hint">Ngày phát hành (mm/yy)</string>
+    <string name="zpw_string_atm_format_wrong">Thẻ ATM không hợp lệ</string>
+    <string name="zpw_string_credit_format_wrong">Thẻ tín dụng không hợp lệ</string>
+    <string name="zpw_string_local_card_password">Mật khẩu DV thanh toán online</string>
+
+    <string name="zpw_string_title_confirm_transaction">HÌNH THỨC XÁC NHẬN GIAO DỊCH</string>
+
+    <string name="zpw_string_sms">SMS</string>
+    <string name="zpw_string_token">Token</string>
+
+    <string name="zpw_string_payment_currency_label">VND</string>
+    <string name="zpw_string_otp_hint">Nhập mã OTP</string>
+    <string name="zpw_string_token_hint">Nhập Token</string>
+    <string name="zpw_string_captcha">Nhập mã bảo mật</string>
+
+    <string name="zpw_string_acc_name_hint">10 số tài khoản thẻ đa năng</string>
+    <string name="zpw_string_acc_password_hint">06-16 số mật mã</string>
+
+    <string name="zpw_string_credit_card_expired_date_hint">Nhập ngày hết hạn (mm/yy)</string>
+    <string name="zpw_string_credit_card_cvv_hint">CVV</string>
+
+    <string name="zpw_string_payment_success_label">THANH TOÁN THÀNH CÔNG!</string>
+    <string name="zpw_string_tranfer_success_label">CHUYỂN TIỀN THÀNH CÔNG!</string>
+    <string name="zpw_string_topup_success_label">NẠP TIỀN THÀNH CÔNG!</string>
+    <string name="zpw_string_linkcard_success_label">LIÊN KẾT THẺ THÀNH CÔNG!</string>
+    <string name="zpw_string_lixi_success_label">LÌ XÌ THÀNH CÔNG!</string>
+    <string name="zpw_string_withdraw_success_label">RÚT TIỀN THÀNH CÔNG!</string>
+
+    <string name="zpw_string_payment_fail_transaction">GIAO DỊCH KHÔNG THÀNH CÔNG</string>
+    <string name="zpw_string_payment_fail_linkcard">LIÊN KẾT THẺ KHÔNG THÀNH CÔNG</string>
+    <string name="zpw_string_payment_error_label">NẠP TIỀN KHÔNG THÀNH CÔNG!</string>
+    <string name="zpw_string_lixi_fail_label">LÌ XÌ KHÔNG THÀNH CÔNG!</string>
+    <string name="zpw_string_withdraw_fail_label">RÚT TIỀN KHÔNG THÀNH CÔNG!</string>
+    <string name="zpw_string_transaction_processing">GIAO DỊCH ĐANG XỬ LÝ</string>
+    <string name="zpw_string_linkcard_processing">LIÊN KẾT THẺ ĐANG XỬ LÝ</string>
+    <string name="zpw_string_transaction_networking_error">MẠNG KHÔNG ỔN ĐỊNH</string>
+
+    <string name="zpw_string_credit_card_save_label">mã thẻ</string>
+    <string name="zpw_string_hidden_character"> ••• </string>
+
+    <string name="zpw_string_not_enough_money_wallet">Tài khoản của bạn không đủ tiền.Vui lòng nạp thêm</string>
+
+    <string name="zpw_string_button_close">Đóng</string>
+
+    <string name="zpw_app_info_map_channel_checksum">app_map_channel_checksum_</string>
+    <string name="zpw_app_info_map_channel_expired_time">app_map_channel_expired_time_</string>
+
+    <string name="zpw_banklist_expired_time">banklist_expired_time</string>
+    <string name="zpw_banklist_checksum">banklist_checksum</string>
+    <string name="zpw_bankconfig">zpw_bankconfig</string>
+    <string name="zpw_bankmap">zpw_bankmap</string>
+
+    <string name="zpw_string_fee_free">Miễn phí giao dịch</string>
+
+    <string name="zpw_string_channel_not_allow">Không hỗ trợ</string>
+    <string name="zpw_string_channel_not_allow_by_amount">Vượt quá hạn mức một lần giao dịch</string>
+    <string name="zpw_string_channel_not_allow_by_amount_small">Không hỗ trợ mệnh giá này</string>
+    <string name="zpw_string_channel_not_allow_by_fee">Không đủ tiền để giao dịch.</string>
+    <string name="zpw_string_bank_maintenance">Ngân hàng đang bảo trì</string>
+    <string name="zpw_string_channel_maintenance">Kênh giao dịch đang bảo trì</string>
+
+    <string name="zpw_app_info_exclude_channel">Hiện không có kênh nào hỗ trợ cho giao dịch của bạn</string>
+
+    <string name="zpw_string_alert_linkcard_channel_withdraw">Rút tiền yêu cầu phải liên kết thẻ hoặc tài khoản của ngân hàng được rút về.\nLiên kết để rút tiền ngay?</string>
+
+    <string name="zpw_string_title_fee">Phí dịch vụ</string>
+    <string name="zpw_string_title_total_pay">Thanh toán</string>
+    <string name="zpw_string_vnd">VND</string>
+    <string name="zpw_string_vnd_success">  VND</string>
+    <string name="zpw_string_title_select_bank">Các ngân hàng được hỗ trợ</string>
+    <string name="zpw_string_title_select_card"><![CDATA[ Các thẻ được "<b>Zalo Pay</b>" hỗ trợ ]]></string>
+
+    <string name="dialog_retry_button">THỬ LẠI</string>
+    <string name="dialog_title_normal">Thông báo</string>
+    <string name="dialog_title_error">Thất bại</string>
+    <string name="dialog_title_warning">Cảnh báo</string>
+    <string name="dialog_title_update">Phiên bản mới</string>
+    <string name="dialog_title_success">Thành công</string>
+    <string name="dialog_title_confirm">Xác nhận</string>
+    <string name="dialog_close_button">  ĐÓNG  </string>
+    <string name="dialog_linkcard_button">  LIÊN KẾT </string>
+    <string name="dialog_linkaccount_button">LIÊN KẾT TÀI KHOẢN</string>
+
+    <string name="dialog_choose_again_button">NGUỒN KHÁC</string>
+
+    <string name="dialog_cancel_button">THOÁT</string>
+
+    <string name="dialog_continue_button">TIẾP TỤC</string>
+
+    <string name="dialog_continue_load_button">TIẾP TỤC TẢI</string>
+
+    <string name="dialog_upgrade_button">CẬP NHẬT</string>
+
+    <string name="dialog_yes_button">ĐÚNG</string>
+
+    <string name="dialog_no_button">KHÔNG ĐÚNG</string>
+
+    <string name="dialog_pay_button">THANH TOÁN</string>
+
+    <string name="dialog_later_button">ĐỂ SAU</string>
+
+    <string name="dialog_comeback_button">QUAY LẠI</string>
+
+    <string name="dialog_agree_button">ĐỒNG Ý</string>
+
+    <string name="dialog_co_button">Có</string>
+
+    <string name="dialog_khong_button">Không</string>
+
+    <string name="dialog_turn_on">Bật</string>
+
+    <string name="dialog_turn_off">Đóng</string>
+
+    <string name="dialog_quit_button">Thoát</string>
+    <string name="dialog_getstatus_button">Kiểm tra giao dịch</string>
+
+    <string name="dialog_retry_input_card_button">NHẬP THẺ KHÁC</string>
+
+    <string name="dialog_retry_other_channel">CHỌN KÊNH KHÁC</string>
+
+    <string name="zpw_string_confirm_upgrade_level_save_card">Bạn cần cập nhật thông tin để liên kết thẻ %s</string>
+
+    <string name="zpw_string_saving_credit_card">Đang liên kết thẻ</string>
+
+    <string name="zpw_string_get_card_info_processing">Đang cập nhật thẻ liên kết</string>
+
+    <string name="zpw_string_authen_atm">Xác thực thông tin</string>
+
+    <string name="zpw_string_save_card_error">Mạng không ổn định.\nKhông thể cập nhật thông tin danh sách thẻ liên kết lúc này!</string>
+    <string name="zpw_string_get_bank_account_error">Mạng không ổn định.\nKhông thể cập nhật thông tin tài khoản liên kết lúc này!</string>
+
+    <string name="zpw_string_number_retry">3</string>
+
+    <string name="zpw_string_number_load_web_retry">3</string>
+
+    <string name="zpw_string_alert_over_retry_otp">Quá số lần nhập OTP.\nVui lòng thử lại</string>
+
+    <string name="zpw_string_alert_loading_bank">Kiểm tra thông tin ngân hàng</string>
+
+    <string name="zpw_string_title_payment_gateway">CHỌN PHƯƠNG THỨC THANH TOÁN</string>
+
+    <string name="zpw_string_title_payment_gateway_tranfer">CHỌN NGUỒN TIỀN</string>
+
+    <string name="zpw_string_title_payment_gateway_topup">CHỌN NGUỒN TIỀN</string>
+
+    <string name="zpw_string_title_payment_gateway_withdraw">CHỌN THẺ NHẬN TIỀN</string>
+
+    <string name="zpw_string_title_payment_gateway_confirm_pay">PHƯƠNG THỨC THANH TOÁN</string>
+    <string name="zpw_string_title_payment_gateway_confirm_topup">NGUỒN TIỀN</string>
+    <string name="zpw_string_title_payment_gateway_confirm_tranfer">NGUỒN TIỀN</string>
+    <string name="zpw_string_title_payment_gateway_confirm_withdraw">THẺ NHẬN TIỀN</string>
+
+    <string name="zpw_string_format_balance">(số dư %s VND)</string>
+
+    <string name="zpw_string_bank_maitenance"><![CDATA[ <b>%1$s</b> bảo trì tới <b>%2$s</b>, bạn vui lòng chọn ngân hàng khác hoặc quay lại sau.]]></string>
+
+    <string name="zpw_string_bank_not_support">Ngân hàng đã chọn không còn được hỗ trợ.\nVui lòng chọn thẻ khác để giao dịch</string>
+
+    <string name="zpw_string_title_header_pay_result">Kết quả</string>
+
+    <string name="zpw_string_error_system">Hệ thống không thể thực hiện giao dịch lúc này.\nVui lòng thử lại sau ít phút</string>
+
+    <string name="zpw_string_alert_profilelevel_update">Bạn cần cập nhật Mật Khẩu Thanh Toán để sử dụng tính năng này.\nBạn có muốn cập nhật thông tin?</string>
+    <string name="zpw_string_alert_profilelevel_update_and_before_payby_bankaccount">Bạn cần cập nhật Mật Khẩu Thanh Toán trước khi sử dụng tài khoản ngân hàng để giao dịch.\nBạn có muốn cập nhật thông tin?</string>
+    <string name="zpw_string_alert_profilelevel_update_and_linkaccount_before_payment"><![CDATA[Bạn cần Cập nhật thông tin và Liên kết tài khoản để giao dịch dùng tài khoản ngân hàng.<br><br><b>Bước 1</b>: Cập nhật Mật Khẩu Thanh Toán<br><b>Bước 2</b>: Liên kết tài khoản ngân hàng]]></string>
+
+    <string name="zpw_string_alert_input_pin">Nhập mật khẩu thanh toán để giao dịch</string>
+    <string name="zpw_string_pin_wrong">Mật khẩu thanh toán không đúng!</string>
+
+    <string name="zpw_string_fee_upgrade_level">Cập nhật thông tin để giao dịch</string>
+
+    <string name="zpw_string_tittle_account_list">CHỌN TÀI KHOẢN NGÂN HÀNG</string>
+
+    <string name="zpw_string_fee_label">Phí:</string>
+
+    <string name="zpw_string_exit_without_pin">Để giao dịch an toàn, chúng tôi cần bạn nhập mật khẩu thanh toán.\nBạn có muốn tiếp tục giao dịch?</string>
+
+    <string name="zpw_string_error_layout">Lỗi khởi tạo dữ liệu.\nVui lòng thử lại</string>
+
+    <string name="zpw_string_error_payment_info">Thông tin thanh toán không hợp lệ</string>
+
+    <string name="zpw_alert_captcha_vietcombank">Nhập không đúng dãy số!</string>
+    <string name="zpw_alert_captcha_vietcombank_update">Mã xác nhận không đúng</string>
+
+    <string name="zpw_alert_cardname_wrong">Tên chủ thẻ chưa đúng</string>
+
+    <string name="zpw_alert_cardname_has_whitespace">Tên chủ thẻ không chứa nhiều khoảng trắng</string>
+
+    <string name="zpw_alert_error_data">Dữ liệu hệ thống không ổn định.\nVui lòng thử lại sau</string>
+
+    <string name="zpw_alert_empty_creditcard_url">Website của ngân hàng không có dữ liệu.\nVui lòng thực hiện lại giao dịch!</string>
+
+    <string name="zpw_alert_error_resource_not_download">Không tải được dữ liệu thanh toán.\nVui lòng thử lại sau ít phút!</string>
+
+    <string name="zpw_string_title_require_pin_page">Nhập mật khẩu thanh toán</string>
+    <string name="zpw_string_alert_userinfo_invalid">Tài khoản nhận không tồn tại</string>
+    <string name="zpw_string_transfer_title">Người nhận</string>
+    <string name="zpw_string_zalopay_name_label">Zalo Pay ID</string>
+    <string name="zpw_string_transfer_price">Phí dịch vụ</string>
+    <string name="zpw_string_transfer_id_card">Số thẻ</string>
+    <string name="zpw_string_transfer_bank">Ngân hàng</string>
+    <string name="zpw_string_transfer_time">Thời gian chuyển</string>
+    <string name="zpw_string_transfer_time_fail">Thời gian chuyển tiền:</string>
+    <string name="zpw_string_transfer_amount">Thanh toán</string>
+    <string name="zpw_string_label_transaction">Mã giao dịch:</string>
+
+    <string name="zpw_string_alert_app_user_invalid_tranfer">Tài khoản chuyển tiền và tài khoản nhận tiền phải khác nhau</string>
+    <string name="zpw_string_alert_app_user_invalid_linkcard">Thông tin tài khoản để liên kết thẻ không hợp lệ</string>
+
+    <string name="zpw_string_alert_card_not_found">Thông tin thẻ không tìm thấy</string>
+    <string name="zpw_string_alert_card_save_error">Không thể liên kết thẻ</string>
+    <string name="zpw_string_alert_maintenance">Hệ thống đang bảo trì </string>
+
+    <string name="zpw_transaction_pay_success_status">Số tiền thanh toán</string>
+
+    <string name="zpw_string_service_status">Thanh toán thành công</string>
+    <string name="zpw_string_service_title">Dịch vụ</string>
+    <string name="zpw_string_service_status_title">Trạng thái giao dịch</string>
+    <string name="zpw_string_service_time_title">Thời gian giao dịch</string>
+    <string name="zpw_string_service_transaction_title">Mã giao dịch</string>
+    <string name="zpw_string_service_transaction_success">Thành công</string>
+
+    <!--li xi -->
+    <string name="zpw_string_lixi_notice_title">Sau 24 giờ số tiền chuyển được hoàn lại vào ví của bạn nếu người nhận chưa cài đặt %s</string>
+    <string name="zpw_string_lixi_notice_title_02">Zalo Pay</string>
+
+    <string name="zpw_string_bankcode_viettinbank">123PVTB</string>
+    <string name="zpw_string_bankcode_sacombank">123PSCB</string>
+    <string name="zpw_string_bankcode_commercialbank">123PSGCB</string>
+    <string name="zpw_string_bankcode_agribank">123PAGB</string>
+    <string name="zpw_string_bankcode_vietcombank">ZPVCB</string>
+    <string name="zpw_string_bankcode_bidv">123PBIDV</string>
+
+    <string name="zpw_string_bankcode_visa">VISA</string>
+    <string name="zpw_string_bankcode_master">MASTER</string>
+    <string name="zpw_string_bankcode_jcb">JCB</string>
+
+    <string name="zpw_string_level_allow_use_zalopay">2</string>
+    <string name="zpw_string_level_allow_mapcard">2</string>
+    <string name="zpw_string_level_allow_withdraw">2</string>
+    <string name="zpw_string_level_allow_bankaccount">2</string>
+
+    <string name="zpw_string_withdraw_description">Số tiền</string>
+
+    <string name="zpw_string_visible_pin_on">Hiện</string>
+    <string name="zpw_string_visible_pin_off">Ẩn</string>
+
+    <string name="zpw_string_card_not_support">Thẻ không được hỗ trợ</string>
+
+    <string name="zpw_string_alert_networking_not_stable">Mạng dữ liệu không ổn định.</string>
+    <string name="zpw_string_alert_networking_offline">Không có kết nối mạng.</string>
+    <string name="zpw_string_alert_networking_online">Kết nối mạng đã bật</string>
+    <string name="zpw_string_remind_turn_on_networking">Kiểm tra kết nối!</string>
+
+    <string name="zpw_string_alert_remove_mapcard_error_networking">Không thể xóa thẻ đã lưu.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
+
+    <string name="zpw_string_number_card_format_wrong">Số thẻ không hợp lệ</string>
+    <string name="zpw_string_credit_card_cvv_wrong">CVV không hợp lệ</string>
+
+    <string name="card_holder_name_hint">TÊN CHỦ THẺ</string>
+    <string name="card_date_hint_expire">NGÀY HẾT HẠN</string>
+    <string name="card_date_hint_local">NGÀY PHÁT HÀNH</string>
+
+    <string name="zpw_missing_card_number">Yêu cầu nhập số thẻ</string>
+
+    <string name="zpw_otp_instruction">Mã OTP đã được gửi qua SMS đến số ĐT của bạn</string>
+
+    <string name="zpw_link_card_existed">Thẻ bạn nhập đã được liên kết</string>
+    <string name="zpw_string_card_error_luhn">Thẻ không hợp lệ</string>
+    <string name="zpsdk_luhn_check_cc">true</string>
+    <string name="zpsdk_luhn_check_atm">true</string>
+
+    <string name="zpw_alert_linkcard_not_support">Thẻ bạn nhập không được hỗ trợ.\nVui lòng nhập thẻ khác để liên kết!</string>
+
+    <string name="sms_option">SMS</string>
+    <string name="token_option">Token</string>
+    <string name="zpsdk_inputmethod_mane">com.google.android.inputmethod(.*)</string>
+
+    <string name="zpw_fail_transanction_by_ssl">Website đang giao dịch bị lỗi vấn đề bảo mật (SSL) nên bạn không thể thực hiên giao dịch.\nVui lòng thử lại bằng thẻ khác!</string>
+
+    <string name="zpw_have_no_transid">Chưa có mã giao dịch</string>
+    <string name="zpw_support">Bạn Cần Hỗ Trợ ?</string>
+    <string name="zpw_support_question">Câu Hỏi Thường Gặp</string>
+    <string name="zpw_get_support">Gửi Báo Lỗi</string>
+    <string name="zpw_support_btn_cancel">Hủy</string>
+
+    <string name="zpw_string_vcb_link_login">https://www.vietcombank.com.vn/IBanking2015/55c3c0a782b739e063efa9d5985e2ab4/Account/Login</string>
+
+    <string name="zpw_string_login_vcb_title">NHẬP THÔNG TIN INTERNET BANKING</string>
+    <string name="zpw_string_unreg_vcb_title">NHẬP THÔNG TIN</string>
+    <string name="zpw_string_link_acc">Liên kết tài khoản</string>
+    <string name="zpw_string_unlink_acc">Hủy liên kết</string>
+
+    <string name="zpw_vcb_wallet_type">MoMo</string>
+    <string name="zpw_vcb_value_otp_sms">3</string>
+
+    <string name="zpw_string_linkacc_otp_hint">Mã OTP</string>
+    <string name="zpw_string_linkacc_account_hint">Tên đăng nhập</string>
+    <string name="zpw_string_linkacc_password_hint">Mật khẩu</string>
+    <string name="zpw_string_linkacc_captcha_hint">Mã kiểm tra</string>
+    <string name="zpw_string_linkacc_phone_hint">Số điện thoại</string>
+    <string name="zpw_string_linkacc_accNumDef_hint">Số tài khoản mặc định</string>
+
+    <string name="zpw_string_linkacc_notice_description">Liên kết ngân hàng thành công,\nBạn có thể tiếp tục sử dụng các dịch vụ khác.</string>
+    <string name="zpw_string_unlinkacc_notice_description">Quý khách hủy thành công kết nối\ngiữa Zalo Pay và TK ngân hàng Vietcombank</string>
+
+    <string name="zpw_error_authen_pin">Hiện tại không thể sử dụng vân tay để giao dịch. Tiếp tục giao dịch sử dụng Mật Khẩu Thanh Toán!</string>
+
+    <string name="zpw_string_title_err_login_vcb">Tên đăng nhập hoặc mật khẩu không đúng.</string>
+    <string name="zpw_string_vcb_empty_username">nhập tên truy cập!</string>
+    <string name="zpw_string_vcb_empty_password">nhập mật khẩu!</string>
+    <string name="zpw_string_vcb_empty_captcha_login">nhập mã xác nhận!</string>
+    <string name="zpw_string_vcb_empty_captcha_confirm">nhập mã kiểm tra!</string>
+    <string name="zpw_string_vcb_wrong_username_password">Tên truy cập hoặc mật khẩu không chính xác.</string>
+    <string name="zpw_string_vcb_account_locked">Dịch vụ đã bị khóa.</string>
+    <string name="zpw_string_vcb_wrong_captcha">Mã kiểm tra không chính xác!</string>
+    <string name="zpw_string_vcb_wrong_times_allow">Bạn còn %d lần để thử lại.</string>
+    <string name="zpw_int_vcb_num_times_allow_login_wrong">3</string>
+    <string name="zpw_string_vcb_error_unidentified">Lỗi không xác định. </string>
+    <string name="zpw_string_vcb_phonenumber_notfound_register">Không có số điện thoại để liên kết.</string>
+    <string name="zpw_string_vcb_phonenumber_notfound_unregister">Không có số điện thoại để hủy liên kết.</string>
+    <string name="zpw_string_vcb_error_captcha">Mã kiểm tra không đúng</string>
+    <string name="zpw_string_vcb_bank_locked_account">Tài khoản đang bị khoá.\nVui lòng liên hệ ngân hàng để được trợ giúp.</string>
+    <string name="zpw_string_vcb_login_error">Đăng nhập sai quá số lần cho phép.</string>
+    <string name="zpw_string_vcb_account_in_server">Tài khoản vẫn còn trên Server</string>
+    <string name="zpw_string_vcb_account_notfound_in_server">Tài khoản không có trên Server</string>
+
+    <string name="zpw_string_vcb_otp_sender">Vietcombank</string>
+    <string name="zpw_int_vcb_otp_size">10</string>
+    <string name="zpw_string_vcb_otp_identify">Dang ky su dung dich vu vi dien tu</string>
+    <string name="zpw_string_vcb_otp_prefixOtp">Ma giao dich cua Quy khach la\u0020</string>
+
+    <string name="zpw_sdkreport_error_message">%1$s | %2$s | %3$s </string>
+
+    <string name="zpw_warning_vietcombank_select_linkcard_payment">Bạn đã liên kết tài khoản của Vietcombank. Hãy chọn tài khoản liên kết để giao dịch.</string>
+    <string name="zpw_warning_vietcombank_linkcard_before_payment">Ngân hàng Vietcombank chỉ hỗ trợ Liên kết tài khoản. Hãy Liên kết tài khoản để tiếp tục thanh toán.</string>
+
+    <string name="zpw_warning_vietcombank_linkbankaccount_not_linkcard">Ngân hàng Vietcombank chỉ hỗ trợ Liên kết tài khoản</string>
+
+    <string name="zpw_warning_link_bankaccount_existed">Tài khoản của bạn đã liên kết với ngân hàng đã chọn</string>
+    <string name="zpw_warning_unlink_bankaccount_invalid">Tài khoản của bạn chưa liên kết với ngân hàng</string>
+
+    <string name="zpw_channelname_vietcombank_mapaccount">Tài khoản Vietcombank</string>
+
+    <string name="header_title">Chọn số tài khoản</string>
+    <string name="footer_button_close">HỦY</string>
+    <string name="footer_button_confirm">ĐỒNG Ý</string>
+
+    <string name="zpw_cache_card_for_show_inlinkcard">cache_card_for_show_in_linkcard</string>
+    <string name="zpw_string_cardpassword_hint">Mật khẩu thẻ</string>
+    <string name="zpw_error_message_bidv_website_wrong_password">Mật khẩu không đúng</string>
+    <string name="zpw_error_message_bidv_website_wrong_captcha">CAPTCHA</string>
+    <string name="zpw_warning_bidv_select_linkcard_payment">Ngân hàng BIDV chỉ hỗ trợ hình thức thanh toán qua thẻ liên kết. Vui lòng chọn thẻ liên kết BIDV để thanh toán.</string>
+    <string name="zpw_warning_bidv_linkcard_before_payment">BIDV chỉ hỗ trợ thanh toán qua thẻ đã liên kết. Bạn có muốn liên kết thẻ để tiếp tục thanh toán không?</string>
+    <string name="zpw_alert_networking_error_parse_website">Có lỗi xảy ra trong quá trình xử lý website ngân hàng.\nVui lòng thực hiện lại giao dịch!</string>
+</resources>

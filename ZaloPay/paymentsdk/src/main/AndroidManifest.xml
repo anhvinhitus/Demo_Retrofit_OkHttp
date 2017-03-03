@@ -1,0 +1,67 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="vn.com.zalopay.wallet"
+    android:versionCode="1"
+    android:versionName="1.0.2">
+
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="24" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
+    <application
+        android:allowBackup="true"
+        android:theme="@style/WalletTheme">
+
+        <activity
+            android:name=".view.component.activity.PaymentChannelActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+        <activity
+            android:name=".view.component.activity.PaymentGatewayActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".view.component.activity.BankListActivity"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Dialog"></activity>
+        <activity
+            android:name=".view.component.activity.MapListSelectionActivity"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Dialog"></activity>
+        <!-- receivers -->
+        <receiver android:name=".receiver.SmsReceiver">
+            <intent-filter android:priority="10000">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receiver.NetworkChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <!--receivers check user unlock Screen-->
+        <receiver android:name=".receiver.UnLockScreenReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        <!-- service retry load resource -->
+        <service
+            android:name=".service.DownloadResourceService"
+            android:exported="false" />
+        <service
+            android:name=".service.PlatformInfoRetryService"
+            android:exported="false" />
+    </application>
+
+</manifest>

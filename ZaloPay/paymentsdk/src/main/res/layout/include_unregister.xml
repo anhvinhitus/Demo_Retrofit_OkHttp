@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn loại ví điện tử"
+        android:visibility="gone" />
+
+    <Spinner
+        android:id="@+id/spn_unregister_WalletType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn tài khoản ZaloPay"
+        android:visibility="gone" />
+
+    <Spinner
+        android:id="@+id/spn_unregister_PhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <!--<android.support.design.widget.TextInputLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="@dimen/margin_small"-->
+    <!--android:theme="@style/TextLabelHint"-->
+    <!--android:hint="@string/zpw_string_linkacc_password_hint"-->
+    <!--android:tag="@string/zpw_string_linkacc_password_hint">-->
+
+    <!--<vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText-->
+    <!--android:id="@+id/edt_unregister_password"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:imeOptions="actionNext|flagNoExtractUi"-->
+    <!--android:inputType="textPassword"-->
+    <!--android:maxLength="@integer/maximum_character_field_vcb_password"-->
+    <!--android:background="@drawable/txt_bottom_default_style"-->
+    <!--android:maxLines="1"-->
+    <!--android:paddingTop="@dimen/zpw_edittext_padding_top"-->
+    <!--android:paddingBottom="@dimen/zpw_edittext_padding_bottom"-->
+    <!--android:paddingLeft="@dimen/margin_small"-->
+    <!--android:paddingRight="@dimen/margin_small"-->
+    <!--android:longClickable="false"-->
+    <!--android:textSize="@dimen/sdk_form_input_card_number_size" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_linkacc_margin_bottom_group_input"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_linkacc_margin_bottom_title"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginTop="@dimen/zpw_text_size_big"
+            android:text="@string/zpw_string_unreg_vcb_title"
+            android:textSize="@dimen/text_size_normal_small" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:hint="@string/zpw_string_linkacc_phone_hint"
+            android:paddingTop="@dimen/margin_small"
+            android:tag="@string/zpw_string_linkacc_phone_hint"
+            android:theme="@style/TextLabelHint">
+
+            <EditText
+                android:id="@+id/edt_unregister_PhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:background="@drawable/txt_bottom_default_style"
+                android:imeOptions="actionNext|flagNoExtractUi"
+                android:inputType="text|textVisiblePassword"
+                android:longClickable="false"
+                android:maxLength="@integer/maximum_character_field_vcb_password"
+                android:maxLines="1"
+                android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                android:paddingRight="@dimen/margin_small"
+                android:paddingTop="@dimen/zpw_edittext_padding_top"
+                android:textSize="@dimen/sdk_form_input_card_number_size" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:hint="@string/zpw_string_linkacc_password_hint"
+            android:paddingTop="@dimen/margin_small"
+            android:tag="@string/zpw_string_linkacc_password_hint"
+            android:theme="@style/TextLabelHint"
+            app:passwordToggleEnabled="false">
+
+            <vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText
+                android:id="@+id/edt_unregister_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/txt_bottom_default_style"
+                android:imeOptions="actionDone|flagNoExtractUi"
+                android:inputType="textPassword"
+                android:longClickable="false"
+                android:maxLength="@integer/maximum_character_field_vcb_password"
+                android:maxLines="1"
+                android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
+                android:paddingLeft="@dimen/margin_small"
+                android:paddingRight="@dimen/margin_small"
+                android:paddingTop="@dimen/zpw_edittext_padding_top"
+                android:textSize="@dimen/sdk_form_input_card_number_size" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:id="@+id/edt_login_captcha_textInputLayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/white"-->
+        <!--android:hint="@string/zpw_string_linkacc_password_hint"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingTop="@dimen/padding_small"-->
+        <!--android:tag="@string/zpw_string_linkacc_password_hint"-->
+        <!--android:theme="@style/TextLabelHint">-->
+
+        <!--<vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText-->
+        <!--android:id="@+id/edt_unregister_password"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@drawable/txt_bottom_default_style"-->
+        <!--android:imeOptions="actionDone|flagNoExtractUi"-->
+        <!--android:inputType="textPassword"-->
+        <!--android:longClickable="false"-->
+        <!--android:maxLength="@integer/maximum_character_field_vcb_password"-->
+        <!--android:maxLines="1"-->
+        <!--android:paddingBottom="@dimen/zpw_edittext_padding_bottom"-->
+        <!--android:paddingLeft="@dimen/margin_small"-->
+        <!--android:paddingRight="@dimen/margin_small"-->
+        <!--android:paddingTop="@dimen/zpw_edittext_padding_top"-->
+        <!--android:textSize="@dimen/sdk_form_input_card_number_size" />-->
+        <!--</android.support.design.widget.TextInputLayout>-->
+
+    </LinearLayout>
+
+
+</LinearLayout>
