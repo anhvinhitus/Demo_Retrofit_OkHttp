@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -200,6 +201,9 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         @Override
         public void onNext(List<BankCard> bankCards) {
             /*ArrayList<BankCard> tmp = new ArrayList<>();
+            BankCard vtbCard = new BankCard("Nguyen Van V", "970415", "3538", ECardType.PVTB.toString());
+            vtbCard.type = vtbCard.bankcode;
+            tmp.add(vtbCard);
             BankCard vcbCard = new BankCard("Nguyen Van A", "686868", "1231", ECardType.PVCB.toString());
             vcbCard.type = vcbCard.bankcode;
             tmp.add(vcbCard);

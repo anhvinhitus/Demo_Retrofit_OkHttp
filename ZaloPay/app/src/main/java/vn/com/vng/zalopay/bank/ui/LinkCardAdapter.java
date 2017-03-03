@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.bank.ui;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
@@ -18,9 +19,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
+import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.domain.model.BankCard;
 
 /**
@@ -146,14 +149,16 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
         }
     }
 
-    private void setBankIcon(ImageView imgLogo, int bankIcon) {
+    private void setBankIcon(ImageView imgLogo, @StringRes int bankIcon) {
         if (imgLogo == null) {
             return;
         }
         if (bankIcon == 0) {
             imgLogo.setImageDrawable(null);
         } else {
-            imgLogo.setImageResource(bankIcon);
+            String iconName = getContext().getString(bankIcon);
+            imgLogo.setImageBitmap(ResourceHelper
+                    .getBitmap(getContext(), BuildConfig.ZALOPAY_APP_ID, iconName));
         }
     }
 

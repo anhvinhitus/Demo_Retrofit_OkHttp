@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.bank.ui;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.bank.models.BankAccountStyle;
+import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -144,14 +147,16 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         }
     }
 
-    private void setBankIcon(ImageView imgLogo, int bankIcon) {
+    private void setBankIcon(ImageView imgLogo, @StringRes int bankIcon) {
         if (imgLogo == null) {
             return;
         }
         if (bankIcon == 0) {
             imgLogo.setImageDrawable(null);
         } else {
-            imgLogo.setImageResource(bankIcon);
+            String fileName = getContext().getString(bankIcon);
+            imgLogo.setImageBitmap(ResourceHelper
+                    .getBitmap(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName));
         }
     }
 
