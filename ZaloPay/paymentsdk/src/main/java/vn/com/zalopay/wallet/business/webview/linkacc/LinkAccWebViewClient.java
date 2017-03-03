@@ -206,13 +206,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
         Log.e("Error", "++++ Current error SSL on page: " + mStartedtUrl);
-
-        for (DBankScript bankScript : mBankScripts) {
-            if (bankScript.eventID == IGNORE_EVENT_ID_FOR_HTTPS && mStartedtUrl.matches(bankScript.url)) {
-                handler.proceed(); // Ignore SSL certificate errors
-                return;
-            }
-        }
+        handler.proceed(); // Ignore SSL certificate errors
     }
 
     @Override
