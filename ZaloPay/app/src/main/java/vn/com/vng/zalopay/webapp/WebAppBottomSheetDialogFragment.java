@@ -93,14 +93,10 @@ public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment i
     }
 
     private void setIntroText(View view) {
-        try {
-            String description = String.format(getString(R.string.webapp_intro_bottomsheet),
-                    Strings.getDomainName(mCurrentUrl));
-            TextView introText = (TextView) view.findViewById(R.id.tv_intro);
-            introText.setText(description);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        String description = String.format(getString(R.string.webapp_intro_bottomsheet),
+                Strings.getDomainName(mCurrentUrl));
+        TextView introText = (TextView) view.findViewById(R.id.tv_intro);
+        introText.setText(description);
     }
 
     private void initRecyclerView(View view) {

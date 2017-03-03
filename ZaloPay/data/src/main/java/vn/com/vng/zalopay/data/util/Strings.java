@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.util;
 
+import com.google.common.net.InternetDomainName;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.Normalizer;
@@ -87,12 +89,19 @@ public final class Strings {
         return output;
     }
 
-    public static String getDomainName(String url) throws URISyntaxException {
-        URI uri = new URI(url);
-        String domain = uri.getHost();
-        String pattern = ".*\\.(?=.*\\.)";
-        if(domain != null) {
-            return domain.replaceAll(pattern, "");
+    public static String getDomainName(String url) {
+        try {
+            URI uri = new URI(url);
+            String domain = uri.getHost();
+            if(domain != null) {
+                return InternetDomainName.from(domain).topPrivateDomain().toString();
+            }
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return "";
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            return "";
         }
 
         return "";
