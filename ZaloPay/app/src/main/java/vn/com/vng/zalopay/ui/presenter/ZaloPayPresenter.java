@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.content.Context;
+import android.view.View;
 
 import com.zalopay.apploader.internal.ModuleName;
 
@@ -373,6 +374,12 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             }
         }
         return mNewListApp;
+    }
+    public int getHeightViewBottomView(View pTopView, int pNumberItemView, int pNumberApp)
+    {
+        double  heightItem = pTopView.getHeight()/2;
+        int     numberRow = (int) Math.ceil((pNumberItemView / (double)pNumberApp));
+        return (int) (heightItem * numberRow);
     }
 
 }

@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -126,7 +127,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
         listView.setHasFixedSize(true);
         listView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
-        listView.setNestedScrollingEnabled(false);
         listView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
         listView.setAdapter(mAdapter);
         listView.setFocusable(false);
@@ -134,7 +134,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
         listViewBottom.setHasFixedSize(true);
         listViewBottom.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
-        listViewBottom.setNestedScrollingEnabled(false);
         listViewBottom.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
         listViewBottom.setAdapter(mAdapterBottomApp);
         listViewBottom.setFocusable(false);
@@ -281,7 +280,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         }
         mAdapter.setData(presenter.getTopAndBottomApp(list,true));
         if(list.size() > presenter.mNumberTopApp) {
-            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list, false));
+            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list,false));
+            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list,false).size() ,SPAN_COUNT_APPLICATION));
         }
     }
 
