@@ -2,6 +2,9 @@ package vn.com.vng.zalopay.webview.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -10,14 +13,25 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.IconFont;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import javax.inject.Inject;
+
 import butterknife.BindView;
+import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.event.RefreshWebEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.vng.zalopay.webbottomsheetdialog.WebBottomSheetDialogFragment;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -36,6 +50,9 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
+
+    @Inject
+    EventBus mEventBus;
 
     public static WebViewFragment newInstance(Bundle bundle) {
         WebViewFragment fragment = new WebViewFragment();
@@ -232,6 +249,10 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
             mWebViewProcessor.onResume();
         }
 
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
+
     }
 
     @Override
@@ -239,6 +260,7 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onPause();
         }
+        mEventBus.unregister(this);
         super.onPause();
     }
 
@@ -266,7 +288,24 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         }
     }
 
-    protected void refreshWeb() {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.webapp_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+        MenuItem menuItem = menu.findItem(R.id.action_settings);
+        View view = menuItem.getActionView();
+        IconFont mIcon = (IconFont) view.findViewById(R.id.imgSettings);
+        mIcon.setIcon(R.string.webapp_3point_android);
+        view.setOnClickListener(new DebouncingOnClickListener() {
+            @Override
+            public void doClick(View v) {
+                showBottomSheetDialog();
+            }
+        });
+    }
+
+    public void refreshWeb() {
         Timber.d("Request to reload web view");
         hideError();
         mWebViewProcessor.refreshWeb(getActivity());
@@ -294,5 +333,18 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         if (getActivity() instanceof WebViewActivity) {
             ((WebViewActivity) getActivity()).setTitleAndLogo(title, url);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshWeb(RefreshWebEvent event) {
+        refreshWeb();
+    }
+
+    private void showBottomSheetDialog() {
+        final WebBottomSheetDialogFragment dialog = WebBottomSheetDialogFragment.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putString("currenturl", mWebViewProcessor.getCurrentUrl());
+        dialog.setArguments(bundle);
+        dialog.show(getChildFragmentManager(), "bottomsheet");
     }
 }
