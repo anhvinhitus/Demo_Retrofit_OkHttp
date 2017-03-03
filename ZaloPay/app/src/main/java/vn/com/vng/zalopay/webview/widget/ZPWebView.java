@@ -24,7 +24,7 @@ import vn.com.vng.zalopay.data.util.Lists;
 
 public class ZPWebView extends WebView {
     private List<String> mHosts;
-    private Map<String, String> mCookiesMap = new HashMap<>();
+    private Map<String, String> mCookiesMap;
 
     public ZPWebView(Context context) {
         super(context);
@@ -73,6 +73,7 @@ public class ZPWebView extends WebView {
             }
         });
         mHosts = new ArrayList<>();
+        mCookiesMap = new HashMap<>();
     }
 
     public void runScript(String scriptContent, ValueCallback<String> resultCallback) {
@@ -109,6 +110,7 @@ public class ZPWebView extends WebView {
             }
             CookieManager.getInstance().setCookie(entry.getKey(), entry.getValue());
         }
+        mCookiesMap.clear();
     }
 
     @SuppressWarnings("deprecation")
@@ -160,7 +162,7 @@ public class ZPWebView extends WebView {
         }
         Uri uri = Uri.parse(url);
         String host = uri.getHost();
-        if (TextUtils.isEmpty(host) || "null".equals(host)) {
+        if (TextUtils.isEmpty(host) || "null".equals(host) || mHosts.contains(host)) {
             return;
         }
         Timber.d("addHost[%s]", host);
