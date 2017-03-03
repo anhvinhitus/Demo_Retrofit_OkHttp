@@ -13,15 +13,28 @@ import com.zalopay.ui.widget.iconfont.IconFontHelper;
 import com.zalopay.ui.widget.iconfont.IconFontInfo;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.R;
+
+import com.zalopay.ui.widget.R;
 
 /**
  * Created by khattn on 3/2/17.
- *
  */
 
 public class CompoundIconFont extends TextView {
+
     IconFontDrawable mIconFontDrawable;
+    final int[] mLeftIcon = {R.styleable.CompoundIconFont_iconLeftName,
+            R.styleable.CompoundIconFont_iconLeftSize,
+            R.styleable.CompoundIconFont_iconLeftColor};
+    final int[] mRightIcon = {R.styleable.CompoundIconFont_iconRightName,
+            R.styleable.CompoundIconFont_iconRightSize,
+            R.styleable.CompoundIconFont_iconRightColor};
+    final int[] mTopIcon = {R.styleable.CompoundIconFont_iconTopName,
+            R.styleable.CompoundIconFont_iconTopSize,
+            R.styleable.CompoundIconFont_iconTopColor};
+    final int[] mBottomIcon = {R.styleable.CompoundIconFont_iconBottomName,
+            R.styleable.CompoundIconFont_iconBottomSize,
+            R.styleable.CompoundIconFont_iconBottomColor};
 
     public CompoundIconFont(Context context) {
         this(context, null);
@@ -38,20 +51,42 @@ public class CompoundIconFont extends TextView {
         }
 
         mIconFontDrawable = new IconFontDrawable(context);
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, com.zalopay.ui.widget.R.styleable.IconFont);
+
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CompoundIconFont);
+        Drawable[] drawables = getCompoundDrawables();
 
         if (typedArray == null) {
             return;
         }
-        try {
-            String iconName = typedArray.getString(com.zalopay.ui.widget.R.styleable.IconFont_iconName);
-            mIconFontDrawable.setIcon(iconName);
-        } catch (RuntimeException e) {
-            Timber.d(e, "set font and icon name throw RuntimeException");
+
+        if (initIconName(typedArray, mLeftIcon[0])) {
+
+            initIcon(typedArray, mLeftIcon[1], mLeftIcon[2], drawables);
+            setCompoundDrawablesWithIntrinsicBounds(mIconFontDrawable, drawables[1], drawables[2], drawables[3]);
+        } else if (initIconName(typedArray, mRightIcon[0])) {
+
+            initIcon(typedArray, mRightIcon[1], mRightIcon[2], drawables);
+            setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], mIconFontDrawable, drawables[3]);
+        } else if (initIconName(typedArray, mTopIcon[0])) {
+
+            initIcon(typedArray, mTopIcon[1], mTopIcon[2], drawables);
+            setCompoundDrawablesWithIntrinsicBounds(drawables[0], mIconFontDrawable, drawables[2], drawables[3]);
+        } else if (initIconName(typedArray, mBottomIcon[0])) {
+
+            initIcon(typedArray, mBottomIcon[1], mBottomIcon[2], drawables);
+            setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], drawables[2], mIconFontDrawable);
         }
 
         try {
-            int iconSize = typedArray.getDimensionPixelSize(com.zalopay.ui.widget.R.styleable.IconFont_iconSize, -1);
+            typedArray.recycle();
+        } catch (RuntimeException e) {
+            Timber.d(e, "recycle typedArray throw RuntimeException");
+        }
+    }
+
+    private void initIcon(TypedArray typedArray, int size, int color, Drawable[] drawables) {
+        try {
+            int iconSize = typedArray.getDimensionPixelSize(size, -1);
             if (iconSize >= 0) {
                 mIconFontDrawable.setPxSize(iconSize);
             }
@@ -62,7 +97,7 @@ public class CompoundIconFont extends TextView {
         }
 
         try {
-            int iconColor = typedArray.getResourceId(com.zalopay.ui.widget.R.styleable.IconFont_iconColor, -1);
+            int iconColor = typedArray.getResourceId(color, -1);
             if (iconColor >= 0) {
                 mIconFontDrawable.setResourcesColor(iconColor);
             }
@@ -71,37 +106,20 @@ public class CompoundIconFont extends TextView {
         } catch (RuntimeException e) {
             Timber.d(e, "get icon color throw RuntimeException");
         }
+    }
 
+    private boolean initIconName(TypedArray typedArray, int index) {
         try {
-            int iconLocation = typedArray.getResourceId(com.zalopay.ui.widget.R.styleable.IconFont_iconLocation, -1);
-            Drawable[] drawables = getCompoundDrawables();
-            if (iconLocation >= 0) {
-                switch (iconLocation) {
-                    case R.string.left:
-                        setCompoundDrawablesWithIntrinsicBounds(mIconFontDrawable, drawables[1], drawables[2], drawables[3]);
-                        break;
-                    case R.string.top:
-                        setCompoundDrawablesWithIntrinsicBounds(drawables[0], mIconFontDrawable, drawables[2], drawables[3]);
-                        break;
-                    case R.string.right:
-                        setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], mIconFontDrawable, drawables[3]);
-                        break;
-                    case R.string.bottom:
-                        setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], drawables[2], mIconFontDrawable);
-                        break;
-                }
+            String iconName = typedArray.getString(index);
+            if (iconName != null) {
+                mIconFontDrawable.setIcon(iconName);
+                return true;
             }
-        } catch (UnsupportedOperationException e) {
-            Timber.d(e, "get icon color throw UnsupportedOperationException");
         } catch (RuntimeException e) {
-            Timber.d(e, "get icon color throw RuntimeException");
+            Timber.d(e, "set font and icon name throw RuntimeException");
         }
 
-        try {
-            typedArray.recycle();
-        } catch (RuntimeException e) {
-            Timber.d(e, "recycle typedArray throw RuntimeException");
-        }
+        return false;
     }
 
     public void setIconColor(int color) {

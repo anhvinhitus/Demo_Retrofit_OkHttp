@@ -108,10 +108,9 @@
             android:paddingRight="@dimen/spacing.medium"
             android:paddingTop="@dimen/app_padding"
             android:text="@string/txt_deposit"
-            app:iconColor="@color/menu_font_ic_green"
-            app:iconLocation="@string/left"
-            app:iconName="@string/notify_1_receivemoney"
-            app:iconSize="@dimen/font_size_balance_manager_deposit" />
+            app:iconLeftColor="@color/menu_font_ic_green"
+            app:iconLeftName="@string/notify_1_receivemoney"
+            app:iconLeftSize="@dimen/font_size_balance_manager_deposit" />
 
         <View
             android:id="@+id/viewSeparate"
@@ -134,10 +133,9 @@
             android:paddingRight="@dimen/spacing.medium"
             android:paddingTop="@dimen/app_padding"
             android:text="@string/txt_withdraw"
-            app:iconColor="@color/menu_font_ic_yellow"
-            app:iconLocation="@string/left"
-            app:iconName="@string/notify_1_withdraw"
-            app:iconSize="@dimen/font_size_balance_manager_deposit" />
+            app:iconLeftColor="@color/menu_font_ic_yellow"
+            app:iconLeftName="@string/notify_1_withdraw"
+            app:iconLeftSize="@dimen/font_size_balance_manager_deposit" />
 
         <View
             android:layout_width="match_parent"
