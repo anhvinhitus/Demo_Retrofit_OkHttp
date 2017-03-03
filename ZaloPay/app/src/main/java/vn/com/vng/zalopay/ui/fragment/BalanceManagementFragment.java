@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BalanceManagementPresenter;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
+import vn.com.vng.zalopay.utils.CompoundIconFont;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -46,18 +47,18 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     @BindView(R.id.tvAccountName)
     TextView tvAccountName;
 
-    @BindView(R.id.layoutDeposit)
-    View layoutDeposit;
+    @BindView(R.id.tv_deposit)
+    CompoundIconFont tvDeposit;
 
     @BindView(R.id.viewSeparate)
     View viewSeparate;
 
-    @OnClick(R.id.layoutDeposit)
+    @OnClick(R.id.tv_deposit)
     public void onClickDeposit() {
         navigator.startDepositActivity(getContext());
     }
 
-    @OnClick(R.id.layoutWithdraw)
+    @OnClick(R.id.tv_withdraw)
     public void onClickWithdraw() {
         mPresenter.startWithdrawActivity();
     }
@@ -116,10 +117,10 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
         try {
             boolean isEnableDeposit = CShareDataWrapper.isEnableDeposite();
             if (isEnableDeposit) {
-                layoutDeposit.setVisibility(View.VISIBLE);
+                tvDeposit.setVisibility(View.VISIBLE);
                 viewSeparate.setVisibility(View.VISIBLE);
             } else {
-                layoutDeposit.setVisibility(View.GONE);
+                tvDeposit.setVisibility(View.GONE);
                 viewSeparate.setVisibility(View.GONE);
             }
         } catch (Exception e) {
