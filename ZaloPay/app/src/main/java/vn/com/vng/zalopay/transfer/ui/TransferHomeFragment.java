@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,8 +19,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -108,11 +113,40 @@ public class TransferHomeFragment extends BaseFragment implements
         mList.setVisibility(View.GONE);
         layoutIntroduction.setVisibility(View.VISIBLE);
 
+        loadAnimationFromResource();
+    }
 
-        imgIntroduction.setBackgroundResource(R.drawable.anim_transfer);
-        AnimationDrawable animationDrawable = (AnimationDrawable) imgIntroduction.getBackground();
+    private void loadAnimationFromResource() {
+        AnimationDrawable animationDrawable = null;
+        try {
+            Drawable frame1 = Drawable.createFromPath(ResourceHelper.getResource(getContext(),
+                    BuildConfig.ZALOPAY_APP_ID, "app_ic_chuyentien_ani_1.png"));
+            Drawable frame2 = Drawable.createFromPath(ResourceHelper.getResource(getContext(),
+                    BuildConfig.ZALOPAY_APP_ID, "app_ic_chuyentien_ani_2.png"));
+            Drawable frame3 = Drawable.createFromPath(ResourceHelper.getResource(getContext(),
+                    BuildConfig.ZALOPAY_APP_ID, "app_ic_chuyentien_ani_3.png"));
+            Drawable frame4 = Drawable.createFromPath(ResourceHelper.getResource(getContext(),
+                    BuildConfig.ZALOPAY_APP_ID, "app_ic_chuyentien_ani_4.png"));
+
+            if (frame1 == null || frame2 == null || frame3 == null || frame4 == null) {
+                return;
+            }
+            animationDrawable = new AnimationDrawable();
+            animationDrawable.addFrame(frame1, 1000);
+            animationDrawable.addFrame(frame2, 100);
+            animationDrawable.addFrame(frame3, 100);
+            animationDrawable.addFrame(frame4, 2000);
+        } catch (Exception e) {
+            Timber.e(e, "Load animation from resource throw exception.");
+        }
+
+        if (animationDrawable == null) {
+            return;
+        }
+        animationDrawable.setOneShot(false);
+        imgIntroduction.setBackground(animationDrawable);
         animationDrawable.start();
-
+        Timber.d("Load & start animation from resource successfully.");
     }
 
     @Override

@@ -95,4 +95,6 @@ public interface Constants {
     interface QRCode {
         int RECEIVE_MONEY = 1;
     }
+
+    String FILE_PNG = ".png";
 }
