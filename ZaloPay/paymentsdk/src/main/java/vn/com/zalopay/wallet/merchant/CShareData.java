@@ -188,7 +188,15 @@ public class CShareData extends SingletonBase {
     }
 
     protected void checkStaticResource() {
-        GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+        //check static resource whether ready or not
+        try {
+            GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+        } catch (Exception e) {
+            if(checkResourceStaticListener != null)
+            {
+                checkResourceStaticListener.onCheckResourceStaticComplete(false,e != null ? e.getMessage(): null);
+            }
+        }
     }
 
     /***

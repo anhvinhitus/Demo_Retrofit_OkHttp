@@ -437,7 +437,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     @Override
     protected void actionAfterCheckAppInfoAndLoadResouce() {
         showProgress(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-         BankLoader.loadBankList(mLoadBankListListener);
+        BankLoader.loadBankList(mLoadBankListListener);
         Log.d(this,"===show Channel===actionAfterCheckAppInfoAndLoadResouce()");
 
     }
@@ -617,15 +617,13 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     private void startChannelDirect(String pChannelID) {
         try {
             Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), pChannelID);
             startActivity(intent);
 
         } catch (Exception e) {
-
             Log.e(this, e);
-
             onExit(getResources().getString(R.string.zingpaysdk_alert_context_error), true);
-
         }
     }
 
@@ -639,12 +637,10 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             showBankMaintenance(pChannel.bankcode);
             return;
         }
-
         if (!pChannel.isEnable() || !pChannel.isAllowByAmount() || !pChannel.isAllowByAmountAndFee()) {
             Log.d(this, "===onSelectedChannel===not support===");
             return;
         }
-
         goToChannel(pChannel);
     }
 

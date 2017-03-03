@@ -54,13 +54,6 @@ public class GatewayLoader extends SingletonBase {
                 mCheckResourceStatisListener.onCheckResourceStaticComplete(false, pMessage);
         }
     };
-
-    /***
-     * load gateway info listener
-     */
-    public ZPWGetGatewayInfoListener getLoadGatewayInfoListener() {
-        return mLoadGatewayInfoListener;
-    }
     private ZPWGetGatewayInfoListener mLoadGatewayInfoListener = new ZPWGetGatewayInfoListener() {
         @Override
         public void onProcessing() {
@@ -115,7 +108,6 @@ public class GatewayLoader extends SingletonBase {
             }
         }
     };
-
     public GatewayLoader() {
         super();
     }
@@ -127,76 +119,70 @@ public class GatewayLoader extends SingletonBase {
         return GatewayLoader._object;
     }
 
+    /***
+     * load gateway info listener
+     */
+    public ZPWGetGatewayInfoListener getLoadGatewayInfoListener() {
+        return mLoadGatewayInfoListener;
+    }
+
     public GatewayLoader setOnCheckResourceStaticListener(onCheckResourceStaticListener pListener) {
         mCheckResourceStatisListener = pListener;
 
         return this;
     }
 
-    public void checkStaticResource() {
+    public void checkStaticResource() throws Exception {
         //check resource whether existed or not.
-        boolean isNeedLoadPlatformInfo;
+        boolean needToReloadPlatforminfo;
         try {
-            isNeedLoadPlatformInfo = BGatewayInfo.isNeedToGetPlatformInfo();
+            needToReloadPlatforminfo = BGatewayInfo.isNeedToGetPlatformInfo();
         } catch (Exception e) {
             Log.e(this, e);
-            isNeedLoadPlatformInfo = true;
+            needToReloadPlatforminfo = true;
         }
-
-        if (isNeedLoadPlatformInfo) {
-            if (mCheckResourceStatisListener != null)
+        if (needToReloadPlatforminfo) {
+            if (mCheckResourceStatisListener != null) {
                 mCheckResourceStatisListener.onCheckResourceStaticInProgress();
-
+            }
             try {
-                Log.d(this, "===isNeedLoadPlatformInfo=TRUE ===starting retry LOAD gateway info again");
+                Log.d(this, "===need to load resource again===");
                 retryLoadGateway(false);
             } catch (Exception e) {
-                Log.d(this, e);
+                Log.e(this, e);
+                throw e;
             }
         }
-
-        if (!BGatewayInfo.isValidConfig()) {
-            Log.d(this, "===resource not valid ===starting retry");
-
-            if (mCheckResourceStatisListener != null)
+        else if (!BGatewayInfo.isValidConfig()) {
+            Log.d(this, "===resource wasnt download===reload again===");
+            if (mCheckResourceStatisListener != null) {
                 mCheckResourceStatisListener.onCheckResourceStaticInProgress();
-
+            }
             try {
                 retryLoadInfo();
             } catch (Exception e) {
                 Log.d(this, e);
-
-                if (mCheckResourceStatisListener != null)
-                    mCheckResourceStatisListener.onCheckResourceStaticComplete(false, e.getMessage());
-
+                throw e;
             }
-
-            return;
         }
         //resource existed  and need to load into memory
-        if (!ResourceManager.isInit()) {
+        else if (!ResourceManager.isInit()) {
             Log.d(this, "===resource was downloaded but not init===init resource now");
-
-            if (mCheckResourceStatisListener != null)
+            if (mCheckResourceStatisListener != null) {
                 mCheckResourceStatisListener.onCheckResourceStaticInProgress();
-
+            }
             initResource(mLoadResourceListener);
-
-            return;
         }
-
-        /***
-         * everything is ok now.
-         */
-        if (mCheckResourceStatisListener != null)
+        //everything is ok now.
+        else if (mCheckResourceStatisListener != null) {
             mCheckResourceStatisListener.onCheckResourceStaticComplete(true, null);
-
+        }
     }
 
     /***
      * in case load gateway info successful but can not donwload resource
      * then we had resource version,resource url in cache
-     * now need to retry to donwload again.
+     * now need to retry to download again.
      */
     private void retryLoadInfo() throws Exception {
         String resourceVersion = SharedPreferencesManager.getInstance().getResourceVersion();

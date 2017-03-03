@@ -305,7 +305,14 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
 
             //check static resource whether ready or not
-            GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+            try {
+                GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+            } catch (Exception e) {
+                if(checkResourceStaticListener != null)
+                {
+                    checkResourceStaticListener.onCheckResourceStaticComplete(false,e != null ? e.getMessage(): null);
+                }
+            }
         }
 
         @Override
@@ -704,7 +711,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         });
     }
 
-    protected void checkLoadMapCardAndBankAccountToFinish() {
+    protected synchronized void checkLoadMapCardAndBankAccountToFinish() {
         if (!mLoadingBankAccount && !mLoadingMapCard) {
             actionAfterCheckAppInfoAndLoadResouce();
         }
