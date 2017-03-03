@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 import com.zalopay.ui.widget.IconFont;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.util.Collections;
@@ -33,10 +36,12 @@ import vn.com.vng.webapp.framework.ZPWebViewAppProcessor;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.event.RefreshWebEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.vng.zalopay.webbottomsheetdialog.WebBottomSheetDialogFragment;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
@@ -72,6 +77,9 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
 
     @Inject
     WebAppPresenter mPresenter;
+
+    @Inject
+    EventBus mEventBus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -284,6 +292,9 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onResume();
         }
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
     }
 
     @Override
@@ -292,6 +303,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onPause();
         }
+        mEventBus.unregister(this);
         super.onPause();
     }
 
@@ -345,7 +357,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         mPresenter.onActivityResult(requestCode, resultCode, data);
     }
 
-    protected void refreshWeb() {
+    public void refreshWeb() {
         Timber.d("Request to reload web view");
         hideError();
         mWebViewProcessor.refreshWeb(getActivity());
@@ -374,8 +386,14 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         return this;
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshWeb(RefreshWebEvent event) {
+        refreshWeb();
+    }
+
     private void showBottomSheetDialog() {
-        final WebAppBottomSheetDialogFragment dialog = WebAppBottomSheetDialogFragment.newInstance();
+        final WebBottomSheetDialogFragment dialog = WebBottomSheetDialogFragment.newInstance();
         Bundle bundle = new Bundle();
         bundle.putString("currenturl", mWebViewProcessor.getCurrentUrl());
         dialog.setArguments(bundle);

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.webapp;
+package vn.com.vng.zalopay.webbottomsheetdialog;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -12,28 +12,34 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import java.net.URISyntaxException;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 
 /**
  * Created by khattn on 2/21/17.
+ *
  */
 
-public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment implements
-        WebAppBottomSheetAdapter.OnClickItemListener {
+public class WebBottomSheetDialogFragment extends BottomSheetDialogFragment implements
+        WebBottomSheetAdapter.OnClickItemListener, IWebBottomSheetView {
     private final static int COLUMN_COUNT = 5;
 
     private RecyclerView mRecyclerView;
-    private WebAppBottomSheetAdapter mAdapter;
-    private WebAppBottomSheetPresenter mPresenter;
+    private WebBottomSheetAdapter mAdapter;
     private String mCurrentUrl;
 
-    public static WebAppBottomSheetDialogFragment newInstance() {
+    @Inject
+    WebBottomSheetPresenter mPresenter;
+
+    public static WebBottomSheetDialogFragment newInstance() {
         Bundle args = new Bundle();
-        WebAppBottomSheetDialogFragment fragment = new WebAppBottomSheetDialogFragment();
+        WebBottomSheetDialogFragment fragment = new WebBottomSheetDialogFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,7 +69,6 @@ public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment i
         View contentView = View.inflate(getContext(), R.layout.bottom_sheet_webapp, null);
         dialog.setContentView(contentView);
 
-        mPresenter = new WebAppBottomSheetPresenter(getContext());
         mCurrentUrl = getArguments().getString("currenturl");
 
         initRecyclerView(contentView);
@@ -75,21 +80,22 @@ public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment i
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
         }
+
+        setupFragmentComponent();
+        mPresenter.attachView(this);
+    }
+
+    private void setupFragmentComponent() {
+        UserComponent userComponent = AndroidApplication.instance().getUserComponent();
+        if (userComponent != null) {
+            userComponent.inject(this);
+        }
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.detachView();
     }
 
     private void setIntroText(View view) {
@@ -101,7 +107,7 @@ public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment i
 
     private void initRecyclerView(View view) {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        mAdapter = new WebAppBottomSheetAdapter(getContext(), this);
+        mAdapter = new WebBottomSheetAdapter(getContext(), this);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMN_COUNT));
@@ -113,27 +119,30 @@ public class WebAppBottomSheetDialogFragment extends BottomSheetDialogFragment i
     }
 
     private void setData() {
-        List<WebAppBottomSheetItem> list = WebAppBottomSheetItemUtil.getMenuItems();
+        List<WebBottomSheetItem> list = WebBottomSheetItemUtil.getMenuItems();
         mAdapter.insertItems(list);
+    }
+
+    @Override
+    public void closeDialog() {
+        dismiss();
     }
 
     @Override
     public void onClickItem(int position) {
         int id = mAdapter.getItem(position).id;
         switch (id) {
-            case WebAppBottomSheetItemUtil.COPY_URL:
-                mPresenter.handleClickCopyURL(mCurrentUrl);
-                dismiss();
+            case WebBottomSheetItemUtil.COPY_URL:
+                mPresenter.handleClickCopyURL(getContext(), mCurrentUrl);
                 break;
-            case WebAppBottomSheetItemUtil.REFRESH:
-                ((WebAppFragment) getParentFragment()).refreshWeb();
-                dismiss();
+            case WebBottomSheetItemUtil.REFRESH:
+                mPresenter.handleClickRefreshWeb();
                 break;
-            case WebAppBottomSheetItemUtil.OPEN_IN_BROWSER:
-                mPresenter.handleClickOpenInBrowser(mCurrentUrl);
+            case WebBottomSheetItemUtil.OPEN_IN_BROWSER:
+                mPresenter.handleClickOpenInBrowser(getContext(), mCurrentUrl);
                 break;
-            case WebAppBottomSheetItemUtil.SHARE_ON_ZALO:
-                mPresenter.handleClickShareOnZalo(mCurrentUrl);
+            case WebBottomSheetItemUtil.SHARE_ON_ZALO:
+                mPresenter.handleClickShareOnZalo(getContext(), mCurrentUrl);
                 break;
         }
     }

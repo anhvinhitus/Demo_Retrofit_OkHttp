@@ -1,7 +1,6 @@
-package vn.com.vng.zalopay.webapp;
+package vn.com.vng.zalopay.webbottomsheetdialog;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +21,11 @@ import vn.com.vng.zalopay.R;
  * Created by khattn on 2/21/17.
  */
 
-public class WebAppBottomSheetAdapter extends AbsRecyclerAdapter<WebAppBottomSheetItem, WebAppBottomSheetAdapter.ViewHolder> {
+public class WebBottomSheetAdapter extends AbsRecyclerAdapter<WebBottomSheetItem, WebBottomSheetAdapter.ViewHolder> {
 
-    private WebAppBottomSheetAdapter.OnClickItemListener itemListener;
+    private WebBottomSheetAdapter.OnClickItemListener itemListener;
 
-    WebAppBottomSheetAdapter(Context context, WebAppBottomSheetAdapter.OnClickItemListener itemListener) {
+    WebBottomSheetAdapter(Context context, WebBottomSheetAdapter.OnClickItemListener itemListener) {
         super(context);
         this.itemListener = itemListener;
     }
@@ -38,14 +37,14 @@ public class WebAppBottomSheetAdapter extends AbsRecyclerAdapter<WebAppBottomShe
     }
 
     @Override
-    public WebAppBottomSheetAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new WebAppBottomSheetAdapter.ViewHolder(mInflater
+    public WebBottomSheetAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new WebBottomSheetAdapter.ViewHolder(mInflater
                 .inflate(R.layout.row_card_webapp_item, parent, false), itemListener);
     }
 
     @Override
-    public void onBindViewHolder(WebAppBottomSheetAdapter.ViewHolder holder, int position) {
-        WebAppBottomSheetItem item = getItem(position);
+    public void onBindViewHolder(WebBottomSheetAdapter.ViewHolder holder, int position) {
+        WebBottomSheetItem item = getItem(position);
         holder.bindView(item);
     }
 
@@ -55,10 +54,10 @@ public class WebAppBottomSheetAdapter extends AbsRecyclerAdapter<WebAppBottomShe
     }
 
     @Override
-    public void insertItems(List<WebAppBottomSheetItem> items) {
+    public void insertItems(List<WebBottomSheetItem> items) {
         if (items == null || items.isEmpty()) return;
         synchronized (_lock) {
-            for (WebAppBottomSheetItem item : items) {
+            for (WebBottomSheetItem item : items) {
                 insert(item);
             }
         }
@@ -96,7 +95,7 @@ public class WebAppBottomSheetAdapter extends AbsRecyclerAdapter<WebAppBottomShe
             }
         }
 
-        void bindView(WebAppBottomSheetItem item) {
+        void bindView(WebBottomSheetItem item) {
             mName.setText(getContext().getResources().getText(item.resStrId));
             if(item.iconResource != null) {
                 mIcon.setIcon(item.iconResource);

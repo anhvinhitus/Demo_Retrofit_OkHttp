@@ -1,28 +1,28 @@
-package vn.com.vng.zalopay.webapp;
+package vn.com.vng.zalopay.webbottomsheetdialog;
 
 /**
  * Created by khattn on 2/21/17.
  */
 
-public class WebAppBottomSheetItem {
+public class WebBottomSheetItem {
     public int id;
     public Integer iconResource;
     public Integer iconColor;
     public int resStrId;
     public int resImgId;
 
-    public WebAppBottomSheetItem(int id) {
+    public WebBottomSheetItem(int id) {
         this.id = id;
     }
 
-    public WebAppBottomSheetItem(int id, int title) {
+    public WebBottomSheetItem(int id, int title) {
         this.id = id;
         this.resStrId = title;
         this.iconResource = null;
         this.iconColor = null;
     }
 
-    public WebAppBottomSheetItem(int id, int title, int resImgId) {
+    public WebBottomSheetItem(int id, int title, int resImgId) {
         this.id = id;
         this.resStrId = title;
         this.resImgId = resImgId;
@@ -30,10 +30,10 @@ public class WebAppBottomSheetItem {
         this.iconColor = null;
     }
 
-    public WebAppBottomSheetItem(int id,
-                    int title,
-                    Integer iconResource,
-                    Integer iconColor) {
+    public WebBottomSheetItem(int id,
+                              int title,
+                              Integer iconResource,
+                              Integer iconColor) {
         this.id = id;
         this.resStrId = title;
         this.iconResource = iconResource;
