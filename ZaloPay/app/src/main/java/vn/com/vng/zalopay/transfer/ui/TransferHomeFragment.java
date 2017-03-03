@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -120,13 +121,13 @@ public class TransferHomeFragment extends BaseFragment implements
         AnimationDrawable animationDrawable = null;
         try {
             Drawable frame1 = Drawable.createFromPath(ResourceHelper.getResource(getContext(),
-                    BuildConfig.ZALOPAY_APP_ID, "app_ic_chuyentien_ani_1.png"));
+                    BuildConfig.ZALOPAY_APP_ID, getString(R.string.ic_chuyentien_ani_1)));
             Drawable frame2 = Drawable.createFromPath(ResourceHelper.getResource(getContext(),
-                    BuildConfig.ZALOPAY_APP_ID, "app_ic_chuyentien_ani_2.png"));
+                    BuildConfig.ZALOPAY_APP_ID, getString(R.string.ic_chuyentien_ani_2)));
             Drawable frame3 = Drawable.createFromPath(ResourceHelper.getResource(getContext(),
-                    BuildConfig.ZALOPAY_APP_ID, "app_ic_chuyentien_ani_3.png"));
+                    BuildConfig.ZALOPAY_APP_ID, getString(R.string.ic_chuyentien_ani_3)));
             Drawable frame4 = Drawable.createFromPath(ResourceHelper.getResource(getContext(),
-                    BuildConfig.ZALOPAY_APP_ID, "app_ic_chuyentien_ani_4.png"));
+                    BuildConfig.ZALOPAY_APP_ID, getString(R.string.ic_chuyentien_ani_4)));
 
             if (frame1 == null || frame2 == null || frame3 == null || frame4 == null) {
                 return;

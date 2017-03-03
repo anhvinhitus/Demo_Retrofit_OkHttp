@@ -1,0 +1,22 @@
+<resources>
+    <string name="ic_chuyentien_ani_1">app_ic_chuyentien_ani_1.png</string>
+    <string name="ic_chuyentien_ani_2">app_ic_chuyentien_ani_2.png</string>
+    <string name="ic_chuyentien_ani_3">app_ic_chuyentien_ani_3.png</string>
+    <string name="ic_chuyentien_ani_4">app_ic_chuyentien_ani_4.png</string>
+
+    <string name="ic_visa">app_ic_visa.png</string>
+    <string name="ic_jcb">app_ic_jcb.png</string>
+    <string name="ic_mastercard">app_ic_mastercard.png</string>
+    <string name="ic_sacombank">app_ic_sacombank.png</string>
+    <string name="ic_agribank">app_ic_agribank.png</string>
+    <string name="ic_bidv">app_ic_bidv.png</string>
+    <string name="ic_eximbank">app_ic_eximbank.png</string>
+    <string name="ic_sacombank_large">app_ic_sacombank_large.png</string>
+    <string name="ic_tcpbank">app_ic_tcpbank.png</string>
+    <string name="ic_vietcombank">app_ic_vietcombank.png</string>
+    <string name="ic_vietcombank_large">app_ic_vietcombank_large.png</string>
+    <string name="ic_vietinbank">app_ic_vietinbank.png</string>
+    <string name="ic_vietinbank_large">app_ic_vietinbank_large.png</string>
+    <string name="ic_sgcb">app_ic_sgcb.png</string>
+
+</resources>
