@@ -23,20 +23,20 @@
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".view.component.activity.PaymentGatewayActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.component.activity.BankListActivity"
             android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Dialog"></activity>
+            android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".view.component.activity.MapListSelectionActivity"
             android:launchMode="singleTop"
-            android:theme="@android:style/Theme.Dialog"></activity>
+            android:theme="@android:style/Theme.Dialog" />
         <!-- receivers -->
         <receiver android:name=".receiver.SmsReceiver">
             <intent-filter android:priority="10000">

@@ -1,4 +1,5 @@
-include ':app', ':paymentsdkapptest'
+include ':app'
+include ':paymentsdkapptest'
 include ':domain'
 include ':data'
 include ':ui.widget'
@@ -7,5 +8,5 @@ include ':app-loader'
 include ':zalopay.debug'
 include ':daogenerator'
 include ':zalopay.feedback'
-include 'paymentsdk'
+include ':paymentsdk'
 
