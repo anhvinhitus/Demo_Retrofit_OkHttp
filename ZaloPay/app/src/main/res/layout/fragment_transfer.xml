@@ -49,15 +49,10 @@
                     tools:text="0987654321" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate_stroke"
-                android:layout_marginTop="@dimen/spacing.medium.t"
-                android:background="@color/separate" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.medium.t"
                 android:background="@color/white"
                 android:orientation="vertical">
 
