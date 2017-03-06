@@ -205,14 +205,14 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     }
 
     private void registerEvent() {
-        if (!mEventBus.isRegistered(this)) {
+       /* if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
-        }
+        }*/
         BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
     }
 
     private void unregisterEvent() {
-        mEventBus.unregister(this);
+        //   mEventBus.unregister(this);
         BusComponent.unregister(this);
     }
 
