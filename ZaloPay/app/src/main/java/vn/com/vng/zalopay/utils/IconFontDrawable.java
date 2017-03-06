@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.zalopay.ui.widget.iconfont.IconFontHelper;
 import com.zalopay.ui.widget.iconfont.IconFontInfo;
@@ -22,7 +23,6 @@ import timber.log.Timber;
 
 /**
  * Created by khattn on 2/24/17.
- *
  */
 
 public class IconFontDrawable extends Drawable {
@@ -31,7 +31,6 @@ public class IconFontDrawable extends Drawable {
     private String mText;
     private TextPaint mPaint;
     private int mSize = -1;
-    private int mAlpha = 255;
 
     public IconFontDrawable(Context context) {
         this.mContext = context;
@@ -56,9 +55,10 @@ public class IconFontDrawable extends Drawable {
 
         if (!TextUtils.isEmpty(fontAsset)) {
             setTypefaceFromAsset(fontAsset);
+        } else {
+            setTypefaceWithoutStyle(IconFontHelper.getInstance().getCurrentTypeface());
         }
     }
-
 
     public IconFontDrawable setResourcesSize(int dimenRes) {
         return setPxSize(mContext.getResources().getDimensionPixelSize(dimenRes));
@@ -99,9 +99,9 @@ public class IconFontDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        mPaint.setTextSize(getBounds().height());
-        Rect textBounds = new Rect();
-        if(mText != null) {
+        if (!TextUtils.isEmpty(mText)) {
+            mPaint.setTextSize(getBounds().height());
+            Rect textBounds = new Rect();
             mPaint.getTextBounds(mText, 0, 1, textBounds);
             float textBottom = (getBounds().height() - textBounds.height()) / 2f + textBounds.height() - textBounds.bottom;
             canvas.drawText(mText, getBounds().width() / 2f, textBottom, mPaint);
@@ -109,39 +109,13 @@ public class IconFontDrawable extends Drawable {
     }
 
     @Override
-    public boolean isStateful() {
-        return true;
-    }
-
-    @Override
-    public boolean setState(int[] stateSet) {
-        int oldValue = mPaint.getAlpha();
-        int newValue = isEnabled(stateSet) ? mAlpha : mAlpha / 2;
-        mPaint.setAlpha(newValue);
-        return oldValue != newValue;
-    }
-
-    public static boolean isEnabled(int[] stateSet) {
-        for (int state : stateSet)
-            if (state == android.R.attr.state_enabled)
-                return true;
-        return false;
-    }
-
-    @Override
     public void setAlpha(int alpha) {
-        this.mAlpha = alpha;
         mPaint.setAlpha(alpha);
     }
 
     @Override
     public void setColorFilter(ColorFilter cf) {
         mPaint.setColorFilter(cf);
-    }
-
-    @Override
-    public void clearColorFilter() {
-        mPaint.setColorFilter(null);
     }
 
     @Override

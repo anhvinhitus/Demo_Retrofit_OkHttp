@@ -76,37 +76,27 @@ public class CompoundIconFont extends TextView {
     }
 
     private void initIcon(IconFontDrawable icon, TypedArray typedArray, int name, int size, int color) {
-        try {
-            String iconName = typedArray.getString(name);
-            if (iconName != null) {
-                icon.setIcon(iconName);
-            }
-        } catch (RuntimeException e) {
-            Timber.d(e, "set font and icon name throw RuntimeException");
+        if(icon == null) {
+            return;
         }
 
-        try {
-            int iconSize = typedArray.getDimensionPixelSize(size, -1);
-            if (iconSize >= 0) {
-                icon.setPxSize(iconSize);
-            }
-        } catch (UnsupportedOperationException e) {
-            Timber.d(e, "get icon size throw UnsupportedOperationException");
-        } catch (RuntimeException e) {
-            Timber.d(e, "get icon size throw RuntimeException");
+        String iconName = typedArray.getString(name);
+        int iconSize = typedArray.getDimensionPixelSize(size, -1);
+        int iconColor = typedArray.getResourceId(color, -1);
+
+        if (iconName != null) {
+            icon.setIcon(iconName);
         }
 
-        try {
-            int iconColor = typedArray.getResourceId(color, -1);
-            if (iconColor >= 0) {
-                icon.setResourcesColor(iconColor);
-            }
-        } catch (UnsupportedOperationException e) {
-            Timber.d(e, "get icon color throw UnsupportedOperationException");
-        } catch (RuntimeException e) {
-            Timber.d(e, "get icon color throw RuntimeException");
+        if (iconSize >= 0) {
+            icon.setPxSize(iconSize);
+        }
+
+        if (iconColor >= 0) {
+            icon.setResourcesColor(iconColor);
         }
     }
+
 
     public IconFontDrawable getLeftIcon() {
         return mLeftIcon;
