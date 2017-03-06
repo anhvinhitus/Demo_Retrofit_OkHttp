@@ -181,7 +181,7 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
         String s = getString();
         setCompoundDrawablePadding(10);
 
-        if (s.toString().length() > 0) {
+        if (s.length() > 0) {
             if (drawableRightDelete == null) {
                 drawableRightDelete = getDrawable(RS.drawable.ic_delete);
 

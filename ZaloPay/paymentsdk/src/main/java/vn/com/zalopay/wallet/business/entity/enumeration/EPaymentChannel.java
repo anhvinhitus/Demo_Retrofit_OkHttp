@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.business.entity.enumeration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public enum EPaymentChannel {
@@ -31,9 +32,7 @@ public enum EPaymentChannel {
 
     public static List<EPaymentChannel> all() {
         List<EPaymentChannel> all = new ArrayList<EPaymentChannel>();
-        for (EPaymentChannel type : EPaymentChannel.values()) {
-            all.add(type);
-        }
+        Collections.addAll(all, EPaymentChannel.values());
         return all;
     }
 

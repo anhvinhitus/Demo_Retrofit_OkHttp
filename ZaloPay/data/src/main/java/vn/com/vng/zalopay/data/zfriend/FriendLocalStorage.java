@@ -285,14 +285,13 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     }
 
     private String orderBy() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("ORDER BY ");
-        builder.append("T0.");
-        builder.append(ZaloPayProfileGDDao.Properties.Status.columnName);
-        builder.append(" DESC");
-        builder.append(", ");
-        builder.append(ColumnIndex.ALIAS_FULL_TEXT_SEARCH);
-        return builder.toString();
+        String builder = "ORDER BY " +
+                "T0." +
+                ZaloPayProfileGDDao.Properties.Status.columnName +
+                " DESC" +
+                ", " +
+                ColumnIndex.ALIAS_FULL_TEXT_SEARCH;
+        return builder;
     }
 
     public String searchUserZalo(String key) {

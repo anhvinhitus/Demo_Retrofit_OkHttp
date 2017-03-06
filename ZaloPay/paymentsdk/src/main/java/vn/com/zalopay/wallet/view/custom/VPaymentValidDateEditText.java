@@ -274,7 +274,7 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
         String s = getString();
         setCompoundDrawablePadding(20);
 
-        if (s.toString().length() > 0) {
+        if (s.length() > 0) {
             if (drawableRight == null) {
                 drawableRight = getDrawable(RS.drawable.ic_delete);
 

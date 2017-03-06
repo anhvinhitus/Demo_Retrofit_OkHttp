@@ -106,11 +106,11 @@ public class CreditCardUtils {
         // String expiryString = dateYear.replace(SLASH_SEPERATOR, "");
 
         String text;
-        if (dateYear.length() > 3 && dateYear.toString().contains(String.valueOf(SPACE_SEPERATOR))) {
+        if (dateYear.length() > 3 && dateYear.contains(String.valueOf(SPACE_SEPERATOR))) {
             String mm = dateYear.substring(0, 2);
             String yy;
             text = mm;
-            if (dateYear.toString().contains(String.valueOf(SPACE_SEPERATOR)) && dateYear.length() >= 5) {
+            if (dateYear.contains(String.valueOf(SPACE_SEPERATOR)) && dateYear.length() >= 5) {
                 String expiryString = dateYear.replace(SLASH_SEPERATOR, "");
                 yy = expiryString.substring(2, 4);
                 try {

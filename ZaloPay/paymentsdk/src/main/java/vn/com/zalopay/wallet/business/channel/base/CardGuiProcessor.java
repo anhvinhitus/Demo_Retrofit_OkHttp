@@ -1898,7 +1898,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
             }
 
             mLastCharacterCardName = newString;
-            lastValue = pCardName.toString();
+            lastValue = pCardName;
 
         } catch (Exception e) {
             Log.e(this, e);

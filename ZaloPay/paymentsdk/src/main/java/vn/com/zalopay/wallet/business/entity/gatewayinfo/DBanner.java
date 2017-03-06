@@ -16,27 +16,25 @@ public class DBanner {
         if (object instanceof DBanner) {
             DBanner other = (DBanner) object;
 
-            StringBuilder builderMe = new StringBuilder();
-            builderMe.append(appid);
-            builderMe.append(bannertype);
-            builderMe.append(platformcode);
-            builderMe.append(function);
-            builderMe.append(dscreentypecode);
-            builderMe.append(logourl);
-            builderMe.append(webviewurl);
-            builderMe.append(orderindex);
+            String builderMe = String.valueOf(appid) +
+                    bannertype +
+                    platformcode +
+                    function +
+                    dscreentypecode +
+                    logourl +
+                    webviewurl +
+                    orderindex;
 
-            StringBuilder builderOther = new StringBuilder();
-            builderOther.append(other.appid);
-            builderOther.append(other.bannertype);
-            builderOther.append(other.platformcode);
-            builderOther.append(other.function);
-            builderOther.append(other.dscreentypecode);
-            builderOther.append(other.logourl);
-            builderOther.append(other.webviewurl);
-            builderOther.append(other.orderindex);
+            String builderOther = String.valueOf(other.appid) +
+                    other.bannertype +
+                    other.platformcode +
+                    other.function +
+                    other.dscreentypecode +
+                    other.logourl +
+                    other.webviewurl +
+                    other.orderindex;
 
-            sameSame = (builderMe.toString().equals(builderOther.toString()));
+            sameSame = (builderMe.equals(builderOther));
         }
         return sameSame;
     }

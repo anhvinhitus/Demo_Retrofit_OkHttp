@@ -534,13 +534,12 @@ public class MainActivity extends ActionBarActivity implements Callback {
      * @return String hmac
      */
     private static String generateHMAC(ZPWPaymentInfo pPaymentInfo, int pSecurityMode, String pSecretKey) {
-        StringBuilder stringBuilder = new StringBuilder(256);
-        stringBuilder.append(pPaymentInfo.appID).append('|').append(pPaymentInfo.appTransID).append('|')
-                .append(pPaymentInfo.appUser).append('|').append(pPaymentInfo.amount).append('|')
-                .append(pPaymentInfo.appTime).append('|').append(pPaymentInfo.embedData).append('|')
-                .append(pPaymentInfo.itemName);
+        String stringBuilder = String.valueOf(pPaymentInfo.appID) + '|' + pPaymentInfo.appTransID + '|' +
+                pPaymentInfo.appUser + '|' + pPaymentInfo.amount + '|' +
+                pPaymentInfo.appTime + '|' + pPaymentInfo.embedData + '|' +
+                pPaymentInfo.itemName;
 
-        String hmac = HMACUtil.HMacHexStringEncode(HMACUtil.HMACS.get(pSecurityMode), pSecretKey, stringBuilder.toString());
+        String hmac = HMACUtil.HMacHexStringEncode(HMACUtil.HMACS.get(pSecurityMode), pSecretKey, stringBuilder);
 
         return hmac;
     }

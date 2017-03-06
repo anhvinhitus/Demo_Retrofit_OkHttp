@@ -4,6 +4,7 @@ import vn.com.vng.zalopay.domain.model.Order;
 
 /**
  * Created by longlv on 13/07/2016.
+ * *
  */
 public class BundleOrder extends Order {
 
@@ -22,9 +23,7 @@ public class BundleOrder extends Order {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder(super.toString());
-        stringBuilder.append(bundleId);
-        return stringBuilder.toString();
+        return super.toString() + bundleId;
     }
 
     @Override

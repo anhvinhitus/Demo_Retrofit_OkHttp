@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.ColorRes;
-import android.support.annotation.Dimension;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.Spannable;
@@ -62,8 +61,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -246,6 +243,7 @@ public class AndroidUtils {
 
     /**
      * Get color string from color resource.
+     *
      * @return color string (format #f0f0f0)
      */
     public static String getColorFromResource(@ColorRes int colorResource) {
@@ -1056,34 +1054,29 @@ public class AndroidUtils {
      * @param trackingContent detail use to analytic
      */
     private static String getGooglePlayCampaign(String campaign, String trackingContent, String appName) {
-        StringBuilder strCampaign = new StringBuilder();
-        strCampaign.append("&referrer=utm_source%3D");
-        strCampaign.append(AndroidApplication.instance().getResources().getString(R.string.app_name));
-        strCampaign.append("%26utm_medium%3D");
-        strCampaign.append("android-app");
-        strCampaign.append("%26utm_content%3D");
-        strCampaign.append(trackingContent);
-        strCampaign.append("%26utm_campaign%3D");
-        strCampaign.append(campaign);
-        strCampaign.append("%26utm_term%3D");
-        strCampaign.append(appName);
-        return strCampaign.toString();
+        String strCampaign = "&referrer=utm_source%3D" +
+                AndroidApplication.instance().getResources().getString(R.string.app_name) +
+                "%26utm_medium%3D" +
+                "android-app" +
+                "%26utm_content%3D" +
+                trackingContent +
+                "%26utm_campaign%3D" +
+                campaign +
+                "%26utm_term%3D" +
+                appName;
+        return strCampaign;
     }
 
     public static String getUrlPlayStore(String campaign, String trackingContent) {
-        StringBuilder urlPlayStore = new StringBuilder();
-        urlPlayStore.append("market://details?id=");
-        urlPlayStore.append(BuildConfig.APPLICATION_ID);
-        urlPlayStore.append(getGooglePlayCampaign(campaign, trackingContent, "play-store"));
-        return urlPlayStore.toString();
+        return "market://details?id=" +
+                BuildConfig.APPLICATION_ID +
+                getGooglePlayCampaign(campaign, trackingContent, "play-store");
     }
 
     private static String getUrlWebPlayStore(String campaign, String trackingContent) {
-        StringBuilder webUrl = new StringBuilder();
-        webUrl.append("https://play.google.com/store/apps/details?id=");
-        webUrl.append(BuildConfig.APPLICATION_ID);
-        webUrl.append(getGooglePlayCampaign(campaign, trackingContent, "web"));
-        return webUrl.toString();
+        return "https://play.google.com/store/apps/details?id=" +
+                BuildConfig.APPLICATION_ID +
+                getGooglePlayCampaign(campaign, trackingContent, "web");
     }
 
     private static void openWebPlayStore(Context context, String campaign, String trackingContent) {

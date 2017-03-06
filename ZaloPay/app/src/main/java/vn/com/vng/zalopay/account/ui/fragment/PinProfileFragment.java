@@ -287,7 +287,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     @Override
     public boolean onBackPressed() {
         if (mPresenter != null && mEdtPhoneView != null) {
-            mPresenter.saveProfileInfo2Cache(mEdtPhoneView.getText().toString());
+            mPresenter.saveProfileInfo2Cache(mEdtPhoneView.getText());
         }
         return super.onBackPressed();
     }
@@ -350,7 +350,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
             return;
         }
 
-        mPresenter.updateProfile(mPassCodeView.getText(), mEdtPhoneView.getText().toString().toLowerCase());
+        mPresenter.updateProfile(mPassCodeView.getText(), mEdtPhoneView.getText().toLowerCase());
         ZPAnalytics.trackEvent(ZPEvents.OTP_LEVEL2_REQUEST);
     }
 
