@@ -22,6 +22,7 @@ import timber.log.Timber;
 
 /**
  * Created by khattn on 2/24/17.
+ *
  */
 
 public class IconFontDrawable extends Drawable {
@@ -41,8 +42,23 @@ public class IconFontDrawable extends Drawable {
         mPaint.setColor(Color.BLACK);
         mPaint.setAntiAlias(true);
 
-        setTypeface();
+        setTypefaceWithoutStyle(IconFontHelper.getInstance().getCurrentTypeface());
     }
+
+    public IconFontDrawable(Context context, String fontAsset) {
+        this.mContext = context;
+        mPaint = new TextPaint();
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setUnderlineText(false);
+        mPaint.setColor(Color.BLACK);
+        mPaint.setAntiAlias(true);
+
+        if (!TextUtils.isEmpty(fontAsset)) {
+            setTypefaceFromAsset(fontAsset);
+        }
+    }
+
 
     public IconFontDrawable setResourcesSize(int dimenRes) {
         return setPxSize(mContext.getResources().getDimensionPixelSize(dimenRes));
@@ -152,31 +168,6 @@ public class IconFontDrawable extends Drawable {
             }
         }
         return this;
-    }
-
-    private void setTypeface() {
-        TypedArray typedArray = mContext.obtainStyledAttributes(com.zalopay.ui.widget.R.styleable.IconFont);
-
-        if (typedArray == null) {
-            return;
-        }
-        try {
-            String fontAsset = typedArray.getString(com.zalopay.ui.widget.R.styleable.IconFont_typefaceAsset);
-
-            if (!TextUtils.isEmpty(fontAsset)) {
-                setTypefaceFromAsset(fontAsset);
-            } else {
-                setTypefaceWithoutStyle(IconFontHelper.getInstance().getCurrentTypeface());
-            }
-        } catch (RuntimeException e) {
-            Timber.d(e, "set font and icon name throw RuntimeException");
-        }
-
-        try {
-            typedArray.recycle();
-        } catch (RuntimeException e) {
-            Timber.d(e, "recycle typedArray throw RuntimeException");
-        }
     }
 
     private void setTypefaceFromAsset(String fontAsset) {
