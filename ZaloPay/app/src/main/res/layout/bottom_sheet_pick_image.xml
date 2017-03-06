@@ -7,67 +7,40 @@
     android:orientation="vertical"
     android:paddingBottom="8dp">
 
-    <FrameLayout
+    <vn.com.vng.zalopay.utils.CompoundIconFont
         android:id="@+id/layoutCapture"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="?selector"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:text="@string/take.a.picture"
-            android:textColor="#dd000000"
-            android:textSize="16sp" />
-
-        <com.zalopay.ui.widget.IconFont
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="@dimen/spacing.medium"
-            android:textColor="@color/menu_font_ic_blue"
-            app:iconName="@string/profile_camera"
-            app:iconSize="@dimen/font_size_profile_icon" />
-    </FrameLayout>
+        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingRight="@dimen/spacing.medium"
+        android:text="@string/take.a.picture"
+        android:textColor="#dd000000"
+        android:textSize="16sp"
+        app:iconRightColor="@color/menu_font_ic_blue"
+        app:iconRightName="@string/profile_camera"
+        app:iconRightSize="@dimen/font_size_profile_icon" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate"
         android:background="@color/separate" />
 
-    <FrameLayout
+    <vn.com.vng.zalopay.utils.CompoundIconFont
         android:id="@+id/layoutGallery"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="?selector"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:text="@string/image.gallery"
-            android:textColor="#dd000000"
-            android:textSize="16sp" />
-
-        <com.zalopay.ui.widget.IconFont
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="@dimen/spacing.medium"
-            android:textColor="@color/menu_font_ic_blue"
-            app:iconName="@string/profile_library"
-            app:iconSize="@dimen/font_size_profile_icon" />
-    </FrameLayout>
+        android:paddingLeft="@dimen/spacing.medium"
+        android:paddingRight="@dimen/spacing.medium"
+        android:text="@string/image.gallery"
+        android:textColor="#dd000000"
+        android:textSize="16sp"
+        app:iconRightColor="@color/menu_font_ic_blue"
+        app:iconRightName="@string/profile_library"
+        app:iconRightSize="@dimen/font_size_profile_icon" />
 
     <View
         android:layout_width="match_parent"
