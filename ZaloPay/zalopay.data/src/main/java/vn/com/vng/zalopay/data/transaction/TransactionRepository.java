@@ -213,18 +213,18 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private boolean shouldRecurse(List<TransHistoryEntity> data, long timestamp, long nextTimestamp, int sortOrder, int statusType, long thresholdTime) {
-        if (timestamp == 0) { // lần đầu k req hết.
+        if (timestamp == 0 && thresholdTime == 0) { // lần đầu k req hết.
             return false;
         }
 
         if (sortOrder == TRANSACTION_ORDER_LATEST) {
-            if (nextTimestamp <= timestamp) {
-                Timber.d("nextTimestamp lt timestamp [%s] lt [%s]", nextTimestamp, timestamp);
+            if (nextTimestamp <= timestamp && timestamp > 0) {
+                //   Timber.d("nextTimestamp lt timestamp [%s] lt [%s]", nextTimestamp, timestamp);
                 return false;
             }
         } else if (sortOrder == TRANSACTION_ORDER_OLDEST) {
-            if (nextTimestamp >= timestamp) {
-                Timber.d("nextTimestamp gt timestamp [%s] gt [%s]", nextTimestamp, timestamp);
+            if (nextTimestamp >= timestamp && timestamp > 0) {
+                // Timber.d("nextTimestamp gt timestamp [%s] gt [%s]", nextTimestamp, timestamp);
                 return false;
             }
         }
@@ -236,10 +236,12 @@ public class TransactionRepository implements TransactionStore.Repository {
         if (thresholdTime > 0) { // đệ quy đến 1 giới hạn thời gian nào đó.
             if (sortOrder == TRANSACTION_ORDER_LATEST) {
                 if (nextTimestamp >= thresholdTime) {
+                    //Timber.d("nextTimestamp [%s] gt thresholdTime[%s]", nextTimestamp, thresholdTime);
                     return false;
                 }
             } else if (sortOrder == TRANSACTION_ORDER_OLDEST) {
-                if (nextTimestamp < thresholdTime) {
+                if (nextTimestamp <= thresholdTime) {
+                    //  Timber.d("nextTimestamp [%s] lt thresholdTime[%s]", nextTimestamp, thresholdTime);
                     return false;
                 }
             }
