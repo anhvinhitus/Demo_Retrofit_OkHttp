@@ -305,13 +305,13 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mView.hideNetworkError();
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+   /* @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationUpdated(NotificationChangeEvent event) {
         Timber.d("on Notification updated state %s", event.isRead());
         if (!event.isRead()) {
             getTotalNotification(0);
         }
-    }
+    }*/
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onReadNotify(ReadNotifyEvent event) {
@@ -387,6 +387,10 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             if (event instanceof ChangeBalanceEvent) {
                 if (mView != null) {
                     mView.setBalance(((ChangeBalanceEvent) event).balance);
+                }
+            } else if (event instanceof NotificationChangeEvent) {
+                if (!((NotificationChangeEvent) event).isRead()) {
+                    getTotalNotification(0);
                 }
             }
         }

@@ -21,14 +21,19 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.util.BusComponent;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.react.error.PaymentError;
+
+import static vn.com.vng.zalopay.data.util.BusComponent.SUBJECT_MY_SUBJECT;
 
 /**
  * Created by huuhoa on 6/10/16.
@@ -193,15 +198,25 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     @Override
     public void onHostResume() {
         Timber.d("Activity onResume");
-        if (!mEventBus.isRegistered(this)) {
-            mEventBus.register(this);
-        }
+        registerEvent();
     }
 
     @Override
     public void onHostPause() {
         Timber.d("Activity onPause");
+        unregisterEvent();
+    }
+
+    private void registerEvent() {
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
+        BusComponent.subscribe(SUBJECT_MY_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
+    }
+
+    private void unregisterEvent() {
         mEventBus.unregister(this);
+        BusComponent.unregister(this);
     }
 
     @Override
@@ -228,12 +243,12 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, null);
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+  /*  @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationUpdated(NotificationChangeEvent event) {
         Timber.d("on receive notification event");
 
         sendEvent("zalopayNotificationsAdded");
-    }
+    }*/
 
     private class RemoveNotifySubscriber extends DefaultSubscriber<Boolean> {
         private Promise promise;
@@ -253,4 +268,13 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         }
     }
 
+    private class ComponentSubscriber extends DefaultSubscriber<Object> {
+        @Override
+        public void onNext(Object event) {
+            if (event instanceof NotificationChangeEvent) {
+                Timber.d("on receive notification event");
+                sendEvent("zalopayNotificationsAdded");
+            }
+        }
+    }
 }
