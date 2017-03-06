@@ -101,16 +101,16 @@
             android:layout_height="wrap_content"
             android:background="?selector"
             android:drawablePadding="@dimen/app_padding"
-            android:drawableRight="@drawable/ic_arrow_right"
             android:gravity="start|center_vertical"
-            android:paddingBottom="@dimen/app_padding"
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingRight="@dimen/spacing.medium"
-            android:paddingTop="@dimen/app_padding"
             android:text="@string/txt_deposit"
             app:iconLeftColor="@color/menu_font_ic_green"
             app:iconLeftName="@string/notify_1_receivemoney"
-            app:iconLeftSize="@dimen/font_size_balance_manager_deposit" />
+            app:iconLeftSize="@dimen/font_size_balance_manager_deposit"
+            app:iconRightColor="@color/arrow_right"
+            app:iconRightName="@string/general_arrowright"
+            app:iconRightSize="@dimen/font_size_arrow_right" />
 
         <View
             android:id="@+id/viewSeparate"
@@ -126,16 +126,16 @@
             android:layout_height="wrap_content"
             android:background="?selector"
             android:drawablePadding="@dimen/app_padding"
-            android:drawableRight="@drawable/ic_arrow_right"
             android:gravity="start|center_vertical"
-            android:paddingBottom="@dimen/app_padding"
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingRight="@dimen/spacing.medium"
-            android:paddingTop="@dimen/app_padding"
             android:text="@string/txt_withdraw"
             app:iconLeftColor="@color/menu_font_ic_yellow"
             app:iconLeftName="@string/notify_1_withdraw"
-            app:iconLeftSize="@dimen/font_size_balance_manager_deposit" />
+            app:iconLeftSize="@dimen/font_size_balance_manager_deposit"
+            app:iconRightColor="@color/arrow_right"
+            app:iconRightName="@string/general_arrowright"
+            app:iconRightSize="@dimen/font_size_arrow_right" />
 
         <View
             android:layout_width="match_parent"
