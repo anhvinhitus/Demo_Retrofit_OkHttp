@@ -200,10 +200,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                             try {
                                 getAdapter().sdkTrustReportError(SDKReport.TIMEOUT_WEBSITE);
                             } catch (Exception e) {
-                                Log.d(this,e);
+                                Log.d(this, e);
                             }
                         }
-                        Log.d(this,"getOneShotTransactionStatus");
+                        Log.d(this, "getOneShotTransactionStatus");
                     } else {
                         //show dialog and move to fail screen
                         ((PaymentChannelActivity) activity.get()).showWarningDialog(new ZPWOnEventDialogListener() {
@@ -308,9 +308,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             try {
                 GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
             } catch (Exception e) {
-                if(checkResourceStaticListener != null)
-                {
-                    checkResourceStaticListener.onCheckResourceStaticComplete(false,e != null ? e.getMessage(): null);
+                if (checkResourceStaticListener != null) {
+                    checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
                 }
             }
         }
@@ -785,56 +784,43 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public View setView(String pStrID, boolean pIsVisible) {
         final int ID = getViewID(pStrID);
         View view = this.findViewById(ID);
-
-        if (view == null)
+        if (view == null) {
             return view;
-
+        }
         if (pIsVisible) {
             view.setVisibility(View.VISIBLE);
         } else {
             view.setVisibility(View.GONE);
         }
-
         return view;
     }
 
     public void setView(int pId, boolean pIsVisible) {
         View view = findViewById(pId);
-
         if (view != null) {
             view.setVisibility(pIsVisible ? View.VISIBLE : View.GONE);
         }
     }
 
-    private View addOrRemoveProperty(int pID, int property, boolean flag) {
+    private View addOrRemoveProperty(int pID, int property) {
         View view = this.findViewById(pID);
-
-        if (view == null)
+        if (view == null) {
             return view;
-
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-        if (flag) {
-            layoutParams.addRule(property);
-        } else {
-            layoutParams.removeRule(property);
         }
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+        layoutParams.addRule(property);
         view.setLayoutParams(layoutParams);
-
         return view;
     }
 
     private View setMarginLeft(int pID, int margin) {
         View view = this.findViewById(pID);
-
-        if (view == null)
+        if (view == null) {
             return view;
-
+        }
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-
         layoutParams.leftMargin = margin;
-
         view.setLayoutParams(layoutParams);
-
         return view;
     }
 
@@ -1225,7 +1211,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 GlobalData.getStringResource(RS.string.zpw_font_medium));
 
         //re-align top
-        addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT, true);
+        addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
 
         animateImageViewFail();
 
@@ -1233,26 +1219,20 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public void showPaymentSuccessContent(String pTransID) throws Exception {
         setText(R.id.zpw_textview_transaction, pTransID);
-
         setView(R.id.zpw_pay_info_buttom_view, true);
-
         //show a different view for lixi.
         if (GlobalData.isRedPacketChannel()) {
             setView(R.id.zpw_transaction_wrapper, false);
             setView(R.id.zpw_textview_transaction_lixi_label, true);
-
             String formattedString = "<b>" + GlobalData.getStringResource(RS.string.zpw_string_lixi_notice_title_02) + "</b>";
-
             setTextHtml(R.id.zpw_textview_transaction_lixi_label, String.format(GlobalData.getStringResource(RS.string.zpw_string_lixi_notice_title), formattedString));
         }
 
         ZPWUtils.applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
-
         //show transaction amount when ! withdraw
         if (GlobalData.orderAmountTotal > 0 && GlobalData.getTransactionType() != ETransactionType.WITHDRAW) {
 
             setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal)));
-
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().description)) {
                 setView(R.id.payment_description_label, true);
                 setText(R.id.payment_description_label, GlobalData.getPaymentInfo().description);
@@ -1282,12 +1262,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
 
         }
-
         //re-align title header.
-        addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT, true);
-
+        addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animationImageViewSuccess();
-
     }
 
     public void showPaymentSpecialSuccessContent(String pTransID) {
@@ -1978,8 +1955,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void showSelectionBankAccountDialog() {
         MapListSelectionActivity.setCloseDialogListener(getCloseDialog());
         Intent intent = new Intent(getApplicationContext(), MapListSelectionActivity.class);
-        intent.putExtra(MapListSelectionActivity.BANKCODE_EXTRA,GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
-        intent.putExtra(MapListSelectionActivity.BUTTON_LEFT_TEXT_EXTRA,getCloseButtonText());
+        intent.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+        intent.putExtra(MapListSelectionActivity.BUTTON_LEFT_TEXT_EXTRA, getCloseButtonText());
         startActivity(intent);
     }
 
