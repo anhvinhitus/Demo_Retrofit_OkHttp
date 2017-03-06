@@ -15,22 +15,25 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
+import vn.com.vng.zalopay.data.util.BusComponent;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
+
+import static vn.com.vng.zalopay.data.util.BusComponent.SUBJECT_MY_SUBJECT;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -59,9 +62,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
 
     @Override
     public void resume() {
-        if (!mEventBus.isRegistered(this)) {
-            mEventBus.register(this);
-        }
+        registerEvent();
         mView.updateBalance(mBalanceRepository.currentBalance());
         updateBalance();
         updateUserInfo();
@@ -69,7 +70,19 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
 
     @Override
     public void pause() {
+        unregisterEvent();
+    }
+
+    private void registerEvent() {
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
+        BusComponent.subscribe(SUBJECT_MY_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
+    }
+
+    private void unregisterEvent() {
         mEventBus.unregister(this);
+        BusComponent.unregister(this);
     }
 
     @Override
@@ -78,13 +91,13 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         super.destroy();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+   /* @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ChangeBalanceEvent event) {
         Timber.d("onEventMainThread ChangeBalanceEvent");
         if (mView != null) {
             mView.updateBalance(event.balance);
         }
-    }
+    }*/
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNetworkChange(NetworkChangeEvent event) {
@@ -209,5 +222,16 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
                         mNavigator.startUpdateProfileLevel2Activity(mView.getContext());
                     }
                 });
+    }
+
+    private class ComponentSubscriber extends DefaultSubscriber<Object> {
+        @Override
+        public void onNext(Object event) {
+            if (event instanceof ChangeBalanceEvent) {
+                if (mView != null) {
+                    mView.updateBalance(((ChangeBalanceEvent) event).balance);
+                }
+            }
+        }
     }
 }

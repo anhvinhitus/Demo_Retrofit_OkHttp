@@ -5,8 +5,11 @@ import org.greenrobot.eventbus.EventBus;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
+import vn.com.vng.zalopay.data.util.BusComponent;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.User;
+
+import static vn.com.vng.zalopay.data.util.BusComponent.SUBJECT_MY_SUBJECT;
 
 /**
  * Created by huuhoa on 6/15/16.
@@ -44,7 +47,8 @@ public class BalanceRepository implements BalanceStore.Repository {
                 .doOnNext(response -> {
                     mCurrentBalance = response.zpwbalance;
                     mLocalStorage.putBalance(response.zpwbalance);
-                    mEventBus.post(new ChangeBalanceEvent(response.zpwbalance));
+                    //  mEventBus.post(new ChangeBalanceEvent(response.zpwbalance));
+                    BusComponent.publish(SUBJECT_MY_SUBJECT, new ChangeBalanceEvent(response.zpwbalance));
                 })
                 .map(response -> response.zpwbalance);
     }
