@@ -1,73 +1,67 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-    <ScrollView
-        android:id="@+id/ScrollView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true">
+        android:baselineAligned="false"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="vertical">
+            android:layout_gravity="right"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/spacing.small"
+            android:paddingRight="@dimen/spacing.medium.t"
+            android:paddingTop="@dimen/spacing.medium">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvResourceMoney"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/spacing.small"
-                android:paddingRight="@dimen/spacing.medium.t"
-                android:paddingTop="@dimen/spacing.medium">
+                android:gravity="right"
+                android:text="@string/min_money"
+                android:textColor="@color/deposit.title"
+                android:textSize="@dimen/textsize.small" />
 
-                <TextView
-                    android:id="@+id/tvResourceMoney"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="@string/min_money"
-                    android:textColor="@color/deposit.title"
-                    android:textSize="@dimen/textsize.small" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing.tiny"
+                android:gravity="right"
+                android:text="@string/vnd"
+                android:textColor="@color/deposit.title"
+                android:textSize="@dimen/textsize.tiny.s" />
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing.tiny"
-                    android:gravity="right"
-                    android:text="@string/vnd"
-                    android:textColor="@color/deposit.title"
-                    android:textSize="@dimen/textsize.tiny.s" />
-            </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate_stroke"
+            android:background="@color/separate" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate_stroke"
-                android:background="@color/separate" />
+        <FrameLayout
+            style="@style/WrapperEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
 
-            <FrameLayout
-                style="@style/WrapperEditText"
+            <vn.com.vng.zalopay.ui.widget.MoneyEditText
+                android:id="@+id/edtAmount"
+                style="@style/ZaloPayEditText.Money"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
+                android:layout_gravity="bottom" />
+        </FrameLayout>
 
-                <vn.com.vng.zalopay.ui.widget.MoneyEditText
-                    android:id="@+id/edtAmount"
-                    style="@style/ZaloPayEditText.Money"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom" />
-            </FrameLayout>
-
-            <Button
-                android:id="@+id/btnDeposit"
-                style="@style/Button.Default.New"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/button.height"
-                android:text="@string/btn_deposit" />
-        </LinearLayout>
-    </ScrollView>
-</FrameLayout>
+        <Button
+            android:id="@+id/btnDeposit"
+            style="@style/Button.Default.New"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button.height"
+            android:text="@string/btn_deposit" />
+    </LinearLayout>
+</ScrollView>
