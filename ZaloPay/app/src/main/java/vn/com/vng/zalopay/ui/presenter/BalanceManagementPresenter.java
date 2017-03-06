@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -33,7 +32,7 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
 
-import static vn.com.vng.zalopay.data.util.BusComponent.SUBJECT_MY_SUBJECT;
+import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -77,7 +76,7 @@ public class BalanceManagementPresenter extends AbsWithdrawConditionPresenter<IB
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        BusComponent.subscribe(SUBJECT_MY_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
+        BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
     }
 
     private void unregisterEvent() {

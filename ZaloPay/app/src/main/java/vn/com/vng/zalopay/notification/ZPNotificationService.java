@@ -50,7 +50,7 @@ import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 
-import static vn.com.vng.zalopay.data.util.BusComponent.SUBJECT_MY_SUBJECT;
+import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
 
 public class ZPNotificationService implements OnReceiverMessageListener {
 
@@ -127,7 +127,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        BusComponent.subscribe(SUBJECT_MY_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
+        BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
     }
 
     private void unregisterEvent() {

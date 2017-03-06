@@ -9,7 +9,7 @@ import vn.com.vng.zalopay.data.util.BusComponent;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.User;
 
-import static vn.com.vng.zalopay.data.util.BusComponent.SUBJECT_MY_SUBJECT;
+import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
 
 /**
  * Created by huuhoa on 6/15/16.
@@ -48,7 +48,7 @@ public class BalanceRepository implements BalanceStore.Repository {
                     mCurrentBalance = response.zpwbalance;
                     mLocalStorage.putBalance(response.zpwbalance);
                     //  mEventBus.post(new ChangeBalanceEvent(response.zpwbalance));
-                    BusComponent.publish(SUBJECT_MY_SUBJECT, new ChangeBalanceEvent(response.zpwbalance));
+                    BusComponent.publish(APP_SUBJECT, new ChangeBalanceEvent(response.zpwbalance));
                 })
                 .map(response -> response.zpwbalance);
     }

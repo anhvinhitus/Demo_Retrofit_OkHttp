@@ -41,7 +41,7 @@ import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 
-import static vn.com.vng.zalopay.data.util.BusComponent.SUBJECT_MY_SUBJECT;
+import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
 import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.Constants;
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
@@ -89,7 +89,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        BusComponent.subscribe(SUBJECT_MY_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
+        BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
     }
 
     private void unregisterEvent() {

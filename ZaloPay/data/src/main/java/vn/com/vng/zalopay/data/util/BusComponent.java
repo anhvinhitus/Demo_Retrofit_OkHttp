@@ -11,7 +11,6 @@ import java.util.Map;
 import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -28,11 +27,11 @@ public final class BusComponent {
     private static SparseArray<PublishSubject<Object>> sSubjectMap = new SparseArray<>();
     private static Map<Object, CompositeSubscription> sSubscriptionsMap = new HashMap<>();
 
-    public static final int SUBJECT_MY_SUBJECT = 0;
+    public static final int APP_SUBJECT = 0;
     public static final int SUBJECT_ANOTHER_SUBJECT = 1;
 
     @Retention(SOURCE)
-    @IntDef({SUBJECT_MY_SUBJECT, SUBJECT_ANOTHER_SUBJECT})
+    @IntDef({APP_SUBJECT, SUBJECT_ANOTHER_SUBJECT})
     @interface Subject {
     }
 
@@ -97,6 +96,9 @@ public final class BusComponent {
      * Publish an object to the specified subject for all subscribers of that subject.
      */
     public static void publish(@Subject int subject, @NonNull Object message) {
-        getSubject(subject).onNext(message);
+        PublishSubject<Object> publishSubject = getSubject(subject);
+        if (publishSubject.hasObservers()) {
+            publishSubject.onNext(message);
+        }
     }
 }

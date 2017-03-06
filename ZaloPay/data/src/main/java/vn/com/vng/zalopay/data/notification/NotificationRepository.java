@@ -20,7 +20,7 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.Enums;
 import vn.com.vng.zalopay.domain.model.User;
 
-import static vn.com.vng.zalopay.data.util.BusComponent.SUBJECT_MY_SUBJECT;
+import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
 
 /**
  * Created by AnhHieu on 6/20/16.
@@ -84,7 +84,7 @@ public class NotificationRepository implements NotificationStore.Repository {
                     mRxBus.send(event);
                 }
 
-                BusComponent.publish(SUBJECT_MY_SUBJECT, event);
+                BusComponent.publish(APP_SUBJECT, event);
             }
 
             return rowId;
@@ -161,7 +161,7 @@ public class NotificationRepository implements NotificationStore.Repository {
                     saveTimeRecovery(notify);
                     Timber.d("post NotificationChangeEvent recovery");
                   //  mEventBus.post(new NotificationChangeEvent(Enums.NotificationState.UNREAD.getId()));
-                    BusComponent.publish(SUBJECT_MY_SUBJECT, new NotificationChangeEvent(Enums.NotificationState.UNREAD.getId()));
+                    BusComponent.publish(APP_SUBJECT, new NotificationChangeEvent(Enums.NotificationState.UNREAD.getId()));
                 });
     }
 

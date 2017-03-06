@@ -14,8 +14,6 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -30,10 +28,9 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.util.BusComponent;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.react.error.PaymentError;
 
-import static vn.com.vng.zalopay.data.util.BusComponent.SUBJECT_MY_SUBJECT;
+import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
 
 /**
  * Created by huuhoa on 6/10/16.
@@ -211,7 +208,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        BusComponent.subscribe(SUBJECT_MY_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
+        BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
     }
 
     private void unregisterEvent() {
