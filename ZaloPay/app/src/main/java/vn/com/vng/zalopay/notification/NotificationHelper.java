@@ -224,7 +224,7 @@ public class NotificationHelper {
     private void putNotification(NotificationData notify) {
         Subscription subscription = mNotifyRepository.putNotify(notify)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Long>());
+                .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscription);
     }
 
@@ -254,7 +254,6 @@ public class NotificationHelper {
     private void shouldUpdateTransAndBalance(NotificationData notify) {
         Timber.d("should Update Trans And Balance");
         if (NotificationType.isTransactionNotification(notify.notificationtype)) {
-            Timber.d("start update Trans And Balance");
             this.updateTransaction();
             this.updateBalance();
         }
@@ -310,17 +309,8 @@ public class NotificationHelper {
         if (last4cardno <= 0 || first6cardno <= 0) {
             return;
         }
-        if (mUser == null) {
-            return;
-        }
-        ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
-        params.userID = mUser.zaloPayId;
-        params.accessToken = mUser.accesstoken;
-        DMappedCard card = new DMappedCard();
-        card.last4cardno = String.valueOf(last4cardno);
-        card.first6cardno = String.valueOf(first6cardno);
-        params.mapCard = card;
-        CShareDataWrapper.reloadMapCardList(params, null);
+      
+        CShareDataWrapper.reloadMapCardList(String.valueOf(last4cardno), String.valueOf(first6cardno), mUser, null);
     }
 
     private void payOrderFromNotify(NotificationData notify) {
@@ -349,7 +339,7 @@ public class NotificationHelper {
     private void updateTransactionStatus(NotificationData notify) {
         Subscription subscription = mTransactionRepository.updateTransactionStatusSuccess(notify.transid)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscription);
     }
 
@@ -363,7 +353,7 @@ public class NotificationHelper {
                 if (profileLevel > 2 && status == 1) {
                     Subscription subscription = mAccountRepository.getUserProfileLevelCloud()
                             .subscribeOn(Schedulers.io())
-                            .subscribe(new DefaultSubscriber<Boolean>());
+                            .subscribe(new DefaultSubscriber<>());
                     mCompositeSubscription.add(subscription);
                 }
             }
@@ -461,7 +451,7 @@ public class NotificationHelper {
     private void updateTransaction() {
         Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistoryLatest()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscriptionSuccess);
     }
 
@@ -487,19 +477,8 @@ public class NotificationHelper {
     public Observable<Void> recoveryNotification(final List<NotificationData> listMessage) {
         Timber.d("Recovery notification size [%s]", listMessage.size());
         return Observable.from(listMessage)
-                .filter(new Func1<NotificationData, Boolean>() {
-                    @Override
-                    public Boolean call(NotificationData notify) {
-                        return !mNotifyRepository.isNotifyExisted(notify.mtaid, notify.mtuid);
-                    }
-                })
-                .doOnNext(new Action1<NotificationData>() {
-                    @Override
-                    public void call(NotificationData notify) {
-                        Timber.d("process notify recovery %s", notify);
-                        processNotification(notify, true);
-                    }
-                })
+                .filter(notify -> !mNotifyRepository.isNotifyExisted(notify.mtaid, notify.mtuid))
+                .doOnNext(notify -> processNotification(notify, true))
                 .lastOrDefault(new NotificationData())
                 .flatMap(new Func1<NotificationData, Observable<Void>>() {
                     @Override
@@ -529,35 +508,16 @@ public class NotificationHelper {
     public void recoveryTransaction() {
         Timber.d("recovery Transaction");
         Subscription subscription = mNotifyRepository.getOldestTimeNotification()
-                .filter(new Func1<Long, Boolean>() {
-                    @Override
-                    public Boolean call(Long time) {
-                        return time > 0;
-                    }
-                })
-                .flatMap(new Func1<Long, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Long oldest) {
-                        Timber.d("begin recover transaction [%s]", oldest);
-                        return mTransactionRepository.fetchTransactionHistoryOldest(oldest);
-                    }
-                })
+                .filter(time -> time > 0)
+                .flatMap(mTransactionRepository::fetchTransactionHistoryOldest)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscription);
     }
 
     public Observable<Long> getOldestTimeRecoveryNotification(final boolean isFirst) {
         return mNotifyRepository.getOldestTimeRecoveryNotification()
-                .filter(new Func1<Long, Boolean>() {
-                    @Override
-                    public Boolean call(Long time) {
-                        boolean filter = !(isFirst && mNotifyRepository.isRecovery()) && (!isFirst || time <= 0);
-                        Timber.d("Recovery isFirst [%s] Cần recovery [%s] với time [%s]", isFirst, filter, time);
-
-                        return filter;
-                    }
-                });
+                .filter(time -> !(isFirst && mNotifyRepository.isRecovery()) && (!isFirst || time <= 0));
     }
 
     private void resetPaymentPassword() {

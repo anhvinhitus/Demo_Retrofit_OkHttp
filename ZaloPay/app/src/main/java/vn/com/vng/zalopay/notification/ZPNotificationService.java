@@ -210,20 +210,8 @@ public class ZPNotificationService implements OnReceiverMessageListener {
                 //Cần recoveryNotification xong để set lasttime recovery xong,
                 // mới tiếp tục sendmessage recovery.
                 Subscription sub = mNotificationHelper.recoveryNotification(listMessage)
-                        .filter(new Func1<Void, Boolean>() {
-                            @Override
-                            public Boolean call(Void aVoid) {
-                                boolean filter = listMessage.size() >= NUMBER_NOTIFICATION;
-                                Timber.d("Filter [%s]", filter);
-                                return filter;
-                            }
-                        })
-                        .flatMap(new Func1<Void, Observable<Long>>() {
-                            @Override
-                            public Observable<Long> call(Void aVoid) {
-                                return mNotificationHelper.getOldestTimeRecoveryNotification(false);
-                            }
-                        })
+                        .filter(aVoid -> listMessage.size() >= NUMBER_NOTIFICATION)
+                        .flatMap(aVoid -> mNotificationHelper.getOldestTimeRecoveryNotification(false))
                         .subscribeOn(Schedulers.io())
                         .subscribe(new DefaultSubscriber<Long>() {
                             @Override
@@ -235,13 +223,15 @@ public class ZPNotificationService implements OnReceiverMessageListener {
                             public void onError(Throwable e) {
                                 Timber.d(e, "onError: ");
                             }
+
+                            @Override
+                            public void onCompleted() {
+                                if (listMessage.size() < NUMBER_NOTIFICATION) {
+                                    recoveryData();
+                                }
+                            }
                         });
-
                 mCompositeSubscription.add(sub);
-            }
-
-            if (listMessage.size() < NUMBER_NOTIFICATION) {
-                recoveryData();
             }
         }
     }

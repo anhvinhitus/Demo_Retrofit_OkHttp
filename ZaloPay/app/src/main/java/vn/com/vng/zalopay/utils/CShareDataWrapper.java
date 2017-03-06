@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.utils;
 
 import java.util.List;
 
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
@@ -79,9 +80,21 @@ public class CShareDataWrapper {
         return CShareData.getInstance().getMaxWithDrawValue();
     }
 
-    public static void reloadMapCardList(ZPWRemoveMapCardParams params, IReloadMapInfoListener listener) {
+    public static void reloadMapCardList(String last4cardno, String first6cardno, User user, IReloadMapInfoListener listener) {
+        if (user == null) {
+            return;
+        }
+
+        ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
+        params.userID = user.zaloPayId;
+        params.accessToken = user.accesstoken;
+        DMappedCard card = new DMappedCard();
+        card.last4cardno = last4cardno;
+        card.first6cardno = first6cardno;
+        params.mapCard = card;
         CShareData.getInstance().reloadMapCardList(params, listener);
     }
+
 
     public static List<DBanner> getBannerList() {
         return CShareData.getInstance().getBannerList();
