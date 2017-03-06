@@ -143,5 +143,7 @@
 
     <color name="red_packet">#D84E43</color>
 
+    <color name="arrow_right">#c7c7cc</color>
+
     <color name="loading_progress_bar">#04be04</color>
 </resources>
