@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,83 +11,54 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <LinearLayout
+        <vn.com.vng.zalopay.utils.CompoundIconFont
             android:id="@+id/layoutTransferViaAccount"
+            style="@style/TextView.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/default_white_selector"
+            android:drawablePadding="@dimen/spacing.medium.t"
+            android:drawableRight="@drawable/ic_arrow_right"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <com.zalopay.ui.widget.IconFont
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing.medium.t"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_marginTop="@dimen/spacing.medium.t"
-                android:textColor="@color/menu_font_ic_green"
-                app:iconName="@string/sendmoney_zalopayid"
-                app:iconSize="@dimen/font_size_transfer_header"/>
-
-            <TextView
-                style="@style/TextView.Title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.medium.t"
-                android:layout_weight="1.0"
-                android:text="@string/account.zalo.pay"
-                android:textColor="@color/txt_item_main"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/ic_arrow_right"/>
-        </LinearLayout>
+            android:paddingBottom="@dimen/spacing.medium.t"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="16dp"
+            android:paddingTop="@dimen/spacing.medium.t"
+            android:text="@string/account.zalo.pay"
+            android:textColor="@color/txt_item_main"
+            app:iconLeftColor="@color/menu_font_ic_green"
+            app:iconLeftName="@string/sendmoney_zalopayid"
+            app:iconLeftSize="@dimen/font_size_transfer_header" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate_stroke"
             android:layout_marginLeft="60dp"
-            android:background="@color/separate"/>
+            android:background="@color/separate" />
 
-        <LinearLayout
+        <vn.com.vng.zalopay.utils.CompoundIconFont
             android:id="@+id/layoutTransferAccZaloPay"
+            style="@style/TextView.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/default_white_selector"
+            android:drawablePadding="@dimen/spacing.medium.t"
+            android:drawableRight="@drawable/ic_arrow_right"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <com.zalopay.ui.widget.IconFont
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing.medium.t"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_marginTop="@dimen/spacing.medium.t"
-                android:textColor="@color/menu_font_ic_blue"
-                app:iconName="@string/sendmoney_friend"
-                app:iconSize="@dimen/font_size_transfer_header"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing.medium.t"
-                android:layout_weight="1.0"
-                android:text="@string/transfer_acc_zalopay"
-                android:textColor="@color/txt_item_main"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/ic_arrow_right"/>
-        </LinearLayout>
+            android:paddingBottom="@dimen/spacing.medium.t"
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="16dp"
+            android:paddingTop="@dimen/spacing.medium.t"
+            android:text="@string/transfer_acc_zalopay"
+            android:textColor="@color/txt_item_main"
+            app:iconLeftColor="@color/menu_font_ic_blue"
+            app:iconLeftName="@string/sendmoney_friend"
+            app:iconLeftSize="@dimen/font_size_transfer_header" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate_stroke"
-            android:background="@color/separate"/>
+            android:background="@color/separate" />
 
     </LinearLayout>
 
@@ -106,12 +76,12 @@
             android:paddingLeft="@dimen/spacing.medium"
             android:paddingTop="@dimen/spacing.large.t"
             android:text="@string/transaction_recent"
-            android:textAllCaps="true"/>
+            android:textAllCaps="true" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate_stroke"
-            android:background="@color/separate"/>
+            android:background="@color/separate" />
     </LinearLayout>
 
 
@@ -122,14 +92,14 @@
         android:background="@color/white"
         android:clipToPadding="false"
         android:visibility="gone"
-        app:layoutManager="LinearLayoutManager"/>
+        app:layoutManager="LinearLayoutManager" />
 
     <View
         android:id="@+id/viewSeparate"
         android:layout_width="match_parent"
         android:layout_height="@dimen/separate_stroke"
         android:background="@color/separate"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -147,7 +117,7 @@
                 android:id="@+id/imgIntroduction"
                 android:layout_width="206dp"
                 android:layout_height="147dp"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -155,7 +125,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:padding="@dimen/spacing.large"
-                android:text="@string/transfer_money_note"/>
+                android:text="@string/transfer_money_note" />
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>
