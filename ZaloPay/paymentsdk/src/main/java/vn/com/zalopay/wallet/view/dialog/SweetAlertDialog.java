@@ -114,6 +114,8 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = context.obtainStyledAttributes(attrs);
         backgroundResource = typedArray.getResourceId(0, 0);
+        //TypedArray should be recycled after use with '#recycle()'
+        typedArray.recycle();
 
         mAlertType = alertType;
         mErrorInAnim = OptAnimationLoader.loadAnimation(getContext(), R.anim.error_frame_in);
