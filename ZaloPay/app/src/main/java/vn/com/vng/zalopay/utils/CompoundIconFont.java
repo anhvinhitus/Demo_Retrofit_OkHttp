@@ -59,21 +59,17 @@ public class CompoundIconFont extends TextView {
             return;
         }
 
-        if (initIconName(typedArray, mLeftIcon[0])) {
+        if (initIcon(typedArray, mLeftIcon[0], mLeftIcon[1], mLeftIcon[2])) {
 
-            initIcon(typedArray, mLeftIcon[1], mLeftIcon[2], drawables);
             setCompoundDrawablesWithIntrinsicBounds(mIconFontDrawable, drawables[1], drawables[2], drawables[3]);
-        } else if (initIconName(typedArray, mRightIcon[0])) {
+        } else if (initIcon(typedArray, mRightIcon[0], mRightIcon[1], mRightIcon[2])) {
 
-            initIcon(typedArray, mRightIcon[1], mRightIcon[2], drawables);
             setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], mIconFontDrawable, drawables[3]);
-        } else if (initIconName(typedArray, mTopIcon[0])) {
+        } else if (initIcon(typedArray, mTopIcon[0], mTopIcon[1], mTopIcon[2])) {
 
-            initIcon(typedArray, mTopIcon[1], mTopIcon[2], drawables);
             setCompoundDrawablesWithIntrinsicBounds(drawables[0], mIconFontDrawable, drawables[2], drawables[3]);
-        } else if (initIconName(typedArray, mBottomIcon[0])) {
+        } else if (initIcon(typedArray, mBottomIcon[0], mBottomIcon[1], mBottomIcon[2])) {
 
-            initIcon(typedArray, mBottomIcon[1], mBottomIcon[2], drawables);
             setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], drawables[2], mIconFontDrawable);
         }
 
@@ -84,11 +80,24 @@ public class CompoundIconFont extends TextView {
         }
     }
 
-    private void initIcon(TypedArray typedArray, int size, int color, Drawable[] drawables) {
+    private boolean initIcon(TypedArray typedArray, int name, int size, int color) {
+        boolean isLocation = false;
+
+        try {
+            String iconName = typedArray.getString(name);
+            if (iconName != null) {
+                mIconFontDrawable.setIcon(iconName);
+                isLocation = true;
+            }
+        } catch (RuntimeException e) {
+            Timber.d(e, "set font and icon name throw RuntimeException");
+        }
+
         try {
             int iconSize = typedArray.getDimensionPixelSize(size, -1);
             if (iconSize >= 0) {
                 mIconFontDrawable.setPxSize(iconSize);
+                isLocation = true;
             }
         } catch (UnsupportedOperationException e) {
             Timber.d(e, "get icon size throw UnsupportedOperationException");
@@ -100,26 +109,15 @@ public class CompoundIconFont extends TextView {
             int iconColor = typedArray.getResourceId(color, -1);
             if (iconColor >= 0) {
                 mIconFontDrawable.setResourcesColor(iconColor);
+                isLocation = true;
             }
         } catch (UnsupportedOperationException e) {
             Timber.d(e, "get icon color throw UnsupportedOperationException");
         } catch (RuntimeException e) {
             Timber.d(e, "get icon color throw RuntimeException");
         }
-    }
 
-    private boolean initIconName(TypedArray typedArray, int index) {
-        try {
-            String iconName = typedArray.getString(index);
-            if (iconName != null) {
-                mIconFontDrawable.setIcon(iconName);
-                return true;
-            }
-        } catch (RuntimeException e) {
-            Timber.d(e, "set font and icon name throw RuntimeException");
-        }
-
-        return false;
+        return isLocation;
     }
 
     public void setIconColor(int color) {
