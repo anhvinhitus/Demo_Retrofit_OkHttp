@@ -29,7 +29,6 @@ public class PaymentAppConfig {
 
     public static final List<AppResource> APP_RESOURCE_LIST;
     public static final List<AppResource> EXCLUDE_APP_RESOURCE_LIST;
-    public static final List<String> EXCEPT_LOAD_FONTS;
 
     static {
         APP_RESOURCE_MAP = new LongSparseArray<>();
@@ -63,9 +62,6 @@ public class PaymentAppConfig {
         EXCLUDE_APP_RESOURCE_LIST = new ArrayList<>();
         EXCLUDE_APP_RESOURCE_LIST.add(new AppResource(BundleServiceImpl.ZALOPAY_INTERNAL_APPLICATION_ID,
                 PaymentAppTypeEnum.REACT_NATIVE.value, "TK Zalo Pay"));
-
-        EXCEPT_LOAD_FONTS = new ArrayList<>();
-        EXCEPT_LOAD_FONTS.add("zalopay");
 
     }
 

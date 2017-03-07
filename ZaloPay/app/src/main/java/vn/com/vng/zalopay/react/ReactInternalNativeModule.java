@@ -38,7 +38,6 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.navigation.INavigator;
-import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
@@ -255,11 +254,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        if (PaymentAppConfig.EXCEPT_LOAD_FONTS.contains(fontFamilyName.toLowerCase())) {
-            promise.reject(new Exception("Can not load font " + fontFamilyName));
-            return;
-        }
-
         try {
             Timber.d("loadFontAsync fontPath %s", url);
             if (url.contains("file://")) {
@@ -270,7 +264,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 FileDownloader.DownloadParam param = new FileDownloader.DownloadParam();
                 param.fileName = fontFamilyName;
                 param.url = url;
-                param.dest = getReactApplicationContext().getFilesDir() + "/fonts/";
+                param.dest = getReactApplicationContext().getFilesDir() + "/Fonts/";
                 param.callback = new FileDownloader.DownloadCallback() {
                     @Override
                     public void onSuccess(File dest) {

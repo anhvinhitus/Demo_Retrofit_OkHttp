@@ -305,11 +305,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
             return;
         }
 
-        if (PaymentAppConfig.EXCEPT_LOAD_FONTS.contains(fontFamilyName.toLowerCase())) {
-            promise.reject(new Exception("Can not load font " + fontFamilyName));
-            return;
-        }
-
         try {
             Timber.d("loadFontAsync fontPath %s", url);
             if (url.contains("file://")) {
@@ -320,7 +315,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
                 FileDownloader.DownloadParam param = new FileDownloader.DownloadParam();
                 param.fileName = fontFamilyName;
                 param.url = url;
-                param.dest = getReactApplicationContext().getFilesDir() + "/fonts/";
+                param.dest = getReactApplicationContext().getFilesDir() + "/Fonts/";
                 param.callback = new FileDownloader.DownloadCallback() {
                     @Override
                     public void onSuccess(File dest) {
