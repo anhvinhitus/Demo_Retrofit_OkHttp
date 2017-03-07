@@ -31,6 +31,7 @@ public class IconFontDrawable extends Drawable {
     private String mText;
     private TextPaint mPaint;
     private int mSize = -1;
+    private int mLeftPadding = 0, mTopPadding = 0, mRightPadding = 0, mBottomPadding = 0;
 
     public IconFontDrawable(Context context) {
         this.mContext = context;
@@ -75,6 +76,14 @@ public class IconFontDrawable extends Drawable {
         return this;
     }
 
+    public IconFontDrawable setPxPadding(int leftPadding, int topPadding, int rightPadding, int bottomPadding) {
+        this.mLeftPadding = leftPadding;
+        this.mTopPadding = topPadding;
+        this.mRightPadding = rightPadding;
+        this.mBottomPadding = bottomPadding;
+        return this;
+    }
+
     public IconFontDrawable setColor(int color) {
         mPaint.setColor(color);
         invalidateSelf();
@@ -104,7 +113,10 @@ public class IconFontDrawable extends Drawable {
             Rect textBounds = new Rect();
             mPaint.getTextBounds(mText, 0, 1, textBounds);
             float textBottom = (getBounds().height() - textBounds.height()) / 2f + textBounds.height() - textBounds.bottom;
-            canvas.drawText(mText, getBounds().width() / 2f, textBottom, mPaint);
+            canvas.drawText(mText,
+                    getBounds().width() / 2f - mLeftPadding + mRightPadding,
+                    textBottom - mTopPadding + mBottomPadding,
+                    mPaint);
         }
     }
 
@@ -142,6 +154,22 @@ public class IconFontDrawable extends Drawable {
             }
         }
         return this;
+    }
+
+    public int getLeftPxPadding() {
+        return mLeftPadding;
+    }
+
+    public int getTopPxPadding() {
+        return mTopPadding;
+    }
+
+    public int getRightPxPadding() {
+        return mRightPadding;
+    }
+
+    public int getBottomPxPadding() {
+        return mBottomPadding;
     }
 
     private void setTypefaceFromAsset(String fontAsset) {
