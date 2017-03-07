@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.ui.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,6 +27,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.IconFontDrawable;
+import vn.com.vng.zalopay.utils.IconFontTextView;
 import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
@@ -112,11 +115,8 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
     public class ViewHolder extends RecyclerView.ViewHolder {
         private OnItemClickListener listener;
 
-        @BindView(R.id.tv_name)
-        TextView mNameView;
-
         @BindView(R.id.iconInsideApp)
-        IconFont iconInsideApp;
+        IconFontTextView iconInsideApp;
 
         ImageLoader mImageLoader;
 
@@ -135,11 +135,11 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         }
 
         public void bindView(AppResource appResource) {
-            mNameView.setText(appResource.appname);
-            setIconFont(iconInsideApp, appResource);
+            iconInsideApp.setText(appResource.appname);
+            setIconFont(iconInsideApp.getTopIcon(), appResource);
         }
 
-        private void setIconFont(IconFont iconInsideApp, AppResource appResource) {
+        private void setIconFont(IconFontDrawable iconInsideApp, AppResource appResource) {
             //  Timber.d("set image appType [%s] url: [%s]", appResource.appType, appResource.iconUrl);
             if (iconInsideApp == null || appResource == null) {
                 return;
@@ -156,33 +156,30 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         }
 
         private void loadIconFontDefault() {
-            loadIconFont(iconInsideApp,
+            loadIconFont(iconInsideApp.getLeftIcon(),
                     R.string.general_icondefault,
                     AndroidUtils.getColorFromResource(R.color.home_font_inside_app));
         }
 
-        private void loadIconFont(IconFont iconInsideApp, String iconName, String iconColor)
+        private void loadIconFont(IconFontDrawable iconInsideApp, String iconName, String iconColor)
                 throws Resources.NotFoundException {
-            iconInsideApp.setTypeface(IconFontHelper.getInstance().getCurrentTypeface());
-            IconFontInfo iconFontInfo = IconFontHelper.getInstance().getIconFontInfo(iconName);
-            if (iconFontInfo != null) {
-                iconInsideApp.setText(iconFontInfo.code);
+            iconInsideApp.setIcon(iconName);
+            if (iconInsideApp.hasIcon()) {
                 setColorIconFont(iconInsideApp, iconColor);
             } else {
                 loadIconFontDefault();
             }
         }
 
-        private void loadIconFont(IconFont iconInsideApp, int resourceId, String iconColor)
+        private void loadIconFont(IconFontDrawable iconInsideApp, int resourceId, String iconColor)
                 throws Resources.NotFoundException {
-            iconInsideApp.setTypefaceFromAsset(getContext().getString(R.string.font_name));
             iconInsideApp.setIcon(resourceId);
             setColorIconFont(iconInsideApp, iconColor);
         }
 
-        private void setColorIconFont(IconFont iconInsideApp, String color) {
+        private void setColorIconFont(IconFontDrawable iconInsideApp, String color) {
             if (!TextUtils.isEmpty(color)) {
-                iconInsideApp.setIconColor(color);
+                iconInsideApp.setColor(color);
             }
         }
     }

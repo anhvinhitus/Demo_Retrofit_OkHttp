@@ -14,22 +14,17 @@
     android:paddingRight="8dp"
     android:paddingTop="16dp">
 
-    <com.zalopay.ui.widget.IconFont
+    <vn.com.vng.zalopay.utils.IconFontTextView
         android:id="@+id/iconInsideApp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:iconSize="@dimen/font_size_home_inside_app"/>
-
-    <TextView
-        android:id="@+id/tv_name"
         style="@style/HomePage.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:gravity="top|center_horizontal"
         android:lines="2"
         android:maxLines="2"
-        tools:text="@string/transfer.money" />
+        tools:text="@string/transfer.money"
+        app:iconTopSize="@dimen/font_size_home_inside_app"
+        app:iconTopPadding="@dimen/spacing.small"/>
 </LinearLayout>
 
 

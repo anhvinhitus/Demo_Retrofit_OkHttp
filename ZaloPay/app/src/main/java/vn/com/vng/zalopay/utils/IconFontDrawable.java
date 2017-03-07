@@ -84,6 +84,15 @@ public class IconFontDrawable extends Drawable {
         return this;
     }
 
+    public IconFontDrawable setColor(String color) {
+        if(!TextUtils.isEmpty(color)) {
+            mPaint.setColor(Color.parseColor(color));
+            invalidateSelf();
+        }
+
+        return this;
+    }
+
     public IconFontDrawable setColor(int color) {
         mPaint.setColor(color);
         invalidateSelf();
@@ -154,6 +163,10 @@ public class IconFontDrawable extends Drawable {
             }
         }
         return this;
+    }
+
+    public boolean hasIcon() {
+        return (!TextUtils.isEmpty(mText));
     }
 
     public int getLeftPxPadding() {
