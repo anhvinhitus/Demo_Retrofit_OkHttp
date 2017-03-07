@@ -93,6 +93,6 @@ dependencies {
     compile libs.wire_runtime
     compile libs.zalopay_analytics
 
-    compile project(':domain')
+    compile project(':zalopay.domain')
     compile project(':zalopay.feedback')
 }

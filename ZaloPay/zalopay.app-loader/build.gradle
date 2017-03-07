@@ -63,6 +63,6 @@ dependencies {
     compile libs.react_native
     compile libs.animated_gif
 
-    compile project(':data')
+    compile project(':zalopay.data')
     compile libs.zalopay_analytics
 }

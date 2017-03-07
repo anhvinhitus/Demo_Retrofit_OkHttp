@@ -450,9 +450,9 @@ dependencies {
 //    compile(name: 'soundtranscoder-release', ext: 'aar')
 
     debugCompile project(':zalopay.debug')
-    compile project(':data')
+    compile project(':zalopay.data')
     compile project(':ui.widget')
-    compile(project(':app-loader')) {
+    compile(project(':zalopay.app-loader')) {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }
     compile project(':zalopay.feedback')
