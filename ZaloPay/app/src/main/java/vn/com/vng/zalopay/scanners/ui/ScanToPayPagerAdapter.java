@@ -15,7 +15,7 @@ import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
  * *
  */
 
-final class ScanToPayPagerAdapter extends AbsFragmentPagerAdapter {
+public final class ScanToPayPagerAdapter extends AbsFragmentPagerAdapter {
 
     static final int TAB_NFC = 1;
     static final int TAB_BEACON = 2;

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.react.test;
+package vn.com.vng.zalopay.react.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
