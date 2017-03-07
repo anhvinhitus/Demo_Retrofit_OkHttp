@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layoutLinkCardEmpty"
     android:layout_width="match_parent"
@@ -29,21 +28,17 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <com.zalopay.ui.widget.IconFont
+                <vn.com.vng.zalopay.utils.IconFontTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    app:iconName="@string/linkaccount_info"
-                    app:iconSize="@dimen/font_size_icon_in_text_large"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing.small"
                     android:text="@string/not_link_card"
                     android:textColor="@color/txt_item_main"
                     android:textSize="@dimen/textsize.text.main"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    app:iconLeftColor="@color/colorPrimary"
+                    app:iconLeftName="@string/linkaccount_info"
+                    app:iconLeftPadding="@dimen/spacing.small"
+                    app:iconLeftSize="@dimen/font_size_icon_in_text_large" />
             </LinearLayout>
 
             <TextView
@@ -55,7 +50,7 @@
                 android:layout_marginTop="@dimen/spacing.small"
                 android:text="@string/link_card_to_use_easily"
                 android:textColor="@color/txt_item_main"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
 
             <LinearLayout
                 android:id="@+id/btn_add_card"
@@ -67,20 +62,16 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <com.zalopay.ui.widget.IconFont
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    app:iconName="@string/linkaccount_add"
-                    app:iconSize="@dimen/font_size_link_card_add"/>
-
-                <TextView
+                <vn.com.vng.zalopay.utils.IconFontTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/spacing.small"
                     android:text="@string/link.card"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    app:iconLeftColor="@color/white"
+                    app:iconLeftName="@string/linkaccount_add"
+                    app:iconLeftPadding="@dimen/spacing.small"
+                    app:iconLeftSize="@dimen/font_size_link_card_add" />
             </LinearLayout>
         </LinearLayout>
 
@@ -94,13 +85,13 @@
             <include
                 layout="@layout/layout_pci_dss"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <FrameLayout
                 android:id="@+id/fragmentInLinkCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"/>
+                android:layout_marginTop="14dp" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
