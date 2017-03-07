@@ -63,12 +63,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textSize="15sp"
-                    android:text="@string/category" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_right" />
+                    android:text="@string/category"
+                    android:drawableRight="@drawable/ic_arrow_right"/>
 
             </LinearLayout>
 

@@ -13,39 +13,23 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <LinearLayout
+        <vn.com.vng.zalopay.utils.IconFontTextView
+            style="@style/TextView.Profile.Edit"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <com.zalopay.ui.widget.IconFont
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:textColor="@color/menu_font_ic_blue"
-                app:iconName="@string/profile_lock"
-                app:iconSize="@dimen/font_size_profile_lock"/>
-
-            <TextView
-                style="@style/TextView.Profile.Edit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/spacing.medium"
-                android:layout_weight="1.0"
-                android:text="@string/establish.and.protect.account"
-                android:textColor="@color/black" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/spacing.medium"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_arrow_right" />
-        </LinearLayout>
+            android:paddingLeft="@dimen/spacing.medium"
+            android:paddingRight="@dimen/spacing.medium"
+            android:text="@string/establish.and.protect.account"
+            android:textColor="@color/black"
+            app:iconLeftColor="@color/menu_font_ic_blue"
+            app:iconLeftName="@string/profile_lock"
+            app:iconLeftPadding="@dimen/spacing.medium"
+            app:iconLeftSize="@dimen/font_size_profile_lock"
+            app:iconRightColor="@color/arrow_right"
+            app:iconRightName="@string/general_arrowright"
+            app:iconRightSize="@dimen/font_size_arrow_right" />
 
         <View
             android:layout_width="match_parent"
