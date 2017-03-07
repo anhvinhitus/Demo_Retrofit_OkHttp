@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.facebook.react.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +32,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
     }
 
     @Override
-    public ReactInstanceManager acquireReactInstanceManager(final ReactInstanceDelegate activity) {
+    public ReactInstanceManager acquireReactInstanceManager(final ReactInstanceDelegate activity, LifecycleState initialLifecycleState) {
         if (activity == null) {
             return null;
         }
@@ -48,7 +50,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
                 .setApplication(activity.getApplication())
                 .setJSMainModuleName(activity.getJSMainModuleName())
                 .setUseDeveloperSupport(activity.getUseDeveloperSupport())
-                .setInitialLifecycleState(activity.mLifecycleState)
+                .setInitialLifecycleState(initialLifecycleState)
                 .setNativeModuleCallExceptionHandler(new HandleReactNativeException(this, activity));
 
         for (ReactPackage reactPackage : activity.getPackages()) {
@@ -187,16 +189,26 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
         activity.handleException(e);
     }
 
-    private Activity mActivity;
+    private WeakReference<Activity> mActivity;
 
     @Override
     public Context getActivityContext() {
-        return mActivity;
+        if (mActivity != null) {
+            return mActivity.get();
+        }
+        return null;
     }
 
     @Override
     public void setActivityContext(Activity activity) {
-        mActivity = activity;
+        if (activity == null) {
+            if (mActivity != null) {
+                mActivity.clear();
+                mActivity = null;
+            }
+        } else {
+            mActivity = new WeakReference<>(activity);
+        }
     }
 
     @Override
@@ -206,7 +218,9 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
                 manager.destroy();
             }
             mInstance.clear();
-            mActivity = null;
+            if (mActivity != null) {
+                mActivity.clear();
+            }
         } catch (Exception e) {
             Timber.w(e, "Error on cleanup of ReactNativeInstanceManagerLongLife");
         }

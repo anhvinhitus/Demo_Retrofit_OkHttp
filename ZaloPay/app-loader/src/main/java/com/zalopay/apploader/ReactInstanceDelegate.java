@@ -1,6 +1,5 @@
 package com.zalopay.apploader;
 
-import android.app.Activity;
 import android.app.Application;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,7 +28,7 @@ interface ReactInstanceDelegate {
 
     boolean getUseDeveloperSupport();
 
-    void handleException(@NonNull Exception e);
+    void handleException(@NonNull Throwable e);
 
     List<ReactPackage> getPackages();
 }

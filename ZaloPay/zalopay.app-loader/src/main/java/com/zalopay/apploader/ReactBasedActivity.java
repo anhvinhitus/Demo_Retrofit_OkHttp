@@ -44,7 +44,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
 
     protected abstract void doInjection();
 
-    protected void handleException(Throwable e) {
+    public void handleException(Throwable e) {
         finish();
     }
 
@@ -129,7 +129,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
      * If your app uses additional views or modules besides the default ones,
      * you'll want to include more packages here.
      */
-    protected abstract List<ReactPackage> getPackages();
+    public abstract List<ReactPackage> getPackages();
 
     /**
      * A subclass may override this method if it needs to use a custom {@link ReactRootView}.
@@ -157,7 +157,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
         this.initArgs(savedInstanceState);
 
         nativeInstanceManager().setActivityContext(this);
-        mReactInstanceManager = nativeInstanceManager().acquireReactInstanceManager(this);
+        mReactInstanceManager = nativeInstanceManager().acquireReactInstanceManager(this, mLifecycleState);
         Timber.i("ReactInstanceManager currently has context: %s", mReactInstanceManager.hasStartedCreatingInitialContext());
 //        mReactInstanceManager.createReactContextInBackground();
         mReactRootView = createRootView();
@@ -296,4 +296,3 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
-

@@ -182,7 +182,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
      * e.g. "index.android.bundle"
      */
     @Nullable
-    protected String getBundleAssetName() {
+    public String getBundleAssetName() {
         return "index.android.bundle";
     }
 
@@ -194,7 +194,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
      * e.g. "file://sdcard/myapp_cache/index.android.bundle"
      */
     @Nullable
-    protected String getJSBundleFile() {
+    public String getJSBundleFile() {
         String jsBundleFile = bundleReactConfig.getExternalJsBundle(appResource);
         Timber.d("jsBundleFile %s", jsBundleFile);
         return jsBundleFile;
@@ -206,7 +206,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
      * This is the first file to be executed once the {@link com.facebook.react.ReactInstanceManager} is created.
      * e.g. "index.android"
      */
-    protected String getJSMainModuleName() {
+    public String getJSMainModuleName() {
         return "index.android";
     }
 
@@ -235,13 +235,13 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     /**
      * Returns whether dev mode should be enabled. This enables e.g. the dev menu.
      */
-    protected boolean getUseDeveloperSupport() {
+    public boolean getUseDeveloperSupport() {
         Timber.d("Developer support: %s", bundleReactConfig.isExternalDevSupport());
         return bundleReactConfig.isExternalDevSupport();
     }
 
     @Override
-    protected List<ReactPackage> getPackages() {
+    public List<ReactPackage> getPackages() {
 
         long appId = appResource == null ? 0 : appResource.appid;
         Timber.d("getPackages: appId %s", appId);
@@ -313,7 +313,7 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     }
 
     @Override
-    protected void handleException(Throwable e) {
+    public void handleException(Throwable e) {
         mEventBus.post(new PaymentAppExceptionEvent(e, appResource.appid));
         super.handleException(e);
     }

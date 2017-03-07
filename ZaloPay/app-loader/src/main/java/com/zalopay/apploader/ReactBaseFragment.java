@@ -1,6 +1,5 @@
 package com.zalopay.apploader;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.react.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
@@ -61,6 +61,8 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     @Nullable
     private PermissionListener mPermissionListener;
 
+    LifecycleState mLifecycleState = LifecycleState.BEFORE_RESUME;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -88,8 +90,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         nativeInstanceManager().setActivityContext(getActivity());
-        mReactInstanceManager = nativeInstanceManager().acquireReactInstanceManager(this);
-
+        mReactInstanceManager = nativeInstanceManager().acquireReactInstanceManager(this, mLifecycleState);
         mReactRootView.startReactApplication(mReactInstanceManager, getMainComponentName(), getLaunchOptions());
     }
 
@@ -104,6 +105,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     @Override
     public void onResume() {
         super.onResume();
+        mLifecycleState = LifecycleState.BEFORE_RESUME;
         if (mReactInstanceManager != null) {
             mReactInstanceManager.onHostResume(getActivity(), this);
         }
@@ -122,8 +124,21 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
         super.onDetach();
     }
 
+    private boolean mReactInstanceError;
+
     @Override
     public void onDestroyView() {
+
+        if (mReactRootView != null) {
+            mReactRootView.unmountReactApplication();
+        }
+
+        if (mReactInstanceManager != null) {
+            nativeInstanceManager().releaseReactInstanceManager(this, mReactInstanceManager, mReactInstanceError);
+            mReactInstanceManager = null;
+        }
+
+        nativeInstanceManager().setActivityContext(null);
         super.onDestroyView();
     }
 
@@ -207,7 +222,11 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     }
 
     @Override
-    public void handleException(@NonNull Exception e) {
+    public void handleException(@NonNull Throwable e) {
         getActivity().finish();
+    }
+
+    protected void reactInstanceCaughtError() {
+        mReactInstanceError = true;
     }
 }

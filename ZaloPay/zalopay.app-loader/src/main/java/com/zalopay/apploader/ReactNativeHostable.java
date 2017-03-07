@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import com.facebook.react.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 
 /**
@@ -16,7 +17,7 @@ public interface ReactNativeHostable {
      *
      * @return new instance of ReactInstanceManager
      */
-    ReactInstanceManager acquireReactInstanceManager(ReactInstanceDelegate delegate);
+    ReactInstanceManager acquireReactInstanceManager(ReactInstanceDelegate delegate, LifecycleState initialLifecycleState);
 
     void releaseReactInstanceManager(ReactInstanceDelegate activity, ReactInstanceManager instance, boolean forceRemove);
 

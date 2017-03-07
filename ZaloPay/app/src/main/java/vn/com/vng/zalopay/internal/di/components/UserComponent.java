@@ -53,6 +53,7 @@ import vn.com.vng.zalopay.bank.ui.LinkCardFragment;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardFragment;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
+import vn.com.vng.zalopay.react.test.ExternalReactFragment;
 import vn.com.vng.zalopay.react.test.InternalReactFragment;
 import vn.com.vng.zalopay.requestsupport.RequestSupportFragment;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
@@ -235,4 +236,6 @@ public interface UserComponent {
     void inject(SearchCategoryFragment f);
 
     void inject(InternalReactFragment d);
+
+    void inject(ExternalReactFragment f);
 }

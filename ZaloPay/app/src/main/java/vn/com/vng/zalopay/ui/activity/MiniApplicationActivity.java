@@ -60,6 +60,7 @@ import vn.com.vng.zalopay.service.GlobalEventHandlingService;
  */
 public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
+
     protected final String TAG = getClass().getSimpleName();
 
     public static final String ACTION_SUPPORT_CENTER = "vn.com.vng.zalopay.action.SUPPORT_CENTER";
@@ -224,7 +225,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
 
     @Override
-    protected List<ReactPackage> getPackages() {
+    public List<ReactPackage> getPackages() {
         return Arrays.asList(
                 new MainReactPackage(),
                 reactInternalPackage(),
@@ -266,7 +267,7 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     @Override
-    protected void handleException(Throwable e) {
+    public void handleException(Throwable e) {
         eventBus.post(new InternalAppExceptionEvent(e));
         super.handleException(e);
     }
