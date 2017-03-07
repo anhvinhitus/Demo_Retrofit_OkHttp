@@ -173,6 +173,14 @@
             android:theme="@style/AppTheme.NoActionBar.FullScreen" />
 
         <activity
+            android:name=".ui.activity.HomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:label="@string/loremipsum"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/loremipsum"
