@@ -264,7 +264,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 FileDownloader.DownloadParam param = new FileDownloader.DownloadParam();
                 param.fileName = fontFamilyName;
                 param.url = url;
-                param.dest = getReactApplicationContext().getFilesDir() + "/Fonts/";
+                param.dest = getReactApplicationContext().getFilesDir() + "/fonts/";
                 param.callback = new FileDownloader.DownloadCallback() {
                     @Override
                     public void onSuccess(File dest) {
