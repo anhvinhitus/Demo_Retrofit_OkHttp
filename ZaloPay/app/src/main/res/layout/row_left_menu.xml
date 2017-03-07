@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:background="?selector">
@@ -12,20 +11,15 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.zalopay.ui.widget.IconFont
-            android:id="@+id/imgIcon"
+        <vn.com.vng.zalopay.utils.CompoundIconFont
+            android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/app_padding"
-            app:iconSize="@dimen/font_size_menu"/>
-
-        <TextView
-            android:id="@+id/tvTitle"
-            style="@style/LeftMenu.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="left|center_vertical"
-            tools:text="@string/app_name"/>
+            android:paddingTop="@dimen/app_padding"
+            android:paddingBottom="@dimen/app_padding"
+            android:paddingLeft="@dimen/app_padding"
+            app:iconLeftSize="@dimen/font_size_menu"
+            app:iconLeftPadding="@dimen/app_padding" />
     </LinearLayout>
 
     <View
@@ -34,5 +28,5 @@
         android:layout_height="@dimen/separate"
         android:layout_gravity="bottom"
         android:layout_marginLeft="48dp"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 </FrameLayout>

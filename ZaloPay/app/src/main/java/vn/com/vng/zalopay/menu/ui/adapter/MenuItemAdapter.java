@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
+import vn.com.vng.zalopay.utils.CompoundIconFont;
 
 /**
  * Created by longlv on 04/05/2016.
@@ -96,14 +97,11 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
     }
 
     static class ItemViewHolder {
-        @BindView(R.id.imgIcon)
-        IconFont mIconFont;
+        @BindView(R.id.icon)
+        CompoundIconFont mIcon;
 
         @BindView(R.id.viewSeparate)
         View viewSeparate;
-
-        @BindView(R.id.tvTitle)
-        TextView mTvTitle;
 
 
         ItemViewHolder(View view) {
@@ -111,9 +109,9 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
         }
 
         void bindView(MenuItem menuItem) {
-            mTvTitle.setText(menuItem.title);
-            mIconFont.setIcon(menuItem.iconResource);
-            mIconFont.setIconColor(menuItem.iconColor);
+            mIcon.setText(menuItem.title);
+            mIcon.getLeftIcon().setIcon(menuItem.iconResource);
+            mIcon.getLeftIcon().setResourcesColor(menuItem.iconColor);
             if (menuItem.showDivider) {
                 viewSeparate.setVisibility(View.VISIBLE);
             } else {
