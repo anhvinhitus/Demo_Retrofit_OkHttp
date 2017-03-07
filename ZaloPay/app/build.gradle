@@ -457,7 +457,7 @@ dependencies {
     }
     compile project(':zalopay.feedback')
 
-    compile project(':paymentsdk')
+    compile project(':zalopay.sdk')
 
     compile libs.fresco
 
