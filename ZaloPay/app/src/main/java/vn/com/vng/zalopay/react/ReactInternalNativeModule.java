@@ -38,6 +38,7 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.navigation.INavigator;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
@@ -251,6 +252,11 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     public void loadFontAsync(final String fontFamilyName, final String url, final Promise promise) {
         if (fontFamilyName.equalsIgnoreCase("") || url.equalsIgnoreCase("")) {
             promise.reject(new Exception("Do not leave param null"));
+            return;
+        }
+
+        if (!BuildConfig.DEBUG && PaymentAppConfig.EXCEPT_LOAD_FONTS.contains(fontFamilyName.toLowerCase())) {
+            promise.reject(new Exception("Can not load font " + fontFamilyName));
             return;
         }
 
