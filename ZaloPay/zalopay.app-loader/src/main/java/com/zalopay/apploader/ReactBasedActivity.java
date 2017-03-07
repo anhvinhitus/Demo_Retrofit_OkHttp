@@ -34,7 +34,8 @@ import timber.log.Timber;
  * Created by huuhoa on 5/16/16.
  * Based activity for hosting react native components
  */
-public abstract class ReactBasedActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity {
+public abstract class ReactBasedActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity,
+        ReactInstanceDelegate {
     private boolean mReactInstanceError;
 
     public ReactBasedActivity() {
@@ -69,7 +70,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
      * always try to load the JS bundle from the packager server.
      * e.g. "index.android.bundle"
      */
-    protected
+    public
     @Nullable
     String getBundleAssetName() {
         return "index.android.bundle";
@@ -81,7 +82,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
      * by getBundleAssetName.
      * e.g. "file://sdcard/myapp_cache/index.android.bundle"
      */
-    protected
+    public
     @Nullable
     String getJSBundleFile() {
         return null;
@@ -93,7 +94,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
      * This is the first file to be executed once the {@link ReactInstanceManager} is created.
      * e.g. "index.android"
      */
-    protected String getJSMainModuleName() {
+    public String getJSMainModuleName() {
         return "index.android";
     }
 
@@ -120,7 +121,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
     /**
      * Returns whether dev mode should be enabled. This enables e.g. the dev menu.
      */
-    protected abstract boolean getUseDeveloperSupport();
+    public abstract boolean getUseDeveloperSupport();
 
     /**
      * Returns a list of {@link ReactPackage} used by the app.

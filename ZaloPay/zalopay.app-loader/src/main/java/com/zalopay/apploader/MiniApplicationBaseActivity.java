@@ -14,17 +14,25 @@ public abstract class MiniApplicationBaseActivity extends ReactBasedActivity {
     public MiniApplicationBaseActivity() {
     }
 
-    protected @Nullable String getBundleAssetName() {
+    public
+    @Nullable
+    String getBundleAssetName() {
         return "index.android.bundle";
     }
 
-    protected @Nullable String getJSBundleFile() {
+    public
+    @Nullable
+    String getJSBundleFile() {
         return null;
     }
-    protected String getJSMainModuleName() {
+
+    public String getJSMainModuleName() {
         return "index.android";
     }
-    protected @Nullable Bundle getLaunchOptions() {
+
+    protected
+    @Nullable
+    Bundle getLaunchOptions() {
         return null;
     }
 
@@ -35,5 +43,5 @@ public abstract class MiniApplicationBaseActivity extends ReactBasedActivity {
         return componentName;
     }
 
-    protected abstract boolean getUseDeveloperSupport();
+    public abstract boolean getUseDeveloperSupport();
 }

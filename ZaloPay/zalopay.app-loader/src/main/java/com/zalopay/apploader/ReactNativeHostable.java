@@ -1,5 +1,6 @@
 package com.zalopay.apploader;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
@@ -12,21 +13,25 @@ import com.facebook.react.ReactInstanceManager;
 public interface ReactNativeHostable {
     /**
      * Acquire a new instance of ReactInstanceManager
+     *
      * @return new instance of ReactInstanceManager
      */
-    ReactInstanceManager acquireReactInstanceManager(ReactBasedActivity activity);
-    void releaseReactInstanceManager(ReactBasedActivity activity, ReactInstanceManager instance, boolean forceRemove);
+    ReactInstanceManager acquireReactInstanceManager(ReactInstanceDelegate delegate);
+
+    void releaseReactInstanceManager(ReactInstanceDelegate activity, ReactInstanceManager instance, boolean forceRemove);
 
     void cleanup();
 
     /**
      * Handle exception caused on react native execution
+     *
      * @param activity based activity that hosts the react native module
-     * @param e exception
+     * @param e        exception
      */
-    void handleJSException(ReactBasedActivity activity, Exception e);
+    void handleJSException(ReactInstanceDelegate activity, Exception e);
 
     @Nullable
     Context getActivityContext();
-    void setActivityContext(ReactBasedActivity activity);
+
+    void setActivityContext(Activity activity);
 }

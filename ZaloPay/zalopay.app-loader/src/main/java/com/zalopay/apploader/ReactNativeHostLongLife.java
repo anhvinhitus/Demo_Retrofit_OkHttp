@@ -1,5 +1,6 @@
 package com.zalopay.apploader;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
@@ -29,7 +30,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
     }
 
     @Override
-    public ReactInstanceManager acquireReactInstanceManager(final ReactBasedActivity activity) {
+    public ReactInstanceManager acquireReactInstanceManager(final ReactInstanceDelegate activity) {
         if (activity == null) {
             return null;
         }
@@ -68,7 +69,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
     }
 
     @Override
-    public void releaseReactInstanceManager(ReactBasedActivity activity, ReactInstanceManager instance, boolean forceRemove) {
+    public void releaseReactInstanceManager(ReactInstanceDelegate activity, ReactInstanceManager instance, boolean forceRemove) {
         if (mInstance == null) {
             return;
         }
@@ -98,7 +99,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
         }
     }
 
-    private void removeInstance(ReactBasedActivity activity) {
+    private void removeInstance(ReactInstanceDelegate activity) {
         if (mInstance == null) {
             return;
         }
@@ -130,7 +131,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
     }
 
     @NonNull
-    private String createMapping(ReactBasedActivity activity) {
+    private String createMapping(ReactInstanceDelegate activity) {
         String mapping = activity.getJSBundleFile();
         if (mapping == null) {
             mapping = "NULL";
@@ -151,7 +152,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
         return mapping;
     }
 
-    private String getAvailableMapping(ReactBasedActivity activity) {
+    private String getAvailableMapping(ReactInstanceDelegate activity) {
         String mapping = activity.getJSBundleFile();
         if (mapping == null) {
             mapping = "NULL";
@@ -176,7 +177,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
     }
 
     @Override
-    public void handleJSException(ReactBasedActivity activity, Exception e) {
+    public void handleJSException(ReactInstanceDelegate activity, Exception e) {
         Timber.e(e, "Exception! Should not happen with production build");
         if (activity == null) {
             return;
@@ -186,7 +187,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
         activity.handleException(e);
     }
 
-    private ReactBasedActivity mActivity;
+    private Activity mActivity;
 
     @Override
     public Context getActivityContext() {
@@ -194,7 +195,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
     }
 
     @Override
-    public void setActivityContext(ReactBasedActivity activity) {
+    public void setActivityContext(Activity activity) {
         mActivity = activity;
     }
 

@@ -203,13 +203,13 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     @Override
-    protected boolean getUseDeveloperSupport() {
+    public boolean getUseDeveloperSupport() {
         return bundleReactConfig.isInternalDevSupport();
     }
 
     @Nullable
     @Override
-    protected String getJSBundleFile() {
+    public String getJSBundleFile() {
         return bundleReactConfig.getInternalJsBundle();
     }
 
