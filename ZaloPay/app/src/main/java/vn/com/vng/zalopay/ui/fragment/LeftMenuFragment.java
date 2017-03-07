@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import butterknife.BindView;
 import butterknife.OnItemClick;
 import butterknife.internal.DebouncingOnClickListener;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.react.base.HomePagerActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.model.MenuItem;
@@ -168,6 +170,12 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
 
     @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        if (true) {
+            startActivity(new Intent(getContext(), HomePagerActivity.class));
+            return;
+        }
+
         if (position == 0) {
             return; // Header
         }

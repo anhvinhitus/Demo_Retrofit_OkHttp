@@ -49,6 +49,10 @@ public class InternalReactFragment extends ReactBaseFragment {
     private static final String ARG_MODULE_NAME = "moduleName";
     private static final String ARG_LAUNCH_OPTIONS = "launchOptions";
 
+    public static InternalReactFragment newInstance(String moduleName) {
+        return newInstance(moduleName, new HashMap<>());
+    }
+
     public static InternalReactFragment newInstance(String moduleName, HashMap<String, String> launchOptions) {
 
         Bundle options = new Bundle();

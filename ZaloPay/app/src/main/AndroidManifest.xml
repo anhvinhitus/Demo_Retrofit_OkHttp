@@ -221,6 +221,12 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".react.base.HomePagerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".paymentapps.ui.PaymentApplicationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:theme="@style/AppTheme.Payment"

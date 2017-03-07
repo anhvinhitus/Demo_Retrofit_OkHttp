@@ -51,6 +51,10 @@ import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 public class ExternalReactFragment extends ReactBaseFragment {
     public static final String TAG = "ExternalReactFragment";
 
+    public static ExternalReactFragment newInstance(AppResource app) {
+        return newInstance(app, new HashMap<>());
+    }
+
     public static ExternalReactFragment newInstance(AppResource app, HashMap<String, String> launchOptions) {
 
         Bundle options = new Bundle();
