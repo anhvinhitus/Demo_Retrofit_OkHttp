@@ -13,23 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.zalopay.ui.widget.IconFont
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            app:iconName="@string/header_payqrcode"
-            app:iconSize="@dimen/font_size_home_function" />
-
-        <TextView
+        <vn.com.vng.zalopay.utils.CompoundIconFont
             style="@style/TextView.Default"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing.small"
             android:gravity="center"
             android:text="@string/txt_home_scantopay"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/font_size_normal" />
+            android:textSize="@dimen/font_size_normal"
+            app:iconTopName="@string/header_payqrcode"
+            app:iconTopSize="@dimen/font_size_home_function"
+            app:iconTopColor="@color/white"
+            app:iconTopPadding="@dimen/spacing.small"/>
     </LinearLayout>
 
     <LinearLayout
@@ -38,23 +34,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.zalopay.ui.widget.IconFont
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            app:iconName="@string/header_overbalance"
-            app:iconSize="@dimen/font_size_home_function" />
-
-        <TextView
+        <vn.com.vng.zalopay.utils.CompoundIconFont
             style="@style/TextView.Default"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing.small"
             android:gravity="center"
             android:text="@string/overbalance"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/font_size_normal" />
+            android:textSize="@dimen/font_size_normal"
+            app:iconTopName="@string/header_overbalance"
+            app:iconTopSize="@dimen/font_size_home_function"
+            app:iconTopColor="@color/white"
+            app:iconTopPadding="@dimen/spacing.small"/>
 
         <TextView
             android:id="@+id/tv_balance"
@@ -74,22 +66,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.zalopay.ui.widget.IconFont
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            app:iconName="@string/header_linkbank"
-            app:iconSize="@dimen/font_size_home_function" />
-
-        <TextView
+        <vn.com.vng.zalopay.utils.CompoundIconFont
             style="@style/TextView.Default"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing.small"
             android:gravity="center"
             android:text="@string/txt_home_bank"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/font_size_normal" />
+            android:textSize="@dimen/font_size_normal"
+            app:iconTopName="@string/header_linkbank"
+            app:iconTopSize="@dimen/font_size_home_function"
+            app:iconTopColor="@color/white"
+            app:iconTopPadding="@dimen/spacing.small" />
     </LinearLayout>
 </LinearLayout>
