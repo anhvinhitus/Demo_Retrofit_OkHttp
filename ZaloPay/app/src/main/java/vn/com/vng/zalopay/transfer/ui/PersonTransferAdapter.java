@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.vng.zalopay.utils.IconFontTextView;
 import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
@@ -190,10 +191,7 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
         TextView tvNoteView;
 
         @BindView(R.id.iconState)
-        IconFont mIconState;
-
-        @BindView(R.id.tvMoney)
-        TextView mMoneyChangeSuccess;
+        IconFontTextView mIconState;
 
         @BindView(R.id.totalView)
         TextView totalView;
@@ -290,10 +288,10 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
                 simpleGrow(layoutSuccess);
             }
 
-            if (mMoneyChangeSuccess != null) {
-                mMoneyChangeSuccess.setTextColor(ContextCompat.getColor(itemView.getContext(), success ? R.color.green : R.color.red));
-                mMoneyChangeSuccess.setText(CurrencyUtil.spanFormatCurrency(amount, false));
-                mIconState.setIcon(success ? R.string.general_success : R.string.general_failed);
+            if (mIconState != null) {
+                mIconState.setTextColor(ContextCompat.getColor(itemView.getContext(), success ? R.color.green : R.color.red));
+                mIconState.setText(CurrencyUtil.spanFormatCurrency(amount, false));
+                mIconState.getLeftIcon().setIcon(success ? R.string.general_success : R.string.general_failed);
             }
         }
 
