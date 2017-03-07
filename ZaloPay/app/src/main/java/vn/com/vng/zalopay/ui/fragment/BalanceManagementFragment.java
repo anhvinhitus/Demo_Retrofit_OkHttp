@@ -21,7 +21,7 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.BalanceManagementPresenter;
 import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
-import vn.com.vng.zalopay.utils.CompoundIconFont;
+import vn.com.vng.zalopay.utils.IconFontTextView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -48,7 +48,7 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
     TextView tvAccountName;
 
     @BindView(R.id.tv_deposit)
-    CompoundIconFont tvDeposit;
+    IconFontTextView tvDeposit;
 
     @BindView(R.id.viewSeparate)
     View viewSeparate;

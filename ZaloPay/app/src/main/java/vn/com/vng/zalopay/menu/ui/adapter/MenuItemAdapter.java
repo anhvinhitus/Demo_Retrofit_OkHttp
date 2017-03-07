@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.zalopay.ui.widget.IconFont;
-
 import java.util.List;
 
 import butterknife.BindView;
@@ -17,7 +15,7 @@ import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
-import vn.com.vng.zalopay.utils.CompoundIconFont;
+import vn.com.vng.zalopay.utils.IconFontTextView;
 
 /**
  * Created by longlv on 04/05/2016.
@@ -98,7 +96,7 @@ public class MenuItemAdapter extends ArrayAdapter<MenuItem> {
 
     static class ItemViewHolder {
         @BindView(R.id.icon)
-        CompoundIconFont mIcon;
+        IconFontTextView mIcon;
 
         @BindView(R.id.viewSeparate)
         View viewSeparate;

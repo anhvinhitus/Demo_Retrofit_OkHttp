@@ -88,7 +88,7 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <vn.com.vng.zalopay.utils.CompoundIconFont
+        <vn.com.vng.zalopay.utils.IconFontTextView
             android:id="@+id/tv_deposit"
             style="@style/LeftMenu.Title"
             android:layout_width="match_parent"
@@ -115,7 +115,7 @@
             android:layout_marginLeft="62dp"
             android:background="@color/separate" />
 
-        <vn.com.vng.zalopay.utils.CompoundIconFont
+        <vn.com.vng.zalopay.utils.IconFontTextView
             android:id="@+id/tv_withdraw"
             style="@style/LeftMenu.Title"
             android:layout_width="match_parent"

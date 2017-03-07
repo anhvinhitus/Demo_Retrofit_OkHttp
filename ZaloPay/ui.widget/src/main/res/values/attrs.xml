@@ -6,7 +6,7 @@
         <attr name="iconSize" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="CompoundIconFont">
+    <declare-styleable name="IconFontTextView">
         <attr name="iconLeftName" format="string"/>
         <attr name="iconLeftSize" format="dimension" />
         <attr name="iconLeftColor" format="reference" />

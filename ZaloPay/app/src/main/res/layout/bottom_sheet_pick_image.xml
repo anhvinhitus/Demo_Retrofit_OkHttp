@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingBottom="8dp">
 
-    <vn.com.vng.zalopay.utils.CompoundIconFont
+    <vn.com.vng.zalopay.utils.IconFontTextView
         android:id="@+id/layoutCapture"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -27,7 +27,7 @@
         android:layout_height="@dimen/separate"
         android:background="@color/separate" />
 
-    <vn.com.vng.zalopay.utils.CompoundIconFont
+    <vn.com.vng.zalopay.utils.IconFontTextView
         android:id="@+id/layoutGallery"
         android:layout_width="match_parent"
         android:layout_height="48dp"

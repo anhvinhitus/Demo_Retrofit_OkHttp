@@ -1,16 +1,9 @@
 package vn.com.vng.zalopay.utils;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.TextView;
-
-import com.zalopay.ui.widget.iconfont.IconFontHelper;
-import com.zalopay.ui.widget.iconfont.IconFontInfo;
 
 import timber.log.Timber;
 
@@ -21,35 +14,35 @@ import com.zalopay.ui.widget.R;
  *
  */
 
-public class CompoundIconFont extends TextView {
+public class IconFontTextView extends TextView {
 
     IconFontDrawable mLeftIcon, mRightIcon, mTopIcon, mBottomIcon;
-    final int[] mLeftValue = {R.styleable.CompoundIconFont_iconLeftName,
-            R.styleable.CompoundIconFont_iconLeftSize,
-            R.styleable.CompoundIconFont_iconLeftColor,
-            R.styleable.CompoundIconFont_iconLeftPadding};
-    final int[] mRightValue = {R.styleable.CompoundIconFont_iconRightName,
-            R.styleable.CompoundIconFont_iconRightSize,
-            R.styleable.CompoundIconFont_iconRightColor,
-            R.styleable.CompoundIconFont_iconRightPadding};
-    final int[] mTopValue = {R.styleable.CompoundIconFont_iconTopName,
-            R.styleable.CompoundIconFont_iconTopSize,
-            R.styleable.CompoundIconFont_iconTopColor,
-            R.styleable.CompoundIconFont_iconTopPadding};
-    final int[] mBottomValue = {R.styleable.CompoundIconFont_iconBottomName,
-            R.styleable.CompoundIconFont_iconBottomSize,
-            R.styleable.CompoundIconFont_iconBottomColor,
-            R.styleable.CompoundIconFont_iconBottomPadding};
+    final int[] mLeftValue = {R.styleable.IconFontTextView_iconLeftName,
+            R.styleable.IconFontTextView_iconLeftSize,
+            R.styleable.IconFontTextView_iconLeftColor,
+            R.styleable.IconFontTextView_iconLeftPadding};
+    final int[] mRightValue = {R.styleable.IconFontTextView_iconRightName,
+            R.styleable.IconFontTextView_iconRightSize,
+            R.styleable.IconFontTextView_iconRightColor,
+            R.styleable.IconFontTextView_iconRightPadding};
+    final int[] mTopValue = {R.styleable.IconFontTextView_iconTopName,
+            R.styleable.IconFontTextView_iconTopSize,
+            R.styleable.IconFontTextView_iconTopColor,
+            R.styleable.IconFontTextView_iconTopPadding};
+    final int[] mBottomValue = {R.styleable.IconFontTextView_iconBottomName,
+            R.styleable.IconFontTextView_iconBottomSize,
+            R.styleable.IconFontTextView_iconBottomColor,
+            R.styleable.IconFontTextView_iconBottomPadding};
 
-    public CompoundIconFont(Context context) {
+    public IconFontTextView(Context context) {
         this(context, null);
     }
 
-    public CompoundIconFont(Context context, AttributeSet attrs) {
+    public IconFontTextView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public CompoundIconFont(Context context, AttributeSet attrs, int defStyle) {
+    public IconFontTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         if (isInEditMode()) {
             return;
@@ -60,7 +53,7 @@ public class CompoundIconFont extends TextView {
         mTopIcon = new IconFontDrawable(context);
         mBottomIcon = new IconFontDrawable(context);
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CompoundIconFont);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.IconFontTextView);
 
         if (typedArray == null) {
             return;
