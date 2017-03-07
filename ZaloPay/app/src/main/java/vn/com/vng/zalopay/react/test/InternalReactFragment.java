@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.react.test;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -16,12 +15,13 @@ import org.greenrobot.eventbus.Subscribe;
 import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
@@ -46,9 +46,19 @@ public class InternalReactFragment extends ReactBaseFragment {
 
     public static final String TAG = "InternalReactFragment";
 
-    public static InternalReactFragment newInstance() {
+    private static final String ARG_MODULE_NAME = "moduleName";
+    private static final String ARG_LAUNCH_OPTIONS = "launchOptions";
+
+    public static InternalReactFragment newInstance(String moduleName, HashMap<String, String> launchOptions) {
+
+        Bundle options = new Bundle();
+        for (Map.Entry<String, String> e : launchOptions.entrySet()) {
+            options.putString(e.getKey(), e.getValue());
+        }
 
         Bundle args = new Bundle();
+        args.putString(ARG_MODULE_NAME, moduleName);
+        args.putBundle(ARG_LAUNCH_OPTIONS, options);
 
         InternalReactFragment fragment = new InternalReactFragment();
         fragment.setArguments(args);
@@ -84,10 +94,7 @@ public class InternalReactFragment extends ReactBaseFragment {
 
     @Override
     protected String getMainComponentName() {
-        String componentName = getIntent().getStringExtra("moduleName");
-
-        Timber.d("Starting module: %s", componentName);
-        return componentName;
+        return mModuleName;
     }
 
     @Inject
@@ -131,6 +138,8 @@ public class InternalReactFragment extends ReactBaseFragment {
 
     Bundle mLaunchOptions = null;
 
+    private String mModuleName;
+
     CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     @Inject
@@ -148,10 +157,12 @@ public class InternalReactFragment extends ReactBaseFragment {
 
     protected void initArgs(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            Intent intent = getIntent();
-            mLaunchOptions = intent.getBundleExtra("launchOptions");
+            Bundle bundle = getArguments();
+            mLaunchOptions = bundle.getBundle(ARG_LAUNCH_OPTIONS);
+            mModuleName = bundle.getString(ARG_MODULE_NAME);
         } else {
-            mLaunchOptions = savedInstanceState.getBundle("launchOptions");
+            mLaunchOptions = savedInstanceState.getBundle(ARG_LAUNCH_OPTIONS);
+            mModuleName = savedInstanceState.getString(ARG_MODULE_NAME);
         }
 
         if (mLaunchOptions == null) {
@@ -175,7 +186,8 @@ public class InternalReactFragment extends ReactBaseFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBundle("launchOptions", mLaunchOptions);
+        outState.putBundle(ARG_LAUNCH_OPTIONS, mLaunchOptions);
+        outState.putString(ARG_MODULE_NAME, mModuleName);
     }
 
     @Override

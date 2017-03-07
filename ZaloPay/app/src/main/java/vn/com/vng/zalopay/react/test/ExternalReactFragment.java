@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.react.test;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -25,7 +24,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,9 +51,16 @@ import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 public class ExternalReactFragment extends ReactBaseFragment {
     public static final String TAG = "ExternalReactFragment";
 
-    public static ExternalReactFragment newInstance() {
+    public static ExternalReactFragment newInstance(AppResource app, HashMap<String, String> launchOptions) {
+
+        Bundle options = new Bundle();
+        for (Map.Entry<String, String> e : launchOptions.entrySet()) {
+            options.putString(e.getKey(), e.getValue());
+        }
 
         Bundle args = new Bundle();
+        args.putParcelable("appResource", app);
+        args.putBundle("launchOptions", options);
 
         ExternalReactFragment fragment = new ExternalReactFragment();
         fragment.setArguments(args);
@@ -176,10 +184,9 @@ public class ExternalReactFragment extends ReactBaseFragment {
         mComponentName = ModuleName.PAYMENT_MAIN;
 
         if (savedInstanceState == null) {
-            Intent intent = getIntent();
-
-            appResource = intent.getParcelableExtra("appResource");
-            mLaunchOptions = intent.getBundleExtra("launchOptions");
+            Bundle args = getArguments();
+            appResource = args.getParcelable("appResource");
+            mLaunchOptions = args.getBundle("launchOptions");
         } else {
             appResource = savedInstanceState.getParcelable("appResource");
             mLaunchOptions = savedInstanceState.getBundle("launchOptions");
