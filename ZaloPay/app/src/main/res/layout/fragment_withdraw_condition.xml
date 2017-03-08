@@ -27,21 +27,17 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <com.zalopay.ui.widget.IconFont
+                <vn.com.vng.zalopay.utils.IconFontTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    app:iconName="@string/linkaccount_info"
-                    app:iconSize="@dimen/font_size_icon_in_text_large"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing.small"
                     android:text="@string/withdraw_miss_condition"
                     android:textColor="@color/txt_item_main"
                     android:textSize="@dimen/textsize.text.main"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    app:iconLeftName="@string/linkaccount_info"
+                    app:iconLeftSize="@dimen/font_size_icon_in_text_large"
+                    app:iconLeftColor="@color/colorPrimary"
+                    app:iconLeftPadding="@dimen/spacing.small"/>
             </LinearLayout>
 
             <TextView
@@ -192,19 +188,15 @@
                 android:paddingRight="@dimen/spacing.medium"
                 android:paddingTop="@dimen/spacing.large.t">
 
-                <com.zalopay.ui.widget.IconFont
+                <vn.com.vng.zalopay.utils.IconFontTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    app:iconName="@string/linkaccount_add"
-                    app:iconSize="@dimen/font_size_icon_in_text"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/spacing.small.t"
                     android:text="@string/add"
-                    android:textColor="@color/colorPrimary"/>
+                    android:textColor="@color/colorPrimary"
+                    app:iconLeftName="@string/linkaccount_add"
+                    app:iconLeftSize="@dimen/font_size_icon_in_text"
+                    app:iconLeftColor="@color/colorPrimary"
+                    app:iconLeftPadding="@dimen/spacing.small.t"/>
             </LinearLayout>
         </FrameLayout>
 
@@ -272,19 +264,15 @@
                     android:paddingRight="@dimen/spacing.medium"
                     android:paddingTop="@dimen/spacing.large.t">
 
-                    <com.zalopay.ui.widget.IconFont
+                    <vn.com.vng.zalopay.utils.IconFontTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/colorPrimary"
-                        app:iconName="@string/linkaccount_add"
-                        app:iconSize="@dimen/font_size_icon_in_text"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing.small.t"
                         android:text="@string/add"
-                        android:textColor="@color/colorPrimary"/>
+                        android:textColor="@color/colorPrimary"
+                        app:iconLeftName="@string/linkaccount_add"
+                        app:iconLeftSize="@dimen/font_size_icon_in_text"
+                        app:iconLeftColor="@color/colorPrimary"
+                        app:iconLeftPadding="@dimen/spacing.small.t"/>
                 </LinearLayout>
             </FrameLayout>
 
