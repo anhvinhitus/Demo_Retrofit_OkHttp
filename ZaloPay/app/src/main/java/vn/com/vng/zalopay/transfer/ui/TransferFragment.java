@@ -15,6 +15,10 @@ import com.zalopay.ui.widget.KeyboardFrameLayout;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+<<<<<<< HEAD
+=======
+import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
+>>>>>>> [Widget] Move SweetDialog in SDK to Widget
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 

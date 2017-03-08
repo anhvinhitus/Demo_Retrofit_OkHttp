@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
@@ -25,10 +27,11 @@ import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.share.IntentHandlerActivity;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.wallet.controller.SDKPayment;
+import vn.com.zalopay.wallet.controller.WalletSDKPayment;
 
 /**
  * Created by hieuvm on 12/4/16.
@@ -296,13 +299,13 @@ public class ExternalCallSplashScreenPresenter extends AbstractPresenter<IExtern
 
     private boolean insidePaymentOrder(final Context context) {
 
-        if (!SDKPayment.isOpenSdk()) {
+        if (!WalletSDKPayment.isOpenSdk()) {
             return false;
         }
 
-        if (SDKPayment.canCloseSdk()) {
+        if (WalletSDKPayment.canCloseSdk()) {
             try {
-                SDKPayment.closeSdk();
+                WalletSDKPayment.closeSdk();
             } catch (Exception e) {
                 Timber.d(e, "close sdk error");
             }

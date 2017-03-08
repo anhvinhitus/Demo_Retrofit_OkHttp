@@ -33,7 +33,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
+import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -44,13 +44,11 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
-import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
-import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
@@ -61,19 +59,19 @@ import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
+import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.utils.ConfigUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
-import vn.com.vng.zalopay.location.LocationProvider;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 
 
 /**
@@ -97,6 +95,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     private User mUser;
     private FriendStore.Repository mFriendRepository;
     private Subscription mRefPlatformSubscription;
+    private Runnable mRunnableRefreshIconFont;
 
     @Inject
     NotificationStore.Repository mNotifyRepository;
@@ -216,30 +215,27 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     @Override
     public void destroy() {
+        if (mRunnableRefreshIconFont != null) {
+            AndroidUtils.cancelRunOnUIThread(mRunnableRefreshIconFont);
+            mRunnableRefreshIconFont = null;
+        }
         super.destroy();
     }
 
     public void initialize() {
-        UserComponent userComponent = AndroidApplication.instance().getUserComponent();
-        if (userComponent != null) {
-            SDKApplication.getBuilder().setRetrofit(userComponent.retrofitConnector());
-        }
-
         this.loadGatewayInfoPaymentSDK();
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
         getZaloFriend();
         warningRoot();
-        getTransaction(10);
     }
 
     private void warningRoot() {
-        Subscription subscription = ObservableHelper
-                .makeObservable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        return !RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted();
-                    }
-                })
+        Subscription subscription = ObservableHelper.makeObservable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return !RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted();
+            }
+        })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {
@@ -254,20 +250,26 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         mSubscription.add(subscription);
     }
 
+    private void ensureAppResourceAvailable() {
+        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
+    }
+
     private void refreshBanners() {
         isLoadedGateWayInfo = true;
         mEventBus.post(new RefreshPlatformInfoEvent());
     }
 
     private void loadGatewayInfoPaymentSDK() {
-        LocationProvider.findLocation();
         final ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
         UserInfo userInfo = new UserInfo();
         userInfo.zaloUserId = String.valueOf(mUser.zaloId);
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;
         paymentInfo.userInfo = userInfo;
-        SDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack() {
+        WalletSDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack() {
             @Override
             public void onFinish() {
                 Timber.d("load payment sdk finish");
@@ -336,12 +338,14 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             return;
         }
         if (!isInitTransaction) {
-            this.getTransaction(0);
+            this.getTransaction();
         }
 
         if (!isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
+
+        ensureAppResourceAvailable();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -372,7 +376,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         paymentInfo.userInfo = new UserInfo();
         paymentInfo.userInfo.zaloPayUserId = mUser.zaloPayId;
         paymentInfo.userInfo.accessToken = mUser.accesstoken;
-        SDKApplication.refreshGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
+        WalletSDKApplication.refreshGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -410,12 +414,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (!event.isDownloadSuccess || event.mDownloadInfo == null) {
             return;
         }
-    }
-
-    @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
-    public void onDownloadResourceSuccessEvent(DownloadZaloPayResourceEvent event) {
-        mEventBus.removeStickyEvent(DownloadZaloPayResourceEvent.class);
-        if (event.isDownloadSuccess) {
+        if (event.mDownloadInfo.appid == BuildConfig.ZALOPAY_APP_ID) {
             reloadConfig();
             reloadIconFont();
         }
@@ -430,12 +429,21 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     private void reloadIconFont() {
         AndroidApplication.instance().initIconFont();
+        if (mRunnableRefreshIconFont == null) {
+            mRunnableRefreshIconFont = () -> {
+                Timber.d("reloadIconFont");
+                if (mView != null) {
+                    mView.refreshIconFont();
+                }
+            };
+        }
+        AndroidUtils.runOnUIThread(mRunnableRefreshIconFont, 1000);
     }
 
     public void logout() {
         Subscription subscription = passportRepository.logout()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
+                .subscribe(new DefaultSubscriber<Boolean>());
         mSubscription.add(subscription);
 
         if (mEventBus.isRegistered(this)) {
@@ -559,15 +567,18 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     private void removeNotification(NotificationData notify) {
         Subscription subscription = mNotifyRepository.removeNotifyByType(notify.notificationtype, notify.appid, notify.transid)
-                .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d(e, "onError");
+                    }
+                });
         mSubscription.add(subscription);
     }
 
-    private void getTransaction(long delay) {
+    private void getTransaction() {
         Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistoryLatest()
-                .delaySubscription(delay, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override

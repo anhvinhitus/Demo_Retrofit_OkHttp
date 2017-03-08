@@ -12,6 +12,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -40,7 +41,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
@@ -56,17 +57,19 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                       BalanceStore.Repository balanceRepository,
                       TransactionStore.Repository transactionRepository,
                       User user,
-                      SharedPreferences sharedPreferences,
-                      EventBus eventBus) {
+                      SharedPreferences sharedPreferences, EventBus eventBus) {
         super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
                 user, sharedPreferences, eventBus);
     }
 
     void getListCard() {
         showLoadingView();
-        Subscription subscription = ObservableHelper.makeObservable(() -> {
-            List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-            return transform(mapCardLis);
+        Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankCard>>() {
+            @Override
+            public List<BankCard> call() throws Exception {
+                List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+                return transform(mapCardLis);
+            }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LinkCardSubscriber());
         mSubscription.add(subscription);
@@ -137,7 +140,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         params.userID = String.valueOf(mUser.zaloPayId);
         params.mapCard = mapCard;
 
-        SDKApplication.removeCardMap(params, new RemoveMapCardListener());
+        WalletSDKApplication.removeCardMap(params, new RemoveMapCardListener());
     }
 
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {
@@ -254,13 +257,6 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             if (mView != null) {
                 mView.gotoTabLinkAccount();
             }
-        }
-    }
-
-    @Override
-    void onLoadIconFontSuccess() {
-        if (mView != null) {
-            mView.refreshLinkedCard();
         }
     }
 

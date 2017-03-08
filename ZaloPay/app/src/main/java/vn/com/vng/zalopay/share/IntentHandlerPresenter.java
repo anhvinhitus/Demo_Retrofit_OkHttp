@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -18,7 +20,6 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
@@ -29,8 +30,7 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.controller.SDKPayment;
-
+import vn.com.zalopay.wallet.controller.WalletSDKPayment;
 /**
  * Created by hieuvm on 2/14/17.
  */
@@ -93,10 +93,10 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         Timber.d("onActivityResult: requestCode [%s] resultCode [%s]", requestCode, resultCode);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == ZALO_INTEGRATION_LOGIN_REQUEST_CODE) {
-                handleDeepLink(data.getData());
+                handleZaloIntegration(data.getData());
             }
         } else {
-            ActivityCompat.finishAffinity(activity);
+            ActivityCompat.finishAffinity((Activity) mView.getContext());
         }
 
     }
@@ -127,51 +127,8 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
                 finish(true);
             }
 
-        } else if (scheme.equalsIgnoreCase("zalopay-zapi-29")) {
-
-            if (host.equalsIgnoreCase("app") && "/mywallet".equalsIgnoreCase(pathPrefix)) {
-                handMyWallet(data);
-            } else {
-                finish(true);
-            }
-
         } else {
             finish(true);
-        }
-    }
-
-    private void handMyWallet(final Uri data) {
-        String senderId = data.getQueryParameter("sender");
-        boolean shouldFinishCurrentActivity = true;
-        try {
-            final long sender;
-
-            try {
-                sender = Long.valueOf(senderId);
-            } catch (NumberFormatException e) {
-                Timber.e(e, "Argument is invalid senderId [%s]", senderId);
-                return;
-            }
-
-            if (shouldSignIn(mView.getContext(), data, sender, "")) {
-                shouldFinishCurrentActivity = false;
-                return;
-            }
-
-            if (signInAnotherAccount(mView.getContext(), data, sender, "")) {
-                shouldFinishCurrentActivity = false;
-                return;
-            }
-
-            Activity activity = (Activity) mView.getContext();
-            if (activity.isTaskRoot()) {
-                mNavigator.startHomeActivity(activity, false);
-            }
-
-        } finally {
-            if (shouldFinishCurrentActivity) {
-                finish(false);
-            }
         }
     }
 
@@ -297,22 +254,21 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         RecentTransaction item = new RecentTransaction();
         item.zaloId = receiver;
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Constants.ARG_MONEY_TRANSFER_MODE, Constants.TransferMode.TransferToZaloFriend);
-        bundle.putSerializable(Constants.ARG_MONEY_ACTIVATE_SOURCE, Constants.ActivateSource.FromZalo);
+        bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
         mNavigator.startTransferActivity(mView.getContext(), bundle);
     }
 
     private boolean insidePaymentOrder(final Context context) {
 
-        if (!SDKPayment.isOpenSdk()) {
+        if (!WalletSDKPayment.isOpenSdk()) {
             return false;
         }
 
-        if (SDKPayment.canCloseSdk()) {
+        if (WalletSDKPayment.canCloseSdk()) {
             ZPAnalytics.trackEvent(ZPEvents.ZALO_PAYMENT_ISINCOMPLETED);
             try {
-                SDKPayment.closeSdk();
+                WalletSDKPayment.closeSdk();
             } catch (Exception e) {
                 Timber.d(e, "close sdk error");
             }
@@ -346,5 +302,9 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         startLogin((IntentHandlerActivity) context, ZALO_INTEGRATION_LOGIN_REQUEST_CODE,
                 data, sender, accesstoken);
         return true;
+    }
+
+    private void validateTransitionParam(String _sender, String _receiver) {
+
     }
 }
