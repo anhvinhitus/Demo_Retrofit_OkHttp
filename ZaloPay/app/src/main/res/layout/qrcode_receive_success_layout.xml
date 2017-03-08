@@ -34,7 +34,7 @@
         android:orientation="horizontal">
 
         <vn.com.vng.zalopay.utils.IconFontTextView
-            android:id="@+id/iconState"
+            android:id="@+id/tvState"
             style="@style/TextView.Default"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

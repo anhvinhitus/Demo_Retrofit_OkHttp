@@ -115,8 +115,8 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
     public class ViewHolder extends RecyclerView.ViewHolder {
         private OnItemClickListener listener;
 
-        @BindView(R.id.iconInsideApp)
-        IconFontTextView iconInsideApp;
+        @BindView(R.id.tvInsideApp)
+        IconFontTextView tvInsideApp;
 
         ImageLoader mImageLoader;
 
@@ -135,8 +135,8 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         }
 
         public void bindView(AppResource appResource) {
-            iconInsideApp.setText(appResource.appname);
-            setIconFont(iconInsideApp.getTopIcon(), appResource);
+            tvInsideApp.setText(appResource.appname);
+            setIconFont(tvInsideApp.getTopIcon(), appResource);
         }
 
         private void setIconFont(IconFontDrawable iconInsideApp, AppResource appResource) {
@@ -156,7 +156,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         }
 
         private void loadIconFontDefault() {
-            loadIconFont(iconInsideApp.getLeftIcon(),
+            loadIconFont(tvInsideApp.getLeftIcon(),
                     R.string.general_icondefault,
                     AndroidUtils.getColorFromResource(R.color.home_font_inside_app));
         }

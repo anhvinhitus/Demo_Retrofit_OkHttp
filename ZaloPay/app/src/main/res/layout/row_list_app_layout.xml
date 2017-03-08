@@ -15,7 +15,7 @@
     android:paddingTop="16dp">
 
     <vn.com.vng.zalopay.utils.IconFontTextView
-        android:id="@+id/iconInsideApp"
+        android:id="@+id/tvInsideApp"
         style="@style/HomePage.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

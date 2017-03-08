@@ -190,8 +190,8 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
         @BindView(R.id.tvMessage)
         TextView tvNoteView;
 
-        @BindView(R.id.iconState)
-        IconFontTextView mIconState;
+        @BindView(R.id.tvState)
+        IconFontTextView tvState;
 
         @BindView(R.id.totalView)
         TextView totalView;
@@ -288,10 +288,10 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
                 simpleGrow(layoutSuccess);
             }
 
-            if (mIconState != null) {
-                mIconState.setTextColor(ContextCompat.getColor(itemView.getContext(), success ? R.color.green : R.color.red));
-                mIconState.setText(CurrencyUtil.spanFormatCurrency(amount, false));
-                mIconState.getLeftIcon().setIcon(success ? R.string.general_success : R.string.general_failed);
+            if (tvState != null) {
+                tvState.setTextColor(ContextCompat.getColor(itemView.getContext(), success ? R.color.green : R.color.red));
+                tvState.setText(CurrencyUtil.spanFormatCurrency(amount, false));
+                tvState.getLeftIcon().setIcon(success ? R.string.general_success : R.string.general_failed);
             }
         }
 
