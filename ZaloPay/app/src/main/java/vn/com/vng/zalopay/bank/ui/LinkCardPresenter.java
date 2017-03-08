@@ -244,7 +244,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             return;
         }
         if (mapBank instanceof DMappedCard) {
-            onAddCardSuccess(mapBank);
+            mView.onAddCardSuccess(mapBank);
         } else if (mapBank instanceof DBankAccount) {
             mView.gotoTabLinkAccount();
         }
