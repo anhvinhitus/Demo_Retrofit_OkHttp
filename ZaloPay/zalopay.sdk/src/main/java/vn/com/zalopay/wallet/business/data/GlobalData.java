@@ -65,7 +65,6 @@ public class GlobalData {
     private static ETransactionType transactionType = ETransactionType.PAY;
     private static EBankFunction bankFunction = EBankFunction.PAY;
     private static ZPPaymentResult paymentResult = null;
-    private static ZPWNotification mNotification;
     /***
      * user level,map table
      * list contain policy for allowing pay which channel by which level.
@@ -751,17 +750,6 @@ public class GlobalData {
 
     public static ListUserProfile getUserProfileList() {
         return mUserProfile;
-    }
-
-    public static ZPWNotification getNotification() {
-        if (mNotification == null) {
-            mNotification = new ZPWNotification(0, "");
-        }
-        return mNotification;
-    }
-
-    public static void setNotification(ZPWNotification mNotify) {
-        GlobalData.mNotification = mNotify;
     }
 
     public static boolean isAllowShowWebviewVCB() {

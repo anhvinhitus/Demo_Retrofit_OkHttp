@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 
+import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Map;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.GatewayLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
+import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -22,6 +24,7 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
@@ -32,6 +35,7 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
+import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
 import vn.com.zalopay.wallet.merchant.listener.IDetectCardTypeListener;
@@ -43,6 +47,8 @@ import vn.com.zalopay.wallet.merchant.strategy.TaskDetectCardType;
 import vn.com.zalopay.wallet.merchant.strategy.TaskGetCardSupportList;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
+import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 /***
  * class sharing data to app
@@ -178,7 +184,27 @@ public class CShareData extends SingletonBase {
      * @param pNotification
      */
     public void pushNotificationToSdk(ZPWNotification pNotification) {
-        GlobalData.setNotification(pNotification);
+        //user in sdk now.
+        Log.d(this,GsonUtils.toJsonString(pNotification));
+        if(BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
+                ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() instanceof AdapterLinkAcc)
+        {
+            ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pNotification);
+        }
+        else
+        {
+            //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
+            BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
+                @Override
+                public void onCheckExistBankAccountComplete(boolean pExisted) {
+                    Log.d(this,"pExisted = "+ pExisted);
+                }
+                @Override
+                public void onCheckExistBankAccountFail(String pMessage) {
+                    Log.e(this,pMessage);
+                }
+            }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+        }
     }
 
     public CShareData setUserInfo(UserInfo pUserInfo) {
