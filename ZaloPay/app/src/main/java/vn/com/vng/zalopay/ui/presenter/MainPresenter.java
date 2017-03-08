@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.util.TimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -70,8 +72,7 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+
 
 /**
  * Created by AnhHieu on 5/24/16.

@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.IconFont;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,7 +43,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webbottomsheetdialog.WebBottomSheetDialogFragment;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+
 
 /**
  * Created by chucvv on 8/28/16.

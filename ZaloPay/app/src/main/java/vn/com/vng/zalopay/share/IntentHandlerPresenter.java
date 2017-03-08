@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 
 import org.greenrobot.eventbus.EventBus;
@@ -29,9 +31,6 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.controller.WalletSDKPayment;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
-
 /**
  * Created by hieuvm on 2/14/17.
  */

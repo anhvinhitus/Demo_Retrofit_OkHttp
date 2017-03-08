@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.bank.ui;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -10,7 +12,6 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 

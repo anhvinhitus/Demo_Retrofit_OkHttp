@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +47,6 @@ import vn.com.vng.zalopay.ui.widget.RippleBackground;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 public class CounterBeaconFragment extends RuntimePermissionFragment implements FragmentLifecycle {
 

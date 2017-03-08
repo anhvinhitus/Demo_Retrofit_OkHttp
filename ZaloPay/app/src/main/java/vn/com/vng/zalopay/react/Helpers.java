@@ -15,6 +15,8 @@ import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,6 @@ import vn.com.vng.zalopay.react.listener.SweetDialogSimpleEventListener;
 import vn.com.vng.zalopay.react.model.DialogType;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 7/14/16.

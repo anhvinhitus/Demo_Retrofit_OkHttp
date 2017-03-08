@@ -17,6 +17,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
@@ -142,7 +144,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        mRecyclerView.setHasFixedSize(true);
+        //mRecyclerView.setHasFixedSize(true);
         RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
         if (animator != null) {
             if (animator instanceof SimpleItemAnimator) {
@@ -339,6 +341,11 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     @Override
+    public void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener) {
+
+    }
+
+    @Override
     public void showLoading() {
         Timber.d("Show progress dialog");
         super.showProgressDialog();
@@ -354,6 +361,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     public void showError(String message) {
         showErrorDialog(message);
     }
+
 
     @Override
     public void onClickMenu(BankCard bankCard) {

@@ -7,6 +7,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +22,7 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.viewpager.NonSwipeableViewPager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,9 +34,8 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+
 
 public class UpdateProfileLevel2Activity extends BaseToolBarActivity
         implements IPreProfileView,

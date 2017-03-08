@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,7 +31,6 @@ import vn.com.vng.zalopay.event.ReceiveSmsEvent;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.widget.validate.DigitsOnlyValidate;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 
 /**
  * A simple {@link Fragment} subclass.

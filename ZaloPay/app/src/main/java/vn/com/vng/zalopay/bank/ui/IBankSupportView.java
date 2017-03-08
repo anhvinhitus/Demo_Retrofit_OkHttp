@@ -2,10 +2,11 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import java.util.List;
 
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**

@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.withdraw.ui.presenter;
 
 import android.app.Activity;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -12,7 +14,6 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawConditionView;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by longlv on 11/08/2016.

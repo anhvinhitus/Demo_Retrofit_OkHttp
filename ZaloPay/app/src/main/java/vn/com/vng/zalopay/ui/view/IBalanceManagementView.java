@@ -2,8 +2,10 @@ package vn.com.vng.zalopay.ui.view;
 
 import android.app.Activity;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+
 
 /**
  * Created by longlv on 13/06/2016.

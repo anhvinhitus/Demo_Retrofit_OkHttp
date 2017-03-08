@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import javax.inject.Inject;
 
@@ -24,7 +25,6 @@ import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import com.zalopay.ui.widget.IconFontTextView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * A simple {@link BaseFragment} subclass.

@@ -5,14 +5,16 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.view.KeyEvent;
 
+import com.zalopay.ui.widget.dialog.DialogManager;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventUpdateListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
+
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+
 
 /**
  * Created by longlv on 12/9/16.
@@ -64,6 +66,7 @@ public class DialogHelper {
                 title,
                 SweetAlertDialog.ERROR_TYPE,
                 cancelListener);
+
     }
 
     public static void showWarningDialog(Activity activity,

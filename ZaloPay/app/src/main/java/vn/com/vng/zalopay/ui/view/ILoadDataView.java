@@ -3,7 +3,7 @@ package vn.com.vng.zalopay.ui.view;
 
 import android.content.Context;
 
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 
 public interface ILoadDataView {

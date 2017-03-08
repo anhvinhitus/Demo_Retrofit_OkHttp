@@ -15,6 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import timber.log.Timber;
@@ -27,10 +32,7 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.ToastUtil;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+
 
 
 /**

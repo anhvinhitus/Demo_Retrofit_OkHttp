@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.ValueCallback;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
@@ -17,7 +19,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.webview.ui.IWebView;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 
 /**
  * Created by longlv on 10/3/16.

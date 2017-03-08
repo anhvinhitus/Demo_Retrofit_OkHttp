@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventUpdateListener;
+
 import org.greenrobot.eventbus.EventBus;
 
 import timber.log.Timber;
@@ -12,7 +14,6 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
-import vn.com.zalopay.wallet.listener.ZPWOnEventUpdateListener;
 
 /**
  * Created by longlv on 05/08/2016.

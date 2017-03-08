@@ -58,4 +58,55 @@
     <string name="birthday">Ngày sinh</string>
 
     <string name="default_required_validation_message">Thông tin bắt buộc phải nhập</string>
+
+    <!--STRING DIALOG-->
+
+    <string name="zingpaysdk_alert_title_nointernet">HƯỚNG DẪN</string>
+
+    <string name="dialog_cancel_button">THOÁT</string>
+
+    <string name="dialog_continue_button">TIẾP TỤC</string>
+
+    <string name="dialog_continue_load_button">TIẾP TỤC TẢI</string>
+
+    <string name="dialog_upgrade_button">CẬP NHẬT</string>
+
+    <string name="dialog_yes_button">ĐÚNG</string>
+
+    <string name="dialog_no_button">KHÔNG ĐÚNG</string>
+
+    <string name="dialog_pay_button">THANH TOÁN</string>
+
+    <string name="dialog_later_button">ĐỂ SAU</string>
+
+    <string name="dialog_comeback_button">QUAY LẠI</string>
+
+    <string name="dialog_agree_button">ĐỒNG Ý</string>
+
+    <string name="dialog_co_button">Có</string>
+
+    <string name="dialog_khong_button">Không</string>
+
+    <string name="dialog_turn_on">Bật</string>
+
+    <string name="dialog_turn_off">Đóng</string>
+
+    <string name="dialog_quit_button">Thoát</string>
+    <string name="dialog_getstatus_button">Kiểm tra giao dịch</string>
+
+    <string name="dialog_retry_input_card_button">NHẬP THẺ KHÁC</string>
+
+    <string name="dialog_retry_other_channel">CHỌN KÊNH KHÁC</string>
+
+
+    <string name="dialog_retry_button">THỬ LẠI</string>
+    <string name="dialog_title_normal">Thông báo</string>
+    <string name="dialog_title_error">Thất bại</string>
+    <string name="dialog_title_warning">Cảnh báo</string>
+    <string name="dialog_title_update">Phiên bản mới</string>
+    <string name="dialog_title_success">Thành công</string>
+    <string name="dialog_title_confirm">Xác nhận</string>
+    <string name="dialog_close_button">  ĐÓNG  </string>
+
+
 </resources>

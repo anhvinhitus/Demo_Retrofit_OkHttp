@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.ui.presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -29,7 +31,6 @@ import vn.com.vng.zalopay.ui.view.IBalanceManagementView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.withdraw.ui.presenter.AbsWithdrawConditionPresenter;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
 
 import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;

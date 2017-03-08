@@ -30,6 +30,7 @@ import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**
  * A fragment representing a list of Items.
@@ -186,6 +187,7 @@ public class TransferHomeFragment extends BaseFragment implements
     public void showError(String message) {
         showErrorDialog(message);
     }
+
 
     @Override
     public void setData(List<RecentTransaction> list) {

@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.account.ui.presenter;
 
 import android.text.TextUtils;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -24,7 +26,6 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**
  * Created by longlv on 25/05/2016.

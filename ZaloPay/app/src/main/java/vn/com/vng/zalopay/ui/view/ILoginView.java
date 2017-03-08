@@ -2,7 +2,8 @@ package vn.com.vng.zalopay.ui.view;
 
 import android.app.Activity;
 
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+
 
 /**
  * Created by AnhHieu on 3/26/16.

@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -30,7 +32,6 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.widget.GridPasswordViewFitWidth;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
 

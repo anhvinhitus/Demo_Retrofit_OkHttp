@@ -12,6 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -41,8 +44,6 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 
 /**

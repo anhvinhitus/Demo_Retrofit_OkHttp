@@ -26,7 +26,8 @@ import vn.com.vng.zalopay.ui.widget.PassCodeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -185,6 +186,7 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
 
     @Override
     public void showError(String message, ZPWOnEventDialogListener listener) {
+
         super.showErrorDialog(message, listener);
     }
 

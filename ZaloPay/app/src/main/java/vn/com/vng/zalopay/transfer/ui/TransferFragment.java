@@ -12,6 +12,10 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.KeyboardFrameLayout;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
@@ -31,10 +35,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+
 
 /**
  * A simple {@link Fragment} subclass.

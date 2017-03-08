@@ -139,4 +139,15 @@
     <color name="bg_btn_blue_selected">#004c7a</color>
     <color name="bg_btn_green">#06be04</color>
     <color name="bg_btn_green_selected">#9906be04</color>
+    <!--COLOR DIALOG-->
+    <color name="text_color_bold">#24272b</color>
+    <color name="line">#e5e5e8</color>
+    <color name="color_indicator">#9077777a</color>
+    <color name="blue_btn_bg_pressed_color">#008fe5</color>
+    <color name="text_color_primary">#008fe5</color>
+    <color name="color_button_pressed">#0174af</color>
+    <color name="success_stroke_color">#A5DC86</color>
+    <color name="color_primary">#008fe5</color>
+    <color name="sweet_dialog_bg_color">#FFFFFF</color>
+
 </resources>

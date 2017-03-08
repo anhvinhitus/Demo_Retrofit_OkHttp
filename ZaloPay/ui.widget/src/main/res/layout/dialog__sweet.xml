@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sweetDialogRootView"
+    android:layout_width="@dimen/alert_width"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/zpw_padding_20"
+        android:paddingLeft="@dimen/zpw_padding_24"
+        android:paddingRight="@dimen/zpw_padding_24"
+        android:paddingTop="@dimen/zpw_padding_15">
+
+        <ImageView
+            android:id="@+id/custom_image"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/error_frame"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/error_x"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/pading_top_min"
+                android:src="@drawable/ic_error" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/info_frame"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/info_im"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/pading_top_min"
+                android:src="@drawable/ic_information" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/update_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/update_im"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/pading_top_min"
+                android:scaleType="center"
+                android:src="@drawable/ic_update" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/normal_frame"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/normal_im"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/pading_top_min"
+                android:src="@drawable/ic_speaker" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/success_frame"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/success_im"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/pading_top_min"
+                android:src="@drawable/ic_success" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/warning_frame"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/pading_top_min"
+                android:src="@drawable/ic_wr" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/internet_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ninternet_im"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:paddingBottom="@dimen/zpw_padding_10"
+                android:paddingTop="@dimen/zpw_padding_20"
+                android:src="@drawable/ic_no_connection" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/custom_rootview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <include layout="@layout/dialog_internet_sweet" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/custom_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/progress_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_indicator"
+            android:paddingBottom="20dp"
+            android:paddingLeft="@dimen/zpw_indicator_padding"
+            android:paddingRight="@dimen/zpw_indicator_padding"
+            android:paddingTop="30dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_logozalopay" />
+
+                <com.zalopay.ui.widget.dialog.indicator.AVLoadingIndicatorView
+                    android:id="@+id/indicatorView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:indicator_color="@color/white" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_title_ver"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="10dp"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/text_color_bold"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:singleLine="true"
+                android:text="v2.0"
+                android:textColor="@color/blue_btn_bg_pressed_color"
+                android:textSize="20sp"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/content_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="15dp"
+            android:gravity="left"
+            android:lineSpacingExtra="@dimen/pading_top_min"
+            android:textColor="@color/text_color_bold"
+            android:textSize="14sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/id_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="@dimen/zpw_margin_large"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:id="@+id/layout_custom_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/zpw_padding_10"
+        android:paddingLeft="@dimen/zpw_padding_8"
+        android:paddingRight="@dimen/zpw_padding_8"
+        android:paddingTop="@dimen/zpw_padding_5"
+        android:visibility="gone"></LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_dialog_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/zpw_padding_10"
+        android:paddingLeft="@dimen/zpw_padding_8"
+        android:paddingRight="@dimen/zpw_padding_8"
+        android:paddingTop="@dimen/zpw_padding_5">
+
+        <TextView
+            android:id="@+id/cancel_button"
+            style="@style/dialog_blue_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/zpw_padding_10"
+            android:layout_toLeftOf="@+id/confirm_button"
+            android:paddingBottom="@dimen/zpw_padding_6"
+            android:paddingLeft="@dimen/zpw_padding_15"
+            android:paddingRight="@dimen/zpw_padding_15"
+            android:paddingTop="@dimen/zpw_padding_6"
+            android:text="@string/dialog_cancel_button"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/confirm_button"
+            style="@style/dialog_blue_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:paddingBottom="@dimen/zpw_padding_6"
+            android:paddingLeft="@dimen/zpw_padding_15"
+            android:paddingRight="@dimen/zpw_padding_15"
+            android:paddingTop="@dimen/zpw_padding_6"
+            android:text="@string/dialog_continue_button" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:weightSum="3">
+
+            <TextView
+                android:id="@+id/update_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/button_textview"
+                android:gravity="center"
+                android:paddingBottom="@dimen/zpw_padding_10"
+                android:paddingLeft="@dimen/zpw_padding_15"
+                android:paddingRight="@dimen/zpw_padding_15"
+                android:paddingTop="@dimen/zpw_padding_10"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/zpw_text_size_big_x"
+                android:textStyle="normal"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

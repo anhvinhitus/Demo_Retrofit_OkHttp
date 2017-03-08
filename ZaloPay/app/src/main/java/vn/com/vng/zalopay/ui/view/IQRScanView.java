@@ -1,7 +1,9 @@
 package vn.com.vng.zalopay.ui.view;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+
 import vn.com.vng.zalopay.ui.presenter.IPaymentDataView;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
+
 
 /**
  * Created by longlv on 09/05/2016.

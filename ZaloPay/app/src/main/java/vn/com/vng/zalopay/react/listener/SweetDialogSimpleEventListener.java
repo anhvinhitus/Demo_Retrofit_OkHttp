@@ -2,9 +2,8 @@ package vn.com.vng.zalopay.react.listener;
 
 
 import com.facebook.react.bridge.Promise;
-
+import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 import vn.com.vng.zalopay.react.Helpers;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 
 /**
  * Created by longlv on 12/6/16.

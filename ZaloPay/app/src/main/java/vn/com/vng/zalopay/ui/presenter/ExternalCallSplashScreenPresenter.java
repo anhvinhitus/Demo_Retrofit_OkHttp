@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
@@ -30,7 +32,6 @@ import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
 import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.wallet.controller.WalletSDKPayment;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 
 /**
  * Created by hieuvm on 12/4/16.
