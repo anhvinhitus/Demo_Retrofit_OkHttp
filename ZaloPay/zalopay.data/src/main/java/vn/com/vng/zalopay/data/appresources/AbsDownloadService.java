@@ -71,7 +71,7 @@ public abstract class AbsDownloadService extends IntentService {
             mRunning = true;
             boolean result = task.execute();
 
-            EventBus.getDefault().post(new DownloadAppEvent(true, task.getDownloadInfo()));
+            EventBus.getDefault().postSticky(new DownloadAppEvent(true, task.getDownloadInfo()));
             if (result) {
                 Timber.d("download success");
             } else {

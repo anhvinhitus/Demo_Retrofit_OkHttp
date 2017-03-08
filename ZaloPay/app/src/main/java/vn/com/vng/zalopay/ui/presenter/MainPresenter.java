@@ -26,6 +26,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
@@ -405,15 +406,15 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
     public void onDownloadAppEvent(DownloadAppEvent event) {
         Timber.d("onDownloadAppEvent result[%s]", event.isDownloadSuccess);
+        mEventBus.removeStickyEvent(DownloadAppEvent.class);
         if (!event.isDownloadSuccess || event.mDownloadInfo == null) {
             return;
         }
-        if (event.mDownloadInfo.appid == 22) {
+        if (event.mDownloadInfo.appid == BuildConfig.ZALOPAY_APP_ID) {
             refreshIconFont();
-        } else if (event.mDownloadInfo.appid == 1) {
             boolean result = ConfigUtil.loadConfigFromResource();
             if (result) {
                 Timber.d("Load config from resource app 1 successfully.");
