@@ -2,6 +2,7 @@ package vn.com.vng.zalopay;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.multidex.MultiDex;
@@ -12,6 +13,7 @@ import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.react.modules.fresco.FrescoModule;
+import com.facebook.react.views.text.ReactFontManager;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -25,13 +27,13 @@ import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
-import vn.com.vng.zalopay.domain.model.Config;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.service.ZPTrackerAnswers;
 import vn.com.vng.zalopay.service.ZPTrackerApptransid;
 import vn.com.vng.zalopay.service.ZPTrackerGA;
@@ -118,6 +120,9 @@ public class AndroidApplication extends Application {
                 "fonts/" + getString(R.string.json_font_info),
                 ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.font_name),
                 ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.json_font_info));
+        ReactFontManager.getInstance().setTypeface(PaymentAppConfig.Constants.FONT_FAMILY_NAME_ZALOPAY,
+                Typeface.NORMAL,
+                IconFontHelper.getInstance().getCurrentTypeface());
     }
 
     private void initPaymentSdk() {

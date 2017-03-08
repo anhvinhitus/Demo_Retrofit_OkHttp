@@ -23,6 +23,8 @@ public class PaymentAppConfig {
         public static final long RECEIVE_MONEY = 3;
         public static final long RED_PACKET = 6;
         public static final long SHOW_SHOW = 22;
+
+        public static final String FONT_FAMILY_NAME_ZALOPAY = "zalopay";
     }
 
     private static final LongSparseArray<AppResource> APP_RESOURCE_MAP;
@@ -65,7 +67,7 @@ public class PaymentAppConfig {
                 PaymentAppTypeEnum.REACT_NATIVE.value, "TK Zalo Pay"));
 
         EXCEPT_LOAD_FONTS = new ArrayList<>();
-        EXCEPT_LOAD_FONTS.add("zalopay");
+        EXCEPT_LOAD_FONTS.add(Constants.FONT_FAMILY_NAME_ZALOPAY);
 
     }
 
