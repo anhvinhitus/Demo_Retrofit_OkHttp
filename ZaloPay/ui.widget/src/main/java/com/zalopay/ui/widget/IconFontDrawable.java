@@ -1,7 +1,6 @@
-package vn.com.vng.zalopay.utils;
+package com.zalopay.ui.widget;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -13,7 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.Log;
+import android.util.TypedValue;
 
 import com.zalopay.ui.widget.iconfont.IconFontHelper;
 import com.zalopay.ui.widget.iconfont.IconFontInfo;
@@ -23,6 +22,7 @@ import timber.log.Timber;
 
 /**
  * Created by khattn on 2/24/17.
+ *
  */
 
 public class IconFontDrawable extends Drawable {
@@ -66,7 +66,11 @@ public class IconFontDrawable extends Drawable {
     }
 
     public IconFontDrawable setDpSize(int size) {
-        return setPxSize((int) AndroidUtils.dpToPixels(mContext, size));
+        return setPxSize((int) dpToPixels(mContext, size));
+    }
+
+    private float dpToPixels(Context context, int dp) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     public IconFontDrawable setPxSize(int size) {

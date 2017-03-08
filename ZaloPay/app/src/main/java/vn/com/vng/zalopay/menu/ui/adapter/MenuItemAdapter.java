@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
-import vn.com.vng.zalopay.utils.IconFontTextView;
+import com.zalopay.ui.widget.IconFontTextView;
 
 /**
  * Created by longlv on 04/05/2016.

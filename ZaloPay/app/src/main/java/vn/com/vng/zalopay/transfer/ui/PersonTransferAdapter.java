@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
 import butterknife.BindView;
@@ -26,7 +25,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.vng.zalopay.utils.IconFontTextView;
+import com.zalopay.ui.widget.IconFontTextView;
 import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**

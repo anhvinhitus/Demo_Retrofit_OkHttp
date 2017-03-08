@@ -2,16 +2,11 @@ package vn.com.vng.zalopay.ui.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.zalopay.ui.widget.IconFont;
-import com.zalopay.ui.widget.iconfont.IconFontHelper;
-import com.zalopay.ui.widget.iconfont.IconFontInfo;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
@@ -27,8 +22,8 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.IconFontDrawable;
-import vn.com.vng.zalopay.utils.IconFontTextView;
+import com.zalopay.ui.widget.IconFontDrawable;
+import com.zalopay.ui.widget.IconFontTextView;
 import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**

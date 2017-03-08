@@ -33,7 +33,7 @@
         android:layout_marginTop="24dp"
         android:orientation="horizontal">
 
-        <vn.com.vng.zalopay.utils.IconFontTextView
+        <com.zalopay.ui.widget.IconFontTextView
             android:id="@+id/tvState"
             style="@style/TextView.Default"
             android:layout_width="wrap_content"

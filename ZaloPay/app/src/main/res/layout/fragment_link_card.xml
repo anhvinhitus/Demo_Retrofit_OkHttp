@@ -42,7 +42,7 @@
                     android:layout_weight="0.0"
                     android:orientation="horizontal">
 
-                    <vn.com.vng.zalopay.utils.IconFontTextView
+                    <com.zalopay.ui.widget.IconFontTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/link_card_more"
@@ -66,7 +66,7 @@
             android:orientation="horizontal"
             android:paddingBottom="@dimen/text.support.margin.normal">
 
-            <vn.com.vng.zalopay.utils.IconFontTextView
+            <com.zalopay.ui.widget.IconFontTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/bank.support.link.card"

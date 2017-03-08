@@ -7,7 +7,7 @@ import android.support.annotation.RequiresApi;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.IconFontDrawable;
+import com.zalopay.ui.widget.IconFontDrawable;
 
 public class WebAppActivity extends BaseToolBarActivity {
     @Override

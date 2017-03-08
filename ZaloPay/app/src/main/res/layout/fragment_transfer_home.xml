@@ -11,7 +11,7 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <vn.com.vng.zalopay.utils.IconFontTextView
+        <com.zalopay.ui.widget.IconFontTextView
             android:id="@+id/layoutTransferViaAccount"
             style="@style/TextView.Title"
             android:layout_width="match_parent"
@@ -38,7 +38,7 @@
             android:layout_marginLeft="60dp"
             android:background="@color/separate" />
 
-        <vn.com.vng.zalopay.utils.IconFontTextView
+        <com.zalopay.ui.widget.IconFontTextView
             android:id="@+id/layoutTransferAccZaloPay"
             style="@style/TextView.Title"
             android:layout_width="match_parent"

@@ -1,20 +1,18 @@
-package vn.com.vng.zalopay.utils;
+package com.zalopay.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import timber.log.Timber;
-
-import com.zalopay.ui.widget.R;
 
 /**
  * Created by khattn on 3/2/17.
  *
  */
 
-public class IconFontTextView extends TextView {
+public class IconFontTextView extends AppCompatTextView {
 
     IconFontDrawable mLeftIcon, mRightIcon, mTopIcon, mBottomIcon;
     final int[] mLeftValue = {R.styleable.IconFontTextView_iconLeftName,

@@ -11,7 +11,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <vn.com.vng.zalopay.utils.IconFontTextView
+        <com.zalopay.ui.widget.IconFontTextView
             android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
