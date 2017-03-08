@@ -5,22 +5,16 @@
     android:layout_height="48dp"
     android:background="?selector">
 
-    <LinearLayout
+    <com.zalopay.ui.widget.IconFontTextView
+        android:id="@+id/icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <com.zalopay.ui.widget.IconFontTextView
-            android:id="@+id/icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/app_padding"
-            android:paddingBottom="@dimen/app_padding"
-            android:paddingLeft="@dimen/app_padding"
-            app:iconLeftSize="@dimen/font_size_menu"
-            app:iconLeftPadding="@dimen/app_padding" />
-    </LinearLayout>
+        android:paddingBottom="@dimen/app_padding"
+        android:paddingLeft="@dimen/app_padding"
+        android:paddingTop="@dimen/app_padding"
+        app:iconLeftPadding="@dimen/app_padding"
+        app:iconLeftSize="@dimen/font_size_menu" />
 
     <View
         android:id="@+id/viewSeparate"
