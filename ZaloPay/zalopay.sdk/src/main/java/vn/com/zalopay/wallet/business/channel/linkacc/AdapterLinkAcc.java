@@ -62,6 +62,7 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
 
+    protected  ZPWNotification mNotification;
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private ELinkAccType mLinkAccType;
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
@@ -168,40 +169,64 @@ public class AdapterLinkAcc extends AdapterBase {
         submitMapAccount.makeRequest();
     }
 
+    protected Runnable runnableWaitingNotifyUnLinkAcc = new Runnable() {
+        @Override
+        public void run() {
+            // get & check bankaccount list
+            BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
+                @Override
+                public void onCheckExistBankAccountComplete(boolean pExisted) {
+                    showProgressBar(false, null);
+                    if (!pExisted) {
+                        unlinkAccSuccess();
+                    } else {
+                        unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server));
+                    }
+                }
+
+                @Override
+                public void onCheckExistBankAccountFail(String pMessage) {
+                    showProgressBar(false, null);
+                    unlinkAccFail(pMessage);
+                }
+            }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+        }
+    };
+
+    protected Runnable runnableWaitingNotifyLinkAcc = new Runnable() {
+        @Override
+        public void run() {
+            // get & check bankaccount list
+            BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
+                @Override
+                public void onCheckExistBankAccountComplete(boolean pExisted) {
+                    showProgressBar(false, null);
+                    if (pExisted) {
+                        linkAccSuccess();
+                    } else {
+                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server));
+                    }
+                }
+
+                @Override
+                public void onCheckExistBankAccountFail(String pMessage) {
+                    showProgressBar(false, null);
+                    linkAccFail(pMessage);
+                }
+            }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+        }
+    };
+
+    // call API,get bankAccount
+    private void checkUnlinkAccountList() {
+        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+        mHandler.postDelayed(runnableWaitingNotifyUnLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
+    }
     // call API, get bankAccount
-    private void checkLinkAccountList() {
+    protected void checkLinkAccountList() {
         // loop to get notification here.
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ZPWNotification notification = GlobalData.getNotification();
-                if (notification.getType() == Constants.NOTIFY_TYPE.LINKACC) {
-                    // receive notify link success
-                    showProgressBar(false, null);
-                    linkAccSuccess();
-                } else {
-                    // get & check bankaccount list
-                    BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
-                        @Override
-                        public void onCheckExistBankAccountComplete(boolean pExisted) {
-                            showProgressBar(false, null);
-                            if (pExisted) {
-                                linkAccSuccess();
-                            } else {
-                                linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server));
-                            }
-                        }
-
-                        @Override
-                        public void onCheckExistBankAccountFail(String pMessage) {
-                            showProgressBar(false, null);
-                            linkAccFail(pMessage);
-                        }
-                    }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
-                }
-            }
-        }, Constants.TIMES_DELAY_TO_GET_NOTIFY);
+        mHandler.postDelayed(runnableWaitingNotifyLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
 
     /***
@@ -262,40 +287,6 @@ public class AdapterLinkAcc extends AdapterBase {
             getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
-    }
-
-    // call API, get bankAccount
-    private void checkUnlinkAccountList() {
-        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ZPWNotification notification = GlobalData.getNotification();
-                if (notification.getType() == Constants.NOTIFY_TYPE.UNLINKACC) {
-                    showProgressBar(false, null);
-                    unlinkAccSuccess();
-                } else {
-                    // get & check bankaccount list
-                    BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
-                        @Override
-                        public void onCheckExistBankAccountComplete(boolean pExisted) {
-                            showProgressBar(false, null);
-                            if (!pExisted) {
-                                unlinkAccSuccess();
-                            } else {
-                                unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server));
-                            }
-                        }
-
-                        @Override
-                        public void onCheckExistBankAccountFail(String pMessage) {
-                            showProgressBar(false, null);
-                            unlinkAccFail(pMessage);
-                        }
-                    }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
-                }
-            }
-        }, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
 
     /***
@@ -687,8 +678,35 @@ public class AdapterLinkAcc extends AdapterBase {
             showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.returnMessage != null ? response.returnMessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified), TSnackbar.LENGTH_SHORT);
             return null;
         }
+        //event notification from app.
+        if(pEventType == EEventType.ON_NOTIFY_BANKACCOUNT)
+        {
+            mNotification = (ZPWNotification) pAdditionParams[0];
 
-        // return null.
+            if(mNotification != null && mNotification.getType() == Constants.NOTIFY_TYPE.LINKACC)
+            {
+                if(mHandler != null)
+                {
+                    mHandler.removeCallbacks(runnableWaitingNotifyLinkAcc);
+                    Log.e(this,"cancelling current notify after getting notify from app...");
+                }
+                runnableWaitingNotifyLinkAcc.run();
+            }
+            else if(mNotification != null && mNotification.getType() == Constants.NOTIFY_TYPE.UNLINKACC)
+            {
+                if(mHandler != null)
+                {
+                    mHandler.removeCallbacks(runnableWaitingNotifyUnLinkAcc);
+                    Log.e(this,"cancelling current notify after getting notify from app...");
+                }
+                runnableWaitingNotifyUnLinkAcc.run();
+            }
+            else
+            {
+                Log.e(this,"notification=" + mNotification != null ? GsonUtils.toJsonString(mNotification) : "null");
+                showProgressBar(false,null);
+            }
+        }
         return null;
     }
 
@@ -802,5 +820,9 @@ public class AdapterLinkAcc extends AdapterBase {
         if (mLinkAccType != null)
             return mLinkAccType;
         return null;
+    }
+
+    public ZPWNotification getNotification() {
+        return mNotification;
     }
 }

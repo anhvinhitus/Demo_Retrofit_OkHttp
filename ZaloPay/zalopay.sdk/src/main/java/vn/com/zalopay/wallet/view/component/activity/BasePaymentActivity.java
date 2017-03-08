@@ -41,6 +41,7 @@ import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.GatewayLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -1242,17 +1243,26 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (getAdapter().getPageName().equals(AdapterBase.PAGE_LINKACC_SUCCESS)) {
                 setViewColor(R.id.zpw_payment_success_textview, getResources().getColor(R.color.text_color_primary));
                 setView(R.id.payment_description_label, true);
-                setText(R.id.payment_description_label,
-                        GlobalData.getNotification().getType() == 116 ?
-                                GlobalData.getNotification().getMsg() : GlobalData.getStringResource(RS.string.zpw_string_linkacc_notice_description));
+
+                String desc = GlobalData.getStringResource(RS.string.zpw_string_linkacc_notice_description);
+                if(getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
+                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null)
+                {
+                    desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
+                }
+                setText(R.id.payment_description_label,desc);
                 setView(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_medium_label));
             } else {
                 setView(R.id.zpw_payment_success_textview, false);
                 setView(R.id.payment_description_label, true);
-                setText(R.id.payment_description_label,
-                        GlobalData.getNotification().getType() == 115 ?
-                                GlobalData.getNotification().getMsg() : GlobalData.getStringResource(RS.string.zpw_string_unlinkacc_notice_description));
+                String desc = GlobalData.getStringResource(RS.string.zpw_string_unlinkacc_notice_description);
+                if(getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
+                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null)
+                {
+                    desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
+                }
+                setText(R.id.payment_description_label,desc);
                 setView(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
             }

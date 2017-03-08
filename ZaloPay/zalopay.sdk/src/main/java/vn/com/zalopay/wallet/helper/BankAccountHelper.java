@@ -91,11 +91,11 @@ public class BankAccountHelper {
                 @Override
                 public void onGetBankAccountListComplete(BaseResponse pResponse) {
                     //for testing
-//                    DBankAccount bankAccount = new DBankAccount();
-//                    bankAccount.bankcode = "ZPVCB";
-//                    bankAccount.firstaccountno = "042100";
-//                    bankAccount.lastaccountno = "6723";
-//                    ((BankAccountListResponse) pResponse).bankaccounts.add(bankAccount);
+                    DBankAccount bankAccount = new DBankAccount();
+                    bankAccount.bankcode = "ZPVCB";
+                    bankAccount.firstaccountno = "042100";
+                    bankAccount.lastaccountno = "6723";
+                    ((BankAccountListResponse) pResponse).bankaccounts.add(bankAccount);
 
                     if (pResponse instanceof BankAccountListResponse
                             && BankAccountHelper.isNeedUpdateBankAccountInfoOnCache(((BankAccountListResponse) pResponse).bankaccountchecksum)) {

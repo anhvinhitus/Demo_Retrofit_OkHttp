@@ -86,6 +86,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
         @Override
         public void onClick(View v) {
 
+            /*
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -101,6 +102,14 @@ public class MainActivity extends ActionBarActivity implements Callback {
                     }
                 }
             }, 20000);
+            */
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    CShareData.getInstance().pushNotificationToSdk(new ZPWNotification(116, "Lien ket VCB thanh cong"));
+                }
+            },10000);
             /*
             ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
 
@@ -518,7 +527,15 @@ public class MainActivity extends ActionBarActivity implements Callback {
 //			} catch (JSONException e) {
 //				e.printStackTrace();
 //			}
-            CShareData.getInstance().pushNotificationToSdk(new ZPWNotification(115, "Huy Lien ket VCB thanh cong"));
+            /*
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    CShareData.getInstance().pushNotificationToSdk(new ZPWNotification(116, "Lien ket VCB thanh cong"));
+                }
+            },60000);
+            */
+
 
             onPay(forcedPaymentChannel);
 

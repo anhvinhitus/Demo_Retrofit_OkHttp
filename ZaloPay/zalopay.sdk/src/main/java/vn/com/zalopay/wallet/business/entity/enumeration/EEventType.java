@@ -21,4 +21,5 @@ public enum EEventType {
     ON_PROGRESSING,
     ON_HIT,
     ON_SUBMIT_LINKACC_COMPLETED,
+    ON_NOTIFY_BANKACCOUNT,
 }
