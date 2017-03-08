@@ -4,6 +4,7 @@ Zalo Pay (Staging v2.9.0 - build 195) - Released on 2017-03-08
 - Update UI: Menu, Profile, Liên kết ngân hàng, Điều kiện rút tiền, Chuyển tiền, ...
 - Update loading trên webview.
 - Optimize performance.
+***Note: Dành riêng để 123Pay test Hỗ trợ BIDV.
 
 Zalo Pay (Sandbox v2.9.0 - build 194) - Released on 2017-03-02
 - Update vị trí Banner trên trang Home
