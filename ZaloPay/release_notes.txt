@@ -1,3 +1,10 @@
+Zalo Pay (Staging v2.9.0 - build 195) - Released on 2017-03-08
+- Fix scroll trên trang Home.
+- Fix không load icon mới trong notify (icon liên kết tài khoản, thông tin,..)
+- Update UI: Menu, Profile, Liên kết ngân hàng, Điều kiện rút tiền, Chuyển tiền, ...
+- Update loading trên webview.
+- Optimize performance.
+
 Zalo Pay (Sandbox v2.9.0 - build 194) - Released on 2017-03-02
 - Update vị trí Banner trên trang Home
 - Xóa cookie trong app dịch vụ khi login facebook
