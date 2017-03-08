@@ -414,21 +414,25 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             return;
         }
         if (event.mDownloadInfo.appid == BuildConfig.ZALOPAY_APP_ID) {
-            refreshIconFont();
-            boolean result = ConfigUtil.loadConfigFromResource();
-            if (result) {
-                Timber.d("Load config from resource app 1 successfully.");
-            }
+            reloadConfig();
+            reloadIconFont();
         }
     }
 
-    private void refreshIconFont() {
+    private void reloadConfig() {
+        boolean result = ConfigUtil.loadConfigFromResource();
+        if (result) {
+            Timber.d("Load config from resource app 1 successfully.");
+        }
+    }
+
+    private void reloadIconFont() {
         AndroidApplication.instance().initIconFont();
         if (mRunnableRefreshIconFont == null) {
             mRunnableRefreshIconFont = new Runnable() {
                 @Override
                 public void run() {
-                    Timber.d("refreshIconFont");
+                    Timber.d("reloadIconFont");
                     if (mView != null) {
                         mView.refreshIconFont();
                     }
