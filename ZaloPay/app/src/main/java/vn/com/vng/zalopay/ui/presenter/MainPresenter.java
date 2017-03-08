@@ -403,11 +403,12 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
-        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
-        if (mView != null) {
-            mView.refreshIconFont();
+    @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
+    public void onDownloadAppEvent(DownloadAppEvent event) {
+        Timber.d("onDownloadAppEvent result[%s]", event.isDownloadSuccess);
+        mEventBus.removeStickyEvent(DownloadAppEvent.class);
+        if (!event.isDownloadSuccess || event.mDownloadInfo == null) {
+            return;
         }
     }
 
