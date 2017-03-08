@@ -105,9 +105,8 @@ public class AndroidApplication extends Application {
 
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
 
-        initIconFont();
-
         initConfig();
+        initIconFont();
     }
 
     private void initConfig() {
@@ -120,9 +119,11 @@ public class AndroidApplication extends Application {
                 "fonts/" + getString(R.string.json_font_info),
                 ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.font_name),
                 ResourceHelper.getFontPath(BuildConfig.ZALOPAY_APP_ID) + getString(R.string.json_font_info));
-        ReactFontManager.getInstance().setTypeface(PaymentAppConfig.Constants.FONT_FAMILY_NAME_ZALOPAY,
-                Typeface.NORMAL,
-                IconFontHelper.getInstance().getCurrentTypeface());
+        if (IconFontHelper.getInstance().getCurrentTypeface() != null) {
+            ReactFontManager.getInstance().setTypeface(PaymentAppConfig.Constants.FONT_FAMILY_NAME_ZALOPAY,
+                    Typeface.NORMAL,
+                    IconFontHelper.getInstance().getCurrentTypeface());
+        }
     }
 
     private void initPaymentSdk() {
