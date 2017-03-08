@@ -296,12 +296,12 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void mapBankAccout() {
-        navigator.startLinkAccountActivity(getReactApplicationContext());
+        navigator.startLinkAccountActivity(getCurrentActivity());
     }
 
     @ReactMethod
     public void removeBankAccout() {
-        navigator.startLinkAccountActivity(getReactApplicationContext());
+        navigator.startLinkAccountActivity(getCurrentActivity());
     }
 
     private void removeNotify(long notifyId) {
