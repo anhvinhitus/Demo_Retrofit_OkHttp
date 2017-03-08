@@ -60,7 +60,7 @@ public class SubmitMapAccount extends BaseRequest<BaseResponse> {
     @Override
     protected void doRequest() {
         try {
-            DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).pushData(new SubmitMapAccountImpl(), getDataParams());
+            DataRepository.shareInstance().setDataSourceListener(getDataSourceListener()).pushData(new SubmitMapAccountImpl(), getDataParams());
         } catch (Exception ex) {
             onRequestFail(null);
         }

@@ -5,7 +5,7 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 
 /**
- * Created by cpu11326 on 10/11/2016.
+ * Created by SinhTT on 10/11/2016.
  */
 
 public class SpinnerUtils {

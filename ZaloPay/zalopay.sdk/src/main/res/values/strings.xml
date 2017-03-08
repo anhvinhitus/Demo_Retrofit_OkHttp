@@ -489,13 +489,13 @@
     <string name="zpw_string_vcb_wrong_times_allow">Bạn còn %d lần để thử lại.</string>
     <string name="zpw_int_vcb_num_times_allow_login_wrong">3</string>
     <string name="zpw_string_vcb_error_unidentified">Lỗi không xác định. </string>
-    <string name="zpw_string_vcb_phonenumber_notfound_register">Không có số điện thoại để liên kết.</string>
+    <string name="zpw_string_vcb_phonenumber_notfound_register">Tài khoản đã được liên kết bởi người khác.</string>
     <string name="zpw_string_vcb_phonenumber_notfound_unregister">Không có số điện thoại để hủy liên kết.</string>
     <string name="zpw_string_vcb_error_captcha">Mã kiểm tra không đúng</string>
     <string name="zpw_string_vcb_bank_locked_account">Tài khoản đang bị khoá.\nVui lòng liên hệ ngân hàng để được trợ giúp.</string>
     <string name="zpw_string_vcb_login_error">Đăng nhập sai quá số lần cho phép.</string>
-    <string name="zpw_string_vcb_account_in_server">Tài khoản vẫn còn trên Server</string>
-    <string name="zpw_string_vcb_account_notfound_in_server">Tài khoản không có trên Server</string>
+    <string name="zpw_string_vcb_account_in_server">Tài khoản vẫn còn trên hệ thống</string>
+    <string name="zpw_string_vcb_account_notfound_in_server">Tài khoản chưa có trên hệ thống</string>
 
     <string name="zpw_string_vcb_otp_sender">Vietcombank</string>
     <string name="zpw_int_vcb_otp_size">10</string>

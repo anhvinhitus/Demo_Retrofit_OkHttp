@@ -9,7 +9,7 @@ import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 /**
- * Created by cpu11326 on 26/10/2016.
+ * Created by SinhTT on 26/10/2016.
  */
 
 public class LayoutUtils {

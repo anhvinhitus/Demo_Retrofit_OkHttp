@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.business.channel.linkacc;
 
 import android.content.Context;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -50,7 +51,7 @@ import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
- * Created by cpu11326 on 14/11/2016.
+ * Created by SinhTT on 14/11/2016.
  */
 
 public class AdapterLinkAcc extends AdapterBase {
@@ -105,15 +106,19 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // show title bar
         if (mLinkAccType.equals(ELinkAccType.LINK))
+        {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
+        }
         else
+        {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
+        }
 
     }
 
     @Override
     public DPaymentChannel getChannelConfig() throws Exception {
-        return null;
+        return GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankAccountChannelConfig(), DPaymentChannel.class);
     }
 
     @Override
@@ -132,8 +137,10 @@ public class AdapterLinkAcc extends AdapterBase {
     @Override
     public String getChannelID() {
         if (mConfig != null)
+        {
             return String.valueOf(mConfig.pmcid);
-        return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc);
+        }
+        return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount);
     }
 
     public void forceVirtualKeyboard() {
@@ -182,7 +189,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             if (pExisted) {
                                 linkAccSuccess();
                             } else {
-                                linkAccFail(getActivity().getString(R.string.zpw_string_vcb_account_notfound_in_server));
+                                linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server));
                             }
                         }
 
@@ -211,8 +218,14 @@ public class AdapterLinkAcc extends AdapterBase {
         }
         getActivity().enableSubmitBtn(true);
 
+        // enable web parse. disable webview
+        if (GlobalData.isAllowShowWebviewVCB()) {
+            getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
+            getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
+        }
 
-        // get bank account
+
+        // get bankaccount from cache callback to app
         List<DBankAccount> dBankAccountList = null;
         try {
             dBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
@@ -243,6 +256,12 @@ public class AdapterLinkAcc extends AdapterBase {
         getActivity().renderByResource();
         getActivity().showFailView(pMessage, null);
         getActivity().enableSubmitBtn(true);
+
+        // enable web parse. disable webview
+        if (GlobalData.isAllowShowWebviewVCB()) {
+            getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
+            getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
+        }
     }
 
     // call API, get bankAccount
@@ -264,7 +283,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             if (!pExisted) {
                                 unlinkAccSuccess();
                             } else {
-                                unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_account_in_server));
+                                unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server));
                             }
                         }
 
@@ -291,6 +310,12 @@ public class AdapterLinkAcc extends AdapterBase {
             e.printStackTrace();
         }
         getActivity().enableSubmitBtn(true);
+
+        // enable web parse. disable webview
+        if (GlobalData.isAllowShowWebviewVCB()) {
+            getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
+            getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
+        }
     }
 
 
@@ -305,6 +330,12 @@ public class AdapterLinkAcc extends AdapterBase {
         getActivity().renderByResource();
         getActivity().showFailView(pMessage, null);
         getActivity().enableSubmitBtn(true);
+
+        // enable web parse. disable webview
+        if (GlobalData.isAllowShowWebviewVCB()) {
+            getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
+            getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
+        }
     }
 
     @Override
@@ -483,7 +514,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         }
                     } else {
                         // don't have account link
-                        linkAccFail(getActivity().getString(R.string.zpw_string_vcb_phonenumber_notfound_register));
+                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_register));
                         return null;
                     }
                 }
@@ -571,7 +602,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     linkAccGuiProcessor.setPhoneNumUnReg(phoneNumList);
                 } else {
                     // don't have account link
-                    unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_phonenumber_notfound_unregister));
+                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_unregister));
                     return null;
                 }
 

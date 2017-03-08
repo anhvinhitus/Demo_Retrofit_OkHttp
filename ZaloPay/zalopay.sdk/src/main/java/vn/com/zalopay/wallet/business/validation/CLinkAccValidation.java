@@ -7,7 +7,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 
 /**
- * Created by cpu11326 on 21/11/2016.
+ * Created by SinhTT on 21/11/2016.
  */
 
 public class CLinkAccValidation implements IPaymentValidate {

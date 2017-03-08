@@ -48,7 +48,7 @@ import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 
 /**
- * Created by cpu11326 on 14/10/2016.
+ * Created by SinhTT on 14/10/2016.
  */
 
 public class LinkAccGuiProcessor extends CardGuiProcessor {
