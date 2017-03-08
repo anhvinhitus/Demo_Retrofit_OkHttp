@@ -191,6 +191,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         //render resource again after finishing loading resource.
         renderByResource();
         showProgress(false, null);
+        /***
+         * exception bidv bank
+         * use can not pay by card with bidv so he/she need to link before payment.
+         * auto fill again card number that he/she input before when direct to link channel
+         */
         fillCardNumberFromCache();
     }
 

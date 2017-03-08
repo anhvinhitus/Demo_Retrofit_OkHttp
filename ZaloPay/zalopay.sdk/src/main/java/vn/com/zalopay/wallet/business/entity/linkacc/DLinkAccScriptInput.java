@@ -1,7 +1,7 @@
 package vn.com.zalopay.wallet.business.entity.linkacc;
 
 /**
- * Created by cpu11326 on 21/11/2016.
+ * Created by SinhTT on 21/11/2016.
  */
 
 public class DLinkAccScriptInput {

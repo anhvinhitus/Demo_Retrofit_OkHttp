@@ -8,7 +8,7 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 
 /**
- * Created by cpu11326 on 21/11/2016.
+ * Created by SinhTT on 21/11/2016.
  */
 
 public class DLinkAccScriptOutput {

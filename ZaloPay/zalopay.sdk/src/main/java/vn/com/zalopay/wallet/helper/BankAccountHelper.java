@@ -90,6 +90,13 @@ public class BankAccountHelper {
 
                 @Override
                 public void onGetBankAccountListComplete(BaseResponse pResponse) {
+                    //for testing
+//                    DBankAccount bankAccount = new DBankAccount();
+//                    bankAccount.bankcode = "ZPVCB";
+//                    bankAccount.firstaccountno = "042100";
+//                    bankAccount.lastaccountno = "6723";
+//                    ((BankAccountListResponse) pResponse).bankaccounts.add(bankAccount);
+
                     if (pResponse instanceof BankAccountListResponse
                             && BankAccountHelper.isNeedUpdateBankAccountInfoOnCache(((BankAccountListResponse) pResponse).bankaccountchecksum)) {
                         try {
@@ -103,15 +110,6 @@ public class BankAccountHelper {
                         }
                     } else if (pResponse != null && pResponse.returncode == 1 && pReloadBankAccountInfoListener != null) {
                         pReloadBankAccountInfoListener.onComplete(null);
-
-//                        // hard code to test linkAcc
-//                        List<DBankAccount> bankaccounts = new ArrayList<DBankAccount>();
-//                        DBankAccount bankAccount = new DBankAccount();
-//                        bankAccount.bankcode = "ZPVCB";
-//                        bankAccount.firstaccountno = "042100";
-//                        bankAccount.lastaccountno = "6723";
-//                        bankaccounts.add(bankAccount);
-//                        pReloadMapCardInfoListener.onComplete(bankaccounts);
                     } else if (pReloadBankAccountInfoListener != null) {
                         pReloadBankAccountInfoListener.onError(null);
                     }

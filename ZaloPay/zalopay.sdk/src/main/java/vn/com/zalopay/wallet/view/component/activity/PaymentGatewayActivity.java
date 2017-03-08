@@ -155,7 +155,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             return;
         }
 
-        //set callback listener
+        //keep callback listener
         GlobalData.setChannelActivityCallBack(this);
 
         //this is link acc , go to channel directly

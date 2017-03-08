@@ -48,6 +48,10 @@ public class RS {
     }
 
     public static final class string {
+        public static final String zpw_string_vcb_account_notfound_in_server = "zpw_string_vcb_account_notfound_in_server";
+        public static final String zpw_string_vcb_account_in_server = "zpw_string_vcb_account_in_server";
+        public static final String zpw_string_vcb_phonenumber_notfound_register = "zpw_string_vcb_phonenumber_notfound_register";
+        public static final String zpw_string_vcb_phonenumber_notfound_unregister = "zpw_string_vcb_phonenumber_notfound_unregister";
         public static final String zpw_alert_networking_error_parse_website = "zpw_alert_networking_error_parse_website";
 
         public static final String zpw_warning_bidv_select_linkcard_payment = "zpw_warning_bidv_select_linkcard_payment";
