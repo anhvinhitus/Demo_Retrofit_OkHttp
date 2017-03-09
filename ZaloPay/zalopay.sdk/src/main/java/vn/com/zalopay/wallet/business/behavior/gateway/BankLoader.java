@@ -126,13 +126,11 @@ public class BankLoader extends SingletonBase {
      */
     public boolean isBankMaintenance(String pBankCode) {
         BankConfig bankConfig = getBankByBankCode(pBankCode);
-
         if (bankConfig != null && bankConfig.isBankMaintenence(GlobalData.getCurrentBankFunction())) {
             maintenanceBank = bankConfig;
             maintenanceBankFunction = bankConfig.getBankFunction(GlobalData.getCurrentBankFunction());
             return true;
         }
-
         return false;
     }
 

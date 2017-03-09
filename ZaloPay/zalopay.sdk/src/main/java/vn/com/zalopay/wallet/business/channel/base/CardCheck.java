@@ -45,7 +45,9 @@ public class CardCheck extends SingletonBase {
 
     public boolean isBankAccount() {
         if (mSelectedBank != null)
+        {
             return mSelectedBank.isBankAccount();
+        }
         return false;
     }
 

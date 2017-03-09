@@ -35,7 +35,9 @@ public class BankCardCheck extends CardCheck {
         public void onError(String pMessage) {
             Activity activity = BasePaymentActivity.getCurrentActivity();
             if (activity != null && activity instanceof PaymentChannelActivity && !activity.isFinishing())
+            {
                 ((PaymentChannelActivity) activity).onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), true);
+            }
         }
     };
 
@@ -71,7 +73,9 @@ public class BankCardCheck extends CardCheck {
     @Override
     public String getDetectBankCode() {
         if (mSelectedBank != null)
+        {
             return mSelectedBank.code;
+        }
 
         return null;
     }
@@ -79,7 +83,9 @@ public class BankCardCheck extends CardCheck {
     @Override
     public String getDetectedBankName() {
         if (mSelectedBank != null)
+        {
             return mSelectedBank.name;
+        }
         return null;
     }
 
@@ -106,13 +112,10 @@ public class BankCardCheck extends CardCheck {
             return false;
         }
 
-        /***
-         * TRY GET BANK CODE IN BANK MAP.
-         */
+        //TRY GET BANK CODE IN BANK MAP.
         String bankCode = null;
         for (int i = 3; i <= pCardNumber.length(); i++) {
             bankCode = mBankMap.get(pCardNumber.substring(0, i));
-
             if (!TextUtils.isEmpty(bankCode)) {
                 break;
             }
@@ -125,31 +128,25 @@ public class BankCardCheck extends CardCheck {
 
         try {
             mSelectedBank = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(bankCode), BankConfig.class);
-
             mCardNumber = pCardNumber;
-
-            if (mSelectedBank != null) {
+            if (mSelectedBank != null && mSelectedBank.isBankActive()) {
                 //GET API PATTERN OF SELECTED BANK.
                 try {
                     if (!TextUtils.isEmpty(mSelectedBank.code)) {
                         mOtpReceiverPatternList = ResourceManager.getInstance(null).getOtpReceiverPattern(bankCode);
-
                         mFoundIdentifier = ResourceManager.getInstance(null).getBankIdentifier(mSelectedBank.code);
-
                         Log.d(this, "===otp pattern===" + GsonUtils.toJsonString(mOtpReceiverPatternList));
                         Log.d(this, "===identifier===" + GsonUtils.toJsonString(mFoundIdentifier));
                     }
                 } catch (Exception e) {
                     Log.e(this, e);
                 }
-
                 return true;
             }
 
         } catch (Exception e) {
             Log.e(this, e);
         }
-
         mSelectedBank = null;
         mFoundIdentifier = null;
         return false;

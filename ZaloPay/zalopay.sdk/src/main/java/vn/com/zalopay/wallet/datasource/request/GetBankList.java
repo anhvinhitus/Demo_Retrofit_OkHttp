@@ -79,12 +79,11 @@ public class GetBankList extends BaseRequest<BankConfigResponse> {
             if (bankConfig.code.equals("123PBIDV")) {
                 //bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
 
-				/*
-				bankConfig.status = 2;
+                /*
+				bankConfig.status = -1;
 				bankConfig.maintenanceto = Long.parseLong("1480063794000");
 				bankConfig.maintenancemsg = "NH ZPVCB bảo trì tới 21:00:00 07/02/2017, vui lòng chọn ngân hàng khác hoặc quay lại sau";
-				*/
-
+                */
                 //bankConfig.functions.get(2).status = 2;
                 //bankConfig.functions.get(0).maintenanceto = Long.parseLong("1480063794000");
                 //bankConfig.interfacetype = 1;
