@@ -11,7 +11,6 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.TextView;
 
 import com.zalopay.ui.widget.iconfont.IconFontHelper;
 import com.zalopay.ui.widget.iconfont.IconFontInfo;
@@ -24,7 +23,7 @@ import timber.log.Timber;
  * TextView subclass which allows the user to define a truetype font file to use as the view's typeface.
  */
 
-public class IconFont extends TextView {
+public class IconFont extends android.support.v7.widget.AppCompatTextView {
     public IconFont(Context context) {
         this(context, null);
     }
