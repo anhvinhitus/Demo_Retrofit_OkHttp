@@ -58,7 +58,7 @@ class PromiseImpl implements Promise {
         mResult.functionName = mMessageName;
         mResult.messageId = mMessageId;
         mResult.messageType = "callback";
-        mResult.keepCallback = false;
+        mResult.keepCallback = true;
 
         if (mWebAppCommunicationHandlerWeakReference.get() != null) {
             mWebAppCommunicationHandlerWeakReference.get().callback(mResult);
