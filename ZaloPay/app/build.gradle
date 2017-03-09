@@ -447,7 +447,7 @@ dependencies {
     compile('vn.com.vng.zalopay:rnmodules:1.21') {
         exclude module: 'bolts-android'
     }
-    compile('vn.com.vng:webapp:0.2')
+    compile('vn.com.vng:webapp:0.3')
 
     debugCompile project(':zalopay.debug')
     compile project(':zalopay.data')
