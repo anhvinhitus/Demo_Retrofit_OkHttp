@@ -66,8 +66,8 @@ public class WalletSDKApplication extends Application {
     }
 
     private static void handleUncaughtException(Thread thread, Throwable e) {
-        SDKReport.makeReportError(e != null ? e.toString() : "handleUncaughtException e=null");
-        Log.e("handleUncaughtException", e != null ? e.getMessage() : "error");
+        SDKReport.makeReportError(null,e != null ? GsonUtils.toJsonString(e) : "handleUncaughtException e=null");
+        Log.e("handleUncaughtException", e != null ? GsonUtils.toJsonString(e) : "error");
 
         //if(Constants.IS_DEV)
         //{
@@ -75,7 +75,7 @@ public class WalletSDKApplication extends Application {
         //sendLogFile();
         //}
 
-        System.exit(1); // kill off the crashed app
+        //System.exit(1); // kill off the crashed app
     }
 
     /**

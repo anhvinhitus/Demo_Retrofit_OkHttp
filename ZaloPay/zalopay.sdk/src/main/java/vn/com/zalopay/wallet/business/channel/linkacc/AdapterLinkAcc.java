@@ -1,11 +1,9 @@
 package vn.com.zalopay.wallet.business.channel.linkacc;
 
-import android.content.Context;
 import android.os.Handler;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
@@ -17,6 +15,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -36,6 +35,7 @@ import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.datasource.request.SubmitMapAccount;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
+import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
@@ -62,7 +62,53 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
 
-    protected  ZPWNotification mNotification;
+    protected ZPWNotification mNotification;
+    protected Runnable runnableWaitingNotifyUnLinkAcc = new Runnable() {
+        @Override
+        public void run() {
+            // get & check bankaccount list
+            BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
+                @Override
+                public void onCheckExistBankAccountComplete(boolean pExisted) {
+                    showProgressBar(false, null);
+                    if (!pExisted) {
+                        unlinkAccSuccess();
+                    } else {
+                        unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server));
+                    }
+                }
+
+                @Override
+                public void onCheckExistBankAccountFail(String pMessage) {
+                    showProgressBar(false, null);
+                    unlinkAccFail(pMessage);
+                }
+            }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+        }
+    };
+    protected Runnable runnableWaitingNotifyLinkAcc = new Runnable() {
+        @Override
+        public void run() {
+            // get & check bankaccount list
+            BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
+                @Override
+                public void onCheckExistBankAccountComplete(boolean pExisted) {
+                    showProgressBar(false, null);
+                    if (pExisted) {
+                        linkAccSuccess();
+                    } else {
+                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server));
+                    }
+                }
+
+                @Override
+                public void onCheckExistBankAccountFail(String pMessage) {
+                    showProgressBar(false, null);
+                    linkAccFail(pMessage);
+                }
+            }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+        }
+    };
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private ELinkAccType mLinkAccType;
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
@@ -70,11 +116,46 @@ public class AdapterLinkAcc extends AdapterBase {
     private LinkAccWebViewClient mWebViewProcessor = null;
     private int mNumAllowLoginWrong;
     private Handler mHandler = new Handler();
+    private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
+        @Override
+        public void onProcessing() {
+        }
+
+        @Override
+        public void onComplete() {
+            try {
+                // get bank config
+                BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(GlobalData.getPaymentInfo().linkAccInfo.getBankCode()), BankConfig.class);
+                if (bankConfig == null || !bankConfig.isBankActive()) {
+                    getActivity().onExit(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
+                    return;
+                } else {
+                    initWebView(bankConfig.loginbankurl);
+                }
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+
+        @Override
+        public void onError(String pMessage) {
+            if (TextUtils.isEmpty(pMessage)) {
+                pMessage = GlobalData.getStringResource(RS.string.zpw_alert_error_networking_when_load_banklist);
+            }
+            getActivity().onExit(pMessage, true);
+        }
+    };
 
     public AdapterLinkAcc(PaymentChannelActivity pOwnerActivity) {
         super(pOwnerActivity);
         mLayoutId = SCREEN_LINK_ACC;
         mPageCode = SCREEN_LINK_ACC;
+    }
+
+    public void startFlow() {
+        Log.d(this, "start flow...");
+        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+        BankLoader.loadBankList(mLoadBankListListener);
     }
 
     @Override
@@ -89,29 +170,13 @@ public class AdapterLinkAcc extends AdapterBase {
                 linkAccGuiProcessor.getLlButton());
 
         mLinkAccType = GlobalData.getPaymentInfo().linkAccInfo.getLinkAccType();
-        DialogManager.showProcessDialog(getActivity(), null);
-        try {
-            // get bank config
-            BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(GlobalData.getPaymentInfo().linkAccInfo.getBankCode()), BankConfig.class);
-            if (bankConfig != null && !TextUtils.isEmpty(bankConfig.loginbankurl)) {
-                initWebView(bankConfig.loginbankurl);
-            } else {
-                initWebView(GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         // get number times allow login wrong.
         mNumAllowLoginWrong = Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_int_vcb_num_times_allow_login_wrong));
 
         // show title bar
-        if (mLinkAccType.equals(ELinkAccType.LINK))
-        {
+        if (mLinkAccType.equals(ELinkAccType.LINK)) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
-        }
-        else
-        {
+        } else if(mLinkAccType.equals(ELinkAccType.UNLINK)) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
         }
 
@@ -137,8 +202,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
     @Override
     public String getChannelID() {
-        if (mConfig != null)
-        {
+        if (mConfig != null) {
             return String.valueOf(mConfig.pmcid);
         }
         return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount);
@@ -147,9 +211,8 @@ public class AdapterLinkAcc extends AdapterBase {
     public void forceVirtualKeyboard() {
         // Check if no view has focus:
         View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (view != null && view instanceof EditText) {
+            linkAccGuiProcessor.showKeyBoardOnEditText((EditText) view);
         }
     }
 
@@ -157,7 +220,7 @@ public class AdapterLinkAcc extends AdapterBase {
     private void submitMapAccount(String pAccNum) {
         JSONObject json = new JSONObject();
         try {
-            json.put("bankcode", GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+            json.put("bankcode", GlobalData.getPaymentInfo().linkAccInfo.getBankCode());
             json.put("firstaccountno", StringUtil.getFirstStringWithSize(pAccNum, 6));
             json.put("lastaccountno", StringUtil.getLastStringWithSize(pAccNum, 4));
         } catch (JSONException e) {
@@ -169,59 +232,12 @@ public class AdapterLinkAcc extends AdapterBase {
         submitMapAccount.makeRequest();
     }
 
-    protected Runnable runnableWaitingNotifyUnLinkAcc = new Runnable() {
-        @Override
-        public void run() {
-            // get & check bankaccount list
-            BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
-                @Override
-                public void onCheckExistBankAccountComplete(boolean pExisted) {
-                    showProgressBar(false, null);
-                    if (!pExisted) {
-                        unlinkAccSuccess();
-                    } else {
-                        unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server));
-                    }
-                }
-
-                @Override
-                public void onCheckExistBankAccountFail(String pMessage) {
-                    showProgressBar(false, null);
-                    unlinkAccFail(pMessage);
-                }
-            }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
-        }
-    };
-
-    protected Runnable runnableWaitingNotifyLinkAcc = new Runnable() {
-        @Override
-        public void run() {
-            // get & check bankaccount list
-            BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
-                @Override
-                public void onCheckExistBankAccountComplete(boolean pExisted) {
-                    showProgressBar(false, null);
-                    if (pExisted) {
-                        linkAccSuccess();
-                    } else {
-                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server));
-                    }
-                }
-
-                @Override
-                public void onCheckExistBankAccountFail(String pMessage) {
-                    showProgressBar(false, null);
-                    linkAccFail(pMessage);
-                }
-            }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
-        }
-    };
-
     // call API,get bankAccount
     private void checkUnlinkAccountList() {
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         mHandler.postDelayed(runnableWaitingNotifyUnLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
+
     // call API, get bankAccount
     protected void checkLinkAccountList() {
         // loop to get notification here.
@@ -244,22 +260,20 @@ public class AdapterLinkAcc extends AdapterBase {
         getActivity().enableSubmitBtn(true);
 
         // enable web parse. disable webview
-        if (GlobalData.isAllowShowWebviewVCB()) {
+        if (GlobalData.shouldNativeWebFlow()) {
             getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
-
-
         // get bankaccount from cache callback to app
         List<DBankAccount> dBankAccountList = null;
         try {
             dBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(this,e);
         }
 
         // get & set mapBank
-        if (dBankAccountList.size() > 0)
+        if (dBankAccountList != null && dBankAccountList.size() > 0)
             GlobalData.getPaymentInfo().mapBank = dBankAccountList.get(0);
 //        else {
 //            // hard code to test
@@ -283,7 +297,7 @@ public class AdapterLinkAcc extends AdapterBase {
         getActivity().enableSubmitBtn(true);
 
         // enable web parse. disable webview
-        if (GlobalData.isAllowShowWebviewVCB()) {
+        if (GlobalData.shouldNativeWebFlow()) {
             getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
@@ -303,7 +317,7 @@ public class AdapterLinkAcc extends AdapterBase {
         getActivity().enableSubmitBtn(true);
 
         // enable web parse. disable webview
-        if (GlobalData.isAllowShowWebviewVCB()) {
+        if (GlobalData.shouldNativeWebFlow()) {
             getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
@@ -323,7 +337,7 @@ public class AdapterLinkAcc extends AdapterBase {
         getActivity().enableSubmitBtn(true);
 
         // enable web parse. disable webview
-        if (GlobalData.isAllowShowWebviewVCB()) {
+        if (GlobalData.shouldNativeWebFlow()) {
             getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
@@ -377,7 +391,13 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Login page
             if (page.equals(VCB_LOGIN_PAGE)) {
-                DialogManager.closeProcessDialog(); // close process dialog
+                showProgressBar(false,null); // close process dialog
+
+                //for testing
+                if(Constants.IS_DEV)
+                {
+                    linkAccGuiProcessor.setAccountTest();
+                }
 
                 mPageCode = PAGE_VCB_LOGIN;
 
@@ -448,6 +468,13 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
                 getActivity().renderByResource();
                 getActivity().enableSubmitBtn(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        forceVirtualKeyboard();//auto show keyboard
+                    }
+                },300);
+
                 return null;
             }
 
@@ -500,7 +527,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         linkAccGuiProcessor.setPhoneNum(phoneNum);
 
                         // MapAccount API. just using for web VCB
-                        if (GlobalData.isAllowShowWebviewVCB()) {
+                        if (GlobalData.shouldNativeWebFlow()) {
                             submitMapAccount(getAccNumValue());
                         }
                     } else {
@@ -528,7 +555,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     mPageCode = PAGE_VCB_OTP;
                     linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().requestFocus();
                     // submit MapAccount for webview VCB parse
-                    if (!GlobalData.isAllowShowWebviewVCB())
+                    if (!GlobalData.shouldNativeWebFlow())
                         submitMapAccount(getAccNumValue());
 
                     getActivity().renderByResource();
@@ -679,32 +706,24 @@ public class AdapterLinkAcc extends AdapterBase {
             return null;
         }
         //event notification from app.
-        if(pEventType == EEventType.ON_NOTIFY_BANKACCOUNT)
-        {
+        if (pEventType == EEventType.ON_NOTIFY_BANKACCOUNT) {
             mNotification = (ZPWNotification) pAdditionParams[0];
 
-            if(mNotification != null && mNotification.getType() == Constants.NOTIFY_TYPE.LINKACC)
-            {
-                if(mHandler != null)
-                {
+            if (mNotification != null && mNotification.getType() == Constants.NOTIFY_TYPE.LINKACC) {
+                if (mHandler != null) {
                     mHandler.removeCallbacks(runnableWaitingNotifyLinkAcc);
-                    Log.e(this,"cancelling current notify after getting notify from app...");
+                    Log.e(this, "cancelling current notify after getting notify from app...");
                 }
                 runnableWaitingNotifyLinkAcc.run();
-            }
-            else if(mNotification != null && mNotification.getType() == Constants.NOTIFY_TYPE.UNLINKACC)
-            {
-                if(mHandler != null)
-                {
+            } else if (mNotification != null && mNotification.getType() == Constants.NOTIFY_TYPE.UNLINKACC) {
+                if (mHandler != null) {
                     mHandler.removeCallbacks(runnableWaitingNotifyUnLinkAcc);
-                    Log.e(this,"cancelling current notify after getting notify from app...");
+                    Log.e(this, "cancelling current notify after getting notify from app...");
                 }
                 runnableWaitingNotifyUnLinkAcc.run();
-            }
-            else
-            {
-                Log.e(this,"notification=" + mNotification != null ? GsonUtils.toJsonString(mNotification) : "null");
-                showProgressBar(false,null);
+            } else {
+                Log.e(this, "notification=" + mNotification != null ? GsonUtils.toJsonString(mNotification) : "null");
+                showProgressBar(false, null);
             }
         }
         return null;
@@ -725,13 +744,11 @@ public class AdapterLinkAcc extends AdapterBase {
         // Init:
         if (mWebViewProcessor == null) {
             // Check show WebView in BankList
-            if (GlobalData.isAllowShowWebviewVCB()) {
+            if (GlobalData.shouldNativeWebFlow()) {
                 // show webview && hide web parse
                 getActivity().findViewById(R.id.webView).setVisibility(View.VISIBLE);
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.GONE);
-                mWebViewProcessor = new
-                        LinkAccWebViewClient(this, (LinkAccWebView)
-                        getActivity().findViewById(R.id.webView));
+                mWebViewProcessor = new LinkAccWebViewClient(this, (LinkAccWebView) getActivity().findViewById(R.id.webView));
             } else {
                 // hide webview && show web parse
                 getActivity().findViewById(R.id.webView).setVisibility(View.GONE);
@@ -739,7 +756,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
         }
-
+        showProgressBar(true,GlobalData.getStringResource(RS.string.zpw_loading_website_message));
         mWebViewProcessor.start(pUrl);
     }
 

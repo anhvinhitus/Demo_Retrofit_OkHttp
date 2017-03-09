@@ -1661,7 +1661,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
         }
     }
 
-    public void showKeyBoardOnEditText(final EditText pEditText) {
+    public void showKeyBoardOnEditTextAndScroll(final EditText pEditText) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1671,6 +1671,20 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
                     ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), pEditText);
                     moveScrollViewToCurrentFocusView();
 
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
+            }
+        }, 300);
+    }
+
+    public void showKeyBoardOnEditText(final EditText pEditText) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), pEditText);
                 } catch (Exception e) {
                     Log.e(this, e);
                 }

@@ -752,7 +752,7 @@ public class GlobalData {
         return mUserProfile;
     }
 
-    public static boolean isAllowShowWebviewVCB() {
+    public static boolean shouldNativeWebFlow() {
         try {
             BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(GlobalData.getPaymentInfo().linkAccInfo.getBankCode()), BankConfig.class);
             if(bankConfig != null && !bankConfig.isCoverBank()){

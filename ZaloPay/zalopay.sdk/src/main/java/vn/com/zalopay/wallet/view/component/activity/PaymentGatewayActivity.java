@@ -131,7 +131,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         @Override
         public void onError(String pMessage) {
             if (TextUtils.isEmpty(pMessage)) {
-                pMessage = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+                pMessage = GlobalData.getStringResource(RS.string.zpw_alert_error_networking_when_load_banklist);
             }
 
             onExit(pMessage, true);
@@ -160,31 +160,15 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
         //this is link acc , go to channel directly
         if (GlobalData.isLinkAccChannel()) {
-            //check app info whether this transaction is allowed or not
-            BundleResourceLoader resourceLoader = new BundleResourceLoader(new ZPWInitResourceListener() {
-                @Override
-                public void onSuccess() {
-                    startChannelDirect(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc));
-                }
-
-                @Override
-                public void onError(String pMessage) {
-                    onReturnCancel(pMessage);
-                }
-            });
-            resourceLoader.execute();
-
+            startChannelDirect(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc));
             isUniqueChannel = true;
-
             return;
         }
 
         //this is link card , go to channel directly
         if (GlobalData.isLinkCardChannel()) {
             startChannelDirect(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
-
             isUniqueChannel = true;
-
             return;
         }
 
@@ -435,10 +419,10 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     }
 
     @Override
-    protected void actionAfterCheckAppInfoAndLoadResouce() {
+    protected void readyForPayment() {
         showProgress(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         BankLoader.loadBankList(mLoadBankListListener);
-        Log.d(this,"===show Channel===actionAfterCheckAppInfoAndLoadResouce()");
+        Log.d(this,"===show Channel===readyForPayment()");
 
     }
 

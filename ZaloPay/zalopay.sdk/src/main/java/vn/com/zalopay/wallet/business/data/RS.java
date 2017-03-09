@@ -48,6 +48,8 @@ public class RS {
     }
 
     public static final class string {
+        public static final String zpw_loading_website_message = "zpw_loading_website_message";
+        public static final String zpw_alert_error_networking_when_load_banklist = "zpw_alert_error_networking_when_load_banklist";
         public static final String zpw_string_vcb_account_notfound_in_server = "zpw_string_vcb_account_notfound_in_server";
         public static final String zpw_string_vcb_account_in_server = "zpw_string_vcb_account_in_server";
         public static final String zpw_string_vcb_phonenumber_notfound_register = "zpw_string_vcb_phonenumber_notfound_register";

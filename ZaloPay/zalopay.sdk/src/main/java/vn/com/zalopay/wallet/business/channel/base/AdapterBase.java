@@ -479,7 +479,7 @@ public abstract class AdapterBase {
                 //reset otp and show keyboard again
                 if (isCardFlow()) {
                     ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
-                    getGuiProcessor().showKeyBoardOnEditText(((BankCardGuiProcessor) getGuiProcessor()).getOtpAuthenPayerEditText());
+                    getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpAuthenPayerEditText());
                 }
             }
         });

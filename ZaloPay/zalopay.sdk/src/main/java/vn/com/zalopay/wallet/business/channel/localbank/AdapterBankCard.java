@@ -328,11 +328,11 @@ public class AdapterBankCard extends AdapterBase {
                             if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing()) {
                                 //reset otp and show keyboard again
                                 ((BankCardGuiProcessor) getGuiProcessor()).resetCaptcha();
-                                getGuiProcessor().showKeyBoardOnEditText(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
+                                getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
                             } else if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
                                 //reset otp and show keyboard again
                                 ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
-                                getGuiProcessor().showKeyBoardOnEditText(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
+                                getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
                             }
                         }
                     });
@@ -345,7 +345,7 @@ public class AdapterBankCard extends AdapterBase {
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() && mOtpEndTime == 0) {
                     mOtpEndTime = System.currentTimeMillis();
 
-                    getGuiProcessor().showKeyBoardOnEditText(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
+                    getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
                 }
 
                 if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing() && mCaptchaEndTime == 0) {
@@ -353,7 +353,7 @@ public class AdapterBankCard extends AdapterBase {
                     //request permission read/view sms on android 6.0+
                     getActivity().requestPermission(getActivity().getApplicationContext());
 
-                    getGuiProcessor().showKeyBoardOnEditText(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
+                    getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
                 }
 
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
