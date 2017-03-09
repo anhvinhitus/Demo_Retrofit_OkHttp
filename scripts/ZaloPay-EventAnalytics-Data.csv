@@ -145,6 +145,7 @@ EventId,Category,Action
 2046,Timing TPE,api_v001_tpe_sdkerrorreport
 2047,Timing UM,api_um_listcardinfoforclient
 2048,Timing Notification,api_notification_ping_pong
+2049,Timing TPE,api_v001_tpe_submitmapaccount
 2100,UpdateProfile2,UpdateProfile2_Launch
 2101,UpdateProfile2,UpdateProfile2_NavigateBack
 2102,UpdateProfile2,UpdateProfile2_PressCheck
