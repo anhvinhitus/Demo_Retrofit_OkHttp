@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BundleResourceLoader;
-import vn.com.zalopay.wallet.business.behavior.view.CChannelGate;
+import vn.com.zalopay.wallet.business.behavior.view.ChannelStartProcessor;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -600,7 +600,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         //calculate fee and total amount order
         populateAmout(pChannel);
 
-        CChannelGate.getInstance(this).setChannel(pChannel).startGateWay();
+        ChannelStartProcessor.getInstance(this).setChannel(pChannel).startGateWay();
         Log.d(this,"===show Channel===goToChannel()");
     }
 

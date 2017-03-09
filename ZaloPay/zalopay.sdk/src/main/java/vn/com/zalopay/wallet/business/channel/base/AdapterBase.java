@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
-import vn.com.zalopay.wallet.business.behavior.view.CChannelGate;
+import vn.com.zalopay.wallet.business.behavior.view.ChannelStartProcessor;
 import vn.com.zalopay.wallet.business.channel.creditcard.AdapterCreditCard;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
@@ -1668,7 +1668,7 @@ public abstract class AdapterBase {
      */
     public void setBankInfoConfirmView() {
         try {
-            DPaymentChannelView channel = CChannelGate.getInstance(null).getChannel();
+            DPaymentChannelView channel = ChannelStartProcessor.getInstance(null).getChannel();
             if (channel != null) {
                 getActivity().setImage(R.id.zpw_zalopay_logo_imageview, ResourceManager.getImage(channel.channel_icon));
                 getActivity().setView(R.id.linearlayout_price, false);
