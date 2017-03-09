@@ -53,7 +53,7 @@ ext {
 
     crashlyticsVersion = "2.5.5@aar"
 
-    zalopayanalyticsVersion = "1.11"
+    zalopayanalyticsVersion = "1.12"
 
     cborVersion = "0.7"
 
