@@ -53,16 +53,16 @@ class PromiseImpl implements Promise {
     }
 
     private void callback(JSONObject data) {
-        if (mWebAppCommunicationHandlerWeakReference.get() == null) {
-            return;
-        }
-
         mResult = new WebMessage();
         mResult.data = data;
         mResult.functionName = mMessageName;
         mResult.messageId = mMessageId;
         mResult.messageType = "callback";
         mResult.keepCallback = false;
+
+        if (mWebAppCommunicationHandlerWeakReference.get() != null) {
+            mWebAppCommunicationHandlerWeakReference.get().callback(mResult);
+        }
     }
 
     private JSONObject failObject(String message) {
