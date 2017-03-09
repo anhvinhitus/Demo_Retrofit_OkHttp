@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.datasource.implement;
 import java.util.HashMap;
 
 import retrofit2.Call;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.datasource.IData;
 import vn.com.zalopay.wallet.datasource.interfaces.ITask;
@@ -32,6 +33,6 @@ public class SubmitMapAccountImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return 0;
+        return ZPEvents.API_V001_TPE_SUBMITMAPACCOUNT;
     }
 }
