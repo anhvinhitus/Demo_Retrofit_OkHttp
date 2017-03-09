@@ -1749,15 +1749,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         try {
             if (!BankLoader.getInstance().isBankSupport(pBankCode)) {
                 String message = GlobalData.getStringResource(RS.string.zpw_string_bank_not_support);
-
                 showInfoDialog(null, message);
-
                 return false;
             }
         } catch (Exception e) {
             Log.e(this, e);
         }
-
         return true;
     }
 
@@ -1766,7 +1763,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     public void showConfirmDialog(final ZPWOnEventConfirmDialogListener pListener, String pMessage, final String pButtonLeftText, final String pButtonRightText) {
-        //Show dialog Confirm
         DialogManager.showSweetDialogConfirm(this, pMessage, pButtonLeftText, pButtonRightText, pListener);
     }
 

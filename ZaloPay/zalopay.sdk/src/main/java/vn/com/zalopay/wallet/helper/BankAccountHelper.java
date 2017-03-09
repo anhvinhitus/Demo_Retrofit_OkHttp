@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.helper;
 
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -90,16 +91,22 @@ public class BankAccountHelper {
 
                 @Override
                 public void onGetBankAccountListComplete(BaseResponse pResponse) {
-                    //for testing
-                    DBankAccount bankAccount = new DBankAccount();
-                    bankAccount.bankcode = "ZPVCB";
-                    bankAccount.firstaccountno = "042100";
-                    bankAccount.lastaccountno = "6723";
-                    ((BankAccountListResponse) pResponse).bankaccounts.add(bankAccount);
 
                     if (pResponse instanceof BankAccountListResponse
                             && BankAccountHelper.isNeedUpdateBankAccountInfoOnCache(((BankAccountListResponse) pResponse).bankaccountchecksum)) {
                         try {
+                            //for testing
+                            /*
+                            DBankAccount bankAccount = new DBankAccount();
+                            bankAccount.bankcode = "ZPVCB";
+                            bankAccount.firstaccountno = "042100";
+                            bankAccount.lastaccountno = "6723";
+                            if(((BankAccountListResponse) pResponse).bankaccounts == null)
+                            {
+                                ((BankAccountListResponse) pResponse).bankaccounts = new ArrayList<>();
+                            }
+                            ((BankAccountListResponse) pResponse).bankaccounts.add(bankAccount);
+                            */
                             BankAccountHelper.updateBankAccountListOnCache(((BankAccountListResponse) pResponse).bankaccountchecksum, ((BankAccountListResponse) pResponse).bankaccounts);
                         } catch (Exception e) {
                             Log.e(this, e);

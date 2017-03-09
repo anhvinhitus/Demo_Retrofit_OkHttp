@@ -162,7 +162,19 @@ public class BankLoader extends SingletonBase {
      * @return
      */
     public boolean isBankSupport(String pBankCode) {
-        return getBankByBankCode(pBankCode) != null;
+        BankConfig bankConfig = getBankByBankCode(pBankCode);
+        if(bankConfig == null)
+        {
+            return false;
+        }
+        else if(!bankConfig.isBankActive())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
 }
