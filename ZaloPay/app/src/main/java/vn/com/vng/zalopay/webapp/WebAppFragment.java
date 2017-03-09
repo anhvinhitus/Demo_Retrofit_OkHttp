@@ -343,7 +343,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         View view = menuItem.getActionView();
         IconFont mIcon = (IconFont) view.findViewById(R.id.imgSettings);
         mIcon.setIcon(R.string.webapp_3point_android);
-        mIcon.setIconColor(ContextCompat.getColor(this.getContext(), R.color.colorWebAppPrimaryText));
+        mIcon.setIconColor(R.color.colorWebAppPrimaryText);
         view.setOnClickListener(new DebouncingOnClickListener() {
             @Override
             public void doClick(View v) {
