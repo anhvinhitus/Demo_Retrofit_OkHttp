@@ -191,6 +191,11 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         return mAdapter;
     }
 
+    public void setAccountTest()
+    {
+        loginHolder.edtUsername.setText("9044060a00");
+        loginHolder.edtPassword.setText("minhly2910");
+    }
     /***
      * Show showDialogSpinner view
      */

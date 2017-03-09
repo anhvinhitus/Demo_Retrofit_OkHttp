@@ -277,10 +277,21 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             notifyUpVersionToApp(pForceUpdate, pVersion, pMessage);
 
             if (!pForceUpdate) {
-                actionAfterCheckAppInfoAndLoadResouce();
+                readyForPayment();
             }
         }
     };
+    protected void loadStaticReload()
+    {
+        //check static resource whether ready or not
+        try {
+            GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+        } catch (Exception e) {
+            if (checkResourceStaticListener != null) {
+                checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
+            }
+        }
+    }
     /***
      * load app info listener
      */
@@ -304,15 +315,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             } catch (Exception e) {
                 Log.d(this, e);
             }
-
-            //check static resource whether ready or not
-            try {
-                GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
-            } catch (Exception e) {
-                if (checkResourceStaticListener != null) {
-                    checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
-                }
-            }
+            loadStaticReload();
         }
 
         @Override
@@ -455,7 +458,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     protected abstract void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage);
 
-    protected abstract void actionAfterCheckAppInfoAndLoadResouce();
+    protected abstract void readyForPayment();
 
     protected AdapterBase getAdapter() {
         return null;
@@ -713,7 +716,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     protected synchronized void checkLoadMapCardAndBankAccountToFinish() {
         if (!mLoadingBankAccount && !mLoadingMapCard) {
-            actionAfterCheckAppInfoAndLoadResouce();
+            readyForPayment();
         }
     }
 

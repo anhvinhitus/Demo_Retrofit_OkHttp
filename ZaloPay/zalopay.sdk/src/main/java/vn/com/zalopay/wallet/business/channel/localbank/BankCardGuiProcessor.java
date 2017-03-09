@@ -490,7 +490,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mOtpAuthenEditText.setVisibility(View.VISIBLE);
             mTextLayoutOtp.setVisibility(View.VISIBLE);
 
-            showKeyBoardOnEditText(mOtpAuthenEditText);
+            showKeyBoardOnEditTextAndScroll(mOtpAuthenEditText);
 
         } else if (mAuthenType == EAuthenType.TOKEN) {
 
@@ -501,7 +501,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             mTokenAuthenEditText.setVisibility(View.VISIBLE);
             mTextLayoutToken.setVisibility(View.VISIBLE);
 
-            showKeyBoardOnEditText(mTokenAuthenEditText);
+            showKeyBoardOnEditTextAndScroll(mTokenAuthenEditText);
         }
 
         checkEnableSubmitButton();

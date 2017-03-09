@@ -61,7 +61,6 @@
                 android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
                 android:paddingRight="@dimen/margin_small"
                 android:paddingTop="@dimen/zpw_edittext_padding_top"
-                android:text="9044060a00"
                 android:textSize="@dimen/sdk_form_input_card_number_size" />
         </android.support.design.widget.TextInputLayout>
 
@@ -89,7 +88,6 @@
                 android:paddingBottom="@dimen/zpw_edittext_padding_bottom"
                 android:paddingRight="@dimen/margin_small"
                 android:paddingTop="@dimen/zpw_edittext_padding_top"
-                android:text="minhly2910"
                 android:textSize="@dimen/sdk_form_input_card_number_size" />
         </android.support.design.widget.TextInputLayout>
 

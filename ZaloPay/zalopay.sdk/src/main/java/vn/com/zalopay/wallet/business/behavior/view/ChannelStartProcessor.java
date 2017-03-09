@@ -34,13 +34,10 @@ public class ChannelStartProcessor extends SingletonBase {
         }
         @Override
         public void onComplete() {
-
             if (!isBankMaintenance() && isBankSupport()) {
                 startChannel();
             }
-
             showProgressBar(false, null);
-
         }
         @Override
         public void onError(String pMessage) {
@@ -56,7 +53,9 @@ public class ChannelStartProcessor extends SingletonBase {
     public static ChannelStartProcessor getInstance(PaymentGatewayActivity pOwnerActivity) {
 
         if (ChannelStartProcessor._object == null)
+        {
             ChannelStartProcessor._object = new ChannelStartProcessor(pOwnerActivity);
+        }
         return ChannelStartProcessor._object;
     }
 

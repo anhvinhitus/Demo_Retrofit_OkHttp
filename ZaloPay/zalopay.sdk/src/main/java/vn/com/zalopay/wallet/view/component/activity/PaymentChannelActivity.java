@@ -17,8 +17,10 @@ import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
+import vn.com.zalopay.wallet.business.behavior.gateway.GatewayLoader;
 import vn.com.zalopay.wallet.business.behavior.view.CPinPage;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.linkacc.LinkAccGuiProcessor;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -120,7 +122,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         {
             Log.e(this,e);
         }
-
         if(! TextUtils.isEmpty(pCardNumber))
         {
             getAdapter().getGuiProcessor().setCardInfo(pCardNumber);
@@ -187,7 +188,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     @Override
-    protected void actionAfterCheckAppInfoAndLoadResouce() {
+    protected void readyForPayment() {
         //render resource again after finishing loading resource.
         renderByResource();
         showProgress(false, null);
@@ -197,6 +198,11 @@ public class PaymentChannelActivity extends BasePaymentActivity {
          * auto fill again card number that he/she input before when direct to link channel
          */
         fillCardNumberFromCache();
+
+        if(mAdapter instanceof AdapterLinkAcc)
+        {
+            ((AdapterLinkAcc) mAdapter).startFlow();
+        }
     }
 
     @Override
@@ -332,6 +338,18 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
         showKeyBoardOnFocusingViewAgain();
 
+        //this is link account and the first call
+        if(GlobalData.isLinkAccChannel() && !mIsRestart)
+        {
+            try {
+                //check static resource whether ready or not
+                loadStaticReload();
+            } catch (Exception ex) {
+                Log.e(this, ex);
+                onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
+                return;
+            }
+        }
         //this is link card channel and the first call.
         if (GlobalData.isLinkCardChannel() && !mIsRestart) {
             //check profile level permission in table map
@@ -354,12 +372,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 if (!isAllowLinkCardATM && isAllowLinkCardCC && createChannelAdapter(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card))) {
                     initChannel();
                 }
-
                 checkAppInfo();
 
             } catch (Exception ex) {
                 Log.e(this, ex);
-
                 onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), true);
                 return;
             }
@@ -670,11 +686,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     protected void initChannel() {
         getAdapter().init();
-
         getAdapter().setListener();
-
         renderResourceAfterDelay();
-
         updateFontCardNumber();
     }
 
