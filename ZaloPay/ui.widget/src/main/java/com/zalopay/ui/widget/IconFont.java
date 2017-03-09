@@ -5,6 +5,8 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.ColorRes;
+import android.support.annotation.StringRes;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -75,7 +77,7 @@ public class IconFont extends TextView {
         }
     }
 
-    public void setIconColor(int color) {
+    public void setIconColor(@ColorRes int color) {
         try {
             super.setTextColor(ResourcesCompat.getColor(getResources(), color, null));
         } catch (Resources.NotFoundException e) {
@@ -90,7 +92,7 @@ public class IconFont extends TextView {
         super.setTextColor(Color.parseColor(color));
     }
 
-    public void setIcon(Integer iconResource) {
+    public void setIcon(@StringRes int iconResource) {
         String iconName = getContext().getString(iconResource);
         setIcon(iconName);
     }
