@@ -23,9 +23,8 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 /***
  * pre check before start payment channel
  */
-public class CChannelGate extends SingletonBase {
-    private static CChannelGate _object;
-
+public class ChannelStartProcessor extends SingletonBase {
+    private static ChannelStartProcessor _object;
     private PaymentGatewayActivity mOwnerActivity;
     private DPaymentChannelView mChannel;
     private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
@@ -33,7 +32,6 @@ public class CChannelGate extends SingletonBase {
         public void onProcessing() {
             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         }
-
         @Override
         public void onComplete() {
 
@@ -44,25 +42,22 @@ public class CChannelGate extends SingletonBase {
             showProgressBar(false, null);
 
         }
-
         @Override
         public void onError(String pMessage) {
             alertNetworking();
         }
     };
 
-    public CChannelGate(PaymentGatewayActivity pOwnerActivity) {
+    public ChannelStartProcessor(PaymentGatewayActivity pOwnerActivity) {
         super();
-
         mOwnerActivity = pOwnerActivity;
     }
 
-    public static CChannelGate getInstance(PaymentGatewayActivity pOwnerActivity) {
+    public static ChannelStartProcessor getInstance(PaymentGatewayActivity pOwnerActivity) {
 
-        if (CChannelGate._object == null)
-            CChannelGate._object = new CChannelGate(pOwnerActivity);
-
-        return CChannelGate._object;
+        if (ChannelStartProcessor._object == null)
+            ChannelStartProcessor._object = new ChannelStartProcessor(pOwnerActivity);
+        return ChannelStartProcessor._object;
     }
 
     protected PaymentGatewayActivity getActivity() {
@@ -73,7 +68,7 @@ public class CChannelGate extends SingletonBase {
         return mChannel;
     }
 
-    public CChannelGate setChannel(DPaymentChannelView pChannel) {
+    public ChannelStartProcessor setChannel(DPaymentChannelView pChannel) {
         mChannel = pChannel;
 
         return this;
@@ -193,7 +188,6 @@ public class CChannelGate extends SingletonBase {
     private boolean isBankSupport() {
         return getActivity().showBankSupport(GlobalData.getPaymentInfo().mapBank.bankcode);
     }
-
     /**
      * Show dialog confirm upgrade level
      */
@@ -227,9 +221,7 @@ public class CChannelGate extends SingletonBase {
      */
     private void alertNetworking() {
         showProgressBar(false, null);
-
         BasePaymentActivity activity = (BasePaymentActivity) BasePaymentActivity.getCurrentActivity();
-
         if (activity != null && activity instanceof PaymentGatewayActivity && !activity.isFinishing()) {
             activity.showWarningDialog(new ZPWOnEventDialogListener() {
                 @Override
@@ -242,13 +234,9 @@ public class CChannelGate extends SingletonBase {
     }
 
     private void startChannel() {
-
         Intent intent = new Intent(GlobalData.getAppContext(), PaymentChannelActivity.class);
-
         intent.putExtra(GlobalData.getStringResource(RS.string.zingpaysdk_intent_key_channel), String.valueOf(mChannel.pmcid));
-
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-
         getActivity().startActivity(intent);
     }
 
