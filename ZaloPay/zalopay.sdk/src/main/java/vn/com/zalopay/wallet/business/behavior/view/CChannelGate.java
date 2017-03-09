@@ -47,7 +47,6 @@ public class CChannelGate extends SingletonBase {
 
         @Override
         public void onError(String pMessage) {
-
             alertNetworking();
         }
     };

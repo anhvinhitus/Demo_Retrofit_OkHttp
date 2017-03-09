@@ -5,6 +5,7 @@ import java.util.List;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CWithDrawCalculateFee;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
+import vn.com.zalopay.wallet.business.entity.enumeration.EBankStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
 import vn.com.zalopay.wallet.utils.Log;
 
@@ -67,9 +68,17 @@ public class BankConfig {
      * @return
      */
     public boolean isBankFunctionAllMaintenance() {
-        return status == 2;
+        return status == Integer.parseInt(EBankStatus.MAINTENANCE.toString());
     }
 
+    /***
+     * check this bank is active for payment
+     * @return
+     */
+    public boolean isBankActive()
+    {
+        return status == Integer.parseInt(EBankStatus.ACTIVE.toString());
+    }
     /***
      * bank maintenance by function: withdraw, link card...
      *
