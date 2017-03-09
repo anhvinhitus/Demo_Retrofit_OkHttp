@@ -150,6 +150,7 @@ public class ZPEvents {
     public static final int API_V001_TPE_SDKERRORREPORT = 2046;
     public static final int API_UM_LISTCARDINFOFORCLIENT = 2047;
     public static final int API_NOTIFICATION_PING_PONG = 2048;
+    public static final int API_V001_TPE_SUBMITMAPACCOUNT = 2049;
     public static final int UPDATEPROFILE2_LAUNCH = 2100;
     public static final int UPDATEPROFILE2_NAVIGATEBACK = 2101;
     public static final int UPDATEPROFILE2_PRESSCHECK = 2102;
@@ -503,6 +504,8 @@ public class ZPEvents {
                 return "api_um_listcardinfoforclient";
             case API_NOTIFICATION_PING_PONG:
                 return "api_notification_ping_pong";
+            case API_V001_TPE_SUBMITMAPACCOUNT:
+                return "api_v001_tpe_submitmapaccount";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2_Launch";
             case UPDATEPROFILE2_NAVIGATEBACK:
@@ -918,6 +921,8 @@ public class ZPEvents {
                 return "Timing UM";
             case API_NOTIFICATION_PING_PONG:
                 return "Timing Notification";
+            case API_V001_TPE_SUBMITMAPACCOUNT:
+                return "Timing TPE";
             case UPDATEPROFILE2_LAUNCH:
                 return "UpdateProfile2";
             case UPDATEPROFILE2_NAVIGATEBACK:
