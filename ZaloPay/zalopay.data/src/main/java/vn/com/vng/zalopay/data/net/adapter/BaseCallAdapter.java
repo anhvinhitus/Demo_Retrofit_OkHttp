@@ -26,12 +26,12 @@ import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
  * BaseCallAdapter for retry API request when has request error
  */
 public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
-    private final int NUMBER_RETRY_REST;
+    protected final int NUMBER_RETRY_REST;
     protected final Context mContext;
-    private final int mApiEventId;
+    protected final int mApiEventId;
     protected final Type mResponseType;
     protected final Scheduler mScheduler;
-    private int mRestRetryCount;
+    protected int mRestRetryCount;
 
     public BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler) {
         this.mContext = context;

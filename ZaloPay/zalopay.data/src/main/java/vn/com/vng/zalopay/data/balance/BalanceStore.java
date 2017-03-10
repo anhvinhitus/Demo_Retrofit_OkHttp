@@ -25,6 +25,12 @@ public interface BalanceStore {
         Observable<BalanceResponse> balance(@Query("userid") String uid, @Query("accesstoken") String accesstoken);
     }
 
+    interface ConnectorService {
+        @API_NAME(ZPEvents.API_V001_TPE_GETBALANCE)
+        @GET(Constants.TPE_API.GETBALANCE)
+        Observable<BalanceResponse> balance(@Query("userid") String uid, @Query("accesstoken") String accesstoken);
+    }
+
     /**
      * Interface for providing up-to-date balance information to outer layers
      */
@@ -39,6 +45,6 @@ public interface BalanceStore {
 
         Observable<Long> fetchBalance();
 
-        Observable<Void> fetchBalancePayment();
+        Observable<Long> fetchBalancePayment();
     }
 }

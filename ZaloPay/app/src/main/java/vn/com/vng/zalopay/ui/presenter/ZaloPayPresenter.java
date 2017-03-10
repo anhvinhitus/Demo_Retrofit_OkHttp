@@ -136,6 +136,24 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mSubscription.add(subscription);
     }
 
+    public void getBalanceConnector() {
+        Subscription subscription = mBalanceRepository.fetchBalancePayment()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<Long>() {
+                    @Override
+                    public void onNext(Long aLong) {
+                        Timber.d("result from connector %s", aLong);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d(e);
+                    }
+                });
+        mSubscription.add(subscription);
+    }
+
     public void getListAppResource() {
         Subscription subscription = mAppResourceRepository.getListAppHome()
                 .doOnNext(this::getListMerchantUser)
@@ -378,6 +396,12 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             inDex ++;
         }
         return mNewListApp;
+    }
+
+    public int getHeightViewBottomView(View pTopView, int pNumberItemView, int pNumberApp) {
+        double heightItem = pTopView.getHeight() / 2;
+        int numberRow = (int) Math.ceil((pNumberItemView / (double) pNumberApp));
+        return (int) (heightItem * numberRow);
     }
 
 

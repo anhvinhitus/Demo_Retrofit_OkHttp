@@ -11,7 +11,6 @@ import vn.com.vng.zalopay.data.balance.BalanceLocalStorage;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.balance.BalanceRepository;
-import vn.com.vng.zalopay.data.ws.payment.request.PaymentRequestService;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
@@ -28,8 +27,8 @@ public class UserBalanceModule {
             BalanceStore.LocalStorage localStorage,
             BalanceStore.RequestService requestService,
             User user,
-            EventBus eventBus, PaymentRequestService paymentRequestService) {
-        return new BalanceRepository(localStorage, requestService, user, eventBus, paymentRequestService);
+            EventBus eventBus, BalanceStore.ConnectorService connectorService) {
+        return new BalanceRepository(localStorage, requestService, user, eventBus, connectorService);
     }
 
     @UserScope
@@ -40,7 +39,13 @@ public class UserBalanceModule {
 
     @Provides
     @UserScope
-    BalanceStore.RequestService provideBalanceRequestService(@Named("retrofitApi") Retrofit retrofit) {
+    BalanceStore.RequestService provideBalanceRequestService(@Named("retrofitConnector") Retrofit retrofit) {
         return retrofit.create(BalanceStore.RequestService.class);
+    }
+
+    @UserScope
+    @Provides
+    BalanceStore.ConnectorService providesConnectorService(@Named("retrofitConnector") Retrofit retrofit) {
+        return retrofit.create(BalanceStore.ConnectorService.class);
     }
 }

@@ -22,7 +22,7 @@ import vn.com.vng.zalopay.data.exception.TokenException;
  * Created by huuhoa on 7/4/16.
  * CallAdapter for pre-processing Server response
  */
-final class ZaloPayCallAdapter extends BaseCallAdapter {
+class ZaloPayCallAdapter extends BaseCallAdapter {
 
     ZaloPayCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler) {
         super(context, apiEventId, responseType, scheduler);

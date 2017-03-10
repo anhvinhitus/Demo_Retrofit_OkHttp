@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.ws.payment.request;
+package vn.com.vng.zalopay.data.ws.paymentconnector;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,7 +24,7 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
 
     private User mUser;
     private Connection mPaymentService;
-    private final LongSparseArray<PaymentRequestCallback> mPaymentCallBackArray;
+    private final LongSparseArray<PaymentConnectorCallback> mPaymentCallBackArray;
     private final LinkedList<PaymentRequest> mRequestQueue;
 
     public PaymentConnectorService(User user, Connection service) {
@@ -35,11 +35,8 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
         this.mPaymentService.addReceiverListener(this);
     }
 
-    public void request(@NonNull PaymentRequest request, @Nullable PaymentRequestCallback callback) {
-        if (callback != null) {
-            mPaymentCallBackArray.put(request.requestId, callback);
-        }
-
+    public void request(@NonNull PaymentRequest request, @NonNull PaymentConnectorCallback callback) {
+        mPaymentCallBackArray.put(request.requestId, callback);
         synchronized (mRequestQueue) {
             mRequestQueue.add(request);
         }
@@ -55,7 +52,7 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
     }
 
     @Nullable
-    private PaymentRequestCallback findCallbackById(long requestId) {
+    private PaymentConnectorCallback findCallbackById(long requestId) {
         return mPaymentCallBackArray.get(requestId);
     }
 
@@ -78,12 +75,12 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
     }
 
     private void handleResult(PaymentRequestData response) {
-        PaymentRequestCallback callback = findCallbackById(response.requestid);
+        PaymentConnectorCallback callback = findCallbackById(response.requestid);
         Timber.d("handleResult: %s", callback);
         if (callback == null) {
             return;
         }
-        callback.handlerResponse(response.resultcode, response.resultdata);
+        callback.onResult(response);
         removeCallback(response.requestid);
     }
 
@@ -114,12 +111,6 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
             }
 
             if (request.cancelled) {
-
-                PaymentRequestCallback callback = findCallbackById(request.requestId);
-                if (callback != null) {
-                    callback.postCancel();
-                }
-
                 mRequestQueue.poll();
                 continue;
             }

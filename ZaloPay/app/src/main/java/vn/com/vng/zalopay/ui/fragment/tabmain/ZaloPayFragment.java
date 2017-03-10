@@ -173,7 +173,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_showshow) {
-            presenter.startPaymentApp(getAppResource(Constants.SHOW_SHOW));
+          //  presenter.startPaymentApp(getAppResource(Constants.SHOW_SHOW));
+            presenter.getBalanceConnector();
             return true;
         } else if (id == R.id.action_notifications) {
             navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);

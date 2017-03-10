@@ -3,14 +3,23 @@ package vn.com.vng.zalopay.internal.di.modules;
 import android.content.Context;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Call;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import retrofit2.CallAdapter;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory;
 import vn.com.vng.zalopay.data.transfer.TransferLocalStorage;
 import vn.com.vng.zalopay.data.transfer.TransferRepository;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
@@ -18,7 +27,8 @@ import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.data.ws.connection.WsConnection;
 import vn.com.vng.zalopay.data.ws.parser.MessageParser;
-import vn.com.vng.zalopay.data.ws.payment.request.PaymentRequestService;
+import vn.com.vng.zalopay.data.ws.payment.request.PaymentConnectorCallFactory;
+import vn.com.vng.zalopay.data.ws.payment.request.PaymentConnectorService;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
@@ -117,5 +127,28 @@ public class UserModule {
     ReactNativeHostable provideReactNativeInstanceManager() {
         Timber.d("Create new instance of ReactNativeInstanceManagerLongLife");
         return new ReactNativeHostLongLife();
+    }
+
+
+    @Provides
+    @UserScope
+    Call.Factory providesCallFactory(PaymentConnectorService connectorService) {
+        return new PaymentConnectorCallFactory(connectorService);
+    }
+
+    @Provides
+    @UserScope
+    @Named("retrofitConnector")
+    Retrofit providesRetrofitConnector(HttpUrl baseUrl, Gson gson,
+                                       CallAdapter.Factory callAdapter,
+                                       Call.Factory callFactory
+    ) {
+        return new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(AndroidApplication.instance(), RxJavaCallAdapterFactory.AdapterType.Connector))
+                .callFactory(callFactory)
+                .baseUrl(baseUrl)
+                .validateEagerly(BuildConfig.DEBUG)
+                .build();
     }
 }

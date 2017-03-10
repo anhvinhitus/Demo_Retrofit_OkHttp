@@ -1,22 +1,14 @@
 package vn.com.vng.zalopay.data.balance;
 
-import android.support.annotation.NonNull;
-
 import org.greenrobot.eventbus.EventBus;
 
 import rx.Observable;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.api.response.BalanceResponse;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.data.ws.payment.request.BalanceCallback;
-import vn.com.vng.zalopay.data.ws.payment.request.PaymentRequest;
-import vn.com.vng.zalopay.data.ws.payment.request.PaymentRequestService;
 import vn.com.vng.zalopay.domain.model.User;
 
 import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
-import static vn.com.vng.zalopay.data.ws.payment.request.PaymentConnectorFactory.createBalanceRequest;
 
 /**
  * Created by huuhoa on 6/15/16.
@@ -29,17 +21,17 @@ public class BalanceRepository implements BalanceStore.Repository {
     private EventBus mEventBus;
     private Long mCurrentBalance;
 
-    private PaymentRequestService mPaymentService;
+    private BalanceStore.ConnectorService mPaymentService;
 
     public BalanceRepository(BalanceStore.LocalStorage localStorage,
                              BalanceStore.RequestService requestService,
                              User user,
-                             EventBus eventBus, PaymentRequestService paymentRequestService) {
+                             EventBus eventBus, BalanceStore.ConnectorService paymentConnectorService) {
         mUser = user;
         mLocalStorage = localStorage;
         mRequestService = requestService;
         mEventBus = eventBus;
-        mPaymentService = paymentRequestService;
+//        mPaymentService = paymentConnectorService;
         Timber.d("accessToken[%s]", mUser.accesstoken);
     }
 
@@ -83,20 +75,10 @@ public class BalanceRepository implements BalanceStore.Repository {
     }
 
     @Override
-    public Observable<Void> fetchBalancePayment() {
-        return ObservableHelper.makeObservable(() -> {
-            mPaymentService.request(balanceRequest(), new BalanceCallback() {
-                @Override
-                public Long doBackground(@NonNull BalanceResponse response) {
-                    Timber.d("doBackground: %s",Thread.currentThread().getName());
-                    mCurrentBalance = response.zpwbalance;
-                    mLocalStorage.putBalance(response.zpwbalance);
-                    BusComponent.publish(APP_SUBJECT, new ChangeBalanceEvent(response.zpwbalance));
-                    return response.zpwbalance;
-                }
-            });
-            return null;
-        });
+    public Observable<Long> fetchBalancePayment() {
+        return mPaymentService.balance(mUser.zaloPayId, mUser.accesstoken)
+                .map(balanceResponse -> balanceResponse.zpwbalance)
+                ;
     }
 
     private PaymentRequest balanceRequest() {
