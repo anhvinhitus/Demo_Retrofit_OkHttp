@@ -528,4 +528,7 @@
     <string name="zpw_alert_error_networking_when_load_banklist">Không tải được thông tin ngân hàng. Vui lòng kiểm tra kết nối mạng và thử lại!</string>
 
     <string name="zpw_loading_website_message">Tải website ngân hàng</string>
+    <string name="zpw_string_special_bankscript_vcb_generate_captcha">^.+(vietcombank\\.com\\.vn).+(\\/Account\\/GenerateCaptcha).*$</string>
+    <string name="zpw_string_special_bankscript_vcb_register_complete">^.+(vietcombank\\.com\\.vn).+(\\/ViDienTu\\/DangKySuDung).*$</string>
+    <string name="zpw_string_special_bankscript_vcb_unregister_complete">^.+(vietcombank\\.com\\.vn).+(\\/ViDienTu\\/NgungSuDungViDienTu).*$</string>
 </resources>

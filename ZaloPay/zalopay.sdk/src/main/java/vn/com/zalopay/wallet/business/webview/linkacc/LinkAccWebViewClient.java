@@ -27,10 +27,13 @@ import android.webkit.WebView;
 
 import java.util.List;
 
+import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EJavaScriptType;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
@@ -163,19 +166,19 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 //            return;
 //        }
 
-        if (url.matches("^.+(vietcombank\\.com\\.vn).+(\\/Account\\/GenerateCaptcha).*$")) {
+        if (url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_generate_captcha))) {
 //            onPageFinishedAjax(url, TIME_WAITING_LOAD_AJAX_GET_MESSAGE); // delay 200ms for wait run ajax, to get status message. Confirm info
             onPageFinishedAuto(url);
             return;
         }
 
-        if (url.matches("^.+(vietcombank\\.com\\.vn).+(\\/ViDienTu\\/DangKySuDung).*$")) {
+        if (url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_register_complete))) {
 //            onPageFinishedAjax(url, TIME_WAITING_LOAD_AJAX_GET_RESULT); // wait run ajax, to get status message. Confirm OTP
             onPageFinishedAuto(url);
             return;
         }
 
-        if (url.matches("^.+(vietcombank\\.com\\.vn).+(\\/ViDienTu\\/NgungSuDungViDienTu).*$")) {
+        if (url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_unregister_complete))) {
 //            onPageFinishedAjax(url, TIME_WAITING_LOAD_AJAX_GET_RESULT); // wait run ajax, to get status message. Confirm OTP
             onPageFinishedAuto(url);
             return;
