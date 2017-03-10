@@ -2,6 +2,9 @@ package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -36,6 +39,7 @@ import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.banner.ui.fragment.BannerFragment;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
@@ -68,7 +72,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     private final static int SPAN_COUNT_APPLICATION = 3;
     private boolean isEnableShowShow;
-
+    private BannerFragment mBannerFragment;
 
     @Inject
     ZaloPayPresenter presenter;
@@ -135,6 +139,15 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         //hideTextAds();
+        initBanner();
+        hideTextAds();
+    }
+
+    private void initBanner() {
+        mBannerFragment = BannerFragment.newInstance();
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.bannerFragment, mBannerFragment, "banner-fragment");
+        fragmentTransaction.commit();
     }
 
     private void setInternetConnectionError(String message, String spannedMessage) {
@@ -266,9 +279,11 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         if (mAdapter == null) {
             return;
         }
-        List<AppResource> listNew = presenter.setBannerInListApp(list);
-        mAdapter.setData(listNew);
-
+        mAdapter.setData(presenter.getTopAndBottomApp(list, true));
+        if (list.size() > presenter.mNumberTopApp) {
+            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list, false));
+            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list, false).size(), SPAN_COUNT_APPLICATION));
+        }
     }
 
 

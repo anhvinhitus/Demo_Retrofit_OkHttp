@@ -6,9 +6,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <fragment
+    <FrameLayout
         android:id="@+id/bannerFragment"
-        android:name="vn.com.vng.zalopay.banner.ui.fragment.BannerFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
