@@ -147,7 +147,7 @@ public class MessageParser implements Parser {
             event.resultcode = message.resultcode;
             event.resultdata = message.resultdata;
 
-            Timber.d("Response payment request --> reqId[%s] resultCode[%s] resultData[%s]", event.requestid, event.resultcode, event.resultdata);
+            Timber.d("Response payment request <-- reqId: [%s], resultCode: [%s], resultData: [%s]", event.requestid, event.resultcode, event.resultdata);
             return event;
         } catch (Exception e) {
             Timber.e(e, "Error ");

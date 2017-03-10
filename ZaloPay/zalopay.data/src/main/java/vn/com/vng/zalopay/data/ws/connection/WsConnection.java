@@ -236,8 +236,8 @@ public class WsConnection extends Connection {
 
     @Override
     public boolean send(int msgType, byte[] data) {
-        Timber.d("send: msgType [%s] data [%s]", msgType, data);
-        if (mSocketClient == null) {
+        Timber.d("send: msgType [%s] data length [%s]", msgType, data != null ? data.length : 0);
+        if (mSocketClient == null || data == null) {
             return false;
         }
 
@@ -245,7 +245,6 @@ public class WsConnection extends Connection {
         bufTemp.putInt(data.length + TYPE_FIELD_LENGTH);
         bufTemp.put((byte) msgType);
         bufTemp.put(data);
-        Timber.d("send message 2 server");
         mSocketClient.send(bufTemp.array());
 
         return true;
