@@ -420,6 +420,10 @@ public class RS {
         public static final String zpw_string_vcb_otp_prefixOtp = "zpw_string_vcb_otp_prefixOtp";
 
         public static final String zpw_string_linkacc_captcha_hint = "zpw_string_linkacc_captcha_hint";
+
+        public static final String zpw_string_special_bankscript_vcb_generate_captcha = "zpw_string_special_bankscript_vcb_generate_captcha";
+        public static final String zpw_string_special_bankscript_vcb_register_complete = "zpw_string_special_bankscript_vcb_register_complete";
+        public static final String zpw_string_special_bankscript_vcb_unregister_complete = "zpw_string_special_bankscript_vcb_unregister_complete";
     }
 
     public static final class layout {
