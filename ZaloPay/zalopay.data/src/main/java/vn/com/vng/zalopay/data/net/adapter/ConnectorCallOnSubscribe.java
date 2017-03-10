@@ -12,6 +12,7 @@ import rx.Subscriber;
 import rx.exceptions.Exceptions;
 import rx.subscriptions.Subscriptions;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -45,7 +46,7 @@ final class ConnectorCallOnSubscribe<T> implements Observable.OnSubscribe<Respon
             call.enqueue(new Callback<T>() {
                 @Override
                 public void onResponse(Call<T> call, Response<T> response) {
-                    Timber.d("onResponse: %s", response);
+
                     if (!subscriber.isUnsubscribed()) {
                         subscriber.onNext(response);
                     }
@@ -53,6 +54,10 @@ final class ConnectorCallOnSubscribe<T> implements Observable.OnSubscribe<Respon
                     long endRequestTime = System.currentTimeMillis();
                     if (response != null && response.isSuccessful()) {
                         logTiming(endRequestTime - beginRequestTime, call.request());
+                    }
+
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onCompleted();
                     }
                 }
 
@@ -91,11 +96,6 @@ final class ConnectorCallOnSubscribe<T> implements Observable.OnSubscribe<Respon
             } catch (Exception ex) {
                 Timber.w(ex, "Exception OnError :");
             }
-            return;
-        }
-
-        if (!subscriber.isUnsubscribed()) {
-            subscriber.onCompleted();
         }
     }
 
