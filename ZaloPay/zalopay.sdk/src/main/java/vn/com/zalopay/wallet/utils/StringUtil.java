@@ -19,33 +19,42 @@ public class StringUtil {
         return NumberFormat.getNumberInstance(Locale.US).format(pLongNumber);
     }
 
+    /***
+     * get detail maintenance message from bankconfig
+     * @return
+     */
     public static String getFormattedBankMaintenaceMessage() {
         String message = "Ngân hàng đang bảo trì.Vui lòng quay lại sau ít phút.";
         try {
             String maintenanceTo = "";
-
             BankConfig bankConfig = BankLoader.getInstance().maintenanceBank;
             BankFunction bankFunction = BankLoader.getInstance().maintenanceBankFunction;
 
-            if (bankConfig != null && bankConfig.isBankFunctionAllMaintenance()) {
+            if(bankConfig != null)
+            {
                 message = bankConfig.maintenancemsg;
-
+            }
+            if (bankConfig != null && bankConfig.isBankFunctionAllMaintenance()) {
                 if (bankConfig.maintenanceto > 0) {
                     maintenanceTo = ZPWUtils.convertDateTime(bankConfig.maintenanceto);
                 }
-
                 if (!TextUtils.isEmpty(message) && message.contains("%s")) {
                     message = String.format(message, maintenanceTo);
                 } else if (TextUtils.isEmpty(message)) {
                     message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
                     message = String.format(message, bankConfig.name, maintenanceTo);
                 }
-
             }
             if (bankConfig != null && bankFunction != null && bankFunction.isFunctionMaintenance()) {
-                maintenanceTo = ZPWUtils.convertDateTime(bankFunction.maintenanceto);
-                message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
-                message = String.format(message, bankConfig.name, maintenanceTo);
+                if (bankFunction.maintenanceto > 0) {
+                    maintenanceTo = ZPWUtils.convertDateTime(bankFunction.maintenanceto);
+                }
+                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
+                    message = String.format(message, maintenanceTo);
+                } else if (TextUtils.isEmpty(message)) {
+                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
+                    message = String.format(message, bankConfig.name, maintenanceTo);
+                }
             }
         } catch (Exception ex) {
             Log.e("getFormattedBankMaintenaceMessage", ex);
