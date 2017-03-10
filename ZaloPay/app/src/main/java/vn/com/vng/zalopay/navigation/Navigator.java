@@ -45,7 +45,6 @@ import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.react.Helpers;
@@ -57,9 +56,10 @@ import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameActivity;
 import vn.com.vng.zalopay.transfer.ui.ZaloContactActivity;
+import vn.com.vng.zalopay.ui.activity.BalanceManagementActivity;
+import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.activity.IntroAppActivity;
 import vn.com.vng.zalopay.ui.activity.InvitationCodeActivity;
-import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.RedPacketApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.TutorialConnectInternetActivity;
@@ -161,7 +161,7 @@ public class Navigator implements INavigator {
     }
 
     public Intent intentHomeActivity(Context context, boolean clearTop) {
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, HomeActivity.class);
 
         if (clearTop) {
             intent.putExtra("finish", true);
@@ -542,7 +542,7 @@ public class Navigator implements INavigator {
     }
 
     public void startBalanceManagementActivity(Context context) {
-        Intent intent = new Intent(context, HomeActivity.class);
+        Intent intent = new Intent(context, BalanceManagementActivity.class);
         context.startActivity(intent);
     }
 

@@ -6,11 +6,14 @@ import android.support.v4.app.FragmentManager;
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
 
+import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
 /**
  * Created by hieuvm on 2/28/17.
+ * *
  */
 
 public class HomePagerAdapter extends AbsFragmentPagerAdapter {
@@ -24,13 +27,12 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
 
         switch (position) {
             case 0:
-                return new Fragment();
+                return ZaloPayFragment.newInstance();
             case 1:
                 return InternalReactFragment.newInstance(ModuleName.NOTIFICATIONS);
+//                return ExternalReactFragment.newInstance(PaymentAppConfig.getAppResource(22));
             case 2:
-                return ExternalReactFragment.newInstance(PaymentAppConfig.getAppResource(22));
-            case 3:
-                return new Fragment();
+                return ProfileFragment.newInstance();
         }
 
         return null;
@@ -38,7 +40,7 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 3;
     }
 
     @Override
@@ -47,10 +49,8 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
             case 0:
                 return "HOME";
             case 1:
-                return "NOTIFICATION";
-            case 2:
                 return "SHOW SHOW";
-            case 3:
+            case 2:
                 return "PROFILE";
         }
         return null;

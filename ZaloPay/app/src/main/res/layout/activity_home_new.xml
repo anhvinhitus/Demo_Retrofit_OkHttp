@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context="vn.com.vng.zalopay.ui.activity.HomeActivity">
 
     <include layout="@layout/toolbar" />
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
+    <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_marginBottom="56.5dp"
+        android:layout_marginTop="?attr/actionBarSize" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="56dp"
         android:background="@color/separate" />
 
     <!-- This is the Bottom Bavigation Bar -->
@@ -27,8 +28,8 @@
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_gravity="start"
+        android:layout_gravity="bottom"
         app:itemBackground="@color/white"
-        app:menu="@menu/bottom_navigation_items"/>
+        app:menu="@menu/bottom_navigation_items" />
 
-</LinearLayout>
+</FrameLayout>

@@ -4,20 +4,27 @@ import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 
+import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.base.ExternalReactFragment;
+import vn.com.vng.zalopay.react.base.HomePagerAdapter;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
 public class HomeActivity extends BaseToolBarActivity {
 
-    private Fragment mHomeFragment;
-    private Fragment mShowShowFragment;
-    private Fragment mProfileFragment;
+    @BindView(R.id.pager)
+    ViewPager mViewPager;
+
+    @BindView(R.id.navigation)
+    BottomNavigationView mBottomNavigationView;
+
+    private HomePagerAdapter mHomePagerAdapter;
 
     @Override
     protected int getResLayoutId() {
@@ -33,32 +40,20 @@ public class HomeActivity extends BaseToolBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mHomeFragment = ZaloPayFragment.newInstance();
-        mShowShowFragment = ExternalReactFragment.newInstance(PaymentAppConfig.getAppResource(22));
-        mProfileFragment = ProfileFragment.newInstance();
+        mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mHomePagerAdapter);
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, mHomeFragment);
-        fragmentTransaction.commit();
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            Fragment fragment = null;
+        mBottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.menu_home:
-                    fragment = mHomeFragment;
+                    mViewPager.setCurrentItem(0);
                     break;
                 case R.id.menu_nearby:
-                    fragment = mShowShowFragment;
+                    mViewPager.setCurrentItem(1);
                     break;
                 case R.id.menu_profile:
-                    fragment = mProfileFragment;
+                    mViewPager.setCurrentItem(2);
                     break;
-            }
-            if (fragment != null) {
-                FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction1.replace(R.id.frameLayout, fragment);
-                fragmentTransaction1.commit();
             }
             return true;
         });
