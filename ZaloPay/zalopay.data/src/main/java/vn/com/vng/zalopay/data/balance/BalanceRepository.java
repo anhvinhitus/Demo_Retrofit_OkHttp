@@ -21,17 +21,14 @@ public class BalanceRepository implements BalanceStore.Repository {
     private EventBus mEventBus;
     private Long mCurrentBalance;
 
-    private BalanceStore.ConnectorService mPaymentService;
-
     public BalanceRepository(BalanceStore.LocalStorage localStorage,
                              BalanceStore.RequestService requestService,
                              User user,
-                             EventBus eventBus, BalanceStore.ConnectorService paymentConnectorService) {
+                             EventBus eventBus) {
         mUser = user;
         mLocalStorage = localStorage;
         mRequestService = requestService;
         mEventBus = eventBus;
-//        mPaymentService = paymentConnectorService;
         Timber.d("accessToken[%s]", mUser.accesstoken);
     }
 
@@ -74,19 +71,4 @@ public class BalanceRepository implements BalanceStore.Repository {
         return updateBalance().onErrorResumeNext(throwable -> balanceLocal());
     }
 
-    @Override
-    public Observable<Long> fetchBalancePayment() {
-        return mPaymentService.balance(mUser.zaloPayId, mUser.accesstoken)
-                .map(balanceResponse -> balanceResponse.zpwbalance)
-                ;
-    }
-
-    private PaymentRequest balanceRequest() {
-        PaymentRequest.Builder builder = new PaymentRequest.Builder()
-                .domain("sandbox.zalopay.com.vn")
-                .path(Constants.TPE_API.GETBALANCE)
-                .method("GET")
-                .user(mUser);
-        return builder.build();
-    }
 }

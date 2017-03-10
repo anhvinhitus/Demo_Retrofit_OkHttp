@@ -11,7 +11,7 @@ import java.util.List;
  * Created by hieuvm on 3/8/17.
  */
 
-public class PaymentRequest {
+class PaymentRequest {
 
     private static long sPaymentRequestId = 1;
 
