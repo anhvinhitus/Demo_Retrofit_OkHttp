@@ -1,3 +1,7 @@
+Zalo Pay (Staging v2.9.0 - build 196) - Released on 2017-03-10
+- Fix crash khi thanh toán.
+***Note: Dành riêng để 123Pay test Hỗ trợ BIDV.
+
 Zalo Pay (Staging v2.9.0 - build 195) - Released on 2017-03-08
 - Fix scroll trên trang Home.
 - Fix không load icon mới trong notify (icon liên kết tài khoản, thông tin,..)
