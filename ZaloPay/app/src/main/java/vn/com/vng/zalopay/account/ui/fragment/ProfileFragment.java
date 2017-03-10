@@ -25,7 +25,10 @@ import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
-
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 public class ProfileFragment extends BaseFragment implements IProfileView {
 
@@ -70,6 +73,25 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @BindView(R.id.layoutChangePin)
     View layoutChangePin;
+
+    @OnClick(R.id.layoutSignOut)
+    public void onClickSignOut() {
+        showConfirmSignOut();
+    }
+
+    private void showConfirmSignOut() {
+        new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
+                .setContentText(getString(R.string.txt_confirm_sigout))
+                .setCancelText(getString(R.string.cancel))
+                .setTitleText(getString(R.string.confirm))
+                .setConfirmText(getString(R.string.txt_leftmenu_sigout))
+                .setConfirmClickListener(sweetAlertDialog -> {
+                    sweetAlertDialog.dismiss();
+                    mPresenter.logout();
+                    ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
+                })
+                .show();
+    }
 
     @Override
     protected void setupFragmentComponent() {
