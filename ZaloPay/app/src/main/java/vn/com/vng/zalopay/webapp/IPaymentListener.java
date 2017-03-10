@@ -7,5 +7,6 @@ package vn.com.vng.zalopay.webapp;
 
 interface IPaymentListener {
     void onPayError(String param);
+    void onPayError(int code, String message);
     void onPaySuccess();
 }

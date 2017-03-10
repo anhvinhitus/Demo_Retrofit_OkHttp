@@ -39,7 +39,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
         mResponseListener = listener;
         Timber.d("start to process paying order: %s", data.toString());
         if (!NetworkHelper.isNetworkAvailable(mView.getContext())) {
-            listener.onPayError(PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
+            listener.onPayError(3, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
             return;
         }
 
@@ -47,11 +47,16 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
             showLoadingView();
             if (zpTransaction(data)) {
                 hideLoadingView();
+                return;
             }
 
             if (orderTransaction(data)) {
                 hideLoadingView();
+                return;
             }
+
+            hideLoadingView();
+            listener.onPayError(2, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
         } catch (IllegalArgumentException e) {
             Timber.i("Invalid JSON input: %s", e.getMessage());
         }
@@ -79,7 +84,11 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
     @Override
     public void onPayResponseError(PaymentError paymentError) {
         if (mResponseListener != null) {
-            mResponseListener.onPayError(PaymentError.getErrorMessage(paymentError));
+            if(paymentError == PaymentError.ERR_CODE_USER_CANCEL) {
+                mResponseListener.onPayError(4, PaymentError.getErrorMessage(paymentError));
+            } else {
+                mResponseListener.onPayError(PaymentError.getErrorMessage(paymentError));
+            }
         }
     }
 

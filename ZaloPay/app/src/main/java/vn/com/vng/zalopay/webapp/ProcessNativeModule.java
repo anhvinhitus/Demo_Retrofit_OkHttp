@@ -50,12 +50,17 @@ public class ProcessNativeModule implements NativeModule {
 
     private void processPayOrder(final JSONObject data, final Promise promise) {
         if (mProcessMessageListener == null) {
-            promise.reject(1, "Missing webview listener.");
+            promise.reject(0, "Missing webview listener.");
         } else {
             mProcessMessageListener.payOrder(data, new IPaymentListener() {
                 @Override
                 public void onPayError(String param) {
-                    promise.reject(1, param);
+                    promise.reject(0, param);
+                }
+
+                @Override
+                public void onPayError(int code, String message) {
+                    promise.reject(code, message);
                 }
 
                 @Override
