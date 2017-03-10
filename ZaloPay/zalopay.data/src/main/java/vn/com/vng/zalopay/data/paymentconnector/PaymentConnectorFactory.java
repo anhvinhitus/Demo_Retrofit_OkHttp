@@ -5,6 +5,8 @@ import android.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Headers;
+import okhttp3.HttpUrl;
 import okhttp3.Request;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
@@ -23,20 +25,35 @@ class PaymentConnectorFactory {
         }
 
         Timber.d("Creating PaymentRequest from OkHttp request: %s", originalRequest);
+
+        HttpUrl httpUrl = originalRequest.url();
+
         PaymentRequest.Builder builder = new PaymentRequest.Builder()
-                .domain(originalRequest.url().host())
-                .path(Constants.TPE_API.GETBALANCE);
+                .domain(httpUrl.host());
 
         List<Pair<String, String>> query = new ArrayList<>();
         int querySize = originalRequest.url().querySize();
-        for (int index = 0; index < querySize; index ++) {
-            Pair<String, String> pair = new Pair<>(originalRequest.url().queryParameterName(index), originalRequest.url().queryParameterValue(index));
+        for (int index = 0; index < querySize; index++) {
+            Pair<String, String> pair = new Pair<>(httpUrl.queryParameterName(index), httpUrl.queryParameterValue(index));
             query.add(pair);
         }
         builder.params(query);
 
-        // todo: add/build params from request's body
-        builder.path(originalRequest.url().encodedPath());
+        Headers headers = originalRequest.headers();
+        if (headers != null) {
+            int headerSize = headers.size();
+            List<Pair<String, String>> header = new ArrayList<>();
+            for (int i = 0; i < headerSize; i++) {
+                Pair<String, String> pair = new Pair<>(headers.name(i), headers.value(i));
+                header.add(pair);
+            }
+
+            builder.headers(header);
+        }
+
+        builder.port(httpUrl.port());
+        builder.path(httpUrl.encodedPath());
+
         return builder.build();
     }
 }
