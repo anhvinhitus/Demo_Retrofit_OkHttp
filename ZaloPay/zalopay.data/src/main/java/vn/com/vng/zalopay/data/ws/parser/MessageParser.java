@@ -9,9 +9,11 @@ import java.io.IOException;
 
 import okio.ByteString;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.protobuf.PaymentResponseMessage;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
+import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
 import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.protobuf.DataRecoveryResponse;
@@ -23,6 +25,7 @@ import vn.com.vng.zalopay.data.protobuf.ResultAuth;
 import vn.com.vng.zalopay.data.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.domain.Enums;
 
+import static vn.com.vng.zalopay.data.protobuf.ServerMessageType.PAYMENT_RESPONSE;
 import static vn.com.vng.zalopay.data.protobuf.ServerMessageType.RECOVERY_RESPONSE;
 
 /**
@@ -71,6 +74,8 @@ public class MessageParser implements Parser {
                 event = parsePongMessage(data);
             } else if (messageType == RECOVERY_RESPONSE) {
                 event = parseRecoveryResponse(data);
+            } else if (messageType == PAYMENT_RESPONSE) {
+                event = parsePaymentRequestResponse(data);
             }
         }
 
@@ -128,6 +133,24 @@ public class MessageParser implements Parser {
             return recoveryMessageEvent;
         } catch (Exception e) {
             Timber.e(e, "error parse recovery response");
+        }
+
+        return null;
+    }
+
+    private Event parsePaymentRequestResponse(ByteString data) {
+        try {
+            PaymentResponseMessage message = PaymentResponseMessage.ADAPTER.decode(data);
+            Timber.d("parsePaymentRequestResponse: %s", message);
+            PaymentRequestData event = new PaymentRequestData();
+            event.requestid = message.requestid;
+            event.resultcode = message.resultcode;
+            event.resultdata = message.resultdata;
+
+            Timber.d("Response payment request --> reqId[%s] resultCode[%s] resultData[%s]", event.requestid, event.resultcode, event.resultdata);
+            return event;
+        } catch (Exception e) {
+            Timber.e(e, "Error ");
         }
 
         return null;

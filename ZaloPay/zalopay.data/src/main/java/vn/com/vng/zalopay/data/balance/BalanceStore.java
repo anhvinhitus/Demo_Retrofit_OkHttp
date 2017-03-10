@@ -38,5 +38,7 @@ public interface BalanceStore {
         Observable<Long> balanceLocal();
 
         Observable<Long> fetchBalance();
+
+        Observable<Void> fetchBalancePayment();
     }
 }

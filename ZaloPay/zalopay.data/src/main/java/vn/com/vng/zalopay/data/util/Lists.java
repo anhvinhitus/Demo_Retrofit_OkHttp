@@ -45,7 +45,7 @@ public final class Lists {
             return Collections.emptyList();
         }
 
-        ArrayList<R> transformedList = new ArrayList<>(collection.size());
+        ArrayList<R> transformedList = new ArrayList<>();
         for (T t : collection) {
             R r = converter.call(t);
             if (r == null) {

@@ -1,6 +1,9 @@
 package vn.com.vng.zalopay.data.ws.connection;
 
 import android.text.TextUtils;
+import android.util.Pair;
+
+import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.protobuf.MessageConnectionInfo;
@@ -8,14 +11,16 @@ import vn.com.vng.zalopay.data.protobuf.MessageLogin;
 import vn.com.vng.zalopay.data.protobuf.MessageRecoveryRequest;
 import vn.com.vng.zalopay.data.protobuf.MessageStatus;
 import vn.com.vng.zalopay.data.protobuf.MessageType;
+import vn.com.vng.zalopay.data.protobuf.PairKeyValue;
+import vn.com.vng.zalopay.data.protobuf.PaymentRequestMessage;
 import vn.com.vng.zalopay.data.protobuf.RecoveryOrder;
 import vn.com.vng.zalopay.data.protobuf.StatusMessageClient;
+import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.Enums;
 
 /**
  * Created by huuhoa on 11/10/16.
  * Helper class to create message for sending to notification server
- *
  */
 
 public class NotificationApiHelper {
@@ -83,5 +88,50 @@ public class NotificationApiHelper {
                 MessageType.FEEDBACK.getValue(),
                 StatusMessageClient.ADAPTER.encode(statusMsg.build())
         );
+    }
+
+    public static NotificationApiMessage createPaymentRequestApi(long requestId, String domain, String method, int port, String path, List<Pair<String, String>> params, List<Pair<String, String>> headers) {
+        PaymentRequestMessage message = buildRequest(requestId, domain, method, port, path, params, headers);
+        return new NotificationApiMessage(
+                MessageType.PAYMENT_REQUEST.getValue(),
+                PaymentRequestMessage.ADAPTER.encode(message));
+    }
+
+    private static PaymentRequestMessage buildRequest(long requestId, String domain, String method, int port, String path, List<Pair<String, String>> params, List<Pair<String, String>> headers) {
+        PaymentRequestMessage.Builder builder = new PaymentRequestMessage.Builder()
+                .domain(domain)
+                .method(method)
+                .path(path)
+                .requestid(requestId)
+                .port(port);
+                ;
+
+        List<PairKeyValue> _header = transform(headers);
+        if (_header != null) {
+            builder.headers(_header);
+        }
+
+        List<PairKeyValue> _param = transform(params);
+        if (_param != null) {
+            builder.params(_param);
+        }
+
+        return builder.build();
+    }
+
+    private static List<PairKeyValue> transform(List<Pair<String, String>> vars) {
+        return Lists.transform(vars, NotificationApiHelper::transform);
+    }
+
+    private static PairKeyValue transform(Pair<String, String> var) {
+        if (var == null || TextUtils.isEmpty(var.first)) {
+            return null;
+        }
+
+        PairKeyValue.Builder builder = new PairKeyValue.Builder()
+                .key(var.first)
+                .value(TextUtils.isEmpty(var.second) ? "" : var.second);
+
+        return builder.build();
     }
 }

@@ -12,15 +12,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.Subscription;
-import rx.schedulers.Schedulers;
+import rx.android.schedulers.AndroidSchedulers;
+\import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
@@ -31,47 +28,42 @@ import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
+import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
-import vn.com.vng.zalopay.data.ws.connection.WsConnection;
+import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
-import vn.com.vng.zalopay.data.ws.parser.MessageParser;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
-import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
-import vn.com.vng.zalopay.internal.di.components.UserComponent;
 
-public class ZPNotificationService implements OnReceiverMessageListener {
+import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
+
+public class ZPNotificationService implements OnReceiverMessageListener, NotificationService {
 
     /*Server API Key: AIzaSyCweupE81mBm3_m8VOoFTUbuhBF82r_GwI
     Sender ID: 386726389536*/
 
     private boolean mIsSubscribeGcm = false;
-    private WsConnection mWsConnection;
 
-    @Inject
-    Context mContext;
+    private Connection mWsConnection;
 
-    @Inject
-    EventBus mEventBus;
+    private Context mContext;
 
-    @Inject
-    User mUser;
+    private EventBus mEventBus;
 
-    @Inject
-    Gson mGson;
+    private User mUser;
 
-    @Inject
-    NotificationHelper mNotificationHelper;
+    private Gson mGson;
 
-    @Inject
-    ThreadExecutor mExecutor;
+    private NotificationHelper mNotificationHelper;
+
+    private ThreadExecutor mExecutor;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
@@ -79,28 +71,27 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
     private long mLastTimeRecovery;
 
-    @Inject
-    ZPNotificationService() {
+    public ZPNotificationService(Context context, User user, NotificationHelper notificationHelper,
+                                 ThreadExecutor executor, Gson gson, EventBus eventbus,
+                                 Connection wsConnection) {
+        this.mContext = context;
+        this.mUser = user;
+        this.mNotificationHelper = notificationHelper;
+        this.mExecutor = executor;
+        this.mGson = gson;
+        this.mEventBus = eventbus;
+        this.mWsConnection = wsConnection;
+        Timber.d("ZPNotificationService: %s", this);
     }
 
     public void start() {
         Timber.d("Start notification service");
-
+        mWsConnection.addReceiverListener(this);
         registerEvent();
-
-        ensureInitializeNetworkConnection();
-
-        if (mExecutor != null) {
-            mExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    connectToServer();
-                }
-            });
-        }
+        mExecutor.execute(this::connectToServer);
     }
 
-    public void destroy() {
+    public void stop() {
         Timber.d("Destroy notification service");
         mIsSubscribeGcm = false;
 
@@ -110,12 +101,9 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
         unregisterEvent();
 
-        if (mWsConnection != null) {
-            mWsConnection.disconnect();
-            mWsConnection.clearReceiverListener();
-            mWsConnection.cleanup();
-            mWsConnection = null;
-        }
+        mWsConnection.disconnect();
+        mWsConnection.clearReceiverListener();
+        mWsConnection.cleanup();
     }
 
     private void registerEvent() {
@@ -156,8 +144,6 @@ public class ZPNotificationService implements OnReceiverMessageListener {
             return;
         }
 
-        ensureInitializeNetworkConnection();
-
         if (!mWsConnection.isConnected()) {
             Timber.d("Socket is not connected. About to create connection.");
             mWsConnection.setGCMToken(token);
@@ -169,10 +155,6 @@ public class ZPNotificationService implements OnReceiverMessageListener {
 
     private void disconnectServer() {
         Timber.d("Request to disconnect connection with notification server");
-        if (mWsConnection == null) {
-            return;
-        }
-
         mWsConnection.disconnect();
     }
 
@@ -283,11 +265,9 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         }
 
         mLastTimeRecovery = timeStamp;
-        if (mWsConnection != null) {
-            mTimeoutRecoverySubscription = startTimeoutRecoveryNotification();
-            NotificationApiMessage message = NotificationApiHelper.createMessageRecovery(NUMBER_NOTIFICATION, timeStamp);
-            mWsConnection.send(message.messageCode, message.messageContent);
-        }
+        mTimeoutRecoverySubscription = startTimeoutRecoveryNotification();
+        NotificationApiMessage message = NotificationApiHelper.createMessageRecovery(NUMBER_NOTIFICATION, timeStamp);
+        mWsConnection.send(message.messageCode, message.messageContent);
     }
 
     private void subscribeTopics(String token) throws IOException {
@@ -345,22 +325,6 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         }
     }
 
-    private void ensureInitializeNetworkConnection() {
-        if (mWsConnection == null) {
-            mWsConnection = new WsConnection(BuildConfig.WS_HOST, BuildConfig.WS_PORT, mContext,
-                    new MessageParser(mGson), mUser);
-            mWsConnection.addReceiverListener(this);
-        }
-    }
-
-    public ApplicationComponent getAppComponent() {
-        return AndroidApplication.instance().getAppComponent();
-    }
-
-    protected UserComponent getUserComponent() {
-        return AndroidApplication.instance().getUserComponent();
-    }
-
     private void handlerAuthenticationError(AuthenticationData authentication) {
         Timber.d("handlerAuthenticationError: %s", authentication.code);
         if (authentication.code == NetworkError.UM_TOKEN_NOT_FOUND ||
@@ -382,7 +346,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         }
     }
 
-  /*  private class ComponentSubscriber extends DefaultSubscriber<Object> {
+/*    private class ComponentSubscriber extends DefaultSubscriber<Object> {
         @Override
         public void onNext(Object event) {
             if (event instanceof NotificationChangeEvent) {
@@ -393,5 +357,32 @@ public class ZPNotificationService implements OnReceiverMessageListener {
                 }
             }
         }
+    }
+
+    /*public void getBalance() {
+        Pair<String, String> user = new Pair<>("userid", mUser.zaloPayId);
+        Pair<String, String> session = new Pair<>("accesstoken", mUser.accesstoken);
+        List<Pair<String, String>> params = new ArrayList<>();
+        params.add(user);
+        params.add(session);
+        Uri uri = Uri.parse(BuildConfig.HOST);
+        NotificationApiMessage message = NotificationApiHelper.createPaymentRequestApi(1, "sandbox.zalopay.com.vn", "GET", 0, Constants.TPE_API.GETBALANCE, params, null);
+        mWsConnection.send(message);
     }*/
+
+    @Override
+    public void addReceiverListener(OnReceiverMessageListener listener) {
+        mWsConnection.addReceiverListener(listener);
+    }
+
+    @Override
+    public void send(NotificationApiMessage message) {
+        mWsConnection.send(message);
+    }
+
+    @Override
+    public boolean isConnected() {
+        return mWsConnection.isConnected()
+                && mWsConnection.isAuthentication();
+    }
 }

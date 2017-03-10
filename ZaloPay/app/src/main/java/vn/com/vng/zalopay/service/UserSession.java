@@ -17,10 +17,10 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
+import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
-import vn.com.vng.zalopay.notification.ZPNotificationService;
 
 /**
  * Created by hieuvm on 11/23/16.
@@ -32,12 +32,13 @@ public class UserSession {
     public static String mHashPassword;
 
     private Context mContext;
+
     private User mUser;
     private EventBus mEventBus;
     private UserConfig mUserConfig;
 
     private static Boolean userInitialized = false;
-    private ZPNotificationService mNotifyService;
+    private NotificationService mNotifyService;
     private BalanceStore.Repository mBalanceRepository;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -45,7 +46,7 @@ public class UserSession {
     public UserSession(Context context, User user,
                        UserConfig mUserConfig,
                        EventBus eventBus,
-                       ZPNotificationService notifyService,
+                       NotificationService notifyService,
                        BalanceStore.Repository balanceRepository
 
     ) {
@@ -83,7 +84,7 @@ public class UserSession {
         mEventBus.unregister(this);
         mLastTimeCheckPassword = 0;
         mHashPassword = null;
-        mNotifyService.destroy();
+        mNotifyService.stop();
         mCompositeSubscription.clear();
         userInitialized = false;
     }

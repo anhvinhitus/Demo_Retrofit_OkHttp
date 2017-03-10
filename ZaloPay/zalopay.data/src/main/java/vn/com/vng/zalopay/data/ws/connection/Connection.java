@@ -59,6 +59,10 @@ public abstract class Connection {
     }
 
     public void addReceiverListener(OnReceiverMessageListener listener) {
+        if (listCallBack.contains(listener)) {
+            return;
+        }
+
         listCallBack.add(listener);
     }
 
@@ -113,5 +117,19 @@ public abstract class Connection {
                 mConnection.get().onPostExecute((Event) msg.obj);
             }
         }
+    }
+
+    public boolean isAuthentication() {
+        return false;
+    }
+
+    protected String gcmToken;
+
+    public boolean send(NotificationApiMessage message) {
+        return send(message.messageCode, message.messageContent);
+    }
+
+    public void setGCMToken(String token) {
+        this.gcmToken = token;
     }
 }

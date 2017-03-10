@@ -216,7 +216,7 @@ public class NotificationRepository implements NotificationStore.Repository {
             if (item.timestamp == 0) {
                 continue;
             }
-            Timber.d("getMinTimeStamp: [%s] ", item.timestamp);
+          //  Timber.d("getMinTimeStamp: [%s] ", item.timestamp);
 
             if (minTime == 0 || minTime > item.timestamp) {
                 minTime = item.timestamp;

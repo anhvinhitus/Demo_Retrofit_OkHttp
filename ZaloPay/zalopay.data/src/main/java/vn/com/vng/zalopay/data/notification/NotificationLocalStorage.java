@@ -113,7 +113,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             return -1;
         }
         try {
-            Timber.d("Put item message [%s]", val.message);
+          //  Timber.d("Put item message [%s]", val.message);
             return getDaoSession().getNotificationGDDao().insert(val);
         } catch (Exception e) {
             if (e instanceof SQLiteConstraintException) {

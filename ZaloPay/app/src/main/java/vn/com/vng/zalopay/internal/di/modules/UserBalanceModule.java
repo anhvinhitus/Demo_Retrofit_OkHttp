@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.data.balance.BalanceLocalStorage;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.balance.BalanceRepository;
+import vn.com.vng.zalopay.data.ws.payment.request.PaymentRequestService;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 
@@ -20,14 +21,15 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
  */
 @Module
 public class UserBalanceModule {
+
     @UserScope
     @Provides
     BalanceStore.Repository provideBalanceRepository(
             BalanceStore.LocalStorage localStorage,
             BalanceStore.RequestService requestService,
             User user,
-            EventBus eventBus) {
-        return new BalanceRepository(localStorage, requestService, user, eventBus);
+            EventBus eventBus, PaymentRequestService paymentRequestService) {
+        return new BalanceRepository(localStorage, requestService, user, eventBus, paymentRequestService);
     }
 
     @UserScope

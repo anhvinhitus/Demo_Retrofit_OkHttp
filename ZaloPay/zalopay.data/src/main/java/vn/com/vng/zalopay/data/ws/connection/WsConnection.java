@@ -37,7 +37,6 @@ public class WsConnection extends Connection {
     private static final int TIMER_HEARTBEAT = 20;
     private static final int SERVER_TIMEOUT = 40;
     private static final int TIMER_CONNECTION_CHECK = 10;
-    private String gcmToken;
 
     private final Context context;
 
@@ -154,10 +153,6 @@ public class WsConnection extends Connection {
         return mUser != null && mUser.hasZaloPayId();
     }
 
-    public void setGCMToken(String token) {
-        this.gcmToken = token;
-    }
-
     @Override
     public void cleanup() {
         super.cleanup();
@@ -241,6 +236,7 @@ public class WsConnection extends Connection {
 
     @Override
     public boolean send(int msgType, byte[] data) {
+        Timber.d("send: msgType [%s] data [%s]", msgType, data);
         if (mSocketClient == null) {
             return false;
         }
@@ -249,7 +245,7 @@ public class WsConnection extends Connection {
         bufTemp.putInt(data.length + TYPE_FIELD_LENGTH);
         bufTemp.put((byte) msgType);
         bufTemp.put(data);
-
+        Timber.d("send message 2 server");
         mSocketClient.send(bufTemp.array());
 
         return true;
@@ -447,5 +443,9 @@ public class WsConnection extends Connection {
         RETRY_CONNECT,
         DISCONNECT,
         RETRY_AFTER_KICKEDOUT
+    }
+
+    public boolean isAuthentication() {
+        return mIsAuthenSuccess;
     }
 }

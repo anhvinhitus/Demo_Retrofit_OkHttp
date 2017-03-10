@@ -75,4 +75,9 @@ public class Constants {
         String SUBMITTOSENDBUNDLEBYZALOPAYINFO = "redpackage/submittosendbundlebyzalopayinfo";
         String GET_LIST_PACKAGE_STATUS = "redpackage/getlistpackagestatus";
     }
+
+    public interface Method {
+        String GET = "GET";
+        String POST = "POST";
+    }
 }
