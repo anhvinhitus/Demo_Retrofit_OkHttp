@@ -43,31 +43,15 @@ final class ConnectorCallOnSubscribe<T> implements Observable.OnSubscribe<Respon
 
         try {
             long beginRequestTime = System.currentTimeMillis();
-            call.enqueue(new Callback<T>() {
-                @Override
-                public void onResponse(Call<T> call, Response<T> response) {
-
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onNext(response);
-                    }
-
-                    long endRequestTime = System.currentTimeMillis();
-                    if (response != null && response.isSuccessful()) {
-                        logTiming(endRequestTime - beginRequestTime, call.request());
-                    }
-
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onCompleted();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<T> call, Throwable t) {
-                    Timber.d(t);
-                    subscriber.onError(t);
-                }
-            });
-
+            Response<T> response = call.execute();
+            Timber.d("response [%s]", response);
+            long endRequestTime = System.currentTimeMillis();
+            if (response != null && response.isSuccessful()) {
+                logTiming(endRequestTime - beginRequestTime, call.request());
+            }
+            if (!subscriber.isUnsubscribed()) {
+                subscriber.onNext(response);
+            }
         } catch (Throwable t) {
             Exceptions.throwIfFatal(t);
             if (subscriber.isUnsubscribed()) {
@@ -96,6 +80,11 @@ final class ConnectorCallOnSubscribe<T> implements Observable.OnSubscribe<Respon
             } catch (Exception ex) {
                 Timber.w(ex, "Exception OnError :");
             }
+            return;
+        }
+
+        if (!subscriber.isUnsubscribed()) {
+            subscriber.onCompleted();
         }
     }
 

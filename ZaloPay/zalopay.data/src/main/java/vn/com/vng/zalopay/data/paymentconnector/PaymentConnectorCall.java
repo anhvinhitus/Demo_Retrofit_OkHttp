@@ -1,6 +1,10 @@
 package vn.com.vng.zalopay.data.paymentconnector;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -22,6 +26,8 @@ public class PaymentConnectorCall implements Call {
     private boolean executed;
     // private Call rawCall;
     private final Request originalRequest;
+    private CountDownLatch doneSignal = new CountDownLatch(1);
+    private Response mResponse;
 
     public PaymentConnectorCall(PaymentConnectorService client, Request request) {
         this.mClient = client;
@@ -37,8 +43,34 @@ public class PaymentConnectorCall implements Call {
     @Override
     public Response execute() throws IOException {
         Timber.d("execute");
-        return null;
+        synchronized (this) {
+            if (executed) throw new IllegalStateException("Already executed");
+            executed = true;
+        }
+
+        mClient.request(PaymentConnectorFactory.createRequest(originalRequest), new PaymentConnectorCallback() {
+            @Override
+            public void onResult(PaymentRequestData data) {
+                Timber.d("response connector %s", data);
+                mResponse = parseResponse(data);
+                doneSignal.countDown();
+            }
+
+            @Override
+            public void onFailure(IOException e) {
+                doneSignal.countDown();
+            }
+        });
+
+        try {
+            doneSignal.await(5, TimeUnit.SECONDS);
+        } catch (InterruptedException ie) {
+            Timber.d(ie);
+        }
+
+        return mResponse;
     }
+
 
     @Override
     public void enqueue(Callback callback) {
@@ -55,13 +87,7 @@ public class PaymentConnectorCall implements Call {
             public void onResult(PaymentRequestData data) {
                 Timber.d("response connector %s", data);
                 try {
-                    ResponseBody resp = ResponseBody.create(MediaType.parse("application/json"), data.resultdata);
-                    callback.onResponse(PaymentConnectorCall.this, new Response.Builder()
-                            .body(resp)
-                            .code(200)
-                            .protocol(Protocol.HTTP_1_1)
-                            .request(originalRequest)
-                            .build());
+                    callback.onResponse(PaymentConnectorCall.this, parseResponse(data));
                 } catch (IOException e) {
                     callback.onFailure(PaymentConnectorCall.this, e);
                     Timber.d(e, "error ");
@@ -77,6 +103,16 @@ public class PaymentConnectorCall implements Call {
                 }
             }
         });
+    }
+
+    private Response parseResponse(PaymentRequestData data) {
+        ResponseBody resp = ResponseBody.create(MediaType.parse("application/json"), data.resultdata);
+        return new Response.Builder()
+                .body(resp)
+                .code(200)
+                .protocol(Protocol.HTTP_1_1)
+                .request(originalRequest)
+                .build();
     }
 
     @Override
