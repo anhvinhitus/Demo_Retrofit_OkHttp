@@ -22,13 +22,11 @@ import vn.com.vng.zalopay.domain.model.User;
 
 public class PaymentConnectorService implements OnReceiverMessageListener {
 
-    private User mUser;
     private Connection mPaymentService;
     private final LongSparseArray<PaymentConnectorCallback> mPaymentCallBackArray;
     private final LinkedList<PaymentRequest> mRequestQueue;
 
-    public PaymentConnectorService(User user, Connection service) {
-        this.mUser = user;
+    public PaymentConnectorService(Connection service) {
         this.mPaymentService = service;
         this.mPaymentCallBackArray = new LongSparseArray<>();
         this.mRequestQueue = new LinkedList<>();
@@ -44,10 +42,13 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
     }
 
     private NotificationApiMessage transform(PaymentRequest request) {
-        return NotificationApiHelper.createPaymentRequestApi(request.requestId,
+        return NotificationApiHelper.createPaymentRequestApi(
+                request.requestId,
                 request.domain,
-                request.method, request.port,
-                request.path, request.params,
+                request.method,
+                request.port,
+                request.path,
+                request.params,
                 request.headers);
     }
 
@@ -64,9 +65,6 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
 
     @Override
     public void onReceiverEvent(Event event) {
-
-        Timber.d("onReceiverEvent: [%s]", event.getClass().getSimpleName());
-
         if (event instanceof AuthenticationData) {
             executeNext();
         } else if (event instanceof PaymentRequestData) {
@@ -76,19 +74,21 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
 
     private void handleResult(PaymentRequestData response) {
         PaymentConnectorCallback callback = findCallbackById(response.requestid);
-        Timber.d("handleResult: %s", callback);
         if (callback == null) {
+            Timber.i("Cannot find callback for request [%s]", response.requestid);
             return;
         }
-        callback.onResult(response);
+
+        Timber.d("Dispatch response for request: %s", response.requestid);
         removeCallback(response.requestid);
+        callback.onResult(response);
     }
 
     private boolean mRunning;
 
     private void executeNext() {
 
-        Timber.d("executeNext: %s", mRequestQueue.size());
+        Timber.d("executeNext with request queue size: %s", mRequestQueue.size());
 
         if (mRunning) {
             Timber.d("Skip execute since there is running task");
@@ -114,7 +114,7 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
                 mRequestQueue.poll();
                 continue;
             }
-            Timber.d("send message");
+            Timber.d("about to send request message to server");
             mPaymentService.send(transform(request));
             mRunning = false;
             mRequestQueue.poll();

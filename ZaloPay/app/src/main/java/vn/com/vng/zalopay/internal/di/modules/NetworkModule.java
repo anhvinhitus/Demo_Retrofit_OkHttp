@@ -24,6 +24,7 @@ import okhttp3.ConnectionPool;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
+import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
@@ -133,10 +134,18 @@ public class NetworkModule {
 
     @Provides
     @Singleton
+    Converter.Factory providesConvertFactory(Gson gson) {
+        return GsonConverterFactory.create(gson);
+    }
+
+    @Provides
+    @Singleton
     @Named("retrofitApi")
-    Retrofit provideRetrofit(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
+    Retrofit provideRetrofit(HttpUrl baseUrl, OkHttpClient okHttpClient,
+                             CallAdapter.Factory callAdapter,
+                             Converter.Factory convertFactory) {
         return new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(convertFactory)
                 .addCallAdapterFactory(callAdapter)
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
@@ -147,11 +156,13 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitRedPacketApi")
-    Retrofit provideRetrofitRedPacketApi(OkHttpClient okHttpClient, Context context, GsonConverterFactory converter) {
+    Retrofit provideRetrofitRedPacketApi(@Named("RedPacketHttpUrl") HttpUrl baseUrl,
+                                         OkHttpClient okHttpClient, Context context,
+                                         Converter.Factory convertFactory) {
         return new Retrofit.Builder()
-                .addConverterFactory(converter)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RedPacket))
-                .baseUrl(BuildConfig.REDPACKET_HOST)
+                .addConverterFactory(convertFactory)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.RedPacket))
+                .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)
                 .build();
@@ -160,9 +171,10 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitPhoto")
-    Retrofit provideRetrofitUploadPhoto(OkHttpClient okHttpClient, CallAdapter.Factory callAdapter, GsonConverterFactory converter) {
+    Retrofit provideRetrofitUploadPhoto(OkHttpClient okHttpClient, CallAdapter.Factory callAdapter,
+                                        Converter.Factory convertFactory) {
         return new Retrofit.Builder()
-                .addConverterFactory(converter)
+                .addConverterFactory(convertFactory)
                 .addCallAdapterFactory(callAdapter)
                 .baseUrl(BuildConfig.UPLOAD_PHOTO_HOST)
                 .validateEagerly(BuildConfig.DEBUG)
@@ -173,7 +185,7 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitPaymentAppWithRetry")
-    Retrofit providePaymentAppWithRetry(HttpUrl baseUrl, OkHttpClient okHttpClient, Context context, ToStringConverterFactory converter) {
+    Retrofit providePaymentAppWithRetry(HttpUrl baseUrl, OkHttpClient okHttpClient, Context context) {
         return new Retrofit.Builder()
                 .addConverterFactory(converter)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, PaymentAppWithRetry))
@@ -186,7 +198,7 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitPaymentAppWithoutRetry")
-    Retrofit providePaymentAppWithoutRetry(HttpUrl baseUrl, OkHttpClient okHttpClient, Context context, ToStringConverterFactory converter) {
+    Retrofit providePaymentAppWithoutRetry(HttpUrl baseUrl, OkHttpClient okHttpClient, Context context) {
         return new Retrofit.Builder()
                 .addConverterFactory(converter)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, PaymentAppWithoutRetry))

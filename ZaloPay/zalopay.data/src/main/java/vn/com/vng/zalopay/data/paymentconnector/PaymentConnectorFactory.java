@@ -22,7 +22,7 @@ class PaymentConnectorFactory {
             return null;
         }
 
-        Timber.d("convert: %s %s", originalRequest, originalRequest.url());
+        Timber.d("Creating PaymentRequest from OkHttp request: %s", originalRequest);
         PaymentRequest.Builder builder = new PaymentRequest.Builder()
                 .domain(originalRequest.url().host())
                 .path(Constants.TPE_API.GETBALANCE);
@@ -34,9 +34,9 @@ class PaymentConnectorFactory {
             query.add(pair);
         }
         builder.params(query);
-        builder.path(originalRequest.url().encodedPath());
 
-        Timber.d("Query params: %s", query);
+        // todo: add/build params from request's body
+        builder.path(originalRequest.url().encodedPath());
         return builder.build();
     }
 }
