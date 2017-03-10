@@ -124,7 +124,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             mAdapter = (AdapterLinkAcc) pAdapter;
             // Avoid memory-leak in WebView:
             // http://stackoverflow.com/questions/3130654/memory-leak-in-webview
-            mWebPaymentBridge = new LinkAccWebView(mAdapter.getActivity().getBaseContext());
+            mWebPaymentBridge = new LinkAccWebView(GlobalData.getAppContext());
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.setWebChromeClient(wcClient);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
@@ -157,40 +157,26 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     }
 
+    protected boolean shouldOnCheckMatchOnLoadResouce(String pUrl)
+    {
+        return pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_generate_captcha))
+                || pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_register_complete))
+                || pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_unregister_complete));
+    }
+
     @Override
     public void onLoadResource(WebView view, String url) {
         Log.d("TAG", "///// onLoadResource: " + url);
-//        // check form OTP show, to know isOTPShow()
-//        if (url.matches("^.+(vietcombank\\.com\\.vn).+(\\/ViDienTu\\/CheckCaptcha).*$")) {
-//            onPageFinishedAuto(url);
-//            return;
-//        }
-
-        if (url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_generate_captcha))) {
-//            onPageFinishedAjax(url, TIME_WAITING_LOAD_AJAX_GET_MESSAGE); // delay 200ms for wait run ajax, to get status message. Confirm info
+        if(shouldOnCheckMatchOnLoadResouce(url))
+        {
             onPageFinishedAuto(url);
-            return;
-        }
-
-        if (url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_register_complete))) {
-//            onPageFinishedAjax(url, TIME_WAITING_LOAD_AJAX_GET_RESULT); // wait run ajax, to get status message. Confirm OTP
-            onPageFinishedAuto(url);
-            return;
-        }
-
-        if (url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_unregister_complete))) {
-//            onPageFinishedAjax(url, TIME_WAITING_LOAD_AJAX_GET_RESULT); // wait run ajax, to get status message. Confirm OTP
-            onPageFinishedAuto(url);
-            return;
         }
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         Log.d("OverrideUrl", "///// shouldOverrideUrlLoading:" + url);
-
         view.loadUrl(url);
-
         isRedirected = true;
         return true;
     }
