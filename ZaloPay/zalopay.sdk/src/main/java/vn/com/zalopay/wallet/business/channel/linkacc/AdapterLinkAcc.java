@@ -130,7 +130,12 @@ public class AdapterLinkAcc extends AdapterBase {
                     getActivity().onExit(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
                     return;
                 } else {
-                    initWebView(bankConfig.loginbankurl);
+                    String loginBankUrl = bankConfig.loginbankurl;
+                    if(TextUtils.isEmpty(loginBankUrl))
+                    {
+                        loginBankUrl = GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login);
+                    }
+                    initWebView(loginBankUrl);
                 }
             } catch (Exception e) {
                 Log.e(this, e);
