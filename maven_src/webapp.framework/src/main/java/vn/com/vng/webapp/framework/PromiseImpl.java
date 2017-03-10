@@ -68,7 +68,7 @@ class PromiseImpl implements Promise {
     private JSONObject failObject(String message) {
         JSONObject result = new JSONObject();
         try {
-            result.put("error", 1);
+            result.put("error", 0);
             result.put("errorMessage", message);
         } catch (JSONException ez) {
             Timber.w(ez);
@@ -93,7 +93,7 @@ class PromiseImpl implements Promise {
         JSONObject result = new JSONObject();
 
         try {
-            result.put("error", 0);
+            result.put("error", 1);
             result.putOpt("data", value);
         } catch (JSONException ez) {
             Timber.w(ez);
