@@ -29,8 +29,8 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
             case 0:
                 return ZaloPayFragment.newInstance();
             case 1:
-                return InternalReactFragment.newInstance(ModuleName.NOTIFICATIONS);
-//                return ExternalReactFragment.newInstance(PaymentAppConfig.getAppResource(22));
+//                return InternalReactFragment.newInstance(ModuleName.NOTIFICATIONS);
+                return ExternalReactFragment.newInstance(PaymentAppConfig.getAppResource(22));
             case 2:
                 return ProfileFragment.newInstance();
         }

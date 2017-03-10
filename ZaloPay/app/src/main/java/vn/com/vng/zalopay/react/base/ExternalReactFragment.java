@@ -46,6 +46,7 @@ import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 
 /**
  * Created by hieuvm on 2/23/17.
+ * *
  */
 
 public class ExternalReactFragment extends ReactBaseFragment {

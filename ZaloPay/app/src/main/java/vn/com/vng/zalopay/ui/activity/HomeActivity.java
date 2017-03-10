@@ -10,13 +10,14 @@ import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.ExternalReactFragment;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
-public class HomeActivity extends BaseToolBarActivity {
+public class HomeActivity extends AbstractReactActivity {
 
     @BindView(R.id.pager)
     ViewPager mViewPager;
@@ -30,6 +31,11 @@ public class HomeActivity extends BaseToolBarActivity {
     protected int getResLayoutId() {
         return R.layout.activity_home_new;
   }
+
+    @Override
+    public Fragment getReactFragment() {
+        return null;
+    }
 
     @Override
     public BaseFragment getFragmentToHost() {
