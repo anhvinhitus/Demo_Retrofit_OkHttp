@@ -637,12 +637,11 @@ public abstract class AdapterBase {
                     if (GlobalData.isMapCardChannel()) {
                         detectCard(GlobalData.getPaymentInfo().mapBank.getFirstNumber());
                     }
-                    //start count timer for checking transaction is expired.
-                    getActivity().startTransactionExpiredTimer();
-                    getTransactionStatus(mTransactionID, true, null);
+                    getActivity().startTransactionExpiredTimer();//start count timer for checking transaction is expired.
+                    getTransactionStatus(mTransactionID, true, null);//get status transaction
                 } else {
-                    onCheckTransactionStatus(mResponseStatus);
-                    releaseClickSubmit();
+                    onCheckTransactionStatus(mResponseStatus);//check status
+                    releaseClickSubmit();//allow click button again
                 }
             }
             //check status again if have issue while submitting order
@@ -1175,8 +1174,8 @@ public abstract class AdapterBase {
                     mIsExitWithoutConfirm = false;
 
                     moveToRequirePin();
-                    if (getActivity().getPinPage() != null) {
-                        getActivity().getPinPage().setErrorPin(pStatusResponse.returnmessage);
+                    if (getActivity().getmPaymentPassword() != null) {
+                        getActivity().getmPaymentPassword().setErrorPin(pStatusResponse.returnmessage);
                     }
 
                 } else {

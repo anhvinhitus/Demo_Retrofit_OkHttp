@@ -13,15 +13,12 @@ import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
 /***
- * PIN process class
+ * password payment class
  */
-public class CPinPage {
+public class PaymentPassword {
     private static int PIN_LENGTH;
-
     private onEnterPinListener mPinListener;
-
     private GridPasswordView gridPasswordView;
-
     //error view
     private TextView mTextViewError;
 
@@ -66,25 +63,19 @@ public class CPinPage {
      *
      * @param pParams
      */
-    public CPinPage(View... pParams) {
+    public PaymentPassword(View... pParams) {
 
         if (pParams != null && pParams.length == 3) {
             gridPasswordView = (GridPasswordView) pParams[0];
-
             mTextViewError = (TextView) pParams[1];
-
             mSwitchVisiblePinTextView = (TextView) pParams[2];
-
             enableInput(true);
-
             //get pin length from bundle resource
             PIN_LENGTH = BasePaymentActivity.getCurrentActivity() != null ? BasePaymentActivity.getCurrentActivity().getResources().getInteger(R.integer.wallet_pin_length) : 6;
         }
-
         if (gridPasswordView != null) {
             addEvent();
         }
-
         if (mSwitchVisiblePinTextView != null)
             mSwitchVisiblePinTextView.setOnClickListener(mSwitchPinViewClicked);
 
@@ -94,7 +85,6 @@ public class CPinPage {
         if (TextUtils.isEmpty(pMessage) && mTextViewError != null) {
             mTextViewError.setVisibility(View.INVISIBLE);
         }
-
         if (!TextUtils.isEmpty(pMessage) && mTextViewError != null) {
             mTextViewError.setVisibility(View.VISIBLE);
         }
@@ -104,7 +94,7 @@ public class CPinPage {
         gridPasswordView.setEnabled(pIsEnable);
     }
 
-    public void showPinSoftKeyBoard() {
+    public void showSoftKeyBoard() {
         if (gridPasswordView != null) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -115,13 +105,12 @@ public class CPinPage {
         }
     }
 
-    public CPinPage setOnEnterPinListener(onEnterPinListener pListener) {
+    public PaymentPassword setOnEnterPinListener(onEnterPinListener pListener) {
         mPinListener = pListener;
-
         return this;
     }
 
-    public void resetPin() {
+    public void reset() {
         if (gridPasswordView != null) {
             gridPasswordView.clearPassword();
             enableInput(true);

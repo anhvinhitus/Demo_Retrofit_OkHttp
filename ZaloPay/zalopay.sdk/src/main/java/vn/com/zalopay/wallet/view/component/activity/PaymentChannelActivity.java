@@ -17,8 +17,7 @@ import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
-import vn.com.zalopay.wallet.business.behavior.gateway.GatewayLoader;
-import vn.com.zalopay.wallet.business.behavior.view.CPinPage;
+import vn.com.zalopay.wallet.business.behavior.view.PaymentPassword;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.linkacc.LinkAccGuiProcessor;
@@ -40,12 +39,11 @@ import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
 
-    protected CPinPage pinPage;
+    protected PaymentPassword mPaymentPassword;
     protected CountDownTimer mTimer;
     protected boolean mTimerRunning = false;
     private AdapterBase mAdapter = null;
-    //prevent duplicate on some function when activity resume.
-    private boolean mIsRestart = false;
+    private boolean mIsRestart = false; //prevent duplicate on some function when activity resume.
     private boolean mIsStart = false;
     private boolean mIsSwitching = false;
     private WeakReference<BankSmsReceiver> mSmsReceiver;
@@ -107,8 +105,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
     };
 
-    public CPinPage getPinPage() {
-        return pinPage;
+    public PaymentPassword getmPaymentPassword() {
+        return mPaymentPassword;
     }
 
     protected void fillCardNumberFromCache()
@@ -438,14 +436,14 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     public void showKeyBoardForPin() {
-        if (pinPage != null) {
-            pinPage.showPinSoftKeyBoard();
+        if (mPaymentPassword != null) {
+            mPaymentPassword.showSoftKeyBoard();
         }
     }
 
     public void resetPin() {
-        if (pinPage != null) {
-            pinPage.resetPin();
+        if (mPaymentPassword != null) {
+            mPaymentPassword.reset();
         }
     }
 
@@ -741,13 +739,13 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     public void configureRequirePinPage() {
 
-        if (pinPage == null) {
-            pinPage = new CPinPage(findViewById(R.id.zpw_gridview_pin), findViewById(R.id.zpw_txt_PinError), findViewById(R.id.zpw_switchvisible_textview));
+        if (mPaymentPassword == null) {
+            mPaymentPassword = new PaymentPassword(findViewById(R.id.zpw_gridview_pin), findViewById(R.id.zpw_txt_PinError), findViewById(R.id.zpw_switchvisible_textview));
         } else {
-            pinPage.resetPin();
+            mPaymentPassword.reset();
         }
 
-        pinPage.setOnEnterPinListener(new CPinPage.onEnterPinListener() {
+        mPaymentPassword.setOnEnterPinListener(new PaymentPassword.onEnterPinListener() {
             @Override
             public void onEnterPinComplete() {
                 if (getAdapter() != null)
@@ -755,7 +753,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             }
         });
 
-        pinPage.showPinSoftKeyBoard();
+        mPaymentPassword.showSoftKeyBoard();
 
     }
 
