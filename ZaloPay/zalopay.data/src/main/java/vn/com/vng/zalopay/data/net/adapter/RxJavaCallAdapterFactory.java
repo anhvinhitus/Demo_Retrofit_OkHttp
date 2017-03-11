@@ -32,8 +32,7 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
         ZaloPay,
         RedPacket,
         PaymentAppWithRetry,
-        PaymentAppWithoutRetry,
-        Connector
+        PaymentAppWithoutRetry
     }
 
     /**
@@ -84,8 +83,6 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
                 return new RNCallAdapter(mApplicationContext, apiEventId, observableType, scheduler, Constants.NUMBER_RETRY_REST);
             case PaymentAppWithoutRetry:
                 return new RNCallAdapter(mApplicationContext, apiEventId, observableType, scheduler, 0);
-            case Connector:
-                return new ConnectorCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
             default:
                 return new ZaloPayCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
         }
