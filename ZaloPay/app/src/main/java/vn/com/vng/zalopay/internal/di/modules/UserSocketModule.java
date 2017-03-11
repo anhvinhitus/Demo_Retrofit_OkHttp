@@ -33,10 +33,11 @@ import vn.com.vng.zalopay.notification.ZPNotificationService;
 
 /**
  * Created by hieuvm on 3/10/17.
+ * Provide glues between network services
  */
 
 @Module
-public class SocketModule {
+public class UserSocketModule {
 
     @Provides
     @UserScope
@@ -55,27 +56,17 @@ public class SocketModule {
 
     @Provides
     @UserScope
-    PaymentConnectorService providesPaymentRequestService(Connection connection) {
-        return new PaymentConnectorService(connection);
-    }
-
-    @Provides
-    @UserScope
-    @Named("connectorCallFactory")
-    Call.Factory providesCallFactory(PaymentConnectorService connectorService) {
-        return new PaymentConnectorCallFactory(connectorService);
-    }
-
-    @Provides
-    @UserScope
     @Named("retrofitConnector")
     Retrofit providesRetrofitConnector(HttpUrl baseUrl,
-                                       @Named("connectorCallFactory") Call.Factory callFactory,
-                                       Converter.Factory convertFactory) {
+                                       CallAdapter.Factory callAdapter,
+                                       Converter.Factory convertFactory,
+                                       Connection connection) {
+        PaymentConnectorService connectorService = new PaymentConnectorService(connection);
+
         return new Retrofit.Builder()
                 .addConverterFactory(convertFactory)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(AndroidApplication.instance(), RxJavaCallAdapterFactory.AdapterType.Connector))
-                .callFactory(callFactory)
+                .addCallAdapterFactory(callAdapter)
+                .callFactory(new PaymentConnectorCallFactory(connectorService))
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .build();

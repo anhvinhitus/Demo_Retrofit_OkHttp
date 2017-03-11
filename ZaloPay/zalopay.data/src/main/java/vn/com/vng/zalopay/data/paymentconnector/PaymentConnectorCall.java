@@ -2,8 +2,6 @@ package vn.com.vng.zalopay.data.paymentconnector;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -18,25 +16,24 @@ import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
 
 /**
  * Created by hieuvm on 3/9/17.
+ * Implement okhttp3.Call for PaymentConnector
  */
 
-public class PaymentConnectorCall implements Call {
+class PaymentConnectorCall implements Call {
 
     private PaymentConnectorService mClient;
-    private boolean executed;
-    // private Call rawCall;
+    private boolean mExecuted;
     private final Request originalRequest;
     private CountDownLatch doneSignal = new CountDownLatch(1);
     private Response mResponse;
 
-    public PaymentConnectorCall(PaymentConnectorService client, Request request) {
+    PaymentConnectorCall(PaymentConnectorService client, Request request) {
         this.mClient = client;
         this.originalRequest = request;
     }
 
     @Override
     public Request request() {
-        Timber.d("get request");
         return originalRequest;
     }
 
@@ -44,14 +41,17 @@ public class PaymentConnectorCall implements Call {
     public Response execute() throws IOException {
         Timber.d("execute");
         synchronized (this) {
-            if (executed) throw new IllegalStateException("Already executed");
-            executed = true;
+            if (mExecuted) {
+                throw new IllegalStateException("Already executed");
+            }
+            mExecuted = true;
         }
 
+        mResponse = null;
         mClient.request(PaymentConnectorFactory.createRequest(originalRequest), new PaymentConnectorCallback() {
             @Override
             public void onResult(PaymentRequestData data) {
-                Timber.d("response connector %s", data);
+                Timber.d("receive response from connector");
                 mResponse = parseResponse(data);
                 doneSignal.countDown();
             }
@@ -74,18 +74,22 @@ public class PaymentConnectorCall implements Call {
 
     @Override
     public void enqueue(Callback callback) {
-        Timber.d("enqueue: %s", callback);
-        if (callback == null) throw new NullPointerException("callback == null");
+        Timber.d("enqueue");
+        if (callback == null) {
+            throw new NullPointerException("callback == null");
+        }
 
         synchronized (this) {
-            if (executed) throw new IllegalStateException("Already executed");
-            executed = true;
+            if (mExecuted) {
+                throw new IllegalStateException("Already executed");
+            }
+            mExecuted = true;
         }
 
         mClient.request(PaymentConnectorFactory.createRequest(originalRequest), new PaymentConnectorCallback() {
             @Override
             public void onResult(PaymentRequestData data) {
-                Timber.d("response connector %s", data);
+                Timber.d("receive response from connector");
                 try {
                     callback.onResponse(PaymentConnectorCall.this, parseResponse(data));
                 } catch (IOException e) {
@@ -122,8 +126,8 @@ public class PaymentConnectorCall implements Call {
 
     @Override
     public boolean isExecuted() {
-        Timber.d("isExecuted: ");
-        return false;
+        Timber.d("isExecuted: %s", mExecuted);
+        return mExecuted;
     }
 
     @Override

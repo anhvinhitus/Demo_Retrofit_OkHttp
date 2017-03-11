@@ -77,7 +77,7 @@ public class BalanceRepositoryTest {
         final Long[] balanceValueExpected = {10L, returnBalance};
 
         mLocalStorage.putBalance(10);
-        mRepository = new BalanceRepository(mLocalStorage, mRequestService, new User("1"), new EventBus(), null);
+        mRepository = new BalanceRepository(mLocalStorage, mRequestService, new User("1"), new EventBus());
         mRepository.balance().subscribe(new Observer<Long>() {
             @Override
             public void onCompleted() {
@@ -126,7 +126,7 @@ public class BalanceRepositoryTest {
         };
 
 
-        mRepository = new BalanceRepository(mLocalStorage, mRequestService, new User("1"), new EventBus(), null);
+        mRepository = new BalanceRepository(mLocalStorage, mRequestService, new User("1"), new EventBus());
         mRepository.updateBalance().subscribe(new Observer<Long>() {
             @Override
             public void onCompleted() {
@@ -156,7 +156,7 @@ public class BalanceRepositoryTest {
     public void testCurrentBalance() throws Exception {
         CountDownLatch countDownLatch = new CountDownLatch(3);
 
-        mRepository = new BalanceRepository(mLocalStorage, mRequestService, new User("1"), new EventBus(), null);
+        mRepository = new BalanceRepository(mLocalStorage, mRequestService, new User("1"), new EventBus());
         Assert.assertEquals(Long.valueOf(0), mRepository.currentBalance());
         mRepository.balance().subscribe(new Observer<Long>() {
             @Override
