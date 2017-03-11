@@ -93,10 +93,10 @@ public abstract class Connection {
     }
 
     public void cleanup() {
-        messageHandler = null;
+        messageHandler.removeCallbacksAndMessages(null);
     }
 
-    private Handler messageHandler;
+    private final Handler messageHandler;
 
     private static class MessageHandler extends Handler {
         private WeakReference<Connection> mConnection;
