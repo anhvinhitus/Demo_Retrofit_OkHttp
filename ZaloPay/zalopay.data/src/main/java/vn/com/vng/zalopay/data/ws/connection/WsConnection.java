@@ -48,7 +48,7 @@ public class WsConnection extends Connection {
     private final Parser parser;
     private final User mUser;
 
-    private SocketClient mSocketClient;
+    private final SocketClient mSocketClient;
     private RxBus mServerPongBus;
 
     private final Handler mConnectionHandler;
@@ -165,12 +165,10 @@ public class WsConnection extends Connection {
         Timber.d("Should cleanup current instance to prevent memory leak");
         if (compositeSubscription != null) {
             compositeSubscription.clear();
-            compositeSubscription = null;
         }
 
         if (mSocketClient != null) {
             mSocketClient.disconnect();
-            mSocketClient = null;
         }
     }
 
