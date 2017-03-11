@@ -11,7 +11,7 @@ import vn.com.vng.zalopay.data.protobuf.MessageLogin;
 import vn.com.vng.zalopay.data.protobuf.MessageRecoveryRequest;
 import vn.com.vng.zalopay.data.protobuf.MessageStatus;
 import vn.com.vng.zalopay.data.protobuf.MessageType;
-import vn.com.vng.zalopay.data.protobuf.PairKeyValue;
+import vn.com.vng.zalopay.data.protobuf.NameValuePair;
 import vn.com.vng.zalopay.data.protobuf.PaymentRequestMessage;
 import vn.com.vng.zalopay.data.protobuf.RecoveryOrder;
 import vn.com.vng.zalopay.data.protobuf.StatusMessageClient;
@@ -106,12 +106,12 @@ public class NotificationApiHelper {
                 .port(port);
                 ;
 
-        List<PairKeyValue> _header = transform(headers);
+        List<NameValuePair> _header = transform(headers);
         if (_header != null) {
             builder.headers(_header);
         }
 
-        List<PairKeyValue> _param = transform(params);
+        List<NameValuePair> _param = transform(params);
         if (_param != null) {
             builder.params(_param);
         }
@@ -119,17 +119,17 @@ public class NotificationApiHelper {
         return builder.build();
     }
 
-    private static List<PairKeyValue> transform(List<Pair<String, String>> vars) {
+    private static List<NameValuePair> transform(List<Pair<String, String>> vars) {
         return Lists.transform(vars, NotificationApiHelper::transform);
     }
 
-    private static PairKeyValue transform(Pair<String, String> var) {
+    private static NameValuePair transform(Pair<String, String> var) {
         if (var == null || TextUtils.isEmpty(var.first)) {
             return null;
         }
 
-        PairKeyValue.Builder builder = new PairKeyValue.Builder()
-                .key(var.first)
+        NameValuePair.Builder builder = new NameValuePair.Builder()
+                .name(var.first)
                 .value(TextUtils.isEmpty(var.second) ? "" : var.second);
 
         return builder.build();

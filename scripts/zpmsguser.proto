@@ -2,6 +2,8 @@ package protobuf;
 option java_package = "vn.com.vng.zalopay.data.protobuf";
 option java_outer_classname = "ZPMsgProtos";
 
+// Notification message status
+// Zalo Pay: 2.0
 enum MessageStatus {
 	RECEIVED = 1;
 	READ = 2;
@@ -9,21 +11,27 @@ enum MessageStatus {
 	VIEWED = 4;
 }
 
+// Device Operating System
+// Zalo Pay: 2.0
 enum OSType {
 	IOS = 1;
 	ANDROID = 2;
 	WINDOW_PHONE = 3;
 }
 
+// Define type of message that client sends to server
+// Zalo Pay: 2.0
 enum MessageType {
 	AUTHEN_LOGIN = 1;
 	FEEDBACK = 2;
 	PING_SERVER = 3;
 	MSG_TO_USER_REQUEST = 4;
 	RECOVERY_REQUEST = 5;
-	PAYMENT_REQUEST = 6;
+	PAYMENT_REQUEST = 6; // available from Zalo Pay 2.10
 }
 
+// Define type of message that server sends to client
+// Zalo Pay: 2.0
 enum ServerMessageType {
 	AUTHEN_LOGIN_RESULT = 1;
 	PONG_CLIENT = 2;
@@ -31,14 +39,18 @@ enum ServerMessageType {
 	PUSH_NOTIFICATION = 101;
 	MSG_TO_USER_RESPONSE = 4;
 	RECOVERY_RESPONSE = 5;
-	PAYMENT_RESPONSE = 6;
+	PAYMENT_RESPONSE = 6; // available from Zalo Pay 2.10
 }
 
+// Define the order to get recover notification message
+// Zalo Pay: 2.0
 enum RecoveryOrder {
 	ORDER_DESCEND = 0;
 	ORDER_ASCEND = 1;
 }
 
+// Define the response code from Payment Connector
+// Zalo Pay: 2.10
 enum PaymentCode {
 	PAY_SUCCESS = 0;
 	PAY_WRONG_FORMAT = 1;
@@ -48,7 +60,9 @@ enum PaymentCode {
 	PAY_EXCEPTION = 5;
 }
 
-message MessageSendUser{
+// Notification message sent to user
+// Zalo Pay: 2.0
+message MessageSendUser {
 	required bytes	data = 1;
 	required string	signature = 2; 
 	optional int64	expiretime = 3;
@@ -59,33 +73,45 @@ message MessageSendUser{
 	optional uint32 msgtype = 8;
 }
 
-message RecoveryMessage{
+// Recovery message that will contain push notification message in data field
+// Zalo Pay: 2.0
+message RecoveryMessage {
 	required bytes data = 1;
 	optional int32 status = 2;
 	optional uint64 mtaid = 3;
 	optional uint64 mtuid = 4;
 }
 
-message DataRecoveryResponse{
+// List of recovery message as result from client's request 
+// Zalo Pay: 2.0
+message DataRecoveryResponse {
 	repeated RecoveryMessage messages = 1;
 	required uint64 starttime = 2;
 }
 
-message MessageLogin{
+// Authentication message that client sends to server
+// Zalo Pay: 2.0
+message MessageLogin {
 	required uint64 usrid = 1;
 	required string	token = 2;
 	optional int32 ostype = 3;
 	optional string devicetoken = 4;
 }
 
-message ResultAuth{
+// Authentication response sent from server to client
+// Zalo Pay: 2.0
+message ResultAuth {
 	required uint64 usrid = 1;
 	required int32	result = 2;
 	optional int32	code = 3;
 	optional string	msg = 4;
 }
 
-message DataResponseUser{
+// Wrapper for all messages sent from server to client
+// Actual message type is defined by field: msgtype - MessageType
+// Actual message content is defined by field: data
+// Zalo Pay: 2.0
+message DataResponseUser {
 	required int32 msgtype = 1;
 	required bytes	data = 2;
 	optional int32 status = 3;
@@ -94,7 +120,9 @@ message DataResponseUser{
 	optional uint32 sourceid = 6;
 }
 
-message MsgPushUser{
+// Message pushed to User by notification service: APNS, GCM
+// Zalo Pay: 2.0
+message MsgPushUser {
 	required string	devicetoken = 1;
 	required int32	ostype = 2;
 	required string	alert = 3;
@@ -106,7 +134,8 @@ message MsgPushUser{
 	optional string msgid = 9;
 }
 
-message StatusMessageClient{
+// Zalo Pay: 2.0
+message StatusMessageClient {
 	required uint64 userid = 1;
 	required int32 status = 2;
 	optional uint64 mtaid = 3;
@@ -114,27 +143,34 @@ message StatusMessageClient{
 	optional uint32 sourceid = 5;
 }
 
-message MessageConnectionInfo{
+// Zalo Pay: 2.0
+message MessageConnectionInfo {
 	required uint64 userid = 1;
 	optional uint64 embeddata = 2;
 }
 
-message MessageUserToUser{
+// Message pushed from an User to another
+// Zalo Pay: 2.0
+message MessageUserToUser {
 	required uint64 receiverid = 1;
 	optional bytes data = 2;
 }
 
+// Request message sent from client to server in order to retrieve recovery messages
+// Zalo Pay: 2.0
 message MessageRecoveryRequest {
 	required uint64 starttime = 1;
 	required uint32 count = 2;
 	optional int32 order = 3;
 }
 
+// Zalo Pay: 2.0
 message UpdateStatus {
 	required int32 status = 1;
 	repeated uint64 msgids = 2;
 }
 
+// Zalo Pay: 2.0
 message MessageToGroup {
 	required bytes	data = 1;
 	required string	signature = 2; 
@@ -146,22 +182,27 @@ message MessageToGroup {
 	optional uint32 msgtype = 8;
 }
 
-message PairKeyValue {
-	required string key = 1;
+// Zalo Pay: 2.10
+message NameValuePair {
+	required string name = 1;
 	required string value = 2;
 }
 
-message PaymentRequestMessage{
+// Request message that client sends to Payment Connector
+// Zalo Pay: 2.10
+message PaymentRequestMessage {
 	required uint64	requestid = 1;
 	required string domain = 2;
 	optional string method = 3;
 	optional uint32 port = 4;
 	optional string	path = 5;
-	repeated PairKeyValue params = 6;
-	repeated PairKeyValue headers = 7;
+	repeated NameValuePair params = 6;
+	repeated NameValuePair headers = 7;
 }
 
-message PaymentResponseMessage{
+// Response message that Payment Connector sends to client as result of previous request
+// Zalo Pay: 2.10
+message PaymentResponseMessage {
 	required uint64 requestid = 1;
 	required int32 resultcode = 2;
 	optional string resultdata = 3;
