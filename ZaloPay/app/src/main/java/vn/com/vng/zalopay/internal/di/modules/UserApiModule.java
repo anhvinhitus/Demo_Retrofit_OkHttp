@@ -18,7 +18,7 @@ public class UserApiModule {
 
     @Provides
     @UserScope
-    ZaloPayService provideZaloPayService(@Named("retrofitApi") Retrofit retrofit) {
+    ZaloPayService provideZaloPayService(@Named("retrofitConnector") Retrofit retrofit) {
         return retrofit.create(ZaloPayService.class);
     }
 

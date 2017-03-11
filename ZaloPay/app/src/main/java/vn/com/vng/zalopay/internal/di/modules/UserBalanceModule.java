@@ -42,10 +42,4 @@ public class UserBalanceModule {
     BalanceStore.RequestService provideBalanceRequestService(@Named("retrofitConnector") Retrofit retrofit) {
         return retrofit.create(BalanceStore.RequestService.class);
     }
-
-    @UserScope
-    @Provides
-    BalanceStore.ConnectorService providesConnectorService(@Named("retrofitConnector") Retrofit retrofit) {
-        return retrofit.create(BalanceStore.ConnectorService.class);
-    }
 }

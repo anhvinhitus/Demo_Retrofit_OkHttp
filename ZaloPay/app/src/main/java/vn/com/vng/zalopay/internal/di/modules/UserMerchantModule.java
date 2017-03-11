@@ -36,7 +36,7 @@ public class UserMerchantModule {
 
     @Provides
     @UserScope
-    MerchantStore.RequestService providesRequestService(@Named("retrofitApi") Retrofit retrofit) {
+    MerchantStore.RequestService providesRequestService(@Named("retrofitConnector") Retrofit retrofit) {
         return retrofit.create(MerchantStore.RequestService.class);
     }
 }

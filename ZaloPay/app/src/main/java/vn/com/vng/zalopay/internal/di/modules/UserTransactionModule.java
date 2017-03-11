@@ -43,7 +43,7 @@ public class UserTransactionModule {
 
     @Provides
     @UserScope
-    TransactionStore.RequestService provideTransactionRequestService(@Named("retrofitApi") Retrofit retrofit) {
+    TransactionStore.RequestService provideTransactionRequestService(@Named("retrofitConnector") Retrofit retrofit) {
         return retrofit.create(TransactionStore.RequestService.class);
     }
 }

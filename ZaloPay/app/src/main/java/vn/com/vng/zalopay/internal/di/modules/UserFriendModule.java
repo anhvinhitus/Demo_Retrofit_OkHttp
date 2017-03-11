@@ -30,7 +30,7 @@ public class UserFriendModule {
 
     @UserScope
     @Provides
-    FriendStore.RequestService provideFriendRequestService(@Named("retrofitApi") Retrofit retrofit) {
+    FriendStore.RequestService provideFriendRequestService(@Named("retrofitConnector") Retrofit retrofit) {
         return retrofit.create(FriendStore.RequestService.class);
     }
 
