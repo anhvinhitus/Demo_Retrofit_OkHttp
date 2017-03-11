@@ -13,7 +13,7 @@ import java.util.List;
 
 class PaymentRequest {
 
-    private static long sPaymentRequestId = 1;
+    private static long sPaymentRequestId = System.currentTimeMillis();
 
     private static long generateRequestId() {
         // this.id = UUID.randomUUID().toString();
