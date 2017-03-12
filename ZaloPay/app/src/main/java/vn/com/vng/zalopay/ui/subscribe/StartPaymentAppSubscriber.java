@@ -13,28 +13,29 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by longlv on 12/14/16.
- * *
+ * Launch payment app if app resources are already downloaded.
+ * Else show dialog to let user know that app resources are downloading
  */
 
 public class StartPaymentAppSubscriber extends DefaultSubscriber<Boolean> {
     private Navigator mNavigator;
     private WeakReference<Activity> mActivity;
-    private AppResource app;
+    private AppResource mAppResource;
 
-    public StartPaymentAppSubscriber(Navigator navigator, Activity activity, AppResource app) {
+    public StartPaymentAppSubscriber(Navigator navigator, Activity activity, AppResource appResource) {
         this.mNavigator = navigator;
         this.mActivity = new WeakReference<>(activity);
-        this.app = app;
+        this.mAppResource = appResource;
     }
 
     @Override
-    public void onNext(Boolean result) {
+    public void onNext(Boolean isAppAvailable) {
         if (mActivity == null || mActivity.get() == null) {
             return;
         }
 
-        if (result) {
-            mNavigator.startPaymentApplicationActivity(mActivity.get(), app);
+        if (isAppAvailable) {
+            mNavigator.startPaymentApplicationActivity(mActivity.get(), mAppResource);
         } else {
             DialogHelper.showCustomDialog(mActivity.get(),
                     mActivity.get().getString(R.string.application_downloading),

@@ -167,7 +167,7 @@ public class BannerPresenter extends AbstractPresenter<IBannerView> {
         }
     }
 
-    public void startPaymentApp(AppResource app) {
+    private void startPaymentApp(AppResource app) {
         Subscription subscription = mAppResourceRepository.existResource(app.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -175,7 +175,7 @@ public class BannerPresenter extends AbstractPresenter<IBannerView> {
         mSubscription.add(subscription);
     }
 
-    public void startServiceWebViewActivity(long appId, String webViewUrl) {
+    private void startServiceWebViewActivity(long appId, String webViewUrl) {
         Subscription subscription = mMerchantRepository.getMerchantUserInfo(appId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
