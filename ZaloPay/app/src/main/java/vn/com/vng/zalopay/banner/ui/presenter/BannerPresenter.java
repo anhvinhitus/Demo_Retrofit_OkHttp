@@ -4,6 +4,8 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.MotionEvent;
 
+import com.zalopay.apploader.internal.ModuleName;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -16,6 +18,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
+import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
@@ -26,6 +30,8 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
@@ -181,5 +187,54 @@ public class BannerPresenter extends AbstractPresenter<IBannerView> {
     public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent e) {
         Timber.d("onRefreshPlatformInfoEvent");
         getBanners();
+    }
+
+    public void handleTouchBannerItem(DBanner banner, int position) {
+
+        if (banner == null) {
+            return;
+        }
+        if (banner.bannertype == BannerType.InternalFunction.getValue()) {
+            if (banner.function == BannerInternalFunction.Deposit.getValue()) {
+                mNavigator.startDepositActivity(mView.getActivity());
+            } else if (banner.function == BannerInternalFunction.WithDraw.getValue()) {
+                mNavigator.startBalanceManagementActivity(mView.getActivity());
+            } else if (banner.function == BannerInternalFunction.SaveCard.getValue()) {
+                mNavigator.startLinkCardActivity(mView.getActivity());
+            } else if (banner.function == BannerInternalFunction.Pay.getValue()) {
+                mNavigator.startScanToPayActivity(mView.getActivity());
+            } else if (banner.function == BannerInternalFunction.TransferMoney.getValue()) {
+                mNavigator.startTransferMoneyActivity(mView.getActivity());
+            } else if (banner.function == BannerInternalFunction.RedPacket.getValue()) {
+                mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.RED_PACKET);
+            }
+        } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
+            startPaymentApp(new AppResource(banner.appid));
+        } else if (banner.bannertype == BannerType.ServiceWebView.getValue()) {
+            startServiceWebViewActivity(banner.appid, banner.webviewurl);
+        } else if (banner.bannertype == BannerType.WebPromotion.getValue()) {
+            mNavigator.startWebViewActivity(mView.getActivity(), banner.webviewurl);
+        }
+        trackBannerEvent(position);
+    }
+
+    private void trackBannerEvent(int position) {
+        switch (position) {
+            case 0:
+                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
+                break;
+            case 1:
+                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
+                break;
+            case 2:
+                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
+                break;
+            case 3:
+                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
+                break;
+            default:
+                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
+                break;
+        }
     }
 }

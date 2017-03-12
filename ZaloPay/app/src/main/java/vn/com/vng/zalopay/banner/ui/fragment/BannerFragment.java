@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
-import com.zalopay.apploader.internal.ModuleName;
 
 import java.util.List;
 
@@ -18,17 +17,12 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
-import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.banner.ui.adapter.BannerPagerAdapter;
 import vn.com.vng.zalopay.banner.ui.presenter.BannerPresenter;
 import vn.com.vng.zalopay.banner.ui.view.IBannerView;
-import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.SmoothViewPager;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
@@ -38,8 +32,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
  * Use the {@link BannerFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BannerFragment extends BaseFragment implements IBannerView,
-        BannerPagerAdapter.IBannerClick {
+public class BannerFragment extends BaseFragment
+        implements IBannerView, BannerPagerAdapter.IBannerClick {
 
     @Inject
     BannerPresenter mBannerPresenter;
@@ -61,7 +55,6 @@ public class BannerFragment extends BaseFragment implements IBannerView,
      *
      * @return A new instance of fragment BannerFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static BannerFragment newInstance() {
         return new BannerFragment();
     }
@@ -169,45 +162,7 @@ public class BannerFragment extends BaseFragment implements IBannerView,
 
     @Override
     public void onBannerItemClick(DBanner banner, int position) {
-        if (banner == null) {
-            return;
-        }
-        if (banner.bannertype == BannerType.InternalFunction.getValue()) {
-            if (banner.function == BannerInternalFunction.Deposit.getValue()) {
-                navigator.startDepositActivity(getActivity());
-            } else if (banner.function == BannerInternalFunction.WithDraw.getValue()) {
-                navigator.startBalanceManagementActivity(getActivity());
-            } else if (banner.function == BannerInternalFunction.SaveCard.getValue()) {
-                navigator.startLinkCardActivity(getActivity());
-            } else if (banner.function == BannerInternalFunction.Pay.getValue()) {
-                navigator.startScanToPayActivity(getActivity());
-            } else if (banner.function == BannerInternalFunction.TransferMoney.getValue()) {
-                navigator.startTransferMoneyActivity(getActivity());
-            } else if (banner.function == BannerInternalFunction.RedPacket.getValue()) {
-                navigator.startMiniAppActivity(getActivity(), ModuleName.RED_PACKET);
-            }
-        } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
-            mBannerPresenter.startPaymentApp(new AppResource(banner.appid));
-        } else if (banner.bannertype == BannerType.ServiceWebView.getValue()) {
-            mBannerPresenter.startServiceWebViewActivity(banner.appid, banner.webviewurl);
-        } else if (banner.bannertype == BannerType.WebPromotion.getValue()) {
-            navigator.startWebViewActivity(getContext(), banner.webviewurl);
-        }
-        trackBannerEvent(position);
-    }
-
-    private void trackBannerEvent(int position) {
-        if (position == 0) {
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
-        } else if (position == 1) {
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
-        } else if (position == 2) {
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
-        } else if (position == 3) {
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
-        } else {
-            ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
-        }
+        mBannerPresenter.handleTouchBannerItem(banner, position);
     }
 
     @Override
