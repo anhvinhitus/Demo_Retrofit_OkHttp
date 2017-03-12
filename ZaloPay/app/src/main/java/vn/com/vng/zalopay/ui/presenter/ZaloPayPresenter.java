@@ -358,12 +358,13 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     }
 
 
-    public List<AppResource> getTopAndBottomApp(List<AppResource> pFullListApp, boolean pKey) {
-        List<AppResource> mNewListApp = new ArrayList<>();
+    public List<AppResource> getTopAndBottomApp(List<AppResource> pFullListApp, boolean isTopApp) {
         if (pFullListApp.size() <= mNumberTopApp) {
             return pFullListApp;
         }
-        if (pKey) {
+
+        List<AppResource> mNewListApp = new ArrayList<>();
+        if (isTopApp) {
             for (int i = 0; i < mNumberTopApp; i++) {
                 mNewListApp.add(pFullListApp.get(i));
             }
@@ -374,6 +375,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         }
         return mNewListApp;
     }
+
     public int getHeightViewBottomView(View pTopView, int pNumberItemView, int pNumberApp)
     {
         double  heightItem = pTopView.getHeight()/2;

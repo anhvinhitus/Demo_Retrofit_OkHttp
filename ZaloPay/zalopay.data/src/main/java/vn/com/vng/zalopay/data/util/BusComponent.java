@@ -19,7 +19,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 /**
  * Used for subscribing to and publishing to subjects. Allowing you to send data between activities, fragments, etc.
  * <p>
- * Created by Pierce Zaifman on 2017-01-02.
  */
 
 public final class BusComponent {
