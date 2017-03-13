@@ -21,11 +21,13 @@ import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
 
 class PaymentConnectorCall implements Call {
 
-    private PaymentConnectorService mClient;
+    private final PaymentConnectorService mClient;
     private boolean mExecuted;
     private final Request originalRequest;
     private CountDownLatch doneSignal = new CountDownLatch(1);
     private Response mResponse;
+    private PaymentRequest mPaymentRequest;
+    private boolean isCancelled;
 
     PaymentConnectorCall(PaymentConnectorService client, Request request) {
         this.mClient = client;
@@ -39,7 +41,6 @@ class PaymentConnectorCall implements Call {
 
     @Override
     public Response execute() throws IOException {
-        Timber.d("execute");
         synchronized (this) {
             if (mExecuted) {
                 throw new IllegalStateException("Already executed");
@@ -48,7 +49,8 @@ class PaymentConnectorCall implements Call {
         }
 
         mResponse = null;
-        mClient.request(PaymentConnectorFactory.createRequest(originalRequest), new PaymentConnectorCallback() {
+        mPaymentRequest = PaymentConnectorFactory.createRequest(originalRequest);
+        mClient.request(mPaymentRequest, new PaymentConnectorCallback() {
             @Override
             public void onResult(PaymentRequestData data) {
                 Timber.d("receive response from connector");
@@ -74,7 +76,6 @@ class PaymentConnectorCall implements Call {
 
     @Override
     public void enqueue(Callback callback) {
-        Timber.d("enqueue");
         if (callback == null) {
             throw new NullPointerException("callback == null");
         }
@@ -86,7 +87,9 @@ class PaymentConnectorCall implements Call {
             mExecuted = true;
         }
 
-        mClient.request(PaymentConnectorFactory.createRequest(originalRequest), new PaymentConnectorCallback() {
+        mPaymentRequest = PaymentConnectorFactory.createRequest(originalRequest);
+
+        mClient.request(mPaymentRequest, new PaymentConnectorCallback() {
             @Override
             public void onResult(PaymentRequestData data) {
                 Timber.d("receive response from connector");
@@ -121,7 +124,17 @@ class PaymentConnectorCall implements Call {
 
     @Override
     public void cancel() {
-        Timber.d("cancel: ");
+        isCancelled = true;
+        if (!isExecuted()) {
+            return;
+        }
+
+        if (mPaymentRequest == null) {
+            return;
+        }
+
+        mClient.cancel(mPaymentRequest);
+
     }
 
     @Override
@@ -132,7 +145,7 @@ class PaymentConnectorCall implements Call {
 
     @Override
     public boolean isCanceled() {
-        Timber.d("isCanceled: ");
-        return false;
+        Timber.d("isCanceled: %s", isCancelled);
+        return isCancelled;
     }
 }

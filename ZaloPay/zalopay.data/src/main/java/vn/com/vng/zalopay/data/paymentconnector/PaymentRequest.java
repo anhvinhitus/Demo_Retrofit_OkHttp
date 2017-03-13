@@ -42,6 +42,16 @@ class PaymentRequest {
         this.domain = domain;
     }
 
+    @Override
+    public boolean equals(Object o) {
+
+        if (o instanceof PaymentRequest) {
+            return requestId == ((PaymentRequest) o).requestId;
+        }
+
+        return false;
+    }
+
     public static final class Builder {
 
         public int priority;

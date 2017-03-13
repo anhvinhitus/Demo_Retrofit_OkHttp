@@ -125,4 +125,11 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
         mRequestQueue.clear();
         mPaymentCallBackArray.clear();
     }
+
+    public void cancel(PaymentRequest request) {
+        mPaymentCallBackArray.remove(request.requestId);
+        synchronized (mRequestQueue) {
+            mRequestQueue.remove(request);
+        }
+    }
 }
