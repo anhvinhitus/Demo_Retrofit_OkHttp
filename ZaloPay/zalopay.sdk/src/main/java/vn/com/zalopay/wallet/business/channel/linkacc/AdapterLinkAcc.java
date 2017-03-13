@@ -41,6 +41,7 @@ import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
 import vn.com.zalopay.wallet.utils.LayoutUtils;
 import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.utils.NetworkUtil;
 import vn.com.zalopay.wallet.utils.OtpUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.utils.VcbUtils;
@@ -194,16 +195,33 @@ public class AdapterLinkAcc extends AdapterBase {
 
     @Override
     public void onProcessPhrase() {
-        if (mPageCode.equals(PAGE_VCB_LOGIN)
-                || mPageCode.equals(PAGE_VCB_CONFIRM_LINK)
-                || mPageCode.equals(PAGE_VCB_CONFIRM_UNLINK)
-                || mPageCode.equals(PAGE_VCB_OTP)) {
-            mWebViewProcessor.hit();
 
-            // force virtual keyboard
-            forceVirtualKeyboard();
+        if(NetworkUtil.getConnectivityStatus(getActivity()) != NetworkUtil.TYPE_NOT_CONNECTED) {
+            if (mPageCode.equals(PAGE_VCB_LOGIN)
+                    || mPageCode.equals(PAGE_VCB_CONFIRM_LINK)
+                    || mPageCode.equals(PAGE_VCB_CONFIRM_UNLINK)
+                    || mPageCode.equals(PAGE_VCB_OTP)) {
+                mWebViewProcessor.hit();
+                // force virtual keyboard
+                forceVirtualKeyboard();
+            }
         }
+        else
+        {
+            getActivity().askToOpenSettingNetwoking();
+            Log.d(this,"===network fail==" );
+        }
+
+
+
     }
+
+
+    @Override
+    public void closeSDKAfterNetworkOffline() {
+        super.closeSDKAfterNetworkOffline();
+    }
+
 
     @Override
     public String getChannelID() {

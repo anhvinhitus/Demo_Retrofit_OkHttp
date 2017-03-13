@@ -964,7 +964,7 @@ public abstract class AdapterBase {
         boolean isNeedCloseSDK = mOwnerActivity != null;
 
         if (isNeedCloseSDK) {
-            isNeedCloseSDK = isNeedCloseSDK && isOrderSubmit();
+            isNeedCloseSDK = isNeedCloseSDK && (isOrderSubmit() || isLinkAccFlow());
         }
 
         if (isNeedCloseSDK && !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
