@@ -53,14 +53,19 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onNext(response);
             }
-        } catch (Throwable t) {
+        } catch (Throwable throwable) {
+
+            Throwable t = throwable.getCause() != null ? throwable.getCause() : throwable;
+
             Exceptions.throwIfFatal(t);
+
             if (subscriber.isUnsubscribed()) {
                 return;
             }
 
             // Add tracing for knowing which request results error
             // Remove access token for protecting users
+
             try {
                 String string = call.request().toString();
                 String accesstoken = call.request().url().queryParameter("accesstoken");

@@ -63,6 +63,12 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
         }
     }
 
+    private void removeRequest(PaymentRequest request) {
+        synchronized (mRequestQueue) {
+            mRequestQueue.remove(request);
+        }
+    }
+
     @Override
     public void onReceiverEvent(Event event) {
         if (event instanceof AuthenticationData) {
@@ -122,14 +128,16 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
     }
 
     public void cancelAll() {
-        mRequestQueue.clear();
-        mPaymentCallBackArray.clear();
+        synchronized (mRequestQueue) {
+            mRequestQueue.clear();
+        }
+        synchronized (mPaymentCallBackArray) {
+            mPaymentCallBackArray.clear();
+        }
     }
 
     public void cancel(PaymentRequest request) {
-        mPaymentCallBackArray.remove(request.requestId);
-        synchronized (mRequestQueue) {
-            mRequestQueue.remove(request);
-        }
+        removeCallback(request.requestId);
+        removeRequest(request);
     }
 }

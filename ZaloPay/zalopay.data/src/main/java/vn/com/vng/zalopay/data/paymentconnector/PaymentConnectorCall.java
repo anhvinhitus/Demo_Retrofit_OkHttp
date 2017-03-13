@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.paymentconnector;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -68,6 +69,10 @@ class PaymentConnectorCall implements Call {
             doneSignal.await(5, TimeUnit.SECONDS);
         } catch (InterruptedException ie) {
             Timber.d(ie);
+        }
+
+        if (mResponse == null) {
+            throw new IOException(new TimeoutException());
         }
 
         return mResponse;
