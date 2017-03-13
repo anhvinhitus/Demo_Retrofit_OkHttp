@@ -52,13 +52,13 @@ public class HomeActivity extends AbstractReactActivity {
         mBottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.menu_home:
-                    mViewPager.setCurrentItem(0);
+                    mViewPager.setCurrentItem(HomePagerAdapter.TAB_MAIN_INDEX);
                     break;
                 case R.id.menu_nearby:
-                    mViewPager.setCurrentItem(1);
+                    mViewPager.setCurrentItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
                     break;
                 case R.id.menu_profile:
-                    mViewPager.setCurrentItem(2);
+                    mViewPager.setCurrentItem(HomePagerAdapter.TAB_PROFILE_INDEX);
                     break;
             }
             return true;

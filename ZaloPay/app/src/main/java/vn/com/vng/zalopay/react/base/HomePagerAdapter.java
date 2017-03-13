@@ -3,11 +3,9 @@ package vn.com.vng.zalopay.react.base;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
-import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
 
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
-import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
@@ -18,6 +16,11 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
 public class HomePagerAdapter extends AbsFragmentPagerAdapter {
 
+    private static final int TAB_COUNT = 3;
+    public static final int TAB_MAIN_INDEX = 0;
+    public static final int TAB_SHOW_SHOW_INDEX = 1;
+    public static final int TAB_PROFILE_INDEX = 2;
+
     public HomePagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -26,12 +29,11 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
     public Fragment getItem(int position) {
 
         switch (position) {
-            case 0:
+            case TAB_MAIN_INDEX:
                 return ZaloPayFragment.newInstance();
-            case 1:
-//                return InternalReactFragment.newInstance(ModuleName.NOTIFICATIONS);
+            case TAB_SHOW_SHOW_INDEX:
                 return ExternalReactFragment.newInstance(PaymentAppConfig.getAppResource(22));
-            case 2:
+            case TAB_PROFILE_INDEX:
                 return ProfileFragment.newInstance();
         }
 
@@ -40,19 +42,7 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return TAB_COUNT;
     }
 
-    @Override
-    public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return "HOME";
-            case 1:
-                return "SHOW SHOW";
-            case 2:
-                return "PROFILE";
-        }
-        return null;
-    }
 }
