@@ -21,6 +21,7 @@ import com.zalopay.zcontacts.ZContactsPackage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
@@ -35,6 +36,8 @@ import cl.json.RNSharePackage;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
@@ -43,13 +46,15 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
+import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by hieuvm on 2/23/17.
  * *
  */
 
-public class ExternalReactFragment extends ReactBaseFragment {
+public class ExternalReactFragment extends ReactBaseFragment implements IExternalReactView {
     public static final String TAG = "ExternalReactFragment";
 
     public static ExternalReactFragment newInstance(AppResource app) {
@@ -77,6 +82,9 @@ public class ExternalReactFragment extends ReactBaseFragment {
     private String mComponentName;
 
     @Inject
+    ExternalReactPresenter mPresenter;
+
+    @Inject
     IPaymentService paymentService;
 
     @Inject
@@ -99,7 +107,7 @@ public class ExternalReactFragment extends ReactBaseFragment {
     @Named("NetworkServiceWithoutRetry")
     NetworkService mNetworkServiceWithoutRetry;
 
-    private AppResource appResource;
+    private AppResource mAppResource;
 
     @Inject
     Navigator mNavigator;
@@ -119,7 +127,7 @@ public class ExternalReactFragment extends ReactBaseFragment {
     @Override
     public List<ReactPackage> getPackages() {
 
-        long appId = appResource == null ? 0 : appResource.appid;
+        long appId = mAppResource == null ? 0 : mAppResource.appid;
         Timber.d("getPackages: appId %s", appId);
         return Arrays.asList(
                 new MainReactPackage(),
@@ -160,7 +168,7 @@ public class ExternalReactFragment extends ReactBaseFragment {
 
     @Nullable
     public String getJSBundleFile() {
-        String jsBundleFile = bundleReactConfig.getExternalJsBundle(appResource);
+        String jsBundleFile = bundleReactConfig.getExternalJsBundle(mAppResource);
         Timber.d("jsBundleFile %s", jsBundleFile);
         return jsBundleFile;
     }
@@ -185,15 +193,29 @@ public class ExternalReactFragment extends ReactBaseFragment {
         initArgs(savedInstanceState);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mPresenter.attachView(this);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser) {
+            mPresenter.checkResourceReady(mAppResource.appid);
+        }
+        super.setUserVisibleHint(isVisibleToUser);
+    }
+
     protected void initArgs(Bundle savedInstanceState) {
         mComponentName = ModuleName.PAYMENT_MAIN;
 
         if (savedInstanceState == null) {
             Bundle args = getArguments();
-            appResource = args.getParcelable("appResource");
+            mAppResource = args.getParcelable("appResource");
             mLaunchOptions = args.getBundle("launchOptions");
         } else {
-            appResource = savedInstanceState.getParcelable("appResource");
+            mAppResource = savedInstanceState.getParcelable("appResource");
             mLaunchOptions = savedInstanceState.getBundle("launchOptions");
         }
 
@@ -204,15 +226,15 @@ public class ExternalReactFragment extends ReactBaseFragment {
         buildLaunchOptions(mLaunchOptions);
 
         Timber.d("Starting module: %s", mComponentName);
-        Timber.d("appResource [appid: %d - appname: %s]", appResource == null ? 0 : appResource.appid,
-                appResource == null ? "" : appResource.appname);
+        Timber.d("mAppResource [appid: %d - appname: %s]", mAppResource == null ? 0 : mAppResource.appid,
+                mAppResource == null ? "" : mAppResource.appname);
     }
 
     private void buildLaunchOptions(Bundle launchOption) {
-        if (appResource != null) {
-            if (appResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
+        if (mAppResource != null) {
+            if (mAppResource.appid == RECHARGE_MONEY_PHONE_APP_ID) {
                 launchOption.putString("user_phonenumber", String.valueOf(mUser.phonenumber));
-            } else if (appResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
+            } else if (mAppResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
                 launchOption.putString("url", BuildConfig.APP22_URL);
             }
         }
@@ -234,13 +256,24 @@ public class ExternalReactFragment extends ReactBaseFragment {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        mPresenter.detachView();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        mPresenter.destroy();
+        super.onDestroy();
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (appResource != null) {
-            outState.putParcelable("appResource", appResource);
+        if (mAppResource != null) {
+            outState.putParcelable("appResource", mAppResource);
         }
 
         outState.putBundle("launchOptions", mLaunchOptions);
@@ -252,4 +285,31 @@ public class ExternalReactFragment extends ReactBaseFragment {
         handleException(event.getInnerException());
     }
 
+    @Override
+    public void startReactApplication() {
+        Timber.d("startReactApplication ");
+        DialogHelper.closeAllDialog();
+        super.startReactApplication();
+    }
+
+    public void showWaitingDownloadApp() {
+        DialogHelper.showCustomDialog(getActivity(),
+                getActivity().getString(R.string.application_downloading),
+                getActivity().getString(R.string.txt_close),
+                SweetAlertDialog.NORMAL_TYPE,
+                null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadAppEvent(DownloadAppEvent event) {
+        Timber.d("onDownloadAppEvent appId[%s] result[%s]",
+                event.mDownloadInfo.appid, 
+                event.isDownloadSuccess);
+        if (!event.isDownloadSuccess || event.mDownloadInfo == null) {
+            return;
+        }
+        if (event.mDownloadInfo.appid == mAppResource.appid) {
+            mPresenter.checkResourceReadyWithoutDownload(mAppResource.appid);
+        }
+    }
 }

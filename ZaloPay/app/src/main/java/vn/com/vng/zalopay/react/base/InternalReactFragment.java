@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 
 /**
  * Created by hieuvm on 2/22/17.
+ * *
  */
 
 public class InternalReactFragment extends ReactBaseFragment {
@@ -153,6 +154,12 @@ public class InternalReactFragment extends ReactBaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initArgs(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        startReactApplication();
     }
 
     public UserComponent getUserComponent() {

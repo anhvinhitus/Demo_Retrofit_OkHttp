@@ -27,6 +27,7 @@ import timber.log.Timber;
 
 /**
  * Created by hieuvm on 2/22/17.
+ * *
  */
 
 public abstract class ReactBaseFragment extends Fragment implements DefaultHardwareBackBtnHandler, PermissionAwareActivity,
@@ -91,12 +92,14 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
         super.onActivityCreated(savedInstanceState);
         nativeInstanceManager().setActivityContext(getActivity());
         mReactInstanceManager = nativeInstanceManager().acquireReactInstanceManager(this, mLifecycleState);
+    }
+
+    protected void startReactApplication() {
         mReactRootView.startReactApplication(mReactInstanceManager, getMainComponentName(), getLaunchOptions());
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (mReactInstanceManager != null) {
             mReactInstanceManager.onActivityResult(requestCode, resultCode, data);
         }

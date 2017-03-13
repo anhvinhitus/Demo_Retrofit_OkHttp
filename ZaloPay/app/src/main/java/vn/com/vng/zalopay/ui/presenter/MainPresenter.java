@@ -28,6 +28,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;

@@ -265,17 +265,23 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
-    public Observable<Boolean> existResource(long appId) {
+    public Observable<Boolean> existResource(long appId, boolean downloadIfNeed) {
         return makeObservable(() -> {
             AppResourceEntity entity = mLocalStorage.get(appId);
             Timber.d("existResource appId [%s] state [%s]", appId, entity.stateDownload);
             boolean downloadSuccess = (entity.stateDownload >= DownloadState.STATE_SUCCESS);
-            if (!downloadSuccess) {
-                startDownloadService(Collections.singletonList(entity));
+            if (!downloadSuccess && downloadIfNeed) {
+                startDownloadService(Collections.singletonList(entity), null);
             }
             return downloadSuccess;
         });
     }
+
+    @Override
+    public Observable<Boolean> existResource(long appId) {
+        return existResource(appId, true);
+    }
+
 
     interface DownloadState {
         int STATE_FAIL = -1;

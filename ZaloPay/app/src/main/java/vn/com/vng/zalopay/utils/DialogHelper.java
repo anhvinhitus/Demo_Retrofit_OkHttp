@@ -303,4 +303,8 @@ public class DialogHelper {
         });
         return mDialog;
     }
+
+    public static void closeAllDialog() {
+        DialogManager.closeAllDialog();
+    }
 }
