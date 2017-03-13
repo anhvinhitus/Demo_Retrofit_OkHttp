@@ -27,7 +27,6 @@ import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.util.BusComponent;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
@@ -41,7 +40,6 @@ import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 
-import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
 import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.Constants;
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
@@ -89,12 +87,12 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
+        //  BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
     }
 
     private void unregisterEvent() {
         mEventBus.unregister(this);
-        BusComponent.unregister(this);
+        // BusComponent.unregister(this);
     }
 
     @Override
@@ -305,18 +303,25 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mView.hideNetworkError();
     }
 
-   /* @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationUpdated(NotificationChangeEvent event) {
         Timber.d("on Notification updated state %s", event.isRead());
         if (!event.isRead()) {
             getTotalNotification(0);
         }
-    }*/
+    }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onReadNotify(ReadNotifyEvent event) {
         Timber.d("onReadNotify");
         getTotalNotification(0);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBalanceChangeEvent(ChangeBalanceEvent event) {
+        if (mView != null) {
+            mView.setBalance(event.balance);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -376,14 +381,13 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         return mNewListApp;
     }
 
-    public int getHeightViewBottomView(View pTopView, int pNumberItemView, int pNumberApp)
-    {
-        double  heightItem = pTopView.getHeight()/2;
-        int     numberRow = (int) Math.ceil((pNumberItemView / (double)pNumberApp));
+    public int getHeightViewBottomView(View pTopView, int pNumberItemView, int pNumberApp) {
+        double heightItem = pTopView.getHeight() / 2;
+        int numberRow = (int) Math.ceil((pNumberItemView / (double) pNumberApp));
         return (int) (heightItem * numberRow);
     }
 
-    private class ComponentSubscriber extends DefaultSubscriber<Object> {
+   /* private class ComponentSubscriber extends DefaultSubscriber<Object> {
         @Override
         public void onNext(Object event) {
             if (event instanceof ChangeBalanceEvent) {
@@ -396,5 +400,5 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                 }
             }
         }
-    }
+    }*/
 }

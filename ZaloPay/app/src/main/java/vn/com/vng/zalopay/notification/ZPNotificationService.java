@@ -16,8 +16,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -30,7 +28,6 @@ import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
-import vn.com.vng.zalopay.data.util.BusComponent;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
@@ -49,8 +46,6 @@ import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-
-import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
 
 public class ZPNotificationService implements OnReceiverMessageListener {
 
@@ -127,12 +122,12 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
+    //    BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
     }
 
     private void unregisterEvent() {
         mEventBus.unregister(this);
-        BusComponent.unregister(this);
+      //  BusComponent.unregister(this);
     }
 
     @Override
@@ -327,7 +322,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         mNotificationHelper.closeNotificationSystem();
     }
 
-   /* @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationUpdated(NotificationChangeEvent event) {
         Timber.d("on Notification updated %s", event.isRead());
         if (mNotificationHelper == null) {
@@ -337,7 +332,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         if (!event.isRead()) {
             mNotificationHelper.showNotificationSystem();
         }
-    }*/
+    }
 
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
@@ -391,7 +386,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         }
     }
 
-    private class ComponentSubscriber extends DefaultSubscriber<Object> {
+  /*  private class ComponentSubscriber extends DefaultSubscriber<Object> {
         @Override
         public void onNext(Object event) {
             if (event instanceof NotificationChangeEvent) {
@@ -402,5 +397,5 @@ public class ZPNotificationService implements OnReceiverMessageListener {
                 }
             }
         }
-    }
+    }*/
 }
