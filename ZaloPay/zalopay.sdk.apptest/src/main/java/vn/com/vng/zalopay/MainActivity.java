@@ -584,50 +584,14 @@ public class MainActivity extends ActionBarActivity implements Callback {
 
         findViewById(R.id.btn).setOnClickListener(onClickListener);
         findViewById(R.id.buttonGetAccessToken).setOnClickListener(onGetAccessTockenListener);
-
-        Constants.setEnumEnvironment(Constants.HostType.SANDBOX);
-
-        OkHttpClient.Builder httpClient = new OkHttpClient().newBuilder();
-
-        long apiReadTimeout = Constants.API_READ_REQUEST_TIMEOUT;
-        long apiConnectTimeout = Constants.API_CONNECTING_REQUEST_TIMEOUT;
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        httpClient.readTimeout(apiReadTimeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(apiReadTimeout, TimeUnit.MILLISECONDS)
-                .connectTimeout(apiConnectTimeout, TimeUnit.MILLISECONDS);
-
-        httpClient.addInterceptor(logging);
-
-        httpClient.addNetworkInterceptor(new StethoInterceptor());
-
-        WalletSDKApplication.setHttpClient(httpClient.build());
-        //use for download resource.
-        OkHttpClient.Builder httpClientLonger = new OkHttpClient().newBuilder();
-
-        apiReadTimeout = Constants.API_PLATFORM_TIMEOUT;
-        apiConnectTimeout = Constants.API_PLATFORM_TIMEOUT;
-
-        httpClientLonger.readTimeout(apiReadTimeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(apiReadTimeout, TimeUnit.MILLISECONDS)
-                .connectTimeout(apiConnectTimeout, TimeUnit.MILLISECONDS);
-
-        httpClientLonger.addInterceptor(logging);
-
-        httpClient.addNetworkInterceptor(new StethoInterceptor());
-
-        WalletSDKApplication.setHttpClientTimeoutLonger(httpClientLonger.build());
-
         getAccessTocken();
 
     }
 
     private void getAccessTocken() {
         //mUrl = "https://zalopay.com.vn/um/";
-        //mUrl = "https://stg.zalopay.com.vn/um/";
-        mUrl = "https://sandbox.zalopay.com.vn/um/";
+        mUrl = "https://stg.zalopay.com.vn/um/";
+        //mUrl = "https://sandbox.zalopay.com.vn/um/";
 
         mServiceAPI = RetrofitSetup.createService(ServiceAPI.class);
         //mCallBack = mServiceAPI.getAccessToken("1",editTextZaloUserID.getText().toString(),"EDjnd71KeIDOznRJNbBpIc749RuJS-DC9Ciakc5QbpSUvLIv1K3PEoZP3DOlSTieMimQv1LEaIfltoAb5cpY8GF9K_0NIRGR6RbXxs1KenmAw1N6TKlsKaUW2CvyFBuyUu9Zt7KziI8RWdBIBotaBYVh3k462j5z98TuZp0_s3zfsq782G2DAKVXRg5aBumu6OjClnHAXb1kutkvQJwwDrpP8P9y6lGm0emae4icwXrMi4tR8YYX2ZM-GxA0MUDJYTPaYeBfNpFAOw-kjh5_JyS5mREaodbPiMx7iF7841lzEBNdaU1W3rvP9gItQ4fmT_Sb");

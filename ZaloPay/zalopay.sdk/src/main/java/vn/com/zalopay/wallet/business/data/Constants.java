@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.business.data;
 
+import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+
 public class Constants {
     public static final String SDK_VERSION = "1.0.17";
     public static final String COMMA = ",";
@@ -82,8 +84,6 @@ public class Constants {
     public static final int INPUT_INVALID = -1;
     public static final int REQUIRE_PIN = 1;
     public static final int REQUIRE_OTP = 2;
-    public static boolean IS_RELEASE = false;
-    public static boolean IS_DEV = !IS_RELEASE;
     public static int PAYMENT_INIT = 1;
     public static int INPUT_CARDINFO_PHARSE = 2;
     public static int ORDER_SUBMIT = 3;
@@ -94,24 +94,9 @@ public class Constants {
     public static int RESULT_PHARSE = 8;
     public static int UNDEFINE = 9;
     public static String TRUE = "true";
-    private static HostType mEnumEnvironment = HostType.LIVE;
-
-    public static void setEnumEnvironment(HostType pEnvironment) {
-        mEnumEnvironment = pEnvironment;
-
-        if (mEnumEnvironment == HostType.LIVE) {
-            IS_RELEASE = true;
-            IS_DEV = false;
-
-            return;
-        }
-        //for testing,when build release must remove them
-        IS_RELEASE = false;
-        IS_DEV = true;
-    }
 
     public static String getUrl() {
-        switch (mEnumEnvironment) {
+        switch (WalletSDKApplication.getHostType()) {
             case LIVE:
                 return "https://zalopay.com.vn/";
 

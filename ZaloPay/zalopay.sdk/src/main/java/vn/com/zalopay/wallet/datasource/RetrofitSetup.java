@@ -7,6 +7,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 import vn.com.zalopay.wallet.utils.Log;
 
 public class RetrofitSetup {
@@ -40,7 +41,7 @@ public class RetrofitSetup {
                     .writeTimeout(Constants.API_READ_REQUEST_TIMEOUT, TimeUnit.MILLISECONDS)
                     .connectTimeout(Constants.API_CONNECTING_REQUEST_TIMEOUT, TimeUnit.MILLISECONDS);
 
-            if (Constants.IS_DEV) {
+            if (!WalletSDKApplication.isReleaseBuild()) {
                 Log.d("createService", "=====creating new httpClient======");
 
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -52,7 +53,7 @@ public class RetrofitSetup {
         }
 
 
-        if (Constants.IS_DEV) {
+        if (!WalletSDKApplication.isReleaseBuild()) {
             Log.d("createService", "connect timeout " + httpClient.connectTimeoutMillis() + " readtimeout " + httpClient.readTimeoutMillis() + " writetimeout " + httpClient.writeTimeoutMillis());
         }
 

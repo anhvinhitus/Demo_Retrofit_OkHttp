@@ -80,8 +80,7 @@ public class StorageUtil {
                 f.mkdirs();
             }
 
-            if (Constants.IS_DEV)
-                Log.d("===prepareUnzipFolder===", "folder to extract resource file :" + unzipFolder + ", available size : " + getAvailableMemorySize(unzipFolder));
+            Log.d("===prepareUnzipFolder===", "folder to extract resource file :" + unzipFolder + ", available size : " + getAvailableMemorySize(unzipFolder));
 
             return unzipFolder;
 
@@ -109,8 +108,7 @@ public class StorageUtil {
                 }
             }
 
-            if (Constants.IS_DEV)
-                Log.d("===prepareUnzipFolder===", "folder to extract resource file :" + unzipFolder + ",available size : " + getAvailableMemorySize(unzipFolder));
+            Log.d("===prepareUnzipFolder===", "folder to extract resource file :" + unzipFolder + ",available size : " + getAvailableMemorySize(unzipFolder));
 
             return unzipFolder;
 
