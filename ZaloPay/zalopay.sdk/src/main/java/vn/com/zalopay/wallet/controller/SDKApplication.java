@@ -19,6 +19,7 @@ import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
