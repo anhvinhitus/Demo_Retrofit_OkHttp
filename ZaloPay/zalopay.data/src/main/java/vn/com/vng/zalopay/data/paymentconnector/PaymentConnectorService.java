@@ -1,16 +1,21 @@
 package vn.com.vng.zalopay.data.paymentconnector;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.LongSparseArray;
 
+import java.io.IOException;
 import java.util.LinkedList;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
+import vn.com.vng.zalopay.data.ws.exception.WriteSocketException;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
@@ -25,11 +30,16 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
     private Connection mPaymentService;
     private final LongSparseArray<PaymentConnectorCallback> mPaymentCallBackArray;
     private final LinkedList<PaymentRequest> mRequestQueue;
+    private final Context mContext;
+    private long mCurrentRequestId;
 
-    public PaymentConnectorService(Connection service) {
+    private boolean mRunning;
+
+    public PaymentConnectorService(Context context, Connection service) {
         this.mPaymentService = service;
         this.mPaymentCallBackArray = new LongSparseArray<>();
         this.mRequestQueue = new LinkedList<>();
+        this.mContext = context;
         this.mPaymentService.addReceiverListener(this);
     }
 
@@ -78,6 +88,24 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
         }
     }
 
+    @Override
+    public void onError(Throwable t) {
+        Timber.d(t, "receiver error from connector");
+
+        if (!(t instanceof WriteSocketException)) {
+            return;
+        }
+
+        if (mCurrentRequestId <= 0) {
+            return;
+        }
+
+        PaymentConnectorCallback callback = findCallbackById(mCurrentRequestId);
+        if (callback != null) {
+            callback.onFailure((WriteSocketException) t);
+        }
+    }
+
     private void handleResult(PaymentRequestData response) {
         PaymentConnectorCallback callback = findCallbackById(response.requestid);
         if (callback == null) {
@@ -89,8 +117,6 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
         removeCallback(response.requestid);
         callback.onResult(response);
     }
-
-    private boolean mRunning;
 
     private void executeNext() {
 
@@ -111,7 +137,10 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
                 break;
             }
 
+            mCurrentRequestId = request.requestId;
+
             if (!mPaymentService.isConnected() || !mPaymentService.isAuthentication()) {
+                failure(request);
                 mRunning = false;
                 break;
             }
@@ -120,10 +149,22 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
                 mRequestQueue.poll();
                 continue;
             }
+
             Timber.d("about to send request message to server");
-            mPaymentService.send(transform(request));
+            boolean result = mPaymentService.send(transform(request));
             mRunning = false;
             mRequestQueue.poll();
+        }
+    }
+
+    private void failure(PaymentRequest request) {
+        if (NetworkHelper.isNetworkAvailable(mContext)) {
+            return;
+        }
+
+        PaymentConnectorCallback callback = findCallbackById(request.requestId);
+        if (callback != null) {
+            callback.onFailure(new IOException("No network connect"));
         }
     }
 

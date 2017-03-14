@@ -28,6 +28,9 @@ public abstract class Connection {
         Connected
     }
 
+    static final int MESSAGE_POST_RESULT = 1;
+    static final int MESSAGE_POSt_ERROR = 2;
+
     public static final int TYPE_FIELD_LENGTH = 1;
     public static final int LENGTH_FIELD_LENGTH = 4;
     public static final int HEADER_LENGTH = TYPE_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
@@ -77,7 +80,7 @@ public abstract class Connection {
     Message postResult(Event message) {
 
         Message uiMsg = new Message();
-        uiMsg.what = message.msgType;
+        uiMsg.what = MESSAGE_POST_RESULT;
         uiMsg.obj = message;
 
         if (messageHandler != null) {
@@ -86,13 +89,35 @@ public abstract class Connection {
         return uiMsg;
     }
 
+    Message postError(Throwable throwable) {
+        Message uiMsg = new Message();
+        uiMsg.what = MESSAGE_POSt_ERROR;
+        uiMsg.obj = throwable;
+
+        if (messageHandler != null) {
+            messageHandler.sendMessage(uiMsg);
+        }
+        return uiMsg;
+    }
+
+
+    private void onErrorExecute(Throwable t) {
+        try {
+            for (int i = listCallBack.size() - 1; i >= 0; i--) {
+                listCallBack.get(i).onError(t);
+            }
+        } catch (Exception ex) {
+            Timber.w(ex);
+        }
+    }
+
     private void onPostExecute(Event event) {
         try {
             for (int i = listCallBack.size() - 1; i >= 0; i--) {
                 listCallBack.get(i).onReceiverEvent(event);
             }
         } catch (Exception ex) {
-            Timber.w(ex, "exception : ");
+            Timber.w(ex);
         }
     }
 
@@ -113,8 +138,19 @@ public abstract class Connection {
 
         @Override
         public void handleMessage(Message msg) {
-            if (mConnection.get() != null) {
-                mConnection.get().onPostExecute((Event) msg.obj);
+
+            Connection connection = mConnection.get();
+            if (connection == null) {
+                return;
+            }
+
+            switch (msg.what) {
+                case MESSAGE_POST_RESULT:
+                    connection.onPostExecute((Event) msg.obj);
+                    break;
+                case MESSAGE_POSt_ERROR:
+                    connection.onErrorExecute((Throwable) msg.obj);
+                    break;
             }
         }
     }

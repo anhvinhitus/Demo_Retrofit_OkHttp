@@ -7,4 +7,6 @@ import vn.com.vng.zalopay.data.ws.model.Event;
  */
 public interface OnReceiverMessageListener {
     void onReceiverEvent(Event event);
+
+    void onError(Throwable t);
 }

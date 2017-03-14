@@ -209,6 +209,10 @@ public class ZPNotificationService implements OnReceiverMessageListener, Notific
         }
     }
 
+    @Override
+    public void onError(Throwable t) {
+        //empty
+    }
 
     private Subscription mTimeoutRecoverySubscription;
 

@@ -17,6 +17,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.ws.exception.WriteSocketException;
 
 /**
  * Created by huuhoa on 12/20/16.
@@ -199,7 +200,7 @@ class SSLClient implements SocketClient {
         return body;
     }
 
-    private void writeData(byte[] data) {
+    private boolean writeData(byte[] data) {
         try {
 
             if (mSslSocket == null) {
@@ -221,16 +222,19 @@ class SSLClient implements SocketClient {
             try {
                 mSslSocket.getOutputStream().write(data);
                 mSslSocket.getOutputStream().flush();
+                return true;
             } catch (Throwable ex) {
                 Timber.w(ex, "Exception while writing data to SSL socket");
                 if (mInputStream != null) {
                     mInputStream.close();
                 }
                 mSslSocket.close();
-                postErrorEvent(ex);
+                postErrorEvent(new WriteSocketException(ex));
+                return false;
             }
         } catch (Throwable e) {
-            postErrorEvent(e);
+            postErrorEvent(new WriteSocketException(e));
+            return false;
         }
     }
 

@@ -395,11 +395,7 @@ public class WsConnection extends Connection {
             mState = Connection.State.Disconnected;
             mIsAuthenSuccess = false;
 
-            if (e instanceof SocketTimeoutException) {
-//            } else if (e instanceof ConnectTimeoutException) {
-            } else if (e instanceof ConnectException) {
-            } else if (e instanceof UnknownHostException) {
-            }
+            postError(e);
 
             if (mNextConnectionState == NextState.RETRY_CONNECT) {
                 scheduleReconnect();

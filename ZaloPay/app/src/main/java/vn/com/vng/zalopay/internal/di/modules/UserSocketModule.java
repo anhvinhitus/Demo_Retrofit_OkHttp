@@ -57,11 +57,11 @@ public class UserSocketModule {
     @Provides
     @UserScope
     @Named("retrofitConnector")
-    Retrofit providesRetrofitConnector(HttpUrl baseUrl,
+    Retrofit providesRetrofitConnector(Context context, HttpUrl baseUrl,
                                        CallAdapter.Factory callAdapter,
                                        Converter.Factory convertFactory,
                                        Connection connection) {
-        PaymentConnectorService connectorService = new PaymentConnectorService(connection);
+        PaymentConnectorService connectorService = new PaymentConnectorService(context, connection);
 
         return new Retrofit.Builder()
                 .addConverterFactory(convertFactory)
