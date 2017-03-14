@@ -19,6 +19,13 @@ enum OSType {
 	WINDOW_PHONE = 3;
 }
 
+// Source Type Notification message
+// Zalo Pay: 2.10
+enum SourceType {
+	SEND = 1;
+	RESEND = 2;
+}
+
 // Define type of message that client sends to server
 // Zalo Pay: 2.0
 enum MessageType {
