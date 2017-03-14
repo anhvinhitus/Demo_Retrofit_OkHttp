@@ -11,8 +11,12 @@ public class SDKConfiguration {
         this.mConfigBuilder = pConfigBuilder;
     }
 
-    public static Builder builder() {
+    public static Builder newBuilder() {
         return new Builder();
+    }
+
+    public Builder getBuilder() {
+        return mConfigBuilder;
     }
 
     public OkHttpClient getHttpClient() {
@@ -31,13 +35,13 @@ public class SDKConfiguration {
         return mConfigBuilder.isReleaseBuild();
     }
 
-    public String getBaseHostUrl() {
-        return mConfigBuilder.getBaseHostUrl();
+    public Constants.HostType getHostType() {
+        return mConfigBuilder.getEnumEnvironment();
     }
 
     public static class Builder {
         protected boolean mReleaseBuild;
-        protected String mBaseHostUrl;
+        protected Constants.HostType mEnumEnvironment;
         /***
          * this http client get from app, with connect timeout : read timeout = 10ms:5ms
          */
@@ -90,12 +94,12 @@ public class SDKConfiguration {
             return this;
         }
 
-        public String getBaseHostUrl() {
-            return mBaseHostUrl;
+        public Constants.HostType getEnumEnvironment() {
+            return mEnumEnvironment;
         }
 
-        public Builder setBaseHostUrl(String pBaseHostUrl) {
-            mBaseHostUrl = pBaseHostUrl;
+        public Builder setHostType(Constants.HostType pHostType) {
+            mEnumEnvironment = pHostType;
             return this;
         }
 

@@ -17,7 +17,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.ws.exception.WriteSocketException;
+import vn.com.vng.zalopay.data.exception.WriteSocketException;
 
 /**
  * Created by huuhoa on 12/20/16.

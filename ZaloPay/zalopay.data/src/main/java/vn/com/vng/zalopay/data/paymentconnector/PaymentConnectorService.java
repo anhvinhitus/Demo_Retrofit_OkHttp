@@ -9,37 +9,36 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
-import vn.com.vng.zalopay.data.ws.exception.WriteSocketException;
+import vn.com.vng.zalopay.data.exception.WriteSocketException;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
-import vn.com.vng.zalopay.domain.model.User;
 
 /**
  * Created by hieuvm on 3/8/17.
+ *
  */
 
 public class PaymentConnectorService implements OnReceiverMessageListener {
 
-    private Connection mPaymentService;
+    private final Connection mPaymentService;
     private final LongSparseArray<PaymentConnectorCallback> mPaymentCallBackArray;
     private final LinkedList<PaymentRequest> mRequestQueue;
     private final Context mContext;
-    private long mCurrentRequestId;
 
+    private long mCurrentRequestId;
     private boolean mRunning;
 
     public PaymentConnectorService(Context context, Connection service) {
-        this.mPaymentService = service;
         this.mPaymentCallBackArray = new LongSparseArray<>();
         this.mRequestQueue = new LinkedList<>();
         this.mContext = context;
+        this.mPaymentService = service;
         this.mPaymentService.addReceiverListener(this);
     }
 
@@ -139,7 +138,8 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
 
             mCurrentRequestId = request.requestId;
 
-            if (!mPaymentService.isConnected() || !mPaymentService.isAuthentication()) {
+            if (!mPaymentService.isConnected()
+                    || !mPaymentService.isAuthentication()) {
                 failure(request);
                 mRunning = false;
                 break;

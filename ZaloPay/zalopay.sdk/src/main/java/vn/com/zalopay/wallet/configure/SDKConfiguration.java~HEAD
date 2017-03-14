@@ -4,10 +4,10 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.business.data.Constants;
 
-public class Configuration {
+public class SDKConfiguration {
     protected Builder mConfigBuilder;
 
-    public Configuration(Builder pConfigBuilder) {
+    public SDKConfiguration(Builder pConfigBuilder) {
         this.mConfigBuilder = pConfigBuilder;
     }
 
@@ -31,13 +31,13 @@ public class Configuration {
         return mConfigBuilder.isReleaseBuild();
     }
 
-    public Constants.HostType getHostType() {
-        return mConfigBuilder.getEnumEnvironment();
+    public String getBaseHostUrl() {
+        return mConfigBuilder.getBaseHostUrl();
     }
 
     public static class Builder {
         protected boolean mReleaseBuild;
-        protected Constants.HostType mEnumEnvironment;
+        protected String mBaseHostUrl;
         /***
          * this http client get from app, with connect timeout : read timeout = 10ms:5ms
          */
@@ -67,6 +67,11 @@ public class Configuration {
             return mHttpClientTimeoutLonger;
         }
 
+        public Builder setHttpClientTimeoutLonger(OkHttpClient pOkHttpClient) {
+            mHttpClientTimeoutLonger = pOkHttpClient;
+            return this;
+        }
+
         public Retrofit getRetrofit() {
             return mRetrofit;
         }
@@ -85,22 +90,17 @@ public class Configuration {
             return this;
         }
 
-        public Constants.HostType getEnumEnvironment() {
-            return mEnumEnvironment;
+        public String getBaseHostUrl() {
+            return mBaseHostUrl;
         }
 
-        public Builder setHttpClientLongTimeout(OkHttpClient pOkHttpClient) {
-            mHttpClientTimeoutLonger = pOkHttpClient;
+        public Builder setBaseHostUrl(String pBaseHostUrl) {
+            mBaseHostUrl = pBaseHostUrl;
             return this;
         }
 
-        public Builder setHostType(Constants.HostType pHostType) {
-            mEnumEnvironment = pHostType;
-            return this;
-        }
-
-        public Configuration build() {
-            return new Configuration(this);
+        public SDKConfiguration build() {
+            return new SDKConfiguration(this);
         }
     }
 }
