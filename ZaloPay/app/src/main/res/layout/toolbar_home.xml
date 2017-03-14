@@ -1,0 +1,36 @@
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary"
+    android:minHeight="?attr/actionBarSize"
+    android:theme="@style/Toolbar"
+    app:contentInsetLeft="16dp"
+    app:contentInsetStart="16dp"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <TextView
+        android:id="@+id/txtTitle"
+        style="@style/Toolbar.TitleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/spacing.small"
+        android:visibility="visible"
+        tools:text="@string/title.activity.profile" />
+
+    <EditText
+        android:id="@+id/edtSearch"
+        style="@style/Toolbar.SearchText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/spacing.small"
+        android:background="@color/white_transparent_2"
+        android:drawablePadding="@dimen/spacing.small"
+        android:drawableRight="@drawable/ic_search"
+        android:hint="@string/search"
+        android:padding="@dimen/spacing.small.t"
+        android:visibility="gone" />
+
+</android.support.v7.widget.Toolbar>

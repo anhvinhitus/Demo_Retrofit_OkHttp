@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context="vn.com.vng.zalopay.ui.activity.HomeActivity">
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar_home" />
 
     <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
         android:id="@+id/pager"

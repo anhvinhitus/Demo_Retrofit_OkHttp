@@ -191,6 +191,7 @@ public class ExternalReactFragment extends ReactBaseFragment implements IExterna
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initArgs(savedInstanceState);
+
     }
 
     @Override
