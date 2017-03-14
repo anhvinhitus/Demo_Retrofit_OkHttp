@@ -15,6 +15,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -51,6 +52,13 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         resetCountRetry();
     }
 
+    public DataRepository(Retrofit pRetrofit) {
+        super();
+        createRetrofitService(pRetrofit);
+        mTempCallBack = new ArrayList<>();
+        resetCountRetry();
+    }
+
     public static DataRepository shareInstance() {
         if (DataRepository._object == null) {
             DataRepository._object = new DataRepository(SDKApplication.getHttpClient());
@@ -61,6 +69,18 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
 
     public static DataRepository newInstance() {
         return new DataRepository(SDKApplication.getHttpClient());
+    }
+
+    public static DataRepository newInstance(Retrofit pRetrofit)
+    {
+        if(pRetrofit != null)
+        {
+            return new DataRepository(pRetrofit);
+        }
+        else
+        {
+            return new DataRepository(WalletSDKApplication.getHttpClient());
+        }
     }
 
     /***
@@ -78,6 +98,11 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
 
     private void createRetrofitService(OkHttpClient pHttpClient) {
         mDataSource = RetrofitSetup.createService(pHttpClient, IData.class);
+    }
+
+    private void createRetrofitService(Retrofit pRetrofit)
+    {
+        mDataSource = RetrofitSetup.createServiceFromRetrofit(pRetrofit,IData.class);
     }
 
     public void cancelRequest() {

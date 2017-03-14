@@ -14,6 +14,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DChannelMapApp;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
+import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.GetAppInfoImpl;
@@ -207,7 +208,7 @@ public class GetAppInfo extends BaseRequest<DAppInfoResponse> {
     protected void doRequest() {
         try {
             Log.d(this, "===Begin getting info of app ID:===" + appID);
-            DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).getData(new GetAppInfoImpl(), getDataParams());
+            DataRepository.newInstance(WalletSDKApplication.getRetrofit()).setDataSourceListener(getDataSourceListener()).getData(new GetAppInfoImpl(), getDataParams());
         } catch (Exception e) {
             Log.e(this, e);
 

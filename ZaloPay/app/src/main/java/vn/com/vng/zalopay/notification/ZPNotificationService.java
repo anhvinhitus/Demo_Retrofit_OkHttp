@@ -102,7 +102,7 @@ public class ZPNotificationService implements OnReceiverMessageListener, Notific
         unregisterEvent();
 
         mWsConnection.disconnect();
-        mWsConnection.clearReceiverListener();
+        mWsConnection.removeReceiverListener(this);
         mWsConnection.cleanup();
     }
 

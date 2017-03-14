@@ -169,6 +169,7 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
     }
 
     public void cancelAll() {
+        mPaymentService.removeReceiverListener(this);
         synchronized (mRequestQueue) {
             mRequestQueue.clear();
         }
