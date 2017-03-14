@@ -71,7 +71,7 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 
 /**
@@ -269,7 +269,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;
         paymentInfo.userInfo = userInfo;
-        WalletSDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack() {
+        SDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack() {
             @Override
             public void onFinish() {
                 Timber.d("load payment sdk finish");
@@ -376,7 +376,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         paymentInfo.userInfo = new UserInfo();
         paymentInfo.userInfo.zaloPayUserId = mUser.zaloPayId;
         paymentInfo.userInfo.accessToken = mUser.accesstoken;
-        WalletSDKApplication.refreshGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
+        SDKApplication.refreshGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

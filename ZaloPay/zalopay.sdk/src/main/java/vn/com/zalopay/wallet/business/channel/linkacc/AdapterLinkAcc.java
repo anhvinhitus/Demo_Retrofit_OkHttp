@@ -32,7 +32,7 @@ import vn.com.zalopay.wallet.business.entity.linkacc.DResponse;
 import vn.com.zalopay.wallet.business.entity.linkacc.DSubmitBankAcc;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.request.SubmitMapAccount;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
@@ -418,7 +418,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 showProgressBar(false,null); // close process dialog
 
                 //for testing
-                if(!WalletSDKApplication.isReleaseBuild())
+                if(!SDKApplication.isReleaseBuild())
                 {
                     linkAccGuiProcessor.setAccountTest();
                 }

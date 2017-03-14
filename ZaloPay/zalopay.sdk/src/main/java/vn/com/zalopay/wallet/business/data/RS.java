@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.business.data;
 
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.utils.Log;
 
 public class RS {
@@ -29,16 +29,16 @@ public class RS {
     }
 
     public static String getResourceName(int pResourceID) {
-        if (WalletSDKApplication.getInstance() != null) {
-            return WalletSDKApplication.getInstance().getResources().getResourceEntryName(pResourceID);
+        if (SDKApplication.getInstance() != null) {
+            return SDKApplication.getInstance().getResources().getResourceEntryName(pResourceID);
         }
         return null;
     }
 
     private static int get(String pName, String pDef) {
-        if (WalletSDKApplication.getInstance() != null) {
-            int ret = WalletSDKApplication.getInstance().getBaseContext().getResources()
-                    .getIdentifier(pName, pDef, WalletSDKApplication.getInstance().getPackageName());
+        if (SDKApplication.getInstance() != null) {
+            int ret = SDKApplication.getInstance().getBaseContext().getResources()
+                    .getIdentifier(pName, pDef, SDKApplication.getInstance().getPackageName());
             //Log.d("RS", pDef + pName + ret);
             return ret;
         } else {

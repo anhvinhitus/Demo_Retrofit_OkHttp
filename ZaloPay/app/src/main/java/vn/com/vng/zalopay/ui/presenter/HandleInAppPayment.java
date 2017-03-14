@@ -24,7 +24,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -136,7 +136,7 @@ public class HandleInAppPayment {
         userInfo.zaloPayUserId = user.zaloPayId;
         userInfo.accessToken = user.accesstoken;
         paymentInfo.userInfo = userInfo;
-        WalletSDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
+        SDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
     }
 
     public void loadPaymentSdk() {

@@ -4,10 +4,10 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.business.data.Constants;
 
-public class Configuration {
+public class SDKConfiguration {
     protected Builder mConfigBuilder;
 
-    public Configuration(Builder pConfigBuilder) {
+    public SDKConfiguration(Builder pConfigBuilder) {
         this.mConfigBuilder = pConfigBuilder;
     }
 
@@ -89,7 +89,7 @@ public class Configuration {
             return mEnumEnvironment;
         }
 
-        public Builder setHttpClientLongTimeout(OkHttpClient pOkHttpClient) {
+        public Builder setHttpClientTimeoutLonger(OkHttpClient pOkHttpClient) {
             mHttpClientTimeoutLonger = pOkHttpClient;
             return this;
         }
@@ -99,8 +99,8 @@ public class Configuration {
             return this;
         }
 
-        public Configuration build() {
-            return new Configuration(this);
+        public SDKConfiguration build() {
+            return new SDKConfiguration(this);
         }
     }
 }

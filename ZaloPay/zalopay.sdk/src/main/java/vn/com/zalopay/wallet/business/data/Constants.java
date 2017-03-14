@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.business.data;
 
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 public class Constants {
     public static final String SDK_VERSION = "1.0.17";
@@ -96,7 +96,7 @@ public class Constants {
     public static String TRUE = "true";
 
     public static String getUrl() {
-        switch (WalletSDKApplication.getHostType()) {
+        switch (SDKApplication.getHostType()) {
             case LIVE:
                 return "https://zalopay.com.vn/";
 

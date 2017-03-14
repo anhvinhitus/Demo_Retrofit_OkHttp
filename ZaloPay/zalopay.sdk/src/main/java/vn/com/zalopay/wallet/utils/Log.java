@@ -3,13 +3,13 @@ package vn.com.zalopay.wallet.utils;
 import android.text.TextUtils;
 
 import timber.log.Timber;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /***
  * log class
  */
 public class Log {
-    public static final boolean IS_LOG_ENABLE = (WalletSDKApplication.isReleaseBuild()) ? false : true;
+    public static final boolean IS_LOG_ENABLE = (SDKApplication.isReleaseBuild()) ? false : true;
 
     public static final String TAG = "ZALOPAY SDK";
 

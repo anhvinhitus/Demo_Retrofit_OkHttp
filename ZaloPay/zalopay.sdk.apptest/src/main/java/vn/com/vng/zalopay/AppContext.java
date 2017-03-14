@@ -11,8 +11,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.configure.Configuration;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.configure.SDKConfiguration;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /**
  * Created by admin on 9/19/16.
@@ -58,14 +58,14 @@ public class AppContext extends Application {
 
         httpClient.addNetworkInterceptor(new StethoInterceptor());
 
-        Configuration sdkConfig = Configuration.builder()
+        SDKConfiguration sdkConfig = SDKConfiguration.builder()
                 .setHttpClient(httpClient.build())
-                .setHttpClientLongTimeout(httpClientLonger.build())
+                .setHttpClientTimeoutLonger(httpClientLonger.build())
                 .setReleaseBuild(!BuildConfig.DEBUG)
                 .setHostType(Constants.HostType.STAGING)
                 .build();
 
-        WalletSDKApplication.initialize(this,sdkConfig);
+        SDKApplication.initialize(this,sdkConfig);
         Stetho.initializeWithDefaults(this);
     }
 }

@@ -25,7 +25,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
-import vn.com.zalopay.wallet.configure.Configuration;
+import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.datasource.request.BaseRequest;
 import vn.com.zalopay.wallet.datasource.request.RemoveMapCard;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
@@ -38,13 +38,13 @@ import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.StorageUtil;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 
-public class WalletSDKApplication extends Application {
-    protected static Configuration mConfig;
+public class SDKApplication extends Application {
+    protected static SDKConfiguration mConfig;
     protected static Application mApplication = null;
 
-    public static void initialize(Application pApplication, Configuration pConfig) {
-        WalletSDKApplication.mApplication = pApplication;
-        WalletSDKApplication.mConfig = pConfig;
+    public static void initialize(Application pApplication, SDKConfiguration pConfig) {
+        SDKApplication.mApplication = pApplication;
+        SDKApplication.mConfig = pConfig;
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable e) {
@@ -218,7 +218,7 @@ public class WalletSDKApplication extends Application {
      * @param pListener
      */
     public synchronized static void saveCardMap(ZPWPaymentInfo pPaymentInfo, ZPWSaveMapCardListener pListener) {
-        WalletSDKPayment.saveCard(pPaymentInfo, pListener);
+        SDKPayment.saveCard(pPaymentInfo, pListener);
     }
 
     /***

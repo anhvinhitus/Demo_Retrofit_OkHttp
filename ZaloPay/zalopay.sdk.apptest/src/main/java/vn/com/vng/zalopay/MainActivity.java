@@ -12,20 +12,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
-import com.facebook.stetho.okhttp3.StethoInterceptor;
-
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.com.vng.zalopay.util.AppUtils;
 import vn.com.vng.zalopay.util.HMACUtil;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
@@ -38,8 +32,8 @@ import vn.com.zalopay.wallet.business.entity.user.ListUserProfile;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
-import vn.com.zalopay.wallet.controller.WalletSDKPayment;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.merchant.CShareData;
@@ -90,12 +84,12 @@ public class MainActivity extends ActionBarActivity implements Callback {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("WalletSDKPayment.isOpenSdk()=", WalletSDKPayment.isOpenSdk() + "");
-                    Log.e("WalletSDKPayment.canCloseSdk()=", WalletSDKPayment.canCloseSdk() + "");
+                    Log.e("SDKPayment.isOpenSdk()=", SDKPayment.isOpenSdk() + "");
+                    Log.e("SDKPayment.canCloseSdk()=", SDKPayment.canCloseSdk() + "");
 
-                    if (WalletSDKPayment.canCloseSdk()) {
+                    if (SDKPayment.canCloseSdk()) {
                         try {
-                            WalletSDKPayment.closeSdk();
+                            SDKPayment.closeSdk();
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
@@ -122,7 +116,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
 			params.userID = editTextZaloUserID.getText().toString();
 			params.mapCard = mapCard;
 
-			WalletSDKApplication.removeCardMap(params, new ZPWRemoveMapCardListener() {
+			SDKApplication.removeCardMap(params, new ZPWRemoveMapCardListener() {
 				@Override
 				public void onSuccess(DMappedCard mapCard) {
 					Log.e("removeCardMap","===mapCard="+GsonUtils.toJsonString(mapCard));
@@ -365,7 +359,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
 			paymentInfo.userInfo.accessToken = editTextAccessToken.getText().toString();
 
 
-			WalletSDKApplication.refreshGatewayInfo(MainActivity.this, paymentInfo,
+			SDKApplication.refreshGatewayInfo(MainActivity.this, paymentInfo,
 					new ZPWGatewayInfoCallback()
 					{
 
@@ -640,7 +634,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
     }
 
     private void onPay(EPaymentChannel forcedPaymentChannel) {
-        WalletSDKPayment.pay(MainActivity.this, forcedPaymentChannel,
+        SDKPayment.pay(MainActivity.this, forcedPaymentChannel,
                 paymentInfo, new ZPPaymentListener() {
                     @Override
                     public void onComplete(final ZPPaymentResult pPaymentResult) {
@@ -734,7 +728,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
             Log.e("GetAccessToken.onResponse", mJsontest);
 
 
-            WalletSDKApplication.loadGatewayInfo(paymentInfo,
+            SDKApplication.loadGatewayInfo(paymentInfo,
                     new ZPWGatewayInfoCallback() {
 
                         @Override

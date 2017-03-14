@@ -36,7 +36,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 /***
  * payment controller class
  */
-public class WalletSDKPayment {
+public class SDKPayment {
     /**
      * Save card when pay or mapcard finish
      *
@@ -45,7 +45,7 @@ public class WalletSDKPayment {
      */
     public synchronized static void saveCard(ZPWPaymentInfo pPaymentInfo, ZPWSaveMapCardListener pListener) {
         try {
-            if (WalletSDKApplication.getZaloPayContext() == null || pPaymentInfo == null || TextUtils.isEmpty(pPaymentInfo.walletTransID)) {
+            if (SDKApplication.getZaloPayContext() == null || pPaymentInfo == null || TextUtils.isEmpty(pPaymentInfo.walletTransID)) {
                 if (pListener != null)
                     pListener.onError("Dữ liệu không hợp lệ");
                 return;
@@ -165,7 +165,7 @@ public class WalletSDKPayment {
 
         //check where context is end?
         try {
-            WalletSDKApplication.getZaloPayContext();
+            SDKApplication.getZaloPayContext();
 
             GlobalData.getTransactionType();
 
