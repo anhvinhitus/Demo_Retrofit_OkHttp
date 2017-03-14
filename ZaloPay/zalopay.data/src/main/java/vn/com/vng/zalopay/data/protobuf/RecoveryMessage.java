@@ -35,6 +35,8 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
 
   public static final Long DEFAULT_MTUID = 0L;
 
+  public static final Integer DEFAULT_SERVERMESSAGETYPE = 0;
+
   @WireField(
       tag = 1,
       adapter = "com.squareup.wire.ProtoAdapter#BYTES",
@@ -60,16 +62,26 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
   )
   public final Long mtuid;
 
-  public RecoveryMessage(ByteString data, Integer status, Long mtaid, Long mtuid) {
-    this(data, status, mtaid, mtuid, ByteString.EMPTY);
+  /**
+   * enum ServerMessageType, Zalo Pay 2.10
+   */
+  @WireField(
+      tag = 5,
+      adapter = "com.squareup.wire.ProtoAdapter#UINT32"
+  )
+  public final Integer servermessagetype;
+
+  public RecoveryMessage(ByteString data, Integer status, Long mtaid, Long mtuid, Integer servermessagetype) {
+    this(data, status, mtaid, mtuid, servermessagetype, ByteString.EMPTY);
   }
 
-  public RecoveryMessage(ByteString data, Integer status, Long mtaid, Long mtuid, ByteString unknownFields) {
+  public RecoveryMessage(ByteString data, Integer status, Long mtaid, Long mtuid, Integer servermessagetype, ByteString unknownFields) {
     super(ADAPTER, unknownFields);
     this.data = data;
     this.status = status;
     this.mtaid = mtaid;
     this.mtuid = mtuid;
+    this.servermessagetype = servermessagetype;
   }
 
   @Override
@@ -79,6 +91,7 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
     builder.status = status;
     builder.mtaid = mtaid;
     builder.mtuid = mtuid;
+    builder.servermessagetype = servermessagetype;
     builder.addUnknownFields(unknownFields());
     return builder;
   }
@@ -92,7 +105,8 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
         && data.equals(o.data)
         && Internal.equals(status, o.status)
         && Internal.equals(mtaid, o.mtaid)
-        && Internal.equals(mtuid, o.mtuid);
+        && Internal.equals(mtuid, o.mtuid)
+        && Internal.equals(servermessagetype, o.servermessagetype);
   }
 
   @Override
@@ -104,6 +118,7 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
       result = result * 37 + (status != null ? status.hashCode() : 0);
       result = result * 37 + (mtaid != null ? mtaid.hashCode() : 0);
       result = result * 37 + (mtuid != null ? mtuid.hashCode() : 0);
+      result = result * 37 + (servermessagetype != null ? servermessagetype.hashCode() : 0);
       super.hashCode = result;
     }
     return result;
@@ -116,6 +131,7 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
     if (status != null) builder.append(", status=").append(status);
     if (mtaid != null) builder.append(", mtaid=").append(mtaid);
     if (mtuid != null) builder.append(", mtuid=").append(mtuid);
+    if (servermessagetype != null) builder.append(", servermessagetype=").append(servermessagetype);
     return builder.replace(0, 2, "RecoveryMessage{").append('}').toString();
   }
 
@@ -127,6 +143,8 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
     public Long mtaid;
 
     public Long mtuid;
+
+    public Integer servermessagetype;
 
     public Builder() {
     }
@@ -151,12 +169,20 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
       return this;
     }
 
+    /**
+     * enum ServerMessageType, Zalo Pay 2.10
+     */
+    public Builder servermessagetype(Integer servermessagetype) {
+      this.servermessagetype = servermessagetype;
+      return this;
+    }
+
     @Override
     public RecoveryMessage build() {
       if (data == null) {
         throw Internal.missingRequiredFields(data, "data");
       }
-      return new RecoveryMessage(data, status, mtaid, mtuid, super.buildUnknownFields());
+      return new RecoveryMessage(data, status, mtaid, mtuid, servermessagetype, super.buildUnknownFields());
     }
   }
 
@@ -171,6 +197,7 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
           + (value.status != null ? ProtoAdapter.INT32.encodedSizeWithTag(2, value.status) : 0)
           + (value.mtaid != null ? ProtoAdapter.UINT64.encodedSizeWithTag(3, value.mtaid) : 0)
           + (value.mtuid != null ? ProtoAdapter.UINT64.encodedSizeWithTag(4, value.mtuid) : 0)
+          + (value.servermessagetype != null ? ProtoAdapter.UINT32.encodedSizeWithTag(5, value.servermessagetype) : 0)
           + value.unknownFields().size();
     }
 
@@ -180,6 +207,7 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
       if (value.status != null) ProtoAdapter.INT32.encodeWithTag(writer, 2, value.status);
       if (value.mtaid != null) ProtoAdapter.UINT64.encodeWithTag(writer, 3, value.mtaid);
       if (value.mtuid != null) ProtoAdapter.UINT64.encodeWithTag(writer, 4, value.mtuid);
+      if (value.servermessagetype != null) ProtoAdapter.UINT32.encodeWithTag(writer, 5, value.servermessagetype);
       writer.writeBytes(value.unknownFields());
     }
 
@@ -193,6 +221,7 @@ public final class RecoveryMessage extends Message<RecoveryMessage, RecoveryMess
           case 2: builder.status(ProtoAdapter.INT32.decode(reader)); break;
           case 3: builder.mtaid(ProtoAdapter.UINT64.decode(reader)); break;
           case 4: builder.mtuid(ProtoAdapter.UINT64.decode(reader)); break;
+          case 5: builder.servermessagetype(ProtoAdapter.UINT32.decode(reader)); break;
           default: {
             FieldEncoding fieldEncoding = reader.peekFieldEncoding();
             Object value = fieldEncoding.rawProtoAdapter().decode(reader);
