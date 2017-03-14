@@ -18,12 +18,14 @@ import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
+import vn.com.zalopay.wallet.configure.Configuration;
 import vn.com.zalopay.wallet.datasource.request.BaseRequest;
 import vn.com.zalopay.wallet.datasource.request.RemoveMapCard;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
@@ -37,26 +39,12 @@ import vn.com.zalopay.wallet.utils.StorageUtil;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 
 public class WalletSDKApplication extends Application {
-    private static Application mApplication = null;
+    protected static Configuration mConfig;
+    protected static Application mApplication = null;
 
-    /***
-     * this http client get from app, with connect timeout : read timeout = 10ms:5ms
-     */
-    private static OkHttpClient mHttpClient;
-
-    /***
-     * this http client for get platform info and download resource
-     * connect timeout : read timeout = 30ms : 30ms.
-     */
-    private static OkHttpClient mHttpClientTimeoutLonger;
-
-    public static void wrap(Application app) {
-        init(app);
-    }
-
-    private static void init(final Application app) {
-        mApplication = app;
-        // Setup handler for uncaught exceptions.
+    public static void initialize(Application pApplication, Configuration pConfig) {
+        WalletSDKApplication.mApplication = pApplication;
+        WalletSDKApplication.mConfig = pConfig;
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable e) {
@@ -66,15 +54,8 @@ public class WalletSDKApplication extends Application {
     }
 
     private static void handleUncaughtException(Thread thread, Throwable e) {
-        SDKReport.makeReportError(null,e != null ? GsonUtils.toJsonString(e) : "handleUncaughtException e=null");
+        SDKReport.makeReportError(null, e != null ? GsonUtils.toJsonString(e) : "handleUncaughtException e=null");
         Log.e("handleUncaughtException", e != null ? GsonUtils.toJsonString(e) : "error");
-
-        //if(Constants.IS_DEV)
-        //{
-        //NotificationUtils.shareInstance(shareInstance()).notify("Zalo Pay","Ứng dụng không thể xử lý yêu cầu của bạn.\nVui lòng liên hệ hotro@zalopay.vn để được hỗ trợ!",false);
-        //sendLogFile();
-        //}
-
         //System.exit(1); // kill off the crashed app
     }
 
@@ -240,18 +221,19 @@ public class WalletSDKApplication extends Application {
         WalletSDKPayment.saveCard(pPaymentInfo, pListener);
     }
 
+    /***
+     * clear all cache if user use
+     * newer version
+     * @throws Exception
+     */
     private static void checkClearCacheIfHasNewVersion() throws Exception {
-        Log.d("checkClearCacheIfHasNewVersion", "===clearCacheIfHasNewVersion===");
         if (ZPWUtils.isNewVersion()) {
-            Log.d("checkClearCacheIfHasNewVersion", "===clearing banklist===");
             //clear banklist
             SharedPreferencesManager.getInstance().setCheckSumBankList(null);
             SharedPreferencesManager.getInstance().setBankConfigMap(null);
             //clear map card list
-            Log.d("checkClearCacheIfHasNewVersion", "===clearing map card list===");
             SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
             //clear app info
-            Log.d("checkClearCacheIfHasNewVersion", "===clearing app info===");
             SharedPreferencesManager.getInstance().setExpiredTimeAppChannel("1", 0);
             SharedPreferencesManager.getInstance().setExpiredTimeAppChannel("2", 0);
         }
@@ -371,27 +353,22 @@ public class WalletSDKApplication extends Application {
     }
 
     public static OkHttpClient getHttpClient() {
-        return mHttpClient != null ? mHttpClient : null;
-    }
-
-    public static void setHttpClient(OkHttpClient pHttpClient) {
-        mHttpClient = pHttpClient;
+        return mConfig.getHttpClient();
     }
 
     public static OkHttpClient getHttpClientTimeoutLonger() {
-        return mHttpClientTimeoutLonger != null ? mHttpClientTimeoutLonger : null;
+        return mConfig.getHttpClientTimeoutLonger();
     }
 
-    public static void setHttpClientTimeoutLonger(OkHttpClient pHttpClient) {
-        mHttpClientTimeoutLonger = pHttpClient;
+    public static boolean isReleaseBuild() {
+        return mConfig.isReleaseBuild();
+    }
+
+    public static Constants.HostType getHostType() {
+        return mConfig.getHostType();
     }
 
     public static Context getZaloPayContext() throws Exception {
         return mApplication.getApplicationContext();
-    }
-
-    public void onCreate() {
-        super.onCreate();
-        init(this);
     }
 }
