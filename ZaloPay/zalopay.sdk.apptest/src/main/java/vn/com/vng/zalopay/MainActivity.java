@@ -794,7 +794,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
             Log.e("GetAccessToken.onResponse", mJsontest);
 
 
-          /*  SDKApplication.loadGatewayInfo(paymentInfo,
+            SDKApplication.loadGatewayInfo(paymentInfo,
                     new ZPWGatewayInfoCallback() {
 
                         @Override
@@ -817,7 +817,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
                         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
                             Log.e("loadGatewayInfo", "force udpate " + pForceUpdate + ".Need to update new version : " + pVersion + ".Message: " + pMessage);
                         }
-                    });*/
+                    });
 
 
             isFirstLoad = false;

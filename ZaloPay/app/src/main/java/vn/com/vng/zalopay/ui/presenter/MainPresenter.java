@@ -222,7 +222,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
         UserComponent userComponent = AndroidApplication.instance().getUserComponent();
         if (userComponent != null) {
-            WalletSDKApplication.getBuilder().setRetrofit(userComponent.retrofitConnector());
+            SDKApplication.getBuilder().setRetrofit(userComponent.retrofitConnector());
         }
 
         this.loadGatewayInfoPaymentSDK();

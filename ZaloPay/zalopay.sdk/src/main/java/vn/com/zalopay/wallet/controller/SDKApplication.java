@@ -39,13 +39,13 @@ import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.StorageUtil;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 
-public class WalletSDKApplication extends Application {
+public class SDKApplication extends Application {
     protected static SDKConfiguration mConfig;
     protected static Application mApplication = null;
 
     public static void initialize(Application pApplication, SDKConfiguration pConfig) {
-        WalletSDKApplication.mApplication = pApplication;
-        WalletSDKApplication.mConfig = pConfig;
+        SDKApplication.mApplication = pApplication;
+        SDKApplication.mConfig = pConfig;
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable e) {
@@ -363,8 +363,7 @@ public class WalletSDKApplication extends Application {
         return mConfig.getHttpClientTimeoutLonger();
     }
 
-    public static Retrofit getRetrofit()
-    {
+    public static Retrofit getRetrofit() {
         return mConfig.getRetrofit();
     }
 
@@ -376,8 +375,7 @@ public class WalletSDKApplication extends Application {
         return mConfig.getBaseHostUrl();
     }
 
-    public static SDKConfiguration.Builder getBuilder()
-    {
+    public static SDKConfiguration.Builder getBuilder() {
         return mConfig.getBuilder();
     }
 

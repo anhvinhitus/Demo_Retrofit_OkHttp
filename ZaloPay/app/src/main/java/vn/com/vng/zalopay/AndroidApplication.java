@@ -43,7 +43,7 @@ import vn.com.vng.zalopay.service.ZPTrackerGA;
 import vn.com.vng.zalopay.utils.ConfigUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /**
  * Created by AnhHieu on 3/24/16.

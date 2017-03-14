@@ -423,6 +423,12 @@ public class AdapterLinkAcc extends AdapterBase {
                     linkAccGuiProcessor.setAccountTest();
                 }
 
+                //for testing
+               /* if(!SDKApplication.isReleaseBuild())
+                {
+                    linkAccGuiProcessor.setAccountTest();
+                }*/
+
                 mPageCode = PAGE_VCB_LOGIN;
 
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
@@ -436,7 +442,6 @@ public class AdapterLinkAcc extends AdapterBase {
                 } else if (!TextUtils.isEmpty(response.otpimgsrc)) {
                     linkAccGuiProcessor.setCaptchaImgLogin(response.otpimgsrc);
                 }
-
 
                 // set Message
                 if (!TextUtils.isEmpty(response.message)) {

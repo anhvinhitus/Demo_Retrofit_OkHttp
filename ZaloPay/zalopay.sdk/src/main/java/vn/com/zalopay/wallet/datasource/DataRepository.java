@@ -71,15 +71,11 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         return new DataRepository(SDKApplication.getHttpClient());
     }
 
-    public static DataRepository newInstance(Retrofit pRetrofit)
-    {
-        if(pRetrofit != null)
-        {
+    public static DataRepository newInstance(Retrofit pRetrofit) {
+        if (pRetrofit != null) {
             return new DataRepository(pRetrofit);
-        }
-        else
-        {
-            return new DataRepository(WalletSDKApplication.getHttpClient());
+        } else {
+            return new DataRepository(SDKApplication.getHttpClient());
         }
     }
 
@@ -100,9 +96,8 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         mDataSource = RetrofitSetup.createService(pHttpClient, IData.class);
     }
 
-    private void createRetrofitService(Retrofit pRetrofit)
-    {
-        mDataSource = RetrofitSetup.createServiceFromRetrofit(pRetrofit,IData.class);
+    private void createRetrofitService(Retrofit pRetrofit) {
+        mDataSource = RetrofitSetup.createServiceFromRetrofit(pRetrofit, IData.class);
     }
 
     public void cancelRequest() {

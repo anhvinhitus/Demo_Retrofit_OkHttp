@@ -12,7 +12,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /**
  * Created by admin on 9/19/16.
@@ -57,7 +57,6 @@ public class AppContext extends Application {
         httpClientLonger.addInterceptor(logging);
 
         httpClient.addNetworkInterceptor(new StethoInterceptor());
-
         SDKConfiguration sdkConfig = SDKConfiguration.newBuilder()
                 .setHttpClient(httpClient.build())
                 .setHttpClientTimeoutLonger(httpClientLonger.build())
