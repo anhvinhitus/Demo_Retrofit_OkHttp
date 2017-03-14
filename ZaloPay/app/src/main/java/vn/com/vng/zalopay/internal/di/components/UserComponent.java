@@ -2,7 +2,10 @@ package vn.com.vng.zalopay.internal.di.components;
 
 import com.zalopay.apploader.ReactNativeHostable;
 
+import javax.inject.Named;
+
 import dagger.Subcomponent;
+import retrofit2.Retrofit;
 import vn.com.vng.zalopay.account.ui.activities.ChangePinActivity;
 import vn.com.vng.zalopay.account.ui.activities.ProfileActivity;
 import vn.com.vng.zalopay.account.ui.activities.UpdateProfileLevel2Activity;
@@ -114,6 +117,9 @@ public interface UserComponent {
     NotificationHelper notificationHelper();
 
     ReactNativeHostable reactNativeInstanceManager();
+
+    @Named("retrofitConnectorSdk")
+    Retrofit retrofitConnector();
 
     /* inject Fragment */
     void inject(ZaloPayFragment f);

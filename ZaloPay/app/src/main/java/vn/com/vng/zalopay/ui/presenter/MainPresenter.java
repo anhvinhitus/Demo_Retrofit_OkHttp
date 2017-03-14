@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -49,6 +50,7 @@ import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
@@ -217,6 +219,12 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     }
 
     public void initialize() {
+
+        UserComponent userComponent = AndroidApplication.instance().getUserComponent();
+        if (userComponent != null) {
+            WalletSDKApplication.getBuilder().setRetrofit(userComponent.retrofitConnector());
+        }
+
         this.loadGatewayInfoPaymentSDK();
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
         getZaloFriend();

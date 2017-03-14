@@ -56,17 +56,36 @@ public class UserSocketModule {
 
     @Provides
     @UserScope
+    PaymentConnectorCallFactory providesConnectorCallFactory(Context context, Connection connection) {
+        return new PaymentConnectorCallFactory(new PaymentConnectorService(context, connection));
+    }
+
+    @Provides
+    @UserScope
     @Named("retrofitConnector")
-    Retrofit providesRetrofitConnector(Context context, HttpUrl baseUrl,
+    Retrofit providesRetrofitConnector(HttpUrl baseUrl,
                                        CallAdapter.Factory callAdapter,
                                        Converter.Factory convertFactory,
-                                       Connection connection) {
-        PaymentConnectorService connectorService = new PaymentConnectorService(context, connection);
+                                       PaymentConnectorCallFactory callFactory) {
 
         return new Retrofit.Builder()
                 .addConverterFactory(convertFactory)
                 .addCallAdapterFactory(callAdapter)
-                .callFactory(new PaymentConnectorCallFactory(connectorService))
+                .callFactory(callFactory)
+                .baseUrl(baseUrl)
+                .validateEagerly(BuildConfig.DEBUG)
+                .build();
+    }
+
+    @Provides
+    @UserScope
+    @Named("retrofitConnectorSdk")
+    Retrofit providesRetrofitConnectorForSdk(HttpUrl baseUrl,
+                                             Converter.Factory convertFactory,
+                                             PaymentConnectorCallFactory callFactory) {
+        return new Retrofit.Builder()
+                .addConverterFactory(convertFactory)
+                .callFactory(callFactory)
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .build();
