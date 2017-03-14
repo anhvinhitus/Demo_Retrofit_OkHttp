@@ -29,7 +29,9 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
+import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
+import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -216,6 +218,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         ensureAppResourceAvailable();
         getZaloFriend();
         warningRoot();
+        getBalance();
     }
 
     private void fetchBalance() {
@@ -547,4 +550,62 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                 });
         mSubscription.add(subscriptionSuccess);
     }
+
+    // datnt10 13.03.2017 add >>
+    public void getBalance() {
+        Subscription subscription = mBalanceRepository.balance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new HomePresenter.BalanceSubscriber());
+
+        mSubscription.add(subscription);
+    }
+
+    // Temporary class for getting balance value on collapse menu
+    private class BalanceSubscriber extends DefaultSubscriber<Long> {
+        @Override
+        public void onNext(Long aLong) {
+            HomePresenter.this.onGetBalanceSuccess(aLong);
+        }
+    }
+
+    private void onGetBalanceSuccess(Long balance) {
+        Timber.d("onGetBalanceSuccess %s", balance);
+        mView.setBalance(balance);
+    }
+
+//    private class ComponentSubscriber extends DefaultSubscriber<Object> {
+//        @Override
+//        public void onNext(Object event) {
+//            if (event instanceof ChangeBalanceEvent) {
+//                if (mView != null) {
+//                    mView.setBalance(((ChangeBalanceEvent) event).balance);
+//                }
+//            } else if (event instanceof NotificationChangeEvent) {
+//                if (!((NotificationChangeEvent) event).isRead()) {
+//                    getTotalNotification(0);
+//                }
+//            }
+//        }
+//    }
+
+//    public void getTotalNotification(long delay) {
+//        Subscription subscription = mNotificationRepository.totalNotificationUnRead()
+//                .delaySubscription(delay, TimeUnit.MILLISECONDS)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new MainPresenter.NotificationSubscriber());
+//        mSubscription.add(subscription);
+//    }
+//
+//    private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
+//        @Override
+//        public void onNext(Integer integer) {
+//            Timber.d("Got total %s unread notification messages", integer);
+//            if (mView != null) {
+//                mView.setTotalNotify(integer);
+//            }
+//        }
+//    }
+    // datnt10 13.03.2017 add <<
 }

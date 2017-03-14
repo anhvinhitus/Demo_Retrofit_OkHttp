@@ -1,41 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vn.com.vng.zalopay.ui.toolbar.HeaderViewTop xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="35dp"
+    android:layout_height="?attr/actionBarSize"
     android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/header_view_top_search"
+        <RelativeLayout
+            android:id="@+id/header_top_rl_normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <EditText
+                android:id="@+id/header_top_et_search"
+                style="@style/Toolbar.SearchText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/spacing.small"
+                android:layout_toLeftOf="@+id/header_top_rl_notification"
+                android:background="@color/white_transparent_2"
+                android:drawablePadding="@dimen/spacing.small"
+                android:drawableRight="@drawable/ic_search"
+                android:hint="@string/search"
+                android:padding="@dimen/spacing.small.t"
+                android:visibility="visible" />
+
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:id="@+id/header_top_rl_showshow"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_toLeftOf="@+id/header_top_rl_notification"
+                android:visibility="gone">
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
-                    android:src="@drawable/ic_bidv" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_showshow" />
 
-                <EditText
-                    android:layout_width="200dp"
-                    android:layout_height="30dp"
-                    android:background="@android:color/transparent"
-                    android:paddingLeft="35dp"
-                    android:textCursorDrawable="@android:color/darker_gray" />
             </RelativeLayout>
-        </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/header_view_top_another"
+            <RelativeLayout
+                android:id="@+id/header_top_rl_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true">
+
+                <include layout="@layout/notification_menu_item" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/header_top_rl_collapsed"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone">
@@ -68,7 +91,7 @@
                     android:layout_marginRight="10dp"
                     android:src="@drawable/ic_viettinbank" />
             </RelativeLayout>
-        </LinearLayout>
+        </RelativeLayout>
 
     </FrameLayout>
 

@@ -6,6 +6,7 @@
     android:background="?attr/colorPrimary"
     android:minHeight="?attr/actionBarSize"
     android:theme="@style/Toolbar"
+    app:layout_collapseMode="pin"
     app:contentInsetLeft="16dp"
     app:contentInsetStart="16dp"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />

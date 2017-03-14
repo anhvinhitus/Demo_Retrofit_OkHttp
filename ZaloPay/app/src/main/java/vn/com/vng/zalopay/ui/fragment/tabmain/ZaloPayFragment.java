@@ -69,10 +69,10 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Inject
     ZaloPayPresenter presenter;
-    // Datnt10 09/03/2017 Deleted >>
+    // datnt10 09.03.2017 deleted >>
 //    @BindView(R.id.home_top_layout)
 //    View mTopLayout;
-    // Datnt10 09/03/2017 Deleted <<
+    // datnt10 09.03.2017 deleted <<
 
     /* Advertisement START */
     @BindView(R.id.tvAdsSubContent)
@@ -88,10 +88,10 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @BindView(R.id.listViewBottom)
     RecyclerView listViewBottom;
 
-    // Datnt10 09/03/2017 Deleted >>
+    // datnt10 09.03.2017 deleted >>
 //    @BindView(R.id.tv_balance)
 //    TextView mBalanceView;
-    // Datnt10 09/03/2017 Deleted <<
+    // datnt10 09.03.2017 deleted <<
 
     @BindView(R.id.tvInternetConnection)
     TextView mTvInternetConnection;
@@ -162,35 +162,41 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
                 });
     }
 
-    private MenuItem mShowShowMenuItem;
+    // datnt 10.03.2017 deleted >>
+//    private MenuItem mShowShowMenuItem;
+    // datnt 10.03.2017 deleted <<
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main_2, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_notifications);
-        View view = menuItem.getActionView();
-        view.setOnClickListener(new DebouncingOnClickListener() {
-            @Override
-            public void doClick(View v) {
-                onOptionsItemSelected(menuItem);
-            }
-        });
+        // datnt 10.03.2017 deleted >>
+//        inflater.inflate(R.menu.menu_main_2, menu);
+//        MenuItem menuItem = menu.findItem(R.id.action_notifications);
+//        View view = menuItem.getActionView();
+//        view.setOnClickListener(new DebouncingOnClickListener() {
+//            @Override
+//            public void doClick(View v) {
+//                onOptionsItemSelected(menuItem);
+//            }
+//        });
+//
+//        mNotifyView = (RoundTextView) view.findViewById(R.id.tvNotificationCount);
+        // datnt 10.03.2017 deleted <<
 
-        mNotifyView = (RoundTextView) view.findViewById(R.id.tvNotificationCount);
-
-        mShowShowMenuItem = menu.findItem(R.id.action_showshow);
+//        mShowShowMenuItem = menu.findItem(R.id.action_showshow);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_showshow) {
-            presenter.startPaymentApp(getAppResource(Constants.SHOW_SHOW));
-            return true;
-        } else if (id == R.id.action_notifications) {
-            navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
-            ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
-        }
+        // datnt 10.03.2017 deleted >>
+//        int id = item.getItemId();
+//        if (id == R.id.action_showshow) {
+//            presenter.startPaymentApp(getAppResource(Constants.SHOW_SHOW));
+//            return true;
+//        } else if (id == R.id.action_notifications) {
+//            navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
+//            ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
+//        }
+        // datnt 10.03.2017 deleted <<
 
         return super.onOptionsItemSelected(item);
     }
@@ -244,7 +250,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         ZPAnalytics.trackEvent(sActionMap.get(position));
     }
 
-    // Datnt10 09/03/2017 Deleted >>
+    // datnt10 09.03.2017 deleted >>
 //    @OnClick(R.id.btn_link_card)
 //    public void onBtnLinkCardClick() {
 //        navigator.startLinkCardActivity(getActivity());
@@ -263,7 +269,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 //    public void onClickBalance() {
 //        navigator.startBalanceManagementActivity(getContext());
 //    }
-    // Datnt10 09/03/2017 Deleted <<
+    // datnt10 09.03.2017 deleted <<
 
     public void refreshIconFont() {
         if (mAdapter != null) {
@@ -272,12 +278,12 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         if (mAdapterBottomApp != null) {
             mAdapterBottomApp.notifyDataSetChanged();
         }
+        // datnt 09.03.2017 deleted >>
 //        if (mTopLayout != null) {
 //            mTopLayout.invalidate();
 //        }
+        // datnt 09.03.2017 deleted <<
     }
-
-
 
     @Override
     public void refreshInsideApps(List<AppResource> list) {
@@ -285,11 +291,11 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         if (mAdapter == null || mAdapterBottomApp == null) {
             return;
         }
-        mAdapter.setData(presenter.getTopAndBottomApp(list,true));
-        if(list.size() > presenter.mNumberTopApp) {
-            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list,false));
-            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list,false).size() ,SPAN_COUNT_APPLICATION));
-        }
+//        mAdapter.setData(presenter.getTopAndBottomApp(list,true));
+//        if(list.size() > presenter.mNumberTopApp) {
+//            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list,false));
+//            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list,false).size() ,SPAN_COUNT_APPLICATION));
+//        }
     }
 
     @Override
@@ -309,22 +315,25 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public void enableShowShow(boolean isEnableShowShow) {
-        if (mShowShowMenuItem != null) {
-            mShowShowMenuItem.setVisible(isEnableShowShow);
-        }
+        // datnt 10.03.2017 deleted >>
+//        if (mShowShowMenuItem != null) {
+//            mShowShowMenuItem.setVisible(isEnableShowShow);
+//        }
+        // datnt 10.03.2017 deleted <<
     }
 
     @Override
     public void setBalance(long balance) {
-        String _temp = CurrencyUtil.formatCurrency(balance, true);
-
-        SpannableString span = new SpannableString(_temp);
-        span.setSpan(new RelativeSizeSpan(0.8f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Datnt10 09/03/2017 Deleted >>
+        // datnt10 09.03.2017 deleted >>
+//        String _temp = CurrencyUtil.formatCurrency(balance, true);
+//
+//        SpannableString span = new SpannableString(_temp);
+//        span.setSpan(new RelativeSizeSpan(0.8f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
+//                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//
 //        mBalanceView.setText(span);
-        // Datnt10 09/03/2017 Deleted <<
+        // datnt10 09.03.2017 deleted <<
     }
 
     @Override

@@ -1,9 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<vn.com.vng.zalopay.ui.toolbar.HeaderView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home_top_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
+    android:background="@color/transparent"
     android:baselineAligned="false"
     android:orientation="horizontal">
 
@@ -22,10 +22,10 @@
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="@dimen/font_size_normal"
-            app:iconTopName="@string/header_payqrcode"
-            app:iconTopSize="@dimen/font_size_home_function"
             app:iconTopColor="@color/white"
-            app:iconTopPadding="@dimen/spacing.small"/>
+            app:iconTopName="@string/header_payqrcode"
+            app:iconTopPadding="@dimen/spacing.small"
+            app:iconTopSize="@dimen/font_size_home_function" />
     </LinearLayout>
 
     <LinearLayout
@@ -80,4 +80,88 @@
             app:iconTopColor="@color/white"
             app:iconTopPadding="@dimen/spacing.small" />
     </LinearLayout>
-</LinearLayout>
+</vn.com.vng.zalopay.ui.toolbar.HeaderView>
+
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--android:id="@+id/home_top_layout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/colorPrimary"-->
+    <!--android:baselineAligned="false"-->
+    <!--android:orientation="horizontal">-->
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/btn_scan_to_pay"-->
+        <!--style="@style/HomeHeaderItem"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<com.zalopay.ui.widget.IconFontTextView-->
+            <!--style="@style/TextView.Default"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/txt_home_scantopay"-->
+            <!--android:textAllCaps="true"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="@dimen/font_size_normal"-->
+            <!--app:iconTopName="@string/header_payqrcode"-->
+            <!--app:iconTopSize="@dimen/font_size_home_function"-->
+            <!--app:iconTopColor="@color/white"-->
+            <!--app:iconTopPadding="@dimen/spacing.small"/>-->
+    <!--</LinearLayout>-->
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/btn_balance"-->
+        <!--style="@style/HomeHeaderItem"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<com.zalopay.ui.widget.IconFontTextView-->
+            <!--style="@style/TextView.Default"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/overbalance"-->
+            <!--android:textAllCaps="true"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="@dimen/font_size_normal"-->
+            <!--app:iconTopName="@string/header_overbalance"-->
+            <!--app:iconTopSize="@dimen/font_size_home_function"-->
+            <!--app:iconTopColor="@color/white"-->
+            <!--app:iconTopPadding="@dimen/spacing.small"/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_balance"-->
+            <!--style="@style/TextView.Default"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center|bottom"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/zero.currency"-->
+            <!--android:textColor="@color/txt_item_sub_2"-->
+            <!--android:textSize="@dimen/font_size_normal" />-->
+    <!--</LinearLayout>-->
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/btn_link_card"-->
+        <!--style="@style/HomeHeaderItem"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<com.zalopay.ui.widget.IconFontTextView-->
+            <!--style="@style/TextView.Default"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/txt_home_bank"-->
+            <!--android:textAllCaps="true"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="@dimen/font_size_normal"-->
+            <!--app:iconTopName="@string/header_linkbank"-->
+            <!--app:iconTopSize="@dimen/font_size_home_function"-->
+            <!--app:iconTopColor="@color/white"-->
+            <!--app:iconTopPadding="@dimen/spacing.small" />-->
+    <!--</LinearLayout>-->
+<!--</LinearLayout>-->

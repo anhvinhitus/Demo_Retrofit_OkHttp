@@ -4,7 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
 
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -33,12 +36,17 @@ import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
+import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
+import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
+import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.BusComponent;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -50,6 +58,7 @@ import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
@@ -57,11 +66,14 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
+import vn.com.vng.zalopay.ui.activity.MainActivity;
+import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.utils.ConfigUtil;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
@@ -72,6 +84,9 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 
+
+import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
+import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /**
  * Created by AnhHieu on 5/24/16.
@@ -94,6 +109,10 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     private User mUser;
     private FriendStore.Repository mFriendRepository;
     private Subscription mRefPlatformSubscription;
+    private Runnable mRunnableRefreshIconFont;
+    // datnt10 13.03.2017 add >>
+    private NotificationStore.Repository mNotificationRepository;
+    // datnt10 13.03.2017 add <<
 
     @Inject
     NotificationStore.Repository mNotifyRepository;
@@ -109,6 +128,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     private boolean isInitTransaction;
 
+    // datnt10 13.03.2017 edit >>
     @Inject
     MainPresenter(User user, EventBus eventBus,
                   AppResourceStore.Repository appResourceRepository,
@@ -118,7 +138,8 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                   BalanceStore.Repository balanceRepository,
                   ZaloPayRepository zaloPayRepository,
                   TransactionStore.Repository transactionRepository,
-                  FriendStore.Repository friendRepository) {
+                  FriendStore.Repository friendRepository,
+                  NotificationStore.Repository notificationRepository) {
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
         this.mApplicationContext = applicationContext;
@@ -129,7 +150,30 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         this.mTransactionRepository = transactionRepository;
         this.mFriendRepository = friendRepository;
         this.mUser = user;
+        this.mNotificationRepository = notificationRepository;
+
+//    @Inject
+//    MainPresenter(User user, EventBus eventBus,
+//                  AppResourceStore.Repository appResourceRepository,
+//                  Context applicationContext,
+//                  Navigator navigator,
+//                  PassportRepository passportRepository,
+//                  BalanceStore.Repository balanceRepository,
+//                  ZaloPayRepository zaloPayRepository,
+//                  TransactionStore.Repository transactionRepository,
+//                  FriendStore.Repository friendRepository) {
+//        this.mEventBus = eventBus;
+//        this.mAppResourceRepository = appResourceRepository;
+//        this.mApplicationContext = applicationContext;
+//        this.mNavigator = navigator;
+//        this.passportRepository = passportRepository;
+//        this.mBalanceRepository = balanceRepository;
+//        this.mZaloPayRepository = zaloPayRepository;
+//        this.mTransactionRepository = transactionRepository;
+//        this.mFriendRepository = friendRepository;
+//        this.mUser = user;
     }
+    // datnt10 13.03.2017 edit <<
 
     private void getZaloFriend() {
         Subscription subscription = retrieveZaloFriendsAsNeeded()
@@ -183,6 +227,11 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
+
+        // datnt10 13.03.2017 add >>
+        BusComponent.subscribe(APP_SUBJECT, this, new MainPresenter.ComponentSubscriber(), AndroidSchedulers.mainThread());
+        // datnt10 13.03.2017 add <<
+
         mUserSession.beginSession();
 
         Timber.d("ApplicationState object [%s]", mApplicationState);
@@ -194,6 +243,9 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         mEventBus.unregister(this);
         unsubscribeIfNotNull(mRefPlatformSubscription);
         CShareDataWrapper.dispose();
+        // datnt10 13.03.2017 add >>
+        BusComponent.unregister(this);
+        // datnt10 13.03.2017 add <<
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
         super.detachView();
     }
@@ -221,6 +273,9 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
         getZaloFriend();
         warningRoot();
+        // datnt10 13.03.2017 add >>
+        getBalance();
+        // datnt10 13.03.2017 add <<
     }
 
     private void warningRoot() {
@@ -577,4 +632,72 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                 });
         mSubscription.add(subscriptionSuccess);
     }
+
+    // datnt10 10.03.2017 add >>
+    public void startPaymentApp(AppResource app) {
+        Subscription subscription = mAppResourceRepository.existResource(app.appid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new StartPaymentAppSubscriber(mNavigator, mView.getActivity(), app));
+        mSubscription.add(subscription);
+    }
+    // datnt10 10.03.2017 add <<
+
+    // datnt10 13.03.2017 add >>
+    public void getBalance() {
+        Subscription subscription = mBalanceRepository.balance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BalanceSubscriber());
+
+        mSubscription.add(subscription);
+    }
+
+    // Temporary class for getting balance value on collapse menu
+    private class BalanceSubscriber extends DefaultSubscriber<Long> {
+        @Override
+        public void onNext(Long aLong) {
+            MainPresenter.this.onGetBalanceSuccess(aLong);
+        }
+    }
+
+    private void onGetBalanceSuccess(Long balance) {
+        Timber.d("onGetBalanceSuccess %s", balance);
+        mView.setBalance(balance);
+    }
+
+    private class ComponentSubscriber extends DefaultSubscriber<Object> {
+        @Override
+        public void onNext(Object event) {
+            if (event instanceof ChangeBalanceEvent) {
+                if (mView != null) {
+                    mView.setBalance(((ChangeBalanceEvent) event).balance);
+                }
+            } else if (event instanceof NotificationChangeEvent) {
+                if (!((NotificationChangeEvent) event).isRead()) {
+                    getTotalNotification(0);
+                }
+            }
+        }
+    }
+
+    public void getTotalNotification(long delay) {
+        Subscription subscription = mNotificationRepository.totalNotificationUnRead()
+                .delaySubscription(delay, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MainPresenter.NotificationSubscriber());
+        mSubscription.add(subscription);
+    }
+
+    private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
+        @Override
+        public void onNext(Integer integer) {
+            Timber.d("Got total %s unread notification messages", integer);
+            if (mView != null) {
+                mView.setTotalNotify(integer);
+            }
+        }
+    }
+    // datnt10 13.03.2017 add <<
 }

@@ -1,4 +1,4 @@
-package com.example.duke.stickyviewapp.ui.toolbar;
+package vn.com.vng.zalopay.ui.toolbar;
 
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;
@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.example.duke.stickyviewapp.R;
+import vn.com.vng.zalopay.R;
 
 /**
  * Created by anton on 11/12/15.
@@ -16,13 +16,10 @@ import com.example.duke.stickyviewapp.R;
 public class HeaderBehavior extends CoordinatorLayout.Behavior<HeaderView> {
 
     private Context mContext;
-
     private int mStartMarginLeft;
     private int mEndMarginLeft;
     private int mMarginRight;
     private int mStartMarginBottom;
-    private float mTitleStartSize;
-    private float mTitleEndSize;
     private boolean isHide;
 
     public HeaderBehavior(Context context, AttributeSet attrs) {
@@ -52,7 +49,7 @@ public class HeaderBehavior extends CoordinatorLayout.Behavior<HeaderView> {
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, HeaderView child, View dependency) {
         shouldInitProperties();
-        int maxScroll = ((AppBarLayout) dependency).getTotalScrollRange() - 150;
+        int maxScroll = ((AppBarLayout) dependency).getTotalScrollRange() - getToolbarHeight(mContext);
         float percentage = Math.abs(dependency.getY()) / (float) maxScroll;
         float childPosition = dependency.getHeight()
                 + dependency.getY()
@@ -93,14 +90,6 @@ public class HeaderBehavior extends CoordinatorLayout.Behavior<HeaderView> {
 
         if (mMarginRight == 0) {
             mMarginRight = mContext.getResources().getDimensionPixelOffset(R.dimen.header_view_end_margin_right);
-        }
-
-        if (mTitleStartSize == 0) {
-            mTitleEndSize = mContext.getResources().getDimensionPixelSize(R.dimen.header_view_end_text_size);
-        }
-
-        if (mTitleStartSize == 0) {
-            mTitleStartSize = mContext.getResources().getDimensionPixelSize(R.dimen.header_view_start_text_size);
         }
     }
 }

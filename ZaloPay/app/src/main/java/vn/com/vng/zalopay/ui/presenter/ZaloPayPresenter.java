@@ -56,7 +56,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     private AppResourceStore.Repository mAppResourceRepository;
     private NotificationStore.Repository mNotificationRepository;
     private Navigator mNavigator;
-    private final int mNumberTopApp = 6;
+    public final int mNumberTopApp = 6;
 
     private long mLastTimeRefreshApp;
 

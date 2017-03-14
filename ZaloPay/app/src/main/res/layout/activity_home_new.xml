@@ -7,30 +7,95 @@
     android:orientation="vertical"
     tools:context="vn.com.vng.zalopay.ui.activity.HomeActivity">
 
-    <include layout="@layout/toolbar_home" />
-
-    <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
-        android:id="@+id/pager"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="56.5dp"
-        android:layout_marginTop="?attr/actionBarSize" />
+        android:fitsSystemWindows="true">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="56dp"
-        android:background="@color/separate" />
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:elevation="0dp" >
 
-    <!-- This is the Bottom Bavigation Bar -->
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom"
-        app:itemBackground="@color/white"
-        app:itemIconTint="@color/bottom_nav_icon_color_selector"
-        app:menu="@menu/bottom_navigation_items" />
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                app:titleEnabled="false">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                    <include
+                        android:id="@+id/toolbar_header_view"
+                        layout="@layout/zp_header_top_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible" />
+
+                </android.support.v7.widget.Toolbar>
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <include
+            android:id="@+id/float_header_view"
+            layout="@layout/zp_control_top_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/scrollView"
+            android:layout_below="@+id/appbar"
+            app:layout_behavior="vn.com.vng.zalopay.ui.toolbar.HeaderBehavior" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="56dp"
+                android:background="@color/separate" />
+
+            <!-- This is the Bottom Bavigation Bar -->
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/navigation"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_gravity="bottom"
+                app:itemBackground="@color/white"
+                app:itemIconTint="@color/bottom_nav_icon_color_selector"
+                app:menu="@menu/bottom_navigation_items" />
+        </FrameLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
 
 </FrameLayout>

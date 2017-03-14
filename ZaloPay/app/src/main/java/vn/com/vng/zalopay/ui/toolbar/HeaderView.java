@@ -1,21 +1,22 @@
-package com.example.duke.stickyviewapp.ui.toolbar;
+package vn.com.vng.zalopay.ui.toolbar;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.example.duke.stickyviewapp.R;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import vn.com.vng.zalopay.R;
 
 /**
  * Created by anton on 11/12/15.
  */
 
 public class HeaderView extends LinearLayout {
-    private ImageView ivBarcode;
-
     public HeaderView(Context context) {
         super(context);
     }
@@ -37,14 +38,10 @@ public class HeaderView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
 //        ButterKnife.bind(this);
-        init(getContext());
+//        init(getContext());
     }
 
-    protected void init(Context context) {
-        ivBarcode = (ImageView) findViewById(R.id.header_view_iv_barcode);
-    }
-
-    public void setOnBarcodeClickListener(OnClickListener listener) {
-        ivBarcode.setOnClickListener(listener);
-    }
+//    protected void init(Context context) {
+//
+//    }
 }

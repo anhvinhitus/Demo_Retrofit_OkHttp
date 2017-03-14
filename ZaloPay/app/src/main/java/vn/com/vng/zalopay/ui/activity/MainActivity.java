@@ -5,39 +5,63 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.ui.widget.textview.RoundTextView;
 
 import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
+import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
+import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
+import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
+import vn.com.vng.zalopay.ui.toolbar.HeaderViewTop;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+
+import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /**
  * Created by AnhHieu on 5/24/16.
  * Main Application activity
  */
-public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
-
+// datnt10 10.03.2017 edit >>
+public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView, AppBarLayout.OnOffsetChangedListener {
+    //public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
+// datnt10 10.03.2017 edit <<
     public static final String TAG = "MainActivity";
 
     @Override
@@ -71,6 +95,20 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     private LeftMenuFragment mLeftMenuFragment;
     private ZaloPayFragment mZaloPayFragment;
 
+    // datnt10 10.03.2017 add >>
+    @BindView(R.id.appbar)
+    AppBarLayout appBarLayout;
+
+    @BindView(R.id.toolbar_header_view)
+    HeaderViewTop toolbarHeaderView;
+
+    @BindView(R.id.tv_balance)
+    TextView mBalanceView;
+
+    @BindView(R.id.tvNotificationCount)
+    RoundTextView mNotifyView;
+    // datnt10 10.30.2017 add <<
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +138,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        // datnt10 10.03.2017 add >>
+        appBarLayout.addOnOffsetChangedListener(this);
+        // datnt10 10.03.2017 add <<
     }
 
     @Override
@@ -119,6 +161,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         Timber.d("destroy main activity");
 
         drawer.removeDrawerListener(toggle);
+        // datnt10 10.03.2017 add >>
+        appBarLayout.removeOnOffsetChangedListener(this);
+        // datnt10 10.03.2017 add <<
         presenter.detachView();
         presenter.destroy();
         super.onDestroy();
@@ -237,6 +282,89 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             mZaloPayFragment.refreshIconFont();
         }
     }
+
+    // datnt10 13.03.2017 add >>
+    // Auto implement methods when adding two abstract methods in IHomeView class
+    @Override
+    public void setBalance(long balance) {
+        String _temp = CurrencyUtil.formatCurrency(balance, true);
+
+        SpannableString span = new SpannableString(_temp);
+        span.setSpan(new RelativeSizeSpan(0.8f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        mBalanceView.setText(span);
+    }
+
+    @Override
+    public void setTotalNotify(int total) {
+        if (mNotifyView != null) {
+            if (mNotifyView.isShown()) {
+                mNotifyView.show(total);
+            } else {
+                mNotifyView.show(total);
+                if (total > 0) {
+                    Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.simple_grow);
+                    mNotifyView.startAnimation(animation);
+                }
+            }
+        }
+    }
+    // datnt10 13.03.2017 add <<
+
+    // datnt10 10.03.2017 add >>
+    /*
+    * Click event for 2 buttons : nearby and notification
+    */
+    @OnClick(R.id.header_top_rl_showshow)
+    public void onBtnNearbyClick() {
+        presenter.startPaymentApp(getAppResource(PaymentAppConfig.Constants.SHOW_SHOW));
+    }
+
+    @OnClick(R.id.header_top_rl_notification)
+    public void onBtnNotificationClick() {
+        navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
+        ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
+    }
+
+    /*
+    * Click event for 3 main button on collapse toolbar
+    */
+    @OnClick(R.id.btn_link_card)
+    public void onBtnLinkCardClick() {
+        navigator.startLinkCardActivity(getActivity());
+        ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
+    }
+
+    @OnClick(R.id.btn_scan_to_pay)
+    public void onScanToPayClick() {
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
+        navigator.startScanToPayActivity(getActivity());
+    }
+
+    @OnClick(R.id.btn_balance)
+    public void onClickBalance() {
+        navigator.startBalanceManagementActivity(getContext());
+    }
+
+    /*
+    * Set display/hide effect for corresponding header while collapsing toolbar
+    */
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
+
+        if (percentage == 0f) {
+            toolbarHeaderView.setTopView(true, percentage);
+
+        } else if (percentage > 0f && percentage <= 1f) {
+            toolbarHeaderView.setTopView(false, percentage);
+        }
+    }
+    // datnt10 10.03.2017 add <<
 
     private final class OpenMenuRunnable implements Runnable {
         final int id;

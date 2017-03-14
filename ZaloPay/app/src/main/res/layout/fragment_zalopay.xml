@@ -1,21 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:overScrollMode="never">
--->
-
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false"
     android:orientation="vertical">
 
-    <!-- Datnt 09/03/2017 edited >> -->
+    <!-- datnt10 09.03.2017 delete >> -->
     <!--<include layout="@layout/zp_control_top_layout" />-->
-    <!-- Datnt 09/03/2017 edited << -->
-
+    <!-- datnt10 09.03.2017 delete << -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -35,21 +27,47 @@
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/listView"
                     style="@style/RecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clipToPadding="false" />
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false" />
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_marginTop="@dimen/app_padding"
                     android:background="@color/separate" />
+
+                <include layout="@layout/layout_advertisement" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="@dimen/app_padding" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/listViewBottom"
+                    style="@style/RecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false" />
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
     </com.zalopay.ui.widget.MultiSwipeRefreshLayout>
 
-
-</LinearLayout><!--
-
-
-</android.support.v4.widget.NestedScrollView>-->
+</LinearLayout>
