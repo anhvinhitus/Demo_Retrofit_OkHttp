@@ -232,6 +232,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         if (mLeftMenuFragment != null) {
             mLeftMenuFragment.refreshIconFont();
         }
+
         if (mZaloPayFragment != null) {
             mZaloPayFragment.refreshIconFont();
         }

@@ -12,7 +12,9 @@
     android:baselineAligned="false"
     android:orientation="vertical">
 
-    <include layout="@layout/zp_control_top_layout" />
+    <!-- Datnt 09/03/2017 edited >> -->
+    <!--<include layout="@layout/zp_control_top_layout" />-->
+    <!-- Datnt 09/03/2017 edited << -->
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -6,19 +6,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.util.SparseIntArray;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -72,22 +69,29 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Inject
     ZaloPayPresenter presenter;
-
-    @BindView(R.id.home_top_layout)
-    View mTopLayout;
+    // Datnt10 09/03/2017 Deleted >>
+//    @BindView(R.id.home_top_layout)
+//    View mTopLayout;
+    // Datnt10 09/03/2017 Deleted <<
 
     /* Advertisement START */
-   /* @BindView(R.id.tvAdsSubContent)
-    TextView mTvAdsSubContent;*/
+    @BindView(R.id.tvAdsSubContent)
+    TextView mTvAdsSubContent;
     /* Advertisement END */
 
     private ListAppRecyclerAdapter mAdapter;
+    private ListAppRecyclerAdapter mAdapterBottomApp;
 
     @BindView(R.id.listView)
     RecyclerView listView;
 
-    @BindView(R.id.tv_balance)
-    TextView mBalanceView;
+    @BindView(R.id.listViewBottom)
+    RecyclerView listViewBottom;
+
+    // Datnt10 09/03/2017 Deleted >>
+//    @BindView(R.id.tv_balance)
+//    TextView mBalanceView;
+    // Datnt10 09/03/2017 Deleted <<
 
     @BindView(R.id.tvInternetConnection)
     TextView mTvInternetConnection;
@@ -115,6 +119,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mAdapter = new ListAppRecyclerAdapter(getContext(), this);
+        mAdapterBottomApp = new ListAppRecyclerAdapter(getContext(), this);
     }
 
     @Override
@@ -124,17 +129,24 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         presenter.attachView(this);
 
         listView.setHasFixedSize(true);
-        listView.setLayoutManager(new StaggeredGridLayoutManager(SPAN_COUNT_APPLICATION, StaggeredGridLayoutManager.VERTICAL));
+        listView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
         listView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
         listView.setAdapter(mAdapter);
         listView.setFocusable(false);
 
+
+        listViewBottom.setHasFixedSize(true);
+        listViewBottom.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
+        listViewBottom.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
+        listViewBottom.setAdapter(mAdapterBottomApp);
+        listViewBottom.setFocusable(false);
+
         setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
                 getString(R.string.check_internet));
-        mSwipeRefreshLayout.setSwipeableChildren(R.id.listView);
+        mSwipeRefreshLayout.setSwipeableChildren(R.id.scrollView);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        //hideTextAds();
+        hideTextAds();
     }
 
     private void setInternetConnectionError(String message, String spannedMessage) {
@@ -154,7 +166,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_main_2, menu);
         MenuItem menuItem = menu.findItem(R.id.action_notifications);
         View view = menuItem.getActionView();
         view.setOnClickListener(new DebouncingOnClickListener() {
@@ -214,11 +226,11 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         super.onDestroy();
     }
 
-   /* private void hideTextAds() {
+    private void hideTextAds() {
         if (mTvAdsSubContent != null) {
             mTvAdsSubContent.setVisibility(View.GONE);
         }
-    }*/
+    }
 
     @Override
     public void onClickAppListener(AppResource app, int position) {
@@ -232,46 +244,53 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         ZPAnalytics.trackEvent(sActionMap.get(position));
     }
 
-    @OnClick(R.id.btn_link_card)
-    public void onBtnLinkCardClick() {
-        navigator.startLinkCardActivity(getActivity());
-        ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
-    }
+    // Datnt10 09/03/2017 Deleted >>
+//    @OnClick(R.id.btn_link_card)
+//    public void onBtnLinkCardClick() {
+//        navigator.startLinkCardActivity(getActivity());
+//        ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
+//    }
+//
+//    @OnClick(R.id.btn_scan_to_pay)
+//    public void onScanToPayClick() {
+//        getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
+//        getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
+//        getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
+//        navigator.startScanToPayActivity(getActivity());
+//    }
+//
+//    @OnClick(R.id.btn_balance)
+//    public void onClickBalance() {
+//        navigator.startBalanceManagementActivity(getContext());
+//    }
+    // Datnt10 09/03/2017 Deleted <<
 
-    @OnClick(R.id.btn_scan_to_pay)
-    public void onScanToPayClick() {
-        getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
-        getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
-        getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
-        navigator.startScanToPayActivity(getActivity());
-    }
-
-    @OnClick(R.id.btn_balance)
-    public void onClickBalance() {
-        navigator.startBalanceManagementActivity(getContext());
-    }
-
-    @Override
     public void refreshIconFont() {
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
-        if (mTopLayout != null) {
-            mTopLayout.invalidate();
+        if (mAdapterBottomApp != null) {
+            mAdapterBottomApp.notifyDataSetChanged();
         }
+//        if (mTopLayout != null) {
+//            mTopLayout.invalidate();
+//        }
     }
+
+
 
     @Override
     public void refreshInsideApps(List<AppResource> list) {
         Timber.d("refreshInsideApps list: [%s]", list.size());
-        if (mAdapter == null) {
+        if (mAdapter == null || mAdapterBottomApp == null) {
             return;
         }
-        List<AppResource> listNew = presenter.setBannerInListApp(list);
-        mAdapter.setData(listNew);
-
+        mAdapter.setData(presenter.getTopAndBottomApp(list,true));
+        if(list.size() > presenter.mNumberTopApp) {
+            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list,false));
+            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list,false).size() ,SPAN_COUNT_APPLICATION));
+        }
     }
-
 
     @Override
     public void setTotalNotify(int total) {
@@ -303,7 +322,9 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         span.setSpan(new RelativeSizeSpan(0.8f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        mBalanceView.setText(span);
+        // Datnt10 09/03/2017 Deleted >>
+//        mBalanceView.setText(span);
+        // Datnt10 09/03/2017 Deleted <<
     }
 
     @Override
@@ -321,7 +342,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public int getAppCount() {
-        return mAdapter.getItemCount() - 1;
+        return mAdapter.getItemCount() + mAdapterBottomApp.getItemCount();
     }
 
     @Override
