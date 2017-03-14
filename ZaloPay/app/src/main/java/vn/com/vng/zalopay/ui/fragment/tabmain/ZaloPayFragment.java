@@ -11,11 +11,13 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.util.SparseIntArray;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -281,9 +283,22 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         mAdapter.setData(presenter.getTopAndBottomApp(list,true));
         if(list.size() > presenter.mNumberTopApp) {
             mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list,false));
-            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list,false).size() ,SPAN_COUNT_APPLICATION));
+            ViewTreeObserver vto = listView.getViewTreeObserver();
+            vto.addOnGlobalLayoutListener(ViewTreeObserver);
         }
+
     }
+
+    public ViewTreeObserver.OnGlobalLayoutListener ViewTreeObserver = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+
+            ViewTreeObserver obs = listView.getViewTreeObserver();
+            obs.removeGlobalOnLayoutListener(this);
+            listViewBottom.setMinimumHeight(presenter.getHeightViewBottom(listView, mAdapterBottomApp.getItemCount() ,SPAN_COUNT_APPLICATION));
+
+        }
+    };
 
     @Override
     public void setTotalNotify(int total) {
