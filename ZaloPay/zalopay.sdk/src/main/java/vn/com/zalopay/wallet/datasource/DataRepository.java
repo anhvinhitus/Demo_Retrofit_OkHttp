@@ -27,7 +27,7 @@ import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.implement.GetPlatformInfoImpl;
 import vn.com.zalopay.wallet.datasource.interfaces.ITask;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
@@ -58,14 +58,14 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
 
     public static DataRepository shareInstance() {
         if (DataRepository._object == null) {
-            DataRepository._object = new DataRepository(WalletSDKApplication.getHttpClient());
+            DataRepository._object = new DataRepository(SDKApplication.getHttpClient());
         }
         DataRepository._object.resetCountRetry();
         return DataRepository._object;
     }
 
     public static DataRepository newInstance() {
-        return new DataRepository(WalletSDKApplication.getHttpClient());
+        return new DataRepository(SDKApplication.getHttpClient());
     }
 
     /***
@@ -74,7 +74,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
      * @return
      */
     public static DataRepository getInstanceForDownloadResource() {
-        return new DataRepository(WalletSDKApplication.getHttpClientTimeoutLonger());
+        return new DataRepository(SDKApplication.getHttpClientTimeoutLonger());
     }
 
     public static void dispose() {

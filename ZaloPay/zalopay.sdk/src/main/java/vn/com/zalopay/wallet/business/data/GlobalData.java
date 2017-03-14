@@ -14,7 +14,6 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardChannelType;
@@ -29,8 +28,8 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserProfile;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
-import vn.com.zalopay.wallet.controller.WalletSDKPayment;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
@@ -108,7 +107,7 @@ public class GlobalData {
         boolean isRightAccess = false;
 
         if (stackTraceElements.length >= 5) {
-            if (stackTraceElements[4].getClassName().equals(WalletSDKPayment.class.getName()) && stackTraceElements[4].getMethodName().equals("pay")) {
+            if (stackTraceElements[4].getClassName().equals(SDKPayment.class.getName()) && stackTraceElements[4].getMethodName().equals("pay")) {
                 isRightAccess = true;
             }
         }
@@ -544,7 +543,7 @@ public class GlobalData {
 
     public static Context getAppContext() {
         try {
-            return WalletSDKApplication.getZaloPayContext();
+            return SDKApplication.getZaloPayContext();
         } catch (Exception e) {
             Log.e(GlobalData.class.getName(), e);
 

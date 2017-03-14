@@ -35,8 +35,8 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
-import vn.com.zalopay.wallet.controller.WalletSDKPayment;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 
@@ -207,7 +207,7 @@ public class PaymentWrapper {
         paymentInfo.walletTransID = walletTransId;
 
         Timber.d("saveCardMap, start paymentsdk");
-        WalletSDKApplication.saveCardMap(paymentInfo, listener);
+        SDKApplication.saveCardMap(paymentInfo, listener);
     }
 
     private boolean hasPendingOrder() {
@@ -356,7 +356,7 @@ public class PaymentWrapper {
                 owner, paymentChannel, paymentInfo);
         mPendingOrder = paymentInfo;
         mPendingChannel = paymentChannel;
-        WalletSDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()));
+        SDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()));
     }
 
     private boolean validPaymentInfo(ZPWPaymentInfo paymentInfo) {

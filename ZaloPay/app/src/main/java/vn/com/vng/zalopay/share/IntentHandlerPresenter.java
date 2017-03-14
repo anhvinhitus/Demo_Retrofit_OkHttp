@@ -4,12 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
-
-import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -28,10 +25,9 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.controller.WalletSDKPayment;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
-
+import vn.com.zalopay.wallet.controller.SDKPayment;
 /**
  * Created by hieuvm on 2/14/17.
  */
@@ -262,14 +258,14 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
 
     private boolean insidePaymentOrder(final Context context) {
 
-        if (!WalletSDKPayment.isOpenSdk()) {
+        if (!SDKPayment.isOpenSdk()) {
             return false;
         }
 
-        if (WalletSDKPayment.canCloseSdk()) {
+        if (SDKPayment.canCloseSdk()) {
             ZPAnalytics.trackEvent(ZPEvents.ZALO_PAYMENT_ISINCOMPLETED);
             try {
-                WalletSDKPayment.closeSdk();
+                SDKPayment.closeSdk();
             } catch (Exception e) {
                 Timber.d(e, "close sdk error");
             }

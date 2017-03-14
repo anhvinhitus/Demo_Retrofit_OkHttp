@@ -40,8 +40,8 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
@@ -140,7 +140,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         params.userID = String.valueOf(mUser.zaloPayId);
         params.mapCard = mapCard;
 
-        WalletSDKApplication.removeCardMap(params, new RemoveMapCardListener());
+        SDKApplication.removeCardMap(params, new RemoveMapCardListener());
     }
 
     private final class RemoveMapCardListener implements ZPWRemoveMapCardListener {

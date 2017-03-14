@@ -13,7 +13,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /**
  * Created by khattn on 2/7/17.
@@ -54,7 +54,7 @@ public class HandleZaloIntegration {
         userInfo.zaloPayUserId = user.zaloPayId;
         userInfo.accessToken = user.accesstoken;
         paymentInfo.userInfo = userInfo;
-        WalletSDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
+        SDKApplication.loadGatewayInfo(paymentInfo, new DefaultZPGatewayInfoCallBack());
     }
 
     public void loadPaymentSdk() {

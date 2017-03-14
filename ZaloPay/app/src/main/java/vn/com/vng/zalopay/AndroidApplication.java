@@ -39,9 +39,8 @@ import vn.com.vng.zalopay.service.ZPTrackerApptransid;
 import vn.com.vng.zalopay.service.ZPTrackerGA;
 import vn.com.vng.zalopay.utils.ConfigUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.configure.Configuration;
-import vn.com.zalopay.wallet.controller.WalletSDKApplication;
+import vn.com.zalopay.wallet.configure.SDKConfiguration;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 
 /**
  * Created by AnhHieu on 3/24/16.
@@ -128,13 +127,13 @@ public class AndroidApplication extends Application {
     }
 
     private void initPaymentSdk() {
-        Configuration sdkConfig = Configuration.builder()
+        SDKConfiguration sdkConfig = SDKConfiguration.builder()
                 .setHttpClient(getAppComponent().okHttpClient())
-                .setHttpClientLongTimeout(getAppComponent().okHttpClientTimeoutLonger())
+                .setHttpClientTimeoutLonger(getAppComponent().okHttpClientTimeoutLonger())
                 .setReleaseBuild(!BuildConfig.DEBUG)
                 .setHostType(BuildConfig.HOST_TYPE)
                 .build();
-        WalletSDKApplication.initialize(this,sdkConfig);
+        SDKApplication.initialize(this,sdkConfig);
     }
 
     private void initializeZaloPayAnalytics() {
