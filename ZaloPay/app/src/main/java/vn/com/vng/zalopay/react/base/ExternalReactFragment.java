@@ -294,17 +294,19 @@ public class ExternalReactFragment extends ReactBaseFragment implements IExterna
     }
 
     public void showWaitingDownloadApp() {
-        DialogHelper.showCustomDialog(getActivity(),
-                getActivity().getString(R.string.application_downloading),
-                getActivity().getString(R.string.txt_close),
-                SweetAlertDialog.NORMAL_TYPE,
-                null);
+        if (isResumed()) {
+            DialogHelper.showCustomDialog(getActivity(),
+                    getActivity().getString(R.string.application_downloading),
+                    getActivity().getString(R.string.txt_close),
+                    SweetAlertDialog.NORMAL_TYPE,
+                    null);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadAppEvent(DownloadAppEvent event) {
         Timber.d("onDownloadAppEvent appId[%s] result[%s]",
-                event.mDownloadInfo.appid, 
+                event.mDownloadInfo.appid,
                 event.isDownloadSuccess);
         if (!event.isDownloadSuccess || event.mDownloadInfo == null) {
             return;
