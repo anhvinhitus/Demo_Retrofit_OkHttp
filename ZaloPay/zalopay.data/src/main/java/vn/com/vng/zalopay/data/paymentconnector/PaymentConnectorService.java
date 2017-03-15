@@ -9,19 +9,18 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.exception.WriteSocketException;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
-import vn.com.vng.zalopay.data.exception.WriteSocketException;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
 
 /**
  * Created by hieuvm on 3/8/17.
- *
  */
 
 public class PaymentConnectorService implements OnReceiverMessageListener {
@@ -100,6 +99,8 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
         }
 
         PaymentConnectorCallback callback = findCallbackById(mCurrentRequestId);
+
+        Timber.d("dispatch error for request mCurrentRequestId [%]", mCurrentRequestId);
         if (callback != null) {
             callback.onFailure((WriteSocketException) t);
         }
@@ -136,8 +137,6 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
                 break;
             }
 
-            mCurrentRequestId = request.requestId;
-
             if (!mPaymentService.isConnected()
                     || !mPaymentService.isAuthentication()) {
                 failure(request);
@@ -150,7 +149,9 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
                 continue;
             }
 
-            Timber.d("about to send request message to server");
+            mCurrentRequestId = request.requestId;
+
+            Timber.d("about to send request message to server mCurrentRequestId [%s]", mCurrentRequestId);
             boolean result = mPaymentService.send(transform(request));
             mRunning = false;
             mRequestQueue.poll();
