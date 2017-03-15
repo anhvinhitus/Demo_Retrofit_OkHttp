@@ -1,0 +1,66 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/default_white_selector"
+    android:baselineAligned="false"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp">
+
+    <com.zalopay.ui.widget.IconFontTextView
+        android:id="@+id/tvInsideApp"
+        style="@style/HomePage.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="top|center_horizontal"
+        android:lines="2"
+        android:maxLines="2"
+        tools:text="@string/transfer.money"
+        app:iconTopSize="@dimen/font_size_home_inside_app"
+        app:iconTopPadding="@dimen/spacing.small"
+        android:visibility="gone"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <fragment
+            android:id="@+id/bannerFragment"
+            android:name="vn.com.vng.zalopay.banner.ui.fragment.BannerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/separate"/>
+
+        <!--<TextView
+            android:id="@+id/tvAdsSubContent"
+            style="@style/TextView.Title"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/app_padding"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/ic_thongbao"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:textSize="12sp"
+            tools:text="Mobi khuyen mai 50%...."
+            android:visibility="gone"/>-->
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+

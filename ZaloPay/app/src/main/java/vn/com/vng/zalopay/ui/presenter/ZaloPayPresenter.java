@@ -362,34 +362,25 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
-
-
-    public List<AppResource> getTopAndBottomApp(List<AppResource> pFullListApp, boolean isTopApp) {
-        if (pFullListApp.size() <= mNumberTopApp) {
-            return pFullListApp;
-        }
+    
+    public List<AppResource> setBannerInListApp(List<AppResource> pFullListApp) {
 
         List<AppResource> mNewListApp = new ArrayList<>();
-        if (isTopApp) {
-            for (int i = 0; i < mNumberTopApp; i++) {
-                mNewListApp.add(pFullListApp.get(i));
+        int inDex = 0;
+        for (AppResource pItem : pFullListApp) {
+            mNewListApp.add(pItem);
+
+            if(pItem !=null && inDex == mNumberTopApp -1) {
+                //hardcode test
+                AppResource banner = new AppResource(0101, 0101,"Banner") ;
+                mNewListApp.add(banner);
             }
-        } else {
-            for (int i = mNumberTopApp; i < pFullListApp.size(); i++) {
-                mNewListApp.add(pFullListApp.get(i));
-            }
+            inDex ++;
         }
         return mNewListApp;
     }
 
 
-    public int getHeightViewBottom(View pTopView, int pNumberItemView, int pNumberApp)
-    {
-        double  heightItem = pTopView.getHeight()/2;
-        int     numberRow = (int) Math.ceil((pNumberItemView / (double)pNumberApp));
-
-        return (int) (heightItem * numberRow);
-    }
 
    /* private class ComponentSubscriber extends DefaultSubscriber<Object> {
         @Override
