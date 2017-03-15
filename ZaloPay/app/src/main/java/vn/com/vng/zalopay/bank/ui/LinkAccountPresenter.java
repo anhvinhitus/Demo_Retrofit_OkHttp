@@ -57,12 +57,9 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     void getMapBankAccount() {
         showLoadingView();
-        Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankAccount>>() {
-            @Override
-            public List<BankAccount> call() throws Exception {
-                List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
-                return transform(mapCardLis);
-            }
+        Subscription subscription = ObservableHelper.makeObservable(() -> {
+            List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+            return transform(mapCardLis);
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetLinkedAccountSubscriber());
         mSubscription.add(subscription);
