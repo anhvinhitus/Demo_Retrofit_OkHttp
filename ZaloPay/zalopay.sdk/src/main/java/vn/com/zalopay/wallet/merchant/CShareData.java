@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 
-import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -179,29 +178,27 @@ public class CShareData extends SingletonBase {
     }
 
     /***
-     * push notify to SDK
+     * push notify to SDK to finish flow vcb account link
      *
      * @param pNotification
      */
-    public void pushNotificationToSdk(ZPWNotification pNotification) {
+    public void notifyLinkBankAccountFinish(ZPWNotification pNotification) {
         //user in sdk now.
-        Log.d(this,GsonUtils.toJsonString(pNotification));
-        if(BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
-                ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() instanceof AdapterLinkAcc)
-        {
+        Log.d(this, GsonUtils.toJsonString(pNotification));
+        if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
+                ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() instanceof AdapterLinkAcc) {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pNotification);
-        }
-        else
-        {
+        } else {
             //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
             BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
                 @Override
                 public void onCheckExistBankAccountComplete(boolean pExisted) {
-                    Log.d(this,"pExisted = "+ pExisted);
+                    Log.d(this, "pExisted = " + pExisted);
                 }
+
                 @Override
                 public void onCheckExistBankAccountFail(String pMessage) {
-                    Log.e(this,pMessage);
+                    Log.e(this, pMessage);
                 }
             }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
         }
@@ -218,9 +215,8 @@ public class CShareData extends SingletonBase {
         try {
             GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
         } catch (Exception e) {
-            if(checkResourceStaticListener != null)
-            {
-                checkResourceStaticListener.onCheckResourceStaticComplete(false,e != null ? e.getMessage(): null);
+            if (checkResourceStaticListener != null) {
+                checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
             }
         }
     }

@@ -101,7 +101,7 @@ public class CShareDataWrapper {
     }
 
     public static void pushNotificationToSdk(int notificationType, String message) {
-        CShareData.getInstance().pushNotificationToSdk(new ZPWNotification(notificationType, message));
+        CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message));
     }
 
     public static void dispose() {
