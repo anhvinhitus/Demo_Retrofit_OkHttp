@@ -284,11 +284,6 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
     }
 
     protected boolean clearUserSession(String message) {
-
-        if (getUserComponent() != null) {
-            getUserComponent().userSession().endSession();
-        }
-
         getAppComponent().applicationSession().setMessageAtLogin(message);
         getAppComponent().applicationSession().clearUserSession();
         return true;

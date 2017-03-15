@@ -29,6 +29,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
@@ -152,7 +153,12 @@ public class ApplicationSessionImpl implements ApplicationSession {
         nm.cancelAll();
 
         taskLogout().subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
+
+        UserComponent userComponent = AndroidApplication.instance().getUserComponent();
+        if (userComponent != null) {
+            userComponent.userSession().endSession();
+        }
 
         ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
 

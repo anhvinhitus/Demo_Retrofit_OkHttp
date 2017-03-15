@@ -229,10 +229,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             return false;
         }
 
-        if (getUserComponent() != null) {
-            getUserComponent().userSession().endSession();
-        }
-
         getAppComponent().applicationSession().setMessageAtLogin(message);
         getAppComponent().applicationSession().clearUserSession();
         return true;
