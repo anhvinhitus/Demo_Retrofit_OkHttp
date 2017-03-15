@@ -94,14 +94,11 @@ public class ApplicationSessionImpl implements ApplicationSession {
     }
 
     private Observable<Boolean> taskLogout() {
-        return ObservableHelper.makeObservable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                clearMerchantSession();
-                deleteInstanceID();
-                resetRecovery();
-                return Boolean.TRUE;
-            }
+        return ObservableHelper.makeObservable(() -> {
+            clearMerchantSession();
+            deleteInstanceID();
+            resetRecovery();
+            return Boolean.TRUE;
         });
     }
 
@@ -109,7 +106,6 @@ public class ApplicationSessionImpl implements ApplicationSession {
     public void clearAllUserDB() {
         Timber.d("clearAllUserDB");
         try {
-            daoSession.clear();
             Collection<AbstractDao<?, ?>> daoCollection = daoSession.getAllDaos();
             for (AbstractDao<?, ?> dao : daoCollection) {
                 if (dao != null && !(dao instanceof AppResourceGDDao)) {
@@ -160,12 +156,11 @@ public class ApplicationSessionImpl implements ApplicationSession {
             userComponent.userSession().endSession();
         }
 
-        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
-
         // move to login
         ZaloSDK.Instance.unauthenticate();
 
         // clear current user DB
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         UserConfig userConfig = applicationComponent.userConfig();
         userConfig.clearConfig();
         userConfig.setCurrentUser(null);
