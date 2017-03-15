@@ -155,6 +155,11 @@
                     android:pathPrefix="/transfer"
                     android:scheme="zalopay-zapi-28" />
 
+                <data
+                    android:host="app"
+                    android:pathPrefix="/mywallet"
+                    android:scheme="zalopay-zapi-29" />
+
             </intent-filter>
 
         </activity-alias>

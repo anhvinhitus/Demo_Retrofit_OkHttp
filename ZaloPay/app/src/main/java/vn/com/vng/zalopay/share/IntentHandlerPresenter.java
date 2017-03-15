@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 
-import com.zing.zalo.zalosdk.oauth.ZaloOpenAPICallback;
-
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
@@ -92,10 +90,10 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         Timber.d("onActivityResult: requestCode [%s] resultCode [%s]", requestCode, resultCode);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == ZALO_INTEGRATION_LOGIN_REQUEST_CODE) {
-                handleZaloIntegration(data.getData());
+                handleDeepLink(data.getData());
             }
         } else {
-            ActivityCompat.finishAffinity((Activity) mView.getContext());
+            ActivityCompat.finishAffinity(activity);
         }
 
     }
@@ -125,8 +123,51 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
                 finish(true);
             }
 
+        } else if (scheme.equalsIgnoreCase("zalopay-zapi-29")) {
+
+            if (host.equalsIgnoreCase("app") && "/mywallet".equalsIgnoreCase(pathPrefix)) {
+                handMyWallet(data);
+            } else {
+                finish(true);
+            }
+
         } else {
             finish(true);
+        }
+    }
+
+    private void handMyWallet(final Uri data) {
+        String senderId = data.getQueryParameter("sender");
+        boolean shouldFinishCurrentActivity = true;
+        try {
+            final long sender;
+
+            try {
+                sender = Long.valueOf(senderId);
+            } catch (NumberFormatException e) {
+                Timber.e(e, "Argument is invalid senderId [%s]", senderId);
+                return;
+            }
+
+            if (shouldSignIn(mView.getContext(), data, sender, "")) {
+                shouldFinishCurrentActivity = false;
+                return;
+            }
+
+            if (signInAnotherAccount(mView.getContext(), data, sender, "")) {
+                shouldFinishCurrentActivity = false;
+                return;
+            }
+
+            Activity activity = (Activity) mView.getContext();
+            if (activity.isTaskRoot()) {
+                mNavigator.startHomeActivity(activity, false);
+            }
+
+        } finally {
+            if (shouldFinishCurrentActivity) {
+                finish(false);
+            }
         }
     }
 
@@ -313,9 +354,5 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         startLogin((IntentHandlerActivity) context, ZALO_INTEGRATION_LOGIN_REQUEST_CODE,
                 data, sender, accesstoken);
         return true;
-    }
-
-    private void validateTransitionParam(String _sender, String _receiver) {
-
     }
 }
