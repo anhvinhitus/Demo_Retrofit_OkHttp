@@ -38,28 +38,23 @@ import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 
+import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.PaymentAppWithRetry;
+import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.PaymentAppWithoutRetry;
+import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.RedPacket;
+import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.ZaloPay;
+
 /**
  * Created by AnhHieu on 3/25/16.
+ *
  */
 @Module
 public class NetworkModule {
     private static final HttpUrl API_HTTP_URL = HttpUrl.parse(BuildConfig.HOST);
-    private static final HttpUrl RED_PACKET_API_HTTP_URL = HttpUrl.parse(BuildConfig.REDPACKET_HOST);
 
     @Provides
     @Singleton
     HttpUrl provideBaseUrl() {
         return API_HTTP_URL;
-    }
-
-    @Provides
-    @Singleton
-    @Named("RedPacketHttpUrl")
-    HttpUrl provideRedPacketUrl() {
-        return RED_PACKET_API_HTTP_URL;
-    }
-
-    public NetworkModule() {
     }
 
     @Provides
@@ -87,12 +82,7 @@ public class NetworkModule {
     OkHttpClient provideOkHttpClient(Cache cache) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-                @Override
-                public void log(String message) {
-                    Timber.i(message);
-                }
-            });
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(Timber::i);
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(interceptor);
         }
@@ -110,12 +100,7 @@ public class NetworkModule {
     OkHttpClient provideOkHttpClientTimeoutLonger(Cache cache) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-                @Override
-                public void log(String message) {
-                    Timber.i(message);
-                }
-            });
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(Timber::i);
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             builder.addInterceptor(interceptor);
         }
@@ -131,7 +116,19 @@ public class NetworkModule {
     @Provides
     @Singleton
     CallAdapter.Factory provideCallAdapter(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, Context context) {
-        return RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.ZaloPay);
+        return RxJavaCallAdapterFactory.create(context, ZaloPay);
+    }
+
+    @Provides
+    @Singleton
+    GsonConverterFactory providesGsonConverterFactory(Gson gson) {
+        return GsonConverterFactory.create(gson);
+    }
+
+    @Provides
+    @Singleton
+    ToStringConverterFactory providesStringConverterFactory() {
+        return new ToStringConverterFactory();
     }
 
     @Provides
@@ -150,11 +147,11 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitRedPacketApi")
-    Retrofit provideRetrofitRedPacketApi(@Named("RedPacketHttpUrl") HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
+    Retrofit provideRetrofitRedPacketApi(OkHttpClient okHttpClient, Context context, GsonConverterFactory converter) {
         return new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.RedPacket))
-                .baseUrl(baseUrl)
+                .addConverterFactory(converter)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RedPacket))
+                .baseUrl(BuildConfig.REDPACKET_HOST)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)
                 .build();
@@ -163,9 +160,9 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitPhoto")
-    Retrofit provideRetrofitUploadPhoto(Gson gson, OkHttpClient okHttpClient, CallAdapter.Factory callAdapter) {
+    Retrofit provideRetrofitUploadPhoto(OkHttpClient okHttpClient, CallAdapter.Factory callAdapter, GsonConverterFactory converter) {
         return new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(converter)
                 .addCallAdapterFactory(callAdapter)
                 .baseUrl(BuildConfig.UPLOAD_PHOTO_HOST)
                 .validateEagerly(BuildConfig.DEBUG)
@@ -176,11 +173,10 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitPaymentAppWithRetry")
-    Retrofit providePaymentAppWithRetry(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
+    Retrofit providePaymentAppWithRetry(HttpUrl baseUrl, OkHttpClient okHttpClient, Context context, ToStringConverterFactory converter) {
         return new Retrofit.Builder()
-                .addConverterFactory(new ToStringConverterFactory())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory
-                        .create(context, RxJavaCallAdapterFactory.AdapterType.PaymentAppWithRetry))
+                .addConverterFactory(converter)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, PaymentAppWithRetry))
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)
@@ -190,18 +186,17 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitPaymentAppWithoutRetry")
-    Retrofit providePaymentAppWithoutRetry(HttpUrl baseUrl, Gson gson, OkHttpClient okHttpClient, Context context) {
+    Retrofit providePaymentAppWithoutRetry(HttpUrl baseUrl, OkHttpClient okHttpClient, Context context, ToStringConverterFactory converter) {
         return new Retrofit.Builder()
-                .addConverterFactory(new ToStringConverterFactory())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory
-                        .create(context, RxJavaCallAdapterFactory.AdapterType.PaymentAppWithoutRetry))
+                .addConverterFactory(converter)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, PaymentAppWithoutRetry))
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)
                 .build();
     }
 
-    private static TypeAdapter<Number> NumberTypeAdapter = new TypeAdapter<Number>() {
+    private static final TypeAdapter<Number> NumberTypeAdapter = new TypeAdapter<Number>() {
 
         /**
          * Writes one JSON value (an array, object, string, number, boolean or null)
