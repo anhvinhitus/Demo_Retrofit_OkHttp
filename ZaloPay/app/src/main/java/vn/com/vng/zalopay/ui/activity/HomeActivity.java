@@ -19,7 +19,6 @@ import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.BottomNavigationViewHelper;
 import vn.com.vng.zalopay.utils.IconFontDrawable;
 
 public class HomeActivity extends AbstractReactActivity {
@@ -185,23 +184,29 @@ public class HomeActivity extends AbstractReactActivity {
     private void hideToolbar() {
         mToolbarParams.setMargins(0, 0, 0, mMarginBottom);
         mViewPager.setLayoutParams(mToolbarParams);
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
     }
 
     private void showToolbarSearch() {
-        mToolbarParams.setMargins(0, getSupportActionBar().getHeight(), 0, mMarginBottom);
-        mViewPager.setLayoutParams(mToolbarParams);
-        mEdtSearch.setVisibility(View.VISIBLE);
-        mTxtTitle.setVisibility(View.GONE);
-        getSupportActionBar().show();
+        if (getSupportActionBar() != null) {
+            mToolbarParams.setMargins(0, getSupportActionBar().getHeight(), 0, mMarginBottom);
+            mViewPager.setLayoutParams(mToolbarParams);
+            mEdtSearch.setVisibility(View.VISIBLE);
+            mTxtTitle.setVisibility(View.GONE);
+            getSupportActionBar().show();
+        }
     }
 
     private void showToolbarTitle(@StringRes int strResource) {
-        mEdtSearch.setVisibility(View.GONE);
-        mTxtTitle.setVisibility(View.VISIBLE);
-        mTxtTitle.setText(strResource);
-        getSupportActionBar().show();
-        mToolbarParams.setMargins(0, getSupportActionBar().getHeight(), 0, mMarginBottom);
-        mViewPager.setLayoutParams(mToolbarParams);
+        if (getSupportActionBar() != null) {
+            mEdtSearch.setVisibility(View.GONE);
+            mTxtTitle.setVisibility(View.VISIBLE);
+            mTxtTitle.setText(strResource);
+            getSupportActionBar().show();
+            mToolbarParams.setMargins(0, getSupportActionBar().getHeight(), 0, mMarginBottom);
+            mViewPager.setLayoutParams(mToolbarParams);
+        }
     }
 }
