@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -18,6 +19,8 @@ import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.BottomNavigationViewHelper;
+import vn.com.vng.zalopay.utils.IconFontDrawable;
 
 public class HomeActivity extends AbstractReactActivity {
 
@@ -36,7 +39,6 @@ public class HomeActivity extends AbstractReactActivity {
     @BindView(R.id.navigation)
     BottomNavigationView mBottomNavigationView;
 
-    private HomePagerAdapter mHomePagerAdapter;
     private FrameLayout.LayoutParams mToolbarParams;
     private int mMarginBottom;
 
@@ -61,7 +63,7 @@ public class HomeActivity extends AbstractReactActivity {
 
         initToolbar();
 
-        mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
+        HomePagerAdapter mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mHomePagerAdapter);
 
         mToolbarParams = new FrameLayout.LayoutParams(
@@ -92,20 +94,82 @@ public class HomeActivity extends AbstractReactActivity {
             }
         });
 
+        updateIconFontState(HomePagerAdapter.TAB_MAIN_INDEX);
+
         mBottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.menu_home:
+                    updateIconFontState(HomePagerAdapter.TAB_MAIN_INDEX);
                     mViewPager.setCurrentItem(HomePagerAdapter.TAB_MAIN_INDEX);
                     break;
                 case R.id.menu_nearby:
+                    updateIconFontState(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
                     mViewPager.setCurrentItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
                     break;
                 case R.id.menu_profile:
+                    updateIconFontState(HomePagerAdapter.TAB_PROFILE_INDEX);
                     mViewPager.setCurrentItem(HomePagerAdapter.TAB_PROFILE_INDEX);
                     break;
             }
             return true;
         });
+    }
+
+    private void updateIconFontState(int currentIndex) {
+        Menu menu = mBottomNavigationView.getMenu();
+        switch (currentIndex) {
+            case HomePagerAdapter.TAB_MAIN_INDEX:
+                menu.getItem(HomePagerAdapter.TAB_MAIN_INDEX)
+                        .setIcon(new IconFontDrawable(this)
+                                .setIcon(R.string.tab_home_active)
+                                .setResourcesColor(R.color.colorPrimary)
+                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                menu.getItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX)
+                        .setIcon(new IconFontDrawable(this)
+                                .setIcon(R.string.tab_showshow)
+                                .setResourcesColor(R.color.txt_item_sub)
+                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                menu.getItem(HomePagerAdapter.TAB_PROFILE_INDEX)
+                        .setIcon(new IconFontDrawable(this)
+                                .setIcon(R.string.tab_personal)
+                                .setResourcesColor(R.color.txt_item_sub)
+                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                break;
+            case HomePagerAdapter.TAB_SHOW_SHOW_INDEX:
+                menu.getItem(HomePagerAdapter.TAB_MAIN_INDEX)
+                        .setIcon(new IconFontDrawable(this)
+                                .setIcon(R.string.tab_home)
+                                .setResourcesColor(R.color.txt_item_sub)
+                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                menu.getItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX)
+                        .setIcon(new IconFontDrawable(this)
+                                .setIcon(R.string.tab_showshow_active)
+                                .setResourcesColor(R.color.colorPrimary)
+                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                menu.getItem(HomePagerAdapter.TAB_PROFILE_INDEX)
+                        .setIcon(new IconFontDrawable(this)
+                                .setIcon(R.string.tab_personal)
+                                .setResourcesColor(R.color.txt_item_sub)
+                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                break;
+            case HomePagerAdapter.TAB_PROFILE_INDEX:
+                menu.getItem(HomePagerAdapter.TAB_MAIN_INDEX)
+                        .setIcon(new IconFontDrawable(this)
+                                .setIcon(R.string.tab_home)
+                                .setResourcesColor(R.color.txt_item_sub)
+                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                menu.getItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX)
+                        .setIcon(new IconFontDrawable(this)
+                                .setIcon(R.string.tab_showshow)
+                                .setResourcesColor(R.color.txt_item_sub)
+                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                menu.getItem(HomePagerAdapter.TAB_PROFILE_INDEX)
+                        .setIcon(new IconFontDrawable(this)
+                                .setIcon(R.string.tab_personal_active)
+                                .setResourcesColor(R.color.colorPrimary)
+                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                break;
+        }
     }
 
     private void initToolbar() {

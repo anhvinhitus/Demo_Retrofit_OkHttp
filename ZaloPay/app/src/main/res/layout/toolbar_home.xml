@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/spacing.small"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:text="@string/title.activity.profile" />
 
     <EditText
@@ -31,6 +31,6 @@
         android:drawableRight="@drawable/ic_search"
         android:hint="@string/search"
         android:padding="@dimen/spacing.small.t"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </android.support.v7.widget.Toolbar>

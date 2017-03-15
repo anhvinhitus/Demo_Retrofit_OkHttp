@@ -30,6 +30,7 @@
         android:layout_height="56dp"
         android:layout_gravity="bottom"
         app:itemBackground="@color/white"
+        app:itemIconTint="@color/bottom_nav_icon_color_selector"
         app:menu="@menu/bottom_navigation_items" />
 
 </FrameLayout>

@@ -17,6 +17,7 @@
     <dimen name="font_size_icon_in_text_large">18dp</dimen>
     <dimen name="font_size_icon_in_text">12dp</dimen>
     <dimen name="font_size_arrow_right">12dp</dimen>
+    <dimen name="font_size_tab_icon">22dp</dimen>
 
     <dimen name="textsize.card.number">18sp</dimen>
     <dimen name="textsize.text.main">15sp</dimen>
