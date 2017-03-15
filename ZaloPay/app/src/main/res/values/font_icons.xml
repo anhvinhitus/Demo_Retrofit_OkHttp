@@ -55,4 +55,15 @@
     <string name="webapp_ico_refresh">webapp_refresh</string>
     <string name="webapp_3point_android">webapp_3point_android</string>
     <!--WebApp END-->
+
+    <!--Tab in Home START-->
+    <string name="tab_home">tab_home</string>
+    <string name="tab_home_active">tab_home_active</string>
+    <string name="tab_history">tab_history</string>
+    <string name="tab_history_active">tab_history_active</string>
+    <string name="tab_showshow">tab_showshow</string>
+    <string name="tab_showshow_active">tab_showshow_active</string>
+    <string name="tab_personal">tab_personal</string>
+    <string name="tab_personal_active">tab_personal_active</string>
+    <!--Tab in Home END-->
 </resources>
