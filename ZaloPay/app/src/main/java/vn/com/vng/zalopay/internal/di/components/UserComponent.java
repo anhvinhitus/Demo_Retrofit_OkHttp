@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.bank.ui.BankSupportLinkCardDialog;
 import vn.com.vng.zalopay.banner.ui.fragment.BannerFragment;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorService;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -120,6 +121,8 @@ public interface UserComponent {
 
     @Named("retrofitConnectorSdk")
     Retrofit retrofitConnector();
+
+    PaymentConnectorService connectorService();
 
     /* inject Fragment */
     void inject(ZaloPayFragment f);

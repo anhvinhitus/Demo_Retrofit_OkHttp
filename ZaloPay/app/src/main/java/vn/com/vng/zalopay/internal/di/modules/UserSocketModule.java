@@ -54,10 +54,17 @@ public class UserSocketModule {
         return new ZPNotificationService(context, user, helper, threadExecutor, gson, eventBus, connection);
     }
 
+
     @Provides
     @UserScope
-    PaymentConnectorCallFactory providesConnectorCallFactory(Context context, Connection connection) {
-        return new PaymentConnectorCallFactory(new PaymentConnectorService(context, connection));
+    PaymentConnectorService providesConnectorService(Context context, Connection connection) {
+        return new PaymentConnectorService(context, connection);
+    }
+
+    @Provides
+    @UserScope
+    PaymentConnectorCallFactory providesConnectorCallFactory(PaymentConnectorService connectorService) {
+        return new PaymentConnectorCallFactory(connectorService);
     }
 
     @Provides

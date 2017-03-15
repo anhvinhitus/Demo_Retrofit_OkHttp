@@ -151,11 +151,11 @@ public class ApplicationSessionImpl implements ApplicationSession {
         taskLogout().subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
 
+        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         UserComponent userComponent = AndroidApplication.instance().getUserComponent();
         if (userComponent != null) {
-            userComponent.userSession().endSession();
+            userComponent.connectorService().cancelAll();
         }
-
         // move to login
         ZaloSDK.Instance.unauthenticate();
 
