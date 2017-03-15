@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.util.AppUtils;
 import vn.com.vng.zalopay.util.HMACUtil;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
@@ -101,9 +102,14 @@ public class MainActivity extends ActionBarActivity implements Callback {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(116, "Lien ket VCB thanh cong"));
+                    //CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(116, "Lien ket VCB thanh cong"));
+                    StatusResponse statusResponse = new StatusResponse();
+                    statusResponse.zptransid = null;
+                    statusResponse.isprocessing = false;
+                    statusResponse.returncode = 1;
+                    CShareData.getInstance().notifyTransactionFinish(GsonUtils.toJsonString(statusResponse));
                 }
-            },10000);
+            },60000);
             /*
             ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
 

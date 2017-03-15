@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.helper;
 
 import android.text.TextUtils;
 
+import retrofit2.http.PUT;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
@@ -92,5 +93,15 @@ public class PaymentStatusHelper {
             return false;
         }
         return Constants.PAYMENT_LIMIT_PER_DAY_CODE.contains(pResponse.returncode);
+    }
+
+    public static boolean isPaymentSuccessFromNotification(String pTransactionId, StatusResponse pResponse)
+    {
+        return true;
+//        if(pResponse != null && !pResponse.isprocessing && !TextUtils.isEmpty(pResponse.zptransid) && pResponse.zptransid.equals(pTransactionId) && pResponse.returncode == 1)
+//        {
+//            return true;
+//        }
+//        return false;
     }
 }

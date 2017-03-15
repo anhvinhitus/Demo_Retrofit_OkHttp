@@ -43,7 +43,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private boolean mIsRequesting = false;
     private IDataSourceListener mDataSourceLitener;
     private Call mCallBack;
-    private ArrayList<Call> mTempCallBack;
     private long startTimeRequest = 0;
     private long totalTimeRequest = 0;
     private int retryCount = 1;
@@ -52,7 +51,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     public DataRepository(OkHttpClient pHttpClient) {
         super();
         createRetrofitService(pHttpClient);
-        mTempCallBack = new ArrayList<>();
         resetCountRetry();
     }
 
@@ -88,13 +86,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     public void cancelRequest() {
         if (mCallBack != null && !mCallBack.isCanceled() && mCallBack.isExecuted()) {
             mCallBack.cancel();
-        }
-        for (int i = 0; i < mTempCallBack.size(); i++) {
-            Call call = mTempCallBack.get(i);
-
-            if (call != null && !call.isCanceled() && call.isExecuted()) {
-                call.cancel();
-            }
+            Log.d(this,"canceling request "+mCallBack.toString());
         }
     }
 
@@ -117,9 +109,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             messageIntent.setAction(Constants.FILTER_ACTION_NETWORKING_CHANGED);
             messageIntent.putExtra(Constants.NETWORKING_NOT_STABLE, true);
             LocalBroadcastManager.getInstance(GlobalData.getAppContext()).sendBroadcast(messageIntent);
-
-            //if(GlobalData.getAppContext() != null)
-            //NotificationUtils.shareInstance(GlobalData.getAppContext()).notify(ZPWUtils.getAppLable(GlobalData.getAppContext()),"Mạng dữ liệu cần đăng nhập!",true);
             return true;
         }
         return false;
@@ -335,8 +324,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
                 } else {
                     callBack = mCallBack.clone();
                 }
-
-                mTempCallBack.add(callBack);
             }
 
             Call callExe = (callBack != null) ? callBack : mCallBack;

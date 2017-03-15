@@ -42,6 +42,7 @@ import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
+import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.request.BaseRequest;
 import vn.com.zalopay.wallet.datasource.request.CheckOrderStatusFailSubmit;
 import vn.com.zalopay.wallet.datasource.request.GetBankAccountList;
@@ -63,6 +64,7 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public abstract class AdapterBase {
 
@@ -800,6 +802,24 @@ public abstract class AdapterBase {
                         onCheckTransactionStatus(mResponseStatus);
                     }
                 }
+            } else if (pEventType == EEventType.ON_NOTIFY_TRANSACTION_FINISH) {
+                Log.d(this, "processing result payment from notification");
+                if (pAdditionParams == null || pAdditionParams.length <= 0) {
+                    Log.e(this, "stopping processing result payment from notification because of empty pAdditionParams");
+                    return pAdditionParams;
+                }
+                try {
+                    StatusResponse response = GsonUtils.fromJsonString(pAdditionParams[0].toString(), StatusResponse.class);
+                    if (response != null && PaymentStatusHelper.isPaymentSuccessFromNotification(mTransactionID, response)) {
+                        DataRepository.shareInstance().cancelRequest();
+                        DialogManager.closeAllDialog();
+                        showTransactionSuccessView();
+                    } else {
+                        Log.d(this, "transaction is not finish");
+                    }
+                } catch (Exception ex) {
+                    Log.e(this, ex);
+                }
             }
 
         } catch (Exception e) {
@@ -1001,9 +1021,7 @@ public abstract class AdapterBase {
                 if (isDetected) {
                     getActivity().setText(R.id.zpw_channel_label_textview, getGuiProcessor().getCardFinder().getDetectedBankName());
                 }
-            }
-            else if(GlobalData.isMapBankAccountChannel())
-            {
+            } else if (GlobalData.isMapBankAccountChannel()) {
                 BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(GlobalData.getPaymentInfo().mapBank.bankcode);
                 if (bankConfig != null) {
                     getActivity().setText(R.id.zpw_channel_label_textview, bankConfig.name);
@@ -1923,9 +1941,8 @@ public abstract class AdapterBase {
 
     protected boolean isExistedCardNumberOnCache() throws Exception {
         try {
-            if(getGuiProcessor() == null)
-            {
-                Log.d("isExistedCardNumberOnCache","getGuiProcessor() = null");
+            if (getGuiProcessor() == null) {
+                Log.d("isExistedCardNumberOnCache", "getGuiProcessor() = null");
                 return false;
             }
             String cardNumber = getGuiProcessor().getCardNumber();
@@ -2091,7 +2108,6 @@ public abstract class AdapterBase {
             throw e;
         }
     }
-
 
 
     public void sdkReportError(int pErrorCode) throws Exception {

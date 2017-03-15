@@ -204,6 +204,18 @@ public class CShareData extends SingletonBase {
         }
     }
 
+    public void notifyTransactionFinish(Object... pObject) {
+        //user in sdk now.
+        Log.d(this, GsonUtils.toJsonString(pObject));
+        if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
+                ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() != null) {
+            ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, pObject);
+        } else {
+            //user quit sdk
+            Log.d(this,"user is not in sdk, skip process now...");
+        }
+    }
+
     public CShareData setUserInfo(UserInfo pUserInfo) {
         GlobalData.setUserInfo(pUserInfo);
 
