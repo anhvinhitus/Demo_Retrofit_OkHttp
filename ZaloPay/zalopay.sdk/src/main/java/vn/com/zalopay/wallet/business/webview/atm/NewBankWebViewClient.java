@@ -10,6 +10,7 @@ import android.webkit.WebView;
 
 import java.util.List;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
@@ -160,7 +161,7 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
 
         // Modify this variable to inform that it not run in ajax mode
         mLastStartPageTime++;
-        if (mStartedtUrl.contains(Constants.PAYMENT_HOST)) {
+        if (mStartedtUrl.contains(BuildConfig.HOST_COMPLETE)) {
             view.stopLoading();
         }
     }
@@ -181,7 +182,7 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
     }
 
     protected boolean loadingStaticResource(String pUrl) {
-        return TextUtils.isEmpty(pUrl) || pUrl.contains(Constants.PAYMENT_HOST) || pUrl.endsWith(".css") || pUrl.endsWith(".js") || pUrl.endsWith(".png") || pUrl.endsWith(".ico")
+        return TextUtils.isEmpty(pUrl) || pUrl.contains(BuildConfig.HOST_COMPLETE) || pUrl.endsWith(".css") || pUrl.endsWith(".js") || pUrl.endsWith(".png") || pUrl.endsWith(".ico")
                 || pUrl.endsWith(".xml") || pUrl.endsWith(".jpg") || pUrl.endsWith(".jpeg") || pUrl.endsWith(".gif");
     }
 

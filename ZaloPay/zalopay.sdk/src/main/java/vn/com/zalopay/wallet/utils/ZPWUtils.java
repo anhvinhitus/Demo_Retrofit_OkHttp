@@ -99,19 +99,6 @@ public class ZPWUtils {
 
         return versionName;
     }
-
-    public static String getAppLable(Context context) {
-        ApplicationInfo applicationInfo = null;
-        PackageManager packageManager = null;
-        try {
-            packageManager = context.getPackageManager();
-            applicationInfo = packageManager.getApplicationInfo(Constants.CLIENT_PACKAGE, 0);
-        } catch (Exception e) {
-            Log.d("getAppLable", e);
-        }
-        return (String) ((applicationInfo != null && packageManager != null) ? packageManager.getApplicationLabel(applicationInfo) : "ZaloPay");
-    }
-
     private static byte[] getHash(String password) {
         MessageDigest digest = null;
         try {

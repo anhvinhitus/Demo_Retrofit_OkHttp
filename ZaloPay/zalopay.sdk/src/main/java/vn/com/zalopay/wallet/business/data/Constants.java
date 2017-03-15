@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 
 public class Constants {
-    public static final String SDK_VERSION = "1.0.17";
     public static final String COMMA = ",";
     public static final String UNDERLINE = "_";
-    public static final String PAYMENT_HOST = "payment-complete";
-    public static final String RESOURCE_FOLDER = "/wallet/";
-    public static final String CLIENT_PACKAGE = "vn.com.vng.zalopay";
-    public static final String PLATFORM = "android";
     public static final String URL_PLATFORM_INFO = "v001/tpe/v001getplatforminfo";
     public static final String URL_SUBMIT_ORDER = "v001/tpe/submittrans";
     public static final String URL_GET_STATUS = "v001/tpe/gettransstatus";
@@ -73,7 +69,7 @@ public class Constants {
     public static final int SERVER_MAINTENANCE_CODE = -999;
     public static final int UPGRADE_LEVEL_CODE = -119;
     public static final List<Integer> MONEY_NOT_ENOUGH_CODE = Arrays.asList(-62,-63);
-    public static final List<Integer> PAYMENT_LIMIT_PER_DAY_CODE = Arrays.asList(-165,-166);
+    public static final List<Integer> PAYMENT_LIMIT_PER_DAY_CODE = Arrays.asList(-133);
     public static final int TRANSACTION_PROCESSING = 5;
     public static final int AUTHEN_PAYER_OTP_WRONG_CODE = 17;
     public static final List<Integer> GET_STATUS_AUTHEN_PAYER_CODE = Arrays.asList(14,18);
@@ -97,26 +93,6 @@ public class Constants {
     public static int RESULT_PHARSE = 8;
     public static int UNDEFINE = 9;
     public static String TRUE = "true";
-
-    public static String getUrl() {
-        switch (SDKApplication.getHostType()) {
-            case LIVE:
-                return "https://zalopay.com.vn/";
-
-            case STAGING:
-                return "https://stg.zalopay.com.vn/";
-
-            case SANDBOX:
-                return "https://sandbox.zalopay.com.vn/";
-
-            default:
-                return "https://zalopay.com.vn/";
-        }
-    }
-
-    public static String getUrlZaloPay() {
-        return getUrl();
-    }
 
     public static enum HostType {
         LIVE,
