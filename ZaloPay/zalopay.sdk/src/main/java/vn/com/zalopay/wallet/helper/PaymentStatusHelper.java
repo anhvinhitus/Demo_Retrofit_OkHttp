@@ -25,7 +25,6 @@ public class PaymentStatusHelper {
         if (pResponse == null) {
             return false;
         }
-
         return pResponse.returncode == Constants.TRANSACTION_NOT_SUBMIT;
     }
 
@@ -33,7 +32,6 @@ public class PaymentStatusHelper {
         if (pResponse == null) {
             return false;
         }
-
         return isServerInMaintenance(pResponse.returncode);
     }
 
@@ -54,10 +52,9 @@ public class PaymentStatusHelper {
             return false;
         }
 
-        if (pResponse.isprocessing || pResponse.returncode == Constants.AUTHEN_PAYER_GET_STATUS_CODE_14 || pResponse.returncode == Constants.AUTHEN_PAYER_GET_STATUS_CODE_18) {
+        if (pResponse.isprocessing || Constants.GET_STATUS_AUTHEN_PAYER_CODE.contains(pResponse.returncode)) {
             return true;
         }
-
         return false;
     }
 
@@ -66,10 +63,9 @@ public class PaymentStatusHelper {
     }
 
     public static boolean isNeedToChargeMoreMoney(int pResponseCode) {
-        if (pResponseCode == Constants.MONEY_NOT_ENOUGH_01 || pResponseCode == Constants.MONEY_NOT_ENOUGH_02) {
+        if (Constants.MONEY_NOT_ENOUGH_CODE.contains(pResponseCode)) {
             return true;
         }
-
         return false;
     }
 
@@ -81,7 +77,6 @@ public class PaymentStatusHelper {
         if (pResponse == null) {
             return false;
         }
-
         return String.valueOf(pResponse.actiontype).equalsIgnoreCase(EStatusActionType.THREE3DS.toString());
     }
 
@@ -89,7 +84,13 @@ public class PaymentStatusHelper {
         if (pResponse == null) {
             return false;
         }
-
         return String.valueOf(pResponse.actiontype).equalsIgnoreCase(EStatusActionType.OTP.toString());
+    }
+
+    public static boolean isPaymentOverLimitPerDay(StatusResponse pResponse) {
+        if (pResponse == null) {
+            return false;
+        }
+        return Constants.PAYMENT_LIMIT_PER_DAY_CODE.contains(pResponse.returncode);
     }
 }

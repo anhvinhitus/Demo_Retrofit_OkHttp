@@ -1,5 +1,9 @@
 package vn.com.zalopay.wallet.business.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import vn.com.zalopay.wallet.controller.SDKApplication;
 
 public class Constants {
@@ -68,12 +72,11 @@ public class Constants {
     public static final int CARD_ALREADY_MAP = -164;
     public static final int SERVER_MAINTENANCE_CODE = -999;
     public static final int UPGRADE_LEVEL_CODE = -119;
-    public static final int MONEY_NOT_ENOUGH_01 = -62;
-    public static final int MONEY_NOT_ENOUGH_02 = -63;
+    public static final List<Integer> MONEY_NOT_ENOUGH_CODE = Arrays.asList(-62,-63);
+    public static final List<Integer> PAYMENT_LIMIT_PER_DAY_CODE = Arrays.asList(-165,-166);
     public static final int TRANSACTION_PROCESSING = 5;
     public static final int AUTHEN_PAYER_OTP_WRONG_CODE = 17;
-    public static final int AUTHEN_PAYER_GET_STATUS_CODE_14 = 14;
-    public static final int AUTHEN_PAYER_GET_STATUS_CODE_18 = 18;
+    public static final List<Integer> GET_STATUS_AUTHEN_PAYER_CODE = Arrays.asList(14,18);
     //user submited order to server fail
     public static final int TRANSACTION_NOT_SUBMIT = -49;
     public static final int FORCE_UP_VERSION_CODE = -1001;
