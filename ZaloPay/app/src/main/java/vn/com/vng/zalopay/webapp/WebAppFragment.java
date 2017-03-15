@@ -245,6 +245,11 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
     }
 
     @Override
+    public void writeLog(String type, long time, String data) {
+        Timber.d("type: %s, time: %s, data: %s", type, time, data);
+    }
+
+    @Override
     public void onReceivedTitle(String title) {
 
     }

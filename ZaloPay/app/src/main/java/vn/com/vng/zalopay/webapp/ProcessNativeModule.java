@@ -8,6 +8,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by khattn on 2/20/17.
+ * *
  */
 
 public class ProcessNativeModule implements NativeModule {
@@ -17,6 +18,7 @@ public class ProcessNativeModule implements NativeModule {
     private static String MESSAGE_SHOW_LOADING = "showLoading";
     private static String MESSAGE_HIDE_LOADING = "hideLoading";
     private static String MESSAGE_SHOW_DIALOG = "showDialog";
+    private static String MESSAGE_WRITE_LOG = "writeLog";
 
     ProcessNativeModule(IProcessMessageListener processMessageListener) {
         this.mProcessMessageListener = processMessageListener;
@@ -40,12 +42,15 @@ public class ProcessNativeModule implements NativeModule {
             promise.resolve(null);
         } else if (MESSAGE_SHOW_DIALOG.equalsIgnoreCase(messageName)) {
             showDialog(data, promise);
+        } else if (MESSAGE_WRITE_LOG.equalsIgnoreCase(messageName)) {
+            writeLog(data, promise);
         }
     }
 
     @Override
     public String[] canProcessMessages() {
-        return new String[] { MESSAGE_PAY_ORDER, MESSAGE_SHOW_LOADING, MESSAGE_HIDE_LOADING, MESSAGE_SHOW_DIALOG,};
+        return new String[] { MESSAGE_PAY_ORDER, MESSAGE_SHOW_LOADING, MESSAGE_HIDE_LOADING,
+                MESSAGE_SHOW_DIALOG, MESSAGE_WRITE_LOG, };
     }
 
     private void processPayOrder(final JSONObject data, final Promise promise) {
@@ -72,7 +77,6 @@ public class ProcessNativeModule implements NativeModule {
     }
 
     private void showDialog(final JSONObject data, Promise promise) {
-        // {"title":"Hello","message":"ABC 123","button":"OK"}
         String title = data.optString("title");
         String content = data.optString("message");
         String buttonLabel = data.optString("button");
@@ -82,5 +86,15 @@ public class ProcessNativeModule implements NativeModule {
         }
 
         promise.resolve(null);
+    }
+
+    private void writeLog(final JSONObject data, Promise promise) {
+        String type = data.optString("type");
+        long time = data.optLong("time");
+        String arg = data.optString("data");
+
+        if (mProcessMessageListener != null) {
+            mProcessMessageListener.writeLog(type, time, arg);
+        }
     }
 }
