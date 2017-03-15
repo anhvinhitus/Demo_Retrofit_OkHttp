@@ -77,6 +77,7 @@ public interface Constants {
     int REQUEST_CODE_UPDATE_PROFILE_LEVEL_BEFORE_LINK_ACC = 133;
 
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
+    String ARG_MONEY_TRANSFER_TYPE = "transferType";
     String ARG_SHOW_NOTIFICATION_LINK_CARD = "show_notification_link_card";
 
     interface MoneyTransfer {
@@ -94,6 +95,15 @@ public interface Constants {
 
     interface QRCode {
         int RECEIVE_MONEY = 1;
+        int RECEIVE_FIXED_MONEY = 2;
+    }
+
+    interface TransferFixedMoney {
+        String ZALO_PAY_VERSION = "zv";
+        String ZALO_PAY_ID = "zpid";
+        String TYPE = "t";
+        String AMOUNT = "a";
+        String MESSAGE = "m";
     }
 
     String FILE_PNG = ".png";
