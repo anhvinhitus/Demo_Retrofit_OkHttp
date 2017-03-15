@@ -31,13 +31,13 @@ public class SDKConfiguration {
         return mConfigBuilder.isReleaseBuild();
     }
 
-    public Constants.HostType getHostType() {
-        return mConfigBuilder.getEnumEnvironment();
+    public String getBaseHostUrl() {
+        return mConfigBuilder.getBaseHostUrl();
     }
 
     public static class Builder {
         protected boolean mReleaseBuild;
-        protected Constants.HostType mEnumEnvironment;
+        protected String mBaseHostUrl;
         /***
          * this http client get from app, with connect timeout : read timeout = 10ms:5ms
          */
@@ -67,6 +67,11 @@ public class SDKConfiguration {
             return mHttpClientTimeoutLonger;
         }
 
+        public Builder setHttpClientTimeoutLonger(OkHttpClient pOkHttpClient) {
+            mHttpClientTimeoutLonger = pOkHttpClient;
+            return this;
+        }
+
         public Retrofit getRetrofit() {
             return mRetrofit;
         }
@@ -85,17 +90,12 @@ public class SDKConfiguration {
             return this;
         }
 
-        public Constants.HostType getEnumEnvironment() {
-            return mEnumEnvironment;
+        public String getBaseHostUrl() {
+            return mBaseHostUrl;
         }
 
-        public Builder setHttpClientTimeoutLonger(OkHttpClient pOkHttpClient) {
-            mHttpClientTimeoutLonger = pOkHttpClient;
-            return this;
-        }
-
-        public Builder setHostType(Constants.HostType pHostType) {
-            mEnumEnvironment = pHostType;
+        public Builder setBaseHostUrl(String pBaseHostUrl) {
+            mBaseHostUrl = pBaseHostUrl;
             return this;
         }
 

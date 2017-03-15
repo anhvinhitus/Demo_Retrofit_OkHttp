@@ -62,7 +62,7 @@ public class AppContext extends Application {
                 .setHttpClient(httpClient.build())
                 .setHttpClientTimeoutLonger(httpClientLonger.build())
                 .setReleaseBuild(!BuildConfig.DEBUG)
-                .setHostType(Constants.HostType.STAGING)
+                .setBaseHostUrl(BuildConfig.HOST)
                 .build();
 
         SDKApplication.initialize(this,sdkConfig);

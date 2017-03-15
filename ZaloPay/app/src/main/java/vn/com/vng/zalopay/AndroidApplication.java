@@ -135,7 +135,7 @@ public class AndroidApplication extends Application {
                 .setHttpClient(getAppComponent().okHttpClient())
                 .setHttpClientTimeoutLonger(getAppComponent().okHttpClientTimeoutLonger())
                 .setReleaseBuild(!BuildConfig.DEBUG)
-                .setHostType(BuildConfig.HOST_TYPE)
+                .setBaseHostUrl(BuildConfig.HOST)
                 .build();
         SDKApplication.initialize(this,sdkConfig);
     }

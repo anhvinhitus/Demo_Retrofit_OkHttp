@@ -583,9 +583,8 @@ public class MainActivity extends ActionBarActivity implements Callback {
     }
 
     private void getAccessTocken() {
-        //mUrl = "https://zalopay.com.vn/um/";
-        mUrl = "https://stg.zalopay.com.vn/um/";
-        //mUrl = "https://sandbox.zalopay.com.vn/um/";
+        mUrl = BuildConfig.HOST;
+        mUrl = mUrl.concat("um/");
 
         mServiceAPI = RetrofitSetup.createService(ServiceAPI.class);
         //mCallBack = mServiceAPI.getAccessToken("1",editTextZaloUserID.getText().toString(),"EDjnd71KeIDOznRJNbBpIc749RuJS-DC9Ciakc5QbpSUvLIv1K3PEoZP3DOlSTieMimQv1LEaIfltoAb5cpY8GF9K_0NIRGR6RbXxs1KenmAw1N6TKlsKaUW2CvyFBuyUu9Zt7KziI8RWdBIBotaBYVh3k462j5z98TuZp0_s3zfsq782G2DAKVXRg5aBumu6OjClnHAXb1kutkvQJwwDrpP8P9y6lGm0emae4icwXrMi4tR8YYX2ZM-GxA0MUDJYTPaYeBfNpFAOw-kjh5_JyS5mREaodbPiMx7iF7841lzEBNdaU1W3rvP9gItQ4fmT_Sb");
