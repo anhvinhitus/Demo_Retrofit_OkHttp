@@ -6,16 +6,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.utils.Log;
 
 public class RetrofitSetup {
-    public static String API_BASE_URL = BuildConfig.HOST.get(SDKApplication.getHostType());
-
     private static Retrofit.Builder builder = new Retrofit.Builder()
-            .baseUrl(API_BASE_URL)
+            .baseUrl(SDKApplication.getBaseHostUrl())
             .addConverterFactory(GsonConverterFactory.create());
 
     public static <S> S createService(OkHttpClient httpClient, Class<S> serviceClass) {

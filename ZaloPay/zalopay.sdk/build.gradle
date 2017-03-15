@@ -14,11 +14,6 @@ android {
         buildConfigField 'String', 'HOST_COMPLETE', '"payment-complete"'
         buildConfigField 'String', 'FOLDER_RESOURCE', '"/wallet/"'
         buildConfigField 'String', 'PAYMENT_PLATFORM', '"android"'
-        buildConfigField "java.util.Map<vn.com.zalopay.wallet.business.data.Constants.HostType, String>", "HOST",
-                "new java.util.HashMap<vn.com.zalopay.wallet.business.data.Constants.HostType, String>() " +
-                        "{{ put(vn.com.zalopay.wallet.business.data.Constants.HostType.LIVE,\"https://zalopay.com.vn/\"); " +
-                        "put(vn.com.zalopay.wallet.business.data.Constants.HostType.STAGING,\"https://stg.zalopay.com.vn/\"); " +
-                        "put(vn.com.zalopay.wallet.business.data.Constants.HostType.SANDBOX,\"https://sandbox.zalopay.com.vn/\"); }}"
     }
 
     buildTypes {

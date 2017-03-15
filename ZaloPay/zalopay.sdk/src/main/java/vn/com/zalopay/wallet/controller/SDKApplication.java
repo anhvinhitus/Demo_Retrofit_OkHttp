@@ -364,8 +364,8 @@ public class SDKApplication extends Application {
         return mConfig.isReleaseBuild();
     }
 
-    public static Constants.HostType getHostType() {
-        return mConfig.getHostType();
+    public static String getBaseHostUrl() {
+        return mConfig.getBaseHostUrl();
     }
 
     public static Context getZaloPayContext() throws Exception {

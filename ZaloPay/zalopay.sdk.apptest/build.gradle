@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
     defaultConfig {
-        applicationId "zalopay.vng.com.vn.wallettest"
+        applicationId "vn.com.vng.zalopay"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 11
@@ -22,6 +22,19 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+        production {
+            buildConfigField 'String', 'HOST', '"https://zalopay.com.vn/"'
+        }
+
+        sandbox {
+            buildConfigField 'String', 'HOST', '"https://sandbox.zalopay.com.vn/"'
+        }
+
+        staging {
+            buildConfigField 'String', 'HOST', '"https://stg.zalopay.com.vn/"'
         }
     }
 }
