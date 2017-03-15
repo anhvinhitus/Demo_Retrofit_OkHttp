@@ -101,7 +101,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    CShareData.getInstance().pushNotificationToSdk(new ZPWNotification(116, "Lien ket VCB thanh cong"));
+                    CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(116, "Lien ket VCB thanh cong"));
                 }
             },10000);
             /*
@@ -511,7 +511,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
             }
 
             // push Notification
-//            CShareData.getInstance().pushNotificationToSdk(new ZPWNotification(116, "Lien ket VCB thanh cong"));
+//            CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(116, "Lien ket VCB thanh cong"));
 
 //			// push Notification
 //			JSONObject jsonObject = new JSONObject();
@@ -525,7 +525,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    CShareData.getInstance().pushNotificationToSdk(new ZPWNotification(116, "Lien ket VCB thanh cong"));
+                    CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(116, "Lien ket VCB thanh cong"));
                 }
             },60000);
             */
