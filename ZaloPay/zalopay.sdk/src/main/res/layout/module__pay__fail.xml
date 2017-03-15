@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_info_finish"
-    android:visibility="gone">
+    android:visibility="visible">
 
     <LinearLayout
         android:id="@+id/layout_top"
@@ -40,8 +40,53 @@
             android:gravity="center"
             android:paddingLeft="@dimen/zpw_padding_10"
             android:paddingRight="@dimen/zpw_padding_10"
-            android:textColor="@color/text_color_red"
+            android:textColor="@color/text_color_bold"
             android:textSize="@dimen/zpw_text_size_medium" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_support"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_top"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/zpw_padding_10"
+        android:paddingRight="@dimen/zpw_padding_5">
+
+        <RelativeLayout
+            android:id="@+id/payment_fail_rl_update_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/payment_fail_tv_update_info_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/zpw_margin_top_supper_supper_label"
+                android:gravity="center"
+                android:paddingLeft="@dimen/zpw_padding_10"
+                android:paddingRight="@dimen/zpw_padding_10"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_medium" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/payment_fail_rl_support"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/payment_fail_tv_support_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/zpw_margin_top_supper_supper_label"
+                android:gravity="center"
+                android:paddingLeft="@dimen/zpw_padding_10"
+                android:paddingRight="@dimen/zpw_padding_10"
+                android:textColor="@color/text_color_bold"
+                android:textSize="@dimen/zpw_text_size_medium" />
+        </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

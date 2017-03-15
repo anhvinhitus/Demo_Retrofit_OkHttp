@@ -1453,6 +1453,14 @@ public abstract class AdapterBase {
         getActivity().setText(R.id.zpw_payment_fail_textview, strMessage);
     }
 
+    // datnt10 15.03.2017 add >>
+    protected  void setUpdateInfoLabel() {
+        String strMessage = GlobalData.getStringResource(RS.string.zpw_string_transaction_networking_error);
+
+        getActivity().setText(R.id.payment_fail_tv_update_info_content, strMessage);
+    }
+    // datnt10 15.03.2017 add <<
+
     /***
      * have 2 type of success pay
      * each type have each type of interface
@@ -1656,6 +1664,9 @@ public abstract class AdapterBase {
         getActivity().enableSubmitBtn(true);
 
         setFailLabel();
+        // datnt10 15.03.2017 add >>
+        setUpdateInfoLabel();
+        // datnt10 15.03.2017 add <<
 
         PaymentSnackBar.getInstance().dismiss();
 

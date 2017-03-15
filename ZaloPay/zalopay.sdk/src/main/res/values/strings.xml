@@ -451,6 +451,9 @@
     <string name="zpw_fail_transanction_by_ssl">Website đang giao dịch bị lỗi vấn đề bảo mật (SSL) nên bạn không thể thực hiên giao dịch.\nVui lòng thử lại bằng thẻ khác!</string>
 
     <string name="zpw_have_no_transid">Chưa có mã giao dịch</string>
+    <!-- datnt10 15.03.2017 add >> -->
+    <string name="zpw_update_info">Cập nhật thông tin</string>
+    <!-- datnt10 15.03.2017 add >> -->
     <string name="zpw_support">Bạn Cần Hỗ Trợ ?</string>
     <string name="zpw_support_question">Câu Hỏi Thường Gặp</string>
     <string name="zpw_get_support">Gửi Báo Lỗi</string>
