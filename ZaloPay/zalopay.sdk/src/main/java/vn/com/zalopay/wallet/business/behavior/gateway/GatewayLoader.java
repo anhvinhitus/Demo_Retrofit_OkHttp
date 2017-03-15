@@ -7,7 +7,7 @@ import java.io.File;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
-import vn.com.zalopay.wallet.business.error.CErrorValidate;
+import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.request.DownloadBundle;
 import vn.com.zalopay.wallet.datasource.request.GetPlatformInfo;
@@ -71,7 +71,7 @@ public class GatewayLoader extends SingletonBase {
             Log.d(this, pMessage != null ? pMessage.toJsonString() : "onError");
 
             if (pMessage != null) {
-                CErrorValidate.updateTransactionResult(pMessage.returncode);
+                ErrorManager.updateTransactionResult(pMessage.returncode);
             }
 
             if (mCheckResourceStatisListener != null)

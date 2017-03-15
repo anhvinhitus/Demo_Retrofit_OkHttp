@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
-import vn.com.zalopay.wallet.business.behavior.gateway.BundleResourceLoader;
 import vn.com.zalopay.wallet.business.behavior.view.ChannelStartProcessor;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
@@ -26,12 +25,11 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
-import vn.com.zalopay.wallet.business.error.CErrorValidate;
+import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
-import vn.com.zalopay.wallet.listener.ZPWInitResourceListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
@@ -532,7 +530,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     }
 
     public void notifyToMerchant() {
-        if (CErrorValidate.needToTerminateTransaction())
+        if (ErrorManager.needToTerminateTransaction())
             recycleActivity();
         else
             exitIfUniqueChannel();

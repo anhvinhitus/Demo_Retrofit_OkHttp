@@ -55,7 +55,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
-import vn.com.zalopay.wallet.business.error.CErrorValidate;
+import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.request.DownloadBundle;
@@ -261,7 +261,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     message = DownloadBundle.errorMessage;
                 }
 
-                showDialogAndExit(message, CErrorValidate.showDialogWithStatus());
+                showDialogAndExit(message, ErrorManager.shouldShowDialog());
             }
         }
 
@@ -335,10 +335,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 if (pMessage.returncode == -2 && TextUtils.isEmpty(pMessage.returnmessage))
                     message = GlobalData.getStringResource(RS.string.zpw_not_allow_payment_app);
 
-                CErrorValidate.updateTransactionResult(pMessage.returncode);
+                ErrorManager.updateTransactionResult(pMessage.returncode);
             }
 
-            showDialogAndExit(message, CErrorValidate.showDialogWithStatus());
+            showDialogAndExit(message, ErrorManager.shouldShowDialog());
         }
     };
     //close snackbar networking alert listener

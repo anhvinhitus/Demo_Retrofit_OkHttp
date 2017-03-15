@@ -11,7 +11,7 @@ import vn.com.zalopay.wallet.utils.Log;
 /***
  * error code map table
  */
-public class CErrorValidate {
+public class ErrorManager {
     public static final SparseArray<String> mErrorArray = new SparseArray<>();
     public static final SparseArray<String> mErrorLoginArray = new SparseArray<>();
     public static final SparseArray<String> mErrorAccountArray = new SparseArray<>();
@@ -66,7 +66,7 @@ public class CErrorValidate {
 
     }
 
-    public static boolean showDialogWithStatus() {
+    public static boolean shouldShowDialog() {
         if (GlobalData.getPaymentResult() != null &&
                 (GlobalData.getPaymentResult().paymentStatus != EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID
                         && GlobalData.getPaymentResult().paymentStatus != EPaymentStatus.ZPC_TRANXSTATUS_LOCK_USER)) {

@@ -8,7 +8,7 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
-import vn.com.zalopay.wallet.business.error.CErrorValidate;
+import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.request.BaseRequest;
 import vn.com.zalopay.wallet.datasource.request.GetPlatformInfo;
@@ -53,7 +53,7 @@ public class BGatewayInfo extends SingletonBase {
             mGetPlatformInfoInProcessing = false;
 
             if (pMessage != null)
-                CErrorValidate.updateTransactionResult(pMessage.returncode);
+                ErrorManager.updateTransactionResult(pMessage.returncode);
 
             if (mClientCallback != null)
                 mClientCallback.onError(pMessage != null ? pMessage.returnmessage : null);
