@@ -96,6 +96,9 @@ public class HomeActivity extends AbstractReactActivity {
 
         updateIconFontState(HomePagerAdapter.TAB_MAIN_INDEX);
 
+        //Use this function to show titles of all menu elements when bottomNavigationBar has 4 tabs.
+        //BottomNavigationViewHelper.disableShiftMode(mBottomNavigationView);
+
         mBottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.menu_home:

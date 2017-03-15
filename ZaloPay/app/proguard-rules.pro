@@ -461,3 +461,8 @@ native <methods>;
 }
 ## For API 17+
 #-keepattributes JavascriptInterface
+
+#Disable BottomNavigationView shift mode
+-keepclassmembers class android.support.design.internal.BottomNavigationMenuView {
+    boolean mShiftingMode;
+}
