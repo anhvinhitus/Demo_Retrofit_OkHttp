@@ -66,7 +66,6 @@ public class GetStatus extends BaseRequest<StatusResponse> {
 
             public void onFinish() {
                 cancelTimer();
-
                 askToRetryGetStatus(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_ask_to_retry));
             }
         };
