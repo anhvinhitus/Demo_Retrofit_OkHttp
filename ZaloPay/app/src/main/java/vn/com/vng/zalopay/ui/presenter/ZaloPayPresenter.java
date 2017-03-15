@@ -380,13 +380,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     }
 
 
-    public int getHeightViewBottom(View pTopView, int pNumberItemView, int pNumberApp)
-    {
-        double  heightItem = pTopView.getHeight()/2;
-        int     numberRow = (int) Math.ceil((pNumberItemView / (double)pNumberApp));
-
-        return (int) (heightItem * numberRow);
-    }
 
 
 

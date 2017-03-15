@@ -33,46 +33,17 @@
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <ScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:fillViewport="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/listView"
                     style="@style/RecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false" />
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_marginTop="@dimen/app_padding"
                     android:background="@color/separate" />
-                <include layout="@layout/layout_advertisement" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginTop="@dimen/app_padding" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/listViewBottom"
-                    style="@style/RecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false" />
-            </LinearLayout>
-        </ScrollView>
     </com.zalopay.ui.widget.MultiSwipeRefreshLayout>
 
 

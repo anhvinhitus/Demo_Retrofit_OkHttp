@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -120,7 +121,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mAdapter = new ListAppRecyclerAdapter(getContext(), this);
-        mAdapterBottomApp = new ListAppRecyclerAdapter(getContext(), this);
     }
 
     @Override
@@ -130,21 +130,14 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         presenter.attachView(this);
 
         listView.setHasFixedSize(true);
-        listView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
+        listView.setLayoutManager(new StaggeredGridLayoutManager(SPAN_COUNT_APPLICATION, StaggeredGridLayoutManager.VERTICAL));
         listView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
         listView.setAdapter(mAdapter);
         listView.setFocusable(false);
 
-
-        listViewBottom.setHasFixedSize(true);
-        listViewBottom.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
-        listViewBottom.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
-        listViewBottom.setAdapter(mAdapterBottomApp);
-        listViewBottom.setFocusable(false);
-
         setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
                 getString(R.string.check_internet));
-        mSwipeRefreshLayout.setSwipeableChildren(R.id.scrollView);
+        mSwipeRefreshLayout.setSwipeableChildren(R.id.listView);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         initBanner();
@@ -275,9 +268,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     public void refreshIconFont() {
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
-        }
-        if (mAdapterBottomApp != null) {
-            mAdapterBottomApp.notifyDataSetChanged();
         }
         if (mTopLayout != null) {
             mTopLayout.invalidate();
