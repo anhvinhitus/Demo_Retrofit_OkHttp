@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ScrollView;
@@ -51,6 +52,8 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         fragment.setArguments(bundle);
         return fragment;
     }
+
+    private boolean mDisableEditData = false;
 
     @Inject
     TransferPresenter mPresenter;
@@ -114,9 +117,27 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
                 argument.getLong(Constants.ARG_AMOUNT),
                 argument.getString(Constants.ARG_MESSAGE));
 
-        mPresenter.setTransferMode(argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT));
+        int transferMode = argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT);
+        mPresenter.setTransferMode(transferMode);
 
+        int transferType = argument.getInt(Constants.ARG_MONEY_TRANSFER_TYPE);
+        if (transferType == Constants.QRCode.RECEIVE_FIXED_MONEY) {
+            mDisableEditData = true;
+        }
+
+        if (mDisableEditData) {
+            disableEditAmountAndMessage();
+        }
         mPresenter.onViewCreated();
+    }
+
+    private void disableEditAmountAndMessage() {
+        mAmountView.setFocusable(false);
+        mAmountView.setFocusableInTouchMode(false);
+        mAmountView.setInputType(InputType.TYPE_NULL);
+        mEdtMessageView.setFocusable(false);
+        mEdtMessageView.setFocusableInTouchMode(false);
+        mEdtMessageView.setInputType(InputType.TYPE_NULL);
     }
 
     @Override

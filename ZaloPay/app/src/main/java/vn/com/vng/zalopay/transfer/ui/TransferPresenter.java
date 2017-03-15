@@ -22,7 +22,6 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.repository.AccountRepositoryImpl;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
@@ -126,7 +125,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             return;
         }
 
-        if(requestCode == Constants.REQUEST_CODE_DEPOSIT && mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
+        if (requestCode == Constants.REQUEST_CODE_DEPOSIT && mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
             ZPAnalytics.trackEvent(ZPEvents.ZALO_BACK);
         }
 
@@ -149,6 +148,14 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mSubscription.add(subscription);
     }
 
+    private void getUserInfo(String zaloPayName) {
+        Timber.d("getUserInfo zaloPayName[%s]", zaloPayName);
+        Subscription subscription = mAccountRepository.getUserInfoByZaloPayName(zaloPayName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ZaloPayUserSubscriber());
+        mSubscription.add(subscription);
+    }
 
     private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
         @Override
@@ -175,7 +182,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 return;
             }
 
-            if(mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
+            if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
                 ZPAnalytics.trackEvent(ZPEvents.ZALO_RECEIVER_NOT_FOUND);
             }
 
@@ -208,6 +215,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
             hideLoading();
             mView.updateReceiverInfo(person.displayName, person.avatar, person.zalopayname);
+            checkShowBtnContinue();
         }
     }
 
@@ -364,11 +372,15 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             return;
         }
 
-        Timber.d("onViewCreated zaloPayId [%s] zaloPayName [%s]",
-                mTransaction.zaloPayId, mTransaction.zaloPayName);
+        Timber.d("onViewCreated zaloPayId [%s] zaloPayName [%s] mTransaction.zaloId[%s]",
+                mTransaction.zaloPayId, mTransaction.zaloPayName, mTransaction.zaloId);
         if (TextUtils.isEmpty(mTransaction.zaloPayId)
                 || TextUtils.isEmpty(mTransaction.zaloPayName)) {
-            getUserInfo(mTransaction.zaloId, mTransaction.zaloPayId);
+            if (mTransaction.zaloId > 0 || !TextUtils.isEmpty(mTransaction.zaloPayId)) {
+                getUserInfo(mTransaction.zaloId, mTransaction.zaloPayId);
+            } else if (!TextUtils.isEmpty(mTransaction.zaloPayName)) {
+                getUserInfo(mTransaction.zaloPayName);
+            }
         }
 
         initLimitAmount();

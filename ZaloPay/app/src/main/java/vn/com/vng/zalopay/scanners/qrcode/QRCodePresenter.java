@@ -36,6 +36,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
@@ -164,6 +165,10 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             return;
         }
 
+        if (transferFixedMoney(data, fromPhotoLibrary)) {
+            return;
+        }
+
         if (zpTransaction(data)) {
             return;
         }
@@ -178,11 +183,28 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
     private boolean transferMoney(JSONObject data, boolean fromPhotoLibrary) {
         int type = data.optInt("type", -1);
-        if (type == vn.com.vng.zalopay.Constants.QRCode.RECEIVE_MONEY) {
+        if (type == Constants.QRCode.RECEIVE_MONEY) {
             if (tryTransferMoney(data)) {
                 if (fromPhotoLibrary) {
                     ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
                 } else {
+                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_MONEYTRANSFER);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean transferFixedMoney(JSONObject data, boolean fromPhotoLibrary) {
+        int type = data.optInt(Constants.TransferFixedMoney.TYPE);
+        if (type == Constants.QRCode.RECEIVE_FIXED_MONEY) {
+            if (tryTransferFixedMoney(data)) {
+                if (fromPhotoLibrary) {
+                    // TODO: 3/15/17 - longlv: need update track event
+                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
+                } else {
+                    // TODO: 3/15/17 - longlv: need update track event
                     ZPAnalytics.trackEvent(ZPEvents.SCANQR_MONEYTRANSFER);
                 }
                 return true;
@@ -204,7 +226,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
         List<String> fields = new ArrayList<>();
         int type = data.optInt("type", -1);
-        if (type != vn.com.vng.zalopay.Constants.QRCode.RECEIVE_MONEY) {
+        if (type != Constants.QRCode.RECEIVE_MONEY) {
             return false;
         }
 
@@ -246,15 +268,58 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         }
 
         // Start money transfer process
-        startMoneyTransfer(zalopayId, amount, messageBase64);
+        startMoneyTransfer(zalopayId, "", amount, messageBase64, Constants.QRCode.RECEIVE_MONEY);
 
         hideLoadingView();
         return true;
     }
 
-    private void startMoneyTransfer(long zalopayId, long amount, String message) {
+    private boolean tryTransferFixedMoney(JSONObject data) {
+        Timber.d("Try transfer fixed money via QrCode");
+
+        int type = data.optInt(Constants.TransferFixedMoney.TYPE, -1);
+        Timber.d("tryTransferFixedMoney type[%s]", type);
+        if (type != Constants.QRCode.RECEIVE_FIXED_MONEY) {
+            return false;
+        }
+
+        String zaloPayName = data.optString(Constants.TransferFixedMoney.ZALO_PAY_ID, "");
+        Timber.d("tryTransferFixedMoney zaloPayId[%s]", zaloPayName);
+        if (TextUtils.isEmpty(zaloPayName)) {
+            return false;
+        }
+
+        if (String.valueOf(zaloPayName).equals(mUser.zalopayname)) {
+            return false;
+        }
+
+        long amount = data.optLong(Constants.TransferFixedMoney.AMOUNT, -1);
+        Timber.d("tryTransferFixedMoney [%s]", amount);
+        if (amount <= 0) {
+            return false;
+        }
+
+        String messageBase64 = data.optString(Constants.TransferFixedMoney.MESSAGE);
+        Timber.d("tryTransferFixedMoney messageBase64[%s]", messageBase64);
+        if (TextUtils.isEmpty(messageBase64)) {
+            return false;
+        }
+
+        // Start money transfer process
+        startMoneyTransfer(null, zaloPayName, amount, messageBase64, Constants.QRCode.RECEIVE_FIXED_MONEY);
+
+        hideLoadingView();
+        return true;
+    }
+
+    private void startMoneyTransfer(Long zaloPayId, String zaloPayName, long amount, String message, int type) {
         RecentTransaction item = new RecentTransaction();
-        item.zaloPayId = String.valueOf(zalopayId);
+        if (zaloPayId != null) {
+            item.zaloPayId = String.valueOf(zaloPayId);
+        }
+        if (!TextUtils.isEmpty(zaloPayName)) {
+            item.zaloPayName = zaloPayName;
+        }
         if (amount != -1) {
             item.amount = amount;
         }
@@ -264,8 +329,9 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         }
 
         Bundle bundle = new Bundle();
-        bundle.putInt(vn.com.vng.zalopay.Constants.ARG_MONEY_TRANSFER_MODE, vn.com.vng.zalopay.Constants.MoneyTransfer.MODE_QR);
-        bundle.putParcelable(vn.com.vng.zalopay.Constants.ARG_TRANSFERRECENT, item);
+        bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_QR);
+        bundle.putInt(Constants.ARG_MONEY_TRANSFER_TYPE, type);
+        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
         mNavigator.startTransferActivity(mView.getContext(), bundle, false);
     }
 

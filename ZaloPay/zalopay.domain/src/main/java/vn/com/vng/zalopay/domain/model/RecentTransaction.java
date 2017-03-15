@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 /**
  * Created by longlv on 11/06/2016.
+ * *
  */
 public class RecentTransaction implements Parcelable {
 
