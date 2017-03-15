@@ -37,7 +37,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
-import vn.com.zalopay.wallet.business.error.CErrorValidate;
+import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
@@ -1163,7 +1163,7 @@ public abstract class AdapterBase {
     protected void onCheckTransactionStatus(StatusResponse pStatusResponse) {
         try {
             if (pStatusResponse != null && pStatusResponse.returncode < 0) {
-                CErrorValidate.updateTransactionResult(pStatusResponse.returncode);
+                ErrorManager.updateTransactionResult(pStatusResponse.returncode);
             }
             //error pin
             if (pStatusResponse != null && pStatusResponse.returncode == Constants.PIN_WRONG_RETURN_CODE) {
@@ -1718,7 +1718,7 @@ public abstract class AdapterBase {
     protected void showDialog(final String pMessage) {
         showProgressBar(false, null);
 
-        if (CErrorValidate.needToTerminateTransaction()) {
+        if (ErrorManager.needToTerminateTransaction()) {
             terminate(pMessage, false);
             return;
         }
