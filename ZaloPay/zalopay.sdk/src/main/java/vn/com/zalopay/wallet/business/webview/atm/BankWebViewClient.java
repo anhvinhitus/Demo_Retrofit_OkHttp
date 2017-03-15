@@ -11,6 +11,7 @@ import android.webkit.WebView;
 
 import java.util.List;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -190,7 +191,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
         /***
          * STOP WEBVIEW IF THIS IS THE FINAL STEP (REDIRECT SUCCESS FROM 123PAY)
          */
-        if (mStartedtUrl.contains(Constants.PAYMENT_HOST)) {
+        if (mStartedtUrl.contains(BuildConfig.HOST_COMPLETE)) {
             view.stopLoading();
         }
     }

@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 
@@ -72,7 +73,7 @@ public class StorageUtil {
         String unzipFolder = null;
 
         try {
-            unzipFolder = GlobalData.getAppContext().getFilesDir().getPath() + Constants.RESOURCE_FOLDER;
+            unzipFolder = GlobalData.getAppContext().getFilesDir().getPath() + BuildConfig.FOLDER_RESOURCE;
 
             File f = new File(unzipFolder);
 
@@ -93,7 +94,7 @@ public class StorageUtil {
          */
         try {
             if (StorageUtil.isExternalStorageAvailable()) {
-                unzipFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.RESOURCE_FOLDER;
+                unzipFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + BuildConfig.FOLDER_RESOURCE;
 
                 File f = new File(unzipFolder);
 

@@ -4,6 +4,7 @@ import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -40,7 +41,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         Log.d("====CCWebViewClient.shouldOverrideUrlLoading====", url);
-        if ((url.contains(mMerchantPrefix) || url.contains(Constants.PAYMENT_HOST)) && getAdapter() != null) {
+        if ((url.contains(mMerchantPrefix) || url.contains(BuildConfig.HOST_COMPLETE)) && getAdapter() != null) {
             getAdapter().onEvent(EEventType.ON_PAYMENT_RESULT_BROWSER, new Object());
             return true;
         }

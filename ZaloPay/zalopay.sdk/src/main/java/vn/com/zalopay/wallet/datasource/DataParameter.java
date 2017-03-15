@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import java.util.HashMap;
 
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
@@ -49,7 +50,7 @@ public class DataParameter {
 
     public static void prepareGetBankList(HashMap<String, String> params, String pCheckSumBankList) throws Exception {
         putBase(params);
-        params.put(ConstantParams.PLATFORM, Constants.PLATFORM);
+        params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.CHECKSUM, pCheckSumBankList != null ? pCheckSumBankList : "");
     }
 
@@ -233,7 +234,7 @@ public class DataParameter {
 
         params.put(ConstantParams.USER_ID, paymentInfo.userInfo.zaloPayUserId);
         params.put(ConstantParams.ACCESS_TOKEN, paymentInfo.userInfo.accessToken);
-        params.put(ConstantParams.PLATFORM_CODE, Constants.PLATFORM);
+        params.put(ConstantParams.PLATFORM_CODE, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.DS_SCREEN_TYPE, DimensionUtil.getScreenType(GlobalData.getAppContext()));
         params.put(ConstantParams.PLATFORM_IN_FOCHECKSUM, checksum);
         params.put(ConstantParams.RESOURCE_VERSION, resrcVer);
@@ -255,11 +256,11 @@ public class DataParameter {
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         params.put(ConstantParams.ZALO_ID, GlobalData.getPaymentInfo().userInfo.zaloUserId);
-        params.put(ConstantParams.PLATFORM, Constants.PLATFORM);
+        params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID());
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
         params.put(ConstantParams.APP_VERSION, ZPWUtils.getAppVersion(GlobalData.getAppContext()));
-        params.put(ConstantParams.SDK_VERSION, Constants.SDK_VERSION);
+        params.put(ConstantParams.SDK_VERSION, BuildConfig.SDK_BUILD_VERSION);
         params.put(ConstantParams.OS_VERSION, Build.VERSION.RELEASE);
         params.put(ConstantParams.CONN_TYPE, ConnectionUtil.getConnectionType(GlobalData.getAppContext()));
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
@@ -330,13 +331,13 @@ public class DataParameter {
         params.put(ConstantParams.DESCRIPTION, paymentInfo.description);
         params.put(ConstantParams.EMBED_DATA, paymentInfo.embedData);
         params.put(ConstantParams.MAC, paymentInfo.mac);
-        params.put(ConstantParams.PLATFORM, Constants.PLATFORM);
-        params.put(ConstantParams.PLATFORM_CODE, Constants.PLATFORM);
+        params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
+        params.put(ConstantParams.PLATFORM_CODE, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.AMOUNT, String.valueOf(GlobalData.getPaymentInfo().amount));
         params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID());
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
         params.put(ConstantParams.APP_VERSION, ZPWUtils.getAppVersion(GlobalData.getAppContext()));
-        params.put(ConstantParams.SDK_VERSION, Constants.SDK_VERSION);
+        params.put(ConstantParams.SDK_VERSION, BuildConfig.SDK_BUILD_VERSION);
         params.put(ConstantParams.OS_VERSION, Build.VERSION.RELEASE);
         params.put(ConstantParams.CONN_TYPE, ConnectionUtil.getConnectionType(GlobalData.getAppContext()));
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
@@ -357,11 +358,11 @@ public class DataParameter {
         params.put(ConstantParams.ZALO_ID, String.valueOf(paymentInfo.userInfo.zaloUserId));
         params.put(ConstantParams.ACCESS_TOKEN, String.valueOf(paymentInfo.userInfo.accessToken));
         params.put(ConstantParams.BANK_ACCOUNT_INFO, String.valueOf(pBankAccInfo));
-        params.put(ConstantParams.PLATFORM, Constants.PLATFORM);
+        params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID());
         params.put(ConstantParams.APP_VERSION, ZPWUtils.getAppVersion(GlobalData.getAppContext()));
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
-        params.put(ConstantParams.SDK_VERSION, Constants.SDK_VERSION);
+        params.put(ConstantParams.SDK_VERSION, BuildConfig.SDK_BUILD_VERSION);
         params.put(ConstantParams.OS_VERSION, Build.VERSION.RELEASE);
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
         params.put(ConstantParams.CONN_TYPE, ConnectionUtil.getConnectionType(GlobalData.getAppContext()));
