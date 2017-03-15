@@ -220,6 +220,11 @@ public class TransferHomeFragment extends BaseFragment implements
     }
 
     @Override
+    public void reloadIntroAnimation() {
+        loadAnimationFromResource();
+    }
+
+    @Override
     public void onItemRecentClick(RecentTransaction item) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);

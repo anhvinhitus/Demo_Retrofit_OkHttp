@@ -5,7 +5,7 @@ package com.zalopay.ui.widget.iconfont;
  * *
  */
 
-enum IconFontType {
+public enum IconFontType {
     UNKNOWN(0), ASSET(1), RESOURCE_APP_1(2);
 
     int value;

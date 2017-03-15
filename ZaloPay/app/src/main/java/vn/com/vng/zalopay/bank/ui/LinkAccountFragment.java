@@ -198,6 +198,13 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     }
 
     @Override
+    public void refreshLinkedAccount() {
+        if (mAdapter != null && mAdapter.getItemCount() > 0) {
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     public void refreshLinkedAccount(List<BankAccount> bankAccounts) {
         mAdapter.setData(bankAccounts);
         showOrHideLayoutEmpty();

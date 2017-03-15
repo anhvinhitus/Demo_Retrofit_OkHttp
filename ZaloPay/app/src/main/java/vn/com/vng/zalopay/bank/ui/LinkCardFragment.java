@@ -297,6 +297,12 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         super.onDestroy();
     }
 
+    public void refreshLinkedCard() {
+        if (mAdapter != null && mAdapter.getItemCount() > 0) {
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public void setData(List<BankCard> bankCards) {
         mAdapter.setData(bankCards);
