@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -19,6 +21,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
@@ -63,6 +66,8 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     abstract void onAddCardSuccess(DBaseMap mappedCreditCard);
 
     abstract void onPayResponseError(PaymentError paymentError);
+
+    abstract void onLoadIconFontSuccess();
 
     abstract void showLoadingView();
 
@@ -132,6 +137,20 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 onUpdateVersion(forceUpdate, latestVersion, message);
             }
         };
+    }
+
+    @Override
+    public void attachView(View view) {
+        super.attachView(view);
+        if (!mEventBus.isRegistered(this)) {
+            mEventBus.register(this);
+        }
+    }
+
+    @Override
+    public void detachView() {
+        mEventBus.unregister(this);
+        super.detachView();
     }
 
     @Override
@@ -274,5 +293,12 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             }
         }
         return ECardType.UNDEFINE.toString();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
+        if (event != null) {
+            onLoadIconFontSuccess();
+        }
     }
 }

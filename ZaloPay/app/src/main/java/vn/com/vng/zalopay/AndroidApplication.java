@@ -23,11 +23,14 @@ import com.zalopay.ui.widget.iconfont.IconFontHelper;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 import com.zing.zalo.zalosdk.oauth.ZaloSDKApplication;
 
+import org.greenrobot.eventbus.EventBus;
+
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
@@ -124,6 +127,7 @@ public class AndroidApplication extends Application {
                     Typeface.NORMAL,
                     IconFontHelper.getInstance().getCurrentTypeface());
         }
+        EventBus.getDefault().post(new LoadIconFontEvent(IconFontHelper.getInstance().getCurrentIconFontType()));
     }
 
     private void initPaymentSdk() {

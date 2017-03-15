@@ -7,11 +7,12 @@ import android.content.SharedPreferences;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -29,6 +30,7 @@ import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
@@ -158,6 +160,13 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
     }
 
     @Override
+    void onLoadIconFontSuccess() {
+        if (mView != null) {
+            mView.refreshLinkedAccount();
+        }
+    }
+
+    @Override
     protected void showLoadingView() {
         if (mView == null) {
             return;
@@ -257,6 +266,14 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
             tmp.add(new BankAccount("B", "Nguyễn Văn", "123456", "4321", "ZPVCB"));
             tmp.add(new BankAccount("C", "Nguyễn Văn", "432100", "6789", "123PVTB"));*/
             onGetLinkedAccountSuccess(bankAccounts);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
+        Timber.d("onLoadIconFontSuccess ");
+        if (event != null && mView != null) {
+            mView.refreshLinkedAccount();
         }
     }
 }

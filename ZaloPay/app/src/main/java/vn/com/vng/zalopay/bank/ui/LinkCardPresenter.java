@@ -12,7 +12,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -42,6 +41,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
@@ -57,7 +57,8 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                       BalanceStore.Repository balanceRepository,
                       TransactionStore.Repository transactionRepository,
                       User user,
-                      SharedPreferences sharedPreferences, EventBus eventBus) {
+                      SharedPreferences sharedPreferences,
+                      EventBus eventBus) {
         super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
                 user, sharedPreferences, eventBus);
     }
@@ -257,6 +258,13 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             if (mView != null) {
                 mView.gotoTabLinkAccount();
             }
+        }
+    }
+
+    @Override
+    void onLoadIconFontSuccess() {
+        if (mView != null) {
+            mView.refreshLinkedCard();
         }
     }
 
