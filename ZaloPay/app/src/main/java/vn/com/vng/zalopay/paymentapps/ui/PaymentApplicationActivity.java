@@ -313,11 +313,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     }
 
     protected boolean clearUserSession(String message) {
-
-        if (getUserComponent() != null) {
-            getUserComponent().userSession().endSession();
-        }
-
         getAppComponent().applicationSession().setMessageAtLogin(message);
         getAppComponent().applicationSession().clearUserSession();
         return true;
