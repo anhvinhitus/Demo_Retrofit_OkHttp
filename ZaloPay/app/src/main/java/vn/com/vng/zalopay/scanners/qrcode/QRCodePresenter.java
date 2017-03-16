@@ -103,6 +103,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     private void showNetworkErrorAndResumeAfterDismiss() {
+        hideLoadingView();
         if (mView == null) {
             return;
         }
@@ -158,7 +159,8 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             return;
         }
 
-        if (transferFixedMoney(data, fromPhotoLibrary)) {
+        boolean isQRCodeOfZaloPay = isQRCodeOfZaloPay(data);
+        if (isQRCodeOfZaloPay && handleQRCodeOfZaloPay(data, fromPhotoLibrary)) {
             return;
         }
 
@@ -171,7 +173,28 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             return;
         }
 
-        resumeScanningAfterWrongQR();
+        if (isQRCodeOfZaloPay) {
+            showDialogNeedUpgradeApp();
+        } else {
+            resumeScanningAfterWrongQR();
+        }
+    }
+
+    private boolean handleQRCodeOfZaloPay(JSONObject data, boolean fromPhotoLibrary) {
+        int type = data.optInt(Constants.TransferFixedMoney.TYPE);
+        if (type == Constants.QRCode.RECEIVE_FIXED_MONEY) {
+            return transferFixedMoney(data, fromPhotoLibrary);
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isQRCodeOfZaloPay(JSONObject data) {
+        if (data == null || !data.has(Constants.QRCode.APP)) {
+            return false;
+        }
+        String qrCodeApp = data.optString(Constants.QRCode.APP);
+        return Constants.QRCode.ZALO_PAY.equals(qrCodeApp);
     }
 
     private boolean transferMoney(JSONObject data, boolean fromPhotoLibrary) {
@@ -190,27 +213,22 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     private boolean transferFixedMoney(JSONObject data, boolean fromPhotoLibrary) {
-        int type = data.optInt(Constants.TransferFixedMoney.TYPE);
-        if (type == Constants.QRCode.RECEIVE_FIXED_MONEY) {
-            if (tryTransferFixedMoney(data)) {
-                if (fromPhotoLibrary) {
-                    // TODO: 3/15/17 - longlv: need update track event
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
-                } else {
-                    // TODO: 3/15/17 - longlv: need update track event
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_MONEYTRANSFER);
-                }
-                return true;
+        if (tryTransferFixedMoney(data)) {
+            if (fromPhotoLibrary) {
+                // TODO: 3/15/17 - longlv: need update track event
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
+            } else {
+                // TODO: 3/15/17 - longlv: need update track event
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_MONEYTRANSFER);
             }
+            return true;
         }
         return false;
     }
 
     private void resumeScanningAfterWrongQR() {
-        hideLoadingView();
-
         ZPAnalytics.trackEvent(ZPEvents.SCANQR_WRONGCODE);
-        qrDataInvalid();
+        showDialogDataInvalid();
     }
 
     private boolean tryTransferMoney(JSONObject data) {
@@ -327,9 +345,28 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         mNavigator.startTransferActivity(mView.getContext(), bundle, false);
     }
 
-    private void qrDataInvalid() {
+    private void showDialogDataInvalid() {
+        hideLoadingView();
         if (mView != null && mView.getContext() != null) {
-            mView.showWarningDialog(mView.getContext().getString(R.string.data_invalid),
+            mView.showWarningDialog(mView.getContext().getString(R.string.qrcode_data_invalid),
+                    new ZPWOnEventConfirmDialogListener() {
+                        @Override
+                        public void onCancelEvent() {
+                            mView.resumeScanner();
+                        }
+
+                        @Override
+                        public void onOKevent() {
+                            mView.resumeScanner();
+                        }
+                    });
+        }
+    }
+
+    private void showDialogNeedUpgradeApp() {
+        hideLoadingView();
+        if (mView != null && mView.getContext() != null) {
+            mView.showWarningDialog(mView.getContext().getString(R.string.qrcode_need_upgrade_to_pay),
                     new ZPWOnEventConfirmDialogListener() {
                         @Override
                         public void onCancelEvent() {
@@ -366,12 +403,12 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
     public void pay(final Intent data) {
         if (data == null) {
-            qrDataInvalid();
+            showDialogDataInvalid();
             return;
         }
         final Uri uri = data.getData();
         if (uri == null) {
-            qrDataInvalid();
+            showDialogDataInvalid();
             return;
         }
         Timber.d("pay by image uri [%s]", uri.toString());
@@ -470,7 +507,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         public void onNext(JsonObject jsonObject) {
             hideLoadingView();
             if (jsonObject == null || TextUtils.isEmpty(jsonObject.toString())) {
-                qrDataInvalid();
+                showDialogDataInvalid();
                 return;
             }
             pay(jsonObject.toString(), false);
@@ -486,7 +523,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
                 /*if (mView != null && mView.getContext() != null) {
                     mNavigator.startWebAppActivity(mView.getContext(), mUrl);
                 }*/
-                qrDataInvalid();
+                showDialogDataInvalid();
             }
         }
     }
