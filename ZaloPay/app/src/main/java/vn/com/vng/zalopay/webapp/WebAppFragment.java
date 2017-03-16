@@ -246,7 +246,19 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
 
     @Override
     public void writeLog(String type, long time, String data) {
-        Timber.d("type: %s, time: %s, data: %s", type, time, data);
+        switch (type) {
+            case "info":
+                Timber.i("time: %s, data: %s", time, data);
+                break;
+            case "warn":
+                Timber.w("time: %s, data: %s", time, data);
+                break;
+            case "error":
+                Timber.e("time: %s, data: %s", time, data);
+                break;
+            default:
+                Timber.d("type: %s, time: %s, data: %s", type, time, data);
+        }
     }
 
     @Override
