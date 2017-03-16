@@ -258,8 +258,13 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             return false;
         }
 
+        String message = "";
+        if (!TextUtils.isEmpty(messageBase64)) {
+            message = new String(Base64.decode(messageBase64, Base64.NO_PADDING | Base64.NO_WRAP));
+        }
+
         // Start money transfer process
-        startMoneyTransfer(zalopayId, "", amount, messageBase64, Constants.QRCode.RECEIVE_MONEY);
+        startMoneyTransfer(zalopayId, "", amount, message, Constants.QRCode.RECEIVE_MONEY);
 
         hideLoadingView();
         return true;
@@ -290,11 +295,11 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             return false;
         }
 
-        String messageBase64 = data.optString(Constants.TransferFixedMoney.MESSAGE);
-        Timber.d("tryTransferFixedMoney messageBase64 [%s]", messageBase64);
+        String message = data.optString(Constants.TransferFixedMoney.MESSAGE);
+        Timber.d("tryTransferFixedMoney message [%s]", message);
 
         // Start money transfer process
-        startMoneyTransfer(null, zaloPayName, amount, messageBase64, Constants.QRCode.RECEIVE_FIXED_MONEY);
+        startMoneyTransfer(null, zaloPayName, amount, message, Constants.QRCode.RECEIVE_FIXED_MONEY);
 
         hideLoadingView();
         return true;
@@ -312,9 +317,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             item.amount = amount;
         }
 
-        if (!TextUtils.isEmpty(message)) {
-            item.message = new String(Base64.decode(message, Base64.NO_PADDING | Base64.NO_WRAP));
-        }
+        item.message = message;
 
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_QR);
