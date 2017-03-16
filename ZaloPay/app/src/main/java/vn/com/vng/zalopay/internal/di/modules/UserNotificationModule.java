@@ -30,7 +30,7 @@ public class UserNotificationModule {
 
     @UserScope
     @Provides
-    NotificationStore.RequestService provideNotificationRequestService(@Named("retrofitApi") Retrofit retrofit) {
+    NotificationStore.RequestService provideNotificationRequestService(@Named("retrofitConnector") Retrofit retrofit) {
         return retrofit.create(NotificationStore.RequestService.class);
     }
 

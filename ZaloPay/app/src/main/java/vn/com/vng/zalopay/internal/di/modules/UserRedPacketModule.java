@@ -42,7 +42,7 @@ public class UserRedPacketModule {
 
     @Provides
     @UserScope
-    RedPacketStore.RequestTPEService providesRedPacketTPEService(@Named("retrofitApi") Retrofit retrofit) {
+    RedPacketStore.RequestTPEService providesRedPacketTPEService(@Named("retrofitConnector") Retrofit retrofit) {
         return retrofit.create(RedPacketStore.RequestTPEService.class);
     }
 
