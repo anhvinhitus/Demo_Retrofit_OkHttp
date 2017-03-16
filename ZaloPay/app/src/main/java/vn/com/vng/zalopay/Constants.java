@@ -99,6 +99,14 @@ public interface Constants {
         int RECEIVE_FIXED_MONEY = 2;
     }
 
+    interface TransferMoney {
+        String TYPE = "type";
+        String UID = "uid";
+        String AMOUNT = "amount";
+        String MESSAGE = "message";
+        String CHECKSUM = "checksum";
+    }
+
     interface TransferFixedMoney {
         String ZALO_PAY_VERSION = "zv";
         String ZALO_PAY_ID = "zpid";
