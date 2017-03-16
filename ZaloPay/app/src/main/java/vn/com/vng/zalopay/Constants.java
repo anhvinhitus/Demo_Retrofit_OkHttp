@@ -2,6 +2,7 @@ package vn.com.vng.zalopay;
 
 /**
  * Created by AnhHieu on 3/25/16.
+ * *
  */
 public interface Constants {
     int CONNECTION_POOL_DOWNLOAD_COUNT = 1;
@@ -95,6 +96,8 @@ public interface Constants {
     public static final String REGISTRATION_COMPLETE = "registrationComplete";*/
 
     interface QRCode {
+        String APP = "app";
+        String ZALO_PAY = "zp";
         int RECEIVE_MONEY = 1;
         int RECEIVE_FIXED_MONEY = 2;
     }

@@ -372,5 +372,12 @@
     <string name="search_no_result">Không có kết quả nào được tìm thấy</string>
 
     <string name="see_all">Xem tất cả</string>
+    <string name="left">left</string>
+    <string name="top">top</string>
+    <string name="right">right</string>
+    <string name="bottom">bottom</string>
+
+    <string name="qrcode.need.upgrade.to.pay">Cập nhật phiên bản mới nhất để quét QR</string>
+    <string name="qrcode.data.invalid">Mã QR code không hợp lệ</string>
 </resources>
 
