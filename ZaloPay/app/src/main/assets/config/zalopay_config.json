@@ -8,5 +8,65 @@
     ],
     "invalid_length_message": "Số điện thoại cần 10 hoặc 11 chữ số",
     "general_message": "Số điện thoại không hợp lệ"
-  }
+  },
+  "inside_app": [
+    {
+      "inside_app_id": 1,
+      "app_type": -1,
+      "app_name": "Rút tiền",
+      "icon_name": "notify_1_withdraw",
+      "icon_color": "#f6b501"
+    },{
+      "inside_app_id": 2,
+      "app_type": -1,
+      "app_name": "Nạp tiền",
+      "icon_name": "notify_1_receivemoney",
+      "icon_color": "#129d5a"
+    },{
+      "inside_app_id": 3,
+      "app_type": -1,
+      "app_name": "Liên kết thẻ",
+      "icon_name": "menu_linkcard",
+      "icon_color": "#f6b501"
+    },{
+      "inside_app_id": 4,
+      "app_type": -1,
+      "app_name": "Trả tiền",
+      "icon_name": "menu_payqrcode",
+      "icon_color": "#f6b501"
+    },{
+      "inside_app_id": 5,
+      "app_type": -2,
+      "app_name": "Lịch sử thanh toán",
+      "icon_name": "menu_history",
+      "icon_color": "#de4438",
+      "module_name": "TransactionLogs"
+    },{
+      "inside_app_id": 6,
+      "app_type": -2,
+      "app_name": "Trung tâm hỗ trợ",
+      "icon_name": "menu_supportcenter",
+      "icon_color": "#53718b",
+      "module_name": "SupportCenter"
+    },{
+      "inside_app_id": 7,
+      "app_type": -2,
+      "app_name": "Thông tin ứng dụng",
+      "icon_name": "menu_infomation",
+      "icon_color": "#53718b",
+      "module_name": "About"
+    },{
+      "inside_app_id": 8,
+      "app_type": -1,
+      "app_name": "Thông tin tài khoản",
+      "icon_name": "profile_avatadefault",
+      "icon_color": "#53718b"
+    },{
+      "inside_app_id": 9,
+      "app_type": -2,
+      "app_name": "Thông báo",
+      "icon_name": "nav_notify",
+      "icon_color": "#53718b",
+      "module_name": "Notifications"
+    }]
 }

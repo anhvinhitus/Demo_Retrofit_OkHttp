@@ -13,6 +13,7 @@ import java.util.Locale;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
+import vn.com.vng.zalopay.data.util.InsideAppUtil;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.Config;
 
@@ -66,10 +67,14 @@ public class ConfigUtil {
         }
         Gson gson = new Gson();
         Config config = gson.fromJson(jsonConfig, Config.class);
-        return loadConfigPhoneFormat(config);
+        return loadConfigPhoneFormat(config) && loadConfigInsideApp(config);
     }
 
     private static boolean loadConfigPhoneFormat(Config config) {
         return config != null && PhoneUtil.setPhoneFormat(config.mPhoneFormat);
+    }
+
+    private static boolean loadConfigInsideApp(Config config) {
+        return config != null && InsideAppUtil.setInsideApps(config.mInsideAppList);
     }
 }
