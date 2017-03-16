@@ -101,7 +101,7 @@ public interface Constants {
         int RECEIVE_FIXED_MONEY = 2;
     }
 
-    interface TransferMoney {
+    interface ReceiveMoney {
         String TYPE = "type";
         String UID = "uid";
         String AMOUNT = "amount";

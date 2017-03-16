@@ -198,7 +198,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     private boolean transferMoney(JSONObject data, boolean fromPhotoLibrary) {
-        int type = data.optInt(Constants.TransferMoney.TYPE, -1);
+        int type = data.optInt(Constants.ReceiveMoney.TYPE, -1);
         if (type == Constants.QRCode.RECEIVE_MONEY) {
             if (tryTransferMoney(data)) {
                 if (fromPhotoLibrary) {
@@ -235,14 +235,14 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         Timber.d("transferMoneyViaQrCode");
 
         List<String> fields = new ArrayList<>();
-        int type = data.optInt(Constants.TransferMoney.TYPE, -1);
+        int type = data.optInt(Constants.ReceiveMoney.TYPE, -1);
         if (type != Constants.QRCode.RECEIVE_MONEY) {
             return false;
         }
 
         fields.add(String.valueOf(type));
 
-        long zaloPayId = data.optLong(Constants.TransferMoney.UID, -1);
+        long zaloPayId = data.optLong(Constants.ReceiveMoney.UID, -1);
         if (zaloPayId <= 0) {
             return false;
         }
@@ -253,17 +253,17 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
         fields.add(String.valueOf(zaloPayId));
 
-        long amount = data.optLong(Constants.TransferMoney.AMOUNT, -1);
+        long amount = data.optLong(Constants.ReceiveMoney.AMOUNT, -1);
         if (amount != -1) {
             fields.add(String.valueOf(amount));
         }
 
-        String messageBase64 = data.optString(Constants.TransferMoney.MESSAGE);
+        String messageBase64 = data.optString(Constants.ReceiveMoney.MESSAGE);
         if (!TextUtils.isEmpty(messageBase64)) {
             fields.add(messageBase64);
         }
 
-        String checksum = data.optString(Constants.TransferMoney.CHECKSUM);
+        String checksum = data.optString(Constants.ReceiveMoney.CHECKSUM);
         if (TextUtils.isEmpty(checksum)) {
             return false;
         }
