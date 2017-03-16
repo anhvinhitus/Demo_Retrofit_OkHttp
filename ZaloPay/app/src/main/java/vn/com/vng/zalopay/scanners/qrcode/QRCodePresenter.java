@@ -278,13 +278,13 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         Timber.d("Try transfer fixed money via QrCode");
 
         int type = data.optInt(Constants.TransferFixedMoney.TYPE, -1);
-        Timber.d("tryTransferFixedMoney type[%s]", type);
+        Timber.d("tryTransferFixedMoney type [%s]", type);
         if (type != Constants.QRCode.RECEIVE_FIXED_MONEY) {
             return false;
         }
 
         String zaloPayName = data.optString(Constants.TransferFixedMoney.ZALO_PAY_ID, "");
-        Timber.d("tryTransferFixedMoney zaloPayId[%s]", zaloPayName);
+        Timber.d("tryTransferFixedMoney zaloPayId [%s]", zaloPayName);
         if (TextUtils.isEmpty(zaloPayName)) {
             return false;
         }
@@ -294,16 +294,13 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         }
 
         long amount = data.optLong(Constants.TransferFixedMoney.AMOUNT, -1);
-        Timber.d("tryTransferFixedMoney [%s]", amount);
+        Timber.d("tryTransferFixedMoney amount [%s]", amount);
         if (amount <= 0) {
             return false;
         }
 
         String messageBase64 = data.optString(Constants.TransferFixedMoney.MESSAGE);
-        Timber.d("tryTransferFixedMoney messageBase64[%s]", messageBase64);
-        if (TextUtils.isEmpty(messageBase64)) {
-            return false;
-        }
+        Timber.d("tryTransferFixedMoney messageBase64 [%s]", messageBase64);
 
         // Start money transfer process
         startMoneyTransfer(null, zaloPayName, amount, messageBase64, Constants.QRCode.RECEIVE_FIXED_MONEY);
