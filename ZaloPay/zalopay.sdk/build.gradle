@@ -14,6 +14,8 @@ android {
         buildConfigField 'String', 'HOST_COMPLETE', '"payment-complete"'
         buildConfigField 'String', 'FOLDER_RESOURCE', '"/wallet/"'
         buildConfigField 'String', 'PAYMENT_PLATFORM', '"android"'
+        buildConfigField 'int', 'ZALOAPP_ID', '1'
+        buildConfigField 'int', 'WITHDRAWAPP_ID', '2'
     }
 
     buildTypes {

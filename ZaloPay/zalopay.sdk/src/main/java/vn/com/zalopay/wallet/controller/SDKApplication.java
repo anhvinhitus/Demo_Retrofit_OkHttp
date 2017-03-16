@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import okhttp3.OkHttpClient;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -235,8 +236,8 @@ public class SDKApplication extends Application {
             //clear clear map account checksum
             SharedPreferencesManager.getInstance().setBankAccountCheckSum(null);
             //reset expire time app info
-            SharedPreferencesManager.getInstance().setExpiredTimeAppChannel("1", 0);
-            SharedPreferencesManager.getInstance().setExpiredTimeAppChannel("2", 0);
+            SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(String.valueOf(BuildConfig.ZALOAPP_ID), 0);
+            SharedPreferencesManager.getInstance().setExpiredTimeAppChannel(String.valueOf(BuildConfig.WITHDRAWAPP_ID), 0);
         }
     }
 
@@ -307,7 +308,7 @@ public class SDKApplication extends Application {
      * @param pAccessToken
      */
     private static void loadAppWalletInfo(String pZaloPayUserId, String pAccessToken) {
-        AppInfoLoader.getInstance(1, ETransactionType.WALLET_TRANSFER, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
+        AppInfoLoader.getInstance(BuildConfig.ZALOAPP_ID, ETransactionType.WALLET_TRANSFER, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
             @Override
             public void onProcessing() {
                 Log.d("loadAppWalletInfo", "onProcessing");
@@ -332,7 +333,7 @@ public class SDKApplication extends Application {
      * @param pAccessToken
      */
     private static void loadAppWithDrawInfo(String pZaloPayUserId, String pAccessToken) {
-        AppInfoLoader.getInstance(2, ETransactionType.WITHDRAW, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
+        AppInfoLoader.getInstance(BuildConfig.WITHDRAWAPP_ID, ETransactionType.WITHDRAW, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
             @Override
             public void onProcessing() {
                 Log.d("loadAppWithDrawInfo", "onProcessing");

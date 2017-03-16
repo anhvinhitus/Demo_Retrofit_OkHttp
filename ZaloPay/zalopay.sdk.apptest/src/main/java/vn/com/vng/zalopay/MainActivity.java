@@ -80,7 +80,67 @@ public class MainActivity extends ActionBarActivity implements Callback {
     OnClickListener onGetAccessTockenListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+            paymentInfo.userInfo = new UserInfo();
+            paymentInfo.userInfo.zaloPayUserId = mUserID;
+            paymentInfo.userInfo.accessToken = editTextAccessToken.getText().toString();
+            SDKApplication.loadGatewayInfo(paymentInfo,
+                    new ZPWGatewayInfoCallback()
+                    {
+                        @Override
+                        public void onFinish() {
+                            Log.d("loadGatewayInfo", "onSuccess");
 
+                        }
+
+                        @Override
+                        public void onProcessing() {
+                            Log.d("loadGatewayInfo", "onProcessing");
+                        }
+
+                        @Override
+                        public void onError(String pMessage) {
+                            Log.e("loadGatewayInfo", ! TextUtils.isEmpty(pMessage) ? pMessage: "error");
+                        }
+
+                        @Override
+                        public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
+                            Log.e("loadGatewayInfo", "need to update new version : "+ pVersion + ".Message: "+ pMessage);
+                        }
+                    });
+            for (int i=0;i<10;i++)
+            {
+                Log.d(this,"i="+i);
+                SDKApplication.refreshGatewayInfo(paymentInfo,
+                        new ZPWGatewayInfoCallback()
+                        {
+                            @Override
+                            public void onFinish() {
+                                Log.d("loadGatewayInfo", "onSuccess");
+
+                            }
+
+                            @Override
+                            public void onProcessing() {
+                                Log.d("loadGatewayInfo", "onProcessing");
+                            }
+
+                            @Override
+                            public void onError(String pMessage) {
+                                Log.e("loadGatewayInfo", ! TextUtils.isEmpty(pMessage) ? pMessage: "error");
+                            }
+
+                            @Override
+                            public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
+                                Log.e("loadGatewayInfo", "need to update new version : "+ pVersion + ".Message: "+ pMessage);
+                            }
+                        });
+                /*try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
+            }
             /*
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -98,7 +158,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
                 }
             }, 20000);
             */
-
+            /*
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -110,6 +170,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
                     CShareData.getInstance().notifyTransactionFinish(GsonUtils.toJsonString(statusResponse));
                 }
             },60000);
+            */
             /*
             ZPWRemoveMapCardParams params = new ZPWRemoveMapCardParams();
 
@@ -733,7 +794,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
             Log.e("GetAccessToken.onResponse", mJsontest);
 
 
-            SDKApplication.loadGatewayInfo(paymentInfo,
+          /*  SDKApplication.loadGatewayInfo(paymentInfo,
                     new ZPWGatewayInfoCallback() {
 
                         @Override
@@ -756,7 +817,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
                         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
                             Log.e("loadGatewayInfo", "force udpate " + pForceUpdate + ".Need to update new version : " + pVersion + ".Message: " + pMessage);
                         }
-                    });
+                    });*/
 
 
             isFirstLoad = false;

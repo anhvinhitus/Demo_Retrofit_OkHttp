@@ -348,8 +348,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             onErrorRequest(e.getMessage());
         }
     }
-
-
     /***
      * download resource file
      *
@@ -359,7 +357,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     public synchronized Response<ResponseBody> getBundleResource(String pUrl) {
         try {
             Call<ResponseBody> callBack = mDataSource.getFile(pUrl);
-
             return callBack.execute();
 
         } catch (Exception e) {
@@ -374,7 +371,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             Log.d(this, "there're a task get platforminfo is running...");
             return;
         }
-
         try {
             inProgress();
             ITask task = new GetPlatformInfoImpl();
@@ -385,7 +381,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
                 public void onFinish(Call call, Response<T> response) {
                     onSuccessRequest(response.isSuccessful(), response.body());
                 }
-
                 @Override
                 public void onFail(Callback pCall, Throwable t) {
                     if (!retry(pCall, t)) {
