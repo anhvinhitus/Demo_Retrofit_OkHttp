@@ -4,7 +4,8 @@ import android.support.annotation.StringRes;
 
 /**
  * Created by hieuvm on 3/15/17.
- * *
+ * Exception for payment connector
+ * 
  */
 
 public class PaymentConnectorException extends GenericException {
