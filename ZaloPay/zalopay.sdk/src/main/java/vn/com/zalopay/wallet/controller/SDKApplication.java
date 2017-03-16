@@ -231,9 +231,11 @@ public class SDKApplication extends Application {
             //clear banklist
             SharedPreferencesManager.getInstance().setCheckSumBankList(null);
             SharedPreferencesManager.getInstance().setBankConfigMap(null);
-            //clear map card list
+            //clear map card checksum
             SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
-            //clear app info
+            //clear clear map account checksum
+            SharedPreferencesManager.getInstance().setBankAccountCheckSum(null);
+            //reset expire time app info
             SharedPreferencesManager.getInstance().setExpiredTimeAppChannel("1", 0);
             SharedPreferencesManager.getInstance().setExpiredTimeAppChannel("2", 0);
         }
