@@ -18,7 +18,6 @@ import com.google.zxing.Reader;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -108,12 +106,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         if (mView == null) {
             return;
         }
-        mView.showNetworkErrorDialog(new ZPWOnSweetDialogListener() {
-            @Override
-            public void onClickDiaLog(int i) {
-                mView.resumeScanner();
-            }
-        });
+        mView.showNetworkErrorDialog(i -> mView.resumeScanner());
     }
 
     void handleResult(String scanResult, boolean fromPhotoLibrary) {
@@ -381,29 +374,26 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         }
         Timber.d("pay by image uri [%s]", uri.toString());
         showLoadingView();
-        Subscription subscription = ObservableHelper.makeObservable(new Callable<String>() {
-            @Override
-            public String call() {
-                InputStream is = null;
-                try {
-                    is = mView.getContext().getContentResolver().openInputStream(uri);
-                    Bitmap bitmap = BitmapFactory.decodeStream(is);
-                    String decoded = scanQRImage(bitmap);
-                    Timber.d("Decoded string = %s", decoded);
-                    return decoded;
-                } catch (FileNotFoundException e) {
-                    Timber.w(e, "Create input stream from uri exception");
-                } finally {
-                    if (is != null) {
-                        try {
-                            is.close();
-                        } catch (IOException e) {
-                            Timber.d(e, "Close input stream exception");
-                        }
+        Subscription subscription = ObservableHelper.makeObservable(() -> {
+            InputStream is = null;
+            try {
+                is = mView.getContext().getContentResolver().openInputStream(uri);
+                Bitmap bitmap = BitmapFactory.decodeStream(is);
+                String decoded = scanQRImage(bitmap);
+                Timber.d("Decoded string = %s", decoded);
+                return decoded;
+            } catch (FileNotFoundException e) {
+                Timber.w(e, "Create input stream from uri exception");
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        Timber.d(e, "Close input stream exception");
                     }
                 }
-                return null;
             }
+            return null;
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -429,12 +419,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     private void ensureResumeScannerInUIThread() {
-        AndroidUtils.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                mView.resumeScanner();
-            }
-        });
+        AndroidUtils.runOnUIThread(() -> mView.resumeScanner());
     }
 
     @Override

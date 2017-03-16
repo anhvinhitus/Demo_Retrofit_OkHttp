@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.transfer.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -58,7 +59,7 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
 
-    public static String mPreviousTransferId = null;
+    private static String mPreviousTransferId = null;
 
     private PaymentWrapper paymentWrapper;
 
@@ -149,12 +150,31 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private void getUserInfo(String zaloPayName) {
-        Timber.d("getUserInfo zaloPayName[%s]", zaloPayName);
+        Timber.d("getUserInfo zaloPayName [%s]", zaloPayName);
         Subscription subscription = mAccountRepository.getUserInfoByZaloPayName(zaloPayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ZaloPayUserSubscriber());
         mSubscription.add(subscription);
+    }
+
+    public void initData(Bundle argument) {
+        initView(argument.getParcelable(Constants.ARG_ZALO_FRIEND),
+                argument.getParcelable(Constants.ARG_TRANSFERRECENT),
+                argument.getLong(Constants.ARG_AMOUNT),
+                argument.getString(Constants.ARG_MESSAGE));
+
+        int transferMode = argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT);
+        setTransferMode(transferMode);
+
+        int transferType = argument.getInt(Constants.ARG_MONEY_TRANSFER_TYPE);
+        if (transferType == Constants.QRCode.RECEIVE_FIXED_MONEY) {
+            if (mView != null) {
+                mView.disableEditAmountAndMessage();
+            }
+        }
+
+        onViewCreated();
     }
 
     private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
@@ -219,7 +239,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    public void transferMoney() {
+    void transferMoney() {
         if (mTransaction.amount <= 0) {
             return;
         }
@@ -305,7 +325,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
         Subscription subscription = mTransferRepository.append(mTransaction, transactionType)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
     }
 
     @Override
@@ -323,7 +344,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
      *
      * @param message message
      */
-    public void updateMessage(String message) {
+    void updateMessage(String message) {
         mTransaction.message = message;
     }
 
@@ -341,7 +362,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         return null;
     }
 
-    public void doTransfer(long amount) {
+    void doTransfer(long amount) {
         if (mView == null) {
             Timber.d("mView is null");
             return;
@@ -449,7 +470,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mView.setInitialValue(mTransaction.amount, mTransaction.message);
     }
 
-    public void initView(ZaloFriend zaloFriend, RecentTransaction transaction, Long amount, String message) {
+    void initView(ZaloFriend zaloFriend, RecentTransaction transaction, Long amount, String message) {
         Timber.d("initView with zaloFriend: %s, transaction: %s, amount: %s, message: %s",
                 zaloFriend == null ? "null" : "NOT null",
                 transaction == null ? "null" : "NOT null",
@@ -479,7 +500,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    public void navigateBack() {
+    void navigateBack() {
         if (mView == null) {
             return;
         }
@@ -509,7 +530,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    public void setTransferMode(int mode) {
+    private void setTransferMode(int mode) {
         mMoneyTransferMode = mode;
         if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
             // Send notification to receiver
