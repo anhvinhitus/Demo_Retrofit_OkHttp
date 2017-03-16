@@ -77,7 +77,7 @@ public class TransferHomePresenter extends AbstractPresenter<ITransferHomeView> 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadIconFontSuccess(LoadIconFontEvent event) {
-        if (event != null && mView != null) {
+        if (mView != null) {
             mView.reloadIntroAnimation();
         }
     }
