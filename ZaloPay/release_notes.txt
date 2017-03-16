@@ -1,3 +1,11 @@
+Zalo Pay (Sandbox v2.9.0 - build 197) - Released on 2017-03-16
+- Fix bug crash NPE socket sau khi đăng xuất.
+- Zalo Integration - handle scheme zalopay-zapi-29
+- Thêm type mới (type 2) cho qr code nhận tiền.
+- Refresh UI sau khi load icon font thành công.
+- Sdk update config.
+- Sdk Xử lý case nhận notify thông báo giao dịch đã hoàn thành.
+
 Zalo Pay (Staging v2.9.0 - build 196) - Released on 2017-03-10
 - Fix crash khi thanh toán.
 ***Note: Dành riêng để 123Pay test Hỗ trợ BIDV.
