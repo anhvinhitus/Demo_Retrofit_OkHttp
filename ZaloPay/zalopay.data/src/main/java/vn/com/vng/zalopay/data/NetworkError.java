@@ -114,6 +114,7 @@ public class NetworkError {
     public static final int INCORRECT_PIN_LIMIT = -161;
     public static final int OTP_CHANGE_PASSWORF_WRONG = -114;
     public static final int USER_IS_LOCKED = -124;
+    public static final int ZALOPAYNAME_NOT_EXIST = -153;
 
     public static String getMessage(Context context, int errorCode) {
         int stringResourceId;
@@ -423,6 +424,9 @@ public class NetworkError {
                 break;
             case USER_IS_LOCKED:
                 stringResourceId = R.string.exception_zpw_account_suspended;
+                break;
+            case ZALOPAYNAME_NOT_EXIST:
+                stringResourceId = R.string.exception_zpw_account_not_exist;
                 break;
             default:
                 return null;

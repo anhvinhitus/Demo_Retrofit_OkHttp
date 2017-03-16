@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -18,9 +19,11 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -66,6 +69,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     private RecentTransaction mTransaction;
     private int mMoneyTransferMode;
     private boolean mIsUserZaloPay = true;
+    private int mTransferType;
 
     private User mUser;
     private final ZaloPayRepository mZaloPayRepository;
@@ -154,7 +158,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         Subscription subscription = mAccountRepository.getUserInfoByZaloPayName(zaloPayName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ZaloPayUserSubscriber());
+                .subscribe(new ZaloPayUserSubscriber(zaloPayName));
         mSubscription.add(subscription);
     }
 
@@ -167,8 +171,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         int transferMode = argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT);
         setTransferMode(transferMode);
 
-        int transferType = argument.getInt(Constants.ARG_MONEY_TRANSFER_TYPE);
-        if (transferType == Constants.QRCode.RECEIVE_FIXED_MONEY) {
+        mTransferType = argument.getInt(Constants.ARG_MONEY_TRANSFER_TYPE);
+        if (mTransferType == Constants.QRCode.RECEIVE_FIXED_MONEY) {
             if (mView != null) {
                 mView.disableEditAmountAndMessage();
             }
@@ -178,6 +182,16 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
+
+        private String mZaloPayName;
+
+        public ZaloPayUserSubscriber() {
+        }
+
+        public ZaloPayUserSubscriber(String mZaloPayName) {
+            this.mZaloPayName = mZaloPayName;
+        }
+
         @Override
         public void onStart() {
             showLoading();
@@ -199,6 +213,15 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
             if (e instanceof NetworkConnectionException) {
                 showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
+                return;
+            } else if (e instanceof BodyException
+                    && ((BodyException) e).errorCode == NetworkError.ZALOPAYNAME_NOT_EXIST
+                    && mTransferType == Constants.QRCode.RECEIVE_FIXED_MONEY
+                    && !TextUtils.isEmpty(mZaloPayName)) {
+                showDialogThenClose(
+                        String.format(mView.getContext().getString(R.string.receiver_invalid), mZaloPayName),
+                        R.string.txt_close,
+                        SweetAlertDialog.ERROR_TYPE);
                 return;
             }
 
@@ -555,7 +578,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mView.hideLoading();
     }
 
-    private void showDialogThenClose(String error, int cancelText, int dialogType) {
+    private void showDialogThenClose(String error, @StringRes int cancelText, int dialogType) {
         if (mView == null) {
             return;
         }

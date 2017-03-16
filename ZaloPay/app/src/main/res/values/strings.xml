@@ -370,6 +370,8 @@
     <string name="bottom">bottom</string>
 
     <string name="qrcode.need.upgrade.to.pay">Cập nhật phiên bản mới nhất để quét QR</string>
-    <string name="qrcode.data.invalid">Mã QR code không hợp lệ</string>
+    <string name="qrcode.data.invalid">Mã QR không hợp lệ</string>
+    <string name="receiver.invalid">Không tìm thấy tài khoản người nhận: %s</string>
+    <string name="can.not.transfer.money.for.your.self">Không thể chuyển tiền tới tài khoản của chính bạn</string>
 </resources>
 
