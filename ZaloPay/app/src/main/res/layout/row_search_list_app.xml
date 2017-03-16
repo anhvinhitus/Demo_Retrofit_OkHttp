@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selector">
+
+    <com.zalopay.ui.widget.IconFontTextView
+        android:id="@+id/icon"
+        style="@style/LeftMenu.Title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="start|center_vertical"
+        android:paddingBottom="@dimen/app_padding"
+        android:paddingLeft="@dimen/app_padding"
+        android:paddingTop="@dimen/app_padding"
+        app:iconLeftPadding="@dimen/app_padding"
+        app:iconLeftSize="@dimen/searchbox.fontsize.app.result" />
+
+    <View
+        android:id="@+id/viewSeparate"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="62dp"
+        android:background="@color/separate" />
+</FrameLayout>

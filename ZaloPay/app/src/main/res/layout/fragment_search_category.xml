@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/layout_no_result_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/layout_search_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing.huge.l"
+            android:gravity="center_vertical"
+            android:text="@string/search_intro"
+            android:textAlignment="center"
+            android:textColor="@color/txt_item_sub"
+            android:textSize="@dimen/font_size_xnormal" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing.medium.t"
+        android:layout_marginLeft="@dimen/spacing.medium"
+        android:layout_marginTop="@dimen/spacing.medium.m"
+        android:background="@color/background"
+        android:text="@string/search_representative_app"
+        android:textColor="@color/txt_item_sub"
+        android:textSize="@dimen/font_size_xnormal" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/listView"
+        style="@style/RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:nestedScrollingEnabled="false" />
+</LinearLayout>

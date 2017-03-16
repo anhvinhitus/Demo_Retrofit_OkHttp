@@ -369,5 +369,8 @@
     <string name="search_representative_app">ỨNG DỤNG TIÊU BIỂU</string>
     <string name="search_app">ỨNG DỤNG</string>
     <string name="search_friend">BẠN BÈ</string>
+    <string name="search_no_result">Không có kết quả nào được tìm thấy</string>
+
+    <string name="see_all">Xem tất cả</string>
 </resources>
 
