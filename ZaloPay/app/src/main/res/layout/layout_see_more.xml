@@ -16,7 +16,7 @@
         android:gravity="center_vertical"
         android:text="@string/see_all"
         android:textAlignment="center"
-        android:textColor="@color/txt_item_sub_2"
+        android:textColor="@color/txt_item_sub"
         android:textSize="14sp" />
 
     <View

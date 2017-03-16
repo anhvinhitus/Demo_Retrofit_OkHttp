@@ -75,6 +75,8 @@ public class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISear
     private List<InsideApp> mResultListApp;
     private List<ZaloFriend> mResultListFriend;
 
+    private static final int NUMBER_APP_SHOW = 5;
+
     @Inject
     SearchCategoryPresenter(Context context, User user,
                             MerchantStore.Repository mMerchantRepository,
@@ -213,8 +215,7 @@ public class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISear
         }
 
         Timber.d("search result - app list size: %s, friend list size: %s", mResultListApp.size(), mResultListFriend.size());
-//        setDataCheckLoadMore(appAdapter, friendAdapter);
-        appAdapter.setData(mResultListApp);
+        setDataCheckLoadMore(appAdapter, friendAdapter);
 
         if (!hasData) {
             mView.showSearchResultView(false);
@@ -232,17 +233,18 @@ public class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISear
     }
 
     private void setDataCheckLoadMore(SearchListAppAdapter appAdapter, SearchListFriendAdapter friendAdapter) {
-        if(mResultListApp.size() > 3) {
+        if(mResultListApp.size() > NUMBER_APP_SHOW) {
             appAdapter.setLoadMore(true);
-            appAdapter.setData(mResultListApp.subList(0, 3));
+            appAdapter.setNumberAppShow(NUMBER_APP_SHOW);
+            appAdapter.setData(mResultListApp.subList(0, NUMBER_APP_SHOW));
         } else {
             appAdapter.setLoadMore(false);
             appAdapter.setData(mResultListApp);
         }
 
-//        if(mResultListFriend.size() > 3) {
+//        if(mResultListFriend.size() > NUMBER_APP_SHOW) {
 //            friendAdapter.setLoadMore(true);
-//            friendAdapter.setData(mResultListFriend.subList(0, 3));
+//            friendAdapter.setData(mResultListFriend.subList(0, NUMBER_APP_SHOW));
 //        } else {
 //            friendAdapter.setLoadMore(false);
 //            friendAdapter.setData(mResultListFriend);
