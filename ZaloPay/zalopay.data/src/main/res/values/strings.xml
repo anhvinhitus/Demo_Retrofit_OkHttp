@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Data</string>
+    <string name="exception.server.error">Hệ thống đang có lỗi, Vui lòng thử lại sau</string>
 </resources>

@@ -106,7 +106,7 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
         }
     }
 
-    private void handleResult(PaymentRequestData response) {
+    private void handleResult(@NonNull PaymentRequestData response) {
         PaymentConnectorCallback callback = findCallbackById(response.requestid);
         if (callback == null) {
             Timber.i("Cannot find callback for request [%s]", response.requestid);
@@ -115,7 +115,7 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
 
         Timber.d("Dispatch response for request: %s", response.requestid);
         removeCallback(response.requestid);
-        callback.onResult(response);
+        callback.onResponse(response);
     }
 
     private void executeNext() {
@@ -150,6 +150,11 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
             }
 
             mCurrentRequestId = request.requestId;
+
+            PaymentConnectorCallback callback = findCallbackById(request.requestId);
+            if (callback != null) {
+                callback.onStart();
+            }
 
             Timber.d("about to send request message to server mCurrentRequestId [%s]", mCurrentRequestId);
             boolean result = mPaymentService.send(transform(request));

@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.data.paymentconnector;
 
+import android.support.annotation.NonNull;
+
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -13,6 +15,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.R;
+import vn.com.vng.zalopay.data.exception.PaymentConnectorException;
+import vn.com.vng.zalopay.data.protobuf.PaymentCode;
 import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
 
 /**
@@ -26,9 +31,11 @@ class PaymentConnectorCall implements Call {
     private boolean mExecuted;
     private final Request originalRequest;
     private CountDownLatch doneSignal = new CountDownLatch(1);
-    private Response mResponse;
+
     private PaymentRequest mPaymentRequest;
     private boolean isCancelled;
+    private long startTime;
+    private PaymentRequestData mPaymentResponse;
 
     PaymentConnectorCall(PaymentConnectorService client, Request request) {
         this.mClient = client;
@@ -49,13 +56,21 @@ class PaymentConnectorCall implements Call {
             mExecuted = true;
         }
 
-        mResponse = null;
+        mPaymentResponse = null;
         mPaymentRequest = PaymentConnectorFactory.createRequest(originalRequest);
         mClient.request(mPaymentRequest, new PaymentConnectorCallback() {
+
             @Override
-            public void onResult(PaymentRequestData data) {
+            public void onStart() {
+                Timber.d("payment request start %s", mPaymentRequest.requestId);
+                startTime = System.currentTimeMillis();
+            }
+
+            @Override
+            public void onResponse(@NonNull PaymentRequestData data) {
                 Timber.d("receive response from connector");
-                mResponse = parseResponse(data);
+                logTiming(System.currentTimeMillis() - startTime, originalRequest);
+                mPaymentResponse = data;
                 doneSignal.countDown();
             }
 
@@ -71,11 +86,15 @@ class PaymentConnectorCall implements Call {
             Timber.d(ie);
         }
 
-        if (mResponse == null) {
+        if (mPaymentResponse == null) {
             throw new IOException(new TimeoutException());
         }
 
-        return mResponse;
+        if (mPaymentResponse.resultcode != PaymentCode.PAY_SUCCESS.getValue()) {
+            throw new IOException(new PaymentConnectorException(R.string.exception_server_error));
+        }
+
+        return parseResponse(mPaymentResponse);
     }
 
 
@@ -95,24 +114,33 @@ class PaymentConnectorCall implements Call {
         mPaymentRequest = PaymentConnectorFactory.createRequest(originalRequest);
 
         mClient.request(mPaymentRequest, new PaymentConnectorCallback() {
+
             @Override
-            public void onResult(PaymentRequestData data) {
+            public void onStart() {
+                Timber.d("payment request start [%s]", mPaymentRequest.requestId);
+                startTime = System.currentTimeMillis();
+            }
+
+            @Override
+            public void onResponse(@NonNull PaymentRequestData data) {
                 Timber.d("receive response from connector");
+                logTiming(System.currentTimeMillis() - startTime, originalRequest);
+
+                if (data.resultcode != PaymentCode.PAY_SUCCESS.getValue()) {
+                    onFailure(new IOException(new PaymentConnectorException(R.string.exception_server_error)));
+                    return;
+                }
+
                 try {
                     callback.onResponse(PaymentConnectorCall.this, parseResponse(data));
                 } catch (IOException e) {
-                    callback.onFailure(PaymentConnectorCall.this, e);
-                    Timber.d(e, "error ");
+                    onFailure(e);
                 }
             }
 
             @Override
             public void onFailure(IOException e) {
-                try {
-                    callback.onFailure(PaymentConnectorCall.this, e);
-                } catch (Exception ex) {
-                    Timber.d(ex);
-                }
+                callback.onFailure(PaymentConnectorCall.this, e);
             }
         });
     }
@@ -152,5 +180,9 @@ class PaymentConnectorCall implements Call {
     public boolean isCanceled() {
         Timber.d("isCanceled: %s", isCancelled);
         return isCancelled;
+    }
+
+    private void logTiming(long duration, Request request) {
+
     }
 }
