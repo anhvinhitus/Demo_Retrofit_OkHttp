@@ -1195,9 +1195,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         if(this instanceof PaymentChannelActivity)
         {
 //            StatusResponse res = getAdapter().getmResponseStatus();
-//            res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(1);
+//            res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
 //            getAdapter().setmResponseStatus(res);
             if(PaymentStatusHelper.isPaymentOverLimitPerDay(getAdapter().getmResponseStatus())) {
+                // The inform text would be set from server
+                setText(R.id.zpw_textview_update_level_inform, "Text responsed from server");
                 setView(R.id.zpw_textview_update_level_inform, true);
                 setView(R.id.zpw_payment_fail_rl_update_info, true);
             } else {
@@ -1206,9 +1208,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
         setView(R.id.zpw_pay_info_buttom_view, true);
-        // datnt10 15.03.2017 delete >>
-//        setView(R.id.zpw_submit_support, true);
-        // datnt10 15.03.2017 delete <<
 
         if (!TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0) {
             setView(R.id.zpw_transaction_wrapper, true);

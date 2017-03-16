@@ -53,8 +53,8 @@
             android:paddingBottom="@dimen/zpw_padding_10"
             android:textColor="@color/text_color_dl"
             android:textSize="@dimen/zpw_text_size_medium"
-            android:text="@string/zpw_update_level_inform_content"
             android:background="@drawable/zpw_bg_update_level_inform_content_border"/>
+
     </LinearLayout>
 
     <View
@@ -99,9 +99,17 @@
                 android:textColor="@color/text_color_bold"
                 android:textSize="@dimen/zpw_text_size_medium" />
 
+            <ImageView
+                android:id="@+id/zpw_payment_fail_iv_update_info_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/zpw_margin_10" />
+
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="@dimen/zpw_line_height"
                 android:layout_alignParentBottom="true"
                 android:layout_marginLeft="@dimen/zpw_margin_10"
                 android:layout_toRightOf="@+id/zpw_payment_fail_iv_update_info"
@@ -131,6 +139,14 @@
                 android:text="@string/zpw_support"
                 android:textColor="@color/text_color_bold"
                 android:textSize="@dimen/zpw_text_size_medium" />
+
+            <ImageView
+                android:id="@+id/zpw_payment_fail_iv_support_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/zpw_margin_10" />
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -1055,7 +1055,7 @@ public abstract class AdapterBase {
         getActivity().setOnClickListener(R.id.zpw_rippleview_continue, okClickListener);
 
         //click support view
-        getActivity().setOnClickListener(R.id.zpw_submit_support, onSupportClickListener);
+        getActivity().setOnClickListener(R.id.zpw_payment_fail_rl_support, onSupportClickListener);
 
         //intro button on linkcard screen
         //getActivity().setOnClickListener(R.id.zpw_linkcard_intro_imageview,mLinkCardIntroClick);
