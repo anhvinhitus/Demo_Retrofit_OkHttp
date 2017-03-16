@@ -70,7 +70,9 @@
     <!--DEFAULT FONT SIZE-->
     <dimen name="font_size_small">10sp</dimen>
     <dimen name="font_size_normal">12sp</dimen>
+    <dimen name="font_size_xnormal">13sp</dimen>
     <dimen name="font_size_medium">14sp</dimen>
+    <dimen name="font_size_xmedium">15sp</dimen>
     <dimen name="font_size_large">16sp</dimen>
     <dimen name="font_size_xlarge">18sp</dimen>
 
@@ -125,4 +127,6 @@
     <dimen name="zpw_text_size_dot">12sp</dimen>
     <dimen name="common_circle_width">3dp</dimen>
     <dimen name="progress_circle_radius">34dp</dimen>
+
+    <dimen name="searchbox_height">33dp</dimen>
 </resources>
