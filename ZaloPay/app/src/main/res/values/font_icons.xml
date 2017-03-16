@@ -32,6 +32,9 @@
     <string name="general_failed">general_failed</string>
     <string name="general_del">general_del</string>
     <string name="general_icondefault">general_icondefault</string>
+    <string name="general_backandroid">general_backandroid</string>
+    <string name="general_arrowright">general_arrowright</string>
+    <string name="general_search">general_search</string>
 
     <string name="profile_lock">profile_lock</string>
     <string name="profile_camera">profile_camera</string>
@@ -44,8 +47,7 @@
     <string name="linkaccount_add">linkaccount_add</string>
     <string name="linkaccount_info">linkaccount_info</string>
 
-    <string name="general_backandroid">general_backandroid</string>
-    <string name="general_arrowright">general_arrowright</string>
+    <string name="nav_showshow">nav_showshow</string>
 
     <!--WebApp START-->
     <string name="webapp_ico_copyurl">webapp_copyurl</string>

@@ -118,4 +118,8 @@
 
     <dimen name="text.support.margin.normal">24dp</dimen>
     <dimen name="text.support.margin.small">10dp</dimen>
+    
+    <dimen name="searchbox.icon">17dp</dimen>
+    <dimen name="searchbox.icon.clear">14dp</dimen>
+    <dimen name="searchbox.fontsize.app.result">36dp</dimen>
 </resources>

@@ -364,9 +364,10 @@
 
     <string name="copy_clipboard">Đã sao chép vào clipboard</string>
 
-    <string name="left">left</string>
-    <string name="top">top</string>
-    <string name="right">right</string>
-    <string name="bottom">bottom</string>
+    <string name="search">Tìm kiếm</string>
+    <string name="search_intro">Nhập từ khóa để tìm kiếm bạn bè hoặc ứng dụng.</string>
+    <string name="search_representative_app">ỨNG DỤNG TIÊU BIỂU</string>
+    <string name="search_app">ỨNG DỤNG</string>
+    <string name="search_friend">BẠN BÈ</string>
 </resources>
 
