@@ -18,7 +18,6 @@ import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
@@ -276,12 +275,13 @@ public class SDKApplication extends Application {
      */
     public synchronized static void refreshGatewayInfo(ZPWPaymentInfo pPaymentInfo, ZPWGatewayInfoCallback pGatewayInfoCallback) {
         try {
+            Log.d("refreshGatewayInfo", "===refreshGatewayInfo===pPaymentInfo=" + GsonUtils.toJsonString(pPaymentInfo));
             GlobalData.initApplicationUserInfo(pPaymentInfo);
             refreshGatewayInfo(pGatewayInfoCallback);
-            Log.d("refreshGatewayInfo", "===refreshGatewayInfo===pPaymentInfo=" + GsonUtils.toJsonString(pPaymentInfo));
         } catch (Exception e) {
-            if (pGatewayInfoCallback != null)
+            if (pGatewayInfoCallback != null) {
                 pGatewayInfoCallback.onError(null);
+            }
         }
     }
 
