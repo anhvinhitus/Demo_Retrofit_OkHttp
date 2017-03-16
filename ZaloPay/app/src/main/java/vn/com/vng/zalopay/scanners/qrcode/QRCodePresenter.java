@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -160,6 +161,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         }
 
         boolean isQRCodeOfZaloPay = isQRCodeOfZaloPay(data);
+        Timber.d("pay isQRCodeOfZaloPay [%s]", isQRCodeOfZaloPay);
         if (isQRCodeOfZaloPay && handleQRCodeOfZaloPay(data, fromPhotoLibrary)) {
             return;
         }
@@ -174,7 +176,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         }
 
         if (isQRCodeOfZaloPay) {
-            showDialogNeedUpgradeApp();
+            showWarningDialog(R.string.qrcode_need_upgrade_to_pay);
         } else {
             resumeScanningAfterWrongQR();
         }
@@ -190,7 +192,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     private boolean isQRCodeOfZaloPay(JSONObject data) {
-        if (data == null || !data.has(Constants.QRCode.APP)) {
+        if (data == null) {
             return false;
         }
         String qrCodeApp = data.optString(Constants.QRCode.APP);
@@ -302,17 +304,19 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         String zaloPayName = data.optString(Constants.TransferFixedMoney.ZALO_PAY_ID, "");
         Timber.d("tryTransferFixedMoney zaloPayId [%s]", zaloPayName);
         if (TextUtils.isEmpty(zaloPayName)) {
-            return false;
+            showDialogDataInvalid();
+            return true;
         }
-
         if (String.valueOf(zaloPayName).equals(mUser.zalopayname)) {
-            return false;
+            showWarningDialog(R.string.can_not_transfer_money_for_your_self);
+            return true;
         }
 
         long amount = data.optLong(Constants.TransferFixedMoney.AMOUNT, -1);
         Timber.d("tryTransferFixedMoney amount [%s]", amount);
         if (amount <= 0) {
-            return false;
+            showDialogDataInvalid();
+            return true;
         }
 
         String message = data.optString(Constants.TransferFixedMoney.MESSAGE);
@@ -347,27 +351,13 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
     }
 
     private void showDialogDataInvalid() {
-        hideLoadingView();
-        if (mView != null && mView.getContext() != null) {
-            mView.showWarningDialog(mView.getContext().getString(R.string.qrcode_data_invalid),
-                    new ZPWOnEventConfirmDialogListener() {
-                        @Override
-                        public void onCancelEvent() {
-                            mView.resumeScanner();
-                        }
-
-                        @Override
-                        public void onOKevent() {
-                            mView.resumeScanner();
-                        }
-                    });
-        }
+        showWarningDialog(R.string.qrcode_data_invalid);
     }
 
-    private void showDialogNeedUpgradeApp() {
+    private void showWarningDialog(@StringRes int strResource) {
         hideLoadingView();
         if (mView != null && mView.getContext() != null) {
-            mView.showWarningDialog(mView.getContext().getString(R.string.qrcode_need_upgrade_to_pay),
+            mView.showWarningDialog(mView.getContext().getString(strResource),
                     new ZPWOnEventConfirmDialogListener() {
                         @Override
                         public void onCancelEvent() {

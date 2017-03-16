@@ -97,7 +97,7 @@ public interface Constants {
 
     interface QRCode {
         String APP = "app";
-        String ZALO_PAY = "zp";
+        String ZALO_PAY = "ZP";
         int RECEIVE_MONEY = 1;
         int RECEIVE_FIXED_MONEY = 2;
     }
