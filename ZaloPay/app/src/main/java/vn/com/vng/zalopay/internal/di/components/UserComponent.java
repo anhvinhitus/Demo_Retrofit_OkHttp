@@ -238,4 +238,6 @@ public interface UserComponent {
     void inject(InternalReactFragment d);
 
     void inject(ExternalReactFragment f);
+
+    void inject(SearchCategoryFragment f);
 }

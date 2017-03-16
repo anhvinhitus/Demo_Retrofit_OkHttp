@@ -18,6 +18,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.functions.Func2;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
@@ -39,7 +40,6 @@ public class SearchListAppAdapter extends AbsRecyclerAdapter<InsideApp, Recycler
     private SearchListAppAdapter.OnClickSeeMoreAppListener seeMoreListener;
 
     private boolean isLoadMore = false;
-    private int numberAppShow;
 
     public SearchListAppAdapter(Context context,
                                 SearchListAppAdapter.OnClickAppListener appListener,
@@ -105,7 +105,7 @@ public class SearchListAppAdapter extends AbsRecyclerAdapter<InsideApp, Recycler
 
     @Override
     public int getItemViewType(int position) {
-        if (isLoadMore && position > numberAppShow - 1) {
+        if (isLoadMore && position > 2) {
             return FOOTER_VIEW;
         }
 
@@ -118,16 +118,11 @@ public class SearchListAppAdapter extends AbsRecyclerAdapter<InsideApp, Recycler
             Timber.d("application data not change");
             return;
         }
-
         super.setData(items);
     }
 
     void setLoadMore(boolean isLoadMore) {
         this.isLoadMore = isLoadMore;
-    }
-
-    void setNumberAppShow(int numberAppShow) {
-        this.numberAppShow = numberAppShow;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
