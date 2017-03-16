@@ -128,4 +128,20 @@ public class StringsTest {
         Assert.assertEquals("", Strings.getDomainName(invalid1));
         Assert.assertEquals("", Strings.getDomainName(invalid2));
     }
+
+    @Test
+    public void testGetIndexOfSearchString() throws Exception {
+        String string = "Thông tin tài khoản";
+        String search1 = "ông";
+        String search2 = "n";
+        String search3 = "tin tài";
+        String search4 = "m";
+        String search5 = "ong";
+
+        Assert.assertEquals(2, Strings.getIndexOfSearchString(string, search1));
+        Assert.assertEquals(3, Strings.getIndexOfSearchString(string, search2));
+        Assert.assertEquals(6, Strings.getIndexOfSearchString(string, search3));
+        Assert.assertEquals(-1, Strings.getIndexOfSearchString(string, search4));
+        Assert.assertEquals(2, Strings.getIndexOfSearchString(string, search5));
+    }
 }

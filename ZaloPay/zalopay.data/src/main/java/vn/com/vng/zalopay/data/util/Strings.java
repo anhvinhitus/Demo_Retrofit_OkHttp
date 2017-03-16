@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.Normalizer;
 import java.util.List;
+import java.util.Locale;
 
 public final class Strings {
 
@@ -112,5 +113,18 @@ public final class Strings {
         }
 
         return "";
+    }
+
+    public static int getIndexOfSearchString(String text, String searchText) {
+        String standardString = text.toLowerCase(Locale.getDefault());
+        String standardRemoveAccentString = stripAccents(standardString);
+
+        if (standardRemoveAccentString.contains(searchText)) {
+            return standardRemoveAccentString.indexOf(searchText);
+        } else if(standardString.contains(searchText)) {
+            return standardString.indexOf(searchText);
+        }
+
+        return -1;
     }
 }
