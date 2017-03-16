@@ -9,9 +9,7 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DChannelMapApp;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
@@ -215,7 +213,7 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
             MapCardHelper.updateMapCardInfoListOnCache(pResponse.cardinfochecksum, pResponse.cardinfos);
             try {
                 MapCardHelper.updateMapCardInfoListOnCache(pResponse.cardinfochecksum, pResponse.cardinfos);
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.e(this, ex);
             }
         }
@@ -428,19 +426,17 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
                 //server will see this is new install, so return new resource to download
                 checksum = null;
                 resrcVer = null;
-
                 SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
-
-                Log.d(this, "checksum =null;resrVer=null");
+                SharedPreferencesManager.getInstance().setBankAccountCheckSum(null);
+                Log.d(this, "checksum =null;resrVer=null..reset card check sum, bank checksum");
             }
 
             try {
                 String cardInfoCheckSum = SharedPreferencesManager.getInstance().getCardInfoCheckSum();
-
-                DataParameter.prepareGetPlatformInfoParams(checksum, resrcVer, cardInfoCheckSum, getDataParams());
+                String bankAccountCheckSum = SharedPreferencesManager.getInstance().getBankAccountCheckSum();
+                DataParameter.prepareGetPlatformInfoParams(checksum, resrcVer, cardInfoCheckSum,bankAccountCheckSum, getDataParams());
             } catch (Exception e) {
                 Log.e(this, e);
-
                 mResponse = null;
                 onPostResultCallBack();
             }

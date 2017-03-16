@@ -9,7 +9,6 @@ import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
@@ -216,21 +215,14 @@ public class DataParameter {
      * @param resrcVer
      * @param params
      */
-    public static void prepareGetPlatformInfoParams(String checksum, String resrcVer, String cardInfoCheckSum, HashMap<String, String> params) throws Exception {
+    public static void prepareGetPlatformInfoParams(String checksum, String resrcVer, String cardInfoCheckSum, String bankAccountChecksum, HashMap<String, String> params) throws Exception {
 
         ZPWPaymentInfo paymentInfo = GlobalData.getPaymentInfo();
 
-        if (checksum == null) {
-            checksum = "";
-        }
-
-        if (resrcVer == null) {
-            resrcVer = "";
-        }
-
-        if (cardInfoCheckSum == null) {
-            cardInfoCheckSum = "";
-        }
+        cardInfoCheckSum = cardInfoCheckSum != null ? cardInfoCheckSum : "";
+        checksum = checksum != null ? checksum : "";
+        resrcVer = resrcVer != null ? resrcVer : "";
+        bankAccountChecksum = bankAccountChecksum != null ? bankAccountChecksum : "";
 
         params.put(ConstantParams.USER_ID, paymentInfo.userInfo.zaloPayUserId);
         params.put(ConstantParams.ACCESS_TOKEN, paymentInfo.userInfo.accessToken);
@@ -242,6 +234,7 @@ public class DataParameter {
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
         params.put(ConstantParams.CARDINFO_CHECKSUM, cardInfoCheckSum);
+        params.put(ConstantParams.BANKACCOUNT_CHECKSUM, bankAccountChecksum);
 
     }
 
