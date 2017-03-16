@@ -147,6 +147,7 @@ public class GetStatus extends BaseRequest<StatusResponse> {
         //getResponse().data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
         //getResponse().isprocessing = true;
         //stop get status right away if wrong otp
+//        ((StatusResponse) getResponse()).returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
         if (PaymentStatusHelper.isWrongOtpResponse(getResponse())) {
             cancelTimer();
             onPostResult();

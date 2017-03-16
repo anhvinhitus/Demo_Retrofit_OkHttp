@@ -150,4 +150,8 @@
 
     <color name="overlay_light">#F8F8F8</color>
 
+    <!-- Color zalopay wallet transaction -->
+    <color name="background_zpw_update_level_inform_content">#EEF9FF</color>
+    <color name="background_zpw_update_level_inform_content_border">#A2CBE7</color>
+
 </resources>

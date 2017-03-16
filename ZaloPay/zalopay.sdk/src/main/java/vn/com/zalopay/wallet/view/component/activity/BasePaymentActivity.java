@@ -46,6 +46,7 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
@@ -62,6 +63,7 @@ import vn.com.zalopay.wallet.datasource.request.DownloadBundle;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
+import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWOnCloseDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -1190,8 +1192,23 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void showFailView(String pMessage, String pTransID) {
         setText(R.id.zpw_textview_error_message, pMessage);
 
+        if(this instanceof PaymentChannelActivity)
+        {
+//            StatusResponse res = getAdapter().getmResponseStatus();
+//            res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(1);
+//            getAdapter().setmResponseStatus(res);
+            if(PaymentStatusHelper.isPaymentOverLimitPerDay(getAdapter().getmResponseStatus())) {
+                setView(R.id.zpw_textview_update_level_inform, true);
+                setView(R.id.zpw_payment_fail_rl_update_info, true);
+            } else {
+                setView(R.id.zpw_textview_update_level_inform, false);
+                setView(R.id.zpw_payment_fail_rl_update_info, false);
+            }
+        }
         setView(R.id.zpw_pay_info_buttom_view, true);
-        setView(R.id.zpw_submit_support, true);
+        // datnt10 15.03.2017 delete >>
+//        setView(R.id.zpw_submit_support, true);
+        // datnt10 15.03.2017 delete <<
 
         if (!TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0) {
             setView(R.id.zpw_transaction_wrapper, true);

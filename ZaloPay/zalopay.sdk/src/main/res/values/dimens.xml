@@ -51,6 +51,7 @@
     <dimen name="zpw_margin_top_medium_label">5dp</dimen>
     <dimen name="zpw_margin_left">5dp</dimen>
     <dimen name="zpw_margin_mini_size">3sp</dimen>
+    <dimen name="zpw_margin_5">5dp</dimen>
     <dimen name="zpw_margin_10">10dp</dimen>
     <dimen name="zpw_margin_16">16dp</dimen>
     <dimen name="zpw_row_padding">5dp</dimen>

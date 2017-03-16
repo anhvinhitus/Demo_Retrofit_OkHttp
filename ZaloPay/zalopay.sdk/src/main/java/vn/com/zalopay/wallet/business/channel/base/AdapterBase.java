@@ -141,6 +141,17 @@ public abstract class AdapterBase {
     protected boolean mCanEditCardInfo = false;
     protected String mLayoutId = null;
     /**
+     * getter and setter
+    */
+    public StatusResponse getmResponseStatus() {
+        return mResponseStatus;
+    }
+
+    public void setmResponseStatus(StatusResponse mResponseStatus) {
+        this.mResponseStatus = mResponseStatus;
+    }
+
+    /**
      * show Fail view
      *
      * @param pMessage
@@ -544,11 +555,13 @@ public abstract class AdapterBase {
                 }
 
                 mResponseStatus = null;
+                setmResponseStatus(null);
             }
 
             try {
                 if (pAdditionParams[0] instanceof StatusResponse) {
                     mResponseStatus = (StatusResponse) pAdditionParams[0];
+                    setmResponseStatus(mResponseStatus);
                 }
             } catch (Exception e) {
                 Log.d(this, e);
@@ -1453,14 +1466,6 @@ public abstract class AdapterBase {
         getActivity().setText(R.id.zpw_payment_fail_textview, strMessage);
     }
 
-    // datnt10 15.03.2017 add >>
-    protected  void setUpdateInfoLabel() {
-        String strMessage = GlobalData.getStringResource(RS.string.zpw_string_transaction_networking_error);
-
-        getActivity().setText(R.id.payment_fail_tv_update_info_content, strMessage);
-    }
-    // datnt10 15.03.2017 add <<
-
     /***
      * have 2 type of success pay
      * each type have each type of interface
@@ -1629,6 +1634,7 @@ public abstract class AdapterBase {
         if (isCardFlow() && getGuiProcessor() != null) {
             getGuiProcessor().useWebView(false);
         }
+
         //notify to app to do some background task
         try {
             if (GlobalData.getPaymentListener() != null && GlobalData.getPaymentInfo() != null)
@@ -1664,9 +1670,6 @@ public abstract class AdapterBase {
         getActivity().enableSubmitBtn(true);
 
         setFailLabel();
-        // datnt10 15.03.2017 add >>
-        setUpdateInfoLabel();
-        // datnt10 15.03.2017 add <<
 
         PaymentSnackBar.getInstance().dismiss();
 

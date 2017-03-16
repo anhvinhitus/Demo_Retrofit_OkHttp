@@ -451,13 +451,12 @@
     <string name="zpw_fail_transanction_by_ssl">Website đang giao dịch bị lỗi vấn đề bảo mật (SSL) nên bạn không thể thực hiên giao dịch.\nVui lòng thử lại bằng thẻ khác!</string>
 
     <string name="zpw_have_no_transid">Chưa có mã giao dịch</string>
-    <!-- datnt10 15.03.2017 add >> -->
     <string name="zpw_update_info">Cập nhật thông tin</string>
-    <!-- datnt10 15.03.2017 add >> -->
-    <string name="zpw_support">Bạn Cần Hỗ Trợ ?</string>
+    <string name="zpw_support">Bạn cần hỗ trợ ?</string>
     <string name="zpw_support_question">Câu Hỏi Thường Gặp</string>
     <string name="zpw_get_support">Gửi Báo Lỗi</string>
     <string name="zpw_support_btn_cancel">Hủy</string>
+    <string name="zpw_update_level_inform_content">Để nâng cao hạn mức, vui lòng cập nhật \nthông tin cá nhân (Email, CMND/Hộ Chiếu)</string>
 
     <string name="zpw_string_vcb_link_login">https://www.vietcombank.com.vn/IBanking2015/55c3c0a782b739e063efa9d5985e2ab4/Account/Login</string>
 

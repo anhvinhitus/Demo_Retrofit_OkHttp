@@ -64,7 +64,7 @@
                     android:layout_marginBottom="@dimen/zpw_margin_top_submit_button_phone" />
 
                 <include
-                    android:id="@+id/zpw_confirm"
+                    android:id="@+id/zpw_confirmc"
                     layout="@layout/module__confirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
