@@ -24,8 +24,6 @@ import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.RecentTransaction;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -34,7 +32,6 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -51,8 +48,6 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         fragment.setArguments(bundle);
         return fragment;
     }
-
-    private boolean mDisableEditData = false;
 
     @Inject
     TransferPresenter mPresenter;
@@ -111,26 +106,11 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         mPresenter.attachView(this);
         mRootView.setOnKeyboardStateListener(this);
 
-        mPresenter.initView((ZaloFriend) argument.getParcelable(Constants.ARG_ZALO_FRIEND),
-                (RecentTransaction) argument.getParcelable(Constants.ARG_TRANSFERRECENT),
-                argument.getLong(Constants.ARG_AMOUNT),
-                argument.getString(Constants.ARG_MESSAGE));
-
-        int transferMode = argument.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT);
-        mPresenter.setTransferMode(transferMode);
-
-        int transferType = argument.getInt(Constants.ARG_MONEY_TRANSFER_TYPE);
-        if (transferType == Constants.QRCode.RECEIVE_FIXED_MONEY) {
-            mDisableEditData = true;
-        }
-
-        if (mDisableEditData) {
-            disableEditAmountAndMessage();
-        }
-        mPresenter.onViewCreated();
+        mPresenter.initData(argument);
     }
 
-    private void disableEditAmountAndMessage() {
+    @Override
+    public void disableEditAmountAndMessage() {
         mAmountView.setFocusable(false);
         mAmountView.setFocusableInTouchMode(false);
         mAmountView.setInputType(InputType.TYPE_NULL);
@@ -232,23 +212,13 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     @Override
     public void showDialogThenClose(String message, String cancelText, int dialogType) {
-        ZPWOnEventDialogListener onClickCancel = new ZPWOnEventDialogListener() {
-            @Override
-            public void onOKevent() {
-                getActivity().finish();
-            }
-        };
+        ZPWOnEventDialogListener onClickCancel = () -> getActivity().finish();
         if (dialogType == SweetAlertDialog.ERROR_TYPE) {
             super.showErrorDialog(message, cancelText, onClickCancel);
         } else if (dialogType == SweetAlertDialog.WARNING_TYPE) {
             super.showWarningDialog(message, cancelText, onClickCancel);
         } else if (dialogType == SweetAlertDialog.NO_INTERNET) {
-            super.showNetworkErrorDialog(new ZPWOnSweetDialogListener() {
-                @Override
-                public void onClickDiaLog(int i) {
-                    getActivity().finish();
-                }
-            });
+            super.showNetworkErrorDialog(i -> getActivity().finish());
         }
     }
 
@@ -383,8 +353,8 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         }
 
         mImageLoader.loadImage(imgAvatar, "");
-        mPresenter.initView((ZaloFriend) bundle.getParcelable(Constants.ARG_ZALO_FRIEND),
-                (RecentTransaction) bundle.getParcelable(Constants.ARG_TRANSFERRECENT),
+        mPresenter.initView(bundle.getParcelable(Constants.ARG_ZALO_FRIEND),
+                bundle.getParcelable(Constants.ARG_TRANSFERRECENT),
                 bundle.getLong(Constants.ARG_AMOUNT),
                 bundle.getString(Constants.ARG_MESSAGE));
 

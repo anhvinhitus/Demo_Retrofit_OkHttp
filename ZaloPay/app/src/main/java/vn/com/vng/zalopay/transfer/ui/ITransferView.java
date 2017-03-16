@@ -40,4 +40,6 @@ public interface ITransferView extends ILoadDataView {
     void confirmTransferUnRegistryZaloPay();
 
     void setMinMaxMoney(long min, long max);
+
+    void disableEditAmountAndMessage();
 }
