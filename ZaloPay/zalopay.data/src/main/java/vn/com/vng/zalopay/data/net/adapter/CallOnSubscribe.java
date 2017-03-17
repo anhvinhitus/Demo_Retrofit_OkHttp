@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.data.net.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -40,11 +42,13 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
         subscriber.add(Subscriptions.create(call::cancel));
 
         try {
-            long beginRequestTime = System.currentTimeMillis();
+            long startNs = System.nanoTime();
             Response<T> response = call.execute();
-            long endRequestTime = System.currentTimeMillis();
+            long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
             if (response != null && response.isSuccessful()) {
-                logTiming(endRequestTime - beginRequestTime, call.request());
+//                logTiming(endRequestTime - beginRequestTime, call.request());
+                Timber.d("API request %s took %s ms", mApiClientId, tookMs);
+                logTiming(response.raw().receivedResponseAtMillis() - response.raw().sentRequestAtMillis(), call.request());
             }
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onNext(response);
