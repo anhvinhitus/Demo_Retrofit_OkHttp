@@ -104,6 +104,10 @@ public class CShareDataWrapper {
         CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message));
     }
 
+    public static void notifyTransactionFinish(Object... pObject) {
+        CShareData.getInstance().notifyTransactionFinish(pObject);
+    }
+
     public static void dispose() {
         CShareData.dispose();
     }

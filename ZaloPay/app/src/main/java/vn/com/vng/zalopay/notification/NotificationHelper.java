@@ -144,6 +144,10 @@ public class NotificationHelper {
 
         if (!isNotificationRecovery) {
             this.shouldUpdateTransAndBalance(notify);
+
+            if (notify.transid > 0) {
+                CShareDataWrapper.notifyTransactionFinish(notify.transid);
+            }
         }
 
         this.shouldMarkRead(notify);
@@ -309,7 +313,7 @@ public class NotificationHelper {
         if (last4cardno <= 0 || first6cardno <= 0) {
             return;
         }
-      
+
         CShareDataWrapper.reloadMapCardList(String.valueOf(last4cardno), String.valueOf(first6cardno), mUser, null);
     }
 
