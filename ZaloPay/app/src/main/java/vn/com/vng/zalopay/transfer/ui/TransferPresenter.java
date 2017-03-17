@@ -563,23 +563,21 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         intent.putExtra(Constants.ARG_MESSAGE, mTransaction.message);
         mView.getActivity().setResult(Activity.RESULT_CANCELED, intent);
 
-        if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
-
-            mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
-                    mTransaction.zaloPayId,
-                    Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL, 0, null
-            ));
+        if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR
+                && mTransferType == Constants.QRCode.RECEIVE_MONEY) {
+            sendNotificationMessage(mTransaction.zaloPayId,
+                    Constants.MoneyTransfer.STAGE_TRANSFER_CANCEL, 0, null);
         }
     }
 
     private void setTransferMode(int mode) {
         mMoneyTransferMode = mode;
         if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
-            // Send notification to receiver
-            mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
-                    mTransaction.zaloPayId,
-                    Constants.MoneyTransfer.STAGE_PRETRANSFER, 0, null
-            ));
+            if (mTransferType == Constants.QRCode.RECEIVE_MONEY) {
+	            // Send notification to receiver
+	            sendNotificationMessage(mTransaction.zaloPayId,
+	                    Constants.MoneyTransfer.STAGE_PRETRANSFER, 0, null);
+	        }
         } else if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_WEB) {
             if (mView != null) {
                 mView.disableEditAmountAndMessage();
@@ -677,21 +675,22 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         public void onPreComplete(boolean isSuccessful, String transId, String pAppTransId) {
             Timber.d("Transaction is completed: [%s, %s]", isSuccessful, transId);
             mTransaction.transactionId = transId;
-            if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR) {
+            if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_QR
+                    && mTransferType == Constants.QRCode.RECEIVE_MONEY) {
                 if (isSuccessful) {
-                    mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
-                            mTransaction.zaloPayId,
-                            Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount, transId
-                    ));
+                    sendNotificationMessage(mTransaction.zaloPayId,
+                            Constants.MoneyTransfer.STAGE_TRANSFER_SUCCEEDED, mTransaction.amount, transId);
                 } else {
-                    mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
-                            mTransaction.zaloPayId,
-                            Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0, null
-                    ));
+                    sendNotificationMessage(mTransaction.zaloPayId,
+                            Constants.MoneyTransfer.STAGE_TRANSFER_FAILED, 0, null);
                 }
             }
         }
+    }
 
+    private void sendNotificationMessage(String toZaloPayId, int stage, long amount, String transId) {
+        mSubscription.add(mTransferNotificationHelper.sendNotificationMessage(
+                toZaloPayId, stage, amount, transId));
     }
 
     void handleCompletedTransferWeb(Activity activity) {
