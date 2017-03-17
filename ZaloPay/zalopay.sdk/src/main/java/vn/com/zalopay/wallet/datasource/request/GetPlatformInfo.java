@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.datasource.request;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -15,7 +14,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
-import vn.com.zalopay.wallet.datasource.PaymentSemaphore;
 import vn.com.zalopay.wallet.datasource.RequestKeeper;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
@@ -33,8 +31,6 @@ import vn.com.zalopay.wallet.utils.ZPWUtils;
  */
 public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
     private static GetPlatformInfo _object;
-    //semaphore to sync write data to cache, init queue permit with 1 item
-    protected static PaymentSemaphore mPaymentSemaphore = new PaymentSemaphore();
     private ZPWGetGatewayInfoListener mCallBack;
     private boolean mIsProcessing = false;
     //force sdk re download everything.
@@ -43,10 +39,6 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
     private boolean mNoDownloadResource;
     //return callback as soon as possible to app
     private boolean mCallBackAsSoonAsPossible;
-    protected void initialize()
-    {
-        mPaymentSemaphore.setPoolSize(1);
-    }
     private ZPWDownloadResourceListener mDownloadResourceListener = new ZPWDownloadResourceListener() {
         @Override
         public void onLoadResourceComplete(boolean isSuccess) {
@@ -71,7 +63,6 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         this.mForceReload = pForceReload;
         this.mNoDownloadResource = false;
         this.mCallBackAsSoonAsPossible = false;
-        initialize();
     }
 
     /***
@@ -85,7 +76,6 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         this.mForceReload = pForceReload;
         this.mNoDownloadResource = pNoDownloadResource;
         this.mCallBackAsSoonAsPossible = false;
-        initialize();
     }
 
     /***
@@ -99,7 +89,6 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         this.mForceReload = pForceReload;
         this.mNoDownloadResource = pNoDownloadResource;
         this.mCallBackAsSoonAsPossible = pCallBackAsSoonAsPossible;
-        initialize();
     }
     //endregion
 
@@ -129,9 +118,6 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
      */
     private synchronized void processGatewayInfoResult(DPlatformInfo pResponse) throws Exception {
         Log.d(this, "===processGatewayInfoResult()===");
-        mPaymentSemaphore.acquire();
-        Log.d(this, "got a permit from semaphore");
-        Log.d(this, "available permit in semaphore " + mPaymentSemaphore.getAvailablePermits());
         //request fail
         if (pResponse == null || pResponse.returncode != 1) {
             onRequestFail(pResponse != null ? pResponse.returnmessage : null);
@@ -285,8 +271,6 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
     private void onPostResultCallBack() {
         DataRepository.dispose();
         mIsProcessing = false;
-        Log.d(this, "release a permit to semaphore");
-        mPaymentSemaphore.release();
         if (this.mCallBack == null) {
             Log.d(this, "mCallBack = null");
             return;

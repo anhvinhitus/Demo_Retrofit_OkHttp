@@ -1,5 +1,6 @@
 package vn.com.zalopay.wallet.business.behavior.gateway;
 
+import android.os.Handler;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -23,11 +24,11 @@ import vn.com.zalopay.wallet.utils.ZPWUtils;
  * download new gateway info ..
  */
 public class BGatewayInfo extends SingletonBase {
+    public static final int MAX_RETRY_REFRESH = 5;
+    private int count = 1;
     private static BGatewayInfo mGatewayInfo = null;
-
     //prevent duplicate thread
     private boolean mProcessing;
-
     private ZPWGatewayInfoCallback mClientCallback;
     private ZPWGetGatewayInfoListener mListener = new ZPWGetGatewayInfoListener() {
 
@@ -116,6 +117,10 @@ public class BGatewayInfo extends SingletonBase {
         return false;
     }
 
+    public boolean isProcessing() {
+        return mProcessing;
+    }
+
     /***
      * call get platform info
      *
@@ -136,12 +141,10 @@ public class BGatewayInfo extends SingletonBase {
                 }
                 return;
             }
-            this.mProcessing = true;
             this.mClientCallback.onProcessing();
             try {
                 Log.d(getClass().getName(), "Get gateway from server");
-                BaseRequest task = new GetPlatformInfo(mListener, false, false, true);
-                task.makeRequest();
+                getPlatformInfo(new GetPlatformInfo(mListener, false, false, true));
             } catch (Exception e) {
                 Log.d(this, e);
                 if (this.mClientCallback != null) {
@@ -161,16 +164,35 @@ public class BGatewayInfo extends SingletonBase {
      * app need to call this to re-update after user reset PIN
      * @param pListener
      */
+
     public synchronized void refreshPlatformInfo(ZPWGatewayInfoCallback pListener) {
         this.mClientCallback = pListener;
         try {
-            BaseRequest task = new GetPlatformInfo(mListener, true, true);
-            task.makeRequest();
+            if (isProcessing() && count <= MAX_RETRY_REFRESH) {
+                Log.d(this, "there're a task platforminfo is runing, so delay refresh to 5s...count="+count);
+                count++;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(this, "running task refresh platforminfo again after 5s");
+                        refreshPlatformInfo(mClientCallback);
+                    }
+                }, 5000);
+            } else if(!isProcessing()){
+                getPlatformInfo(new GetPlatformInfo(mListener, true, true));
+            }
         } catch (Exception e) {
             Log.e(this, e);
             if (this.mClientCallback != null) {
                 this.mClientCallback.onError(e != null ? e.getMessage() : null);
             }
+        }
+    }
+
+    protected void getPlatformInfo(BaseRequest task) {
+        if (task != null) {
+            this.mProcessing = true;
+            task.makeRequest();
         }
     }
 }

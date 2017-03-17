@@ -97,11 +97,10 @@ public class PaymentStatusHelper {
 
     public static boolean isPaymentSuccessFromNotification(String pTransactionId, StatusResponse pResponse)
     {
-        return true;
-//        if(pResponse != null && !pResponse.isprocessing && !TextUtils.isEmpty(pResponse.zptransid) && pResponse.zptransid.equals(pTransactionId) && pResponse.returncode == 1)
-//        {
-//            return true;
-//        }
-//        return false;
+        if(pResponse != null && !pResponse.isprocessing && !TextUtils.isEmpty(pResponse.zptransid) && pResponse.zptransid.equals(pTransactionId) && pResponse.returncode == 1)
+        {
+            return true;
+        }
+        return false;
     }
 }

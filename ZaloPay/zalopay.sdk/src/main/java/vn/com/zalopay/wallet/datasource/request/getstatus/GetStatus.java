@@ -23,13 +23,12 @@ import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
  * get transaction status class
  */
 public class GetStatus extends BaseRequest<StatusResponse> {
+    //coundown timer to retry get status
+    protected static CountDownTimer mTimer;
     private String mTransID;
     private boolean mIsNeedToCheckDataInResponse;
     private AdapterBase mAdapter;
     private boolean mRetry;
-
-    //coundown timer to retry get status
-    private CountDownTimer mTimer;
     private boolean isTimerStated = false;
     private String mMessage;
     private int mRetryCount = 1;
@@ -49,6 +48,10 @@ public class GetStatus extends BaseRequest<StatusResponse> {
         this.mRetry = pRetry;
         this.mMessage = pMessage;
         initTimer();
+    }
+
+    public static CountDownTimer getTimer() {
+        return mTimer;
     }
 
     private void initTimer() {

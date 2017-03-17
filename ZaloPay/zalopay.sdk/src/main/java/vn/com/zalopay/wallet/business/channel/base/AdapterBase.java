@@ -50,6 +50,7 @@ import vn.com.zalopay.wallet.datasource.request.GetMapCardInfoList;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.datasource.request.SendLog;
 import vn.com.zalopay.wallet.datasource.request.TrustSDKReport;
+import vn.com.zalopay.wallet.datasource.request.getstatus.GetStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
@@ -824,8 +825,9 @@ public abstract class AdapterBase {
                 try {
                     StatusResponse response = GsonUtils.fromJsonString(pAdditionParams[0].toString(), StatusResponse.class);
                     if (response != null && PaymentStatusHelper.isPaymentSuccessFromNotification(mTransactionID, response)) {
-                        DataRepository.shareInstance().cancelRequest();
-                        DialogManager.closeAllDialog();
+                        DataRepository.shareInstance().cancelRequest();//cancel current request
+                        GetStatus.getTimer().cancel();//cancel timer retry get status
+                        DialogManager.closeAllDialog();//close dialog
                         showTransactionSuccessView();
                     } else {
                         Log.d(this, "transaction is not finish");

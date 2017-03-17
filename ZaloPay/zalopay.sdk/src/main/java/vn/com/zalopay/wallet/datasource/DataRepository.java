@@ -5,7 +5,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.net.ssl.SSLHandshakeException;
@@ -42,7 +41,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private IData mDataSource;
     private boolean mIsRequesting = false;
     private IDataSourceListener mDataSourceLitener;
-    private Call mCallBack;
+    private Call mCallable;
     private long startTimeRequest = 0;
     private long totalTimeRequest = 0;
     private int retryCount = 1;
@@ -84,9 +83,9 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     }
 
     public void cancelRequest() {
-        if (mCallBack != null && !mCallBack.isCanceled() && mCallBack.isExecuted()) {
-            mCallBack.cancel();
-            Log.d(this,"canceling request "+mCallBack.toString());
+        if (mCallable != null && !mCallable.isCanceled() && mCallable.isExecuted()) {
+            mCallable.cancel();
+            Log.d(this, "canceling request " + mCallable.toString());
         }
     }
 
@@ -118,12 +117,12 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         if (retryCount <= Constants.API_MAX_RETRY && needRetry(t)) {
             try {
                 retryCount++;
-                if (mCallBack == null) {
-                    Log.d(this, "retry request but mCallBack = NULL, retryCount" + retryCount);
+                if (mCallable == null) {
+                    Log.d(this, "retry request but mCallable = NULL, retryCount" + retryCount);
                     return false;
                 }
-                mCallBack.clone().enqueue(pCallback);
-                Log.d(this, mCallBack.toString() + ",retryCount=" + (retryCount - 1));
+                mCallable.clone().enqueue(pCallback);
+                Log.d(this, mCallable.toString() + ",retryCount=" + (retryCount - 1));
                 return true;
             } catch (Exception e) {
                 Log.e(this, e);
@@ -139,8 +138,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     }
 
     protected void sendErrorLogHttpErrorCode(Response pResponse) {
-        if (mCurrentTask != null && mCurrentTask.get() != null && mCurrentTask.get().getTaskEventId() == ZPEvents.API_V001_TPE_SDKERRORREPORT)
-        {
+        if (mCurrentTask != null && mCurrentTask.get() != null && mCurrentTask.get().getTaskEventId() == ZPEvents.API_V001_TPE_SDKERRORREPORT) {
             return;
         }
         if (pResponse != null && pResponse.code() >= 400) {
@@ -237,8 +235,8 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         try {
             inProgress();
             mCurrentTask = new WeakReference<ITask>(pTask);
-            mCallBack = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, pParams);
-            onRequest(mCallBack, new IPaymentApiCallBack<T>() {
+            mCallable = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, pParams);
+            onRequest(mCallable, new IPaymentApiCallBack<T>() {
                 @Override
                 public void onFinish(Call call, Response<T> response) {
                     onSuccessRequest(response.isSuccessful(), response.body());
@@ -274,8 +272,8 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         try {
             inProgress();
             mCurrentTask = new WeakReference<ITask>(pTask);
-            mCallBack = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
-            onRequest(mCallBack, new IPaymentApiCallBack<T>() {
+            mCallable = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
+            onRequest(mCallable, new IPaymentApiCallBack<T>() {
                 @Override
                 public void onFinish(Call call, Response<T> response) {
                     onSuccessRequest(response.isSuccessful(), response.body());
@@ -311,24 +309,23 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
 
         try {
             inProgress();
-
-            Call callBack = null;
             mCurrentTask = new WeakReference<ITask>(pTask);
 
             if (!pIsRetry) {
-                mCallBack = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
+                mCallable = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
+                Log.d(this, "the first request...create new callable");
             } else {
 
-                if (mCallBack == null) {
-                    mCallBack = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
+                if (mCallable == null) {
+                    mCallable = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
+                    Log.d(this, "the retry request...create new callable");
                 } else {
-                    callBack = mCallBack.clone();
+                    mCallable = mCallable.clone();
+                    Log.d(this, "the retry request...reuse callable");
                 }
             }
 
-            Call callExe = (callBack != null) ? callBack : mCallBack;
-
-            onRequest(callExe, new IPaymentApiCallBack<T>() {
+            onRequest(mCallable, new IPaymentApiCallBack<T>() {
                 @Override
                 public void onFinish(Call call, Response<T> response) {
                     onSuccessRequest(response.isSuccessful(), response.body());
@@ -348,6 +345,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             onErrorRequest(e.getMessage());
         }
     }
+
     /***
      * download resource file
      *
@@ -375,19 +373,20 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             inProgress();
             ITask task = new GetPlatformInfoImpl();
             mCurrentTask = new WeakReference<ITask>(task);
-            mCallBack = TPaymentTask.newInstance().setTask(task).doTask(mDataSource, params);
-            onRequest(mCallBack, new IPaymentApiCallBack<T>() {
+            mCallable = TPaymentTask.newInstance().setTask(task).doTask(mDataSource, params);
+            onRequest(mCallable, new IPaymentApiCallBack<T>() {
                 @Override
                 public void onFinish(Call call, Response<T> response) {
                     onSuccessRequest(response.isSuccessful(), response.body());
                 }
+
                 @Override
                 public void onFail(Callback pCall, Throwable t) {
                     if (!retry(pCall, t)) {
                         Log.d("getPlatformInfo.onFailure", t != null ? t.getMessage() : "error");
 
                         //save this request for retrying later
-                        RequestKeeper.requestPlatformInfo = mCallBack.clone();
+                        RequestKeeper.requestPlatformInfo = mCallable.clone();
 
                         onErrorRequest(t != null ? t.getMessage() : "");
                     }
@@ -435,8 +434,8 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             Log.d("===STARTING REQUEST at time=", String.valueOf(startTimeRequest));
 
             mCurrentTask = new WeakReference<ITask>(pTask);
-            mCallBack = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
-            onRequest(mCallBack, new IPaymentApiCallBack<SaveCardResponse>() {
+            mCallable = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
+            onRequest(mCallable, new IPaymentApiCallBack<SaveCardResponse>() {
                 @Override
                 public void onFinish(Call call, Response<SaveCardResponse> response) {
                 }
