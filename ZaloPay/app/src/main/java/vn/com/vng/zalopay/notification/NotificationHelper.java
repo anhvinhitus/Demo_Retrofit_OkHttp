@@ -277,14 +277,20 @@ public class NotificationHelper {
         }
         int last4cardno = 0;
         int first6cardno = 0;
-        if (embeddata.has("last4cardno")) {
-            last4cardno = embeddata.get("last4cardno").getAsInt();
-        }
-        if (embeddata.has("first6cardno")) {
-            first6cardno = embeddata.get("first6cardno").getAsInt();
+
+        try {
+            if (embeddata.has("last4cardno")) {
+                last4cardno = embeddata.get("last4cardno").getAsInt();
+            }
+            if (embeddata.has("first6cardno")) {
+                first6cardno = embeddata.get("first6cardno").getAsInt();
+            }
+        } catch (Exception e) {
+            return;
         }
 
         Timber.d("Remove link card last4cardno [%s] first6cardno [%s]", last4cardno, first6cardno);
+
         if (last4cardno <= 0 || first6cardno <= 0) {
             return;
         }
@@ -293,7 +299,6 @@ public class NotificationHelper {
     }
 
     private void payOrderFromNotify(NotificationData notify) {
-        Timber.d("pay order via notify %s", notify);
         JsonObject embeddata = notify.getEmbeddata();
         Timber.d("pay order notificationId [%s] embeddata %s", notify.notificationId, embeddata);
         if (embeddata == null) {
@@ -304,8 +309,15 @@ public class NotificationHelper {
             return;
         }
 
-        String zptranstoken = embeddata.get("zptranstoken").getAsString();
-        long appId = embeddata.get("appid").getAsLong();
+        String zptranstoken;
+        long appId;
+
+        try {
+            zptranstoken = embeddata.get("zptranstoken").getAsString();
+            appId = embeddata.get("appid").getAsLong();
+        } catch (Exception e) {
+            return;
+        }
 
         if (!TextUtils.isEmpty(zptranstoken) && appId > 0) {
             PaymentDataEvent event = new PaymentDataEvent(appId, zptranstoken, false, true);
@@ -346,9 +358,19 @@ public class NotificationHelper {
      */
     void showNotificationSystem() {
         Subscription subscription = mNotifyRepository.totalNotificationUnRead()
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .doOnError(Timber::d)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NotificationSubscriber());
         mCompositeSubscription.add(subscription);
+    }
+
+    private class NotificationSubscriber extends DefaultSubscriber<Integer> {
+
+        @Override
+        public void onNext(Integer integer) {
+            showNotificationSystem(integer);
+        }
     }
 
     /**
@@ -406,19 +428,6 @@ public class NotificationHelper {
                         }
                     });
             mCompositeSubscription.add(subscription);
-        }
-    }
-
-    private class NotificationSubscriber extends DefaultSubscriber<Integer> {
-
-        @Override
-        public void onNext(Integer integer) {
-            showNotificationSystem(integer);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.w(e, "Show notify error");
         }
     }
 
