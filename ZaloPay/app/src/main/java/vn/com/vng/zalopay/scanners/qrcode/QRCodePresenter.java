@@ -191,6 +191,11 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             case ZaloPayUnknown:
                 showWarningDialog(R.string.qrcode_need_upgrade_to_pay);
                 executeResult = true;
+                if (fromPhotoLibrary) {
+                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_ZALOPAY_UNKNOWN);
+                } else {
+                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_ZALOPAY_UNKNOWN);
+                }
                 break;
             case Unknown:
                 resumeScanningAfterWrongQR();
