@@ -27,7 +27,6 @@ import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
-import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
@@ -223,7 +222,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean clearUserSession(String message) {
         //Remove all sticky event in app
         eventBus.removeAllStickyEvents();
-        
+
         if (TAG.equals(LoginZaloActivity.class.getSimpleName())) {
             return false;
         }

@@ -157,12 +157,9 @@ public class OtpProfileFragment extends RuntimePermissionFragment implements IOT
 
     @Override
     public void showError(String message) {
-        super.showErrorDialog(message, getContext().getString(R.string.txt_close), new ZPWOnEventDialogListener() {
-            @Override
-            public void onOKevent() {
-                if (mEdtOTPView != null && !mEdtOTPView.isFocused()) {
-                    mEdtOTPView.requestFocus();
-                }
+        super.showErrorDialog(message, getContext().getString(R.string.txt_close), () -> {
+            if (mEdtOTPView != null && !mEdtOTPView.isFocused()) {
+                mEdtOTPView.requestFocus();
             }
         });
     }

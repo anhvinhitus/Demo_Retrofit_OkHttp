@@ -128,13 +128,10 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
         AndroidUtils.runOnUIThread(mRunnableScan, 200);
     }
 
-    Runnable mRunnableScan = new Runnable() {
-        @Override
-        public void run() {
-            if (getUserVisibleHint() && !mSelectedImageInGallery) {
-                hideLoading();
-                startAndCheckPermissionOnce();
-            }
+    Runnable mRunnableScan = () -> {
+        if (getUserVisibleHint() && !mSelectedImageInGallery) {
+            hideLoading();
+            startAndCheckPermissionOnce();
         }
     };
 

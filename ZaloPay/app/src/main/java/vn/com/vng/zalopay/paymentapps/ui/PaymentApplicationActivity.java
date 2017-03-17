@@ -324,12 +324,4 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
         super.handleException(e);
     }
 
-    public void showToast(String message) {
-        ToastUtil.showToast(this, message);
-    }
-
-    public void showToast(int message) {
-        ToastUtil.showToast(this, message);
-    }
-
 }

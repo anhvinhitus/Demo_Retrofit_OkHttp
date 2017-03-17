@@ -352,11 +352,11 @@ public class AndroidUtils {
                 context.startActivity(intent);
             } else {
                 Timber.tag("AndroidUtils").d("Show toast khong the tim thay browser");
-                ToastUtil.showToast(context, "context.getResources().getString(R.string.miss_browser)");
+                ToastUtil.showToast(context, context.getResources().getString(R.string.miss_browser));
             }
         } catch (Exception ex) {
             Timber.e(ex, "openBrowser exception [%s]", ex.getMessage());
-            ToastUtil.showToast(context, "context.getResources().getString(R.string.miss_browser)");
+            ToastUtil.showToast(context, context.getResources().getString(R.string.miss_browser));
         }
     }
 
@@ -379,10 +379,10 @@ public class AndroidUtils {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             } else {
-                ToastUtil.showToast(context, "context.getResources().getString(R.string.miss_playstore)");
+                ToastUtil.showToast(context, context.getResources().getString(R.string.miss_playstore));
             }
         } catch (Exception ex) {
-            ToastUtil.showToast(context, "context.getResources().getString(R.string.miss_playstore)");
+            ToastUtil.showToast(context, context.getResources().getString(R.string.miss_playstore));
         }
     }
 

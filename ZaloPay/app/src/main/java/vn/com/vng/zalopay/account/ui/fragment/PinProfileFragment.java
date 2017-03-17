@@ -328,7 +328,7 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        showErrorDialog(message);
     }
 
     @Override

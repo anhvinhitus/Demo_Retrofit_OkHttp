@@ -139,7 +139,7 @@ public class EditAccountNameFragment extends BaseFragment implements IEditAccoun
 
     @Override
     public void showError(String msg) {
-        showToast(msg);
+        showErrorDialog(msg);
     }
 
     @Override

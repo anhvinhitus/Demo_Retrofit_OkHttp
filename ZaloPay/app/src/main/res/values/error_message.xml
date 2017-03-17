@@ -33,4 +33,7 @@
     <string name="exception.otp.invaild">Mã OTP không hợp lệ.</string>
     <string name="exception.send.feedback">Không thể gửi phản hồi</string>
     <string name="exception.user.is.locked.format">Tài khoản %s đang bị khóa. Vui lòng liên hệ 1900545436 để được trợ giúp</string>
+
+    <string name="miss_browser">Vui lòng kiểm tra lại trình duyệt web trên thiết bị của bạn</string>
+    <string name="merchant_user_info_invalid">Có lỗi xảy ra trong quá trình lấy thông tin ứng dụng. Vui lòng thử lại</string>
 </resources>

@@ -295,14 +295,6 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
         handleException(event.getInnerException());
     }
 
-    public void showToast(String message) {
-        ToastUtil.showToast(this, message);
-    }
-
-    public void showToast(int message) {
-        ToastUtil.showToast(this, message);
-    }
-
     private void markAllNotify() {
         Subscription subscription = notificationRepository.markViewAllNotify()
                 .subscribeOn(Schedulers.io())
