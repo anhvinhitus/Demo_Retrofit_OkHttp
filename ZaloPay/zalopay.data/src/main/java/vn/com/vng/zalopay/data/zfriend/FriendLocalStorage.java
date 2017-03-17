@@ -96,7 +96,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
 
     @Override
     public void putZaloUser(ZaloUserEntity entity) {
-        Timber.d("put zalo user : %s", entity);
+        Timber.d("put zalo user: %s", entity);
         ZaloFriendGD item = mDataMapper.transform(entity);
         if (item != null) {
             mZaloUserDao.insertOrReplaceInTx(item);
@@ -105,7 +105,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
 
     @Override
     public void putZaloPayUser(@Nullable List<ZaloPayUserEntity> entities) {
-        Timber.d("put zaloPay user : [%s]", entities);
+        Timber.d("put zaloPay user: [%s]", entities == null ? 0 : entities.size());
         List<ZaloPayProfileGD> list = mDataMapper.transformZaloPayUser(entities);
         if (!Lists.isEmptyOrNull(list)) {
             mZaloPayUserDao.insertOrReplaceInTx(list);
@@ -123,7 +123,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
 
     @Override
     public void putContacts(List<Contact> contacts) {
-        Timber.d("putContacts: %s", contacts);
+        Timber.d("putContacts: %s", contacts == null ? 0 : contacts.size());
         List<ContactGD> list = mDataMapper.transformContact(contacts);
         if (!Lists.isEmptyOrNull(list)) {
             mContactDao.insertOrReplaceInTx(list);
@@ -145,7 +145,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
             return Collections.emptyList();
         }
 
-        Timber.d("getZaloPayUsers: %s", zalopayids);
+        Timber.d("getZaloPayUsers: %s", zalopayids.size());
 
         List<ZaloPayProfileGD> list = mZaloPayUserDao.queryBuilder()
                 .where(ZaloPayProfileGDDao.Properties.ZaloPayId.in(zalopayids))
