@@ -53,12 +53,22 @@ public class FontHelper {
     }
 
     public Typeface getFontFromFile(String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
+            return null;
+        }
+
+        if (mFonts.containsKey(filePath)) {
+            return mFonts.get(filePath);
+        }
+
+        return initFontFromFile(filePath);
+    }
+
+    public Typeface initFontFromFile(String filePath) {
         //String filePath = "/storage/emulated/0/fonts/" + fileName;
         if (TextUtils.isEmpty(filePath)) {
             return null;
         }
-        if (mFonts.containsKey(filePath))
-            return mFonts.get(filePath);
 
         Typeface typeface = null;
 

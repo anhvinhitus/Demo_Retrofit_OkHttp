@@ -3,7 +3,6 @@ package com.zalopay.ui.widget.iconfont;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -13,6 +12,8 @@ import com.zalopay.ui.widget.util.FontHelper;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * Created by longlv on 1/6/17.
@@ -48,12 +49,12 @@ public class IconFontHelper {
                               String fontPathInResource, String jsonPathInResource) {
         if (initIconFontInResourceApp1(fontPathInResource, jsonPathInResource)) {
             mCurrentIconFontType = IconFontType.RESOURCE_APP_1;
-            Log.d("IconFontHelper", "load icon font from resource app 1 successfully.");
+            Timber.d("load icon font from resource app 1 successfully.");
         } else if (initIconFontInAsset(fontPathInAsset, jsonPathInAsset)) {
             mCurrentIconFontType = IconFontType.ASSET;
-            Log.d("IconFontHelper", "load icon font from asset successfully.");
+            Timber.d("load icon font from asset successfully.");
         } else {
-            Log.w("IconFontHelper", "load icon font fail.");
+            Timber.w("load icon font fail.");
             mCurrentIconFontType = IconFontType.UNKNOWN;
         }
     }
@@ -64,7 +65,7 @@ public class IconFontHelper {
     }
 
     private boolean initIconFontInResourceApp1(String fontFilePath, String jsonFilePath) {
-        Typeface typeface = FontHelper.getInstance().getFontFromFile(fontFilePath);
+        Typeface typeface = FontHelper.getInstance().initFontFromFile(fontFilePath);
         Map<String, IconFontInfo> iconFontInfoMap = getMapIconFontInfoInFile(jsonFilePath);
         if (typeface != null && iconFontInfoMap != null && iconFontInfoMap.size() > 0) {
             setCurrentIconFont(typeface, iconFontInfoMap);
@@ -90,7 +91,7 @@ public class IconFontHelper {
             String jsonString = FileUtil.readAssetToString(mAssetManager, jsonFilePath);
             return getMapIconFontInfo(jsonString);
         } catch (IOException e) {
-            Log.d("IconFontHelper", "Read file in asset to string throw exception: " + e.getMessage());
+            Timber.d("Read file in asset to string throw exception [%s]", e.getMessage());
         }
         return null;
     }
@@ -101,7 +102,7 @@ public class IconFontHelper {
             jsonString = FileUtil.readFileToString(jsonFilePath);
             return getMapIconFontInfo(jsonString);
         } catch (IOException e) {
-            Log.d("IconFontHelper", "Read file to string throw exception: " + e.getMessage());
+            Timber.d("Read file to string throw exception [%s]", e.getMessage());
         }
         return null;
     }
@@ -116,7 +117,7 @@ public class IconFontHelper {
                     new TypeToken<HashMap<String, IconFontInfo>>() {
                     }.getType());
         } catch (Exception e) {
-            Log.e("IconFontHelper", "initIconFontInResourceApp1 throw exception: " + e.getMessage());
+            Timber.e("initIconFontInResourceApp1 throw exception [%s]", e.getMessage());
         }
         return iconFontInfoMap;
     }

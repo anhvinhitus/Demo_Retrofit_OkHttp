@@ -127,7 +127,7 @@ public class AndroidApplication extends Application {
                     Typeface.NORMAL,
                     IconFontHelper.getInstance().getCurrentTypeface());
         }
-        EventBus.getDefault().post(new LoadIconFontEvent(IconFontHelper.getInstance().getCurrentIconFontType()));
+        EventBus.getDefault().postSticky(new LoadIconFontEvent(IconFontHelper.getInstance().getCurrentIconFontType()));
     }
 
     private void initPaymentSdk() {

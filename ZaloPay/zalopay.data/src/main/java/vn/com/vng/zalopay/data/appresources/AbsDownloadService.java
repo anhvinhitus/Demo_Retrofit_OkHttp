@@ -9,14 +9,16 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
+import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 
 /**
  * Created by AnhHieu on 5/20/16.
- *
  */
 public abstract class AbsDownloadService extends IntentService {
 
     protected abstract void doInject();
+
+    private int mZaloPayAppId;
 
     @Inject
     public DownloadAppResourceTaskQueue mTaskQueue;
@@ -25,8 +27,9 @@ public abstract class AbsDownloadService extends IntentService {
 
     private boolean mRunning;
 
-    public AbsDownloadService() {
+    public AbsDownloadService(int zaloPayAppId) {
         super(TAG);
+        mZaloPayAppId = zaloPayAppId;
     }
 
     @Override
@@ -71,7 +74,12 @@ public abstract class AbsDownloadService extends IntentService {
             mRunning = true;
             boolean result = task.execute();
 
-            EventBus.getDefault().postSticky(new DownloadAppEvent(result, task.getDownloadInfo()));
+            if (task.getDownloadInfo().appid == mZaloPayAppId) {
+                EventBus.getDefault().postSticky(new DownloadZaloPayResourceEvent(result));
+            } else {
+                EventBus.getDefault().postSticky(new DownloadAppEvent(result, task.getDownloadInfo()));
+            }
+
             if (result) {
                 Timber.d("download success");
             } else {

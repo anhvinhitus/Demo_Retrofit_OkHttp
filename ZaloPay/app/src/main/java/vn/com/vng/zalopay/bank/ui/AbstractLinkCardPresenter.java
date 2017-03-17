@@ -296,6 +296,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadIconFontSuccess(LoadIconFontEvent event) {
+        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
         onLoadIconFontSuccess();
     }
 }
