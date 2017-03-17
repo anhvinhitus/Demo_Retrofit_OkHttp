@@ -36,7 +36,7 @@ public class AppTransIdLogModule {
 
     @Singleton
     @Provides
-    ApptransidLogStore.RequestService providesApptransidLogService(@Named("retrofitRedPacketApi") Retrofit retrofit) {
+    ApptransidLogStore.RequestService providesApptransidLogService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(ApptransidLogStore.RequestService.class);
     }
 

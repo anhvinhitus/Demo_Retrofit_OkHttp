@@ -155,21 +155,6 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    @Named("retrofitRedPacketApi")
-    Retrofit provideRetrofitRedPacketApi(@Named("RedPacketHttpUrl") HttpUrl baseUrl,
-                                         OkHttpClient okHttpClient, Context context,
-                                         Converter.Factory convertFactory) {
-        return new Retrofit.Builder()
-                .addConverterFactory(convertFactory)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.RedPacket))
-                .baseUrl(baseUrl)
-                .validateEagerly(BuildConfig.DEBUG)
-                .client(okHttpClient)
-                .build();
-    }
-
-    @Provides
-    @Singleton
     @Named("retrofitPhoto")
     Retrofit provideRetrofitUploadPhoto(OkHttpClient okHttpClient, CallAdapter.Factory callAdapter,
                                         Converter.Factory convertFactory) {

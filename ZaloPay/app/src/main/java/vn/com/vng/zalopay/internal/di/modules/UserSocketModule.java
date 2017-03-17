@@ -7,11 +7,13 @@ import com.google.gson.Gson;
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
@@ -95,6 +97,21 @@ public class UserSocketModule {
                 .callFactory(callFactory)
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    @Named("retrofitRedPacketApi")
+    Retrofit provideRetrofitRedPacketApi(OkHttpClient okHttpClient, Context context,
+                                         Converter.Factory convertFactory, PaymentConnectorCallFactory callFactory) {
+        return new Retrofit.Builder()
+                .addConverterFactory(convertFactory)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.RedPacket))
+                .callFactory(callFactory)
+                .baseUrl(BuildConfig.REDPACKET_HOST)
+                .validateEagerly(BuildConfig.DEBUG)
+                .client(okHttpClient)
                 .build();
     }
 }
