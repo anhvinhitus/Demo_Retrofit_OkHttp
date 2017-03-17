@@ -1194,12 +1194,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         if(this instanceof PaymentChannelActivity)
         {
-//            StatusResponse res = getAdapter().getmResponseStatus();
-//            res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
-//            getAdapter().setmResponseStatus(res);
+            StatusResponse res = getAdapter().getmResponseStatus();
+            res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
+            getAdapter().setmResponseStatus(res);
             if(PaymentStatusHelper.isPaymentOverLimitPerDay(getAdapter().getmResponseStatus())) {
                 // The inform text would be set from server
-                setText(R.id.zpw_textview_update_level_inform, "Text responsed from server");
+                setText(R.id.zpw_textview_update_level_inform, GlobalData.getStringResource(RS.string.zpw_update_level_inform_content));
                 setView(R.id.zpw_textview_update_level_inform, true);
                 setView(R.id.zpw_payment_fail_rl_update_info, true);
             } else {

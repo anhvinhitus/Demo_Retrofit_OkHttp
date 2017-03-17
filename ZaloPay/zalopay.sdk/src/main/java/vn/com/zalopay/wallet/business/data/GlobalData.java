@@ -287,6 +287,10 @@ public class GlobalData {
         GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE;
     }
 
+    public static void setResultUpgradeCMND() {
+        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_CMND_EMAIL;
+    }
+
     public static void setResultInvalidInput() {
         GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID;
     }

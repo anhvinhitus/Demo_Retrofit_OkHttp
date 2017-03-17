@@ -166,6 +166,14 @@ public abstract class AdapterBase {
             getActivity().showSupportView(mTransactionID);
         }
     };
+    private View.OnClickListener onUpdateInfoClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            GlobalData.setResultUpgradeCMND();
+            onClickSubmission();
+        }
+    };
+
     private String olderPassword = null;
     private IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
@@ -1058,6 +1066,9 @@ public abstract class AdapterBase {
 
         //click support view
         getActivity().setOnClickListener(R.id.zpw_payment_fail_rl_support, onSupportClickListener);
+
+        //click update info view
+        getActivity().setOnClickListener(R.id.zpw_payment_fail_rl_update_info, onUpdateInfoClickListener);
 
         //intro button on linkcard screen
         //getActivity().setOnClickListener(R.id.zpw_linkcard_intro_imageview,mLinkCardIntroClick);
