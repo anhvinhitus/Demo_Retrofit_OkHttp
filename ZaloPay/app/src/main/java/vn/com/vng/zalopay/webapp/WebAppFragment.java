@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -384,6 +383,11 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
     @Override
     public void payOrder(JSONObject jsonObject, IPaymentListener listener) {
         mPresenter.pay(jsonObject, listener);
+    }
+
+    @Override
+    public void transferMoney(JSONObject jsonObject, IPaymentListener listener) {
+        mPresenter.transferMoney(jsonObject, listener);
     }
 
     @Override

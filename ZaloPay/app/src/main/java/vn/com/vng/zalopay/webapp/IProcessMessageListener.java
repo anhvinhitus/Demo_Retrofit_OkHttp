@@ -11,6 +11,8 @@ import org.json.JSONObject;
 interface IProcessMessageListener {
     void payOrder(JSONObject jsonObject, IPaymentListener listener);
 
+    void transferMoney(JSONObject jsonObject, IPaymentListener listener);
+
     void logout();
 
     void showDialog(int dialogType, String title, String message, String buttonLabel);

@@ -37,4 +37,10 @@ public interface Constants {
         String RECEIVE_OTP_KEY = "receive_otp_key";
         String TIME_RECEIVE_OTP_KEY = "time_receive_otp_key";
     }
+
+    interface TransferMoneyWebAPI {
+        String ZPID = "zpid";
+        String MESSAGE = "message";
+        String AMOUNT = "amount";
+    }
 }
