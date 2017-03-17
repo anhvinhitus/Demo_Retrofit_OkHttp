@@ -255,10 +255,9 @@ public class SDKApplication extends Application {
                 Log.d("loadGatewayInfo", "===loadGatewayInfo===user in sdk,delay load gateway info now====");
                 return;
             }
-
             GlobalData.initApplication(pPaymentInfo);
             checkClearCacheIfHasNewVersion();
-            initGateway(pGatewayInfoCallback);
+            loadPlatformInfo(pGatewayInfoCallback);
             BankLoader.loadBankList(null);
             loadAppWalletInfo(pPaymentInfo.userInfo.zaloPayUserId, pPaymentInfo.userInfo.accessToken);
             loadAppWithDrawInfo(pPaymentInfo.userInfo.zaloPayUserId, pPaymentInfo.userInfo.accessToken);
@@ -286,14 +285,14 @@ public class SDKApplication extends Application {
         }
     }
 
-    private static void initGateway(ZPWGatewayInfoCallback pGatewayInfoCallback) {
+    private static void loadPlatformInfo(ZPWGatewayInfoCallback pGatewayInfoCallback) {
         try {
             BGatewayInfo.getInstance().execute(pGatewayInfoCallback);
         } catch (Exception e) {
             if (pGatewayInfoCallback != null)
                 pGatewayInfoCallback.onError(e != null ? e.getMessage() : null);
 
-            Log.e("initGateway", e);
+            Log.e("loadPlatformInfo", e);
         }
     }
 
