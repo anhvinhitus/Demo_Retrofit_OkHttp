@@ -295,10 +295,9 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         return ECardType.UNDEFINE.toString();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onLoadIconFontSuccess(LoadIconFontEvent event) {
-        if (event != null) {
-            onLoadIconFontSuccess();
-        }
+        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
+        onLoadIconFontSuccess();
     }
 }

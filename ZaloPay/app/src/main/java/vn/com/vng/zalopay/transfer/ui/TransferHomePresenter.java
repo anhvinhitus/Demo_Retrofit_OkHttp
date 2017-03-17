@@ -75,9 +75,10 @@ public class TransferHomePresenter extends AbstractPresenter<ITransferHomeView> 
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onLoadIconFontSuccess(LoadIconFontEvent event) {
-        if (event != null && mView != null) {
+        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
+        if (mView != null) {
             mView.reloadIntroAnimation();
         }
     }
