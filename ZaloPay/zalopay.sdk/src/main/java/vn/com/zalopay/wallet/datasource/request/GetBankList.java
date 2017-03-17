@@ -158,7 +158,7 @@ public class GetBankList extends BaseRequest<BankConfigResponse> {
         }
 
         if (getResponse().returncode < 1) {
-            onRequestFail(getResponse().returnmessage);
+            onRequestFail(getResponse().getMessage());
             return;
         }
 

@@ -144,7 +144,7 @@ public abstract class AdapterBase {
     /**
      * getter and setter
     */
-    public StatusResponse getmResponseStatus() {
+    public StatusResponse getResponseStatus() {
         return mResponseStatus;
     }
 
@@ -494,7 +494,7 @@ public abstract class AdapterBase {
             return false;
         }
 
-        showDialogWithCallBack(mResponseStatus.returnmessage, GlobalData.getStringResource(RS.string.dialog_close_button), new ZPWOnEventDialogListener() {
+        showDialogWithCallBack(mResponseStatus.getMessage(), GlobalData.getStringResource(RS.string.dialog_close_button), new ZPWOnEventDialogListener() {
 
             @Override
             public void onOKevent() {
@@ -578,7 +578,7 @@ public abstract class AdapterBase {
 
             //server is maintenance
             if (PaymentStatusHelper.isServerInMaintenance(mResponseStatus)) {
-                getActivity().showServerMaintenanceDialog(mResponseStatus.returnmessage);
+                getActivity().showServerMaintenanceDialog(mResponseStatus.getMessage());
                 return null;
             }
             //reload map card list
@@ -588,8 +588,8 @@ public abstract class AdapterBase {
                 try {
                     CardInfoListResponse cardInfoListResponse = (CardInfoListResponse) pAdditionParams[0];
 
-                    if (cardInfoListResponse.returncode < 0 && !TextUtils.isEmpty(cardInfoListResponse.returnmessage)) {
-                        getActivity().showInfoDialog(null, cardInfoListResponse.returnmessage);
+                    if (cardInfoListResponse.returncode < 0 && !TextUtils.isEmpty(cardInfoListResponse.getMessage())) {
+                        getActivity().showInfoDialog(null, cardInfoListResponse.getMessage());
                     } else {
                         processCardInfoListResponse(cardInfoListResponse);
                     }
@@ -606,8 +606,8 @@ public abstract class AdapterBase {
                 try {
                     BankAccountListResponse cardInfoListResponse = (BankAccountListResponse) pAdditionParams[0];
 
-                    if (cardInfoListResponse.returncode < 0 && !TextUtils.isEmpty(cardInfoListResponse.returnmessage)) {
-                        getActivity().showInfoDialog(null, cardInfoListResponse.returnmessage);
+                    if (cardInfoListResponse.returncode < 0 && !TextUtils.isEmpty(cardInfoListResponse.getMessage())) {
+                        getActivity().showInfoDialog(null, cardInfoListResponse.getMessage());
                     } else if (BankAccountHelper.isNeedUpdateBankAccountInfoOnCache(cardInfoListResponse.bankaccountchecksum)) {
                         BankAccountHelper.updateBankAccountListOnCache(cardInfoListResponse.bankaccountchecksum, cardInfoListResponse.bankaccounts);
                     }
@@ -1219,11 +1219,11 @@ public abstract class AdapterBase {
 
                     moveToRequirePin();
                     if (getActivity().getmPaymentPassword() != null) {
-                        getActivity().getmPaymentPassword().setErrorPin(pStatusResponse.returnmessage);
+                        getActivity().getmPaymentPassword().setErrorPin(pStatusResponse.getMessage());
                     }
 
                 } else {
-                    showTransactionFailView(!TextUtils.isEmpty(pStatusResponse.returnmessage) ? pStatusResponse.returnmessage : GlobalData.getStringResource(RS.string.zpw_string_pin_wrong));
+                    showTransactionFailView(!TextUtils.isEmpty(pStatusResponse.getMessage()) ? pStatusResponse.getMessage() : GlobalData.getStringResource(RS.string.zpw_string_pin_wrong));
                 }
             }
             //order still need to continue processing
@@ -1235,8 +1235,8 @@ public abstract class AdapterBase {
                 showTransactionSuccessView();
             }
             //transaction is fail with message
-            else if (pStatusResponse != null && !pStatusResponse.isprocessing && !TextUtils.isEmpty(pStatusResponse.returnmessage)) {
-                showTransactionFailView(pStatusResponse.returnmessage);
+            else if (pStatusResponse != null && !pStatusResponse.isprocessing && !TextUtils.isEmpty(pStatusResponse.getMessage())) {
+                showTransactionFailView(pStatusResponse.getMessage());
             }
             //response is null
             else {
@@ -1455,7 +1455,7 @@ public abstract class AdapterBase {
                     Log.e(this, ex);
                 }
             } else if (PaymentStatusHelper.isErrorResponse(pCardInfoResponse)) {
-                showDialog(pCardInfoResponse.returnmessage);
+                showDialog(pCardInfoResponse.getMessage());
             } else if (PaymentStatusHelper.isNetworkingErrorResponse(pCardInfoResponse)) {
                 showDialog(GlobalData.getStringResource(RS.string.zpw_string_save_card_error));
             }

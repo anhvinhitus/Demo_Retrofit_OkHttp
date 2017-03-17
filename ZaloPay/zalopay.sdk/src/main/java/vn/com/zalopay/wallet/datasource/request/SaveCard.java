@@ -64,7 +64,7 @@ public class SaveCard extends BaseRequest<SaveCardResponse> {
                     TSaveCardThreadTask saveCardThreadTask = new TSaveCardThreadTask();
                     saveCardThreadTask.execute();
                 } else
-                    mSaveCardListener.onError(saveCardResponse.returnmessage);
+                    mSaveCardListener.onError(saveCardResponse.getMessage());
             } else {
                 mSaveCardListener.onError(null);
             }

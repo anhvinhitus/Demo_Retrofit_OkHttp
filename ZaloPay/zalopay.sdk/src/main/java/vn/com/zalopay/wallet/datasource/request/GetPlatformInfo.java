@@ -120,7 +120,7 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         Log.d(this, "===processGatewayInfoResult()===");
         //request fail
         if (pResponse == null || pResponse.returncode != 1) {
-            onRequestFail(pResponse != null ? pResponse.returnmessage : null);
+            onRequestFail(pResponse != null ? pResponse.getMessage() : null);
             return;
         }
 

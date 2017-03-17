@@ -328,13 +328,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
             String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
 
-            if (pMessage != null && !TextUtils.isEmpty(pMessage.returnmessage)) {
-                message = pMessage.returnmessage;
+            if (pMessage != null && !TextUtils.isEmpty(pMessage.getMessage())) {
+                message = pMessage.getMessage();
             }
 
             if (pMessage != null && pMessage.returncode < 0) {
                 //sometimes get app info return empty message and return code -2.that mean app not allow from backend.
-                if (pMessage.returncode == -2 && TextUtils.isEmpty(pMessage.returnmessage))
+                if (pMessage.returncode == -2 && TextUtils.isEmpty(pMessage.getMessage()))
                     message = GlobalData.getStringResource(RS.string.zpw_not_allow_payment_app);
 
                 ErrorManager.updateTransactionResult(pMessage.returncode);
@@ -1194,16 +1194,18 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         if(this instanceof PaymentChannelActivity)
         {
-            StatusResponse res = getAdapter().getmResponseStatus();
-            res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
-            getAdapter().setmResponseStatus(res);
-            if(PaymentStatusHelper.isPaymentOverLimitPerDay(getAdapter().getmResponseStatus())) {
-                // The inform text would be set from server
-                setText(R.id.zpw_textview_update_level_inform, GlobalData.getStringResource(RS.string.zpw_update_level_inform_content));
-                setView(R.id.zpw_textview_update_level_inform, true);
+            StatusResponse res = getAdapter().getResponseStatus();
+            /*res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
+            getAdapter().setmResponseStatus(res);*/
+            // The inform text would be set from server
+
+            setText(R.id.zpw_textview_update_level_inform, res.suggest_actions);//show suggest action which return from server
+            setView(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(res.suggest_actions));
+
+            //exception case for payment overlimit per day
+            if(PaymentStatusHelper.isPaymentOverLimitPerDay(getAdapter().getResponseStatus())) {
                 setView(R.id.zpw_payment_fail_rl_update_info, true);
             } else {
-                setView(R.id.zpw_textview_update_level_inform, false);
                 setView(R.id.zpw_payment_fail_rl_update_info, false);
             }
         }

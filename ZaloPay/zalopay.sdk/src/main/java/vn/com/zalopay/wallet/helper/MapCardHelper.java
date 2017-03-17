@@ -78,7 +78,7 @@ public class MapCardHelper {
                             pReloadMapCardInfoListener.onComplete(((CardInfoListResponse) pResponse).cardinfos);
                         }
                     } else if (pResponse != null && pReloadMapCardInfoListener != null) {
-                        pReloadMapCardInfoListener.onError(pResponse.returnmessage);
+                        pReloadMapCardInfoListener.onError(pResponse.getMessage());
                     } else if (pReloadMapCardInfoListener != null) {
                         pReloadMapCardInfoListener.onError(null);
                     }

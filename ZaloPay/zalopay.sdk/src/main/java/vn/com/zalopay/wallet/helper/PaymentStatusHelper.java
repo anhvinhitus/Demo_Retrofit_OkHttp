@@ -15,7 +15,7 @@ public class PaymentStatusHelper {
     }
 
     public static boolean isErrorResponse(BaseResponse pResponse) {
-        return pResponse != null && pResponse.returncode < 0 && !TextUtils.isEmpty(pResponse.returnmessage);
+        return pResponse != null && pResponse.returncode < 0 && !TextUtils.isEmpty(pResponse.getMessage());
     }
 
     public static boolean isCardMapByOtherAccount(BaseResponse pCardInfoResponse) {
