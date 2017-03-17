@@ -239,6 +239,10 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
+    boolean checkWebMode() {
+        return mMoneyTransferMode == Constants.MoneyTransfer.MODE_WEB;
+    }
+
     void transferMoney() {
         if (mTransaction.amount <= 0) {
             return;
@@ -292,9 +296,16 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         hideLoading();
 
         if (e instanceof NetworkConnectionException) {
+            if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_WEB) {
+                handleFailedTransferWeb(mView.getActivity(),
+                        3, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INTERNET));
+            }
             mView.showNetworkErrorDialog();
         } else {
             String message = ErrorMessageFactory.create(applicationContext, e);
+            if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_WEB) {
+                handleFailedTransferWeb(mView.getActivity(), 0, message);
+            }
             mView.showError(message);
         }
     }
@@ -516,6 +527,11 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             return;
         }
 
+        if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_WEB) {
+            handleFailedTransferWeb(mView.getActivity(),
+                    4, PaymentError.getErrorMessage(PaymentError.ERR_CODE_USER_CANCEL));
+        }
+
         Intent intent = new Intent();
         intent.putExtra(Constants.ARG_AMOUNT, mTransaction.amount);
         intent.putExtra(Constants.ARG_MESSAGE, mTransaction.message);
@@ -538,6 +554,10 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                     mTransaction.zaloPayId,
                     Constants.MoneyTransfer.STAGE_PRETRANSFER, 0, null
             ));
+        } else if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_WEB) {
+            if (mView != null) {
+                mView.disableEditAmountAndMessage();
+            }
         }
     }
 
@@ -581,6 +601,9 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
             if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
                 handleFailedTransferZalo(mView.getActivity(), paymentError.value());
+            } else if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_WEB) {
+                handleFailedTransferWeb(mView.getActivity(),
+                        paymentError.value(), PaymentError.getErrorMessage(paymentError));
             }
         }
 
@@ -592,6 +615,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
             if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_ZALO) {
                 handleCompletedTransferZalo(mView.getActivity());
+            } else if (mMoneyTransferMode == Constants.MoneyTransfer.MODE_WEB) {
+                handleCompletedTransferWeb(mView.getActivity());
             } else {
                 mView.getActivity().setResult(Activity.RESULT_OK);
                 mView.getActivity().finish();
@@ -643,4 +668,19 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
     }
 
+    void handleCompletedTransferWeb(Activity activity) {
+        Intent data = new Intent();
+        data.putExtra("code", 1);
+        activity.setResult(Activity.RESULT_OK, data);
+        activity.finish();
+    }
+
+    void handleFailedTransferWeb(Activity activity, int code, String param) {
+        Timber.d("handleFailedTransferWeb with code: %s, param: %s", code, param);
+        Intent data = new Intent();
+        data.putExtra("code", code);
+        data.putExtra("param", param);
+        activity.setResult(Activity.RESULT_OK, data);
+        activity.finish();
+    }
 }

@@ -342,7 +342,15 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     @Override
     public void showError(String message) {
-        showErrorDialog(message);
+        showErrorDialog(message, () -> {
+            if(mPresenter.checkWebMode()) {
+                if(message.equals(getContext().getString(R.string.exception_transfer_for_self))) {
+                    mPresenter.handleFailedTransferWeb(getActivity(), 2, message);
+                } else {
+                    mPresenter.handleFailedTransferWeb(getActivity(), 5, message);
+                }
+            }
+        });
     }
 
     @Override
