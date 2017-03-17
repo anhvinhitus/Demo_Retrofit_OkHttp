@@ -9,6 +9,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.SaveCardImpl;
@@ -84,7 +85,7 @@ public class SaveCard extends BaseRequest<SaveCardResponse> {
     @Override
     protected void doRequest() {
         try {
-            DataRepository.shareInstance().setDataSourceListener(getDataSourceListener()).pushData(new SaveCardImpl(), getDataParams());
+            shareDataRepository().pushData(new SaveCardImpl(), getDataParams());
         } catch (Exception ex) {
             Log.e(this, ex);
             onRequestFail(null);

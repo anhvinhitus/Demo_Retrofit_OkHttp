@@ -13,6 +13,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.RemoveMapCardImpl;
@@ -114,7 +115,7 @@ public class RemoveMapCard extends BaseRequest<BaseResponse> {
     @Override
     protected void doRequest() {
         try {
-            DataRepository.shareInstance().setDataSourceListener(getDataSourceListener()).pushData(new RemoveMapCardImpl(), getDataParams());
+            shareDataRepository().pushData(new RemoveMapCardImpl(), getDataParams());
             SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
         } catch (Exception ex) {
             onRequestFail(null);

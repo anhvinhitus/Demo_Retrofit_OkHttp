@@ -207,7 +207,7 @@ public class GetAppInfo extends BaseRequest<DAppInfoResponse> {
     protected void doRequest() {
         try {
             Log.d(this, "===Begin getting info of app ID:===" + appID);
-            DataRepository.newInstance(SDKApplication.getRetrofit()).setDataSourceListener(getDataSourceListener()).getData(new GetAppInfoImpl(), getDataParams());
+           newDataRepository().getData(new GetAppInfoImpl(), getDataParams());
         } catch (Exception e) {
             Log.e(this, e);
 

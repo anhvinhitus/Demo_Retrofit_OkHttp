@@ -12,6 +12,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.GetBankListImpl;
@@ -37,7 +38,7 @@ public class GetBankList extends BaseRequest<BankConfigResponse> {
         mLoading = true;
 
         try {
-            DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).getData(new GetBankListImpl(), getDataParams());
+           newDataRepository().getData(new GetBankListImpl(), getDataParams());
         } catch (Exception e) {
             Log.e(this, e);
 

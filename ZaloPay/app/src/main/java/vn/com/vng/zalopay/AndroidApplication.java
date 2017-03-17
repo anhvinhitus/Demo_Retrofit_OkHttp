@@ -132,7 +132,6 @@ public class AndroidApplication extends Application {
 
     private void initPaymentSdk() {
         SDKConfiguration sdkConfig = SDKConfiguration.newBuilder()
-                .setHttpClient(getAppComponent().okHttpClient())
                 .setHttpClientTimeoutLonger(getAppComponent().okHttpClientTimeoutLonger())
                 .setReleaseBuild(!BuildConfig.DEBUG)
                 .setBaseHostUrl(BuildConfig.HOST)

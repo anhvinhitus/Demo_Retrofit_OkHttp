@@ -19,10 +19,6 @@ public class SDKConfiguration {
         return mConfigBuilder;
     }
 
-    public OkHttpClient getHttpClient() {
-        return mConfigBuilder.getHttpClient();
-    }
-
     public OkHttpClient getHttpClientTimeoutLonger() {
         return mConfigBuilder.getHttpClientTimeoutLonger();
     }
@@ -43,11 +39,6 @@ public class SDKConfiguration {
         protected boolean mReleaseBuild;
         protected Constants.HostType mEnumEnvironment;
         /***
-         * this http client get from app, with connect timeout : read timeout = 10ms:5ms
-         */
-        protected OkHttpClient mHttpClient;
-
-        /***
          * this http client for get platform info and download resource
          * connect timeout : read timeout = 30ms : 30ms.
          */
@@ -57,15 +48,6 @@ public class SDKConfiguration {
          * connector
          */
         protected Retrofit mRetrofit;
-
-        public OkHttpClient getHttpClient() {
-            return mHttpClient;
-        }
-
-        public Builder setHttpClient(OkHttpClient pOkHttpClient) {
-            mHttpClient = pOkHttpClient;
-            return this;
-        }
 
         public OkHttpClient getHttpClientTimeoutLonger() {
             return mHttpClientTimeoutLonger;

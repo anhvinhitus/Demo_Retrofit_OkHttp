@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.listener.IDataSourceListener;
 import vn.com.zalopay.wallet.utils.Log;
 
@@ -68,5 +70,15 @@ public abstract class BaseRequest<T extends BaseResponse> extends SingletonBase 
 
     protected HashMap<String, String> getDataParams() {
         return mDataParams;
+    }
+
+    protected DataRepository shareDataRepository()
+    {
+        return DataRepository.shareInstance(SDKApplication.getRetrofit()).setDataSourceListener(getDataSourceListener());
+    }
+
+    protected DataRepository newDataRepository()
+    {
+        return DataRepository.newInstance(SDKApplication.getRetrofit()).setDataSourceListener(getDataSourceListener());
     }
 }

@@ -7,6 +7,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.VerifyMapCardImpl;
@@ -71,6 +72,6 @@ public class VerifyMapCard extends BaseRequest<StatusResponse> {
             return;
         }
 
-        DataRepository.shareInstance().setDataSourceListener(getDataSourceListener()).pushData(new VerifyMapCardImpl(), getDataParams());
+        shareDataRepository().pushData(new VerifyMapCardImpl(), getDataParams());
     }
 }

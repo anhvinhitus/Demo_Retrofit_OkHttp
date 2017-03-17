@@ -355,10 +355,6 @@ public class SDKApplication extends Application {
         return mApplication;
     }
 
-    public static OkHttpClient getHttpClient() {
-        return mConfig.getHttpClient();
-    }
-
     public static OkHttpClient getHttpClientTimeoutLonger() {
         return mConfig.getHttpClientTimeoutLonger();
     }

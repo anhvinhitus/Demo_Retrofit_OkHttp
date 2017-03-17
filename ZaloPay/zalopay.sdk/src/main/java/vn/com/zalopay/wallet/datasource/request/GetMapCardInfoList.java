@@ -7,6 +7,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.GetMapCardInfoListImpl;
@@ -74,7 +75,7 @@ public class GetMapCardInfoList extends BaseRequest<CardInfoListResponse> {
                 return;
             }
 
-            DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).getData(new GetMapCardInfoListImpl(), getDataParams());
+           newDataRepository().getData(new GetMapCardInfoListImpl(), getDataParams());
         } catch (Exception ex) {
             onRequestFail(null);
         }

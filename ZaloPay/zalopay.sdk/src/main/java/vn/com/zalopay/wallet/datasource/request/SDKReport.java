@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.SDKReportImpl;
@@ -108,7 +109,7 @@ public class SDKReport extends BaseRequest<BaseResponse> {
                 Log.e("makeReportError", "====cant send log report error because networking is offline");
                 return;
             }
-            DataRepository.shareInstance().setDataSourceListener(getDataSourceListener()).pushData(new SDKReportImpl(), getDataParams());
+           shareDataRepository().pushData(new SDKReportImpl(), getDataParams());
         } catch (Exception ex) {
             onRequestFail(null);
         }

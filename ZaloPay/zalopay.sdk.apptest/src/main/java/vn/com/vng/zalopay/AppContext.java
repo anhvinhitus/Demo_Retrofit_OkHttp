@@ -9,10 +9,12 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+import vn.com.zalopay.wallet.datasource.IData;
 
 /**
  * Created by admin on 9/19/16.
@@ -55,10 +57,9 @@ public class AppContext extends Application {
                 .connectTimeout(apiConnectTimeout, TimeUnit.MILLISECONDS);
 
         httpClientLonger.addInterceptor(logging);
-
         httpClient.addNetworkInterceptor(new StethoInterceptor());
+
         SDKConfiguration sdkConfig = SDKConfiguration.newBuilder()
-                .setHttpClient(httpClient.build())
                 .setHttpClientTimeoutLonger(httpClientLonger.build())
                 .setReleaseBuild(!BuildConfig.DEBUG)
                 .setBaseHostUrl(BuildConfig.HOST)

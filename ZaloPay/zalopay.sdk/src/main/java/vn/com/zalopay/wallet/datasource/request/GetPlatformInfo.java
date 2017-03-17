@@ -12,6 +12,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DChannelMapApp;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.RequestKeeper;
@@ -268,6 +269,22 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         }
     }
 
+    /***
+     * retry platforminfo from service or in GatewayLoader
+     */
+    public void makeRetry() {
+        mIsProcessing = true;
+        try {
+            Log.d(this, "===starting to retry platform info=====");
+            newDataRepository().retryPlatformInfo(RequestKeeper.requestPlatformInfo);
+        } catch (Exception e) {
+            Log.e(this, e);
+
+            mResponse = null;
+            onRequestFail(null);
+        }
+    }
+
     private void onPostResultCallBack() {
         DataRepository.dispose();
         mIsProcessing = false;
@@ -378,7 +395,7 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
     @Override
     protected void doRequest() {
         try {
-            DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).getPlatformInfo(getDataParams());
+            newDataRepository().getPlatformInfo(getDataParams());
         } catch (Exception e) {
             Log.e(this, e);
             mResponse = null;

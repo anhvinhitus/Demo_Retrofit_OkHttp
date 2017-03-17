@@ -7,6 +7,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.AuthenPayerImpl;
@@ -69,8 +70,7 @@ public class AuthenPayer extends BaseRequest<StatusResponse> {
     protected void doRequest() {
         try {
             if (mAdapter.checkNetworkingAndShowRequest()) {
-                DataRepository.shareInstance().setDataSourceListener(getDataSourceListener()).pushData(new AuthenPayerImpl(), getDataParams());
-                ;
+                shareDataRepository().pushData(new AuthenPayerImpl(), getDataParams());
             }
         } catch (Exception ex) {
             Log.e(this, ex);

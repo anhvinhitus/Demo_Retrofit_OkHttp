@@ -7,6 +7,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.GetBankAccountListImpl;
@@ -79,7 +80,7 @@ public class GetBankAccountList extends BaseRequest<BankAccountListResponse> {
                 return;
             }
 
-            DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).getData(new GetBankAccountListImpl(), getDataParams());
+           newDataRepository().getData(new GetBankAccountListImpl(), getDataParams());
         } catch (Exception ex) {
             onRequestFail(null);
         }

@@ -604,8 +604,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } else {
             fadeOutTransition();
         }
-
-        DataRepository.shareInstance().cancelRequest();
     }
 
     @Override

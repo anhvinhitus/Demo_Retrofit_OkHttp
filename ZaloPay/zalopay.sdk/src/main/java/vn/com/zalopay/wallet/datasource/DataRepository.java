@@ -39,6 +39,7 @@ import vn.com.zalopay.wallet.utils.Log;
 
 public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private static DataRepository _object;
+    private static DataRepository _objectUseRetrofit;
     private IData mDataSource;
     private boolean mIsRequesting = false;
     private IDataSourceListener mDataSourceLitener;
@@ -47,12 +48,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private int retryCount = 1;
     private WeakReference<ITask> mCurrentTask = null;
 
-    public DataRepository(OkHttpClient pHttpClient) {
-        super();
-        createRetrofitService(pHttpClient);
-        resetCountRetry();
-    }
-
+    //region contructor with retrofit
     public DataRepository(Retrofit pRetrofit) {
         super();
         createRetrofitService(pRetrofit);
@@ -60,25 +56,38 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         resetCountRetry();
     }
 
-    public static DataRepository shareInstance() {
+    public static DataRepository newInstance(Retrofit pRetrofit) {
+        return new DataRepository(pRetrofit);
+    }
+
+    public static DataRepository shareInstance(Retrofit pRetrofit) {
+        if (DataRepository._objectUseRetrofit == null) {
+            DataRepository._objectUseRetrofit = new DataRepository(pRetrofit);
+        }
+        DataRepository._objectUseRetrofit.resetCountRetry();
+        return DataRepository._objectUseRetrofit;
+    }
+    //endregion
+
+    //region contructor with okhttp
+    public DataRepository(OkHttpClient pHttpClient) {
+        super();
+        createRetrofitService(pHttpClient);
+        mTempCallBack = new ArrayList<>();
+        resetCountRetry();
+    }
+    public static DataRepository shareInstance(OkHttpClient pHttpClient) {
         if (DataRepository._object == null) {
-            DataRepository._object = new DataRepository(SDKApplication.getHttpClient());
+            DataRepository._object = new DataRepository(pHttpClient);
         }
         DataRepository._object.resetCountRetry();
         return DataRepository._object;
     }
 
-    public static DataRepository newInstance() {
-        return new DataRepository(SDKApplication.getHttpClient());
+    public static DataRepository newInstance(OkHttpClient pHttpClient) {
+        return new DataRepository(pHttpClient);
     }
-
-    public static DataRepository newInstance(Retrofit pRetrofit) {
-        if (pRetrofit != null) {
-            return new DataRepository(pRetrofit);
-        } else {
-            return new DataRepository(SDKApplication.getHttpClient());
-        }
-    }
+    //endregion
 
     /***
      * httpclient for download resouce with longer timeout

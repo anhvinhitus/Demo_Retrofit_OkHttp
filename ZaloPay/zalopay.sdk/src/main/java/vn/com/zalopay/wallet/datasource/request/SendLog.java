@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.datasource.request;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.SendLogImpl;
@@ -46,7 +47,7 @@ public class SendLog extends BaseRequest<BaseResponse> {
     @Override
     protected void doRequest() {
         try {
-            DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).pushDataNoCheckDuplicate(new SendLogImpl(), getDataParams());
+           newDataRepository().pushDataNoCheckDuplicate(new SendLogImpl(), getDataParams());
         } catch (Exception ex) {
             onRequestFail(null);
         }

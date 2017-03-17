@@ -2,6 +2,7 @@ package vn.com.zalopay.wallet.datasource.request;
 
 
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.SDKReportImpl;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
@@ -46,7 +47,7 @@ public class TrustSDKReport extends SDKReport {
                 return;
             }
             Log.d(this,"TrustSDKReport.doRequest");
-            DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).pushData(new SDKReportImpl(), getDataParams());
+           newDataRepository().pushData(new SDKReportImpl(), getDataParams());
         } catch (Exception ex) {
             onRequestFail(null);
         }

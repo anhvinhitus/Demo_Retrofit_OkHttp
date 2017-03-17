@@ -7,6 +7,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.CheckOrderStatusFailSubmitImpl;
@@ -76,7 +77,7 @@ public class CheckOrderStatusFailSubmit extends BaseRequest<StatusResponse> {
     protected void doRequest() {
         Log.d(this, "===Begin check status transID: " + mAppTransID);
         try {
-            DataRepository.shareInstance().setDataSourceListener(getDataSourceListener()).getDataReuseRequest(new CheckOrderStatusFailSubmitImpl(), getDataParams(), mRetry);
+            shareDataRepository().getDataReuseRequest(new CheckOrderStatusFailSubmitImpl(), getDataParams(), mRetry);
         } catch (Exception ex) {
             onRequestFail(null);
         }

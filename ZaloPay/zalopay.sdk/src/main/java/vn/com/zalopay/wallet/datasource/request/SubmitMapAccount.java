@@ -8,6 +8,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.linkacc.DSubmitBankAcc;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.implement.SubmitMapAccountImpl;
@@ -60,7 +61,7 @@ public class SubmitMapAccount extends BaseRequest<BaseResponse> {
     @Override
     protected void doRequest() {
         try {
-            DataRepository.shareInstance().setDataSourceListener(getDataSourceListener()).pushData(new SubmitMapAccountImpl(), getDataParams());
+            shareDataRepository().pushData(new SubmitMapAccountImpl(), getDataParams());
         } catch (Exception ex) {
             onRequestFail(null);
         }
