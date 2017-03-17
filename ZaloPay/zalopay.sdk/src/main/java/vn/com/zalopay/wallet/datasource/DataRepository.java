@@ -42,8 +42,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private boolean mIsRequesting = false;
     private IDataSourceListener mDataSourceLitener;
     private Call mCallable;
-    private long startTimeRequest = 0;
-    private long totalTimeRequest = 0;
     private int retryCount = 1;
     private WeakReference<ITask> mCurrentTask = null;
 
@@ -188,9 +186,9 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
                     try {
                         //send tracking timing to tracking source, for example : GA,vvv
                         if (mCurrentTask != null && mCurrentTask.get() != null && PaymentPermission.allowUseTrackingTiming()) {
-                            totalTimeRequest = System.currentTimeMillis() - startTimeRequest;
-                            ZPAnalytics.trackTiming(mCurrentTask.get().getTaskEventId(), totalTimeRequest);
-                            Log.d(this, "===ZPAnalytics.trackTiming===" + mCurrentTask.get().getTaskEventId() + " timing(ms)=" + (totalTimeRequest));
+                            Long timeRequest = response.raw().receivedResponseAtMillis() - response.raw().sentRequestAtMillis();
+                            ZPAnalytics.trackTiming(mCurrentTask.get().getTaskEventId(), timeRequest);
+                            Log.d(this, "===ZPAnalytics.trackTiming===" + mCurrentTask.get().getTaskEventId() + " timing(ms)=" + (timeRequest));
                         }
                         if (pCallback != null) {
                             pCallback.onFinish(call, response);
@@ -430,9 +428,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     public synchronized void pushDataNoCheckDuplicate(final ITask pTask, HashMap<String, String> params) {
 
         try {
-            startTimeRequest = System.currentTimeMillis();
-            Log.d("===STARTING REQUEST at time=", String.valueOf(startTimeRequest));
-
             mCurrentTask = new WeakReference<ITask>(pTask);
             mCallable = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
             onRequest(mCallable, new IPaymentApiCallBack<SaveCardResponse>() {
@@ -469,10 +464,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
      */
     private void inProgress() {
         mIsRequesting = true;
-
-        startTimeRequest = System.currentTimeMillis();
-        Log.d("===STARTING REQUEST at time=", String.valueOf(startTimeRequest));
-
         if (mDataSourceLitener != null) {
             mDataSourceLitener.onRequestAPIProgress();
         }
@@ -485,7 +476,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
      */
     private void onErrorRequest(String pError) {
         mIsRequesting = false;
-        Log.d("===REQUEST ERROR total request time= ", String.format("%d ms", totalTimeRequest));
         if (mDataSourceLitener != null) {
             mDataSourceLitener.onRequestAPIComplete(false, pError, null);
         }
@@ -499,8 +489,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
      */
     private void onSuccessRequest(boolean pIsSuccess, BaseResponse pResponse) {
         mIsRequesting = false;
-        Log.d("=====REQUEST SUCESS total request time= ", String.format("%d MS", totalTimeRequest));
-        //update access token if have new
+         //update access token if have new
         GlobalData.checkForUpdateAccessTokenToApp(pResponse);
 
         if (mDataSourceLitener != null) {
