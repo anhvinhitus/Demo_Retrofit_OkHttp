@@ -27,6 +27,7 @@ import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -187,6 +188,10 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
         if (!mAmountView.validate()) {
+            if(mPresenter.checkWebMode()) {
+                mPresenter.handleFailedTransferWeb(getActivity(),
+                        2, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
+            }
             return;
         }
 
@@ -208,7 +213,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         }
 
         mAmountView.setSelection(mAmountView.length());
-
+        mAmountView.validate();
     }
 
     @Override

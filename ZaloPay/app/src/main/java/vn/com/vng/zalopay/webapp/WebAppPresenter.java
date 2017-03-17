@@ -149,11 +149,14 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
             int code = result.getInt("code");
             String param = result.getString("param");
             if (code == 1) {
-                mResponseListener.onPaySuccess();
+                if(mResponseListener != null) {
+                    mResponseListener.onPaySuccess();
+                }
             } else {
-                Timber.d("onActivityResult with code: %s", code);
-                code = Arrays.asList(mZPTransfer.errorCodeList).contains(code) ? code : 5;
-                mResponseListener.onPayError(code, param);
+                if(mResponseListener != null) {
+                    code = Arrays.asList(mZPTransfer.errorCodeList).contains(code) ? code : 5;
+                    mResponseListener.onPayError(code, param);
+                }
             }
         }
     }
