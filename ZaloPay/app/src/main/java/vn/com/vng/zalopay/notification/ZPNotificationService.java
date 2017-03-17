@@ -122,12 +122,12 @@ public class ZPNotificationService implements OnReceiverMessageListener {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-    //    BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
+        //    BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
     }
 
     private void unregisterEvent() {
         mEventBus.unregister(this);
-      //  BusComponent.unregister(this);
+        //  BusComponent.unregister(this);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class ZPNotificationService implements OnReceiverMessageListener {
                 return;
             }
 
-            mNotificationHelper.processNotification((NotificationData) event);
+            mNotificationHelper.processImmediateNotification((NotificationData) event);
         } else if (event instanceof RecoveryMessageEvent) {
             if (mTimeoutRecoverySubscription != null) {
                 mTimeoutRecoverySubscription.unsubscribe();

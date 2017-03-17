@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
@@ -26,7 +27,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -51,8 +51,6 @@ import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.activity.NotificationActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
 /**
  * Created by AnhHieu on 6/15/16.
@@ -131,27 +129,11 @@ public class NotificationHelper {
         manager.notify(id, n);
     }
 
-    void processNotification(NotificationData notify) {
-        processNotification(notify, false);
-    }
-
-    void processNotification(NotificationData notify, boolean isNotificationRecovery) {
-
-        if (notify == null) {
-            return;
-        }
-        Timber.d("processNotification: %s %s", notify.message, isNotificationRecovery);
-
-        if (!isNotificationRecovery) {
-            this.shouldUpdateTransAndBalance(notify);
-        }
+    private void processNotification(@NonNull NotificationData notify, boolean isRecovery) {
 
         this.shouldMarkRead(notify);
 
-        boolean skipStorage = false;
-
         int notificationType = (int) notify.notificationtype;
-
         switch (notificationType) {
             case NotificationType.UPDATE_PROFILE_LEVEL_OK:
                 updateLevelProfile(notify, true);
@@ -160,36 +142,10 @@ public class NotificationHelper {
                 updateLevelProfile(notify, false);
                 break;
             case NotificationType.SEND_RED_PACKET:
-                extractRedPacketFromNotification(notify, isNotificationRecovery);
+                extractRedPacketFromNotification(notify, isRecovery);
                 break;
             case NotificationType.RETRY_TRANSACTION:
                 updateTransactionStatus(notify);
-                break;
-            case NotificationType.DONATE_MONEY:
-                if (isNotificationRecovery) {
-                    break;
-                }
-
-                showAlertNotification(notify, mContext.getString(R.string.donate_money));
-                break;
-            case NotificationType.MONEY_TRANSFER:
-                if (isNotificationRecovery) {
-                    break;
-                }
-
-                if (!notify.isRead()) {
-                    mEventBus.post(notify);
-                }
-
-                break;
-            case NotificationType.APP_P2P_NOTIFICATION:
-
-                if (isNotificationRecovery) {
-                    break;
-                }
-                // post notification and skip write to db
-                mEventBus.post(notify);
-                skipStorage = true;
                 break;
             case NotificationType.RESET_PAYMENT_PASSWORD:
                 resetPaymentPassword();
@@ -197,28 +153,51 @@ public class NotificationHelper {
             case NotificationType.LINK_CARD_EXPIRED:
                 removeLinkCard(notify);
                 break;
-            case NotificationType.MERCHANT_BILL:
-                if (isNotificationRecovery) {
-                    break;
-                }
+        }
 
+        if (!isRecovery) {
+            return;
+        }
+
+        boolean skipStorage = false;
+        this.shouldUpdateTransAndBalance(notify);
+
+        switch (notificationType) {
+            case NotificationType.DONATE_MONEY:
+                showAlertNotification(notify, mContext.getString(R.string.donate_money));
+                break;
+            case NotificationType.MONEY_TRANSFER:
+                if (!notify.isRead()) {
+                    mEventBus.post(notify);
+                }
+                break;
+            case NotificationType.APP_P2P_NOTIFICATION:
+                mEventBus.post(notify);
+                skipStorage = true;
+                break;
+            case NotificationType.MERCHANT_BILL:
                 payOrderFromNotify(notify);
                 break;
             case NotificationType.UNLINK_ACCOUNT:
-                if (!isNotificationRecovery) {
-                    CShareDataWrapper.pushNotificationToSdk(notificationType, notify.message);
-                }
+                CShareDataWrapper.pushNotificationToSdk(notificationType, notify.message);
                 break;
             case NotificationType.LINK_ACCOUNT:
-                if (!isNotificationRecovery) {
-                    CShareDataWrapper.pushNotificationToSdk(notificationType, notify.message);
-                }
+                CShareDataWrapper.pushNotificationToSdk(notificationType, notify.message);
                 break;
         }
 
-        if (!skipStorage && !isNotificationRecovery) {
+        if (!skipStorage) {
             this.putNotification(notify);
         }
+
+    }
+
+    void processImmediateNotification(NotificationData notify) {
+        processNotification(notify, false);
+    }
+
+    private void processRecoveryNotification(NotificationData notify) {
+        processNotification(notify, true);
     }
 
     private void putNotification(NotificationData notify) {
@@ -309,7 +288,7 @@ public class NotificationHelper {
         if (last4cardno <= 0 || first6cardno <= 0) {
             return;
         }
-      
+
         CShareDataWrapper.reloadMapCardList(String.valueOf(last4cardno), String.valueOf(first6cardno), mUser, null);
     }
 
@@ -474,11 +453,11 @@ public class NotificationHelper {
      * Kiểm tra từng notify, Nếu notify đã tồn tại trong db thì không thực hiện process.
      * Sau đó save all notify
      */
-    public Observable<Void> recoveryNotification(final List<NotificationData> listMessage) {
+    Observable<Void> recoveryNotification(final List<NotificationData> listMessage) {
         Timber.d("Recovery notification size [%s]", listMessage.size());
         return Observable.from(listMessage)
                 .filter(notify -> !mNotifyRepository.isNotifyExisted(notify.mtaid, notify.mtuid))
-                .doOnNext(notify -> processNotification(notify, true))
+                .doOnNext(this::processRecoveryNotification)
                 .lastOrDefault(new NotificationData())
                 .flatMap(new Func1<NotificationData, Observable<Void>>() {
                     @Override
@@ -488,7 +467,7 @@ public class NotificationHelper {
                 });
     }
 
-    public void recoveryRedPacketStatus() {
+    void recoveryRedPacketStatus() {
         if (Lists.isEmptyOrNull(mListPacketIdToRecovery)) {
             return;
         }
@@ -505,7 +484,7 @@ public class NotificationHelper {
         mCompositeSubscription.add(subscription);
     }
 
-    public void recoveryTransaction() {
+    void recoveryTransaction() {
         Timber.d("recovery Transaction");
         Subscription subscription = mNotifyRepository.getOldestTimeNotification()
                 .filter(time -> time > 0)
@@ -515,7 +494,7 @@ public class NotificationHelper {
         mCompositeSubscription.add(subscription);
     }
 
-    public Observable<Long> getOldestTimeRecoveryNotification(final boolean isFirst) {
+    Observable<Long> getOldestTimeRecoveryNotification(final boolean isFirst) {
         return mNotifyRepository.getOldestTimeRecoveryNotification()
                 .filter(time -> !(isFirst && mNotifyRepository.isRecovery()) && (!isFirst || time <= 0));
     }
