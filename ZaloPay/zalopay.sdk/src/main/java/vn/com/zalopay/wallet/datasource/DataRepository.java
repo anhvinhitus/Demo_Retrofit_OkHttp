@@ -43,6 +43,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private boolean mIsRequesting = false;
     private IDataSourceListener mDataSourceLitener;
     private Call mCallable;
+    private ArrayList<Call> mTempCallBack;
     private int retryCount = 1;
     private WeakReference<ITask> mCurrentTask = null;
 
@@ -509,7 +510,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
      */
     private void onSuccessRequest(boolean pIsSuccess, BaseResponse pResponse) {
         mIsRequesting = false;
-         //update access token if have new
+        //update access token if have new
         GlobalData.checkForUpdateAccessTokenToApp(pResponse);
 
         if (mDataSourceLitener != null) {
