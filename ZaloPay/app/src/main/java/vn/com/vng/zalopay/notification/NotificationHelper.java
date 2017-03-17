@@ -462,18 +462,13 @@ public class NotificationHelper {
      * Kiểm tra từng notify, Nếu notify đã tồn tại trong db thì không thực hiện process.
      * Sau đó save all notify
      */
-    Observable<Void> recoveryNotification(final List<NotificationData> listMessage) {
+    Observable<Void> recoveryNotification(List<NotificationData> listMessage) {
         Timber.d("Recovery notification size [%s]", listMessage.size());
         return Observable.from(listMessage)
                 .filter(notify -> !mNotifyRepository.isNotifyExisted(notify.mtaid, notify.mtuid))
                 .doOnNext(this::processRecoveryNotification)
                 .lastOrDefault(new NotificationData())
-                .flatMap(new Func1<NotificationData, Observable<Void>>() {
-                    @Override
-                    public Observable<Void> call(NotificationData notify) {
-                        return mNotifyRepository.recoveryNotify(listMessage);
-                    }
-                });
+                .flatMap(notify -> mNotifyRepository.recoveryNotify(listMessage));
     }
 
     void recoveryRedPacketStatus() {

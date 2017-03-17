@@ -207,16 +207,12 @@ public class ZPNotificationService implements OnReceiverMessageListener {
                 Subscription sub = mNotificationHelper.recoveryNotification(listMessage)
                         .filter(aVoid -> listMessage.size() >= NUMBER_NOTIFICATION)
                         .flatMap(aVoid -> mNotificationHelper.getOldestTimeRecoveryNotification(false))
+                        .doOnError(Timber::d)
                         .subscribeOn(Schedulers.io())
                         .subscribe(new DefaultSubscriber<Long>() {
                             @Override
                             public void onNext(Long time) {
                                 sendMessageRecovery(time);
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Timber.d(e, "onError: ");
                             }
 
                             @Override
