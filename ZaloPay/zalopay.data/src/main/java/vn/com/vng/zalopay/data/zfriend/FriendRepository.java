@@ -226,7 +226,7 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     private Observable<List<ZaloPayUserEntity>> fetchZaloPayUserByZaloId(String zaloidlist) {
-        Timber.d("fetch zalopay info: zaloids [%s]", zaloidlist);
+        Timber.d("fetching zalopay info");
         return mRequestService.checklistzaloidforclient(mUser.zaloPayId, mUser.accesstoken, zaloidlist)
                 .map(response -> response.userList)
                 .doOnNext(mLocalStorage::putZaloPayUser)
