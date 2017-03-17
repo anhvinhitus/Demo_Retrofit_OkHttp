@@ -1,17 +1,18 @@
 package vn.com.vng.zalopay.ui.subscribe;
 
 import android.app.Activity;
+import android.support.annotation.StringRes;
 
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.vng.zalopay.utils.ToastUtil;
 import vn.com.vng.zalopay.webview.entity.WebViewPayInfo;
 
 /**
@@ -39,7 +40,7 @@ public class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInf
             return;
         }
         if (merchantUserInfo == null) {
-            ToastUtil.showToast(mActivity.get(), "MerchantUserInfo invalid");
+            showErrorDialog(R.string.merchant_user_info_invalid);
             return;
         }
         WebViewPayInfo gamePayInfo = new WebViewPayInfo();
@@ -58,6 +59,18 @@ public class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInf
         if (mActivity == null || mActivity.get() == null) {
             return;
         }
-        DialogHelper.showNotificationDialog(mActivity.get(), ErrorMessageFactory.create(mActivity.get(), e));
+        showErrorDialog(ErrorMessageFactory.create(mActivity.get(), e));
+    }
+
+    private void showErrorDialog(@StringRes int strResource) {
+        if (mActivity != null && mActivity.get() != null) {
+            showErrorDialog(mActivity.get().getString(strResource));
+        }
+    }
+
+    private void showErrorDialog(String message) {
+        if (mActivity != null && mActivity.get() != null) {
+            DialogHelper.showNotificationDialog(mActivity.get(), message);
+        }
     }
 }

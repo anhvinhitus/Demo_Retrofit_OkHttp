@@ -148,7 +148,7 @@ public class BalanceTopupFragment extends BaseFragment implements IBalanceTopupV
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        showErrorDialog(message);
     }
 
     @Override

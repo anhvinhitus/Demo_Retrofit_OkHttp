@@ -357,7 +357,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        showErrorDialog(message);
     }
 
     @Override

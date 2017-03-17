@@ -226,6 +226,6 @@ public class WithdrawConditionFragment extends BaseFragment implements IWithdraw
 
     @Override
     public void showError(String message) {
-        showToast(message);
+        showErrorDialog(message);
     }
 }
