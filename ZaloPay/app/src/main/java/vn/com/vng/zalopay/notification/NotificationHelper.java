@@ -159,6 +159,10 @@ public class NotificationHelper {
             return;
         }
 
+        if (notify.transid > 0) {
+            CShareDataWrapper.notifyTransactionFinish(notify.transid);
+        }
+
         boolean skipStorage = false;
         this.shouldUpdateTransAndBalance(notify);
 
