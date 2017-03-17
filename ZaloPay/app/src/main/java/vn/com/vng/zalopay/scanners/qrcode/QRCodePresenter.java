@@ -71,6 +71,21 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
     private QRCodeStore.Repository mQRCodeRepository;
 
+    private enum QRCodeType {
+        /// Zalo Pay QR Code for Receive money/Transfer money
+        MoneyTransfer,
+        /// Zalo Pay QR Code Type 2
+        ReadOnlyMoneyTransfer,
+        /// Zalo Pay Order with only appid and zptranstoken
+        OrderWithTranstoken,
+        /// Zalo Pay Order with full order information
+        OrderWithFullInfo,
+        /// Zalo Pay QR Code, valid but unsupported for current build version
+        ZaloPayUnknown,
+        /// Not a Zalo Pay QR Code
+        Unknown
+    }
+
     @Inject
     QRCodePresenter(BalanceStore.Repository balanceRepository,
                     ZaloPayRepository zaloPayRepository,
@@ -157,29 +172,117 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             return;
         }
 
-        if (transferMoney(data, fromPhotoLibrary)) {
-            return;
+        QRCodeType qrCodeType = detectQrCodeType(data);
+        boolean executeResult;
+        switch (qrCodeType) {
+            case MoneyTransfer:
+                executeResult = transferMoney(data, fromPhotoLibrary);
+                break;
+            case ReadOnlyMoneyTransfer:
+                executeResult = handleQRCodeOfZaloPay(data, fromPhotoLibrary);
+                break;
+            case OrderWithTranstoken:
+                executeResult = zpTransaction(data);
+                break;
+            case OrderWithFullInfo:
+                executeResult = orderTransaction(data);
+                hideLoadingView();
+                break;
+            case ZaloPayUnknown:
+                showWarningDialog(R.string.qrcode_need_upgrade_to_pay);
+                executeResult = true;
+                break;
+            case Unknown:
+                resumeScanningAfterWrongQR();
+                executeResult = true;
+                break;
+            default:
+                resumeScanningAfterWrongQR();
+                executeResult = true;
+                break;
         }
 
-        boolean isQRCodeOfZaloPay = isQRCodeOfZaloPay(data);
-        Timber.d("pay isQRCodeOfZaloPay [%s]", isQRCodeOfZaloPay);
-        if (isQRCodeOfZaloPay && handleQRCodeOfZaloPay(data, fromPhotoLibrary)) {
-            return;
-        }
-
-        if (zpTransaction(data)) {
-            return;
-        }
-
-        if (orderTransaction(data)) {
+        if (!executeResult) {
             hideLoadingView();
-            return;
+        }
+//        if (transferMoney(data, fromPhotoLibrary)) {
+//            return;
+//        }
+//
+//        boolean isQRCodeOfZaloPay = isQRCodeOfZaloPay(data);
+//        Timber.d("pay isQRCodeOfZaloPay [%s]", isQRCodeOfZaloPay);
+//        if (isQRCodeOfZaloPay && handleQRCodeOfZaloPay(data, fromPhotoLibrary)) {
+//            return;
+//        }
+//
+//        if (zpTransaction(data)) {
+//            return;
+//        }
+//
+//        if (orderTransaction(data)) {
+//            hideLoadingView();
+//            return;
+//        }
+//
+//        if (isQRCodeOfZaloPay) {
+//            showWarningDialog(R.string.qrcode_need_upgrade_to_pay);
+//        } else {
+//            resumeScanningAfterWrongQR();
+//        }
+    }
+
+    private QRCodeType detectQrCodeType(JSONObject data) {
+        if (data == null) {
+            return null;
         }
 
-        if (isQRCodeOfZaloPay) {
-            showWarningDialog(R.string.qrcode_need_upgrade_to_pay);
-        } else {
-            resumeScanningAfterWrongQR();
+        try {
+            // detect if type of MoneyTransfer
+            int type = data.optInt(Constants.ReceiveMoney.TYPE, -1);
+            if (type == Constants.QRCode.RECEIVE_MONEY) {
+                long zaloPayId = data.optLong(Constants.ReceiveMoney.UID, -1);
+                if (zaloPayId > 0) {
+                    return QRCodeType.MoneyTransfer;
+                }
+            }
+
+            String app = data.optString(Constants.QRCode.APP);
+            if (Constants.QRCode.ZALO_PAY.equalsIgnoreCase(app)) {
+                // is Zalo Pay QR code
+
+                // detect if type of ReadOnlyMoneyTransfer
+                type = data.optInt(Constants.TransferFixedMoney.TYPE, -1);
+                String zpid = data.optString(Constants.TransferFixedMoney.ZALO_PAY_ID);
+                long amount = data.optInt(Constants.TransferFixedMoney.AMOUNT, -1);
+                if (type == Constants.QRCode.RECEIVE_FIXED_MONEY &&
+                        !TextUtils.isEmpty(zpid) &&
+                        amount > 0) {
+                    return QRCodeType.ReadOnlyMoneyTransfer;
+                }
+
+                return QRCodeType.ZaloPayUnknown;
+            }
+
+            long appid = data.optLong(vn.com.vng.zalopay.domain.Constants.APPID);
+            String zptranstoken = data.optString(vn.com.vng.zalopay.domain.Constants.ZPTRANSTOKEN);
+
+            if (appid > 0 && !TextUtils.isEmpty(zptranstoken)) {
+                return QRCodeType.OrderWithTranstoken;
+            }
+
+            String apptransid = data.optString(vn.com.vng.zalopay.domain.Constants.APPTRANSID);
+            String appuser = data.optString(vn.com.vng.zalopay.domain.Constants.APPUSER);
+            long apptime = data.optLong(vn.com.vng.zalopay.domain.Constants.APPTIME);
+            long amount = data.optLong(vn.com.vng.zalopay.domain.Constants.AMOUNT);
+
+            if (appid > 0 && apptime > 0 && amount > 0 && !TextUtils.isEmpty(apptransid) && !TextUtils.isEmpty(appuser)) {
+                return QRCodeType.OrderWithFullInfo;
+            }
+
+            return QRCodeType.Unknown;
+        } catch (Throwable t) {
+            Timber.d(t, "Exception while detecting QR code type");
+            return null;
         }
     }
 
@@ -190,14 +293,6 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         } else {
             return false;
         }
-    }
-
-    private boolean isQRCodeOfZaloPay(JSONObject data) {
-        if (data == null) {
-            return false;
-        }
-        String qrCodeApp = data.optString(Constants.QRCode.APP);
-        return Constants.QRCode.ZALO_PAY.equals(qrCodeApp);
     }
 
     private boolean transferMoney(JSONObject data, boolean fromPhotoLibrary) {
