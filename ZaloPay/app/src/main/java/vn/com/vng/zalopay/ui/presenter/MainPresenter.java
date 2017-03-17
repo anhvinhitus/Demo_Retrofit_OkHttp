@@ -28,12 +28,11 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.eventbus.DownloadAppEvent;
+import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -44,6 +43,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
+import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
@@ -59,7 +59,6 @@ import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.utils.ConfigUtil;
@@ -95,7 +94,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     private User mUser;
     private FriendStore.Repository mFriendRepository;
     private Subscription mRefPlatformSubscription;
-    private Runnable mRunnableRefreshIconFont;
 
     @Inject
     NotificationStore.Repository mNotifyRepository;
@@ -215,10 +213,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     @Override
     public void destroy() {
-        if (mRunnableRefreshIconFont != null) {
-            AndroidUtils.cancelRunOnUIThread(mRunnableRefreshIconFont);
-            mRunnableRefreshIconFont = null;
-        }
         super.destroy();
     }
 
@@ -407,14 +401,18 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
-    public void onDownloadAppEvent(DownloadAppEvent event) {
-        Timber.d("onDownloadAppEvent result[%s]", event.isDownloadSuccess);
-        mEventBus.removeStickyEvent(DownloadAppEvent.class);
-        if (!event.isDownloadSuccess || event.mDownloadInfo == null) {
-            return;
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
+        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
+        if (mView != null) {
+            mView.refreshIconFont();
         }
-        if (event.mDownloadInfo.appid == BuildConfig.ZALOPAY_APP_ID) {
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
+    public void onDownloadResourceSuccessEvent(DownloadZaloPayResourceEvent event) {
+        mEventBus.removeStickyEvent(DownloadZaloPayResourceEvent.class);
+        if (event.isDownloadSuccess) {
             reloadConfig();
             reloadIconFont();
         }
@@ -429,15 +427,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     private void reloadIconFont() {
         AndroidApplication.instance().initIconFont();
-        if (mRunnableRefreshIconFont == null) {
-            mRunnableRefreshIconFont = () -> {
-                Timber.d("reloadIconFont");
-                if (mView != null) {
-                    mView.refreshIconFont();
-                }
-            };
-        }
-        AndroidUtils.runOnUIThread(mRunnableRefreshIconFont, 1000);
     }
 
     public void logout() {
