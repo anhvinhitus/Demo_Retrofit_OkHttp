@@ -122,4 +122,10 @@
     <dimen name="searchbox.icon">17dp</dimen>
     <dimen name="searchbox.icon.clear">14dp</dimen>
     <dimen name="searchbox.fontsize.app.result">36dp</dimen>
+
+
+    <dimen name="menu_item_icon_size">24dp</dimen>
+    <dimen name="menu_item_size">48dp</dimen>
+    <dimen name="menu_item_ripple_size">48dp</dimen>
+
 </resources>

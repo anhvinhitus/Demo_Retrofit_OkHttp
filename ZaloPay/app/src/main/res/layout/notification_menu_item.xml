@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="48dp"
-    android:layout_height="48dp"
-    android:padding="@dimen/spacing.tiny">
+    android:layout_width="@dimen/menu_item_size"
+    android:layout_height="@dimen/menu_item_size">
 
-    <ImageView
-        android:id="@+id/imgNotification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <View
+        android:layout_width="@dimen/menu_item_ripple_size"
+        android:layout_height="@dimen/menu_item_ripple_size"
         android:layout_gravity="center"
-        android:adjustViewBounds="true"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_notify" />
+        android:background="?attr/selectableItemBackgroundBorderless" />
 
-    <com.zalopay.ui.widget.textview.RoundTextView xmlns:rv="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/tvNotificationCount"
-        style="@style/TextView.Default"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|top"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:textSize="12dp"
-        android:visibility="gone"
-        rv:rv_backgroundColor="@color/red"
-        rv:rv_isRadiusHalfHeight="true"
-        rv:rv_strokeColor="@color/red"
-        rv:rv_strokeWidth="0dp" />
+    <FrameLayout
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center">
 
+        <ImageView
+            android:layout_width="@dimen/menu_item_icon_size"
+            android:layout_height="@dimen/menu_item_icon_size"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_notify" />
+
+        <com.zalopay.ui.widget.textview.RoundTextView xmlns:rv="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/tvNotificationCount"
+            style="@style/TextView.Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="12dp"
+            android:visibility="gone"
+            rv:rv_backgroundColor="@color/red"
+            rv:rv_isRadiusHalfHeight="true"
+            rv:rv_strokeColor="@color/red"
+            rv:rv_strokeWidth="0dp" />
+
+    </FrameLayout>
 </FrameLayout>
