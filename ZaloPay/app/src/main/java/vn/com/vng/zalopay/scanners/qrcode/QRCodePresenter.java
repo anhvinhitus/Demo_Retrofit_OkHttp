@@ -194,11 +194,9 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         if (type == Constants.QRCode.RECEIVE_FIXED_MONEY) {
             if (tryTransferFixedMoney(data)) {
                 if (fromPhotoLibrary) {
-                    // TODO: 3/15/17 - longlv: need update track event
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
+                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_TYPE2);
                 } else {
-                    // TODO: 3/15/17 - longlv: need update track event
-                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_MONEYTRANSFER);
+                    ZPAnalytics.trackEvent(ZPEvents.SCANQR_TYPE2);
                 }
                 return true;
             }
