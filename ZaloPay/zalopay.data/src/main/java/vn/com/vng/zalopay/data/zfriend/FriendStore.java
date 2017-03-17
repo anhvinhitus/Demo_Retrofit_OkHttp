@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
@@ -79,8 +80,9 @@ public interface FriendStore {
 
     interface RequestService {
 
-        @API_NAME(ZPEvents.API_UM_CHECKLISTZALOIDFORCLIENT)
+        @API_NAME(ZPEvents.CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT)
         @GET(Constants.UM_API.CHECKLISTZALOIDFORCLIENT)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT})
         Observable<ListUserExistResponse> checklistzaloidforclient(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("zaloidlist") String zaloidlist);
     }
 

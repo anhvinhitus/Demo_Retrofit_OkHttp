@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.api;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -17,16 +18,18 @@ import vn.com.zalopay.analytics.ZPEvents;
  */
 public interface ZaloPayService {
 
-    @API_NAME(ZPEvents.API_V001_TPE_GETORDERINFO)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETORDERINFO)
     @GET(Constants.TPE_API.GETORDERINFO)
+    @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_V001_TPE_GETORDERINFO})
     Observable<GetOrderResponse> getorder(@Query("userid") String userid,
                                           @Query("accesstoken") String accesstoken,
                                           @Query(Constants.APPID) long appId,
                                           @Query(Constants.ZPTRANSTOKEN) String apptransid);
 
-    @API_NAME(ZPEvents.API_V001_TPE_CREATEWALLETORDER)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_CREATEWALLETORDER)
     @FormUrlEncoded
     @POST(Constants.TPE_API.CREATEWALLETORDER)
+    @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_V001_TPE_CREATEWALLETORDER})
     Observable<GetOrderResponse> createwalletorder(@Field("userid") String userid,
                                                    @Field("accesstoken") String accesstoken,
                                                    @Field(Constants.APPID) long appId,

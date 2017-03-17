@@ -31,6 +31,8 @@ public class Constants {
     public static final String MANIFEST_LASTTIME_SYNC_CONTACT = "manifest_lt_sync_contact";
     public static final String MANIFEST_RECOVERY_NOTIFY = "manifest_notify_recovery";
 
+    public static final String HEADER_EVENT = "zp-event:";
+
     public interface TPE_API {
         String CREATEWALLETORDER = "v001/tpe/createwalletorder";
         String GETBALANCE = "v001/tpe/getbalance";
@@ -74,10 +76,5 @@ public class Constants {
         String GETAPPINFO = "redpackage/getappinfo";
         String SUBMITTOSENDBUNDLEBYZALOPAYINFO = "redpackage/submittosendbundlebyzalopayinfo";
         String GET_LIST_PACKAGE_STATUS = "redpackage/getlistpackagestatus";
-    }
-
-    public interface Method {
-        String GET = "GET";
-        String POST = "POST";
     }
 }

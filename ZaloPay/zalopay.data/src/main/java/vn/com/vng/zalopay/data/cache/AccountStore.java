@@ -8,6 +8,7 @@ import okhttp3.RequestBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -53,45 +54,54 @@ public interface AccountStore {
 
     interface RequestService {
 
-        @API_NAME(ZPEvents.API_UM_UPDATEPROFILE)
+        @API_NAME(ZPEvents.CONNECTOR_UM_UPDATEPROFILE)
         @FormUrlEncoded
         @POST(Constants.UM_API.UPDATEPROFILE)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_UPDATEPROFILE})
         Observable<BaseResponse> updateProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
 
-        @API_NAME(ZPEvents.API_UM_VERIFYOTPPROFILE)
+        @API_NAME(ZPEvents.CONNECTOR_UM_VERIFYOTPPROFILE)
         @FormUrlEncoded
         @POST(Constants.UM_API.VERIFYOTPPROFILE)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_VERIFYOTPPROFILE})
         Observable<UpdateProfileResponse> verifyOTPProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("otp") String otp);
 
-        @API_NAME(ZPEvents.API_UM_RECOVERYPIN)
+        @API_NAME(ZPEvents.CONNECTOR_UM_RECOVERYPIN)
         @FormUrlEncoded
         @POST(Constants.UM_API.RECOVERYPIN)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_RECOVERYPIN})
         Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("oldpin") String oldPin, @Field("pin") String newPin, @Field("otp") String otp);
 
-        @API_NAME(ZPEvents.API_UM_GETUSERPROFILELEVEL)
+        @API_NAME(ZPEvents.CONNECTOR_UM_GETUSERPROFILELEVEL)
         @GET(Constants.UM_API.GETUSERPROFILELEVEL)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_GETUSERPROFILELEVEL})
         Observable<UserProfileLevelResponse> getUserProfileLevel(@Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @API_NAME(ZPEvents.API_UM_GETUSERINFOBYZALOPAYNAME)
+        @API_NAME(ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYNAME)
         @GET(Constants.UM_API.GETUSERINFOBYZALOPAYNAME)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYNAME})
         Observable<GetUserInfoByZPNameResponse> getUserInfoByZaloPayName(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @API_NAME(ZPEvents.API_UM_GETUSERINFOBYZALOPAYID)
+        @API_NAME(ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYID)
         @GET(Constants.UM_API.GETUSERINFOBYZALOPAYID)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYID})
         Observable<GetUserInfoByZPIDResponse> getUserInfoByZaloPayId(@Query("requestid") String zalopayid, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @API_NAME(ZPEvents.API_UM_CHECKZALOPAYNAMEEXIST)
+        @API_NAME(ZPEvents.CONNECTOR_UM_CHECKZALOPAYNAMEEXIST)
         @GET(Constants.UM_API.CHECKZALOPAYNAMEEXIST)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_CHECKZALOPAYNAMEEXIST})
         Observable<BaseResponse> checkZaloPayNameExist(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
-        @API_NAME(ZPEvents.API_UM_UPDATEZALOPAYNAME)
+        @API_NAME(ZPEvents.CONNECTOR_UM_UPDATEZALOPAYNAME)
         @FormUrlEncoded
         @POST(Constants.UM_API.UPDATEZALOPAYNAME)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_UPDATEZALOPAYNAME})
         Observable<BaseResponse> updateZaloPayName(@Field("zalopayname") String zalopayname, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
 
-        @API_NAME(ZPEvents.API_UM_VALIDATEPIN)
+        @API_NAME(ZPEvents.CONNECTOR_UM_VALIDATEPIN)
         @FormUrlEncoded
         @POST(Constants.UM_API.VALIDATEPIN)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_VALIDATEPIN})
         Observable<BaseResponse> validatePin(@Field("pin") String pin, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
 
     }

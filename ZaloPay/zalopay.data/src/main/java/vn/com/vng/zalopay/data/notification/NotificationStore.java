@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.data.notification;
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
@@ -73,8 +74,9 @@ public interface NotificationStore {
          * @param embededdata stringify of json data sent to another user
          * @return basic response
          */
-        @API_NAME(ZPEvents.API_UM_SENDNOTIFICATION)
+        @API_NAME(ZPEvents.CONNECTOR_UM_SENDNOTIFICATION)
         @GET(Constants.UM_API.SENDNOTIFICATION)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_SENDNOTIFICATION})
         Observable<BaseResponse> sendNotification(@Query("userid") String uid,
                                                   @Query("accesstoken") String accesstoken,
                                                   @Query("receiverid") String receiverid,

@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.balance;
 
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
@@ -20,8 +21,9 @@ public interface BalanceStore {
     }
 
     interface RequestService {
-        @API_NAME(ZPEvents.API_V001_TPE_GETBALANCE)
+        @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETBALANCE)
         @GET(Constants.TPE_API.GETBALANCE)
+        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_V001_TPE_GETBALANCE})
         Observable<BalanceResponse> balance(@Query("userid") String uid, @Query("accesstoken") String accesstoken);
     }
 

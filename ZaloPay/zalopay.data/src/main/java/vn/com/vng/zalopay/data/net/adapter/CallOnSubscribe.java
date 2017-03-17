@@ -30,7 +30,7 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
     CallOnSubscribe(Context context, Call<T> originalCall, int apiClientId) {
         this.mContext = context;
         this.mOriginalCall = originalCall;
-        mApiClientId = apiClientId;
+        this.mApiClientId = apiClientId;
     }
 
     @Override
@@ -48,7 +48,8 @@ final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
             if (response != null && response.isSuccessful()) {
 //                logTiming(endRequestTime - beginRequestTime, call.request());
                 Timber.d("API request %s took %s ms", mApiClientId, tookMs);
-                logTiming(response.raw().receivedResponseAtMillis() - response.raw().sentRequestAtMillis(), call.request());
+                okhttp3.Response resp = response.raw();
+                logTiming(resp.receivedResponseAtMillis() - resp.sentRequestAtMillis(), call.request());
             }
             if (!subscriber.isUnsubscribed()) {
                 subscriber.onNext(response);
