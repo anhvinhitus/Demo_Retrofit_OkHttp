@@ -831,14 +831,14 @@ public abstract class AdapterBase {
                     return pAdditionParams;
                 }
                 try {
-                    StatusResponse response = GsonUtils.fromJsonString(pAdditionParams[0].toString(), StatusResponse.class);
-                    if (response != null && PaymentStatusHelper.isPaymentSuccessFromNotification(mTransactionID, response)) {
+                    String transId = String.valueOf(pAdditionParams[0]);
+                    if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
                         DataRepository.shareInstance().cancelRequest();//cancel current request
                         GetStatus.getTimer().cancel();//cancel timer retry get status
                         DialogManager.closeAllDialog();//close dialog
                         showTransactionSuccessView();
                     } else {
-                        Log.d(this, "transaction is not finish");
+                        Log.d(this, "transId is null");
                     }
                 } catch (Exception ex) {
                     Log.e(this, ex);

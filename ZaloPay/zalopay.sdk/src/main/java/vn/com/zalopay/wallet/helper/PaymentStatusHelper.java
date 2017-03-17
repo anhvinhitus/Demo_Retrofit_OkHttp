@@ -94,13 +94,4 @@ public class PaymentStatusHelper {
         }
         return Constants.PAYMENT_LIMIT_PER_DAY_CODE.contains(pResponse.returncode);
     }
-
-    public static boolean isPaymentSuccessFromNotification(String pTransactionId, StatusResponse pResponse)
-    {
-        if(pResponse != null && !pResponse.isprocessing && !TextUtils.isEmpty(pResponse.zptransid) && pResponse.zptransid.equals(pTransactionId) && pResponse.returncode == 1)
-        {
-            return true;
-        }
-        return false;
-    }
 }
