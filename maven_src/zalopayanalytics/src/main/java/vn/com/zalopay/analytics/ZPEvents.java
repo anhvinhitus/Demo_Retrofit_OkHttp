@@ -76,6 +76,10 @@ public class ZPEvents {
     public static final int SCANQR_PL_GETMTCODE = 1509;
     public static final int SCANQR_PL_NOQRCODE = 1510;
     public static final int SCANQR_PL_NOPHOTO = 1511;
+    public static final int SCANQR_TYPE2 = 1512;
+    public static final int SCANQR_PL_TYPE2 = 1513;
+    public static final int SCANQR_ZALOPAY_UNKNOWN = 1514;
+    public static final int SCANQR_PL_ZALOPAY_UNKNOWN = 1515;
     public static final int MONEYTRANSFER_LAUNCH = 1600;
     public static final int MONEYTRANSFER_NAVIGATEBACK = 1601;
     public static final int MONEYTRANSFER_CHOOSERECENTTRANSACTION = 1602;
@@ -209,6 +213,54 @@ public class ZPEvents {
     public static final int ZALO_RECEIVER_NOT_FOUND = 2604;
     public static final int ZALO_PAYMENT_ISINPROGRESS = 2605;
     public static final int ZALO_PAYMENT_ISINCOMPLETED = 2606;
+    public static final int ZALO_LAUNCH_29 = 2607;
+    public static final int CONNECTOR_V001_TPE_GETBALANCE = 2702;
+    public static final int CONNECTOR_V001_TPE_CREATEWALLETORDER = 2703;
+    public static final int CONNECTOR_V001_TPE_GETINSIDEAPPRESOURCE = 2704;
+    public static final int CONNECTOR_V001_TPE_GETORDERINFO = 2705;
+    public static final int CONNECTOR_V001_TPE_GETTRANSSTATUS = 2706;
+    public static final int CONNECTOR_V001_TPE_TRANSHISTORY = 2707;
+    public static final int CONNECTOR_UM_CREATEACCESSTOKEN = 2708;
+    public static final int CONNECTOR_UM_REMOVEACCESSTOKEN = 2709;
+    public static final int CONNECTOR_UM_VERIFYCODETEST = 2710;
+    public static final int CONNECTOR_UM_UPDATEPROFILE = 2711;
+    public static final int CONNECTOR_UM_VERIFYOTPPROFILE = 2712;
+    public static final int CONNECTOR_UM_RECOVERYPIN = 2713;
+    public static final int CONNECTOR_UM_GETUSERINFO = 2714;
+    public static final int CONNECTOR_UM_GETUSERPROFILELEVEL = 2715;
+    public static final int CONNECTOR_UM_GETUSERINFOBYZALOPAYNAME = 2716;
+    public static final int CONNECTOR_UM_GETUSERINFOBYZALOPAYID = 2717;
+    public static final int CONNECTOR_UM_CHECKZALOPAYNAMEEXIST = 2718;
+    public static final int CONNECTOR_UM_UPDATEZALOPAYNAME = 2719;
+    public static final int CONNECTOR_UM_VALIDATEPIN = 2720;
+    public static final int CONNECTOR_UM_SENDNOTIFICATION = 2721;
+    public static final int CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT = 2722;
+    public static final int CONNECTOR_UMMERCHANT_GETMERCHANTUSERINFO = 2723;
+    public static final int CONNECTOR_UMMERCHANT_GETLISTMERCHANTUSERINFO = 2724;
+    public static final int CONNECTOR_UMUPLOAD_PREUPDATEPROFILELEVEL3 = 2725;
+    public static final int CONNECTOR_REDPACKAGE_CREATEBUNDLEORDER = 2726;
+    public static final int CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLE = 2727;
+    public static final int CONNECTOR_REDPACKAGE_SUBMITOPENPACKAGE = 2728;
+    public static final int CONNECTOR_REDPACKAGE_GETSENTBUNDLELIST = 2729;
+    public static final int CONNECTOR_REDPACKAGE_GETREVPACKAGELIST = 2730;
+    public static final int CONNECTOR_REDPACKAGE_GETPACKAGESINBUNDLE = 2731;
+    public static final int CONNECTOR_REDPACKAGE_GETAPPINFO = 2732;
+    public static final int CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO = 2733;
+    public static final int CONNECTOR_REDPACKAGE_GETLISTPACKAGESTATUS = 2734;
+    public static final int CONNECTOR_V001_TPE_V001GETPLATFORMINFO = 2735;
+    public static final int CONNECTOR_V001_TPE_GETAPPINFO = 2736;
+    public static final int CONNECTOR_V001_TPE_GETBANKLIST = 2737;
+    public static final int CONNECTOR_V001_TPE_SUBMITTRANS = 2738;
+    public static final int CONNECTOR_V001_TPE_ATMAUTHENPAYER = 2739;
+    public static final int CONNECTOR_V001_TPE_AUTHCARDHOLDERFORMAPPING = 2740;
+    public static final int CONNECTOR_V001_TPE_GETSTATUSMAPCARD = 2741;
+    public static final int CONNECTOR_V001_TPE_VERIFYCARDFORMAPPING = 2742;
+    public static final int CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT = 2743;
+    public static final int CONNECTOR_V001_TPE_SDKWRITEATMTIME = 2744;
+    public static final int CONNECTOR_V001_TPE_REMOVEMAPCARD = 2745;
+    public static final int CONNECTOR_V001_TPE_SDKERRORREPORT = 2746;
+    public static final int CONNECTOR_UM_LISTCARDINFOFORCLIENT = 2747;
+    public static final int CONNECTOR_V001_TPE_SUBMITMAPACCOUNT = 2749;
 
     public static String actionFromEventId(int eventId) {
         switch (eventId) {
@@ -356,6 +408,14 @@ public class ZPEvents {
                 return "ScanQR_PL_NoQRCode";
             case SCANQR_PL_NOPHOTO:
                 return "ScanQR_PL_NoPhoto";
+            case SCANQR_TYPE2:
+                return "ScanQR_Type2";
+            case SCANQR_PL_TYPE2:
+                return "ScanQR_PL_Type2";
+            case SCANQR_ZALOPAY_UNKNOWN:
+                return "ScanQR_ZaloPay_Unknown";
+            case SCANQR_PL_ZALOPAY_UNKNOWN:
+                return "ScanQR_PL_ZaloPay_Unknown";
             case MONEYTRANSFER_LAUNCH:
                 return "MoneyTransfer_Launch";
             case MONEYTRANSFER_NAVIGATEBACK:
@@ -622,6 +682,102 @@ public class ZPEvents {
                 return "Zalo_Payment_IsInProgress";
             case ZALO_PAYMENT_ISINCOMPLETED:
                 return "Zalo_Payment_IsInCompleted";
+            case ZALO_LAUNCH_29:
+                return "Zalo_Launch_29";
+            case CONNECTOR_V001_TPE_GETBALANCE:
+                return "connector_v001_tpe_getbalance";
+            case CONNECTOR_V001_TPE_CREATEWALLETORDER:
+                return "connector_v001_tpe_createwalletorder";
+            case CONNECTOR_V001_TPE_GETINSIDEAPPRESOURCE:
+                return "connector_v001_tpe_getinsideappresource";
+            case CONNECTOR_V001_TPE_GETORDERINFO:
+                return "connector_v001_tpe_getorderinfo";
+            case CONNECTOR_V001_TPE_GETTRANSSTATUS:
+                return "connector_v001_tpe_gettransstatus";
+            case CONNECTOR_V001_TPE_TRANSHISTORY:
+                return "connector_v001_tpe_transhistory";
+            case CONNECTOR_UM_CREATEACCESSTOKEN:
+                return "connector_um_createaccesstoken";
+            case CONNECTOR_UM_REMOVEACCESSTOKEN:
+                return "connector_um_removeaccesstoken";
+            case CONNECTOR_UM_VERIFYCODETEST:
+                return "connector_um_verifycodetest";
+            case CONNECTOR_UM_UPDATEPROFILE:
+                return "connector_um_updateprofile";
+            case CONNECTOR_UM_VERIFYOTPPROFILE:
+                return "connector_um_verifyotpprofile";
+            case CONNECTOR_UM_RECOVERYPIN:
+                return "connector_um_recoverypin";
+            case CONNECTOR_UM_GETUSERINFO:
+                return "connector_um_getuserinfo";
+            case CONNECTOR_UM_GETUSERPROFILELEVEL:
+                return "connector_um_getuserprofilelevel";
+            case CONNECTOR_UM_GETUSERINFOBYZALOPAYNAME:
+                return "connector_um_getuserinfobyzalopayname";
+            case CONNECTOR_UM_GETUSERINFOBYZALOPAYID:
+                return "connector_um_getuserinfobyzalopayid";
+            case CONNECTOR_UM_CHECKZALOPAYNAMEEXIST:
+                return "connector_um_checkzalopaynameexist";
+            case CONNECTOR_UM_UPDATEZALOPAYNAME:
+                return "connector_um_updatezalopayname";
+            case CONNECTOR_UM_VALIDATEPIN:
+                return "connector_um_validatepin";
+            case CONNECTOR_UM_SENDNOTIFICATION:
+                return "connector_um_sendnotification";
+            case CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT:
+                return "connector_um_checklistzaloidforclient";
+            case CONNECTOR_UMMERCHANT_GETMERCHANTUSERINFO:
+                return "connector_ummerchant_getmerchantuserinfo";
+            case CONNECTOR_UMMERCHANT_GETLISTMERCHANTUSERINFO:
+                return "connector_ummerchant_getlistmerchantuserinfo";
+            case CONNECTOR_UMUPLOAD_PREUPDATEPROFILELEVEL3:
+                return "connector_umupload_preupdateprofilelevel3";
+            case CONNECTOR_REDPACKAGE_CREATEBUNDLEORDER:
+                return "connector_redpackage_createbundleorder";
+            case CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLE:
+                return "connector_redpackage_submittosendbundle";
+            case CONNECTOR_REDPACKAGE_SUBMITOPENPACKAGE:
+                return "connector_redpackage_submitopenpackage";
+            case CONNECTOR_REDPACKAGE_GETSENTBUNDLELIST:
+                return "connector_redpackage_getsentbundlelist";
+            case CONNECTOR_REDPACKAGE_GETREVPACKAGELIST:
+                return "connector_redpackage_getrevpackagelist";
+            case CONNECTOR_REDPACKAGE_GETPACKAGESINBUNDLE:
+                return "connector_redpackage_getpackagesinbundle";
+            case CONNECTOR_REDPACKAGE_GETAPPINFO:
+                return "connector_redpackage_getappinfo";
+            case CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO:
+                return "connector_redpackage_submittosendbundlebyzalopayinfo";
+            case CONNECTOR_REDPACKAGE_GETLISTPACKAGESTATUS:
+                return "connector_redpackage_getlistpackagestatus";
+            case CONNECTOR_V001_TPE_V001GETPLATFORMINFO:
+                return "connector_v001_tpe_v001getplatforminfo";
+            case CONNECTOR_V001_TPE_GETAPPINFO:
+                return "connector_v001_tpe_getappinfo";
+            case CONNECTOR_V001_TPE_GETBANKLIST:
+                return "connector_v001_tpe_getbanklist";
+            case CONNECTOR_V001_TPE_SUBMITTRANS:
+                return "connector_v001_tpe_submittrans";
+            case CONNECTOR_V001_TPE_ATMAUTHENPAYER:
+                return "connector_v001_tpe_atmauthenpayer";
+            case CONNECTOR_V001_TPE_AUTHCARDHOLDERFORMAPPING:
+                return "connector_v001_tpe_authcardholderformapping";
+            case CONNECTOR_V001_TPE_GETSTATUSMAPCARD:
+                return "connector_v001_tpe_getstatusmapcard";
+            case CONNECTOR_V001_TPE_VERIFYCARDFORMAPPING:
+                return "connector_v001_tpe_verifycardformapping";
+            case CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT:
+                return "connector_v001_tpe_getstatusbyapptransidforclient";
+            case CONNECTOR_V001_TPE_SDKWRITEATMTIME:
+                return "connector_v001_tpe_sdkwriteatmtime";
+            case CONNECTOR_V001_TPE_REMOVEMAPCARD:
+                return "connector_v001_tpe_removemapcard";
+            case CONNECTOR_V001_TPE_SDKERRORREPORT:
+                return "connector_v001_tpe_sdkerrorreport";
+            case CONNECTOR_UM_LISTCARDINFOFORCLIENT:
+                return "connector_um_listcardinfoforclient";
+            case CONNECTOR_V001_TPE_SUBMITMAPACCOUNT:
+                return "connector_v001_tpe_submitmapaccount";
             default:
                 return "DefaultAction";
         }
@@ -772,6 +928,14 @@ public class ZPEvents {
             case SCANQR_PL_NOQRCODE:
                 return "Scan QR";
             case SCANQR_PL_NOPHOTO:
+                return "Scan QR";
+            case SCANQR_TYPE2:
+                return "Scan QR";
+            case SCANQR_PL_TYPE2:
+                return "Scan QR";
+            case SCANQR_ZALOPAY_UNKNOWN:
+                return "Scan QR";
+            case SCANQR_PL_ZALOPAY_UNKNOWN:
                 return "Scan QR";
             case MONEYTRANSFER_LAUNCH:
                 return "Money Transfer";
@@ -1039,6 +1203,102 @@ public class ZPEvents {
                 return "Zalo Integration";
             case ZALO_PAYMENT_ISINCOMPLETED:
                 return "Zalo Integration";
+            case ZALO_LAUNCH_29:
+                return "Zalo Integration";
+            case CONNECTOR_V001_TPE_GETBALANCE:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_CREATEWALLETORDER:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_GETINSIDEAPPRESOURCE:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_GETORDERINFO:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_GETTRANSSTATUS:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_TRANSHISTORY:
+                return "Timing TPE";
+            case CONNECTOR_UM_CREATEACCESSTOKEN:
+                return "Timing UM";
+            case CONNECTOR_UM_REMOVEACCESSTOKEN:
+                return "Timing UM";
+            case CONNECTOR_UM_VERIFYCODETEST:
+                return "Timing UM";
+            case CONNECTOR_UM_UPDATEPROFILE:
+                return "Timing UM";
+            case CONNECTOR_UM_VERIFYOTPPROFILE:
+                return "Timing UM";
+            case CONNECTOR_UM_RECOVERYPIN:
+                return "Timing UM";
+            case CONNECTOR_UM_GETUSERINFO:
+                return "Timing UM";
+            case CONNECTOR_UM_GETUSERPROFILELEVEL:
+                return "Timing UM";
+            case CONNECTOR_UM_GETUSERINFOBYZALOPAYNAME:
+                return "Timing UM";
+            case CONNECTOR_UM_GETUSERINFOBYZALOPAYID:
+                return "Timing UM";
+            case CONNECTOR_UM_CHECKZALOPAYNAMEEXIST:
+                return "Timing UM";
+            case CONNECTOR_UM_UPDATEZALOPAYNAME:
+                return "Timing UM";
+            case CONNECTOR_UM_VALIDATEPIN:
+                return "Timing UM";
+            case CONNECTOR_UM_SENDNOTIFICATION:
+                return "Timing UM";
+            case CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT:
+                return "Timing UM";
+            case CONNECTOR_UMMERCHANT_GETMERCHANTUSERINFO:
+                return "Timing UM";
+            case CONNECTOR_UMMERCHANT_GETLISTMERCHANTUSERINFO:
+                return "Timing UM";
+            case CONNECTOR_UMUPLOAD_PREUPDATEPROFILELEVEL3:
+                return "Timing UM";
+            case CONNECTOR_REDPACKAGE_CREATEBUNDLEORDER:
+                return "Timing RedPacket";
+            case CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLE:
+                return "Timing RedPacket";
+            case CONNECTOR_REDPACKAGE_SUBMITOPENPACKAGE:
+                return "Timing RedPacket";
+            case CONNECTOR_REDPACKAGE_GETSENTBUNDLELIST:
+                return "Timing RedPacket";
+            case CONNECTOR_REDPACKAGE_GETREVPACKAGELIST:
+                return "Timing RedPacket";
+            case CONNECTOR_REDPACKAGE_GETPACKAGESINBUNDLE:
+                return "Timing RedPacket";
+            case CONNECTOR_REDPACKAGE_GETAPPINFO:
+                return "Timing RedPacket";
+            case CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO:
+                return "Timing RedPacket";
+            case CONNECTOR_REDPACKAGE_GETLISTPACKAGESTATUS:
+                return "Timing RedPacket";
+            case CONNECTOR_V001_TPE_V001GETPLATFORMINFO:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_GETAPPINFO:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_GETBANKLIST:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_SUBMITTRANS:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_ATMAUTHENPAYER:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_AUTHCARDHOLDERFORMAPPING:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_GETSTATUSMAPCARD:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_VERIFYCARDFORMAPPING:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_SDKWRITEATMTIME:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_REMOVEMAPCARD:
+                return "Timing TPE";
+            case CONNECTOR_V001_TPE_SDKERRORREPORT:
+                return "Timing TPE";
+            case CONNECTOR_UM_LISTCARDINFOFORCLIENT:
+                return "Timing UM";
+            case CONNECTOR_V001_TPE_SUBMITMAPACCOUNT:
+                return "Timing TPE";
             default:
                 return "DefaultCategory";
         }
