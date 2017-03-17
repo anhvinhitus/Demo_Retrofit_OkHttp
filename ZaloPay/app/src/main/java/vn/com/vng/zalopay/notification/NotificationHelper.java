@@ -155,7 +155,7 @@ public class NotificationHelper {
                 break;
         }
 
-        if (!isRecovery) {
+        if (isRecovery) {
             return;
         }
 
