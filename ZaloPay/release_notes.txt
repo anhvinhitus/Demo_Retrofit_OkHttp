@@ -1,3 +1,7 @@
+Zalo Pay (Sandbox v2.9.0 - build 198) - Released on 2017-03-17
+- Fix lỗi không thấy thẻ khi up level 3.
+- Fix lỗi không hiện icon (danh sách app & menu) khi chạy app lần đầu.
+
 Zalo Pay (Sandbox v2.9.0 - build 197) - Released on 2017-03-16
 - Fix bug crash NPE socket sau khi đăng xuất.
 - Zalo Integration - handle scheme zalopay-zapi-29
