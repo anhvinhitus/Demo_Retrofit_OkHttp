@@ -326,13 +326,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
             String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
 
-            if (pMessage != null && !TextUtils.isEmpty(pMessage.returnmessage)) {
-                message = pMessage.returnmessage;
+            if (pMessage != null && !TextUtils.isEmpty(pMessage.getMessage())) {
+                message = pMessage.getMessage();
             }
 
             if (pMessage != null && pMessage.returncode < 0) {
                 //sometimes get app info return empty message and return code -2.that mean app not allow from backend.
-                if (pMessage.returncode == -2 && TextUtils.isEmpty(pMessage.returnmessage))
+                if (pMessage.returncode == -2 && TextUtils.isEmpty(pMessage.getMessage()))
                     message = GlobalData.getStringResource(RS.string.zpw_not_allow_payment_app);
 
                 ErrorManager.updateTransactionResult(pMessage.returncode);
@@ -1189,7 +1189,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public void showFailView(String pMessage, String pTransID) {
         setText(R.id.zpw_textview_error_message, pMessage);
-
         setView(R.id.zpw_pay_info_buttom_view, true);
         setView(R.id.zpw_submit_support, true);
 

@@ -189,7 +189,7 @@ public class AdapterBankCard extends AdapterBase {
                 else if (PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
                     processWrongOtp();
                 } else if (mResponseStatus != null) {
-                    showTransactionFailView(mResponseStatus.returnmessage);
+                    showTransactionFailView(mResponseStatus.getMessage());
                     releaseClickSubmit();
                 } else if (shouldCheckStatusAgain()) {
                     Log.d(this, "===continue get status because mResponseStatus=NULL after authen payer===");
@@ -207,7 +207,7 @@ public class AdapterBankCard extends AdapterBase {
                 } else {
                     String failMessage = null;
                     if (mResponseStatus != null) {
-                        failMessage = mResponseStatus.returnmessage;
+                        failMessage = mResponseStatus.getMessage();
                     }
 
                     if (!TextUtils.isEmpty(failMessage)) {
@@ -229,7 +229,7 @@ public class AdapterBankCard extends AdapterBase {
                 if (response.returncode == EPaymentReturnCode.ATM_VERIFY_OTP_SUCCESS.getValue()) {
                     getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
                 } else {
-                    showTransactionFailView(response.returnmessage);
+                    showTransactionFailView(response.getMessage());
                 }
             }
             //render webview flow
