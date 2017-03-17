@@ -56,6 +56,7 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 
 /**
  * Created by longlv on 09/05/2016.
@@ -358,17 +359,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         hideLoadingView();
         if (mView != null && mView.getContext() != null) {
             mView.showWarningDialog(mView.getContext().getString(strResource),
-                    new ZPWOnEventConfirmDialogListener() {
-                        @Override
-                        public void onCancelEvent() {
-                            mView.resumeScanner();
-                        }
-
-                        @Override
-                        public void onOKevent() {
-                            mView.resumeScanner();
-                        }
-                    });
+                    () -> mView.resumeScanner());
         }
     }
 
