@@ -345,10 +345,12 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
         long zaloPayId = data.optLong(Constants.ReceiveMoney.UID, -1);
         if (zaloPayId <= 0) {
+            showDialogDataInvalid();
             return false;
         }
 
         if (String.valueOf(zaloPayId).equals(mUser.zaloPayId)) {
+            showWarningDialog(R.string.can_not_transfer_money_for_your_self);
             return false;
         }
 
@@ -366,6 +368,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
         String checksum = data.optString(Constants.ReceiveMoney.CHECKSUM);
         if (TextUtils.isEmpty(checksum)) {
+            showDialogDataInvalid();
             return false;
         }
 
@@ -375,6 +378,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
         if (!checksum.equals(computedChecksum)) {
             Timber.d("Checksum does not match");
+            showDialogDataInvalid();
             return false;
         }
 
