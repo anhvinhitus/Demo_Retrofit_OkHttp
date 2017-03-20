@@ -207,7 +207,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         }
 
         mAmountView.setSelection(mAmountView.length());
-
+        mAmountView.validate();
     }
 
     @Override
