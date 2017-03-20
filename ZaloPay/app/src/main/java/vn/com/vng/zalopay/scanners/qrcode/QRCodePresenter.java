@@ -407,18 +407,18 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         Timber.d("tryTransferFixedMoney zaloPayId [%s]", zaloPayName);
         if (TextUtils.isEmpty(zaloPayName)) {
             showDialogDataInvalid();
-            return true;
+            return false;
         }
         if (String.valueOf(zaloPayName).equals(mUser.zalopayname)) {
             showWarningDialog(R.string.can_not_transfer_money_for_your_self);
-            return true;
+            return false;
         }
 
         long amount = data.optLong(Constants.TransferFixedMoney.AMOUNT, -1);
         Timber.d("tryTransferFixedMoney amount [%s]", amount);
         if (amount <= 0) {
             showDialogDataInvalid();
-            return true;
+            return false;
         }
 
         String message = data.optString(Constants.TransferFixedMoney.MESSAGE);
