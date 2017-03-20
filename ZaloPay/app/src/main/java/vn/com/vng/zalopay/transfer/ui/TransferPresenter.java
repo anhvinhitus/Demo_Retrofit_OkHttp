@@ -262,8 +262,11 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
     }
 
-    boolean checkWebMode() {
-        return mMoneyTransferMode == Constants.MoneyTransfer.MODE_WEB;
+    void shouldFinishTransfer() {
+        if(mMoneyTransferMode == Constants.MoneyTransfer.MODE_WEB) {
+            handleFailedTransferWeb(mView.getActivity(),
+                    2, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
+        }
     }
 
     void transferMoney() {

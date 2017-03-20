@@ -188,10 +188,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
         if (!mAmountView.validate()) {
-            if(mPresenter.checkWebMode()) {
-                mPresenter.handleFailedTransferWeb(getActivity(),
-                        2, PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
-            }
+            mPresenter.shouldFinishTransfer();
             return;
         }
 
@@ -348,13 +345,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     @Override
     public void showError(String message) {
         showErrorDialog(message, () -> {
-            if(mPresenter.checkWebMode()) {
-                if(message.equals(getContext().getString(R.string.exception_transfer_for_self))) {
-                    mPresenter.handleFailedTransferWeb(getActivity(), 2, message);
-                } else {
-                    mPresenter.handleFailedTransferWeb(getActivity(), 5, message);
-                }
-            }
+            mPresenter.shouldFinishTransfer();
         });
     }
 
