@@ -11,7 +11,6 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.utils.Log;
 
 public class RetrofitSetup {
-    public static String API_BASE_URL = BuildConfig.HOST.get(SDKApplication.getHostType());
     private static Retrofit.Builder builder = new Retrofit.Builder()
             .baseUrl(SDKApplication.getBaseHostUrl())
             .addConverterFactory(GsonConverterFactory.create());

@@ -359,10 +359,6 @@ public class SDKApplication extends Application {
         return mConfig.getHttpClientTimeoutLonger();
     }
 
-    public static Retrofit getRetrofit() {
-        return mConfig.getRetrofit();
-    }
-
     public static boolean isReleaseBuild() {
         return mConfig.isReleaseBuild();
     }

@@ -403,22 +403,6 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         }
     }
 
-    /***
-     * retry platforminfo from service or in GatewayLoader
-     */
-    public void makeRetry() {
-        mIsProcessing = true;
-        try {
-            Log.d(this, "===starting to retry platform info=====");
-            DataRepository.newInstance().setDataSourceListener(getDataSourceListener()).retryPlatformInfo(RequestKeeper.requestPlatformInfo);
-        } catch (Exception e) {
-            Log.e(this, e);
-
-            mResponse = null;
-            onRequestFail(null);
-        }
-    }
-
     @Override
     protected boolean doParams() {
         try {

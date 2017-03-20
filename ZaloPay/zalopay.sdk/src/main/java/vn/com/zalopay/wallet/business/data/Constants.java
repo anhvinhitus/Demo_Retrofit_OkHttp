@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.business.data;
 
-import vn.com.zalopay.wallet.controller.SDKApplication;
+import java.util.Arrays;
+import java.util.List;
 
 public class Constants {
     public static final String COMMA = ",";
@@ -88,26 +89,6 @@ public class Constants {
     public static int RESULT_PHARSE = 8;
     public static int UNDEFINE = 9;
     public static String TRUE = "true";
-
-    public static String getUrl() {
-        switch (SDKApplication.getHostType()) {
-            case LIVE:
-                return "https://zalopay.com.vn/";
-
-            case STAGING:
-                return "https://stg.zalopay.com.vn/";
-
-            case SANDBOX:
-                return "https://sandbox.zalopay.com.vn/";
-
-            default:
-                return "https://zalopay.com.vn/";
-        }
-    }
-
-    public static String getUrlZaloPay() {
-        return getUrl();
-    }
 
     public static enum HostType {
         LIVE,

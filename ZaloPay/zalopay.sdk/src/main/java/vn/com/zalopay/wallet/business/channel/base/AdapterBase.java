@@ -833,7 +833,7 @@ public abstract class AdapterBase {
                 try {
                     String transId = String.valueOf(pAdditionParams[0]);
                     if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
-                        DataRepository.shareInstance().cancelRequest();//cancel current request
+                        shareDataRepository().cancelRequest();//cancel current request
                         GetStatus.getTimer().cancel();//cancel timer retry get status
                         DialogManager.closeAllDialog();//close dialog
                         showTransactionSuccessView();

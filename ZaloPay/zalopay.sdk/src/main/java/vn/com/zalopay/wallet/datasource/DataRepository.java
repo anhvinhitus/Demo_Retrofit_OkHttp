@@ -44,7 +44,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private boolean mIsRequesting = false;
     private IDataSourceListener mDataSourceLitener;
     private Call mCallable;
-    private ArrayList<Call> mTempCallBack;
     private int retryCount = 1;
     private WeakReference<ITask> mCurrentTask = null;
 
@@ -52,7 +51,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     public DataRepository(Retrofit pRetrofit) {
         super();
         createRetrofitService(pRetrofit);
-        mTempCallBack = new ArrayList<>();
         resetCountRetry();
     }
 
@@ -73,7 +71,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     public DataRepository(OkHttpClient pHttpClient) {
         super();
         createRetrofitService(pHttpClient);
-        mTempCallBack = new ArrayList<>();
         resetCountRetry();
     }
     public static DataRepository shareInstance(OkHttpClient pHttpClient) {
