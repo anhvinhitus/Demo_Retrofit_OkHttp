@@ -75,6 +75,7 @@ EventId,Category,Action
 1513,Scan QR,ScanQR_PL_Type2
 1514,Scan QR,ScanQR_ZaloPay_Unknown
 1515,Scan QR,ScanQR_PL_ZaloPay_Unknown
+1516,Scan QR,ScanQR_HR_Type2
 1600,Money Transfer,MoneyTransfer_Launch
 1601,Money Transfer,MoneyTransfer_NavigateBack
 1602,Money Transfer,MoneyTransfer_ChooseRecentTransaction
