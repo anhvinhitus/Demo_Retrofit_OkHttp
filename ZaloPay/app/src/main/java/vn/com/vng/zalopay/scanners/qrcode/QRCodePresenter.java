@@ -125,14 +125,14 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         mView.showNetworkErrorDialog(i -> mView.resumeScanner());
     }
 
-    void handleResult(String scanResult, boolean fromPhotoLibrary) {
+    void handleResult(String scanResult, QRCodeResource qrCodeResource) {
         if (TextUtils.isEmpty(scanResult)) {
             Timber.i("Empty QR code");
             resumeScanningAfterWrongQR();
         } else if (AndroidUtils.isHttpRequest(scanResult)) {
             payViaUrl(scanResult);
         } else {
-            pay(scanResult, fromPhotoLibrary);
+            pay(scanResult, qrCodeResource);
         }
     }
 
@@ -145,8 +145,8 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         mSubscription.add(subscription);
     }
 
-    private void pay(String jsonString, boolean fromPhotoLibrary) {
-        Timber.d("start to process paying QR code: %s, from lib: %s", jsonString, fromPhotoLibrary);
+    private void pay(String jsonString, QRCodeResource qrCodeResource) {
+        Timber.d("start to process paying QR code: %s, from resource: %s", jsonString, qrCodeResource.getValue());
         if (!NetworkHelper.isNetworkAvailable(mApplicationContext)) {
             showNetworkErrorAndResumeAfterDismiss();
             return;
@@ -174,10 +174,10 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         boolean executeResult;
         switch (qrCodeType) {
             case MoneyTransfer:
-                executeResult = transferMoney(data, fromPhotoLibrary);
+                executeResult = transferMoney(data, qrCodeResource);
                 break;
             case ReadOnlyMoneyTransfer:
-                executeResult = handleQRCodeOfZaloPay(data, fromPhotoLibrary);
+                executeResult = handleQRCodeOfZaloPay(data, qrCodeResource);
                 break;
             case OrderWithTranstoken:
                 executeResult = zpTransaction(data);
@@ -189,7 +189,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             case ZaloPayUnknown:
                 showWarningDialog(R.string.qrcode_need_upgrade_to_pay);
                 executeResult = true;
-                if (fromPhotoLibrary) {
+                if (qrCodeResource == QRCodeResource.PHOTO_LIBRARY) {
                     ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_ZALOPAY_UNKNOWN);
                 } else {
                     ZPAnalytics.trackEvent(ZPEvents.SCANQR_ZALOPAY_UNKNOWN);
@@ -289,20 +289,20 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         }
     }
 
-    private boolean handleQRCodeOfZaloPay(JSONObject data, boolean fromPhotoLibrary) {
+    private boolean handleQRCodeOfZaloPay(JSONObject data, QRCodeResource qrCodeResource) {
         int type = data.optInt(Constants.TransferFixedMoney.TYPE);
         if (type == Constants.QRCode.RECEIVE_FIXED_MONEY) {
-            return transferFixedMoney(data, fromPhotoLibrary);
+            return transferFixedMoney(data, qrCodeResource);
         } else {
             return false;
         }
     }
 
-    private boolean transferMoney(JSONObject data, boolean fromPhotoLibrary) {
+    private boolean transferMoney(JSONObject data, QRCodeResource qrCodeResource) {
         int type = data.optInt(Constants.ReceiveMoney.TYPE, -1);
         if (type == Constants.QRCode.RECEIVE_MONEY) {
             if (tryTransferMoney(data)) {
-                if (fromPhotoLibrary) {
+                if (qrCodeResource == QRCodeResource.PHOTO_LIBRARY) {
                     ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
                 } else {
                     ZPAnalytics.trackEvent(ZPEvents.SCANQR_MONEYTRANSFER);
@@ -313,10 +313,12 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         return false;
     }
 
-    private boolean transferFixedMoney(JSONObject data, boolean fromPhotoLibrary) {
+    private boolean transferFixedMoney(JSONObject data, QRCodeResource qrCodeResource) {
         if (tryTransferFixedMoney(data)) {
-            if (fromPhotoLibrary) {
+            if (qrCodeResource == QRCodeResource.PHOTO_LIBRARY) {
                 ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_TYPE2);
+            } else if (qrCodeResource == QRCodeResource.HTTP_REQUEST) {
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_HR_TYPE2);
             } else {
                 ZPAnalytics.trackEvent(ZPEvents.SCANQR_TYPE2);
             }
@@ -523,7 +525,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
                             ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_NOQRCODE);
                             resumeScanningAfterWrongQR();
                         } else {
-                            handleResult(decoded, true);
+                            handleResult(decoded, QRCodeResource.PHOTO_LIBRARY);
                         }
                     }
 
@@ -591,7 +593,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
                 showDialogDataInvalid();
                 return;
             }
-            pay(jsonObject.toString(), false);
+            pay(jsonObject.toString(), QRCodeResource.HTTP_REQUEST);
         }
 
         @Override
