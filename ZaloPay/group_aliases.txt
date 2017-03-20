@@ -1,1 +1,1 @@
-zalo--, esale, minhnt_group, security, design
+zalo--, esale, minhnt_group, security, design, android_testers, android_dev
