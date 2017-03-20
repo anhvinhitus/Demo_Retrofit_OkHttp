@@ -80,7 +80,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
 
         getAppComponent().monitorTiming().finishEvent(MonitorEvents.QR_SCANNING);
         ZPAnalytics.trackEvent(ZPEvents.SCANQR_GETCODE);
-        qrCodePresenter.handleResult(result, false);
+        qrCodePresenter.handleResult(result, QRCodeResource.SCANNER);
     }
 
     @Override
