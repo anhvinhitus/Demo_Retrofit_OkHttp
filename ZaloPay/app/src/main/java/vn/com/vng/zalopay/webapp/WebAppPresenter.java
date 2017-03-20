@@ -206,7 +206,8 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
-        bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_WEB);
+        bundle.putSerializable(Constants.ARG_MONEY_TRANSFER_MODE, Constants.TransferMode.TransferToZaloPayID);
+        bundle.putSerializable(Constants.ARG_MONEY_ACTIVATE_SOURCE, Constants.ActivateSource.FromWebApp_QRType2);
         mNavigator.startTransferActivity(getFragment(), bundle);
     }
 

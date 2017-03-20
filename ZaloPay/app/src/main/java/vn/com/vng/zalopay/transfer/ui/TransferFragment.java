@@ -187,16 +187,8 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
-        if (!mAmountView.validate()) {
-            mPresenter.shouldFinishTransfer();
-            return;
-        }
-
-        if (!TextUtils.isEmpty(mPresenter.getZaloPayId())) {
-            mPresenter.doTransfer(mAmountView.getAmount());
-            ZPAnalytics.trackEvent(mEdtMessageView.length() == 0 ? ZPEvents.MONEYTRANSFER_INPUTNODESCRIPTION : ZPEvents.MONEYTRANSFER_INPUTDESCRIPTION);
-            ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TAPCONTINUE);
-        }
+        mAmountView.validate();
+        mPresenter.handleDoTransfer(mAmountView.getAmount());
     }
 
     @Override

@@ -11,7 +11,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
 public class TransferActivity extends BaseToolBarActivity {
 
-    int mTransferMode = Constants.MoneyTransfer.MODE_DEFAULT;
+    Constants.ActivateSource mActivateSource = Constants.ActivateSource.FromTransferActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +35,19 @@ public class TransferActivity extends BaseToolBarActivity {
     private void initMode(Intent intent) {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            mTransferMode = bundle.getInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_DEFAULT);
+            mActivateSource = (Constants.ActivateSource) bundle.getSerializable(Constants.ARG_MONEY_ACTIVATE_SOURCE);
+            if(mActivateSource == null) {
+                mActivateSource = Constants.ActivateSource.FromTransferActivity;
+            }
         }
-
     }
 
     @Override
     public void finish() {
 
-        Timber.d("finish mode %s ", mTransferMode);
+        Timber.d("finish mode %s ", mActivateSource);
 
-        if (mTransferMode != Constants.MoneyTransfer.MODE_ZALO) {
+        if (mActivateSource != Constants.ActivateSource.FromZalo) {
             super.finish();
             return;
         }
@@ -65,6 +67,4 @@ public class TransferActivity extends BaseToolBarActivity {
         }
 
     }
-
-
 }

@@ -78,14 +78,10 @@ public interface Constants {
     int REQUEST_CODE_UPDATE_PROFILE_LEVEL_BEFORE_LINK_ACC = 133;
 
     String ARG_MONEY_TRANSFER_MODE = "transferMode";
-    String ARG_MONEY_TRANSFER_TYPE = "transferType";
+    String ARG_MONEY_ACTIVATE_SOURCE = "activateSource";
     String ARG_SHOW_NOTIFICATION_LINK_CARD = "show_notification_link_card";
 
     interface MoneyTransfer {
-        int MODE_DEFAULT = 0;
-        int MODE_QR = 1;
-        int MODE_ZALO = 2;
-        int MODE_WEB = 3;
         int STAGE_PRETRANSFER = 1;
         int STAGE_TRANSFER_SUCCEEDED = 2;
         int STAGE_TRANSFER_FAILED = 3;
@@ -94,6 +90,20 @@ public interface Constants {
 
  /*   public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
     public static final String REGISTRATION_COMPLETE = "registrationComplete";*/
+
+    enum TransferMode {
+        TransferToZaloPayID,
+        TransferToZaloFriend,
+        TransferToZaloPayUser
+    }
+
+    enum ActivateSource {
+        FromTransferActivity,
+        FromQRCodeType1,
+        FromQRCodeType2,
+        FromZalo,
+        FromWebApp_QRType2,
+    }
 
     interface QRCode {
         String APP = "app";
