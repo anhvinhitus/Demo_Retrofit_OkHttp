@@ -42,6 +42,7 @@ import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.request.BaseRequest;
 import vn.com.zalopay.wallet.datasource.request.CheckOrderStatusFailSubmit;
@@ -833,7 +834,7 @@ public abstract class AdapterBase {
                 try {
                     String transId = String.valueOf(pAdditionParams[0]);
                     if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
-                        shareDataRepository().cancelRequest();//cancel current request
+                        DataRepository.shareInstance(SDKApplication.getRetrofit()).cancelRequest();//cancel current request
                         GetStatus.getTimer().cancel();//cancel timer retry get status
                         DialogManager.closeAllDialog();//close dialog
                         showTransactionSuccessView();

@@ -170,7 +170,7 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitPaymentAppWithRetry")
-    Retrofit providePaymentAppWithRetry(HttpUrl baseUrl, OkHttpClient okHttpClient, Context context) {
+    Retrofit providePaymentAppWithRetry(Converter.Factory converter, HttpUrl baseUrl, OkHttpClient okHttpClient, Context context) {
         return new Retrofit.Builder()
                 .addConverterFactory(converter)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, PaymentAppWithRetry))
@@ -183,7 +183,7 @@ public class NetworkModule {
     @Provides
     @Singleton
     @Named("retrofitPaymentAppWithoutRetry")
-    Retrofit providePaymentAppWithoutRetry(HttpUrl baseUrl, OkHttpClient okHttpClient, Context context) {
+    Retrofit providePaymentAppWithoutRetry(Converter.Factory converter, HttpUrl baseUrl, OkHttpClient okHttpClient, Context context) {
         return new Retrofit.Builder()
                 .addConverterFactory(converter)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, PaymentAppWithoutRetry))

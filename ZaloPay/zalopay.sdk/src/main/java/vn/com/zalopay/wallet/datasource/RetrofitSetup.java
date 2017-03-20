@@ -15,6 +15,10 @@ public class RetrofitSetup {
             .baseUrl(SDKApplication.getBaseHostUrl())
             .addConverterFactory(GsonConverterFactory.create());
 
+    public static <S> S createServiceFromRetrofit(Retrofit pRetrofit, Class<S> serviceClass) {
+        return pRetrofit.create(serviceClass);
+    }
+
     public static <S> S createService(OkHttpClient httpClient, Class<S> serviceClass) {
 
         if (httpClient == null) {

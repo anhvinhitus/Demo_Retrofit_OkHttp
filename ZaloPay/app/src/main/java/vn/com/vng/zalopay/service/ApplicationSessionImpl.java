@@ -160,7 +160,6 @@ public class ApplicationSessionImpl implements ApplicationSession {
         ZaloSDK.Instance.unauthenticate();
 
         // clear current user DB
-        ApplicationComponent applicationComponent = AndroidApplication.instance().getAppComponent();
         UserConfig userConfig = applicationComponent.userConfig();
         userConfig.clearConfig();
         userConfig.setCurrentUser(null);

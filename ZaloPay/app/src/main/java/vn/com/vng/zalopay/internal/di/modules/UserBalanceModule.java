@@ -27,8 +27,8 @@ public class UserBalanceModule {
             BalanceStore.LocalStorage localStorage,
             BalanceStore.RequestService requestService,
             User user,
-            EventBus eventBus, BalanceStore.ConnectorService connectorService) {
-        return new BalanceRepository(localStorage, requestService, user, eventBus, connectorService);
+            EventBus eventBus) {
+        return new BalanceRepository(localStorage, requestService, user, eventBus);
     }
 
     @UserScope

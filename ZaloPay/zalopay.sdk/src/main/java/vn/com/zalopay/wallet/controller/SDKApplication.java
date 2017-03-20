@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
@@ -357,6 +358,10 @@ public class SDKApplication extends Application {
 
     public static OkHttpClient getHttpClientTimeoutLonger() {
         return mConfig.getHttpClientTimeoutLonger();
+    }
+
+    public static Retrofit getRetrofit() {
+        return mConfig.getRetrofit();
     }
 
     public static boolean isReleaseBuild() {
