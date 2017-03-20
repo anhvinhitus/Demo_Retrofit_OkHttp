@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.TimeUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -87,7 +87,7 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     public Fragment getFragment() {
         return this;
     }
-    
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -112,8 +112,17 @@ public class QRCodeFragment extends AbsQrScanFragment implements IQRScanView, Fr
     }
 
     @Override
+    public void showWarningDialogAndResumeScan(@StringRes int strResource) {
+        showWarningDialogAndResumeScan(getString(strResource));
+    }
+
+    public void showWarningDialogAndResumeScan(String error) {
+        showWarningDialog(error, () -> resumeScanner());
+    }
+
+    @Override
     public void showError(String message) {
-        showToast(message);
+        showWarningDialogAndResumeScan(message);
         hideLoading();
     }
 

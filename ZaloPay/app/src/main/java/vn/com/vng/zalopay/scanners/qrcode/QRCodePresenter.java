@@ -55,8 +55,6 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 
 /**
  * Created by longlv on 09/05/2016.
@@ -458,9 +456,8 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
     private void showWarningDialog(@StringRes int strResource) {
         hideLoadingView();
-        if (mView != null && mView.getContext() != null) {
-            mView.showWarningDialog(mView.getContext().getString(strResource),
-                    () -> mView.resumeScanner());
+        if (mView != null) {
+            mView.showWarningDialogAndResumeScan(strResource);
         }
     }
 
@@ -575,7 +572,8 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
     @Override
     public void onPayAppError(String msg) {
-        ensureResumeScannerInUIThread();
+        // TODO: 3/20/17: showed error dialog & resume scan after dialog hide in AppError of AbstractPaymentPresenter.
+        //ensureResumeScannerInUIThread();
     }
 
     private class GetPaymentInfoSubscribe extends DefaultSubscriber<JsonObject> {
