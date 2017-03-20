@@ -476,8 +476,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     }
 
     private void initLimitAmount() {
-        long mMinAmount = 0;
-        long mMaxAmount = 0;
         try {
             mMinAmount = CShareDataWrapper.getMinTranferValue();
             mMaxAmount = CShareDataWrapper.getMaxTranferValue();
