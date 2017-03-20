@@ -149,6 +149,7 @@ class DataMapper {
         map.putString("revavatarurl", packet.revAvatarURL);
         map.putString("revfullname", packet.revFullName);
         map.putDouble("opentime", packet.openTime);
+        map.putString("packetid", String.valueOf(packet.packageID));
         return map;
     }
 
