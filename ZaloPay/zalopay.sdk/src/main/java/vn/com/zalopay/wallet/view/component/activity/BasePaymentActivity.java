@@ -1196,9 +1196,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             /*res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
             getAdapter().setmResponseStatus(res);*/
             // The inform text would be set from server
-
-            setText(R.id.zpw_textview_update_level_inform, res.suggest_actions);//show suggest action which return from server
-            setView(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(res.suggest_actions));
+            if(res != null) {
+                setText(R.id.zpw_textview_update_level_inform, res.suggest_actions);//show suggest action which return from server
+                setView(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(res.suggest_actions));
+            }
 
             //exception case for payment overlimit per day
             if(PaymentStatusHelper.isPaymentOverLimitPerDay(getAdapter().getResponseStatus())) {
