@@ -2,16 +2,6 @@ package vn.com.zalopay.wallet.controller;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.text.TextUtils;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 import okhttp3.OkHttpClient;
 import vn.com.zalopay.wallet.BuildConfig;
@@ -35,7 +25,6 @@ import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
-import vn.com.zalopay.wallet.utils.StorageUtil;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 
 public class SDKApplication extends Application {
@@ -45,145 +34,20 @@ public class SDKApplication extends Application {
     public static void initialize(Application pApplication, SDKConfiguration pConfig) {
         SDKApplication.mApplication = pApplication;
         SDKApplication.mConfig = pConfig;
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable e) {
-                handleUncaughtException(thread, e);
-            }
-        });
+        if (!BuildConfig.DEBUG) {
+            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread thread, Throwable e) {
+                    handleUncaughtException(thread, e);
+                }
+            });
+        }
     }
 
     private static void handleUncaughtException(Thread thread, Throwable e) {
         SDKReport.makeReportError(null, e != null ? GsonUtils.toJsonString(e) : "handleUncaughtException e=null");
         Log.e("handleUncaughtException", e != null ? GsonUtils.toJsonString(e) : "error");
         //System.exit(1); // kill off the crashed app
-    }
-
-    /**
-     * Get Log
-     *
-     * @return
-     */
-    private static String getLogs() {
-        try {
-            String strLogs;
-
-            String model = Build.MODEL;
-            if (!model.startsWith(Build.MANUFACTURER))
-                model = Build.MANUFACTURER + " " + model;
-
-            InputStreamReader reader = null;
-            try {
-                // For Android 4.0 and earlier, you will get all app's log output, so filter it to
-                // mostly limit it to your app's output.  In later versions, the filtering isn't needed.
-                String cmd = (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) ?
-                        "logcat -d -v time MyApp:v dalvikvm:v System.err:v *:s" :
-                        "logcat -d -v time";
-
-                // get input stream
-                Process process = Runtime.getRuntime().exec(cmd);
-                reader = new InputStreamReader(process.getInputStream());
-
-                // write output stream
-                strLogs = "\nAndroid version: " + Build.VERSION.SDK_INT + "\n";
-                strLogs += "\nDevice: " + model + "\n";
-                strLogs += "\nApp version: " + (ZPWUtils.getAppVersion(getInstance())) + "\n";
-
-                char[] buffer = new char[10000];
-                do {
-                    int n = reader.read(buffer, 0, buffer.length);
-                    if (n == -1)
-                        break;
-
-                    strLogs += "\n" + String.valueOf(buffer, 0, n);
-                } while (true);
-
-                reader.close();
-            } catch (IOException e) {
-                if (reader != null)
-                    try {
-                        reader.close();
-                    } catch (IOException e1) {
-                    }
-                // You might want to write a failure message to the log here.
-                return null;
-            }
-
-            return strLogs;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * extract Log to file
-     *
-     * @return name of file
-     */
-    private static String extractLogToFile() {
-        try {
-            String path = null;
-
-            if (StorageUtil.isExternalStorageAvailable()) {
-                path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separatorChar + "wallet" + File.separator + "logs" + File.separator;
-
-                File f = new File(path);
-                if (!f.isDirectory() || !f.exists()) {
-                    f.mkdirs();
-                }
-            }
-
-            if (TextUtils.isEmpty(path)) {
-                Log.e("extractLogToFile", "Can not create log file");
-
-                return null;
-            }
-
-            String fullName = path + "error_wallet.txt";
-
-            // Extract to file.
-            File file = new File(fullName);
-            FileWriter writer = null;
-            try {
-                // write output stream
-                writer = new FileWriter(file);
-                writer.write(getLogs());
-
-                writer.close();
-            } catch (IOException e) {
-                if (writer != null)
-                    try {
-                        writer.close();
-                    } catch (IOException e1) {
-                    }
-                // You might want to write a failure message to the log here.
-                return null;
-            }
-
-            return fullName;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * Send Log
-     */
-    private static void sendLogFile() {
-        String fullName = extractLogToFile();
-        if (TextUtils.isEmpty(fullName))
-            return;
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"chucvv@vng.com.vn"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "ZaloWallet log file");
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + fullName));
-        intent.putExtra(Intent.EXTRA_TEXT, "Log file attached.");
-
-        if (GlobalData.getMerchantActivity() != null)
-            GlobalData.getMerchantActivity().startActivity(intent);
-
     }
 
     /***

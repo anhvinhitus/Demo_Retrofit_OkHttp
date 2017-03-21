@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
@@ -21,13 +23,21 @@ public class AppContext extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Timber.plant(new Timber.DebugTree());
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        } else {
-            //Timber.plant(new CrashReportingTree());
-            Timber.plant(new Timber.DebugTree());
-        }
+        SDKConfiguration sdkConfig = SDKConfiguration.builder()
+                .setHttpClientTimeoutLonger(createOKHttpClient())
+                .setRetrofit(createRetrofit())
+                .setReleaseBuild(!BuildConfig.DEBUG)
+                .setBaseHostUrl(BuildConfig.HOST)
+                .build();
+
+        SDKApplication.initialize(this,sdkConfig);
+        Stetho.initializeWithDefaults(this);
+    }
+
+    protected OkHttpClient createOKHttpClient()
+    {
         OkHttpClient.Builder httpClient = new OkHttpClient().newBuilder();
 
         long apiReadTimeout = Constants.API_READ_REQUEST_TIMEOUT;
@@ -67,5 +77,13 @@ public class AppContext extends Application {
 
         SDKApplication.initialize(this,sdkConfig);
         Stetho.initializeWithDefaults(this);
+        return httpClient.build();
+    }
+    protected Retrofit createRetrofit()
+    {
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(BuildConfig.HOST)
+                .addConverterFactory(GsonConverterFactory.create());
+        return builder.client(createOKHttpClient()).build();
     }
 }
