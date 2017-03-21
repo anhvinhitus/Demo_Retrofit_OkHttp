@@ -43,7 +43,8 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private IData mDataSource;
     private boolean mIsRequesting = false;
     private IDataSourceListener mDataSourceLitener;
-    private Call mCallable;
+    private Call mCallable;//keep the request to retry
+    private Call mCallableGetStatus;//keep the request to retry get status
     private int retryCount = 1;
     private WeakReference<ITask> mCurrentTask = null;
 
@@ -73,26 +74,15 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         createRetrofitService(pHttpClient);
         resetCountRetry();
     }
-    public static DataRepository shareInstance(OkHttpClient pHttpClient) {
-        if (DataRepository._object == null) {
-            DataRepository._object = new DataRepository(pHttpClient);
-        }
-        DataRepository._object.resetCountRetry();
-        return DataRepository._object;
-    }
-
-    public static DataRepository newInstance(OkHttpClient pHttpClient) {
-        return new DataRepository(pHttpClient);
-    }
     //endregion
 
     /***
-     * httpclient for download resouce with longer timeout
+     * httpclient for download resouce with httpclient
      *
      * @return
      */
-    public static DataRepository getInstanceForDownloadResource() {
-        return new DataRepository(SDKApplication.getHttpClientTimeoutLonger());
+    public static DataRepository getInstanceForDownloadResource(OkHttpClient pOkHttpClient) {
+        return new DataRepository(pOkHttpClient);
     }
 
     public static void dispose() {
@@ -111,6 +101,10 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         if (mCallable != null && !mCallable.isCanceled() && mCallable.isExecuted()) {
             mCallable.cancel();
             Log.d(this, "canceling request " + mCallable.toString());
+        }
+        if (mCallableGetStatus != null && !mCallableGetStatus.isCanceled() && mCallableGetStatus.isExecuted()) {
+            mCallableGetStatus.cancel();
+            Log.d(this, "canceling request get status " + mCallableGetStatus.toString());
         }
     }
 
@@ -307,7 +301,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
                 @Override
                 public void onFail(Callback pCall, Throwable t) {
                     Log.d(pTask.toString() + ".pushData.onFailure", t != null ? t.getMessage() : "error");
-
                     verifyException(t);
                     onErrorRequest(t != null ? t.getMessage() : "");
                 }
@@ -337,20 +330,20 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             mCurrentTask = new WeakReference<ITask>(pTask);
 
             if (!pIsRetry) {
-                mCallable = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
+                mCallableGetStatus = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
                 Log.d(this, "the first request...create new callable");
             } else {
 
-                if (mCallable == null) {
-                    mCallable = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
+                if (mCallableGetStatus == null) {
+                    mCallableGetStatus = TPaymentTask.newInstance().setTask(pTask).doTask(mDataSource, params);
                     Log.d(this, "the retry request...create new callable");
                 } else {
-                    mCallable = mCallable.clone();
+                    mCallableGetStatus = mCallableGetStatus.clone();
                     Log.d(this, "the retry request...reuse callable");
                 }
             }
 
-            onRequest(mCallable, new IPaymentApiCallBack<T>() {
+            onRequest(mCallableGetStatus, new IPaymentApiCallBack<T>() {
                 @Override
                 public void onFinish(Call call, Response<T> response) {
                     onSuccessRequest(response.isSuccessful(), response.body());
