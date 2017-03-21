@@ -18,7 +18,7 @@ public class QRCodeModule {
 
     @Provides
     @UserScope
-    QRCodeStore.RequestService provideQRCodeService(@Named("retrofitConnector") Retrofit retrofit) {
+    QRCodeStore.RequestService provideQRCodeService(@Named("retrofitApi") Retrofit retrofit) {
         return retrofit.create(QRCodeStore.RequestService.class);
     }
 
