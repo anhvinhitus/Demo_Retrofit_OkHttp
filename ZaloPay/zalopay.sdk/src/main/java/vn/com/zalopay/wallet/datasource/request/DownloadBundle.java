@@ -11,6 +11,7 @@ import retrofit2.Response;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.listener.ZPWDownloadResourceListener;
 import vn.com.zalopay.wallet.service.DownloadResourceService;
@@ -94,7 +95,7 @@ public class DownloadBundle extends AsyncTask<Void, Void, Boolean> {
             try {
                 current = System.currentTimeMillis();
 
-                Response<ResponseBody> response = DataRepository.getInstanceForDownloadResource().getBundleResource(this.mResourceZipFileURL);
+                Response<ResponseBody> response = DataRepository.getInstanceForDownloadResource(SDKApplication.getHttpClientTimeoutLonger()).getBundleResource(this.mResourceZipFileURL);
 
                 DataRepository.dispose();
 
