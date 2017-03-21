@@ -268,17 +268,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
-    protected void loadStaticReload()
-    {
-        //check static resource whether ready or not
-        try {
-            GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
-        } catch (Exception e) {
-            if (checkResourceStaticListener != null) {
-                checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
-            }
-        }
-    }
     /***
      * load app info listener
      */
@@ -434,6 +423,17 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         } catch (Exception e) {
 
+        }
+    }
+
+    protected void loadStaticReload() {
+        //check static resource whether ready or not
+        try {
+            GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+        } catch (Exception e) {
+            if (checkResourceStaticListener != null) {
+                checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
+            }
         }
     }
 
@@ -1216,24 +1216,22 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setView(R.id.payment_description_label, true);
 
                 String desc = GlobalData.getStringResource(RS.string.zpw_string_linkacc_notice_description);
-                if(getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
-                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null)
-                {
+                if (getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
+                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null) {
                     desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
                 }
-                setText(R.id.payment_description_label,desc);
+                setText(R.id.payment_description_label, desc);
                 setView(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_medium_label));
             } else {
                 setView(R.id.zpw_payment_success_textview, false);
                 setView(R.id.payment_description_label, true);
                 String desc = GlobalData.getStringResource(RS.string.zpw_string_unlinkacc_notice_description);
-                if(getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
-                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null)
-                {
+                if (getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
+                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null) {
                     desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
                 }
-                setText(R.id.payment_description_label,desc);
+                setText(R.id.payment_description_label, desc);
                 setView(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
             }
