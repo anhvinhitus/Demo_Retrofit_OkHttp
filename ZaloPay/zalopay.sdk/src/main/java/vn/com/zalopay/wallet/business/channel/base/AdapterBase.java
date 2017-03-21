@@ -1698,7 +1698,6 @@ public abstract class AdapterBase {
     }
 
     public void terminate(String pMessage, boolean pExitSDK) {
-        //showProgressBar(false, null);
         //full of 2 activity: payment gateway and payment channel
         if (GlobalData.getChannelActivityCallBack() != null) {
             if (pExitSDK) {
@@ -2004,66 +2003,6 @@ public abstract class AdapterBase {
         }
     }
 
-    /**
-     * user level 1 payment,we haven't saved card yet.
-     * user need to upgrade to level 2 to save card.
-     * in this case,need to a dialog to show user know this.
-     * Dialog with 2 option: no save card and upgrade to save card.
-     * user choose upgrade to save card,sdk need to callback to app to show upgrade interface.
-     * after user save card sucessfully,app need to card sdk's SaveCard function
-     */
-    public void confirmUpgradeLevelAndSaveMapCard() {
-        String message = GlobalData.getStringResource(RS.string.zpw_string_confirm_upgrade_level_save_card);
-
-        String bankInfo = null;
-
-        if (!TextUtils.isEmpty(getGuiProcessor().getCardFinder().getDetectedBankName())) {
-            bankInfo = getGuiProcessor().getCardFinder().getDetectedBankName();
-            bankInfo += " " + GlobalData.getStringResource(RS.string.zpw_string_credit_card_save_label);
-            bankInfo += " " + getGuiProcessor().getCardFinder().getTinyCardNumber();
-
-        }
-
-        message = String.format(message, bankInfo);
-
-        getActivity().showNoticeDialog(new ZPWOnEventConfirmDialogListener() {
-                                           @Override
-                                           public void onCancelEvent() {
-                                               //notify to app withou upgrade to save card
-                                               GlobalData.setResultSuccess();
-                                               terminate(GlobalData.getStringResource(RS.string.zingpaysdk_alert_transaction_success), false);
-                                           }
-
-                                           @Override
-                                           public void onOKevent() {
-                                               /***
-                                                * save transaction id+ card info to card.
-                                                * this infomation will be compared and send to server when app call save card api.
-                                                */
-                                               try {
-                                                   SharedPreferencesManager.getInstance().setCardInfoTransaction(mTransactionID, GsonUtils.toJsonString(mMapCard));
-
-                                               } catch (Exception e) {
-                                                   Log.e(this, e);
-                                               }
-
-                                               /***
-                                                * notify to merchant to upgrade and save card.
-                                                */
-                                               try {
-                                                   GlobalData.getPaymentInfo().walletTransID = mTransactionID;
-                                                   GlobalData.setResultUpgradeAndSave();
-
-                                               } catch (Exception e) {
-                                                   Log.e(this, e);
-                                               }
-
-                                               terminate(GlobalData.getStringResource(RS.string.zingpaysdk_alert_transaction_success), false);
-                                           }
-                                       }, message, GlobalData.getStringResource(RS.string.dialog_upgrade_button),
-                GlobalData.getStringResource(RS.string.dialog_later_button));
-    }
-
     public void sdkReportErrorOnPharse(int pPharse, String pMessage) {
         String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
         if (!TextUtils.isEmpty(paymentError)) {
@@ -2142,13 +2081,6 @@ public abstract class AdapterBase {
         } catch (Exception e) {
             throw e;
         }
-    }
-
-    protected boolean isDialogFingerPrintShowing() {
-        if (getDialogFingerPrint() != null && getDialogFingerPrint().getDialog() != null) {
-            return getDialogFingerPrint().getDialog().isShowing();
-        }
-        return false;
     }
 
     protected DialogFragment getDialogFingerPrint() {
