@@ -34,6 +34,7 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EJavaScriptType;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
@@ -345,7 +346,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             public void run() {
                 DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
                 EEventType eventType = convertPageIdToEvent(mEventID);
-                DResponse response = genResponse(eventType, scriptOutput);
+                StatusResponse response = genResponse(eventType, scriptOutput);
 
                 if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
                     // Auto hit at first step
@@ -379,20 +380,20 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         return mEventID == 1;
     }
 
-    public DResponse genResponse(EEventType pEventType, DLinkAccScriptOutput pScriptOutput) {
-        DResponse ret = null;
+    public StatusResponse genResponse(EEventType pEventType, DLinkAccScriptOutput pScriptOutput) {
+        StatusResponse ret = null;
         switch (pEventType) {
             default:
-                ret = new DResponse();
-                ret.returnMessage = pScriptOutput.message;
+                ret = new StatusResponse();
+                ret.returnmessage = pScriptOutput.message;
                 break;
         }
 
         if (ret != null) {
             if (!pScriptOutput.isError()) {
-                ret.returnCode = 4;
+                ret.returncode = 4;
             } else {
-                ret.returnCode = -4;
+                ret.returncode = -4;
             }
         }
 

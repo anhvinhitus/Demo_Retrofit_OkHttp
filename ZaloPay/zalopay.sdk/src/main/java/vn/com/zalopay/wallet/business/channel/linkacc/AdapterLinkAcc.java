@@ -22,14 +22,13 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
-import vn.com.zalopay.wallet.business.entity.linkacc.DResponse;
-import vn.com.zalopay.wallet.business.entity.linkacc.DSubmitBankAcc;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -75,14 +74,14 @@ public class AdapterLinkAcc extends AdapterBase {
                     if (!pExisted) {
                         unlinkAccSuccess();
                     } else {
-                        unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server));
+                        unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
                     }
                 }
 
                 @Override
                 public void onCheckExistBankAccountFail(String pMessage) {
                     showProgressBar(false, null);
-                    unlinkAccFail(pMessage);
+                    unlinkAccFail(pMessage, mTransactionID);
                 }
             }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
         }
@@ -98,14 +97,14 @@ public class AdapterLinkAcc extends AdapterBase {
                     if (pExisted) {
                         linkAccSuccess();
                     } else {
-                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server));
+                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server),mTransactionID);
                     }
                 }
 
                 @Override
                 public void onCheckExistBankAccountFail(String pMessage) {
                     showProgressBar(false, null);
-                    linkAccFail(pMessage);
+                    linkAccFail(pMessage,mTransactionID);
                 }
             }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
         }
@@ -296,10 +295,10 @@ public class AdapterLinkAcc extends AdapterBase {
      *
      * @param pMessage
      */
-    private void linkAccFail(String pMessage) {
+    private void linkAccFail(String pMessage, String pTransID) {
         mPageCode = PAGE_LINKACC_FAIL;
         getActivity().renderByResource();
-        getActivity().showFailView(pMessage, null);
+        getActivity().showFailView(pMessage, pTransID);
         getActivity().enableSubmitBtn(true);
 
         // enable web parse. disable webview
@@ -316,7 +315,7 @@ public class AdapterLinkAcc extends AdapterBase {
         mPageCode = PAGE_UNLINKACC_SUCCESS;
         getActivity().renderByResource();
         try {
-            getActivity().showPaymentSuccessContent(null);
+            getActivity().showPaymentSuccessContent(mTransactionID);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -335,11 +334,11 @@ public class AdapterLinkAcc extends AdapterBase {
      *
      * @param pMessage
      */
-    private void unlinkAccFail(String pMessage) {
+    private void unlinkAccFail(String pMessage , String pTransID ) {
         mPageCode = PAGE_UNLINKACC_FAIL;
         // rendering by resource
         getActivity().renderByResource();
-        getActivity().showFailView(pMessage, null);
+        getActivity().showFailView(pMessage, pTransID);
         getActivity().enableSubmitBtn(true);
 
         // enable web parse. disable webview
@@ -380,7 +379,8 @@ public class AdapterLinkAcc extends AdapterBase {
 
         if (pEventType == EEventType.ON_SUBMIT_LINKACC_COMPLETED) {
             // TODO: code here for submit linkacc complete
-            DSubmitBankAcc response = (DSubmitBankAcc) pAdditionParams[0];
+            StatusResponse response = (StatusResponse) pAdditionParams[0];
+            setmResponseStatus(response);
             // set transID
             mTransactionID = String.valueOf(response.zptransid);
             return null;
@@ -436,18 +436,18 @@ public class AdapterLinkAcc extends AdapterBase {
                                                 mNumAllowLoginWrong), TSnackbar.LENGTH_LONG);
                             } else {
                                 if (mLinkAccType.equals(ELinkAccType.LINK)) {
-                                    linkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error));
+                                    linkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
                                 } else {
-                                    unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error));
+                                    unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
                                 }
                                 return null;
                             }
                             break;
                         case ACCOUNT_LOCKED:
                             if (mLinkAccType.equals(ELinkAccType.LINK)) {
-                                linkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account));
+                                linkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
                             } else {
-                                unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account));
+                                unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
                             }
                             return null;
                         case WRONG_CAPTCHA:
@@ -538,7 +538,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         }
                     } else {
                         // don't have account link
-                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_register));
+                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_register), mTransactionID);
                         return null;
                     }
                 }
@@ -626,7 +626,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     linkAccGuiProcessor.setPhoneNumUnReg(phoneNumList);
                 } else {
                     // don't have account link
-                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_unregister));
+                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_unregister), mTransactionID);
                     return null;
                 }
 
@@ -656,7 +656,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     if (!TextUtils.isEmpty(response.message)) {
                         DialogManager.closeProcessDialog(); // close process dialog
                         String msgErr = response.message;
-                        linkAccFail(msgErr);
+                        linkAccFail(msgErr, mTransactionID);
                     } else {
                         if (!TextUtils.isEmpty(response.messageTimeout)) {
                             // code here if js time out.
@@ -667,6 +667,15 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
 
                 return null;
+            }
+
+            try {
+                if (pAdditionParams[0] instanceof StatusResponse) {
+                    mResponseStatus = (StatusResponse) pAdditionParams[0];
+                    setmResponseStatus(mResponseStatus);
+                }
+            } catch (Exception e) {
+                Log.d(this, e);
             }
 
             // Unregister Complete page
@@ -683,7 +692,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     if (!TextUtils.isEmpty(response.message)) {
                         DialogManager.closeProcessDialog(); // close process dialog
                         String msgErr = response.message;
-                        unlinkAccFail(msgErr);
+                        unlinkAccFail(msgErr, mTransactionID);
                     } else {
                         if (!TextUtils.isEmpty(response.messageTimeout)) {
                             // code here if js time out.
@@ -706,9 +715,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 return null;
             }
 
-            DResponse response = (DResponse) pAdditionParams[0];
+            StatusResponse response = (StatusResponse) pAdditionParams[0];
+
             // show message
-            showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.returnMessage != null ? response.returnMessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified), TSnackbar.LENGTH_SHORT);
+            showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified), TSnackbar.LENGTH_SHORT);
             return null;
         }
         //event notification from app.
