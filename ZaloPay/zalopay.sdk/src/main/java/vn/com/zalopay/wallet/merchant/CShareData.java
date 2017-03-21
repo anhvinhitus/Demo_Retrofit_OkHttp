@@ -1,5 +1,8 @@
 package vn.com.zalopay.wallet.merchant;
 
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
@@ -54,17 +57,14 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
  */
 public class CShareData extends SingletonBase {
 
-    private static CShareData _object;
-
-    private static DConfigFromServer mConfigFromServer;
-
-    private IMerchantTask mMerchantTask;
-
-    private IGetWithDrawBankList mGetWithDrawBankList;
+    protected static CShareData _object;
+    protected static DConfigFromServer mConfigFromServer;
+    protected IMerchantTask mMerchantTask;
+    protected IGetWithDrawBankList mGetWithDrawBankList;
     /***
      * load resource static listener
      */
-    private GatewayLoader.onCheckResourceStaticListener checkResourceStaticListener = new GatewayLoader.onCheckResourceStaticListener() {
+    protected GatewayLoader.onCheckResourceStaticListener checkResourceStaticListener = new GatewayLoader.onCheckResourceStaticListener() {
         @Override
         public void onCheckResourceStaticComplete(boolean isSuccess, String pError) {
             if (isSuccess && mMerchantTask != null) {
@@ -93,7 +93,7 @@ public class CShareData extends SingletonBase {
             Log.d(this, "===onUpVersion===pForceUpdate=" + pForceUpdate + "===pVersion=" + pVersion + "===pMessage=" + pMessage);
         }
     };
-    private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
+    protected ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
         public void onProcessing() {
         }
@@ -184,10 +184,46 @@ public class CShareData extends SingletonBase {
      */
     public void notifyLinkBankAccountFinish(ZPWNotification pNotification) {
         //user in sdk now.
-        Log.d(this, GsonUtils.toJsonString(pNotification));
+        boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
+        if (!isUiThread) {
+            Log.d(this, "notification coming from background, switching thread to main thread...");
+            new Handler(Looper.getMainLooper()).post(() -> {
+                //this runs on the UI thread
+                sendNotifyBankAccountFinishToAdapter(pNotification);
+            });
+        } else {
+            sendNotifyBankAccountFinishToAdapter(pNotification);
+        }
+    }
+
+    /***
+     * app push notify about finish transaction to workout for issue when
+     * 1. user waiting for processing loading -> stop loading and show success screen
+     * 2. user in fail screen by networking or anhything -> reload to success screen
+     * app can call this  in main thread or background thread so need to check for switch to main
+     * thread
+     * @param pObject
+     */
+    public void notifyTransactionFinish(Object... pObject) {
+        boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
+        if (!isUiThread) {
+            Log.d(this, "notification coming from background, switching thread to main thread...");
+            new Handler(Looper.getMainLooper()).post(() -> {
+                //this runs on the UI thread
+                sendNotifyTransactionFinishToAdapter(pObject);
+            });
+        } else {
+            sendNotifyTransactionFinishToAdapter(pObject);
+        }
+    }
+
+    protected void sendNotifyBankAccountFinishToAdapter(Object... pObject) {
+        Log.d(this, GsonUtils.toJsonString(pObject));
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
                 ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter() instanceof AdapterLinkAcc) {
-            ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pNotification);
+            ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
         } else {
             //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
             BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
@@ -204,7 +240,7 @@ public class CShareData extends SingletonBase {
         }
     }
 
-    public void notifyTransactionFinish(Object... pObject) {
+    protected void sendNotifyTransactionFinishToAdapter(Object... pObject) {
         //user in sdk now.
         Log.d(this, GsonUtils.toJsonString(pObject));
         if (BasePaymentActivity.getPaymentChannelActivity() instanceof PaymentChannelActivity &&
@@ -212,7 +248,7 @@ public class CShareData extends SingletonBase {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_TRANSACTION_FINISH, pObject);
         } else {
             //user quit sdk
-            Log.d(this,"user is not in sdk, skip process now...");
+            Log.d(this, "user is not in sdk, skip process now...");
         }
     }
 

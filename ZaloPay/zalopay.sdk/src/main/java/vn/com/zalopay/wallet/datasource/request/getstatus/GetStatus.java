@@ -50,8 +50,10 @@ public class GetStatus extends BaseRequest<StatusResponse> {
         initTimer();
     }
 
-    public static CountDownTimer getTimer() {
-        return mTimer;
+    public static void cancelRetryRequest() {
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
     }
 
     private void initTimer() {
@@ -149,6 +151,7 @@ public class GetStatus extends BaseRequest<StatusResponse> {
 
         //getResponse().data = "{\"actiontype\":1,\"redirecturl\":\"ac2pl\"}";
         //getResponse().isprocessing = true;
+        //((StatusResponse) getResponse()).returncode = -1;
         //stop get status right away if wrong otp
         if (PaymentStatusHelper.isWrongOtpResponse(getResponse())) {
             cancelTimer();

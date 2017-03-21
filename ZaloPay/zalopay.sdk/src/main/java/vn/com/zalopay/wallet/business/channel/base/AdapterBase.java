@@ -141,18 +141,7 @@ public abstract class AdapterBase {
     protected boolean mIsOrderSubmit = false;
     protected boolean mCanEditCardInfo = false;
     protected String mLayoutId = null;
-    /**
-     * getter and setter
-    */
-    public StatusResponse getResponseStatus() {
-        return mResponseStatus;
-    }
 
-    /**
-     * show Fail view
-     *
-     * @param pMessage
-     */
     protected boolean preventRetryLoadMapCardList = false;
     //prevent click duplicate
     private boolean mMoreClick = true;
@@ -203,6 +192,7 @@ public abstract class AdapterBase {
             startSubmitTransaction();
         }
     };
+  
     private View.OnClickListener okClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -221,7 +211,6 @@ public abstract class AdapterBase {
             }
         }
     };
-
     public AdapterBase(PaymentChannelActivity pOwnerActivity) {
         if (pOwnerActivity != null) {
             mOwnerActivity = new WeakReference<PaymentChannelActivity>(pOwnerActivity);
@@ -236,6 +225,17 @@ public abstract class AdapterBase {
         }
 
         mCard = new DPaymentCard();
+    }
+
+    /**
+     * getter and setter
+     */
+    public StatusResponse getResponseStatus() {
+        return mResponseStatus;
+    }
+
+    public void setmResponseStatus(StatusResponse mResponseStatus) {
+        this.mResponseStatus = mResponseStatus;
     }
 
     public abstract void init();
@@ -803,6 +803,10 @@ public abstract class AdapterBase {
                 }
             } else if (pEventType == EEventType.ON_NOTIFY_TRANSACTION_FINISH) {
                 Log.d(this, "processing result payment from notification");
+                if (isTransactionSuccess()) {
+                    Log.d(this, "transaction is finish, skipping process notification");
+                    return pAdditionParams;
+                }
                 if (pAdditionParams == null || pAdditionParams.length <= 0) {
                     Log.e(this, "stopping processing result payment from notification because of empty pAdditionParams");
                     return pAdditionParams;
@@ -811,7 +815,7 @@ public abstract class AdapterBase {
                     String transId = String.valueOf(pAdditionParams[0]);
                     if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
                         DataRepository.shareInstance().cancelRequest();//cancel current request
-                        GetStatus.getTimer().cancel();//cancel timer retry get status
+                        GetStatus.cancelRetryRequest();//cancel timer retry get status
                         DialogManager.closeAllDialog();//close dialog
                         showTransactionSuccessView();
                     } else {
