@@ -80,7 +80,7 @@ public class ZPEvents {
     public static final int SCANQR_PL_TYPE2 = 1513;
     public static final int SCANQR_ZALOPAY_UNKNOWN = 1514;
     public static final int SCANQR_PL_ZALOPAY_UNKNOWN = 1515;
-    public static final int SCANQR_HR_TYPE2 = 1516;
+    public static final int SCANQR_URL_TYPE2 = 1516;
     public static final int MONEYTRANSFER_LAUNCH = 1600;
     public static final int MONEYTRANSFER_NAVIGATEBACK = 1601;
     public static final int MONEYTRANSFER_CHOOSERECENTTRANSACTION = 1602;
@@ -417,8 +417,8 @@ public class ZPEvents {
                 return "ScanQR_ZaloPay_Unknown";
             case SCANQR_PL_ZALOPAY_UNKNOWN:
                 return "ScanQR_PL_ZaloPay_Unknown";
-            case SCANQR_HR_TYPE2:
-                return "ScanQR_HR_Type2";
+            case SCANQR_URL_TYPE2:
+                return "ScanQR_URL_Type2";
             case MONEYTRANSFER_LAUNCH:
                 return "MoneyTransfer_Launch";
             case MONEYTRANSFER_NAVIGATEBACK:
@@ -940,7 +940,7 @@ public class ZPEvents {
                 return "Scan QR";
             case SCANQR_PL_ZALOPAY_UNKNOWN:
                 return "Scan QR";
-            case SCANQR_HR_TYPE2:
+            case SCANQR_URL_TYPE2:
                 return "Scan QR";
             case MONEYTRANSFER_LAUNCH:
                 return "Money Transfer";
