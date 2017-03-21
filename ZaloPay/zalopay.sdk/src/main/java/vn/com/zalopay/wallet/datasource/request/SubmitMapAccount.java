@@ -6,6 +6,7 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.linkacc.DSubmitBankAcc;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -33,7 +34,7 @@ public class SubmitMapAccount extends BaseRequest<BaseResponse> {
     @Override
     protected void onRequestSuccess() throws Exception {
         if (mAdapter != null) {
-            DSubmitBankAcc response = GsonUtils.fromJsonString(getResponse().toJsonString(), DSubmitBankAcc.class);
+            StatusResponse response = GsonUtils.fromJsonString(getResponse().toJsonString(), StatusResponse.class);
             mAdapter.onEvent(EEventType.ON_SUBMIT_LINKACC_COMPLETED, response);
         }
     }

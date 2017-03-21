@@ -1165,6 +1165,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setText(R.id.zpw_textview_update_level_inform, statusResponse.getSuggestMessage());
                 setView(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(statusResponse.getSuggestMessage()));
             }
+            else
+            {
+                setView(R.id.zpw_textview_update_level_inform, false);
+            }
             //exception case for payment overlimit per day
             if (PaymentStatusHelper.isPaymentOverLimitPerDay(getAdapter().getResponseStatus())) {
                 setView(R.id.zpw_payment_fail_rl_update_info, true);
