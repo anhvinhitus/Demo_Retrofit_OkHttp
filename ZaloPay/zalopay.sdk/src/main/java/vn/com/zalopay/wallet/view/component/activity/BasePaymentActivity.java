@@ -58,7 +58,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
-import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.request.DownloadBundle;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
@@ -268,17 +267,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
-    protected void loadStaticReload()
-    {
-        //check static resource whether ready or not
-        try {
-            GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
-        } catch (Exception e) {
-            if (checkResourceStaticListener != null) {
-                checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
-            }
-        }
-    }
     /***
      * load app info listener
      */
@@ -434,6 +422,17 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         } catch (Exception e) {
 
+        }
+    }
+
+    protected void loadStaticReload() {
+        //check static resource whether ready or not
+        try {
+            GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+        } catch (Exception e) {
+            if (checkResourceStaticListener != null) {
+                checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
+            }
         }
     }
 
@@ -1157,19 +1156,17 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void showFailView(String pMessage, String pTransID) {
         setText(R.id.zpw_textview_error_message, pMessage);
 
-        if(this instanceof PaymentChannelActivity)
-        {
-            StatusResponse res = getAdapter().getResponseStatus();
+        if (this instanceof PaymentChannelActivity) {
+            StatusResponse statusResponse = getAdapter().getResponseStatus();
             /*res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
             getAdapter().setmResponseStatus(res);*/
             // The inform text would be set from server
-            if(res != null) {
-                setText(R.id.zpw_textview_update_level_inform, res.suggest_actions);//show suggest action which return from server
-                setView(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(res.suggest_actions));
+            if(statusResponse != null) {
+                setText(R.id.zpw_textview_update_level_inform, statusResponse.getSuggestMessage());
+                setView(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(statusResponse.getSuggestMessage()));
             }
-
             //exception case for payment overlimit per day
-            if(PaymentStatusHelper.isPaymentOverLimitPerDay(getAdapter().getResponseStatus())) {
+            if (PaymentStatusHelper.isPaymentOverLimitPerDay(getAdapter().getResponseStatus())) {
                 setView(R.id.zpw_payment_fail_rl_update_info, true);
             } else {
                 setView(R.id.zpw_payment_fail_rl_update_info, false);
@@ -1232,24 +1229,22 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setView(R.id.payment_description_label, true);
 
                 String desc = GlobalData.getStringResource(RS.string.zpw_string_linkacc_notice_description);
-                if(getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
-                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null)
-                {
+                if (getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
+                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null) {
                     desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
                 }
-                setText(R.id.payment_description_label,desc);
+                setText(R.id.payment_description_label, desc);
                 setView(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_medium_label));
             } else {
                 setView(R.id.zpw_payment_success_textview, false);
                 setView(R.id.payment_description_label, true);
                 String desc = GlobalData.getStringResource(RS.string.zpw_string_unlinkacc_notice_description);
-                if(getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
-                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null)
-                {
+                if (getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
+                        ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null) {
                     desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
                 }
-                setText(R.id.payment_description_label,desc);
+                setText(R.id.payment_description_label, desc);
                 setView(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
             }
