@@ -378,11 +378,8 @@ public class AdapterLinkAcc extends AdapterBase {
         }
 
         if (pEventType == EEventType.ON_SUBMIT_LINKACC_COMPLETED) {
-            // TODO: code here for submit linkacc complete
-            StatusResponse response = (StatusResponse) pAdditionParams[0];
-            setmResponseStatus(response);
-            // set transID
-            mTransactionID = String.valueOf(response.zptransid);
+            mResponseStatus = (StatusResponse) pAdditionParams[0];
+            mTransactionID = String.valueOf(mResponseStatus.zptransid);
             return null;
         }
 
@@ -672,7 +669,6 @@ public class AdapterLinkAcc extends AdapterBase {
             try {
                 if (pAdditionParams[0] instanceof StatusResponse) {
                     mResponseStatus = (StatusResponse) pAdditionParams[0];
-                    setmResponseStatus(mResponseStatus);
                 }
             } catch (Exception e) {
                 Log.d(this, e);

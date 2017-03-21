@@ -1,4 +1,16 @@
 apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda'
+
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "me.tatarka:gradle-retrolambda:${lambdaVersion}"
+    }
+}
 
 def cfg = rootProject.ext.configuration
 
@@ -16,6 +28,11 @@ android {
         buildConfigField 'String', 'PAYMENT_PLATFORM', '"android"'
         buildConfigField 'int', 'ZALOAPP_ID', '1'
         buildConfigField 'int', 'WITHDRAWAPP_ID', '2'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {

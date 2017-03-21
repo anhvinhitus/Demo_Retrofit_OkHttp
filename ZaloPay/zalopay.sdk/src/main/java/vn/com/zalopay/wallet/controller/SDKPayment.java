@@ -217,15 +217,12 @@ public class SDKPayment {
                     && BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getPaymentInfo().linkAccInfo.getBankCode())) {
                 DialogManager.closeProcessDialog();
                 DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-                        GlobalData.getMerchantActivity().getString(R.string.zpw_warning_link_bankaccount_existed), new ZPWOnSweetDialogListener() {
-                            @Override
-                            public void onClickDiaLog(int pIndex) {
-                                if (GlobalData.getPaymentListener() != null) {
-                                    GlobalData.setResultUserClose();
-                                    GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
-                                }
-                                SingletonLifeCircleManager.disposeAll();
+                        GlobalData.getMerchantActivity().getString(R.string.zpw_warning_link_bankaccount_existed), pIndex -> {
+                            if (GlobalData.getPaymentListener() != null) {
+                                GlobalData.setResultUserClose();
+                                GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
                             }
+                            SingletonLifeCircleManager.disposeAll();
                         }, new String[]{GlobalData.getStringResource(RS.string.dialog_close_button)});
                 return;
             }
@@ -237,15 +234,12 @@ public class SDKPayment {
                 DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
                         GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
                         GlobalData.getMerchantActivity().getString(R.string.zpw_warning_unlink_bankaccount_invalid),
-                        new ZPWOnSweetDialogListener() {
-                            @Override
-                            public void onClickDiaLog(int pIndex) {
-                                if (GlobalData.getPaymentListener() != null) {
-                                    GlobalData.setResultUserClose();
-                                    GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
-                                }
-                                SingletonLifeCircleManager.disposeAll();
+                        pIndex -> {
+                            if (GlobalData.getPaymentListener() != null) {
+                                GlobalData.setResultUserClose();
+                                GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
                             }
+                            SingletonLifeCircleManager.disposeAll();
                         }, new String[]{GlobalData.getStringResource(RS.string.dialog_close_button)});
                 return;
             }
@@ -254,15 +248,12 @@ public class SDKPayment {
             if (GlobalData.isLinkAccChannel() && BankLoader.getInstance().isBankMaintenance(GlobalData.getPaymentInfo().linkAccInfo.getBankCode(), EBankFunction.LINK_BANK_ACCOUNT)) {
                 DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
                         GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-                        StringUtil.getFormattedBankMaintenaceMessage(), new ZPWOnSweetDialogListener() {
-                            @Override
-                            public void onClickDiaLog(int pIndex) {
-                                if (GlobalData.getPaymentListener() != null) {
-                                    GlobalData.setResultUserClose();
-                                    GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
-                                }
-                                SingletonLifeCircleManager.disposeAll();
+                        StringUtil.getFormattedBankMaintenaceMessage(), pIndex -> {
+                            if (GlobalData.getPaymentListener() != null) {
+                                GlobalData.setResultUserClose();
+                                GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
                             }
+                            SingletonLifeCircleManager.disposeAll();
                         }, new String[]{GlobalData.getStringResource(RS.string.dialog_close_button)});
                 return;
             }
@@ -292,14 +283,11 @@ public class SDKPayment {
             SDKReport.makeReportError(SDKReport.INVALID_PAYMENTINFO, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
         }
         DialogManager.closeProcessDialog();
-        DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.WARNING_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_warning), pMessage, new ZPWOnSweetDialogListener() {
-            @Override
-            public void onClickDiaLog(int pIndex) {
-                if (GlobalData.getPaymentListener() != null)
-                    GlobalData.getPaymentListener().onError(new CError(pPayError, pMessage));
+        DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.WARNING_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_warning), pMessage, pIndex -> {
+            if (GlobalData.getPaymentListener() != null)
+                GlobalData.getPaymentListener().onError(new CError(pPayError, pMessage));
 
-                SingletonLifeCircleManager.disposeAll();
-            }
+            SingletonLifeCircleManager.disposeAll();
         }, new String[]{GlobalData.getStringResource(RS.string.dialog_close_button)});
     }
 }

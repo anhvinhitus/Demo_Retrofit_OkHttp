@@ -144,7 +144,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        if (mTimerRunning) {
+        if (mTimerRunning && !getAdapter().isFinalScreen()) {
             Log.d(this, "===onUserInteraction===startTransactionExpiredTimer");
             startTransactionExpiredTimer();
         }
@@ -392,14 +392,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         unlockFilter.addAction(Constants.ACTION_UNLOCK_SCREEN);
         mUnLockScreenReceiver = new WeakReference<UnlockSreenReceiver>(new UnlockSreenReceiver());
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(getUnLockScreenReceiver(), unlockFilter);
-
-        //clear notifications if networking online again
-        /*
-        if (ConnectionUtil.isOnline(this))
-		{
-			NotificationUtils.getInstance(this).cancel();
-		}
-		*/
     }
 
     protected void showKeyBoardOnFocusingViewAgain() {
@@ -473,9 +465,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
             onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
-
-        //resize submit button
-        //resizePaymentButton();
 
         setMarginSubmitButtonTop(false);
         //resize pin layout if this is phone
@@ -609,12 +598,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     protected void updateFontCardNumber() {
         //update font
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ZPWUtils.applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
-            }
-        }, 500);
+        new Handler().postDelayed(() -> ZPWUtils.applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium)), 500);
     }
 
     public void startTransactionExpiredTimer() {
@@ -758,22 +742,19 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     protected void confirmQuitOrGetStatus() {
-        showConfirmDialogWithManyOption(GlobalData.getStringResource(RS.string.zpw_confirm_quit_loadsite), new ZPWOnSweetDialogListener() {
-            @Override
-            public void onClickDiaLog(int pIndex) {
-                switch (pIndex) {
-                    case 0:
-                        break;
-                    case 1:
-                        if (GlobalData.getChannelActivityCallBack() != null) {
-                            GlobalData.getChannelActivityCallBack().onExitAction();
-                        }
-                        finish();
-                        break;
-                    case 2:
-                        getAdapter().onEvent(EEventType.ON_BACK_WHEN_LOADSITE, new Object());
-                        break;
-                }
+        showConfirmDialogWithManyOption(GlobalData.getStringResource(RS.string.zpw_confirm_quit_loadsite), pIndex -> {
+            switch (pIndex) {
+                case 0:
+                    break;
+                case 1:
+                    if (GlobalData.getChannelActivityCallBack() != null) {
+                        GlobalData.getChannelActivityCallBack().onExitAction();
+                    }
+                    finish();
+                    break;
+                case 2:
+                    getAdapter().onEvent(EEventType.ON_BACK_WHEN_LOADSITE, new Object());
+                    break;
             }
         }, GlobalData.getStringResource(RS.string.dialog_khong_button), GlobalData.getStringResource(RS.string.dialog_co_button), GlobalData.getStringResource(RS.string.dialog_getstatus_button));
     }

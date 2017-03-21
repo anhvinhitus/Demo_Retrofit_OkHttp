@@ -33,18 +33,15 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
     protected ArrayList<DPaymentChannelView> mChannelList = new ArrayList<>();
     protected WeakReference<IMoveToChannel> mMoveToChannelListener;
     protected WeakReference<BasePaymentActivity> mGatewayActivity;
-    private AdapterView.OnItemClickListener mChannelItemClick = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            boolean selectedChannel = selectChannel(position);
-            if (selectedChannel) {
-                finish();
-            }
+    private AdapterView.OnItemClickListener mChannelItemClick = (parent, view, position, id) -> {
+        boolean selectedChannel = selectChannel(position);
+        if (selectedChannel) {
+            finish();
         }
     };
 
     public static void setCloseDialogListener(ZPWOnCloseDialogListener pListener) {
-        MapListSelectionActivity.mCloseDialog = new WeakReference<ZPWOnCloseDialogListener>(pListener);
+        MapListSelectionActivity.mCloseDialog = new WeakReference<>(pListener);
     }
 
     public ZPWOnCloseDialogListener getListener() {
@@ -111,23 +108,15 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
         this.mSelectButton = findViewById(R.id.selectButton);
         this.mSelectOtherButton = findViewById(R.id.selectOtherButton);
 
-        this.mSelectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int positionToSelect = getChannel(mCardNumber);
-                if (positionToSelect > -1) {
-                    selectChannel(positionToSelect);
-                }
-                finish();
+        this.mSelectButton.setOnClickListener(view -> {
+            int positionToSelect = getChannel(mCardNumber);
+            if (positionToSelect > -1) {
+                selectChannel(positionToSelect);
             }
+            finish();
         });
 
-        this.mSelectOtherButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        this.mSelectOtherButton.setOnClickListener(view -> onBackPressed());
 
         if (!TextUtils.isEmpty(mCloseButtonText)) {
             ((ZPWRippleButton) findViewById(R.id.selectOtherButton)).setText(mCloseButtonText);
