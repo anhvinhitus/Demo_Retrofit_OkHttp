@@ -242,7 +242,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         try {
             // detect if type of MoneyTransfer
             int type = data.optInt(Constants.ReceiveMoney.TYPE, -1);
-            if (type == Constants.QRCode.RECEIVE_MONEY) {
+            if (type == Constants.ActivateSource.FromQRCodeType1.ordinal()) {
                 long zaloPayId = data.optLong(Constants.ReceiveMoney.UID, -1);
                 if (zaloPayId > 0) {
                     return QRCodeType.MoneyTransfer;
@@ -257,7 +257,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
                 type = data.optInt(Constants.TransferFixedMoney.TYPE, -1);
                 String zpid = data.optString(Constants.TransferFixedMoney.ZALO_PAY_ID);
                 long amount = data.optInt(Constants.TransferFixedMoney.AMOUNT, -1);
-                if (type == Constants.QRCode.RECEIVE_FIXED_MONEY &&
+                if (type == Constants.ActivateSource.FromQRCodeType2.ordinal() &&
                         !TextUtils.isEmpty(zpid) &&
                         amount > 0) {
                     return QRCodeType.ReadOnlyMoneyTransfer;
@@ -291,7 +291,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
     private boolean handleQRCodeOfZaloPay(JSONObject data, QRCodeResource qrCodeResource) {
         int type = data.optInt(Constants.TransferFixedMoney.TYPE);
-        if (type == Constants.QRCode.RECEIVE_FIXED_MONEY) {
+        if (type == Constants.ActivateSource.FromQRCodeType2.ordinal()) {
             return transferFixedMoney(data, qrCodeResource);
         } else {
             return false;
@@ -300,7 +300,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
     private boolean transferMoney(JSONObject data, QRCodeResource qrCodeResource) {
         int type = data.optInt(Constants.ReceiveMoney.TYPE, -1);
-        if (type == Constants.QRCode.RECEIVE_MONEY) {
+        if (type == Constants.ActivateSource.FromQRCodeType1.ordinal()) {
             if (tryTransferMoney(data)) {
                 if (qrCodeResource == QRCodeResource.PHOTO_LIBRARY) {
                     ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_GETMTCODE);
@@ -337,7 +337,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
         List<String> fields = new ArrayList<>();
         int type = data.optInt(Constants.ReceiveMoney.TYPE, -1);
-        if (type != Constants.QRCode.RECEIVE_MONEY) {
+        if (type != Constants.ActivateSource.FromQRCodeType1.ordinal()) {
             return false;
         }
 
@@ -400,7 +400,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
         int type = data.optInt(Constants.TransferFixedMoney.TYPE, -1);
         Timber.d("tryTransferFixedMoney type [%s]", type);
-        if (type != Constants.QRCode.RECEIVE_FIXED_MONEY) {
+        if (type != Constants.ActivateSource.FromQRCodeType2.ordinal()) {
             return false;
         }
 
