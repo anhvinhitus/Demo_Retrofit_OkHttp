@@ -167,12 +167,9 @@ public abstract class AdapterBase {
             getActivity().showSupportView(mTransactionID);
         }
     };
-    private View.OnClickListener onUpdateInfoClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            GlobalData.setResultUpgradeCMND();
-            onClickSubmission();
-        }
+    private View.OnClickListener onUpdateInfoClickListener = v -> {
+        GlobalData.setResultUpgradeCMND();
+        onClickSubmission();
     };
 
     private String olderPassword = null;
@@ -183,12 +180,7 @@ public abstract class AdapterBase {
             //has an error in authen fingerprint
             Log.d(this, "===onError===" + GsonUtils.toJsonString(pError));
             showDialogWithCallBack(GlobalData.getStringResource(RS.string.zpw_error_authen_pin),
-                    GlobalData.getStringResource(RS.string.dialog_continue_button), new ZPWOnEventDialogListener() {
-                        @Override
-                        public void onOKevent() {
-                            moveToRequirePin();
-                        }
-                    });
+                    GlobalData.getStringResource(RS.string.dialog_continue_button), AdapterBase.this::moveToRequirePin);
         }
 
         @Override
@@ -495,15 +487,11 @@ public abstract class AdapterBase {
             return false;
         }
 
-        showDialogWithCallBack(mResponseStatus.getMessage(), GlobalData.getStringResource(RS.string.dialog_close_button), new ZPWOnEventDialogListener() {
-
-            @Override
-            public void onOKevent() {
-                //reset otp and show keyboard again
-                if (isCardFlow()) {
-                    ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
-                    getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpAuthenPayerEditText());
-                }
+        showDialogWithCallBack(mResponseStatus.getMessage(), GlobalData.getStringResource(RS.string.dialog_close_button), () -> {
+            //reset otp and show keyboard again
+            if (isCardFlow()) {
+                ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
+                getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpAuthenPayerEditText());
             }
         });
 
@@ -1070,9 +1058,6 @@ public abstract class AdapterBase {
 
         //click update info view
         getActivity().setOnClickListener(R.id.zpw_payment_fail_rl_update_info, onUpdateInfoClickListener);
-
-        //intro button on linkcard screen
-        //getActivity().setOnClickListener(R.id.zpw_linkcard_intro_imageview,mLinkCardIntroClick);
     }
 
     public void showFee() {

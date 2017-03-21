@@ -131,12 +131,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
-    protected ZPWOnCloseDialogListener mCloseDialog = new ZPWOnCloseDialogListener() {
-        @Override
-        public void onCloseCardSupportDialog() {
-            onCloseDialogSelection();
-        }
-    };
+    protected ZPWOnCloseDialogListener mCloseDialog = this::onCloseDialogSelection;
     /***
      * loading website so long,over timeout 40s
      */
@@ -209,23 +204,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                         Log.d(this, "getOneShotTransactionStatus");
                     } else {
                         //show dialog and move to fail screen
-                        ((PaymentChannelActivity) activity.get()).showWarningDialog(new ZPWOnEventDialogListener() {
-                            @Override
-                            public void onOKevent() {
-                                ((PaymentChannelActivity) activity.get()).getAdapter().showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
-                            }
-                        }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+                        ((PaymentChannelActivity) activity.get()).showWarningDialog(() -> ((PaymentChannelActivity) activity.get()).getAdapter().showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)), GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
                     }
                     return;
                 }
                 //user in gateway screen
                 if (activity.get() instanceof PaymentGatewayActivity) {
-                    ((PaymentGatewayActivity) activity.get()).showWarningDialog(new ZPWOnEventDialogListener() {
-                        @Override
-                        public void onOKevent() {
-                            finish();
-                        }
-                    }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+                    ((PaymentGatewayActivity) activity.get()).showWarningDialog(BasePaymentActivity.this::finish, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
                 }
             } catch (Exception ex) {
                 ((PaymentChannelActivity) activity.get()).getAdapter().showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
@@ -490,14 +475,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void onReturnCancel(final String pMessage) {
         showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
 
-        showWarningDialog(new ZPWOnEventDialogListener() {
-            @Override
-            public void onOKevent() {
-                GlobalData.updateResultNetworkingError(pMessage);
-                GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
+        showWarningDialog(() -> {
+            GlobalData.updateResultNetworkingError(pMessage);
+            GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
 
-                finish();
-            }
+            finish();
         }, pMessage);
     }
 
@@ -514,21 +496,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         if (TextUtils.isEmpty(message))
             message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
 
-        showWarningDialog(new ZPWOnEventDialogListener() {
-            @Override
-            public void onOKevent() {
-                recycleActivity();
-            }
-        }, message);
+        showWarningDialog(() -> recycleActivity(), message);
     }
 
     public void showDialogWarningLinkCardAndResetCardNumber() {
-        showInfoDialog(new ZPWOnEventDialogListener() {
-            @Override
-            public void onOKevent() {
-                if (getAdapter() != null) {
-                    getAdapter().getGuiProcessor().resetCardNumberAndShowKeyBoard();
-                }
+        showInfoDialog(() -> {
+            if (getAdapter() != null) {
+                getAdapter().getGuiProcessor().resetCardNumberAndShowKeyBoard();
             }
         }, GlobalData.getStringResource(RS.string.zpw_alert_linkcard_not_support));
     }
@@ -1057,13 +1031,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         setView(R.id.zpw_card_info, pIsVisible);
     }
 
-	/*
-    public void visibleIntroLinkCardButton(boolean pIsVisible)
-	{
-		setView(R.id.zpw_linkcard_intro_imageview,pIsVisible);
-	}
-	*/
-
     public void visibleTranferWalletInfo(boolean pIsVisible) {
         setView(R.id.zpsdk_transfer_info, pIsVisible);
     }
@@ -1433,12 +1400,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      * alert invalid data and quit payment
      */
     private void showDialogUserInfo() {
-        showErrorDialog(new ZPWOnEventDialogListener() {
-            @Override
-            public void onOKevent() {
-                GlobalData.setResultInvalidInput();
-                recycleActivity();
-            }
+        showErrorDialog(() -> {
+            GlobalData.setResultInvalidInput();
+            recycleActivity();
         }, GlobalData.getStringResource(RS.string.zpw_string_alert_userinfo_invalid));
     }
 
@@ -1712,14 +1676,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             mMessage = pStatusMessage;
         }
 
-        showInfoDialog(new ZPWOnEventDialogListener() {
-            @Override
-            public void onOKevent() {
-                if (GlobalData.getPaymentResult() != null) {
-                    GlobalData.setResultServiceMaintenance();
-                }
-                finish();
+        showInfoDialog(() -> {
+            if (GlobalData.getPaymentResult() != null) {
+                GlobalData.setResultServiceMaintenance();
             }
+            finish();
         }, mMessage);
     }
 

@@ -63,12 +63,7 @@ public class BankListActivity extends BasePaymentDialogActivity {
 
         mRippleButtonSelectBank = findViewById(R.id.rippleButtonSelectBank);
 
-        mRippleButtonSelectBank.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        mRippleButtonSelectBank.setOnClickListener(view -> onBackPressed());
     }
 
     @Override

@@ -83,13 +83,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     /***
      * exit click
      */
-    private View.OnClickListener mOnClickExitListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            recycleActivity();
-        }
-    };
+    private View.OnClickListener mOnClickExitListener = v -> recycleActivity();
     /***
      * click item on channel listview
      */
@@ -639,12 +633,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     @Override
     public void onCallBackAction(boolean pIsShowDialog, String pMessage) {
         if (pIsShowDialog) {
-            showWarningDialog(new ZPWOnEventDialogListener() {
-                @Override
-                public void onOKevent() {
-                    notifyToMerchant();
-                }
-            }, pMessage);
+            showWarningDialog(() -> notifyToMerchant(), pMessage);
 
         } else {
             notifyToMerchant();
