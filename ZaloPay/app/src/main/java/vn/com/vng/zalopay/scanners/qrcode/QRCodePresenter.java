@@ -388,7 +388,8 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         }
 
         // Start money transfer process
-        startMoneyTransfer(zaloPayId, "", amount, message, Constants.QRCode.RECEIVE_MONEY);
+        startMoneyTransfer(zaloPayId, "", amount, message,
+                Constants.TransferMode.TransferToZaloPayUser, Constants.ActivateSource.FromQRCodeType1);
 
         hideLoadingView();
         return true;
@@ -425,13 +426,15 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         Timber.d("tryTransferFixedMoney message [%s]", message);
 
         // Start money transfer process
-        startMoneyTransfer(null, zaloPayName, amount, message, Constants.QRCode.RECEIVE_FIXED_MONEY);
+        startMoneyTransfer(null, zaloPayName, amount, message,
+                Constants.TransferMode.TransferToZaloPayID, Constants.ActivateSource.FromQRCodeType2);
 
         hideLoadingView();
         return true;
     }
 
-    private void startMoneyTransfer(Long zaloPayId, String zaloPayName, long amount, String message, int type) {
+    private void startMoneyTransfer(Long zaloPayId, String zaloPayName, long amount, String message,
+                                    Constants.TransferMode mode, Constants.ActivateSource activateSource) {
         RecentTransaction item = new RecentTransaction();
         if (zaloPayId != null) {
             item.zaloPayId = String.valueOf(zaloPayId);
@@ -446,8 +449,8 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
         item.message = message;
 
         Bundle bundle = new Bundle();
-        bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_QR);
-        bundle.putInt(Constants.ARG_MONEY_TRANSFER_TYPE, type);
+        bundle.putSerializable(Constants.ARG_MONEY_TRANSFER_MODE, mode);
+        bundle.putSerializable(Constants.ARG_MONEY_ACTIVATE_SOURCE, activateSource);
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
         mNavigator.startTransferActivity(mView.getContext(), bundle, false);
     }

@@ -296,7 +296,8 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
         RecentTransaction item = new RecentTransaction();
         item.zaloId = receiver;
         Bundle bundle = new Bundle();
-        bundle.putInt(Constants.ARG_MONEY_TRANSFER_MODE, Constants.MoneyTransfer.MODE_ZALO);
+        bundle.putSerializable(Constants.ARG_MONEY_TRANSFER_MODE, Constants.TransferMode.TransferToZaloFriend);
+        bundle.putSerializable(Constants.ARG_MONEY_ACTIVATE_SOURCE, Constants.ActivateSource.FromZalo);
         bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
         mNavigator.startTransferActivity(mView.getContext(), bundle);
     }
