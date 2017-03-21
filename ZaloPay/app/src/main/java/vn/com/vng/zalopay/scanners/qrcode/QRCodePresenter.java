@@ -318,7 +318,7 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
             if (qrCodeResource == QRCodeResource.PHOTO_LIBRARY) {
                 ZPAnalytics.trackEvent(ZPEvents.SCANQR_PL_TYPE2);
             } else if (qrCodeResource == QRCodeResource.HTTP_REQUEST) {
-                ZPAnalytics.trackEvent(ZPEvents.SCANQR_HR_TYPE2);
+                ZPAnalytics.trackEvent(ZPEvents.SCANQR_URL_TYPE2);
             } else {
                 ZPAnalytics.trackEvent(ZPEvents.SCANQR_TYPE2);
             }
