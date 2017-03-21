@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.BottomNavigationView;
@@ -13,15 +14,24 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.IconFontDrawable;
+
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.ui.presenter.HomePresenter;
+import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.IconFontDrawable;
+import vn.com.vng.zalopay.utils.DialogHelper;
 
-public class HomeActivity extends AbstractReactActivity {
+public class HomeActivity extends AbstractReactActivity implements IHomeView {
+
+    @Inject
+    HomePresenter mPresenter;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -57,8 +67,15 @@ public class HomeActivity extends AbstractReactActivity {
     }
 
     @Override
+    protected void setupActivityComponent() {
+        getUserComponent().inject(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPresenter.attachView(this);
+        mPresenter.initialize();
 
         initToolbar();
 
@@ -115,6 +132,25 @@ public class HomeActivity extends AbstractReactActivity {
             }
             return true;
         });
+    }
+
+    @Override
+    public void onPause() {
+        mPresenter.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.resume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.detachView();
+        mPresenter.destroy();
+        super.onDestroy();
     }
 
     private void updateIconFontState(int currentIndex) {
@@ -207,6 +243,33 @@ public class HomeActivity extends AbstractReactActivity {
             getSupportActionBar().show();
             mToolbarParams.setMargins(0, getSupportActionBar().getHeight(), 0, mMarginBottom);
             mViewPager.setLayoutParams(mToolbarParams);
+        }
+    }
+
+    @Override
+    public void showLoading() {
+        DialogHelper.showLoading(this);
+    }
+
+    @Override
+    public void hideLoading() {
+        DialogHelper.hideLoading();
+    }
+
+    @Override
+    public void showError(String message) {
+        DialogHelper.showNotificationDialog(this, message);
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public void refreshIconFont() {
+        if (mViewPager != null) {
+            updateIconFontState(mViewPager.getCurrentItem());
         }
     }
 }

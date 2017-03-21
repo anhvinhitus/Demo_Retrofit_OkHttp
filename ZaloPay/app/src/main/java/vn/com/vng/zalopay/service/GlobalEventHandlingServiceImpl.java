@@ -87,7 +87,7 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        Timber.i("Exception with type: %s", ex.getClass());
+        Timber.i("Exception with type: %s message: %s", ex.getClass(), ex.getMessage());
         if (ex instanceof RuntimeException) {
             RuntimeException runtimeException = (RuntimeException) ex;
 

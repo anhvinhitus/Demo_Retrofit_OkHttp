@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.ui.presenter;
 
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zalopay.apploader.internal.ModuleName;
@@ -31,6 +29,7 @@ import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.event.SignOutEvent;
@@ -57,13 +56,12 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     private AppResourceStore.Repository mAppResourceRepository;
     private NotificationStore.Repository mNotificationRepository;
     private Navigator mNavigator;
-    public final int mNumberTopApp = 6;
-    private Context mContext;
+    private final int mNumberTopApp = 6;
 
     private long mLastTimeRefreshApp;
 
     @Inject
-    ZaloPayPresenter(Context context, MerchantStore.Repository mMerchantRepository,
+    ZaloPayPresenter(MerchantStore.Repository mMerchantRepository,
                      EventBus eventBus,
                      BalanceStore.Repository balanceRepository,
                      AppResourceStore.Repository appResourceRepository,
@@ -75,7 +73,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         this.mAppResourceRepository = appResourceRepository;
         this.mNotificationRepository = notificationRepository;
         this.mNavigator = navigator;
-        this.mContext = context;
     }
 
     @Override
@@ -179,7 +176,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
     // when received notification
-    public void getTotalNotification(long delay) {
+    private void getTotalNotification(long delay) {
         Subscription subscription = mNotificationRepository.totalNotificationUnRead()
                 .delaySubscription(delay, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
@@ -355,13 +352,21 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mSubscription.add(subscription);
     }
 
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLoadIconFontSuccess(LoadIconFontEvent event) {
+        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
+        if (mView != null) {
+            mView.refreshIconFont();
+        }
+    }
+
     private void ensureAppResourceAvailable() {
         Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
-    
+
     public List<AppResource> setBannerInListApp(List<AppResource> pFullListApp) {
 
         List<AppResource> mNewListApp = new ArrayList<>();
@@ -369,17 +374,15 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         for (AppResource pItem : pFullListApp) {
             mNewListApp.add(pItem);
 
-            if(pItem !=null && inDex == mNumberTopApp -1) {
+            if (pItem != null && inDex == mNumberTopApp - 1) {
                 //hardcode test
-                AppResource banner = new AppResource(0101, 0101,"Banner") ;
+                AppResource banner = new AppResource(0101, 0101, "Banner");
                 mNewListApp.add(banner);
             }
-            inDex ++;
+            inDex++;
         }
         return mNewListApp;
     }
-
-
 
 
 

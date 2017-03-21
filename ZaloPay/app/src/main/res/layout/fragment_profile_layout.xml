@@ -1,35 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/layoutChangePin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <com.zalopay.ui.widget.IconFontTextView
-            style="@style/TextView.Profile.Edit"
+        <LinearLayout
+            android:id="@+id/layoutChangePin"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/white"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium"
-            android:text="@string/establish.and.protect.account"
-            android:textColor="@color/black"
-            app:iconLeftColor="@color/menu_font_ic_blue"
-            app:iconLeftName="@string/profile_lock"
-            app:iconLeftPadding="@dimen/spacing.medium"
-            app:iconLeftSize="@dimen/font_size_profile_lock"
-            app:iconRightColor="@color/arrow_right"
-            app:iconRightName="@string/general_arrowright"
-            app:iconRightSize="@dimen/font_size_arrow_right" />
+            android:orientation="vertical">
+
+            <com.zalopay.ui.widget.IconFontTextView
+                style="@style/TextView.Profile.Edit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium"
+                android:text="@string/establish.and.protect.account"
+                android:textColor="@color/black"
+                app:iconLeftColor="@color/menu_font_ic_blue"
+                app:iconLeftName="@string/profile_lock"
+                app:iconLeftPadding="@dimen/spacing.medium"
+                app:iconLeftSize="@dimen/font_size_profile_lock"
+                app:iconRightColor="@color/arrow_right"
+                app:iconRightName="@string/general_arrowright"
+                app:iconRightSize="@dimen/font_size_arrow_right" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:background="@color/separate" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:layout_marginTop="@dimen/spacing.medium"
+                android:background="@color/separate" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
+
+                <TextView
+                    style="@style/TextView.Item.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/birthday" />
+
+                <TextView
+                    android:id="@+id/tvBirthday"
+                    style="@style/TextView.Profile.Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:hint="@string/not_update" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:layout_marginLeft="@dimen/spacing.medium"
+                android:background="@color/separate" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
+
+                <TextView
+                    style="@style/TextView.Item.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gender" />
+
+                <TextView
+                    android:id="@+id/tvGender"
+                    style="@style/TextView.Profile.Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:hint="@string/not_update" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:layout_marginTop="@dimen/spacing.medium"
+            android:background="@color/separate" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layoutPhone"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
+
+                <TextView
+                    style="@style/TextView.Item.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hint_phone" />
+
+                <TextView
+                    android:id="@+id/tvPhone"
+                    style="@style/TextView.Profile.Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/spacing.small"
+                    android:drawableRight="@drawable/ic_arrow_right"
+                    android:gravity="right|center_vertical"
+                    android:hint="@string/not_update" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:layout_marginLeft="@dimen/spacing.medium"
+                android:background="@color/separate" />
+
+            <LinearLayout
+                android:id="@+id/layoutAccountName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
+
+                <TextView
+                    style="@style/TextView.Item.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/account_name" />
+
+                <TextView
+                    android:id="@+id/tvAccountName"
+                    style="@style/TextView.Profile.Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/spacing.small"
+                    android:drawableRight="@drawable/ic_arrow_right"
+                    android:gravity="right|center_vertical"
+                    android:hint="@string/not_update" />
+            </LinearLayout>
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -41,30 +192,98 @@
             android:layout_height="@dimen/separate"
             android:layout_marginTop="@dimen/spacing.medium"
             android:background="@color/separate" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layoutEmail"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
+
+                <TextView
+                    style="@style/TextView.Item.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hint_email" />
+
+                <TextView
+                    android:id="@+id/tvEmail"
+                    style="@style/TextView.Profile.Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/spacing.small"
+                    android:drawableRight="@drawable/ic_arrow_right"
+                    android:gravity="right|center_vertical"
+                    android:hint="@string/not_update" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separate"
+                android:layout_marginLeft="@dimen/spacing.medium"
+                android:background="@color/separate" />
+
+            <LinearLayout
+                android:id="@+id/layoutCmnd"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing.medium"
+                android:paddingRight="@dimen/spacing.medium">
+
+                <TextView
+                    style="@style/TextView.Item.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cmnd_passpost" />
+
+                <TextView
+                    android:id="@+id/tvCMND"
+                    style="@style/TextView.Profile.Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/spacing.small"
+                    android:drawableRight="@drawable/ic_arrow_right"
+                    android:gravity="right|center_vertical"
+                    android:hint="@string/not_update" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:layout_marginTop="@dimen/spacing.medium"
+            android:background="@color/separate" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium">
+            android:padding="@dimen/spacing.medium">
 
             <TextView
                 style="@style/TextView.Item.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/birthday" />
+                android:text="@string/zalopay_id" />
 
             <TextView
-                android:id="@+id/tvBirthday"
+                android:id="@+id/tvZaloPayId"
                 style="@style/TextView.Profile.Edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -75,248 +294,59 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:layout_marginLeft="@dimen/spacing.medium"
+            android:layout_marginTop="@dimen/spacing.medium"
             android:background="@color/separate" />
 
         <LinearLayout
+            android:id="@+id/layoutSignOut"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium">
+            android:padding="@dimen/spacing.medium">
 
-            <TextView
-                style="@style/TextView.Item.Title"
+            <com.zalopay.ui.widget.IconFontTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gender" />
+                android:text="@string/txt_leftmenu_sigout"
+                app:iconLeftColor="@color/menu_font_ic_gray"
+                app:iconLeftName="@string/menu_logout"
+                app:iconLeftPadding="@dimen/app_padding"
+                app:iconLeftSize="@dimen/font_size_menu" />
+        </LinearLayout>
+
+        <!--<View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separate"
+            android:background="@color/separate"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="@dimen/spacing.medium">
 
             <TextView
-                android:id="@+id/tvGender"
+                style="@style/TextView.Profile.Edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zalo_id"/>
+
+            <TextView
+                android:id="@+id/tvZaloId"
                 style="@style/TextView.Profile.Edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
-                android:hint="@string/not_update" />
-        </LinearLayout>
-    </LinearLayout>
+                android:hint="@string/not_update"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/layoutPhone"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium">
-            <TextView
-                style="@style/TextView.Item.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/hint_phone" />
-
-            <TextView
-                android:id="@+id/tvPhone"
-                style="@style/TextView.Profile.Edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/spacing.small"
-                android:drawableRight="@drawable/ic_arrow_right"
-                android:gravity="right|center_vertical"
-                android:hint="@string/not_update" />
-        </LinearLayout>
+        </LinearLayout>-->
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/separate"
-            android:layout_marginLeft="@dimen/spacing.medium"
             android:background="@color/separate" />
-
-        <LinearLayout
-            android:id="@+id/layoutAccountName"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium">
-            <TextView
-                style="@style/TextView.Item.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/account_name" />
-
-            <TextView
-                android:id="@+id/tvAccountName"
-                style="@style/TextView.Profile.Edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/spacing.small"
-                android:drawableRight="@drawable/ic_arrow_right"
-                android:gravity="right|center_vertical"
-                android:hint="@string/not_update" />
-        </LinearLayout>
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/layoutEmail"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium">
-
-            <TextView
-                style="@style/TextView.Item.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/hint_email" />
-
-            <TextView
-                android:id="@+id/tvEmail"
-                style="@style/TextView.Profile.Edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/spacing.small"
-                android:drawableRight="@drawable/ic_arrow_right"
-                android:gravity="right|center_vertical"
-                android:hint="@string/not_update" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separate"
-            android:layout_marginLeft="@dimen/spacing.medium"
-            android:background="@color/separate" />
-
-        <LinearLayout
-            android:id="@+id/layoutCmnd"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/spacing.medium"
-            android:paddingRight="@dimen/spacing.medium">
-
-            <TextView
-                style="@style/TextView.Item.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cmnd_passpost" />
-
-            <TextView
-                android:id="@+id/tvCMND"
-                style="@style/TextView.Profile.Edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/spacing.small"
-                android:drawableRight="@drawable/ic_arrow_right"
-                android:gravity="right|center_vertical"
-                android:hint="@string/not_update" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:padding="@dimen/spacing.medium">
-
-        <TextView
-            style="@style/TextView.Item.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/zalopay_id" />
-
-        <TextView
-            android:id="@+id/tvZaloPayId"
-            style="@style/TextView.Profile.Edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:hint="@string/not_update" />
-    </LinearLayout>
-
-    <!--<View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:padding="@dimen/spacing.medium">
-
-        <TextView
-            style="@style/TextView.Profile.Edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/zalo_id"/>
-
-        <TextView
-            android:id="@+id/tvZaloId"
-            style="@style/TextView.Profile.Edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:hint="@string/not_update"/>
-
-    </LinearLayout>-->
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separate"
-        android:background="@color/separate" />
-</LinearLayout>
-
+</ScrollView>

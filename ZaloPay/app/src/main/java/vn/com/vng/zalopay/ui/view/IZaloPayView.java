@@ -17,6 +17,8 @@ public interface IZaloPayView {
 
     Activity getActivity();
 
+    void refreshIconFont();
+
     void refreshInsideApps(List<AppResource> list);
 
     void setTotalNotify(int total);

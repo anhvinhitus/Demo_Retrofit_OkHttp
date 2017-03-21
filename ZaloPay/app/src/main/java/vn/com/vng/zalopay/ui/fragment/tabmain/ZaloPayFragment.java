@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -37,7 +36,6 @@ import butterknife.OnClick;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.banner.ui.fragment.BannerFragment;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
@@ -70,7 +68,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     private final static int SPAN_COUNT_APPLICATION = 3;
     private boolean isEnableShowShow;
-    private BannerFragment mBannerFragment;
+
 
     @Inject
     ZaloPayPresenter presenter;
@@ -79,18 +77,14 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     View mTopLayout;
 
     /* Advertisement START */
-    @BindView(R.id.tvAdsSubContent)
-    TextView mTvAdsSubContent;
+   /* @BindView(R.id.tvAdsSubContent)
+    TextView mTvAdsSubContent;*/
     /* Advertisement END */
 
     private ListAppRecyclerAdapter mAdapter;
-    private ListAppRecyclerAdapter mAdapterBottomApp;
 
     @BindView(R.id.listView)
     RecyclerView listView;
-
-    @BindView(R.id.listViewBottom)
-    RecyclerView listViewBottom;
 
     @BindView(R.id.tv_balance)
     TextView mBalanceView;
@@ -140,15 +134,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         mSwipeRefreshLayout.setSwipeableChildren(R.id.listView);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        initBanner();
-        hideTextAds();
-    }
-
-    private void initBanner() {
-        mBannerFragment = BannerFragment.newInstance();
-        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.bannerFragment, mBannerFragment, "banner-fragment");
-        fragmentTransaction.commit();
+        //hideTextAds();
     }
 
     private void setInternetConnectionError(String message, String spannedMessage) {
@@ -228,11 +214,11 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         super.onDestroy();
     }
 
-    private void hideTextAds() {
+   /* private void hideTextAds() {
         if (mTvAdsSubContent != null) {
             mTvAdsSubContent.setVisibility(View.GONE);
         }
-    }
+    }*/
 
     @Override
     public void onClickAppListener(AppResource app, int position) {
@@ -265,6 +251,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         navigator.startBalanceManagementActivity(getContext());
     }
 
+    @Override
     public void refreshIconFont() {
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
@@ -277,27 +264,14 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @Override
     public void refreshInsideApps(List<AppResource> list) {
         Timber.d("refreshInsideApps list: [%s]", list.size());
-        if (mAdapter == null || mAdapterBottomApp == null) {
+        if (mAdapter == null) {
             return;
         }
-        mAdapter.setData(presenter.getTopAndBottomApp(list,true));
-        if(list.size() > presenter.mNumberTopApp) {
-            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list,false));
-            ViewTreeObserver vto = listView.getViewTreeObserver();
-            vto.addOnGlobalLayoutListener(ViewTreeObserver);
-        }
+        List<AppResource> listNew = presenter.setBannerInListApp(list);
+        mAdapter.setData(listNew);
+
     }
 
-    public ViewTreeObserver.OnGlobalLayoutListener ViewTreeObserver = new ViewTreeObserver.OnGlobalLayoutListener() {
-        @Override
-        public void onGlobalLayout() {
-
-            ViewTreeObserver obs = listView.getViewTreeObserver();
-            obs.removeGlobalOnLayoutListener(this);
-            listViewBottom.setMinimumHeight(presenter.getHeightViewBottom(listView, mAdapterBottomApp.getItemCount() ,SPAN_COUNT_APPLICATION));
-
-        }
-    };
 
     @Override
     public void setTotalNotify(int total) {
@@ -347,7 +321,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public int getAppCount() {
-        return mAdapter.getItemCount() + mAdapterBottomApp.getItemCount();
+        return mAdapter.getItemCount() - 1;
     }
 
     @Override

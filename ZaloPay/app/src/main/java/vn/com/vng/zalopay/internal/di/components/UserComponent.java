@@ -66,6 +66,7 @@ import vn.com.vng.zalopay.transfer.ui.TransferFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeFragment;
 import vn.com.vng.zalopay.transfer.ui.TransferViaZaloPayNameFragment;
 import vn.com.vng.zalopay.transfer.ui.friendlist.ZaloFriendListFragment;
+import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.activity.MainActivity;
 import vn.com.vng.zalopay.ui.activity.MiniApplicationActivity;
 import vn.com.vng.zalopay.ui.activity.QRCodeScannerActivity;
@@ -240,4 +241,6 @@ public interface UserComponent {
     void inject(ExternalReactFragment f);
 
     void inject(SearchCategoryFragment f);
+
+    void inject(HomeActivity activity);
 }
