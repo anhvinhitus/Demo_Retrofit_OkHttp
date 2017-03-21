@@ -82,7 +82,6 @@ public interface FriendStore {
 
         @API_NAME(ZPEvents.CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT)
         @GET(Constants.UM_API.CHECKLISTZALOIDFORCLIENT)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_CHECKLISTZALOIDFORCLIENT})
         Observable<ListUserExistResponse> checklistzaloidforclient(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("zaloidlist") String zaloidlist);
     }
 

@@ -37,14 +37,12 @@ public interface MerchantStore {
     interface RequestService {
         @API_NAME(ZPEvents.CONNECTOR_UMMERCHANT_GETMERCHANTUSERINFO)
         @GET(Constants.UM_API.GETMERCHANTUSERINFO)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UMMERCHANT_GETMERCHANTUSERINFO})
         Observable<GetMerchantUserInfoResponse> getmerchantuserinfo(@Query("appid") long appid,
                                                                     @Query("userid") String userid,
                                                                     @Query("accesstoken") String accesstoken);
 
         @API_NAME(ZPEvents.CONNECTOR_UMMERCHANT_GETLISTMERCHANTUSERINFO)
         @GET(Constants.UM_API.GETLISTMERCHANTUSERINFO)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UMMERCHANT_GETLISTMERCHANTUSERINFO})
         Observable<ListMUIResponse> getlistmerchantuserinfo(@Query("appidlist") String appidlist,
                                                             @Query("userid") String userid,
                                                             @Query("accesstoken") String accesstoken);

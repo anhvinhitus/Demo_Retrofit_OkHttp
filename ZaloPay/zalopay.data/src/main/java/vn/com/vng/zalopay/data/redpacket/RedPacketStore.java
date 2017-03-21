@@ -99,7 +99,6 @@ public interface RedPacketStore {
     interface RequestTPEService {
         @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS)
         @GET(Constants.TPE_API.GETTRANSSTATUS)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS})
         Observable<PackageStatusResponse> getPackageStatus(@Query("appid") int appId, @Query("packageid") long packageID, @Query("zptransid") long zpTransID, @Query("userid") String userid, @Query("accesstoken") String accessToken, @Query("deviceid") String deviceid);
     }
 
@@ -107,50 +106,41 @@ public interface RedPacketStore {
         @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_CREATEBUNDLEORDER)
         @FormUrlEncoded
         @POST(Constants.REDPACKET_API.CREATEBUNDLEORDER)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_REDPACKAGE_CREATEBUNDLEORDER})
         Observable<BundleOrderResponse> createBundleOrder(@Field("quantity") int quantity, @Field("totalluck") long totalLuck, @Field("amounteach") long amountEach, @Field("type") int type, @Field("sendzalopayid") String sendZaloPayID, @Field("accesstoken") String accessToken, @Field("sendmessage") String sendMessage);
 
         @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLE)
         @FormUrlEncoded
         @POST(Constants.REDPACKET_API.SUBMITTOSENDBUNDLE)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLE})
         Observable<BaseResponse> sendBundle(@Field("bundleid") long bundleID, @Field("friendlist") String friendList, @Field("sendzalopayid") String sendZaloPayID, @Field("accesstoken") String accessToken);
 
         @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_SUBMITOPENPACKAGE)
         @FormUrlEncoded
         @POST(Constants.REDPACKET_API.SUBMITOPENPACKAGE)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_REDPACKAGE_SUBMITOPENPACKAGE})
         Observable<SubmitOpenPackageResponse> submitOpenPackage(@Field("packageid") long packageID, @Field("bundleid") long bundleID, @Field("revzalopayid") String revZaloPayID, @Field("accesstoken") String accessToken);
 
         @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_GETSENTBUNDLELIST)
         @GET(Constants.REDPACKET_API.GETSENTBUNDLELIST)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_REDPACKAGE_GETSENTBUNDLELIST})
         Observable<SentBundleListResponse> getSentBundleList(@Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
 
         @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_GETREVPACKAGELIST)
         @GET(Constants.REDPACKET_API.GETREVPACKAGELIST)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_REDPACKAGE_GETREVPACKAGELIST})
         Observable<GetReceivePackageResponse> getReceivedPackageList(@Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
 
         @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_GETPACKAGESINBUNDLE)
         @GET(Constants.REDPACKET_API.GETPACKAGESINBUNDLE)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_REDPACKAGE_GETPACKAGESINBUNDLE})
         Observable<SentPackageInBundleResponse> getPackageInBundleList(@Query("bundleid") long bundleid, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
 
         @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_GETAPPINFO)
         @GET(Constants.REDPACKET_API.GETAPPINFO)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_REDPACKAGE_GETAPPINFO})
         Observable<RedPacketAppInfoResponse> getAppInfo(@Query("checksum") String checksum, @Query("userid") String zalopayid, @Query("accesstoken") String accesstoken);
 
         @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO)
         @FormUrlEncoded
         @POST(Constants.REDPACKET_API.SUBMITTOSENDBUNDLEBYZALOPAYINFO)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO})
         Observable<BaseResponse> submittosendbundlebyzalopayinfo(@Field("bundleid") long bundleID, @Field("zalopayoffriendlist") String friends, @Field("zalopayofsender") String sender, @Field("accesstoken") String accessToken);
 
         @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_GETLISTPACKAGESTATUS)
         @GET(Constants.REDPACKET_API.GET_LIST_PACKAGE_STATUS)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_REDPACKAGE_GETLISTPACKAGESTATUS})
         Observable<ListRedPacketStatusResponse> getListPackageStatus(@Query("listpackageid") String listpackageid, @Query("userid") String zalopayId, @Query("accesstoken") String accessToken);
     }
 

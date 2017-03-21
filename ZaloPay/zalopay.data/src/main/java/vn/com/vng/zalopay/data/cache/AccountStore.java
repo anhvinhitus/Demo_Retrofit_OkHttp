@@ -57,51 +57,42 @@ public interface AccountStore {
         @API_NAME(ZPEvents.CONNECTOR_UM_UPDATEPROFILE)
         @FormUrlEncoded
         @POST(Constants.UM_API.UPDATEPROFILE)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_UPDATEPROFILE})
         Observable<BaseResponse> updateProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("pin") String pin, @Field("phonenumber") String phonenumber);
 
         @API_NAME(ZPEvents.CONNECTOR_UM_VERIFYOTPPROFILE)
         @FormUrlEncoded
         @POST(Constants.UM_API.VERIFYOTPPROFILE)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_VERIFYOTPPROFILE})
         Observable<UpdateProfileResponse> verifyOTPProfile(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("otp") String otp);
 
         @API_NAME(ZPEvents.CONNECTOR_UM_RECOVERYPIN)
         @FormUrlEncoded
         @POST(Constants.UM_API.RECOVERYPIN)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_RECOVERYPIN})
         Observable<BaseResponse> recoverypin(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Field("oldpin") String oldPin, @Field("pin") String newPin, @Field("otp") String otp);
 
         @API_NAME(ZPEvents.CONNECTOR_UM_GETUSERPROFILELEVEL)
         @GET(Constants.UM_API.GETUSERPROFILELEVEL)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_GETUSERPROFILELEVEL})
         Observable<UserProfileLevelResponse> getUserProfileLevel(@Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
         @API_NAME(ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYNAME)
         @GET(Constants.UM_API.GETUSERINFOBYZALOPAYNAME)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYNAME})
         Observable<GetUserInfoByZPNameResponse> getUserInfoByZaloPayName(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
         @API_NAME(ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYID)
         @GET(Constants.UM_API.GETUSERINFOBYZALOPAYID)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_GETUSERINFOBYZALOPAYID})
         Observable<GetUserInfoByZPIDResponse> getUserInfoByZaloPayId(@Query("requestid") String zalopayid, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
         @API_NAME(ZPEvents.CONNECTOR_UM_CHECKZALOPAYNAMEEXIST)
         @GET(Constants.UM_API.CHECKZALOPAYNAMEEXIST)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_CHECKZALOPAYNAMEEXIST})
         Observable<BaseResponse> checkZaloPayNameExist(@Query("zalopayname") String zalopayname, @Query("userid") String userid, @Query("accesstoken") String accesstoken);
 
         @API_NAME(ZPEvents.CONNECTOR_UM_UPDATEZALOPAYNAME)
         @FormUrlEncoded
         @POST(Constants.UM_API.UPDATEZALOPAYNAME)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_UPDATEZALOPAYNAME})
         Observable<BaseResponse> updateZaloPayName(@Field("zalopayname") String zalopayname, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
 
         @API_NAME(ZPEvents.CONNECTOR_UM_VALIDATEPIN)
         @FormUrlEncoded
         @POST(Constants.UM_API.VALIDATEPIN)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_VALIDATEPIN})
         Observable<BaseResponse> validatePin(@Field("pin") String pin, @Field("userid") String userid, @Field("accesstoken") String accesstoken);
 
     }

@@ -54,7 +54,6 @@ public interface TransactionStore {
     interface RequestService {
         @API_NAME(ZPEvents.CONNECTOR_V001_TPE_TRANSHISTORY)
         @GET(Constants.TPE_API.TRANSHISTORY)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_V001_TPE_TRANSHISTORY})
         Observable<TransactionHistoryResponse> getTransactionHistories(@Query("userid") String userid, @Query("accesstoken") String accesstoken, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("statustype") int statustype);
     }
 

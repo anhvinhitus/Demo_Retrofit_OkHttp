@@ -76,7 +76,6 @@ public interface NotificationStore {
          */
         @API_NAME(ZPEvents.CONNECTOR_UM_SENDNOTIFICATION)
         @GET(Constants.UM_API.SENDNOTIFICATION)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_UM_SENDNOTIFICATION})
         Observable<BaseResponse> sendNotification(@Query("userid") String uid,
                                                   @Query("accesstoken") String accesstoken,
                                                   @Query("receiverid") String receiverid,

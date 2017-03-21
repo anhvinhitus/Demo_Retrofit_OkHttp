@@ -23,7 +23,6 @@ public interface BalanceStore {
     interface RequestService {
         @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETBALANCE)
         @GET(Constants.TPE_API.GETBALANCE)
-        @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_V001_TPE_GETBALANCE})
         Observable<BalanceResponse> balance(@Query("userid") String uid, @Query("accesstoken") String accesstoken);
     }
 

@@ -20,7 +20,6 @@ public interface ZaloPayService {
 
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETORDERINFO)
     @GET(Constants.TPE_API.GETORDERINFO)
-    @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_V001_TPE_GETORDERINFO})
     Observable<GetOrderResponse> getorder(@Query("userid") String userid,
                                           @Query("accesstoken") String accesstoken,
                                           @Query(Constants.APPID) long appId,
@@ -29,7 +28,6 @@ public interface ZaloPayService {
     @API_NAME(ZPEvents.CONNECTOR_V001_TPE_CREATEWALLETORDER)
     @FormUrlEncoded
     @POST(Constants.TPE_API.CREATEWALLETORDER)
-    @Headers({Constants.HEADER_EVENT + ZPEvents.CONNECTOR_V001_TPE_CREATEWALLETORDER})
     Observable<GetOrderResponse> createwalletorder(@Field("userid") String userid,
                                                    @Field("accesstoken") String accesstoken,
                                                    @Field(Constants.APPID) long appId,
