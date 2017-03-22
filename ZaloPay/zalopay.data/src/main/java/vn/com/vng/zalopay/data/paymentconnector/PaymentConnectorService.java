@@ -7,9 +7,18 @@ import android.util.LongSparseArray;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import rx.Subscription;
+import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.R;
+import vn.com.vng.zalopay.data.exception.PaymentConnectorException;
 import vn.com.vng.zalopay.data.exception.WriteSocketException;
+import vn.com.vng.zalopay.data.protobuf.PaymentCode;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.Connection;
@@ -18,6 +27,7 @@ import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
 /**
  * Created by hieuvm on 3/8/17.
@@ -26,6 +36,8 @@ import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
 
 public class PaymentConnectorService implements OnReceiverMessageListener {
 
+    private static final int CONNECT_TIMEOUT = 5; // 5 SECONDS
+
     private final Connection mPaymentService;
     private final LongSparseArray<PaymentConnectorCallback> mPaymentCallBackArray;
     private final LinkedList<PaymentRequest> mRequestQueue;
@@ -33,6 +45,9 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
 
     private long mCurrentRequestId;
     private boolean mRunning;
+
+    private final PublishSubject<Long> publishSubject = PublishSubject.create();
+    private final CompositeSubscription mSubscription = new CompositeSubscription();
 
     public PaymentConnectorService(Context context, Connection service) {
         this.mPaymentCallBackArray = new LongSparseArray<>();
@@ -43,12 +58,41 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
     }
 
     public void request(@NonNull PaymentRequest request, @NonNull PaymentConnectorCallback callback) {
+        beginTimer(request);
         mPaymentCallBackArray.put(request.requestId, callback);
         synchronized (mRequestQueue) {
             mRequestQueue.add(request);
         }
         executeNext();
     }
+
+    private void beginTimer(PaymentRequest request) {
+        Subscription subscription = publishSubject.subscribeOn(Schedulers.io())
+                .filter(requestId -> requestId == request.requestId)
+                .take(1)
+                //.doOnNext(requestId -> Timber.d("stop requestId: %s", requestId))
+                .timeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .subscribe(new DefaultSubscriber<Long>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof TimeoutException) {
+                            failureTimeout(request, e);
+                        }
+                    }
+                });
+        mSubscription.add(subscription);
+    }
+
+    private void failureTimeout(PaymentRequest request, Throwable e) {
+        PaymentConnectorCallback callback = findCallbackById(request.requestId);
+        Timber.d("Payment request timeout: path = %s requestId %s", request.path, request.requestId);
+        if (callback != null) {
+            callback.onFailure(new IOException(e));
+        }
+        removeRequest(request);
+        removeCallback(request.requestId);
+    }
+
 
     private NotificationApiMessage transform(PaymentRequest request) {
         return NotificationApiHelper.createPaymentRequestApi(
@@ -99,24 +143,35 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
             return;
         }
 
-        PaymentConnectorCallback callback = findCallbackById(mCurrentRequestId);
+        publishSubject.onNext(mCurrentRequestId);
 
+        PaymentConnectorCallback callback = findCallbackById(mCurrentRequestId);
         Timber.d("dispatch error for request mCurrentRequestId [%]", mCurrentRequestId);
+
         if (callback != null) {
             callback.onFailure((WriteSocketException) t);
         }
+
     }
 
     private void handleResult(@NonNull PaymentRequestData response) {
+        publishSubject.onNext(response.requestid);
+
         PaymentConnectorCallback callback = findCallbackById(response.requestid);
         if (callback == null) {
             Timber.i("Cannot find callback for request [%s]", response.requestid);
             return;
         }
 
+        if (response.resultcode != PaymentCode.PAY_SUCCESS.getValue()) {
+            callback.onFailure(new IOException(new PaymentConnectorException(R.string.exception_server_error)));
+        } else {
+            callback.onResponse(response);
+        }
+
         Timber.d("Dispatch response for request: %s", response.requestid);
         removeCallback(response.requestid);
-        callback.onResponse(response);
+
     }
 
     private void executeNext() {
@@ -154,6 +209,7 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
             if (request.cancelled) {
                 removeCallback(request.requestId);
                 removeRequest(request);
+                publishSubject.onNext(request.requestId);
                 mRunning = false;
                 continue;
             }
@@ -175,11 +231,14 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
         if (NetworkHelper.isNetworkAvailable(mContext)) {
             return false;
         }
+        Timber.d("failure request path = %s requestId %s", request.path, request.requestId);
 
+        publishSubject.onNext(request.requestId);
         PaymentConnectorCallback callback = findCallbackById(request.requestId);
         if (callback != null) {
             callback.onFailure(new IOException("No network connect"));
         }
+
         return true;
     }
 
@@ -191,10 +250,12 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
         synchronized (mPaymentCallBackArray) {
             mPaymentCallBackArray.clear();
         }
+        mSubscription.clear();
     }
 
     public void cancel(PaymentRequest request) {
         removeCallback(request.requestId);
         removeRequest(request);
+        publishSubject.onNext(request.requestId);
     }
 }
