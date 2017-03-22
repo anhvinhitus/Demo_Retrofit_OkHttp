@@ -32,6 +32,8 @@ import vn.com.zalopay.analytics.ZPEvents;
 
 class PaymentConnectorCall implements Call {
 
+    private static final int CONNECT_TIMEOUT = 5; // 5 SECONDS
+
     private final PaymentConnectorService mClient;
     private boolean mExecuted;
     private final Request originalRequest;
@@ -68,13 +70,12 @@ class PaymentConnectorCall implements Call {
 
             @Override
             public void onStart() {
-                Timber.d("payment request start %s", mPaymentRequest.requestId);
+                Timber.d("Payment request start url = %s", originalRequest.url().toString());
                 sentRequestAtMillis = System.currentTimeMillis();
             }
 
             @Override
             public void onResponse(@NonNull PaymentRequestData data) {
-                Timber.d("receive response from connector");
                 receivedResponseAtMillis = System.currentTimeMillis();
                 mPaymentResponse = data;
                 doneSignal.countDown();
@@ -87,12 +88,14 @@ class PaymentConnectorCall implements Call {
         });
 
         try {
-            doneSignal.await(5, TimeUnit.SECONDS);
+            doneSignal.await(CONNECT_TIMEOUT, TimeUnit.SECONDS);
         } catch (InterruptedException ie) {
             Timber.d(ie);
         }
 
         if (mPaymentResponse == null) {
+            Timber.d("Payment request timeout requestId [%s]", mPaymentRequest.requestId);
+            dispose();
             throw new IOException(new TimeoutException());
         }
 
@@ -127,13 +130,12 @@ class PaymentConnectorCall implements Call {
 
             @Override
             public void onStart() {
-                Timber.d("payment request start [%s]", mPaymentRequest.requestId);
+                Timber.d("Payment request start url = %s", originalRequest.url().toString());
                 sentRequestAtMillis = System.currentTimeMillis();
             }
 
             @Override
             public void onResponse(@NonNull PaymentRequestData data) {
-                Timber.d("receive response from connector");
                 receivedResponseAtMillis = System.currentTimeMillis();
                 if (data.resultcode != PaymentCode.PAY_SUCCESS.getValue()) {
                     onFailure(new IOException(new PaymentConnectorException(R.string.exception_server_error)));
@@ -169,6 +171,27 @@ class PaymentConnectorCall implements Call {
     @Override
     public void cancel() {
         isCancelled = true;
+
+        if (mPaymentRequest != null) {
+            mPaymentRequest.cancelled = true;
+        }
+
+        dispose();
+
+        doneSignal.countDown();
+    }
+
+    @Override
+    public boolean isExecuted() {
+        return mExecuted;
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return isCancelled;
+    }
+
+    private void dispose() {
         if (!isExecuted()) {
             return;
         }
@@ -178,18 +201,5 @@ class PaymentConnectorCall implements Call {
         }
 
         mClient.cancel(mPaymentRequest);
-
-    }
-
-    @Override
-    public boolean isExecuted() {
-        Timber.d("isExecuted: %s", mExecuted);
-        return mExecuted;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        Timber.d("isCanceled: %s", isCancelled);
-        return isCancelled;
     }
 }

@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
 
 /**
  * Created by hieuvm on 3/8/17.
+ * Connector Service
  */
 
 public class PaymentConnectorService implements OnReceiverMessageListener {
@@ -139,13 +140,21 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
 
             if (!mPaymentService.isConnected()
                     || !mPaymentService.isAuthentication()) {
-                failure(request);
+                boolean failure = failure(request);
+
+                if (failure) {
+                    removeCallback(request.requestId);
+                    removeRequest(request);
+                }
+
                 mRunning = false;
                 break;
             }
 
             if (request.cancelled) {
-                mRequestQueue.poll();
+                removeCallback(request.requestId);
+                removeRequest(request);
+                mRunning = false;
                 continue;
             }
 
@@ -156,22 +165,22 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
                 callback.onStart();
             }
 
-            Timber.d("about to send request message to server mCurrentRequestId [%s]", mCurrentRequestId);
             boolean result = mPaymentService.send(transform(request));
             mRunning = false;
-            mRequestQueue.poll();
+            removeRequest(request);
         }
     }
 
-    private void failure(PaymentRequest request) {
+    private boolean failure(PaymentRequest request) {
         if (NetworkHelper.isNetworkAvailable(mContext)) {
-            return;
+            return false;
         }
 
         PaymentConnectorCallback callback = findCallbackById(request.requestId);
         if (callback != null) {
             callback.onFailure(new IOException("No network connect"));
         }
+        return true;
     }
 
     public void cancelAll() {

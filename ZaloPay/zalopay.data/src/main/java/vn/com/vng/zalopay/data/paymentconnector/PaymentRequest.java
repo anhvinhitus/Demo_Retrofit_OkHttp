@@ -30,6 +30,7 @@ class PaymentRequest {
     public int port;
     public String method;
     public String domain;
+    public long sentRequestAtMillis;
 
     public PaymentRequest(long requestId, String domain, String path, List<Pair<String, String>> params, List<Pair<String, String>> headers, int port, String method, int priority) {
         this.priority = priority;
@@ -40,6 +41,7 @@ class PaymentRequest {
         this.port = port;
         this.method = method;
         this.domain = domain;
+        this.sentRequestAtMillis = System.currentTimeMillis();
     }
 
     @Override
