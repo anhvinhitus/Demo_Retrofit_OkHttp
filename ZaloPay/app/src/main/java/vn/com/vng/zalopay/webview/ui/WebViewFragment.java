@@ -86,8 +86,12 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         return mWebViewProcessor.getCurrentUrl();
     }
 
+    protected void initWebViewUserAgent(ZPWebView webView) {
+    }
+
     private void initWebView(View rootView) {
         ZPWebView webView = (ZPWebView) rootView.findViewById(R.id.webview);
+        initWebViewUserAgent(webView);
         mWebViewProcessor = new ZPWebViewProcessor(webView, this);
     }
 

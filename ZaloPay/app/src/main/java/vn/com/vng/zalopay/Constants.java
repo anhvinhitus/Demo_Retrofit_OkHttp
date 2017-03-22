@@ -89,4 +89,11 @@ public interface Constants {
     interface QRCode {
         int RECEIVE_MONEY = 1;
     }
+
+    interface UserAgent {
+        String ZALO_PAY_CLIENT = "ZaloPayClient/";
+        String PLATFORM = "Platform/android";
+        String OS = "OS/";
+        String SECURED = "Secured/";
+    }
 }
