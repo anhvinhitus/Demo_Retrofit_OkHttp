@@ -240,13 +240,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 String message = pError;
                 if (TextUtils.isEmpty(message)) {
                     message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
-                    ;
                 }
-
                 if (!TextUtils.isEmpty(DownloadBundle.errorMessage)) {
                     message = DownloadBundle.errorMessage;
                 }
-
                 showDialogAndExit(message, ErrorManager.shouldShowDialog());
             }
         }
@@ -259,12 +256,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         @Override
         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
             showProgress(false, null);
-
             notifyUpVersionToApp(pForceUpdate, pVersion, pMessage);
-
-            if (!pForceUpdate) {
-                readyForPayment();
-            }
         }
     };
     /***
@@ -1161,12 +1153,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             /*res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
             getAdapter().setmResponseStatus(res);*/
             // The inform text would be set from server
-            if(statusResponse != null) {
+            if (statusResponse != null) {
                 setText(R.id.zpw_textview_update_level_inform, statusResponse.getSuggestMessage());
                 setView(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(statusResponse.getSuggestMessage()));
-            }
-            else
-            {
+            } else {
                 setView(R.id.zpw_textview_update_level_inform, false);
             }
             //exception case for payment overlimit per day

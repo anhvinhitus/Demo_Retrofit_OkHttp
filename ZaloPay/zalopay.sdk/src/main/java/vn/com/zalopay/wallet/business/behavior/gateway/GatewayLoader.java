@@ -29,9 +29,10 @@ public class GatewayLoader extends SingletonBase {
         @Override
         public void onSuccess() {
             Log.d(this, "====onSuccess=====");
-
             if (mCheckResourceStatisListener != null)
+            {
                 mCheckResourceStatisListener.onCheckResourceStaticComplete(true, null);
+            }
         }
 
         @Override
@@ -43,15 +44,15 @@ public class GatewayLoader extends SingletonBase {
              */
             try {
                 String resPath = SharedPreferencesManager.getInstance().getUnzipPath();
-
                 if (!TextUtils.isEmpty(resPath))
                     StorageUtil.deleteRecursive(new File(resPath));
             } catch (Exception e) {
                 Log.d(this, e);
             }
-
             if (mCheckResourceStatisListener != null)
+            {
                 mCheckResourceStatisListener.onCheckResourceStaticComplete(false, pMessage);
+            }
         }
     };
     private ZPWGetGatewayInfoListener mLoadGatewayInfoListener = new ZPWGetGatewayInfoListener() {
@@ -69,24 +70,24 @@ public class GatewayLoader extends SingletonBase {
         @Override
         public void onError(DPlatformInfo pMessage) {
             Log.d(this, pMessage != null ? pMessage.toJsonString() : "onError");
-
             if (pMessage != null) {
                 ErrorManager.updateTransactionResult(pMessage.returncode);
             }
-
             if (mCheckResourceStatisListener != null)
+            {
                 mCheckResourceStatisListener.onCheckResourceStaticComplete(false, pMessage != null ? pMessage.returnmessage : null);
+            }
         }
 
         @Override
         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
             Log.d(this, "===onUpVersion===");
-
-            if (mCheckResourceStatisListener != null)
-                mCheckResourceStatisListener.onUpVersion(pForceUpdate, pVersion, pMessage);
-
             if (!pForceUpdate) {
                 initResource(mLoadResourceListener);
+            }
+            if (mCheckResourceStatisListener != null)
+            {
+                mCheckResourceStatisListener.onUpVersion(pForceUpdate, pVersion, pMessage);
             }
         }
     };
@@ -119,16 +120,8 @@ public class GatewayLoader extends SingletonBase {
         return GatewayLoader._object;
     }
 
-    /***
-     * load gateway info listener
-     */
-    public ZPWGetGatewayInfoListener getLoadGatewayInfoListener() {
-        return mLoadGatewayInfoListener;
-    }
-
     public GatewayLoader setOnCheckResourceStaticListener(onCheckResourceStaticListener pListener) {
         mCheckResourceStatisListener = pListener;
-
         return this;
     }
 
@@ -206,22 +199,20 @@ public class GatewayLoader extends SingletonBase {
         BundleResourceLoader initResourceTask = new BundleResourceLoader(pCallback);
         initResourceTask.execute();
     }
-
     // retry downloading resource
     private void retryLoadResource(String pUrl, String pUnzipFolder, String pResourceVersion) {
         DownloadBundle downloadResourceTask = new DownloadBundle(mDownloadResourceListener, pUrl, pUnzipFolder, pResourceVersion);
         downloadResourceTask.execute();
-
         Log.d(this, "===starting retry loading resource...===");
     }
 
     //retry load gateway info
     private void retryLoadGateway(boolean pForceReload) throws Exception {
         if (getGatewayInfoTask == null)
+        {
             getGatewayInfoTask = GetPlatformInfo.getInstance(mLoadGatewayInfoListener, pForceReload);
-
+        }
         getGatewayInfoTask.makeRequest();
-
         Log.d(this, "===retryLoadGateway===");
     }
 
