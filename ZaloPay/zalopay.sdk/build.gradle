@@ -14,6 +14,10 @@ buildscript {
 
 def cfg = rootProject.ext.configuration
 
+def configFilePath = file("configs.json").toString()
+def confsFile = new File(configFilePath, "").getText('UTF-8')
+def configJson = new groovy.json.JsonSlurper().parseText(confsFile)
+
 android {
     compileSdkVersion cfg.compileVersion
     buildToolsVersion cfg.buildToolsVersion
@@ -22,12 +26,12 @@ android {
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
 
-        buildConfigField 'String', 'SDK_BUILD_VERSION', '"1.0.20"'
-        buildConfigField 'String', 'HOST_COMPLETE', '"payment-complete"'
-        buildConfigField 'String', 'FOLDER_RESOURCE', '"/wallet/"'
-        buildConfigField 'String', 'PAYMENT_PLATFORM', '"android"'
-        buildConfigField 'int', 'ZALOAPP_ID', '1'
-        buildConfigField 'int', 'WITHDRAWAPP_ID', '2'
+        buildConfigField 'String', 'SDK_BUILD_VERSION', '"' + configJson.configs.build_version + '"'
+        buildConfigField 'String', 'HOST_COMPLETE', '"' + configJson.configs.host_complete + '"'
+        buildConfigField 'String', 'FOLDER_RESOURCE', '"' + configJson.configs.resource_folder + '"'
+        buildConfigField 'String', 'PAYMENT_PLATFORM', '"' + configJson.configs.platform_code + '"'
+        buildConfigField 'int', 'ZALOAPP_ID', configJson.configs.zaloapp_id
+        buildConfigField 'int', 'WITHDRAWAPP_ID', configJson.configs.withdrawapp_id
     }
 
     compileOptions {

@@ -1,0 +1,10 @@
+{
+  "configs": {
+    "build_version" : "1.0.21",
+    "host_complete" : "payment-complete",
+    "resource_folder" : "/wallet/",
+    "platform_code" : "android",
+    "zaloapp_id" : "1",
+    "withdrawapp_id" : "2"
+  }
+}
