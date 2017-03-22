@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.util.Lists;
 
 public class ZPWebView extends WebView {
     private List<String> mHosts;
@@ -92,7 +91,7 @@ public class ZPWebView extends WebView {
     }
 
     private void saveCookies(String rejectUrl) {
-        if (Lists.isEmptyOrNull(mHosts)) {
+        if (mHosts == null || mHosts.size() <= 0) {
             return;
         }
         for (String host : mHosts) {
@@ -153,8 +152,12 @@ public class ZPWebView extends WebView {
     private void clearSessionCookie() {
         CookieManager cookieManager = CookieManager.getInstance();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cookieManager.removeSessionCookies(value ->
-                    Timber.d("clearSessionCookie result [%s]", value));
+            cookieManager.removeSessionCookies(new ValueCallback<Boolean>() {
+                @Override
+                public void onReceiveValue(Boolean value) {
+                    Timber.d("clearSessionCookie result [%s]", value);
+                }
+            });
         } else {
             cookieManager.removeSessionCookie();
         }
