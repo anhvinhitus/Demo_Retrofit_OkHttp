@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.webview.ui.service;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,17 +9,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.ValueCallback;
-
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.webview.ui.IWebView;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
+import vn.com.vng.zalopay.webview.widget.ZPWebView;
 
 /**
  * Created by longlv on 10/3/16.
@@ -51,6 +53,19 @@ public class ServiceWebViewFragment extends WebViewFragment implements IWebView 
         super.initPresenter(view);
         mPresenter.attachView(this);
         mPresenter.initData(getArguments());
+    }
+
+    @Override
+    protected void initWebViewUserAgent(ZPWebView webView) {
+        webView.setUserAgent(getUserAgentWebService());
+    }
+
+    private String getUserAgentWebService() {
+        String userAgent = Constants.UserAgent.ZALO_PAY_CLIENT + AppVersionUtils.getMainVersionName();
+        userAgent += " " + Constants.UserAgent.PLATFORM;
+        userAgent += " " + Constants.UserAgent.OS + Build.VERSION.RELEASE;
+        userAgent += " " + Constants.UserAgent.SECURED + !RootUtils.isDeviceRooted();
+        return userAgent;
     }
 
     @Override
@@ -121,12 +136,7 @@ public class ServiceWebViewFragment extends WebViewFragment implements IWebView 
         boolean canBack = mWebViewProcessor.canBack();
         Timber.d("Can WebApp navigate back: %s", canBack);
         if (canBack) {
-            mWebViewProcessor.runScript("utils.back()", new ValueCallback<String>() {
-                @Override
-                public void onReceiveValue(String value) {
-                    Timber.d("navigation back: %s", value);
-                }
-            });
+            mWebViewProcessor.runScript("utils.back()", value -> Timber.d("navigation back: %s", value));
             return true;
         }
         return super.onBackPressed();
@@ -147,11 +157,6 @@ public class ServiceWebViewFragment extends WebViewFragment implements IWebView 
     public void showInputErrorDialog() {
         DialogHelper.showWarningDialog(getActivity(),
                 getContext().getString(R.string.appgame_alert_input_error),
-                new ZPWOnEventDialogListener() {
-                    @Override
-                    public void onOKevent() {
-                        getActivity().finish();
-                    }
-                });
+                () -> getActivity().finish());
     }
 }
