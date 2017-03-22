@@ -94,6 +94,12 @@ public class GetStatus extends BaseRequest<StatusResponse> {
     private synchronized void askToRetryGetStatus(String pMessage) {
         showProgress(false);
 
+        if(mAdapter != null && mAdapter.isFinalScreen())
+        {
+            Log.d(this,"user in fail screen, don't need show retry dialog again");
+            return;
+        }
+
         Activity activity = BasePaymentActivity.getCurrentActivity();
 
         if (activity == null || activity.isFinishing() || !(activity instanceof BasePaymentActivity)) {

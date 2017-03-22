@@ -6,6 +6,7 @@
     <string name="allow_use_tracking_timing">1</string>
     <string name="allow_use_send_log_on_transactionfail">1</string>
 
+    <string name="payment_success_label">Giao dịch thành công</string>
 
     <string name="time_to_live_transaction">7</string>
 

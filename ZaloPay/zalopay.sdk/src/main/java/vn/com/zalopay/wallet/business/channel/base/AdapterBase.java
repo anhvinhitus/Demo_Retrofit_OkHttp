@@ -817,6 +817,11 @@ public abstract class AdapterBase {
                         DataRepository.shareInstance().cancelRequest();//cancel current request
                         GetStatus.cancelRetryRequest();//cancel timer retry get status
                         DialogManager.closeAllDialog();//close dialog
+                        if(mResponseStatus != null)
+                        {
+                            mResponseStatus.returncode = 1;
+                            mResponseStatus.returnmessage = GlobalData.getStringResource(RS.string.payment_success_label);
+                        }
                         showTransactionSuccessView();
                     } else {
                         Log.d(this, "transId is null");
