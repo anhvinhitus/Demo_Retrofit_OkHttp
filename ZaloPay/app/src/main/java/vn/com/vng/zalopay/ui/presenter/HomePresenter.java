@@ -205,16 +205,25 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     }
 
     public void initialize() {
-
         UserComponent userComponent = AndroidApplication.instance().getUserComponent();
         if (userComponent != null) {
             SDKApplication.getBuilder().setRetrofit(userComponent.retrofitConnector());
         }
 
-        this.loadGatewayInfoPaymentSDK();
+        loadGatewayInfoPaymentSDK();
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
+        fetchBalance();
+        ensureAppResourceAvailable();
         getZaloFriend();
         warningRoot();
+    }
+
+    private void fetchBalance() {
+        Subscription subscription = mBalanceRepository.balance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
     }
 
     private void warningRoot() {
@@ -284,7 +293,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         });
     }
 
-
     private void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {
             subscription.unsubscribe();
@@ -322,7 +330,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         if (!isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
-
+        fetchBalance();
         ensureAppResourceAvailable();
     }
 

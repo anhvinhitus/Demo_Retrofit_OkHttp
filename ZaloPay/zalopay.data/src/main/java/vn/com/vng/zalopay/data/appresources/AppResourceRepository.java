@@ -357,6 +357,12 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     @Override
+    public Observable<List<AppResource>> getListAppHomeLocal() {
+        return getAppResourceLocal()
+                .map(this::listAppInHomePage);
+    }
+
+    @Override
     public Observable<List<AppResource>> fetchListAppHome() {
         return fetchAppResource()
                 .map(this::listAppInHomePage);

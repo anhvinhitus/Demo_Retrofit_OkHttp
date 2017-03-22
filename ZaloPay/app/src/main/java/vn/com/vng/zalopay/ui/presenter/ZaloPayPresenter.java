@@ -117,14 +117,13 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     @Override
     public void initialize() {
-        this.getListAppResource();
-        this.getTotalNotification(2000);
-        this.getBalance();
+        getListAppHomeLocal();
+        getTotalNotification(100);
+        getBalanceLocal();
     }
 
-    @Override
-    public void getBalance() {
-        Subscription subscription = mBalanceRepository.balance()
+    private void getBalanceLocal() {
+        Subscription subscription = mBalanceRepository.balanceLocal()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BalanceSubscriber());
@@ -172,6 +171,15 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                 mNavigator.startReceiveMoneyActivity(mView.getContext());
             }
         }
+    }
+
+    private void getListAppHomeLocal() {
+        Timber.d("getListAppHomeLocal ");
+        Subscription subscription = mAppResourceRepository.getListAppHomeLocal()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AppResourceSubscriber());
+        mSubscription.add(subscription);
     }
 
     // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
@@ -255,7 +263,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     private class BalanceSubscriber extends DefaultSubscriber<Long> {
         @Override
         public void onNext(Long aLong) {
-            ZaloPayPresenter.this.onGetBalanceSuccess(aLong);
+            onGetBalanceSuccess(aLong);
         }
     }
 
@@ -295,8 +303,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             mView.showNetworkError();
             return;
         }
-        getBalance();
-        ensureAppResourceAvailable();
         mView.hideNetworkError();
     }
 
@@ -360,13 +366,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         }
     }
 
-    private void ensureAppResourceAvailable() {
-        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
-        mSubscription.add(subscription);
-    }
-
     public List<AppResource> setBannerInListApp(List<AppResource> pFullListApp) {
 
         List<AppResource> mNewListApp = new ArrayList<>();
@@ -384,7 +383,11 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         return mNewListApp;
     }
 
-
+    public int getHeightViewBottomView(View pTopView, int pNumberItemView, int pNumberApp) {
+        double heightItem = pTopView.getHeight() / 2;
+        int numberRow = (int) Math.ceil((pNumberItemView / (double) pNumberApp));
+        return (int) (heightItem * numberRow);
+    }
 
    /* private class ComponentSubscriber extends DefaultSubscriber<Object> {
         @Override

@@ -9,8 +9,6 @@ import vn.com.vng.zalopay.domain.model.AppResource;
 public interface IZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView> {
     void initialize();
 
-    void getBalance();
-
     void startServiceWebViewActivity(long appId, String webViewUrl);
 
     void startPaymentApp(AppResource app);
