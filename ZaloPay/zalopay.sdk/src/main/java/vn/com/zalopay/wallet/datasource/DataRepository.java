@@ -215,7 +215,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
                             pCallback.onFinish(call, response);
                         }
                         //send log to server if http code is error
-                        sendErrorLogHttpErrorCode(response);
+                        //sendErrorLogHttpErrorCode(response);
                     } catch (Exception ex) {
                         Log.e(this, ex);
                         if (pCallback != null) {
@@ -230,7 +230,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
                         if (pCallback != null) {
                             pCallback.onFail(this, t);
                         }
-                        sendErrorLogResponseNULL(t);
+                        //sendErrorLogResponseNULL(t);
                     } catch (Exception ex) {
                         Log.e(this, ex);
                         if (pCallback != null) {
