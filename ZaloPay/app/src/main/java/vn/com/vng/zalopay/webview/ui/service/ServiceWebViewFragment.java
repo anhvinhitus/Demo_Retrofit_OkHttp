@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.webview.ui.service;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,10 +14,14 @@ import android.webkit.ValueCallback;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.webview.ui.IWebView;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
+import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 
 /**
@@ -50,6 +55,19 @@ public class ServiceWebViewFragment extends WebViewFragment implements IWebView 
         super.initPresenter(view);
         mPresenter.attachView(this);
         mPresenter.initData(getArguments());
+    }
+
+    @Override
+    protected void initWebViewUserAgent(ZPWebView webView) {
+        webView.setUserAgent(getUserAgentWebService());
+    }
+
+    private String getUserAgentWebService() {
+        String userAgent = Constants.UserAgent.ZALO_PAY_CLIENT + AppVersionUtils.getMainVersionName();
+        userAgent += " " + Constants.UserAgent.PLATFORM;
+        userAgent += " " + Constants.UserAgent.OS + Build.VERSION.RELEASE;
+        userAgent += " " + Constants.UserAgent.SECURED + !RootUtils.isDeviceRooted();
+        return userAgent;
     }
 
     @Override

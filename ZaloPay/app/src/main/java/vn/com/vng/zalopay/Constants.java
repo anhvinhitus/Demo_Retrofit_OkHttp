@@ -129,4 +129,11 @@ public interface Constants {
     }
 
     String FILE_PNG = ".png";
+
+    interface UserAgent {
+        String ZALO_PAY_CLIENT = "ZaloPayClient/";
+        String PLATFORM = "Platform/android";
+        String OS = "OS/";
+        String SECURED = "Secured/";
+    }
 }

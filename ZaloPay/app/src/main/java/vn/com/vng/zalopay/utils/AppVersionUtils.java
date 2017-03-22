@@ -71,6 +71,20 @@ public class AppVersionUtils {
         }
     }
 
+    /**
+     * Convert app version from x.y.z to x.y
+     *
+     * @return main version.
+     */
+    public static String getMainVersionName() {
+        String appVersion = BuildConfig.VERSION_NAME;
+        String[] appVersionArr = appVersion.split("\\.");
+        if (appVersionArr.length < 2) {
+            return appVersion;
+        }
+        return appVersionArr[0] + "." + appVersionArr[1];
+    }
+
     private static boolean isLastVersion() throws NumberFormatException {
         String appVersion = BuildConfig.VERSION_NAME;
         String lassVersion = getLatestVersionInServer();

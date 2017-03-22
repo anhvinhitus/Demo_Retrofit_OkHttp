@@ -41,6 +41,12 @@ public class ZPWebView extends WebView {
         init();
     }
 
+    public void setUserAgent(String userAgent) {
+        if (!TextUtils.isEmpty(userAgent)) {
+            getSettings().setUserAgentString(userAgent);
+        }
+    }
+
     @SuppressWarnings("deprecation")
     @SuppressLint("SetJavaScriptEnabled")
     private void init() {
