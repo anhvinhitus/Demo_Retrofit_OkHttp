@@ -49,60 +49,56 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     private WeakReference<BankSmsReceiver> mSmsReceiver;
     private WeakReference<UnlockSreenReceiver> mUnLockScreenReceiver;
     private ActivityRendering mActivityRender;
-    private View.OnClickListener mOnClickExitListener = new View.OnClickListener() {
+    private View.OnClickListener mOnClickExitListener = v -> {
+        //get status again if user back when payment in bank's site
+        if (getAdapter() != null && getAdapter().isCardFlowWeb() && (getAdapter().isCCFlow() || (getAdapter().isATMFlow() && ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).isOtpWebProcessing()))) {
+            confirmQuitOrGetStatus();
+            return;
+        }
+        if (getAdapter() != null && getAdapter().isATMFlow() && getAdapter().isCanEditCardInfo()) {
+            ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).goBackInputCard();
+            return;
+        }
+        if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
+            getAdapter().confirmExitTransWithoutPin();
+            return;
+        }
 
-        @Override
-        public void onClick(View v) {
-            //get status again if user back when payment in bank's site
-            if (getAdapter() != null && getAdapter().isCardFlowWeb() && (getAdapter().isCCFlow() || (getAdapter().isATMFlow() && ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).isOtpWebProcessing()))) {
-                confirmQuitOrGetStatus();
-                return;
-            }
-            if (getAdapter() != null && getAdapter().isATMFlow() && getAdapter().isCanEditCardInfo()) {
-                ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).goBackInputCard();
-                return;
-            }
-            if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
-                getAdapter().confirmExitTransWithoutPin();
-                return;
-            }
+        if (getAdapter() != null && getAdapter().isZaloPayFlow() && getAdapter().isBalanceErrorPharse()) {
+            GlobalData.setResultFail();
 
-            if (getAdapter() != null && getAdapter().isZaloPayFlow() && getAdapter().isBalanceErrorPharse()) {
+            if (GlobalData.getChannelActivityCallBack() != null) {
+                GlobalData.getChannelActivityCallBack().onBackAction();
+            }
+            finish();
+            return;
+        }
+
+        if (getAdapter() != null && getAdapter().exitWithoutConfirm() && !isInProgress()) {
+            if (getAdapter().isTransactionSuccess()) {
+
+                GlobalData.setResultSuccess();
+
+                if (GlobalData.getChannelActivityCallBack() != null) {
+                    GlobalData.getChannelActivityCallBack().onExitAction();
+                }
+            } else if (getAdapter().isTransactionFail()) {
                 GlobalData.setResultFail();
 
                 if (GlobalData.getChannelActivityCallBack() != null) {
+                    GlobalData.getChannelActivityCallBack().onExitAction();
+                }
+            } else {
+                if (GlobalData.getChannelActivityCallBack() != null) {
                     GlobalData.getChannelActivityCallBack().onBackAction();
                 }
-                finish();
-                return;
             }
 
-            if (getAdapter() != null && getAdapter().exitWithoutConfirm() && !isInProgress()) {
-                if (getAdapter().isTransactionSuccess()) {
-
-                    GlobalData.setResultSuccess();
-
-                    if (GlobalData.getChannelActivityCallBack() != null) {
-                        GlobalData.getChannelActivityCallBack().onExitAction();
-                    }
-                } else if (getAdapter().isTransactionFail()) {
-                    GlobalData.setResultFail();
-
-                    if (GlobalData.getChannelActivityCallBack() != null) {
-                        GlobalData.getChannelActivityCallBack().onExitAction();
-                    }
-                } else {
-                    if (GlobalData.getChannelActivityCallBack() != null) {
-                        GlobalData.getChannelActivityCallBack().onBackAction();
-                    }
-                }
-
-                finish();
-                return;
-            }
-
-            confirmQuitPayment();
+            finish();
+            return;
         }
+
+        confirmQuitPayment();
     };
 
     public PaymentPassword getmPaymentPassword() {
@@ -262,30 +258,16 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-        //prevent capture screen
-        //if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
-        //{
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        //}
-
         initTimer();
-
         mIsRestart = false;
-
         mAdapter = AdapterFactory.produce(this);
-
         if (getAdapter() == null) {
             onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
             return;
         }
-
         renderActivity();
-
         getAdapter().init();
-
         if (GlobalData.isChannelHasInputCard()) {
             renderResourceAfterDelay();
         }
@@ -635,12 +617,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             });
         } else {
             Log.d(this, "===renderByResource===on handler===");
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    renderByResource();
-                }
-            }, 500);
+            new Handler().postDelayed(this::renderByResource, 500);
         }
     }
 

@@ -63,51 +63,45 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
 
     protected ZPWNotification mNotification;
-    protected Runnable runnableWaitingNotifyUnLinkAcc = new Runnable() {
-        @Override
-        public void run() {
-            // get & check bankaccount list
-            BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
-                @Override
-                public void onCheckExistBankAccountComplete(boolean pExisted) {
-                    showProgressBar(false, null);
-                    if (!pExisted) {
-                        unlinkAccSuccess();
-                    } else {
-                        unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
-                    }
+    protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
+        // get & check bankaccount list
+        BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
+            @Override
+            public void onCheckExistBankAccountComplete(boolean pExisted) {
+                showProgressBar(false, null);
+                if (!pExisted) {
+                    unlinkAccSuccess();
+                } else {
+                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
                 }
+            }
 
-                @Override
-                public void onCheckExistBankAccountFail(String pMessage) {
-                    showProgressBar(false, null);
-                    unlinkAccFail(pMessage, mTransactionID);
-                }
-            }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
-        }
+            @Override
+            public void onCheckExistBankAccountFail(String pMessage) {
+                showProgressBar(false, null);
+                unlinkAccFail(pMessage, mTransactionID);
+            }
+        }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
-    protected Runnable runnableWaitingNotifyLinkAcc = new Runnable() {
-        @Override
-        public void run() {
-            // get & check bankaccount list
-            BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
-                @Override
-                public void onCheckExistBankAccountComplete(boolean pExisted) {
-                    showProgressBar(false, null);
-                    if (pExisted) {
-                        linkAccSuccess();
-                    } else {
-                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server),mTransactionID);
-                    }
+    protected Runnable runnableWaitingNotifyLinkAcc = () -> {
+        // get & check bankaccount list
+        BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
+            @Override
+            public void onCheckExistBankAccountComplete(boolean pExisted) {
+                showProgressBar(false, null);
+                if (pExisted) {
+                    linkAccSuccess();
+                } else {
+                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server),mTransactionID);
                 }
+            }
 
-                @Override
-                public void onCheckExistBankAccountFail(String pMessage) {
-                    showProgressBar(false, null);
-                    linkAccFail(pMessage,mTransactionID);
-                }
-            }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
-        }
+            @Override
+            public void onCheckExistBankAccountFail(String pMessage) {
+                showProgressBar(false, null);
+                linkAccFail(pMessage,mTransactionID);
+            }
+        }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private ELinkAccType mLinkAccType;

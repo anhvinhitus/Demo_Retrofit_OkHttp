@@ -241,13 +241,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 String message = pError;
                 if (TextUtils.isEmpty(message)) {
                     message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
-                    ;
                 }
-
                 if (!TextUtils.isEmpty(DownloadBundle.errorMessage)) {
                     message = DownloadBundle.errorMessage;
                 }
-
                 showDialogAndExit(message, ErrorManager.shouldShowDialog());
             }
         }
@@ -260,12 +257,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         @Override
         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
             showProgress(false, null);
-
             notifyUpVersionToApp(pForceUpdate, pVersion, pMessage);
-
-            if (!pForceUpdate) {
-                readyForPayment();
-            }
         }
     };
     /***

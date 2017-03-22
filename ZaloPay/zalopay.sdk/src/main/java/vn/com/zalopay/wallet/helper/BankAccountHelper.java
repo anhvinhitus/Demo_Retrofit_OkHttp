@@ -2,7 +2,6 @@ package vn.com.zalopay.wallet.helper;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
