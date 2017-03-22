@@ -14,10 +14,12 @@ import rx.Observable;
 
 public class QRCodeRepository implements QRCodeStore.Repository {
 
+    private String mUserAgent;
     private QRCodeStore.RequestService mRequestService;
 
-    public QRCodeRepository(QRCodeStore.RequestService requestService) {
+    public QRCodeRepository(QRCodeStore.RequestService requestService, String userAgent) {
         mRequestService = requestService;
+        mUserAgent = userAgent;
     }
 
     @Override
@@ -25,6 +27,6 @@ public class QRCodeRepository implements QRCodeStore.Repository {
         if (TextUtils.isEmpty(url)) {
             Observable.just(null);
         }
-        return mRequestService.getPaymentInfo(url, "ZaloPayClient/2.8");
+        return mRequestService.getPaymentInfo(url, mUserAgent);
     }
 }
