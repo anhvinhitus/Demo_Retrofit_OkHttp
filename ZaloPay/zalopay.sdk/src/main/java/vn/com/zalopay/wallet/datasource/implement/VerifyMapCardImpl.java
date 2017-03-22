@@ -27,6 +27,6 @@ public class VerifyMapCardImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return ZPEvents.API_V001_TPE_VERIFYCARDFORMAPPING;
+        return ZPEvents.CONNECTOR_V001_TPE_VERIFYCARDFORMAPPING;
     }
 }

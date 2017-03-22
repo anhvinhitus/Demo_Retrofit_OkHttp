@@ -15,6 +15,6 @@ public class GetPlatformInfoImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return ZPEvents.API_V001_TPE_V001GETPLATFORMINFO;
+        return ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO;
     }
 }

@@ -22,6 +22,6 @@ public class AuthenPayerImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return ZPEvents.API_V001_TPE_ATMAUTHENPAYER;
+        return ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER;
     }
 }

@@ -25,6 +25,6 @@ public class SendLogImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return ZPEvents.API_V001_TPE_SDKWRITEATMTIME;
+        return ZPEvents.CONNECTOR_V001_TPE_SDKWRITEATMTIME;
     }
 }

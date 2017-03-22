@@ -22,6 +22,6 @@ public class RemoveMapCardImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return ZPEvents.API_V001_TPE_REMOVEMAPCARD;
+        return ZPEvents.CONNECTOR_V001_TPE_REMOVEMAPCARD;
     }
 }

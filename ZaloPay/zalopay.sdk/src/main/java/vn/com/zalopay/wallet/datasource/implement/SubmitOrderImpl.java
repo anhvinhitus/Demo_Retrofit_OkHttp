@@ -23,6 +23,6 @@ public class SubmitOrderImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return ZPEvents.API_V001_TPE_SUBMITTRANS;
+        return ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS;
     }
 }

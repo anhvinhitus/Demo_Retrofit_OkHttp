@@ -15,6 +15,6 @@ public class CheckOrderStatusFailSubmitImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return ZPEvents.API_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT;
+        return ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT;
     }
 }

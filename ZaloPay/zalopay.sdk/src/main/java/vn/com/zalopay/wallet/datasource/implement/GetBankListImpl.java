@@ -15,6 +15,6 @@ public class GetBankListImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return ZPEvents.API_V001_TPE_GETBANKLIST;
+        return ZPEvents.CONNECTOR_V001_TPE_GETBANKLIST;
     }
 }

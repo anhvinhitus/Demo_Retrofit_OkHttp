@@ -21,6 +21,6 @@ public class SDKReportImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return ZPEvents.API_V001_TPE_SDKERRORREPORT;
+        return ZPEvents.CONNECTOR_V001_TPE_SDKERRORREPORT;
     }
 }

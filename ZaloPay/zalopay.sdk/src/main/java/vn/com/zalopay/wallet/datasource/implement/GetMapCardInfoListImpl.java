@@ -15,6 +15,6 @@ public class GetMapCardInfoListImpl implements ITask {
 
     @Override
     public int getTaskEventId() {
-        return ZPEvents.API_UM_LISTCARDINFOFORCLIENT;
+        return ZPEvents.CONNECTOR_UM_LISTCARDINFOFORCLIENT;
     }
 }
