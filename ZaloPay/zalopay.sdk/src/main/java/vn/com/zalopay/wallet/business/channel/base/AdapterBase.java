@@ -242,10 +242,6 @@ public abstract class AdapterBase {
         return mResponseStatus;
     }
 
-    public void setmResponseStatus(StatusResponse mResponseStatus) {
-        this.mResponseStatus = mResponseStatus;
-    }
-
     public abstract void init();
 
     public abstract DPaymentChannel getChannelConfig() throws Exception;
@@ -551,13 +547,11 @@ public abstract class AdapterBase {
                 }
 
                 mResponseStatus = null;
-                setmResponseStatus(null);
             }
 
             try {
                 if (pAdditionParams[0] instanceof StatusResponse) {
                     mResponseStatus = (StatusResponse) pAdditionParams[0];
-                    setmResponseStatus(mResponseStatus);
                 }
             } catch (Exception e) {
                 Log.d(this, e);

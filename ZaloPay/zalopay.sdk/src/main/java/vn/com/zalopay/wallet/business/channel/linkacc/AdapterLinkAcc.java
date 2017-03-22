@@ -93,14 +93,14 @@ public class AdapterLinkAcc extends AdapterBase {
                 if (pExisted) {
                     linkAccSuccess();
                 } else {
-                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server),mTransactionID);
+                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server), mTransactionID);
                 }
             }
 
             @Override
             public void onCheckExistBankAccountFail(String pMessage) {
                 showProgressBar(false, null);
-                linkAccFail(pMessage,mTransactionID);
+                linkAccFail(pMessage, mTransactionID);
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
@@ -126,8 +126,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     return;
                 } else {
                     String loginBankUrl = bankConfig.loginbankurl;
-                    if(TextUtils.isEmpty(loginBankUrl))
-                    {
+                    if (TextUtils.isEmpty(loginBankUrl)) {
                         loginBankUrl = GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login);
                     }
                     initWebView(loginBankUrl);
@@ -176,7 +175,7 @@ public class AdapterLinkAcc extends AdapterBase {
         // show title bar
         if (mLinkAccType.equals(ELinkAccType.LINK)) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
-        } else if(mLinkAccType.equals(ELinkAccType.UNLINK)) {
+        } else if (mLinkAccType.equals(ELinkAccType.UNLINK)) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
         }
 
@@ -190,7 +189,7 @@ public class AdapterLinkAcc extends AdapterBase {
     @Override
     public void onProcessPhrase() {
 
-        if(NetworkUtil.getConnectivityStatus(getActivity()) != NetworkUtil.TYPE_NOT_CONNECTED) {
+        if (NetworkUtil.getConnectivityStatus(getActivity()) != NetworkUtil.TYPE_NOT_CONNECTED) {
             if (mPageCode.equals(PAGE_VCB_LOGIN)
                     || mPageCode.equals(PAGE_VCB_CONFIRM_LINK)
                     || mPageCode.equals(PAGE_VCB_CONFIRM_UNLINK)
@@ -199,13 +198,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 // force virtual keyboard
                 forceVirtualKeyboard();
             }
-        }
-        else
-        {
+        } else {
             getActivity().askToOpenSettingNetwoking();
-            Log.d(this,"===network fail==" );
+            Log.d(this, "===network fail==");
         }
-
 
 
     }
@@ -286,7 +282,7 @@ public class AdapterLinkAcc extends AdapterBase {
         try {
             dBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         } catch (Exception e) {
-            Log.e(this,e);
+            Log.e(this, e);
         }
 
         // get & set mapBank
@@ -346,7 +342,7 @@ public class AdapterLinkAcc extends AdapterBase {
      *
      * @param pMessage
      */
-    private void unlinkAccFail(String pMessage , String pTransID ) {
+    private void unlinkAccFail(String pMessage, String pTransID) {
         mPageCode = PAGE_UNLINKACC_FAIL;
         // rendering by resource
         getActivity().renderByResource();
@@ -392,7 +388,7 @@ public class AdapterLinkAcc extends AdapterBase {
         if (pEventType == EEventType.ON_SUBMIT_LINKACC_COMPLETED) {
             // TODO: code here for submit linkacc complete
             StatusResponse response = (StatusResponse) pAdditionParams[0];
-            setmResponseStatus(response);
+            mResponseStatus = response;
             // set transID
             mTransactionID = String.valueOf(response.zptransid);
             return null;
@@ -409,11 +405,10 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Login page
             if (page.equals(VCB_LOGIN_PAGE)) {
-                showProgressBar(false,null); // close process dialog
+                showProgressBar(false, null); // close process dialog
 
                 //for testing
-                if(!SDKApplication.isReleaseBuild())
-                {
+                if (!SDKApplication.isReleaseBuild()) {
                     linkAccGuiProcessor.setAccountTest();
                 }
 
@@ -496,7 +491,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     public void run() {
                         forceVirtualKeyboard();//auto show keyboard
                     }
-                },300);
+                }, 300);
 
                 return null;
             }
@@ -689,7 +684,6 @@ public class AdapterLinkAcc extends AdapterBase {
             try {
                 if (pAdditionParams[0] instanceof StatusResponse) {
                     mResponseStatus = (StatusResponse) pAdditionParams[0];
-                    setmResponseStatus(mResponseStatus);
                 }
             } catch (Exception e) {
                 Log.d(this, e);
@@ -789,7 +783,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
         }
-        showProgressBar(true,GlobalData.getStringResource(RS.string.zpw_loading_website_message));
+        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
         mWebViewProcessor.start(pUrl);
     }
 
