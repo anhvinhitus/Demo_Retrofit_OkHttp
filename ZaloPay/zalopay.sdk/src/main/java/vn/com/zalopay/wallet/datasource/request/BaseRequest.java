@@ -74,11 +74,11 @@ public abstract class BaseRequest<T extends BaseResponse> extends SingletonBase 
 
     protected DataRepository shareDataRepository()
     {
-        return DataRepository.shareInstance(SDKApplication.getRetrofit()).setDataSourceListener(getDataSourceListener());
+        return DataRepository.shareInstance().setDataSourceListener(getDataSourceListener());
     }
 
     protected DataRepository newDataRepository()
     {
-        return DataRepository.newInstance(SDKApplication.getRetrofit()).setDataSourceListener(getDataSourceListener());
+        return DataRepository.newInstance().setDataSourceListener(getDataSourceListener());
     }
 }

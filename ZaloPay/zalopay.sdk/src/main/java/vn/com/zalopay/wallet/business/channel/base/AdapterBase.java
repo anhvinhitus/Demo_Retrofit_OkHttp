@@ -818,7 +818,7 @@ public abstract class AdapterBase {
                 try {
                     String transId = String.valueOf(pAdditionParams[0]);
                     if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
-                        DataRepository.shareInstance(SDKApplication.getRetrofit()).cancelRequest();//cancel current request
+                        DataRepository.shareInstance().cancelRequest();//cancel current request
                         GetStatus.cancelRetryRequest();//cancel timer retry get status
                         DialogManager.closeAllDialog();//close dialog
                         if(mResponseStatus != null)

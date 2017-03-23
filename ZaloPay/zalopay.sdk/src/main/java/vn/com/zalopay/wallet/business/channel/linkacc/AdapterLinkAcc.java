@@ -412,12 +412,6 @@ public class AdapterLinkAcc extends AdapterBase {
                     linkAccGuiProcessor.setAccountTest();
                 }
 
-                //for testing
-               /* if(!SDKApplication.isReleaseBuild())
-                {
-                    linkAccGuiProcessor.setAccountTest();
-                }*/
-
                 mPageCode = PAGE_VCB_LOGIN;
 
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];

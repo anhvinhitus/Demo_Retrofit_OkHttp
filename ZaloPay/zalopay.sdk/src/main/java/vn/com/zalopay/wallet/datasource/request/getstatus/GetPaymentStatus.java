@@ -11,7 +11,7 @@ import vn.com.zalopay.wallet.listener.IDataSourceListener;
 public class GetPaymentStatus implements IGetPaymentStatus {
     @Override
     public void onGetStatus(IDataSourceListener pListener, HashMap<String, String> pParamsRequest, boolean pIsRetry) {
-        DataRepository.shareInstance(SDKApplication.getRetrofit()).setDataSourceListener(pListener).getDataReuseRequest(new GetTransactionStatusImpl(), pParamsRequest, pIsRetry);
+        DataRepository.shareInstance().setDataSourceListener(pListener).getDataReuseRequest(new GetTransactionStatusImpl(), pParamsRequest, pIsRetry);
     }
 
     @Override

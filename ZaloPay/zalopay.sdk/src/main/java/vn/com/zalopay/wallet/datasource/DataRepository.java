@@ -10,12 +10,10 @@ import java.util.HashMap;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
-import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -39,7 +37,7 @@ import vn.com.zalopay.wallet.utils.Log;
 
 public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private static DataRepository _object;
-    private static DataRepository _objectUseRetrofit;
+    protected InjectionWrapper mInjectionWrapper;
     private IData mDataSource;
     private boolean mIsRequesting = false;
     private IDataSourceListener mDataSourceLitener;
@@ -48,53 +46,44 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private int retryCount = 1;
     private WeakReference<ITask> mCurrentTask = null;
 
-    //region contructor with retrofit
-    public DataRepository(Retrofit pRetrofit) {
+    public DataRepository() {
         super();
-        createRetrofitService(pRetrofit);
-        resetCountRetry();
+        mInjectionWrapper = new InjectionWrapper();
+        SDKApplication.getApplicationComponent().inject(mInjectionWrapper);
+        mDataSource = mInjectionWrapper.getRetrofit().create(IData.class);
+        setRetryCountNumber();
     }
 
-    public static DataRepository newInstance(Retrofit pRetrofit) {
-        return new DataRepository(pRetrofit);
+    public DataRepository(Object... params) {
+        super();
+        mInjectionWrapper = new InjectionWrapper();
+        SDKApplication.getApplicationComponent().inject(mInjectionWrapper);
+        mDataSource = mInjectionWrapper.getRetrofitDownloadResource().create(IData.class);
+        setRetryCountNumber();
     }
 
-    public static DataRepository shareInstance(Retrofit pRetrofit) {
-        if (DataRepository._objectUseRetrofit == null) {
-            DataRepository._objectUseRetrofit = new DataRepository(pRetrofit);
+    public static DataRepository newInstance() {
+        return new DataRepository();
+    }
+
+    public static DataRepository shareInstance() {
+        if (DataRepository._object == null) {
+            DataRepository._object = new DataRepository();
         }
-        DataRepository._objectUseRetrofit.resetCountRetry();
-        return DataRepository._objectUseRetrofit;
+        DataRepository._object.setRetryCountNumber();
+        return DataRepository._object;
     }
-    //endregion
-
-    //region contructor with okhttp
-    public DataRepository(OkHttpClient pHttpClient) {
-        super();
-        createRetrofitService(pHttpClient);
-        resetCountRetry();
-    }
-    //endregion
 
     /***
      * httpclient for download resouce with httpclient
-     *
      * @return
      */
-    public static DataRepository getInstanceForDownloadResource(OkHttpClient pOkHttpClient) {
-        return new DataRepository(pOkHttpClient);
+    public static DataRepository getInstanceDownloadResource() {
+        return new DataRepository(true);
     }
 
     public static void dispose() {
         SingletonLifeCircleManager.disposeDataRepository();
-    }
-
-    private void createRetrofitService(OkHttpClient pHttpClient) {
-        mDataSource = RetrofitSetup.createService(pHttpClient, IData.class);
-    }
-
-    private void createRetrofitService(Retrofit pRetrofit) {
-        mDataSource = RetrofitSetup.createServiceFromRetrofit(pRetrofit, IData.class);
     }
 
     public void cancelRequest() {
@@ -108,7 +97,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         }
     }
 
-    private void resetCountRetry() {
+    private void setRetryCountNumber() {
         if (retryCount >= Constants.API_MAX_RETRY) {
             retryCount = 1;
         }

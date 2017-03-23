@@ -3,8 +3,6 @@ package vn.com.zalopay.wallet.controller;
 import android.app.Application;
 import android.content.Context;
 
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
@@ -23,7 +21,7 @@ import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.di.component.ApplicationComponent;
 import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
-import vn.com.zalopay.wallet.di.module.ServiceModule;
+import vn.com.zalopay.wallet.di.module.ConfigurationModule;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
@@ -33,24 +31,25 @@ import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 
 public class SDKApplication extends Application {
-    protected static SDKConfiguration mConfig;
-    protected static Application mApplication = null;
     protected static ApplicationComponent mApplicationComponent;
 
     public static ApplicationComponent getApplicationComponent() {
         return mApplicationComponent;
     }
 
+    //use for mock testing purpose
+    public static void setApplicationComponent(ApplicationComponent mApplicationComponent) {
+        SDKApplication.mApplicationComponent = mApplicationComponent;
+    }
+
     public static void initialize(Application pApplication, SDKConfiguration pConfig) {
-        SDKApplication.mApplication = pApplication;
-        SDKApplication.mConfig = pConfig;
+        mApplicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(pApplication))
+                .configurationModule(new ConfigurationModule(pConfig))
+                .build();
         if (!BuildConfig.DEBUG) {
             Thread.setDefaultUncaughtExceptionHandler(SDKApplication::handleUncaughtException);
         }
-        mApplicationComponent = DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(pApplication))
-                .serviceModule(new ServiceModule(mConfig.getRetrofit()))
-                .build();
     }
 
     private static void handleUncaughtException(Thread thread, Throwable e) {
@@ -224,30 +223,18 @@ public class SDKApplication extends Application {
     }
 
     public static Application getInstance() {
-        return mApplication;
-    }
-
-    public static OkHttpClient getHttpClientTimeoutLonger() {
-        return mConfig.getHttpClientTimeoutLonger();
-    }
-
-    public static Retrofit getRetrofit() {
-        return mConfig.getRetrofit();
+        return getApplicationComponent().application();
     }
 
     public static boolean isReleaseBuild() {
-        return mConfig.isReleaseBuild();
-    }
-
-    public static String getBaseHostUrl() {
-        return mConfig.getBaseHostUrl();
+        return getApplicationComponent().sdkConfiguration().isReleaseBuild();
     }
 
     public static SDKConfiguration.Builder getBuilder() {
-        return mConfig.getBuilder();
+        return getApplicationComponent().sdkConfiguration().getBuilder();
     }
 
     public static Context getZaloPayContext() throws Exception {
-        return mApplication.getApplicationContext();
+        return getApplicationComponent().application().getApplicationContext();
     }
 }
