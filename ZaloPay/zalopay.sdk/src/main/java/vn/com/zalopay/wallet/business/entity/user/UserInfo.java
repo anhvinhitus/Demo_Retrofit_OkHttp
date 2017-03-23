@@ -12,6 +12,7 @@ public class UserInfo {
     public int level;
     public long balance;
     public String userProfile;
+    public String avatar;
 
     public boolean isUserInfoValid() {
         return !TextUtils.isEmpty(zaloPayUserId) && !TextUtils.isEmpty(accessToken);

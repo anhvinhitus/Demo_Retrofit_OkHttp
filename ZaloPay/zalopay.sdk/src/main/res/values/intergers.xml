@@ -18,4 +18,5 @@
     <integer name="maximum_character_field_vcb_username">11</integer>
     <integer name="maximum_character_field_vcb_password">50</integer>
     <integer name="maximum_character_field_vcb_captcha">5</integer>
+    <integer name="line_text_1">1</integer>
 </resources>
