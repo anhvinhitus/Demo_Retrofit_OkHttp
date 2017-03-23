@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.ValueCallback;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +27,7 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
  */
 public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.IWebViewListener {
 
+    protected ZPWebView mWebView;
     protected ZPWebViewProcessor mWebViewProcessor;
 
     private View layoutRetry;
@@ -86,13 +86,14 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         return mWebViewProcessor.getCurrentUrl();
     }
 
-    protected void initWebViewUserAgent(ZPWebView webView) {
+    protected void updateWebViewSettings() {
+
     }
 
     private void initWebView(View rootView) {
-        ZPWebView webView = (ZPWebView) rootView.findViewById(R.id.webview);
-        initWebViewUserAgent(webView);
-        mWebViewProcessor = new ZPWebViewProcessor(webView, this);
+        mWebView = (ZPWebView) rootView.findViewById(R.id.webview);
+        updateWebViewSettings();
+        mWebViewProcessor = new ZPWebViewProcessor(mWebView, this);
     }
 
     public void loadUrl(final String pUrl) {
