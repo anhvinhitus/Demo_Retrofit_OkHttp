@@ -20,6 +20,10 @@ import vn.com.zalopay.wallet.configure.SDKConfiguration;
 import vn.com.zalopay.wallet.datasource.request.BaseRequest;
 import vn.com.zalopay.wallet.datasource.request.RemoveMapCard;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
+import vn.com.zalopay.wallet.di.component.ApplicationComponent;
+import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
+import vn.com.zalopay.wallet.di.module.ApplicationModule;
+import vn.com.zalopay.wallet.di.module.ServiceModule;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
@@ -31,18 +35,22 @@ import vn.com.zalopay.wallet.utils.ZPWUtils;
 public class SDKApplication extends Application {
     protected static SDKConfiguration mConfig;
     protected static Application mApplication = null;
+    protected static ApplicationComponent mApplicationComponent;
+
+    public static ApplicationComponent getApplicationComponent() {
+        return mApplicationComponent;
+    }
 
     public static void initialize(Application pApplication, SDKConfiguration pConfig) {
         SDKApplication.mApplication = pApplication;
         SDKApplication.mConfig = pConfig;
         if (!BuildConfig.DEBUG) {
-            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(Thread thread, Throwable e) {
-                    handleUncaughtException(thread, e);
-                }
-            });
+            Thread.setDefaultUncaughtExceptionHandler(SDKApplication::handleUncaughtException);
         }
+        mApplicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(pApplication))
+                .serviceModule(new ServiceModule(mConfig.getRetrofit()))
+                .build();
     }
 
     private static void handleUncaughtException(Thread thread, Throwable e) {
