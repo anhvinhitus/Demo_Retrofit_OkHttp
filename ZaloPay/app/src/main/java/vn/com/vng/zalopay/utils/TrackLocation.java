@@ -23,20 +23,23 @@ import vn.com.vng.zalopay.domain.model.UserLocation;
 
 public class TrackLocation extends Service {
     private final static int TIME_REFRESH = 300000;
-    private static LocationStore.Repository mRepository;
+    private final Context context;
+    private final LocationStore.Repository repository;
 
-    private static Location location;
+    private Location location;
 
-    private static double latitude;
-    private static double longitude;
-    private static Address address;
-    private static boolean canGetLocation = false;
+    private double latitude;
+    private double longitude;
+    private Address address;
+    private boolean canGetLocation = false;
 
-    public static void init(LocationStore.Repository repository) {
-        mRepository = repository;
+    public TrackLocation(Context context,
+                         LocationStore.Repository repository) {
+        this.context = context;
+        this.repository = repository;
     }
 
-    public static void findLocation(Context context) {
+    public void findLocation() {
         try {
             LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
             boolean checkGPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -50,7 +53,7 @@ public class TrackLocation extends Service {
                 if (checkNetwork) {
                     try {
                         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        updateCoordinates(context);
+                        updateCoordinates();
                         Timber.d("Get location by network with lat: %s, long: %s", latitude, longitude);
                     } catch (SecurityException e) {
                         Timber.e("Get location by network failed with: %s", e.getMessage());
@@ -61,7 +64,7 @@ public class TrackLocation extends Service {
                     if (location == null) {
                         try {
                             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            updateCoordinates(context);
+                            updateCoordinates();
                             Timber.d("Get location by gps with lat: %s, long: %s", latitude, longitude);
                         } catch (SecurityException e) {
                             Timber.e("Get location by gps failed with: %s", e.getMessage());
@@ -76,7 +79,7 @@ public class TrackLocation extends Service {
         }
     }
 
-    private static void updateCoordinates(Context context) throws Exception {
+    private void updateCoordinates() throws Exception {
         if (location != null) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
@@ -89,7 +92,7 @@ public class TrackLocation extends Service {
         }
     }
 
-    private static String getAddress() {
+    private String getAddress() {
         if (address != null) {
             return String.format("%s, %s, %s, %s",
                     address.getAddressLine(0),
@@ -105,16 +108,13 @@ public class TrackLocation extends Service {
         return null;
     }
 
-    private static void saveLocation() {
-        if(mRepository == null) {
-            return;
-        }
-        mRepository.saveLocationCache(latitude, longitude, getAddress(), System.currentTimeMillis());
+    private void saveLocation() {
+        repository.saveLocationCache(latitude, longitude, getAddress(), System.currentTimeMillis());
     }
 
-    private static UserLocation getUpdateLocation(Context context, UserLocation location) {
+    private UserLocation getUpdateLocation(UserLocation location) {
         if (Math.abs(System.currentTimeMillis() - location.timeget) > TIME_REFRESH) {
-            findLocation(context);
+            findLocation();
             if (canGetLocation) {
                 saveLocation();
                 return new UserLocation(latitude, longitude, getAddress(), System.currentTimeMillis());
@@ -124,11 +124,8 @@ public class TrackLocation extends Service {
         return location;
     }
 
-    public static UserLocation getLocation(Context context) {
-        if(mRepository == null) {
-            return null;
-        }
-        UserLocation location = mRepository.getLocationCache();
-        return getUpdateLocation(context, location);
+    public UserLocation getLocation() {
+        UserLocation location = repository.getLocationCache();
+        return getUpdateLocation(location);
     }
 }
