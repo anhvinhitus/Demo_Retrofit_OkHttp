@@ -2,6 +2,7 @@ package vn.com.vng.zalopay;
 
 import android.app.Application;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
@@ -34,6 +35,7 @@ public class AppContext extends Application {
 
         SDKApplication.initialize(this,sdkConfig);
         Stetho.initializeWithDefaults(this);
+        Fresco.initialize(this);
     }
 
     protected OkHttpClient createOKHttpClient()
