@@ -460,6 +460,7 @@ dependencies {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }
     compile project(':zalopay.feedback')
+    compile project(':zalopay.location')
     compile project(':zalopay.sdk')
 }
 
