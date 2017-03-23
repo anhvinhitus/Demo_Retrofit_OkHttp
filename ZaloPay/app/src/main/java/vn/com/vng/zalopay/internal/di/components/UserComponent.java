@@ -26,6 +26,7 @@ import vn.com.vng.zalopay.bank.ui.BankSupportLinkCardDialog;
 import vn.com.vng.zalopay.banner.ui.fragment.BannerFragment;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
+import vn.com.vng.zalopay.data.location.LocationStore;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorService;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
@@ -35,6 +36,7 @@ import vn.com.vng.zalopay.feedback.FeedbackFragment;
 import vn.com.vng.zalopay.bank.ui.BankSupportFragment;
 import vn.com.vng.zalopay.bank.ui.LinkAccountFragment;
 import vn.com.vng.zalopay.internal.di.modules.QRCodeModule;
+import vn.com.vng.zalopay.internal.di.modules.UserLocationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserSocketModule;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountFragment;
 import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
@@ -97,7 +99,8 @@ import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
                 UserFriendModule.class,
                 UserRedPacketModule.class,
                 QRCodeModule.class,
-                UserSocketModule.class
+                UserSocketModule.class,
+                UserLocationModule.class
 
         }
 )
@@ -108,6 +111,8 @@ public interface UserComponent {
     UserSession userSession();
 
     AccountStore.Repository accountRepository();
+
+    LocationStore.Repository locationRepository();
 
     ZaloPayRepository zaloPayRepository();
 
