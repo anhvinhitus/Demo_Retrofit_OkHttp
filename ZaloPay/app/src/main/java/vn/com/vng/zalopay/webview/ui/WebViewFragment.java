@@ -42,6 +42,7 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
  */
 public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.IWebViewListener {
 
+    protected ZPWebView mWebView;
     protected ZPWebViewProcessor mWebViewProcessor;
 
     private View layoutRetry;
@@ -106,15 +107,16 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         return mWebViewProcessor.getCurrentUrl();
     }
 
-    protected void initWebViewUserAgent(ZPWebView webView) {
+    protected void updateWebViewSettings() {
+
     }
 
     private void initWebView(View rootView) {
-        ZPWebView webView = (ZPWebView) rootView.findViewById(R.id.webview);
-        initWebViewUserAgent(webView);
-        mWebViewProcessor = new ZPWebViewProcessor(webView, this);
+        mWebView = (ZPWebView) rootView.findViewById(R.id.webview);
+        updateWebViewSettings();
+        mWebViewProcessor = new ZPWebViewProcessor(mWebView, this);
 
-        webView.setWebChromeClient(new WebChromeClient() {
+        mWebView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 Timber.d("WebLoading progress: %s", progress);
                 if (progress < 100 && mProgressBar.getVisibility() == ProgressBar.GONE) {

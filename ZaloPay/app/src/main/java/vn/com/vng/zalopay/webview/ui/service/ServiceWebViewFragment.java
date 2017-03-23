@@ -21,7 +21,6 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.webview.ui.IWebView;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
-import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 
 /**
@@ -58,8 +57,10 @@ public class ServiceWebViewFragment extends WebViewFragment implements IWebView 
     }
 
     @Override
-    protected void initWebViewUserAgent(ZPWebView webView) {
-        webView.setUserAgent(getUserAgentWebService());
+    protected void updateWebViewSettings() {
+        if (mWebView != null) {
+            mWebView.appendUserAgent(getUserAgentWebService());
+        }
     }
 
     private String getUserAgentWebService() {
