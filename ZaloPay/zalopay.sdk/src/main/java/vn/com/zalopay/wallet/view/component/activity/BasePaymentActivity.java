@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.IdRes;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,6 +21,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
@@ -31,8 +34,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
@@ -1194,7 +1201,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         ZPWUtils.applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
         //show transaction amount when ! withdraw
-        if (GlobalData.orderAmountTotal > 0 && GlobalData.getTransactionType() != ETransactionType.WITHDRAW) {
+        if (GlobalData.orderAmountTotal > 0 && GlobalData.getTransactionType() != ETransactionType.WITHDRAW && !GlobalData.isTranferMoneyChannel()) {
 
             setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal)));
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().description)) {
@@ -1227,7 +1234,34 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setView(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
             }
-        } else {
+        }
+        else if(GlobalData.isTranferMoneyChannel()) {// Show lable and image tranfer
+            //prevent capture screen
+            if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
+            {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+            }
+            setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal)));
+            setView(R.id.layout_detail, true);
+            setView(R.id.payment_description_label, false);
+            if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().description)) {
+                setText(R.id.text_description, GlobalData.getPaymentInfo().description);
+            }
+            if (GlobalData.getPaymentInfo().userTranfer != null) {
+                setText(R.id.text_zalopay_id, GlobalData.getPaymentInfo().userTranfer.zaloPayUserId);
+                setText(R.id.text_userTo, GlobalData.getPaymentInfo().userTranfer.zaloPayName);
+                findViewAndLoadUri(R.id.img_avatarFrom, GlobalData.getPaymentInfo().userTranfer.avatar);
+            }
+            if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().userInfo.avatar)) {
+                findViewAndLoadUri(R.id.img_avatarFrom,  GlobalData.getPaymentInfo().userTranfer.avatar);
+            }
+            //cade test
+            findViewAndLoadUri(R.id.img_avatarFrom, "https://www.gstatic.com/webp/gallery/1.sm.jpg");
+
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            String currentDateTimeString = format.format(new Date());
+            setText(R.id.text_date, currentDateTimeString);
+        }else {
             setView(R.id.payment_description_label, false);
             setView(R.id.price_linearlayout, false);
             setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
@@ -1953,6 +1987,18 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 }
             }
         }
+    }
+    // fresco load Uri
+
+
+    private SimpleDraweeView findViewAndLoadUri(@IdRes int viewId, String uri) {
+        SimpleDraweeView view = this.findAndPrepare(viewId);
+        view.setImageURI(Uri.parse(uri));
+        return view;
+    }
+    private SimpleDraweeView findAndPrepare(@IdRes int viewId) {
+        SimpleDraweeView view = (SimpleDraweeView) findViewById(viewId);
+        return view;
     }
     //endregion
 

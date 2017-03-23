@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/credit_card_holder_success"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -69,6 +70,151 @@
             android:gravity="center"
             android:textColor="@color/text_color_bold"
             android:textSize="@dimen/zpw_text_size_medium" />
+        <LinearLayout
+            android:id="@+id/layout_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/zpw_line_height"
+                android:paddingRight="@dimen/zpw_padding_45"
+                android:paddingLeft="@dimen/zpw_padding_45"
+                android:layout_marginBottom="@dimen/zpw_padding_20"
+                android:background="@color/line"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="@dimen/zpw_padding_15"
+                android:orientation="horizontal">
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/img_avatarFrom"
+                    android:layout_width="@dimen/zpw_width_avatar"
+                    android:layout_height="@dimen/zpw_width_avatar"
+                    android:layout_gravity="center"
+                    fresco:roundAsCircle="true"
+                    fresco:placeholderImage="@drawable/ava_default"
+                    fresco:actualImageScaleType="centerInside"/>
+                <ImageView
+                    android:id="@+id/zpw_payment_success_arow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/zpw_padding_15"
+                    android:layout_marginRight="@dimen/zpw_padding_15"
+                    android:src="@drawable/arow"/>
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/img_avatarTo"
+                    android:layout_width="@dimen/zpw_width_avatar"
+                    android:layout_height="@dimen/zpw_width_avatar"
+                    android:layout_gravity="center"
+                    fresco:roundAsCircle="true"
+                    fresco:placeholderImage="@drawable/ava_default"
+                    fresco:actualImageScaleType="centerInside"/>
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/zpw_padding_5"
+                android:paddingRight="@dimen/zpw_padding_5"
+                android:layout_marginBottom="@dimen/zpw_padding_10">
+                <TextView
+                    android:id="@+id/lable_UserTo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zpw_string_transfer_title"
+                    android:layout_alignParentLeft="true" />
+                <TextView
+                    android:id="@+id/text_userTo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="@integer/line_text_1"
+                    android:gravity="right"
+                    android:ellipsize = "end"
+                    android:layout_marginLeft="@dimen/zpw_padding_20"
+                    android:textColor="@color/text_color_bold"
+                    android:layout_alignParentRight="true"
+                    android:layout_toRightOf="@+id/lable_UserTo"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/zpw_padding_5"
+                android:paddingRight="@dimen/zpw_padding_5"
+                android:layout_marginBottom="@dimen/zpw_padding_10">
+                <TextView
+                    android:id="@+id/lable_zalopay_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zpw_string_transfer_zalopay_id"
+                    android:layout_alignParentLeft="true" />
+                <TextView
+                    android:id="@+id/text_zalopay_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="@integer/line_text_1"
+                    android:gravity="right"
+                    android:ellipsize = "end"
+                    android:layout_marginLeft="@dimen/zpw_padding_20"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/text_color_primary"
+                    android:layout_toRightOf="@+id/lable_zalopay_id"/>
 
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/zpw_padding_5"
+                android:paddingRight="@dimen/zpw_padding_5"
+                android:layout_marginBottom="@dimen/zpw_padding_10">
+                <TextView
+                    android:id="@+id/lable_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zpw_string_transfer_description"
+                    android:layout_alignParentLeft="true" />
+                <TextView
+                    android:id="@+id/text_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="@integer/line_text_1"
+                    android:gravity="right"
+                    android:ellipsize = "end"
+                    android:layout_marginLeft="@dimen/zpw_padding_20"
+                    android:textColor="@color/text_color_bold"
+                    android:layout_alignParentRight="true"
+                    android:layout_toRightOf="@+id/lable_description"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/zpw_padding_5"
+                android:paddingRight="@dimen/zpw_padding_5"
+                android:layout_marginBottom="@dimen/zpw_padding_10">
+                <TextView
+                    android:id="@+id/lable_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/zpw_string_transfer_date"
+                    android:layout_alignParentLeft="true" />
+                <TextView
+                    android:id="@+id/text_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="@integer/line_text_1"
+                    android:gravity="right"
+                    android:ellipsize = "end"
+                    android:layout_marginLeft="@dimen/zpw_padding_20"
+                    android:textColor="@color/text_color_bold"
+                    android:layout_alignParentRight="true"
+                    android:layout_toRightOf="@+id/lable_time"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

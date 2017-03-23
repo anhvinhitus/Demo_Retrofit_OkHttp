@@ -23,6 +23,7 @@ public class ZPWPaymentInfo extends BaseEntity<ZPWPaymentInfo> {
     public String chargeInfo;
     public DBaseMap mapBank;
     public UserInfo userInfo;
+    public UserInfo userTranfer;
     public LinkAccInfo linkAccInfo;
 
     public int[] forceChannelIds;
