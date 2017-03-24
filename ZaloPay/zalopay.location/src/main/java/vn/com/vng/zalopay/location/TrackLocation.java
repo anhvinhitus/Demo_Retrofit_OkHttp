@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Locale;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.location.LocationStore;
-import vn.com.vng.zalopay.location.UserLocation;
 
 /**
  * Created by khattn on 3/20/17.
@@ -112,27 +110,23 @@ public class TrackLocation extends Service {
         mRepository.saveLocationCache(latitude, longitude, getAddress(), System.currentTimeMillis());
     }
 
-    private static UserLocation getUpdateLocation(Context context, UserLocation location) {
+    private static AppLocation getUpdateLocation(Context context, AppLocation location) {
         if (location == null || Math.abs(System.currentTimeMillis() - location.timeget) > TIME_REFRESH) {
             findLocation(context);
             if (canGetLocation) {
                 saveLocation();
-                return new UserLocation(latitude, longitude, getAddress(), System.currentTimeMillis());
+                return new AppLocation(latitude, longitude, getAddress(), System.currentTimeMillis());
             }
             return null;
         }
         return location;
     }
 
-    public static UserLocation getLocation(Context context) {
+    public static AppLocation getLocation(Context context) {
         if(mRepository == null) {
             return null;
         }
-        UserLocation location = mRepository.getLocationCache();
+        AppLocation location = mRepository.getLocationCache();
         return getUpdateLocation(context, location);
-    }
-
-    public static List<UserLocation> getListLocation() {
-        return mRepository.getListLocation();
     }
 }

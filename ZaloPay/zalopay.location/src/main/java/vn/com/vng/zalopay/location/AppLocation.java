@@ -5,7 +5,7 @@ package vn.com.vng.zalopay.location;
  * Model of user's current location
  */
 
-public class UserLocation {
+public class AppLocation {
     public double latitude;
 
     public double longitude;
@@ -14,11 +14,11 @@ public class UserLocation {
 
     public long timeget;
 
-    public UserLocation() {
+    public AppLocation() {
 
     }
 
-    public UserLocation(double latitude, double longitude, String address, long timeget) {
+    public AppLocation(double latitude, double longitude, String address, long timeget) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;

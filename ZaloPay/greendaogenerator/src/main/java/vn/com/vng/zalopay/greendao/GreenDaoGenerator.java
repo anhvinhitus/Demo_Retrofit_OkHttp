@@ -10,9 +10,11 @@ import org.greenrobot.greendao.generator.ToMany;
 
 public class GreenDaoGenerator {
     private static final int APP_DB_VERSION = 56;
+    private static final int GLOBAL_DB_VERSION = 1;
 
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
+        Schema globalSchema = new Schema(GLOBAL_DB_VERSION, "vn.com.vng.zalopay.data.cache.global");
 
         //ADD TABLE
         addApplicationInfo(appSchema);
@@ -27,7 +29,12 @@ public class GreenDaoGenerator {
         addMerchantUser(appSchema);
         addApptransidLog(appSchema);
 
-        new DaoGenerator("./daogenerator/src-template/").generateAll(appSchema, "./data/src/main/java");
+        //ADD TABLE GLOBAL
+        addLocationLog(globalSchema);
+
+        DaoGenerator daoGenerator = new DaoGenerator("./daogenerator/src-template/");
+        daoGenerator.generateAll(appSchema, "./zalopay.data/src/main/java");
+        daoGenerator.generateAll(globalSchema, "./zalopay.data/src/main/java");
     }
 
     private static void addRedPacket(Schema appSchema) {
@@ -331,6 +338,15 @@ public class GreenDaoGenerator {
         entity.addIntProperty("sdk_result");
         entity.addIntProperty("server_result");
         entity.addStringProperty("source");
+    }
+
+    private static void addLocationLog(Schema schema) {
+        Entity entity = schema.addEntity("LocationLogGD");
+        entity.setConstructors(false);
+        entity.addLongProperty("timeget").notNull().unique().primaryKey();
+        entity.addDoubleProperty("latitude");
+        entity.addDoubleProperty("longitude");
+        entity.addStringProperty("address");
     }
 
 }

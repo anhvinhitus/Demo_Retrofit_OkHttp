@@ -26,7 +26,6 @@ import vn.com.vng.zalopay.bank.ui.BankSupportLinkCardDialog;
 import vn.com.vng.zalopay.banner.ui.fragment.BannerFragment;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
-import vn.com.vng.zalopay.location.LocationStore;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorService;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;

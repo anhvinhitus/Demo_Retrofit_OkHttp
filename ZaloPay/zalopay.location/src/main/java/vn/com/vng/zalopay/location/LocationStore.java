@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.location;
 
-import java.util.List;
-import java.util.Map;
+import vn.com.vng.zalopay.data.cache.global.LocationLogGD;
 
 /**
  * Created by khattn on 3/22/17.
@@ -11,18 +10,14 @@ import java.util.Map;
 public interface LocationStore {
 
     interface LocalStorage {
-        void save(double latitude, double longitude, String address, long timeget);
+        void save(LocationLogGD newLocation);
 
-        Map<String, String> get();
-
-        List<UserLocation> getListLocation();
+        LocationLogGD get();
     }
 
     interface Repository {
         Boolean saveLocationCache(double latitude, double longitude, String address, long timeget);
 
-        UserLocation getLocationCache();
-
-        List<UserLocation> getListLocation();
+        AppLocation getLocationCache();
     }
 }

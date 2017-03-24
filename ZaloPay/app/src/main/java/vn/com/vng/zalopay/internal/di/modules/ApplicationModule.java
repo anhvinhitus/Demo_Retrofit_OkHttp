@@ -28,6 +28,7 @@ import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.executor.JobExecutor;
 import vn.com.vng.zalopay.data.util.DBOpenHelper;
+import vn.com.vng.zalopay.data.util.GlobalDBOpenHelper;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
@@ -91,6 +92,16 @@ public class ApplicationModule {
         DaoMaster.OpenHelper helper = new DBOpenHelper(context, "zalopay.db");
         SQLiteDatabase db = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(db);
+        return daoMaster.newSession();
+    }
+
+    @Provides
+    @Singleton
+    @Named("globaldaosession")
+    vn.com.vng.zalopay.data.cache.global.DaoSession provideGlobalDaoSession(Context context) {
+        vn.com.vng.zalopay.data.cache.global.DaoMaster.OpenHelper helper = new GlobalDBOpenHelper(context, "zpglobal.db");
+        SQLiteDatabase db = helper.getWritableDatabase();
+        vn.com.vng.zalopay.data.cache.global.DaoMaster daoMaster = new vn.com.vng.zalopay.data.cache.global.DaoMaster(db);
         return daoMaster.newSession();
     }
 

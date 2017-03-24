@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.internal.di.components.DaggerApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
+import vn.com.vng.zalopay.location.TrackLocation;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.service.ZPTrackerAnswers;
 import vn.com.vng.zalopay.service.ZPTrackerApptransid;
@@ -108,6 +109,7 @@ public class AndroidApplication extends Application {
 
         initConfig();
         initIconFont();
+        initLocation();
     }
 
     private void initConfig() {
@@ -158,6 +160,9 @@ public class AndroidApplication extends Application {
         //   }
     }
 
+    private void initLocation() {
+        TrackLocation.init(appComponent.locationRepository());
+    }
 
     private void initAppComponent() {
         appComponent = DaggerApplicationComponent.builder()

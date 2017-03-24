@@ -31,7 +31,9 @@ import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
 import vn.com.vng.zalopay.internal.di.modules.AppTransIdLogModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
+import vn.com.vng.zalopay.internal.di.modules.AppLocationModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
+import vn.com.vng.zalopay.location.LocationStore;
 import vn.com.vng.zalopay.monitors.IMonitorReport;
 import vn.com.vng.zalopay.monitors.IMonitorTiming;
 import vn.com.vng.zalopay.navigation.Navigator;
@@ -55,7 +57,8 @@ import vn.com.vng.zalopay.utils.ImageLoader;
                 AppMonitorModule.class,
                 AppReactNativeModule.class,
                 AppResourceModule.class,
-                AppTransIdLogModule.class
+                AppTransIdLogModule.class,
+                AppLocationModule.class
         }
 )
 public interface ApplicationComponent {
@@ -104,6 +107,8 @@ public interface ApplicationComponent {
     ApplicationState applicationState();
 
     ApptransidLogStore.Repository appTransIdLogRepository();
+
+    LocationStore.Repository locationRepository();
 
     /*INJECT*/
 

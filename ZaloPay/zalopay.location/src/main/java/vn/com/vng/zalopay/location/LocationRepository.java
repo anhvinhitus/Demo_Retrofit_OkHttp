@@ -2,9 +2,7 @@ package vn.com.vng.zalopay.location;
 
 import android.text.TextUtils;
 
-import java.util.List;
-import java.util.Map;
-
+import vn.com.vng.zalopay.data.cache.global.LocationLogGD;
 
 /**
  * Created by khattn on 3/22/17.
@@ -13,9 +11,12 @@ import java.util.Map;
 
 public class LocationRepository implements LocationStore.Repository {
     private final LocationStore.LocalStorage mLocalStore;
+    private final LocationDataMapper mMapper;
 
-    public LocationRepository(LocationStore.LocalStorage localStorage) {
+    public LocationRepository(LocationStore.LocalStorage localStorage,
+                              LocationDataMapper mMapper) {
         this.mLocalStore = localStorage;
+        this.mMapper = mMapper;
     }
 
     @Override
@@ -23,27 +24,13 @@ public class LocationRepository implements LocationStore.Repository {
         if (latitude == 0 && longitude == 0 && TextUtils.isEmpty(address)) {
             return Boolean.FALSE;
         }
-        mLocalStore.save(latitude, longitude, address, timeget);
+        mLocalStore.save(mMapper.transform(new AppLocation(latitude, longitude, address, timeget)));
         return Boolean.TRUE;
     }
 
     @Override
-    public UserLocation getLocationCache() {
-        Map<String, String> map = mLocalStore.get();
-        UserLocation location = new UserLocation();
-        try {
-            location.latitude = Double.parseDouble(map.get("latitude"));
-            location.longitude = Double.parseDouble(map.get("longitude"));
-            location.address = map.get("address");
-            location.timeget = Long.parseLong(map.get("timeget"));
-        } catch (Exception e) {
-            return null;
-        }
-        return location;
-    }
-
-    @Override
-    public List<UserLocation> getListLocation() {
-        return mLocalStore.getListLocation();
+    public AppLocation getLocationCache() {
+        LocationLogGD location = mLocalStore.get();
+        return mMapper.transform(location);
     }
 }

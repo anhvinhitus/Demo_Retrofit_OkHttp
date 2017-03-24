@@ -34,6 +34,7 @@ import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
+import vn.com.vng.zalopay.location.LocationStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -67,6 +68,7 @@ import vn.com.vng.zalopay.utils.ConfigUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
+import vn.com.vng.zalopay.location.TrackLocation;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -219,7 +221,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     }
 
     public void initialize() {
-
         UserComponent userComponent = AndroidApplication.instance().getUserComponent();
         if (userComponent != null) {
             SDKApplication.getBuilder().setRetrofit(userComponent.retrofitConnector());
@@ -260,6 +261,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     }
 
     private void loadGatewayInfoPaymentSDK() {
+        TrackLocation.findLocation(mView.getContext());
         final ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
         UserInfo userInfo = new UserInfo();
         userInfo.zaloUserId = String.valueOf(mUser.zaloId);
