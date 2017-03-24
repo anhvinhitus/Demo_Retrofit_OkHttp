@@ -60,6 +60,7 @@ dependencies {
     compile libs.retrofit
     compile libs.retrofitConverter
     compile libs.retrofitLogging
+    compile libs.retrofitAdapter
     compile libs.okHttp
 
     compile libs.timber
@@ -74,4 +75,7 @@ dependencies {
     compile libs.dagger
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
+
+    compile libs.rxJava
+    compile libs.rxAndroid
 }
