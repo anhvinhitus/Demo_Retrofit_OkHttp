@@ -27,24 +27,18 @@ import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
 import vn.com.vng.zalopay.event.ReceiveOTPEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
-import vn.com.vng.zalopay.service.PaymentWrapper;
-import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
-
 
 public class UpdateProfileLevel2Activity extends BaseToolBarActivity
         implements IPreProfileView,
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
 
-    private String walletTransId = null;
     private boolean mLinkAccAfterUpdateProfile2 = false;
-    private PaymentWrapper paymentWrapper;
     private SweetAlertDialog mProgressDialog;
     private String mCurrentPhone = null;
     private ProfileSlidePagerAdapter mAdapter;
@@ -76,11 +70,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
         super.onCreate(savedInstanceState);
         presenter.attachView(this);
         initData();
-        initPaymentWrapper();
-    }
-
-    private void initPaymentWrapper() {
-        paymentWrapper = new PaymentWrapperBuilder().build();
     }
 
     private void initData() {
@@ -89,9 +78,7 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
         if (bundle == null) {
             return;
         }
-        walletTransId = bundle.getString(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID);
         mLinkAccAfterUpdateProfile2 = bundle.getBoolean(Constants.ARG_UPDATE_PROFILE2_AND_LINK_ACC);
-        Timber.d("initData, walletTransId %s", walletTransId);
     }
 
     @Override
@@ -183,14 +170,11 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
 
     @Override
     public void onConfirmOTPSuccess() {
-        Timber.d("onConfirmOTPSucess, walletTransId: %s", walletTransId);
+        Timber.d("onConfirmOTPSucess");
         presenter.saveUserPhone(mCurrentPhone);
         //Reload PaymentSDK for load new payment permission
         EventBus.getDefault().post(new RefreshPaymentSdkEvent());
-        if (needSaveCardBeforeFinish()) {
-            showToastUpdateProfileSuccess();
-            Timber.d("Confirm OTP success, in process save card.");
-        } else if (mLinkAccAfterUpdateProfile2) {
+        if (mLinkAccAfterUpdateProfile2) {
             showDialogConfirmLinkAccToContinuePay();
         } else if (getActivity() != null && !getActivity().isFinishing()) {
             showToastUpdateProfileSuccess();
@@ -218,37 +202,6 @@ public class UpdateProfileLevel2Activity extends BaseToolBarActivity
                         finishActivityWithResult(RESULT_OK);
                     }
                 });
-    }
-
-    private boolean needSaveCardBeforeFinish() {
-        if (TextUtils.isEmpty(walletTransId)) {
-            return false;
-        }
-        showLoading();
-        paymentWrapper.saveCardMap(walletTransId, new ZPWSaveMapCardListener() {
-            @Override
-            public void onSuccess() {
-                if (getActivity() == null) {
-                    return;
-                }
-                showToastLonger(getString(R.string.txt_link_card_success));
-                finishActivityWithResult(RESULT_OK);
-            }
-
-            @Override
-            public void onError(String s) {
-                if (getActivity() == null) {
-                    return;
-                }
-                if (TextUtils.isEmpty(s)) {
-                    showToast(getString(R.string.txt_link_card_fail));
-                } else {
-                    showToastLonger(s);
-                }
-                finishActivityWithResult(RESULT_OK);
-            }
-        });
-        return true;
     }
 
     private void finishActivityWithResult(int result) {
