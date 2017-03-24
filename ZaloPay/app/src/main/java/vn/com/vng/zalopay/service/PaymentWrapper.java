@@ -35,10 +35,8 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
-import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 
 /**
  * Created by huuhoa on 6/3/16.
@@ -99,9 +97,9 @@ public class PaymentWrapper {
     public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
         ZPWPaymentInfo paymentInfo = transform(order);
-        User mUser =  getUserComponent().currentUser();
+        User mUser = getUserComponent().currentUser();
         paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
-        paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName );
+        paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName);
         callPayAPI(activity, paymentInfo, forcedPaymentChannel);
     }
 
@@ -203,15 +201,6 @@ public class PaymentWrapper {
         }
     }
 
-    public void saveCardMap(String walletTransId, ZPWSaveMapCardListener listener) {
-        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        paymentInfo.userInfo = assignBaseUserInfo(paymentInfo.userInfo);
-        paymentInfo.walletTransID = walletTransId;
-
-        Timber.d("saveCardMap, start paymentsdk");
-        SDKApplication.saveCardMap(paymentInfo, listener);
-    }
-
     private boolean hasPendingOrder() {
         return (mPendingOrder != null);
     }
@@ -303,6 +292,7 @@ public class PaymentWrapper {
         mUserInfo.avatar = avatar;
         return mUserInfo;
     }
+
     private UserInfo createUserTransFerInfo(String displayName, String avatar, String zaloPayName) {
         UserInfo mUserInfo = new UserInfo();
         mUserInfo.userName = displayName;
@@ -310,6 +300,7 @@ public class PaymentWrapper {
         mUserInfo.avatar = avatar;
         return mUserInfo;
     }
+
     private UserInfo assignBaseUserInfo(UserInfo userInfo) {
         User user = null;
         if (getUserComponent() != null) {
@@ -437,12 +428,12 @@ public class PaymentWrapper {
         mNavigator.startDepositForResultActivity(mActivity);
     }
 
-    void startUpdateProfile2ForResult(String walletTransID) {
+    void startUpdateProfile2ForResult() {
         if (mActivity == null) {
             return;
         }
 
-        mNavigator.startUpdateProfile2ForResult(mActivity, walletTransID);
+        mNavigator.startUpdateProfile2ForResult(mActivity);
     }
 
     void startUpdateProfileBeforeLinkAcc() {
@@ -461,7 +452,7 @@ public class PaymentWrapper {
     }
 
     public interface IRedirectListener {
-        void startUpdateProfileLevel(String walletTransId);
+        void startUpdateProfileLevel();
 
         void startDepositForResult();
 

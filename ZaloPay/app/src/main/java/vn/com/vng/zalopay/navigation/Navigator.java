@@ -368,12 +368,8 @@ public class Navigator implements INavigator {
     }
 
     private Intent getUpdateProfileLevel2Activity(Context context,
-                                                  String walletTransID,
                                                   Boolean linkAccAfterUpdate) {
         Intent intent = new Intent(context, UpdateProfileLevel2Activity.class);
-        if (!TextUtils.isEmpty(walletTransID)) {
-            intent.putExtra(vn.com.vng.zalopay.domain.Constants.WALLETTRANSID, walletTransID);
-        }
         if (linkAccAfterUpdate != null) {
             intent.putExtra(Constants.ARG_UPDATE_PROFILE2_AND_LINK_ACC, linkAccAfterUpdate);
         }
@@ -381,21 +377,16 @@ public class Navigator implements INavigator {
     }
 
     private Intent getUpdateProfileLevel2Activity(Context context) {
-        return getUpdateProfileLevel2Activity(context, null, null);
-    }
-
-    private Intent getUpdateProfileLevel2Activity(Context context,
-                                                  String walletTransID) {
-        return getUpdateProfileLevel2Activity(context, walletTransID, null);
+        return getUpdateProfileLevel2Activity(context, null);
     }
 
     public void startUpdateProfileLevelBeforeLinkAcc(Activity activity) {
-        Intent intent = getUpdateProfileLevel2Activity(activity, null, true);
+        Intent intent = getUpdateProfileLevel2Activity(activity, true);
         activity.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_BEFORE_LINK_ACC);
     }
 
     public void startUpdateProfileLevelBeforeLinkAcc(Fragment fragment) {
-        Intent intent = getUpdateProfileLevel2Activity(fragment.getContext(), null, true);
+        Intent intent = getUpdateProfileLevel2Activity(fragment.getContext(), true);
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_BEFORE_LINK_ACC);
     }
 
@@ -411,25 +402,25 @@ public class Navigator implements INavigator {
     }
 
     @Override
-    public void startUpdateProfile2ForResult(Fragment fragment, String walletTransID) {
+    public void startUpdateProfile2ForResult(Fragment fragment) {
         if (fragment == null || fragment.getContext() == null) {
             Timber.w("Cannot start pre-profile activity due to NULL context");
             return;
         }
 
-        Intent intent = getUpdateProfileLevel2Activity(fragment.getContext(), walletTransID);
+        Intent intent = getUpdateProfileLevel2Activity(fragment.getContext());
 
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2);
     }
 
     @Override
-    public void startUpdateProfile2ForResult(Activity activity, String walletTransID) {
+    public void startUpdateProfile2ForResult(Activity activity) {
         if (activity == null) {
             Timber.w("Cannot start pre-profile activity due to NULL context");
             return;
         }
 
-        Intent intent = getUpdateProfileLevel2Activity(activity, walletTransID);
+        Intent intent = getUpdateProfileLevel2Activity(activity);
 
         activity.startActivityForResult(intent, Constants.REQUEST_CODE_UPDATE_PROFILE_LEVEL_2);
     }

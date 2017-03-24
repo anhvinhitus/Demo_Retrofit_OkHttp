@@ -21,17 +21,17 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
     }
 
     @Override
-    public void startUpdateProfileLevel(String walletTransId) {
+    public void startUpdateProfileLevel() {
         Object context = getContext();
-        Timber.d("startUpdateProfileLevel transId[%s] context [%s] navigator[%s]",
-                walletTransId, context, mNavigator);
+        Timber.d("startUpdateProfileLevel context [%s] navigator[%s]",
+                context, mNavigator);
         if (context == null || mNavigator == null) {
             return;
         }
         if (context instanceof Fragment) {
-            mNavigator.startUpdateProfile2ForResult((Fragment) context, walletTransId);
+            mNavigator.startUpdateProfile2ForResult((Fragment) context);
         } else if (context instanceof Activity) {
-            mNavigator.startUpdateProfile2ForResult((Activity) context, walletTransId);
+            mNavigator.startUpdateProfile2ForResult((Activity) context);
         }
     }
 
