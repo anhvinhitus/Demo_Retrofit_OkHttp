@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "386726389536",
-    "project_id": "zalo-pay"
+    "firebase_url": "https://zalo-pay.firebaseio.com",
+    "project_id": "zalo-pay",
+    "storage_bucket": "zalo-pay.appspot.com"
   },
   "client": [
     {
@@ -12,6 +14,10 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "386726389536-so691urinoogh801dk3sgvcgfjvde4jl.apps.googleusercontent.com",
+          "client_type": 3
+        },
         {
           "client_id": "386726389536-keiegcvb29n0avdsvue997u2g7sspqs0.apps.googleusercontent.com",
           "client_type": 3
@@ -34,7 +40,77 @@
           "other_platform_oauth_client": []
         },
         "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386726389536:android:4efc1a7f25b3e140",
+        "android_client_info": {
+          "package_name": "vn.com.vng.zalopay.sb1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "386726389536-so691urinoogh801dk3sgvcgfjvde4jl.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "386726389536-keiegcvb29n0avdsvue997u2g7sspqs0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKM_WVOFUvEsePdKKOwJPLBv_ZRRhLmcQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
           "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386726389536:android:409e7be80bcd743f",
+        "android_client_info": {
+          "package_name": "vn.com.vng.zalopay.stg1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "386726389536-so691urinoogh801dk3sgvcgfjvde4jl.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "386726389536-keiegcvb29n0avdsvue997u2g7sspqs0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKM_WVOFUvEsePdKKOwJPLBv_ZRRhLmcQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
         }
       }
     }
