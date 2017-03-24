@@ -511,22 +511,22 @@ public class GlobalData {
     /***
      * alwaw call this to set static listener and info.
      */
-    public static void setSDKData(Activity pActivity, ZPPaymentListener pPaymentListener, ZPWPaymentInfo pPaymentInfo, ZPPaymentOption pPaymentOption) throws Exception {
+    public static void setSDKData(Activity pActivity, ZPPaymentListener pPaymentListener, ZPPaymentOption pPaymentOption) throws Exception {
         if (!isAccessRight()) {
             throw new Exception("Violate Design Pattern! Only 'pay' static method of ZingPayService class can set application!");
         }
-
-        GlobalData.appID = pPaymentInfo.appID;
+        PaymentSessionInfo paymentSessionInfo = PaymentSessionInfo.shared();
+        GlobalData.mPaymentInfo = paymentSessionInfo.getPaymentInfo();
+        GlobalData.appID = GlobalData.mPaymentInfo.appID;
         GlobalData.mMerchantActivity = new WeakReference<Activity>(pActivity);
         GlobalData.mListener = pPaymentListener;
-        GlobalData.mPaymentInfo = pPaymentInfo;
         GlobalData.mPaymentOption = pPaymentOption;
 
         //reset data
         GlobalData.paymentResult = null;
         GlobalData.mTransactionPin = null;
         GlobalData.mUserProfile = null;
-        GlobalData.orderAmountTotal = pPaymentInfo.amount;
+        GlobalData.orderAmountTotal = GlobalData.mPaymentInfo.amount;
         GlobalData.orderAmountFee = 0;
         AdapterBase.existedMapCard = false;
 
@@ -547,7 +547,7 @@ public class GlobalData {
 
     public static Context getAppContext() {
         try {
-            return SDKApplication.getZaloPayContext();
+            return SDKApplication.getApplication();
         } catch (Exception e) {
             Log.e(GlobalData.class.getName(), e);
 
@@ -758,7 +758,7 @@ public class GlobalData {
     public static boolean shouldNativeWebFlow() {
         try {
             BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(GlobalData.getPaymentInfo().linkAccInfo.getBankCode()), BankConfig.class);
-            if(bankConfig != null && !bankConfig.isCoverBank()){
+            if (bankConfig != null && !bankConfig.isCoverBank()) {
                 return true;
             }
         } catch (Exception e) {

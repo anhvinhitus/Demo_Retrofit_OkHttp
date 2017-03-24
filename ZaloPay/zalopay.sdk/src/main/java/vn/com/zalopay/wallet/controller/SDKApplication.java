@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.controller;
 
 import android.app.Application;
-import android.content.Context;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
@@ -20,8 +19,10 @@ import vn.com.zalopay.wallet.datasource.request.RemoveMapCard;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.di.component.ApplicationComponent;
 import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
+import vn.com.zalopay.wallet.di.component.PaymentSessionComponent;
 import vn.com.zalopay.wallet.di.module.ApplicationModule;
 import vn.com.zalopay.wallet.di.module.ConfigurationModule;
+import vn.com.zalopay.wallet.di.module.PaymentSessionModule;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
@@ -32,6 +33,20 @@ import vn.com.zalopay.wallet.utils.ZPWUtils;
 
 public class SDKApplication extends Application {
     protected static ApplicationComponent mApplicationComponent;
+    protected static PaymentSessionComponent mPaymentSessionComponent;
+
+    public static PaymentSessionComponent createPaymentInfoComponent(ZPWPaymentInfo pPaymentInfo) {
+        mPaymentSessionComponent = getApplicationComponent().plus(new PaymentSessionModule(pPaymentInfo));
+        return mPaymentSessionComponent;
+    }
+
+    public static PaymentSessionComponent getPaymentSessionComponent() {
+        return mPaymentSessionComponent;
+    }
+
+    public static void releasePaymentSession() {
+        mPaymentSessionComponent = null;
+    }
 
     public static ApplicationComponent getApplicationComponent() {
         return mApplicationComponent;
@@ -81,16 +96,12 @@ public class SDKApplication extends Application {
     }
 
     /***
-     * app call to save card
-     * rule: user just can save card if in level 2.
-     * user in level 1, after pay successfully, he/she need to back app update level to 2,
-     * after that, app call this to auto save card which paid before again.
+     *this is not run any more
      *
      * @param pPaymentInfo
      * @param pListener
      */
     public synchronized static void saveCardMap(ZPWPaymentInfo pPaymentInfo, ZPWSaveMapCardListener pListener) {
-        SDKPayment.saveCard(pPaymentInfo, pListener);
     }
 
     /***
@@ -222,7 +233,7 @@ public class SDKApplication extends Application {
         }).execureForMerchant();
     }
 
-    public static Application getInstance() {
+    public static Application getApplication() {
         return getApplicationComponent().application();
     }
 
@@ -232,9 +243,5 @@ public class SDKApplication extends Application {
 
     public static SDKConfiguration.Builder getBuilder() {
         return getApplicationComponent().sdkConfiguration().getBuilder();
-    }
-
-    public static Context getZaloPayContext() throws Exception {
-        return getApplicationComponent().application().getApplicationContext();
     }
 }

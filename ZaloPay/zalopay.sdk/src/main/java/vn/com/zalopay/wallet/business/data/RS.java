@@ -29,16 +29,16 @@ public class RS {
     }
 
     public static String getResourceName(int pResourceID) {
-        if (SDKApplication.getInstance() != null) {
-            return SDKApplication.getInstance().getResources().getResourceEntryName(pResourceID);
+        if (SDKApplication.getApplication() != null) {
+            return SDKApplication.getApplication().getResources().getResourceEntryName(pResourceID);
         }
         return null;
     }
 
     private static int get(String pName, String pDef) {
-        if (SDKApplication.getInstance() != null) {
-            int ret = SDKApplication.getInstance().getBaseContext().getResources()
-                    .getIdentifier(pName, pDef, SDKApplication.getInstance().getPackageName());
+        if (SDKApplication.getApplication() != null) {
+            int ret = SDKApplication.getApplication().getBaseContext().getResources()
+                    .getIdentifier(pName, pDef, SDKApplication.getApplication().getPackageName());
             //Log.d("RS", pDef + pName + ret);
             return ret;
         } else {

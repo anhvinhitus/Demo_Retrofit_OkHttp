@@ -18,11 +18,8 @@ import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.business.validation.CValidation;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
-import vn.com.zalopay.wallet.datasource.request.SaveCard;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
@@ -37,40 +34,9 @@ import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
  * payment controller class
  */
 public class SDKPayment {
-    /**
-     * Save card when pay or mapcard finish
-     *
-     * @param pPaymentInfo payment info
-     * @param pListener    call back
-     */
-    public synchronized static void saveCard(ZPWPaymentInfo pPaymentInfo, ZPWSaveMapCardListener pListener) {
-        try {
-            if (SDKApplication.getZaloPayContext() == null || pPaymentInfo == null || TextUtils.isEmpty(pPaymentInfo.walletTransID)) {
-                if (pListener != null)
-                    pListener.onError("Dữ liệu không hợp lệ");
-                return;
-            }
-
-            GlobalData.initApplication(pPaymentInfo, pListener);
-
-            SaveCard saveCreditCardTask = new SaveCard(null, pPaymentInfo.walletTransID);
-            saveCreditCardTask.setOnSaveCardListener(pListener);
-            saveCreditCardTask.makeRequest();
-
-        } catch (Exception e) {
-            Log.e("saveCardMap", e != null ? e.getMessage() : "error");
-
-            if (pListener != null)
-                pListener.onError(null);
-
-            return;
-        }
-    }
-
     /***
      * merchant check whether
      * use is opening sdk for payment
-     *
      * @return
      */
     public synchronized static boolean isOpenSdk() {
@@ -79,8 +45,7 @@ public class SDKPayment {
 
     /***
      * merchant need to call this to check whether
-     * can close sdk right away before calling closeSdk();
-     *
+     * can close sdk right away before calling closeSdk()
      * @return
      */
     public synchronized static boolean canCloseSdk() {
@@ -134,22 +99,21 @@ public class SDKPayment {
         pay(owner, info, option, listener, pExtraParams);
     }
 
-    private synchronized static void pay(final Activity pMerchantActivity, final ZPWPaymentInfo info, final ZPPaymentOption option, final ZPPaymentListener listener, Object... pExtraParams) {
+    private synchronized static void pay(final Activity pMerchantActivity, final ZPWPaymentInfo pPaymentInfo, final ZPPaymentOption pPaymentOption, final ZPPaymentListener pPaymentListener, Object... pExtraParams) {
 
         //validate payment info and activity
-        if (pMerchantActivity == null || info == null) {
-            if (listener != null) {
-                listener.onError(new CError(EPayError.COMPONENT_NULL, "Component (activity,payment info) is null"));
+        if (pMerchantActivity == null || pPaymentInfo == null) {
+            if (pPaymentListener != null) {
+                pPaymentListener.onError(new CError(EPayError.COMPONENT_NULL, "Component (activity,payment info) is null"));
             }
             return;
         }
-
         //set listener and data payment to global static
-        try {
-            GlobalData.setSDKData(pMerchantActivity, listener, info, option);
+        try{
+            SDKApplication.createPaymentInfoComponent(pPaymentInfo);
+            GlobalData.setSDKData(pMerchantActivity, pPaymentListener, pPaymentOption);
         } catch (Exception e) {
             onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_input_error), EPayError.DATA_INVALID);
-
             return;
         }
         //set fingerprint listener from merchant
@@ -160,27 +124,16 @@ public class SDKPayment {
                 }
             }
         }
-
-        Log.d("pay", "===info payment===" + GsonUtils.toJsonString(info));
-
+        Log.d("pay", "===info payment===" + GsonUtils.toJsonString(pPaymentInfo));
         //check where context is end?
         try {
-            SDKApplication.getZaloPayContext();
-
             GlobalData.getTransactionType();
-
             Log.d("pay", "===transtype: ===" + GlobalData.getTransactionType().toString());
-
         } catch (Exception e) {
-
             Log.e("pay", e);
-
             onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_context_error), EPayError.DATA_INVALID);
-
             return;
         }
-
-
         try {
             //check internet connection
             if (!ConnectionUtil.isOnline(pMerchantActivity)) {
@@ -192,16 +145,13 @@ public class SDKPayment {
 
                 return;
             }
-
             CValidation validation = new CValidation();
             //validate params order info
-            String validateMessage = validation.onValidateOrderInfo(info);
-
+            String validateMessage = validation.onValidateOrderInfo(pPaymentInfo);
             if (!TextUtils.isEmpty(validateMessage)) {
                 onReturnCancel(validateMessage, EPayError.DATA_INVALID);
                 return;
             }
-
             //validate user
             String validateUser = validation.onValidateUser();
 
