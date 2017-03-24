@@ -146,7 +146,7 @@ public class NotificationHelper {
             this.shouldUpdateTransAndBalance(notify);
 
             if (notify.transid > 0) {
-                CShareDataWrapper.notifyTransactionFinish(notify.transid);
+                CShareDataWrapper.notifyTransactionFinish(notify.transid, notify.timestamp);
             }
         }
 
