@@ -288,14 +288,22 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @Override
     public void refreshInsideApps(List<AppResource> list) {
         Timber.d("refreshInsideApps list: [%s]", list.size());
-        if (mAdapter == null || mAdapterBottomApp == null) {
-            return;
-        }
+//        if (mAdapter == null || mAdapterBottomApp == null) {
+//            return;
+//        }
 //        mAdapter.setData(presenter.getTopAndBottomApp(list,true));
 //        if(list.size() > presenter.mNumberTopApp) {
 //            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list,false));
 //            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list,false).size() ,SPAN_COUNT_APPLICATION));
 //        }
+
+        if(mAdapter == null) {
+            return;
+        }
+
+        List<AppResource> listNew = presenter.setBannerInListApp(list);
+        mAdapter.setData(listNew);
+
     }
 
     @Override
