@@ -165,6 +165,7 @@ android {
             buildConfigField 'String', 'APP22_URL', '"https://comerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
             buildConfigField 'int', 'ENVIRONMENT', '3'
+            applicationIdSuffix ""
         }
 
         sandbox {
@@ -212,6 +213,7 @@ android {
             buildConfigField 'String', 'APP22_URL', '"https://comerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-1"'
             buildConfigField 'int', 'ENVIRONMENT', '3'
+            applicationIdSuffix ""
         }
 
         internalSandbox {
