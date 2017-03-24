@@ -24,8 +24,6 @@ import timber.log.Timber;
  * Copy from react-native-code-push
  */
 public class FileUtils {
-
-    public static final String AUTHORITY_PROVIDER = "vn.com.vng.zalopay.provider";
     private static final int WRITE_BUFFER_SIZE = 1024 * 8;
 
     public static void copyDirectoryContents(String sourceDirectoryPath, String destinationDirectoryPath)

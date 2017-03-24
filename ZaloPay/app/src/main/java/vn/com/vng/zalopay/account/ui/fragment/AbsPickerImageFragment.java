@@ -52,7 +52,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
 
         Timber.d("getCaptureImageOutputUri %s", photoFile);
         if (photoFile != null) {
-            outputFileUri = FileProvider.getUriForFile(getContext(), FileUtils.AUTHORITY_PROVIDER, photoFile);
+            outputFileUri = FileProvider.getUriForFile(getContext(), getString(R.string.file_provider), photoFile);
         }
         return outputFileUri;
     }

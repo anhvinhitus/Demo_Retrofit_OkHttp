@@ -62,12 +62,6 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission-sdk-23 android:name="android.permission.READ_SMS" />
 
-    <permission
-        android:name="vn.com.vng.zalopay.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
-    <uses-permission android:name="vn.com.vng.zalopay.permission.C2D_MESSAGE" />
-
     <application
         android:name=".AndroidApplication"
         android:allowBackup="false"
@@ -459,7 +453,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="vn.com.vng.zalopay.provider"
+            android:authorities="@string/file_provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
