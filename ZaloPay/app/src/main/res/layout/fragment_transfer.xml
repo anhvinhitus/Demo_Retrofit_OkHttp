@@ -17,14 +17,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/background"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/spacing.medium.t">
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtError"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="top"
+                android:background="@color/background_snackbar"
+                android:gravity="center"
+                android:text="@string/min_money"
+                android:textColor="@color/txt_title_check_internet"
+                android:visibility="gone" />
 
             <LinearLayout
+                android:id="@+id/layout_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/spacing.medium.t"
+                android:paddingTop="@dimen/spacing.medium.t">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/imgAvatar"
@@ -50,11 +63,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_dynamic_money"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing.medium.t"
                 android:background="@color/white"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="visible">
 
                 <View
                     android:layout_width="match_parent"
@@ -78,6 +92,70 @@
                     android:hint="@string/hint_message"
                     android:inputType="text|textCapSentences"
                     android:maxLength="@integer/max_length_message" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_fixed_money"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/spacing.small.t"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/separate"
+                    android:layout_marginLeft="@dimen/spacing.medium"
+                    android:layout_marginRight="@dimen/spacing.medium"
+                    android:background="@color/separate" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|bottom"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:textColor="@color/txt_item_main"
+                        android:textSize="@dimen/textsize.large.l"
+                        tools:text="100.000" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="@dimen/spacing.tiny"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="@string/zpw_string_vnd_success"
+                        android:textColor="@color/txt_item_main"
+                        android:textSize="@dimen/textsize.tiny" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtTransferMsg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/spacing.medium"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="@dimen/spacing.medium.s"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:textColor="@color/txt_item_main"
+                    tools:text="@string/transfer_money_note" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/separate"
+                    android:background="@color/separate" />
             </LinearLayout>
 
             <Button
