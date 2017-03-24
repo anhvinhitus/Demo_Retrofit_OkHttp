@@ -175,6 +175,7 @@ public class RS {
         public static final String zpw_string_title_payment_gateway_confirm_topup = "zpw_string_title_payment_gateway_confirm_topup";
         public static final String zpw_string_title_payment_gateway_confirm_tranfer = "zpw_string_title_payment_gateway_confirm_tranfer";
         public static final String zpw_string_title_payment_gateway_confirm_withdraw = "zpw_string_title_payment_gateway_confirm_withdraw";
+        public static final String zpw_string_transfer_zalopay_id_null = "zpw_string_transfer_zalopay_id_null";
 
         public static final String zpw_string_merchant_creditcard_3ds_url_prefix = "zpw_string_merchant_creditcard_3ds_url_prefix";
         public static final String zpw_font_regular = "zpw_font_regular";

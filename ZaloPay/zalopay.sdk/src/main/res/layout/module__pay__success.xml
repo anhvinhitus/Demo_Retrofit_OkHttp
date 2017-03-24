@@ -38,7 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/zpw_padding_10">
 
             <TextView
                 android:id="@+id/payment_price_label"
@@ -103,8 +104,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/zpw_padding_15"
-                    android:layout_marginRight="@dimen/zpw_padding_15"
-                    android:src="@drawable/arow"/>
+                    android:layout_marginRight="@dimen/zpw_padding_15" />
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/img_avatarTo"
                     android:layout_width="@dimen/zpw_width_avatar"
@@ -194,7 +194,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/zpw_padding_5"
                 android:paddingRight="@dimen/zpw_padding_5"
-                android:layout_marginBottom="@dimen/zpw_padding_10">
+                android:layout_marginBottom="@dimen/zpw_padding_15">
                 <TextView
                     android:id="@+id/lable_time"
                     android:layout_width="wrap_content"
@@ -202,7 +202,7 @@
                     android:text="@string/zpw_string_transfer_date"
                     android:layout_alignParentLeft="true" />
                 <TextView
-                    android:id="@+id/text_date"
+                    android:id="@+id/text_transfer_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="@integer/line_text_1"
