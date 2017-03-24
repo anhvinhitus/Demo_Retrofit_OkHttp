@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ScrollView;
@@ -27,6 +26,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
@@ -68,11 +68,33 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     @BindView(R.id.tvZaloPayName)
     TextView mTextViewZaloPayName;
 
+    @BindView(R.id.layout_profile)
+    View mLayoutProfile;
+
+    @BindView(R.id.txtError)
+    TextView mTxtError;
+
+    /* Layout Transfer dynamic money start.*/
+    @BindView(R.id.layout_dynamic_money)
+    View mLayoutDynamicMoney;
+
     @BindView(R.id.edtAmount)
     MoneyEditText mAmountView;
 
     @BindView(R.id.edtTransferMsg)
     ZPEditText mEdtMessageView;
+    /* Layout Transfer dynamic money end.*/
+
+    /* Layout Transfer fixed money start.*/
+    @BindView(R.id.layout_fixed_money)
+    View mLayoutFixedMoney;
+
+    @BindView(R.id.txtAmount)
+    TextView mTxtAmount;
+
+    @BindView(R.id.txtTransferMsg)
+    TextView mTxtTransferMsg;
+    /* Layout Transfer fixed money end.*/
 
     @BindView(R.id.btnContinue)
     View btnContinue;
@@ -105,16 +127,6 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         mRootView.setOnKeyboardStateListener(this);
 
         mPresenter.initData(argument);
-    }
-
-    @Override
-    public void disableEditAmountAndMessage() {
-        mAmountView.setFocusable(false);
-        mAmountView.setFocusableInTouchMode(false);
-        mAmountView.setInputType(InputType.TYPE_NULL);
-        mEdtMessageView.setFocusable(false);
-        mEdtMessageView.setFocusableInTouchMode(false);
-        mEdtMessageView.setInputType(InputType.TYPE_NULL);
     }
 
     @Override
@@ -183,12 +195,33 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
-        mAmountView.validate();
-        mPresenter.handleDoTransfer(mAmountView.getAmount());
+        mPresenter.handleOnClickContinue();
     }
 
     @Override
-    public void setInitialValue(long currentAmount, String currentMessage) {
+    public void showErrorTransferFixedMoney(String error) {
+        mTxtError.setText(error);
+        mTxtError.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideErrorTransferFixedMoney() {
+        mTxtError.setText("");
+        mTxtError.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setInitialFixedValue(long currentAmount, String currentMessage) {
+        mTxtAmount.setText(CurrencyUtil.formatCurrency(currentAmount, false));
+        mTxtTransferMsg.setText(currentMessage);
+
+        mLayoutProfile.setBackgroundResource(R.color.white);
+        mLayoutDynamicMoney.setVisibility(View.GONE);
+        mLayoutFixedMoney.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setInitialDynamicValue(long currentAmount, String currentMessage) {
         mEdtMessageView.setText(currentMessage);
 
         if (currentAmount > 0) {
@@ -199,6 +232,20 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
         mAmountView.setSelection(mAmountView.length());
         mAmountView.validate();
+
+        mLayoutProfile.setBackgroundResource(R.color.background);
+        mLayoutDynamicMoney.setVisibility(View.VISIBLE);
+        mLayoutFixedMoney.setVisibility(View.GONE);
+    }
+
+    @Override
+    public long getEdtAmount() {
+        return mAmountView.getAmount();
+    }
+
+    @Override
+    public boolean validateEdtAmount() {
+        return mAmountView.validate();
     }
 
     @Override

@@ -11,6 +11,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  */
 public interface ITransferView extends ILoadDataView {
     Activity getActivity();
+
     Fragment getFragment();
 
     void setEnableBtnContinue(boolean isEnable);
@@ -33,7 +34,9 @@ public interface ITransferView extends ILoadDataView {
      */
     void updateReceiverInfo(String displayName, String avatar, String zalopayName);
 
-    void setInitialValue(long currentAmount, String currentMessage);
+    void setInitialDynamicValue(long currentAmount, String currentMessage);
+
+    void setInitialFixedValue(long currentAmount, String currentMessage);
 
     void showDialogThenClose(String content, String title, int dialogType);
 
@@ -41,5 +44,11 @@ public interface ITransferView extends ILoadDataView {
 
     void setMinMaxMoney(long min, long max);
 
-    void disableEditAmountAndMessage();
+    boolean validateEdtAmount();
+
+    long getEdtAmount();
+
+    void showErrorTransferFixedMoney(String error);
+
+    void hideErrorTransferFixedMoney();
 }
