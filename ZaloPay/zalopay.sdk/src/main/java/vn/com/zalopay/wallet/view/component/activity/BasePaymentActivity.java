@@ -1234,11 +1234,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setView(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
             }
-        }
-        else if(GlobalData.isTranferMoneyChannel()) {// Show lable and image tranfer
+        } else if (GlobalData.isTranferMoneyChannel()) {// Show detail tranfer
             //prevent capture screen
-            if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
-            {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
             }
             setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal)));
@@ -1247,21 +1245,24 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().description)) {
                 setText(R.id.text_description, GlobalData.getPaymentInfo().description);
             }
-            if (GlobalData.getPaymentInfo().userTranfer != null) {
-                setText(R.id.text_zalopay_id, GlobalData.getPaymentInfo().userTranfer.zaloPayUserId);
-                setText(R.id.text_userTo, GlobalData.getPaymentInfo().userTranfer.zaloPayName);
-                findViewAndLoadUri(R.id.img_avatarFrom, GlobalData.getPaymentInfo().userTranfer.avatar);
+            if (GlobalData.getPaymentInfo().userTransfer != null) {
+                if (TextUtils.isEmpty(GlobalData.getPaymentInfo().userTransfer.zaloPayName)) {// check zalo pay ID
+                    setText(R.id.text_zalopay_id, GlobalData.getStringResource(RS.string.zpw_string_transfer_zalopay_id_null));
+                } else {
+                    setText(R.id.text_zalopay_id, GlobalData.getPaymentInfo().userTransfer.zaloPayName);
+                }
+
+                setText(R.id.text_userTo, GlobalData.getPaymentInfo().userTransfer.userName);
+                findViewAndLoadUri(R.id.img_avatarTo, GlobalData.getPaymentInfo().userTransfer.avatar);
             }
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().userInfo.avatar)) {
-                findViewAndLoadUri(R.id.img_avatarFrom,  GlobalData.getPaymentInfo().userTranfer.avatar);
+                findViewAndLoadUri(R.id.img_avatarFrom, GlobalData.getPaymentInfo().userInfo.avatar);
             }
             //cade test
-            findViewAndLoadUri(R.id.img_avatarFrom, "https://www.gstatic.com/webp/gallery/1.sm.jpg");
-
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm ");
             String currentDateTimeString = format.format(new Date());
-            setText(R.id.text_date, currentDateTimeString);
-        }else {
+            setTransferDate(currentDateTimeString);
+        } else {
             setView(R.id.payment_description_label, false);
             setView(R.id.price_linearlayout, false);
             setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
@@ -1996,9 +1997,14 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         view.setImageURI(Uri.parse(uri));
         return view;
     }
+
     private SimpleDraweeView findAndPrepare(@IdRes int viewId) {
         SimpleDraweeView view = (SimpleDraweeView) findViewById(viewId);
         return view;
+    }
+
+    public void setTransferDate(String pDate) {
+        setText(R.id.text_transfer_date, pDate);
     }
     //endregion
 

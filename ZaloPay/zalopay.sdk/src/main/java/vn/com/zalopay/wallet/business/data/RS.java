@@ -48,7 +48,7 @@ public class RS {
     }
 
     public static final class string {
-        public static final String payment_success_label    =   "payment_success_label";
+        public static final String payment_success_label = "payment_success_label";
         public static final String zpw_update_level_inform_content = "zpw_update_level_inform_content";
         public static final String zpw_loading_website_message = "zpw_loading_website_message";
         public static final String zpw_alert_error_networking_when_load_banklist = "zpw_alert_error_networking_when_load_banklist";
@@ -164,6 +164,7 @@ public class RS {
         public static final String zpw_string_title_payment_gateway_confirm_topup = "zpw_string_title_payment_gateway_confirm_topup";
         public static final String zpw_string_title_payment_gateway_confirm_tranfer = "zpw_string_title_payment_gateway_confirm_tranfer";
         public static final String zpw_string_title_payment_gateway_confirm_withdraw = "zpw_string_title_payment_gateway_confirm_withdraw";
+        public static final String zpw_string_transfer_zalopay_id_null = "zpw_string_transfer_zalopay_id_null";
 
         public static final String zpw_string_merchant_creditcard_3ds_url_prefix = "zpw_string_merchant_creditcard_3ds_url_prefix";
         public static final String zpw_font_regular = "zpw_font_regular";

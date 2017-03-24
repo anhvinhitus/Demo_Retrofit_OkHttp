@@ -340,7 +340,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         if (mView == null) {
             return;
         }
-
         paymentWrapper.transfer(mView.getActivity(), order, mTransaction.displayName, mTransaction.avatar, mTransaction.phoneNumber, mTransaction.zaloPayName);
         hideLoading();
     }

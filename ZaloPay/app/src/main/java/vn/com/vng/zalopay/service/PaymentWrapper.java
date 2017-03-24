@@ -99,7 +99,9 @@ public class PaymentWrapper {
     public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
         ZPWPaymentInfo paymentInfo = transform(order);
-        paymentInfo.userInfo = createUserInfo(displayName, avatar, phoneNumber, zaloPayName);
+        User mUser =  getUserComponent().currentUser();
+        paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
+        paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName );
         callPayAPI(activity, paymentInfo, forcedPaymentChannel);
     }
 
@@ -298,9 +300,16 @@ public class PaymentWrapper {
         mUserInfo.phoneNumber = phoneNumber;
         mUserInfo.userName = displayName;
         mUserInfo.zaloPayName = zaloPayName;
+        mUserInfo.avatar = avatar;
         return mUserInfo;
     }
-
+    private UserInfo createUserTransFerInfo(String displayName, String avatar, String zaloPayName) {
+        UserInfo mUserInfo = new UserInfo();
+        mUserInfo.userName = displayName;
+        mUserInfo.zaloPayName = zaloPayName;
+        mUserInfo.avatar = avatar;
+        return mUserInfo;
+    }
     private UserInfo assignBaseUserInfo(UserInfo userInfo) {
         User user = null;
         if (getUserComponent() != null) {

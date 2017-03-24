@@ -371,6 +371,7 @@
     <string name="zpw_string_transfer_description">Lời nhắn</string>
     <string name="zpw_string_transfer_zalopay_id">Zalo Pay ID</string>
     <string name="zpw_string_transfer_date">Thời gian</string>
+    <string name="zpw_string_transfer_zalopay_id_null">Chưa cập nhật</string>
     <string name="zpw_string_zalopay_name_label">Zalo Pay ID</string>
     <string name="zpw_string_transfer_price">Phí dịch vụ</string>
     <string name="zpw_string_transfer_id_card">Số thẻ</string>
