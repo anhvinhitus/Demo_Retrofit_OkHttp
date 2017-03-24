@@ -157,6 +157,10 @@ public class MessageParser implements Parser {
     }
 
     private NotificationData processRecoveryMessage(RecoveryMessage message) {
+        if (message.servermessagetype != ServerMessageType.PUSH_NOTIFICATION.getValue()) {
+            return null;
+        }
+
         Event event = processPushMessage(message.data);
         Timber.d("event %s", event);
         if (event instanceof NotificationData) {
