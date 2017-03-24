@@ -1258,10 +1258,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().userInfo.avatar)) {
                 findViewAndLoadUri(R.id.img_avatarFrom, GlobalData.getPaymentInfo().userInfo.avatar);
             }
-            //cade test
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm ");
-            String currentDateTimeString = format.format(new Date());
-            setTransferDate(currentDateTimeString);
+
+            Long paymentTime = GlobalData.getPaymentInfo().appTime;
+            if(paymentTime == null || paymentTime == 0)
+            {
+                paymentTime = new Date().getTime();
+            }
+            setTransferDate(ZPWUtils.convertDateTime(paymentTime));
         } else {
             setView(R.id.payment_description_label, false);
             setView(R.id.price_linearlayout, false);

@@ -126,7 +126,7 @@ public class ZPWUtils {
 
     public static String convertDateTime(long timestamp) {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             Date date = new Date(timestamp);
             return dateFormat.format(date);
         } catch (Exception e) {

@@ -822,6 +822,21 @@ public abstract class AdapterBase {
                             mResponseStatus.returncode = 1;
                             mResponseStatus.returnmessage = GlobalData.getStringResource(RS.string.payment_success_label);
                         }
+                        /***
+                         * tranfer money exception case
+                         *  show time in success screen
+                         *  need to update time again from success notification
+                         */
+                        if(GlobalData.isTranferMoneyChannel() && pAdditionParams.length == 2)
+                        {
+                            try {
+                                Long paymentTime = Long.parseLong(pAdditionParams[1].toString());
+                                GlobalData.getPaymentInfo().appTime = paymentTime;
+                            }catch (Exception ex)
+                            {
+                                Log.e(this,ex);
+                            }
+                        }
                         showTransactionSuccessView();
                     } else {
                         Log.d(this, "transId is null");
