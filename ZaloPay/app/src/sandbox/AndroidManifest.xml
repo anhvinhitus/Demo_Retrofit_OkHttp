@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- Permissions -->
+    <application>
+        <permission
+            android:name="vn.com.vng.zalopay.sb1.permission.C2D_MESSAGE"
+            android:protectionLevel="signature" />
+
+        <uses-permission android:name="vn.com.vng.zalopay.permission.sb1.C2D_MESSAGE" />
+    </application>
+</manifest>
