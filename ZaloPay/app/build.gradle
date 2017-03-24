@@ -41,7 +41,7 @@ android {
     buildToolsVersion cfg.buildToolsVersion
 
     defaultConfig {
-        applicationId "vn.com.vng.zalopay"
+        applicationId cfg.applicationId
         minSdkVersion minSdk
         targetSdkVersion cfg.targetSdk
         versionCode 199
@@ -49,7 +49,6 @@ android {
 
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
         buildConfigField 'int', 'ZALOPAY_APP_ID', '1'
-        resValue "string", "file_provider", "vn.com.vng.zalopay.provider"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -182,7 +181,6 @@ android {
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
             buildConfigField 'int', 'ENVIRONMENT', '1'
             applicationIdSuffix ".sb1"
-            resValue "string", "file_provider", "vn.com.vng.zalopay.provider.sb1"
         }
 
         staging {
@@ -299,6 +297,11 @@ android {
         }
     }
 
+    productFlavors.all {
+        def final file_provider = cfg.applicationId + applicationIdSuffix + ".provider";
+        resValue "string", "file_provider", file_provider
+        buildConfigField "String", "FILE_AUTHORITY", "\"" + file_provider + "\""
+    }
 
     lintOptions {
 
