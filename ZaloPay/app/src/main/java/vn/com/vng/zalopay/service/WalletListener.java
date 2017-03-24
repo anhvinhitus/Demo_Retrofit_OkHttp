@@ -67,23 +67,9 @@ class WalletListener implements ZPPaymentListener {
                 case ZPC_TRANXSTATUS_UPGRADE:
                     //Hien update profile level 2
                     if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startUpdateProfile2ForResult(null);
+                        mPaymentWrapper.startUpdateProfile2ForResult();
                     } else {
-                        mPaymentWrapper.mRedirectListener.startUpdateProfileLevel(null);
-                    }
-
-                    paymentIsCompleted = false; // will continue after update profile
-                    break;
-                case ZPC_TRANXSTATUS_UPGRADE_SAVECARD:
-                    String walletTransId = null;
-                    if (pPaymentResult.paymentInfo != null) {
-                        walletTransId = pPaymentResult.paymentInfo.walletTransID;
-                    }
-                    //Hien update profile level 2
-                    if (mPaymentWrapper.mRedirectListener == null) {
-                        mPaymentWrapper.startUpdateProfile2ForResult(walletTransId);
-                    } else {
-                        mPaymentWrapper.mRedirectListener.startUpdateProfileLevel(walletTransId);
+                        mPaymentWrapper.mRedirectListener.startUpdateProfileLevel();
                     }
 
                     paymentIsCompleted = false; // will continue after update profile

@@ -17,9 +17,9 @@ import vn.com.vng.zalopay.domain.model.AppResource;
  */
 public interface INavigator {
 
-    void startUpdateProfile2ForResult(Activity activity, String walletTransID);
+    void startUpdateProfile2ForResult(Activity activity);
 
-    void startUpdateProfile2ForResult(Fragment fragment, String walletTransID);
+    void startUpdateProfile2ForResult(Fragment fragment);
 
     void startDepositForResultActivity(Activity activity);
 

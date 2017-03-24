@@ -35,10 +35,8 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
-import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 
 /**
  * Created by huuhoa on 6/3/16.
@@ -199,15 +197,6 @@ public class PaymentWrapper {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
         }
-    }
-
-    public void saveCardMap(String walletTransId, ZPWSaveMapCardListener listener) {
-        ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
-        paymentInfo.userInfo = assignBaseUserInfo(paymentInfo.userInfo);
-        paymentInfo.walletTransID = walletTransId;
-
-        Timber.d("saveCardMap, start paymentsdk");
-        SDKApplication.saveCardMap(paymentInfo, listener);
     }
 
     private boolean hasPendingOrder() {
@@ -428,12 +417,12 @@ public class PaymentWrapper {
         mNavigator.startDepositForResultActivity(mActivity);
     }
 
-    void startUpdateProfile2ForResult(String walletTransID) {
+    void startUpdateProfile2ForResult() {
         if (mActivity == null) {
             return;
         }
 
-        mNavigator.startUpdateProfile2ForResult(mActivity, walletTransID);
+        mNavigator.startUpdateProfile2ForResult(mActivity);
     }
 
     void startUpdateProfileBeforeLinkAcc() {
@@ -452,7 +441,7 @@ public class PaymentWrapper {
     }
 
     public interface IRedirectListener {
-        void startUpdateProfileLevel(String walletTransId);
+        void startUpdateProfileLevel();
 
         void startDepositForResult();
 
