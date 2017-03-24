@@ -42,6 +42,7 @@ android {
 
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
         buildConfigField 'int', 'ZALOPAY_APP_ID', '1'
+        resValue "string", "file_provider", "vn.com.vng.zalopay.provider"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -175,6 +176,8 @@ android {
             buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
             buildConfigField 'int', 'ENVIRONMENT', '1'
+            applicationIdSuffix ".sb1"
+            resValue "string", "file_provider", "vn.com.vng.zalopay.provider.sb1"
         }
 
         staging {
@@ -191,6 +194,7 @@ android {
             buildConfigField 'String', 'APP22_URL', '"http://stgcomerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-3"'
             buildConfigField 'int', 'ENVIRONMENT', '2'
+            applicationIdSuffix ".stg1"
         }
 
         internalProduction {
@@ -223,6 +227,7 @@ android {
             buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
             buildConfigField 'int', 'ENVIRONMENT', '1'
+            applicationIdSuffix ".sb1"
         }
 
         internalStaging {
@@ -239,6 +244,7 @@ android {
             buildConfigField 'String', 'APP22_URL', '"http://stgcomerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-3"'
             buildConfigField 'int', 'ENVIRONMENT', '2'
+            applicationIdSuffix ".stg1"
         }
 
         iapProduction {
@@ -273,6 +279,7 @@ android {
             buildConfigField 'String', 'APP22_URL', '"https://sandbox.zalopay.com.vn/merchant/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-2"'
             buildConfigField 'int', 'ENVIRONMENT', '1'
+            applicationIdSuffix ".sb1"
         }
 
         iapStaging {
@@ -290,6 +297,7 @@ android {
             buildConfigField 'String', 'APP22_URL', '"http://stgcomerchant.zalopay.vn/api/"'
             buildConfigField 'String', 'GA_Tracker', '"UA-79910400-3"'
             buildConfigField 'int', 'ENVIRONMENT', '2'
+            applicationIdSuffix ".stg1"
         }
     }
 

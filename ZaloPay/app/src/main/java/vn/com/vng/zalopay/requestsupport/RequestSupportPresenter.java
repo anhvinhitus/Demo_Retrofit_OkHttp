@@ -78,7 +78,9 @@ public class RequestSupportPresenter extends AbstractPresenter<IRequestSupportVi
                             public ArrayList<Uri> call(String filePath) {
                                 ArrayList<Uri> uris = new ArrayList<>(screenshot);
                                 if (!TextUtils.isEmpty(filePath)) {
-                                    Uri uri = FileProvider.getUriForFile(mContext, FileUtils.AUTHORITY_PROVIDER, new File(filePath));
+                                    Uri uri = FileProvider.getUriForFile(mContext,
+                                            mContext.getString(R.string.file_provider),
+                                            new File(filePath));
                                     Timber.d("uri file data %s", uri.toString());
                                     uris.add(uri);
                                 }
