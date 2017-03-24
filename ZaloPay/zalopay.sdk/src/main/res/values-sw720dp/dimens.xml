@@ -12,5 +12,5 @@
     <dimen name="zpw_fail_icon">140dp</dimen>
     <dimen name="zpw_text_size_pass">18sp</dimen>
     <dimen name="zpw_text_size_dot">20sp</dimen>
-    <dimen name="zpw_width_avatar">80dp</dimen>
+    <dimen name="zpw_width_avatar">60dp</dimen>
 </resources>

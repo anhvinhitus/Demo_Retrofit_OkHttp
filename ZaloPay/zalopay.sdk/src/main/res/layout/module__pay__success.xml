@@ -76,12 +76,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/zpw_line_height"
-                android:paddingRight="@dimen/zpw_padding_45"
-                android:paddingLeft="@dimen/zpw_padding_45"
+                android:layout_marginLeft="@dimen/zpw_padding_5"
+                android:layout_marginRight="@dimen/zpw_padding_5"
                 android:layout_marginBottom="@dimen/zpw_padding_20"
                 android:background="@color/line"/>
             <LinearLayout
