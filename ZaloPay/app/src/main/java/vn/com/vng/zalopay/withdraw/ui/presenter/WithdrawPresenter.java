@@ -15,8 +15,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.exception.GenericException;
 import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
+import vn.com.vng.zalopay.data.exception.UserInputException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
@@ -90,7 +90,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                     @Override
                     public Observable<Order> call(Long balance) {
                         if (amount > balance) {
-                            return Observable.error(new GenericException(mContext.getString(R.string.withdraw_exceed_balance)));
+                            return Observable.error(new UserInputException(R.string.withdraw_exceed_balance));
                         } else {
                             return mZaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WITHDRAW.toString(), mUser.zaloPayId, mContext.getString(R.string.withdraw_description));
                         }
@@ -134,7 +134,6 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                 return;
             }
 
-            Timber.e(e, "Server responses with error");
             WithdrawPresenter.this.onCreateWalletOrderError(e);
         }
     }
@@ -147,9 +146,10 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         mView.hideLoading();
         if (e instanceof NetworkConnectionException) {
             mView.showNetworkErrorDialog();
-        } else if (e instanceof GenericException) {
+        } else if (e instanceof UserInputException) {
             mView.showAmountError(e.getMessage());
         } else {
+            Timber.e(e, "Server responses with error when client create withdraw order.");
             String message = ErrorMessageFactory.create(mContext, e);
             mView.showError(message);
         }
