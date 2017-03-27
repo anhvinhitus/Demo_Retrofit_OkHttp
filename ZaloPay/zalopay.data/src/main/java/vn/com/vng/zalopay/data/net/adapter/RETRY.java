@@ -10,7 +10,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Created by huuhoa on 1/10/17.
- * Annotation for API NAME in tracking API timing
+ * Annotation for retry network
  */
 
 @Keep
