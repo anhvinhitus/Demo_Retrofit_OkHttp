@@ -551,7 +551,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         mSubscription.add(subscriptionSuccess);
     }
 
-    // datnt10 13.03.2017 add >>
     public void getBalance() {
         Subscription subscription = mBalanceRepository.balance()
                 .subscribeOn(Schedulers.io())
@@ -607,5 +606,4 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
 //            }
 //        }
 //    }
-    // datnt10 13.03.2017 add <<
 }

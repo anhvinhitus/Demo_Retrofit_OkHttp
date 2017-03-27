@@ -41,10 +41,8 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
-// datnt10 23.03.2017 edit >>
 public class HomeActivity extends AbstractReactActivity implements IHomeView, AppBarLayout.OnOffsetChangedListener {
-//public class HomeActivity extends AbstractReactActivity implements IHomeView {
-// datnt10 23.03.2017 edit <<
+
     @Inject
     HomePresenter mPresenter;
 
@@ -115,13 +113,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         HomePagerAdapter mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mHomePagerAdapter);
 
-        // datnt10 23.03.2017 delete >>
-//        mToolbarParams = new FrameLayout.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.MATCH_PARENT);
-//        mMarginBottom = (int) AndroidUtils.dpToPixels(getActivity(), 56);
-        // datnt10 23.03.2017 delete <<
-
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -147,9 +138,8 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
             }
         });
 
-        // datnt10 23.03.2017 add >>
+        // Set collapsing behavior
         appBarLayout.addOnOffsetChangedListener(this);
-        // datnt10 23.03.2017 add <<
 
         updateIconFontState(HomePagerAdapter.TAB_MAIN_INDEX);
 
@@ -191,6 +181,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
     protected void onDestroy() {
         mPresenter.detachView();
         mPresenter.destroy();
+        appBarLayout.removeOnOffsetChangedListener(this);
         super.onDestroy();
     }
 
@@ -296,7 +287,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         }
     }
 
-    // datnt10 23.03.2017 delete >>
 //    private void hideToolbar() {
 //        mToolbarParams.setMargins(0, 0, 0, mMarginBottom);
 //        mViewPager.setLayoutParams(mToolbarParams);
@@ -325,7 +315,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
 ////            mViewPager.setLayoutParams(mToolbarParams);
 //        }
 //    }
-    // datnt10 23.03.2017 add <<
 
     @Override
     public void showLoading() {
@@ -354,7 +343,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         }
     }
 
-    // datnt10 23.03.2017 add >>
     /*
     * Click event for 3 main button on collapse toolbar
     */
@@ -421,5 +409,4 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
             toolbarHeaderView.setTopView(false, percentage);
         }
     }
-    // datnt10 23.03.2017 add <<
 }

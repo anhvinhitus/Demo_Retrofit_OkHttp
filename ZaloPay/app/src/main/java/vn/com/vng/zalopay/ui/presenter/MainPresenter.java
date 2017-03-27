@@ -110,9 +110,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     private FriendStore.Repository mFriendRepository;
     private Subscription mRefPlatformSubscription;
     private Runnable mRunnableRefreshIconFont;
-    // datnt10 13.03.2017 add >>
     private NotificationStore.Repository mNotificationRepository;
-    // datnt10 13.03.2017 add <<
 
     @Inject
     NotificationStore.Repository mNotifyRepository;
@@ -128,7 +126,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     private boolean isInitTransaction;
 
-    // datnt10 13.03.2017 edit >>
     @Inject
     MainPresenter(User user, EventBus eventBus,
                   AppResourceStore.Repository appResourceRepository,
@@ -173,7 +170,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 //        this.mFriendRepository = friendRepository;
 //        this.mUser = user;
     }
-    // datnt10 13.03.2017 edit <<
 
     private void getZaloFriend() {
         Subscription subscription = retrieveZaloFriendsAsNeeded()
@@ -228,9 +224,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             mEventBus.register(this);
         }
 
-        // datnt10 13.03.2017 add >>
         BusComponent.subscribe(APP_SUBJECT, this, new MainPresenter.ComponentSubscriber(), AndroidSchedulers.mainThread());
-        // datnt10 13.03.2017 add <<
 
         mUserSession.beginSession();
 
@@ -243,9 +237,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         mEventBus.unregister(this);
         unsubscribeIfNotNull(mRefPlatformSubscription);
         CShareDataWrapper.dispose();
-        // datnt10 13.03.2017 add >>
         BusComponent.unregister(this);
-        // datnt10 13.03.2017 add <<
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
         super.detachView();
     }
@@ -273,9 +265,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
         getZaloFriend();
         warningRoot();
-        // datnt10 13.03.2017 add >>
         getBalance();
-        // datnt10 13.03.2017 add <<
     }
 
     private void warningRoot() {
@@ -633,7 +623,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         mSubscription.add(subscriptionSuccess);
     }
 
-    // datnt10 10.03.2017 add >>
     public void startPaymentApp(AppResource app) {
         Subscription subscription = mAppResourceRepository.existResource(app.appid)
                 .subscribeOn(Schedulers.io())
@@ -641,9 +630,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                 .subscribe(new StartPaymentAppSubscriber(mNavigator, mView.getActivity(), app));
         mSubscription.add(subscription);
     }
-    // datnt10 10.03.2017 add <<
 
-    // datnt10 13.03.2017 add >>
     public void getBalance() {
         Subscription subscription = mBalanceRepository.balance()
                 .subscribeOn(Schedulers.io())
@@ -699,5 +686,4 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             }
         }
     }
-    // datnt10 13.03.2017 add <<
 }

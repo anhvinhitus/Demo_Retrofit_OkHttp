@@ -69,10 +69,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Inject
     ZaloPayPresenter presenter;
-    // datnt10 09.03.2017 deleted >>
 //    @BindView(R.id.home_top_layout)
 //    View mTopLayout;
-    // datnt10 09.03.2017 deleted <<
 
     /* Advertisement START */
     @BindView(R.id.tvAdsSubContent)
@@ -88,10 +86,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @BindView(R.id.listViewBottom)
     RecyclerView listViewBottom;
 
-    // datnt10 09.03.2017 deleted >>
 //    @BindView(R.id.tv_balance)
 //    TextView mBalanceView;
-    // datnt10 09.03.2017 deleted <<
 
     @BindView(R.id.tvInternetConnection)
     TextView mTvInternetConnection;
@@ -250,7 +246,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         ZPAnalytics.trackEvent(sActionMap.get(position));
     }
 
-    // datnt10 09.03.2017 deleted >>
 //    @OnClick(R.id.btn_link_card)
 //    public void onBtnLinkCardClick() {
 //        navigator.startLinkCardActivity(getActivity());
@@ -269,7 +264,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 //    public void onClickBalance() {
 //        navigator.startBalanceManagementActivity(getContext());
 //    }
-    // datnt10 09.03.2017 deleted <<
 
     public void refreshIconFont() {
         if (mAdapter != null) {
@@ -332,7 +326,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public void setBalance(long balance) {
-        // datnt10 09.03.2017 deleted >>
 //        String _temp = CurrencyUtil.formatCurrency(balance, true);
 //
 //        SpannableString span = new SpannableString(_temp);
@@ -341,7 +334,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 //
 //
 //        mBalanceView.setText(span);
-        // datnt10 09.03.2017 deleted <<
     }
 
     @Override

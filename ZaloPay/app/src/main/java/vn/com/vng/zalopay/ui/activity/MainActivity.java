@@ -58,10 +58,8 @@ import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
  * Created by AnhHieu on 5/24/16.
  * Main Application activity
  */
-// datnt10 10.03.2017 edit >>
 public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView, AppBarLayout.OnOffsetChangedListener {
-    //public class MainActivity extends BaseToolBarActivity implements MenuClickListener, IHomeView {
-// datnt10 10.03.2017 edit <<
+
     public static final String TAG = "MainActivity";
 
     @Override
@@ -95,7 +93,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     private LeftMenuFragment mLeftMenuFragment;
     private ZaloPayFragment mZaloPayFragment;
 
-    // datnt10 10.03.2017 add >>
     @BindView(R.id.appbar)
     AppBarLayout appBarLayout;
 
@@ -107,7 +104,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
 
     @BindView(R.id.tvNotificationCount)
     RoundTextView mNotifyView;
-    // datnt10 10.30.2017 add <<
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,9 +135,9 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        // datnt10 10.03.2017 add >>
+        // Collapsing behavior
         appBarLayout.addOnOffsetChangedListener(this);
-        // datnt10 10.03.2017 add <<
+
     }
 
     @Override
@@ -161,9 +157,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         Timber.d("destroy main activity");
 
         drawer.removeDrawerListener(toggle);
-        // datnt10 10.03.2017 add >>
         appBarLayout.removeOnOffsetChangedListener(this);
-        // datnt10 10.03.2017 add <<
         presenter.detachView();
         presenter.destroy();
         super.onDestroy();
@@ -283,7 +277,6 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         }
     }
 
-    // datnt10 13.03.2017 add >>
     // Auto implement methods when adding two abstract methods in IHomeView class
     @Override
     public void setBalance(long balance) {
@@ -310,9 +303,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             }
         }
     }
-    // datnt10 13.03.2017 add <<
 
-    // datnt10 10.03.2017 add >>
     /*
     * Click event for 2 buttons : nearby and notification
     */
@@ -364,7 +355,7 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
             toolbarHeaderView.setTopView(false, percentage);
         }
     }
-    // datnt10 10.03.2017 add <<
+
 
     private final class OpenMenuRunnable implements Runnable {
         final int id;

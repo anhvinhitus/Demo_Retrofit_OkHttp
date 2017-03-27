@@ -12,8 +12,6 @@ public interface IHomeView extends ILoadDataView {
     Activity getActivity();
 
     void refreshIconFont();
-    // datnt10 13.03.2017 add >>
     void setBalance(long balance);
     void setTotalNotify(int total);
-    // datnt10 13.03.2017 add <<
 }
