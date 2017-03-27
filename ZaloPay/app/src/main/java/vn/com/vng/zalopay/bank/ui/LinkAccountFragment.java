@@ -267,7 +267,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
                     return;
                 }
                 ZPCard zpCard = data.getParcelableExtra(Constants.ARG_BANK);
-                mPresenter.linkAccount(zpCard);
+                mPresenter.linkAccountIfNotExist(zpCard);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

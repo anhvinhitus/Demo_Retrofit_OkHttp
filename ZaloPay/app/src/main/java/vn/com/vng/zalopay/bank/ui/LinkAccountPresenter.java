@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.bank.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,7 +41,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * Created by longlv on 1/17/17.
- * *
+ * Logic of LinkAccountFragment.
  */
 class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
@@ -62,6 +64,24 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new GetLinkedAccountSubscriber());
         mSubscription.add(subscription);
+    }
+
+    void linkAccountIfNotExist(ZPCard zpCard) {
+        Subscription subscription = ObservableHelper.makeObservable(() -> {
+            List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+            return transform(mapCardLis);
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new LinkAccountIfNotLinkedSubscriber(zpCard));
+        mSubscription.add(subscription);
+    }
+
+    private void linkAccount(ZPCard zpCard) {
+        if (paymentWrapper == null || mView == null || zpCard == null) {
+            return;
+        }
+        Timber.d("Link account, card code [%s]", zpCard.getCardCode());
+        paymentWrapper.linkAccount(getActivity(), zpCard.getCardCode());
+        hideLoadingView();
     }
 
     private List<BankAccount> transform(List<DBankAccount> bankAccounts) {
@@ -243,6 +263,31 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
     }
 
+    private void finishActivity() {
+        if (mView != null && mView.getActivity() != null && !mView.getActivity().isFinishing()) {
+            mView.getActivity().finish();
+        }
+    }
+
+    private void showRetryGetLinkedAccount() {
+        hideLoadingView();
+        if (mView == null || mView.getContext() == null) {
+            return;
+        }
+        mView.showRetryDialog(mView.getContext().getString(R.string.exception_get_linked_account_try_again),
+                new ZPWOnEventConfirmDialogListener() {
+                    @Override
+                    public void onCancelEvent() {
+                        finishActivity();
+                    }
+
+                    @Override
+                    public void onOKevent() {
+                        getMapBankAccount();
+                    }
+                });
+    }
+
     private class GetLinkedAccountSubscriber extends DefaultSubscriber<List<BankAccount>> {
         @Override
         public void onError(Throwable e) {
@@ -252,7 +297,8 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                 return;
             }
 
-            Timber.e(e, "LinkAccountSubscriber ");
+            Timber.e(e, "Get linked account throw exception.");
+            showRetryGetLinkedAccount();
         }
 
         @Override
@@ -265,9 +311,65 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
     }
 
+    private void showAccountHasLinked(ZPCard zpCard) {
+        hideLoadingView();
+        if (mView == null || mView.getContext() == null) {
+            return;
+        }
+
+        String message = String.format(mView.getContext().getString(R.string.bank_account_has_linked),
+                zpCard.getCardLogoName());
+        mView.showError(message);
+    }
+
+    private boolean isExist(List<BankAccount> bankAccounts, @NonNull ZPCard zpCard) {
+        if (Lists.isEmptyOrNull(bankAccounts)) {
+            return false;
+        }
+        for (int i = 0; i < bankAccounts.size(); i++) {
+            BankAccount bankAccount = bankAccounts.get(i);
+            if (bankAccount == null || TextUtils.isEmpty(bankAccount.mBankCode)) {
+                continue;
+            }
+            if (bankAccount.mBankCode.equals(zpCard.getCardCode())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private class LinkAccountIfNotLinkedSubscriber extends DefaultSubscriber<List<BankAccount>> {
+        private ZPCard mZPCard;
+
+        LinkAccountIfNotLinkedSubscriber(@NonNull ZPCard zpCard) {
+            mZPCard = zpCard;
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            if (ResponseHelper.shouldIgnoreError(e)) {
+                // simply ignore the error
+                // because it is handled from event subscribers
+                return;
+            }
+
+            Timber.e(e, "Get linked account before link throw exception.");
+            linkAccount(mZPCard);
+        }
+
+        @Override
+        public void onNext(List<BankAccount> bankAccounts) {
+            if (isExist(bankAccounts, mZPCard)) {
+                showAccountHasLinked(mZPCard);
+            } else {
+                linkAccount(mZPCard);
+            }
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadIconFontSuccess(LoadIconFontEvent event) {
-        Timber.d("onLoadIconFontSuccess ");
+        Timber.d("Load icon font success.");
         if (event != null && mView != null) {
             mView.refreshLinkedAccount();
         }
