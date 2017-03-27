@@ -220,6 +220,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
         getZaloFriend();
         warningRoot();
+        getTransaction(10);
     }
 
     private void warningRoot() {
@@ -331,7 +332,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             return;
         }
         if (!isInitTransaction) {
-            this.getTransaction();
+            this.getTransaction(0);
         }
 
         if (!isLoadedGateWayInfo) {
@@ -565,8 +566,9 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         mSubscription.add(subscription);
     }
 
-    private void getTransaction() {
+    private void getTransaction(long delay) {
         Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistoryLatest()
+                .delaySubscription(delay, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
