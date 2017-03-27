@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.navigation.INavigator;
@@ -70,8 +71,9 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     private NotificationStore.Repository mNotificationRepository;
 
     private final NetworkService mNetworkServiceWithRetry;
+    private final User mUser;
 
-    ReactInternalNativeModule(ReactApplicationContext reactContext,
+    ReactInternalNativeModule(ReactApplicationContext reactContext, User user,
                               INavigator navigator, AppResourceStore.Repository resourceRepository,
                               NotificationStore.Repository mNotificationRepository,
                               ZaloPayRepository zaloPayRepository,
@@ -88,6 +90,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         this.mBalanceRepository = balanceRepository;
 
         this.mNetworkServiceWithRetry = networkServiceWithRetry;
+        this.mUser = user;
     }
 
     @Override
@@ -423,7 +426,13 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void request(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("requestWithoutRetry: baseUrl [%s] String content [%s]", baseUrl, content);
-        Subscription subscription = mNetworkServiceWithRetry.requestWithoutRetry(baseUrl, content)
+
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(content);
+        writableMap.putString("accesstoken", mUser.accesstoken);
+        writableMap.putString("userid", mUser.zaloPayId);
+
+        Subscription subscription = mNetworkServiceWithRetry.requestWithoutRetry(baseUrl, writableMap)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         mCompositeSubscription.add(subscription);
@@ -432,6 +441,12 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void requestWithRetry(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("requestWithRetry: baseUrl [%s] String content [%s]", baseUrl, content);
+
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(content);
+        writableMap.putString("accesstoken", mUser.accesstoken);
+        writableMap.putString("userid", mUser.zaloPayId);
+
         Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, content)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
