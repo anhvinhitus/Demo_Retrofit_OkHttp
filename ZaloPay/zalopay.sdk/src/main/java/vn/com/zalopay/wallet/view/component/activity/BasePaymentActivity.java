@@ -115,6 +115,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected int numberOfRetryOpenNetwoking = 0;
     protected boolean isAllowLinkCardATM = true;
     protected boolean isAllowLinkCardCC = true;
+
+    private boolean isVisibilitySupport = false;
+    private Feedback mFeedback = null;
     /**
      * show more info icon click listener
      */
@@ -223,8 +226,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
-    private boolean isVisibilitySupport = false;
-    private Feedback mFeedback = null;
     /***
      * check static resource listener.
      */
@@ -1545,7 +1546,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void applyFont() {
         ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
         ZPWUtils.overrideFonts(viewGroup, GlobalData.getStringResource(RS.string.zpw_font_regular));
-
         ZPWUtils.applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
         ZPWUtils.applyFont(findViewById(R.id.payment_method_name), GlobalData.getStringResource(RS.string.zpw_font_medium));
     }

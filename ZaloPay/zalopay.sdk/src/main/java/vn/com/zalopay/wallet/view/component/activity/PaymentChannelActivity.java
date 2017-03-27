@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.view.component.activity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.test.LoaderTestCase;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -42,7 +43,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     protected CountDownTimer mTimer;
     protected boolean mTimerRunning = false;
     private AdapterBase mAdapter = null;
-    private boolean mIsRestart = false; //prevent duplicate on some function when activity resume.
     private boolean mIsStart = false;
     private boolean mIsSwitching = false;
     private ActivityRendering mActivityRender;
@@ -208,28 +208,25 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if (isFinishing() && getAdapter() != null) {
             getAdapter().onFinish();
             mAdapter = null;
         }
-
         if (DialogManager.isShowingProgressDialog())
+        {
             DialogManager.closeProcessDialog();
-
+        }
         cancelTransactionExpiredTimer();
-
-        Log.d(this, "==== onDestroy ====");
-
         System.gc();
+        Log.d(this, "==== onDestroy ====");
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(this,"onCreate");
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         initTimer();
-        mIsRestart = false;
         mAdapter = AdapterFactory.produce(this);
         if (getAdapter() == null) {
             onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
@@ -244,51 +241,32 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     @Override
     public void onBackPressed() {
-        //user is summiting order
         if (getVisibilitySupportView()) {
             closeSupportView();
             return;
         }
+        //user is summiting order
         if (processingOrder) {
             Log.d(this, "can not back,order still request api");
             return;
         }
-
         mOnClickExitListener.onClick(null);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        applyFont();
-
+        Log.d(this,"onStart");
         updateFontCardNumber();
-
         if (!mIsStart && ((getAdapter() != null && getAdapter().isZaloPayFlow()) || GlobalData.isMapCardChannel()) || GlobalData.isMapBankAccountChannel()) {
             try {
                 getAdapter().moveToConfirmScreen();
             } catch (Exception e) {
                 Log.e(this, e);
             }
-            mIsStart = true;
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        Log.d(this, "==== onResume ====");
-
-        if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
-            showKeyBoardForPin();
-        }
-
-        showKeyBoardOnFocusingViewAgain();
-
         //this is link account and the first call
-        if (GlobalData.isLinkAccChannel() && !mIsRestart) {
+        if (GlobalData.isLinkAccChannel() && !mIsStart) {
             try {
                 //check static resource whether ready or not
                 loadStaticReload();
@@ -299,7 +277,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             }
         }
         //this is link card channel and the first call.
-        if (GlobalData.isLinkCardChannel() && !mIsRestart) {
+        if (GlobalData.isLinkCardChannel() && !mIsStart) {
             //check profile level permission in table map
             try {
                 int allowATM = GlobalData.checkPermissionByChannelMap(Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm)));
@@ -328,7 +306,17 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 return;
             }
         }
-        mIsRestart = true;
+        mIsStart = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(this, "==== onResume ====");
+        if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
+            showKeyBoardForPin();
+        }
+        showKeyBoardOnFocusingViewAgain();
     }
 
     protected void showKeyBoardOnFocusingViewAgain() {
@@ -391,11 +379,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         } catch (Exception e) {
             Log.d(this, e);
         }
-
-
         try {
             showAmount();
-
             showDisplayInfo();
         } catch (Exception e) {
             Log.e(this, e);
@@ -420,7 +405,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (GlobalData.isLinkCardChannel()) {
             visibleAppInfo(false);
         }
-
+        applyFont();
     }
 
     @Override
