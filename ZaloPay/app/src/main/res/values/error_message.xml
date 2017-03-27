@@ -36,4 +36,7 @@
 
     <string name="miss_browser">Vui lòng kiểm tra lại trình duyệt web trên thiết bị của bạn</string>
     <string name="merchant_user_info_invalid">Có lỗi xảy ra trong quá trình lấy thông tin ứng dụng. Vui lòng thử lại</string>
+
+    <string name="exception.get.linked.account.try.again">Lỗi xảy ra trong quá trình lấy danh sách tài khoản ngân hàng đã liên kết. Vui lòng thử lại</string>
+    <string name="bank.account.has.linked">Bạn đang liên kết với ngân hàng %s, bạn không thể liên kết tiếp với ngân hàng này</string>
 </resources>

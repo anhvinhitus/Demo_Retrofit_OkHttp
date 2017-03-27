@@ -42,7 +42,7 @@ import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 /**
  * Created by longlv on 10/25/16.
- * Contains linkCard function
+ * Common function of LinkCardPresenter & LinkAccountPresenter
  */
 
 abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
@@ -185,15 +185,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         } else {
             getListBankSupport();
         }
-    }
-
-    void linkAccount(ZPCard zpCard) {
-        if (paymentWrapper == null || mView == null || zpCard == null) {
-            return;
-        }
-        Timber.d("linkAccount card[%s]", zpCard.getCardCode());
-        paymentWrapper.linkAccount(getActivity(), zpCard.getCardCode());
-        hideLoadingView();
     }
 
     void addLinkCard() {
