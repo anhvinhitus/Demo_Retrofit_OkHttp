@@ -1,10 +1,8 @@
 package vn.com.zalopay.wallet.view.component.activity;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -12,7 +10,6 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -23,13 +20,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -60,6 +58,8 @@ import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.datasource.request.DownloadBundle;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
+import vn.com.zalopay.wallet.eventmessage.NetworkEventMessage;
+import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
@@ -112,7 +112,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     };
     protected boolean mLoadingMapCard = false, mLoadingBankAccount = false;
-    protected NetworkingReceiver mNetworkingEventReceiver;
     protected int numberOfRetryOpenNetwoking = 0;
     protected boolean isAllowLinkCardATM = true;
     protected boolean isAllowLinkCardCC = true;
@@ -188,7 +187,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
                         return;
                     }
-                    //load web timeout, need to get oneshot to server to check status again
+                    //load web timeout, need to shared oneshot to server to check status again
                     if (ConnectionUtil.isOnline(GlobalData.getAppContext()) && getAdapter().isParseWebFlow() && getAdapter().shouldGetOneShotTransactionStatus()) {
                         getAdapter().getOneShotTransactionStatus();
 
@@ -298,7 +297,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
 
             if (pMessage != null && pMessage.returncode < 0) {
-                //sometimes get app info return empty message and return code -2.that mean app not allow from backend.
+                //sometimes shared app info return empty message and return code -2.that mean app not allow from backend.
                 if (pMessage.returncode == -2 && TextUtils.isEmpty(pMessage.getMessage()))
                     message = GlobalData.getStringResource(RS.string.zpw_not_allow_payment_app);
 
@@ -309,12 +308,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     };
     //close snackbar networking alert listener
-    private onCloseSnackBar mOnCloseSnackBarListener = new onCloseSnackBar() {
-        @Override
-        public void onClose() {
-            askToOpenSettingNetwoking();
-        }
-    };
+    private onCloseSnackBar mOnCloseSnackBarListener = this::askToOpenSettingNetwoking;
+
     private View.OnClickListener mSupportButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -536,18 +531,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 } else {
                     //not granted
                     Log.d(getClass().getName(), "permission not granted");
-
-					/*
-                    DialogManager.showSweetDialogCustom(BasePaymentActivity.getCurrentActivity(),
-							GlobalData.getStringResource(RS.string.zpw_string_alert_permission_sms_not_allow),
-							GlobalData.getStringResource(RS.string.dialog_close_button),
-							SweetAlertDialog.NORMAL_TYPE, new ZPWOnEventDialogListener() {
-
-								@Override
-								public void onOKevent() {
-								}
-							});
-							*/
                 }
                 break;
             default:
@@ -556,15 +539,19 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        PaymentEventBus.shared().register(this);
+    }
+
+    @Override
     public void finish() {
         super.finish();
-
         if (mIsBackClick) {
             //notify to app know that user click back on sdk.
             if (GlobalData.getPaymentResult() != null && GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL) {
                 GlobalData.setResultUserClose();
             }
-
             slideOutTransition();
         } else {
             fadeOutTransition();
@@ -577,8 +564,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         synchronized (mZaloaPayActivitiesStack) {
             if (mZaloaPayActivitiesStack == null)
+            {
                 mZaloaPayActivitiesStack = new Stack<>();
-
+            }
             mZaloaPayActivitiesStack.push(this);
         }
     }
@@ -588,13 +576,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         super.onResume();
 
         Log.d(this, "===onResume===");
-
-        // Register the local broadcast receiver networking change event
-        IntentFilter messageFilter = new IntentFilter();
-        messageFilter.addAction(Constants.FILTER_ACTION_NETWORKING_CHANGED);
-        mNetworkingEventReceiver = new NetworkingReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mNetworkingEventReceiver, messageFilter);
-
         //clear snackbar if has networkign again when user resume
         if (ConnectionUtil.isOnline(this)) {
             Log.d(this, "===networking is on===");
@@ -626,10 +607,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
-        //release local receiver networking change event
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mNetworkingEventReceiver);
-
+        PaymentEventBus.shared().unregister(this);
     }
 
     /***
@@ -688,12 +666,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public View setKeyBoard(String pStrID, EKeyBoardType pKeyBoardType) {
         final int ID = getViewID(pStrID);
         View view = this.findViewById(ID);
-
         if (view == null && isViewVisible(view)) {
             Log.d("setKeyBoard", "===pStrID==NULL or NOT VISIBLE");
             return view;
         }
-
         if (pKeyBoardType == EKeyBoardType.NUMBER && view instanceof EditText) {
             //user using the laban key for exmple
             if (!ZPWUtils.useDefaultKeyBoard(this)) {
@@ -795,32 +771,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     private View setMarginBottom(int pID, int margin) {
         View view = this.findViewById(pID);
-
         if (view == null)
+        {
             return view;
-
+        }
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
-
         layoutParams.bottomMargin = margin;
-
         view.setLayoutParams(layoutParams);
-
-        return view;
-    }
-
-    public View setViewAlign(String pStrID, int... gravity) {
-        final int ID = getViewID(pStrID);
-        View view = this.findViewById(ID);
-
-        if (view == null)
-            return view;
-
-        if (view instanceof TextView)
-            if (gravity.length == 2)
-                ((TextView) view).setGravity(gravity[0] | gravity[1]);
-            else
-                ((TextView) view).setGravity(gravity[0]);
-
         return view;
     }
 
@@ -829,13 +786,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         if (view == null) {
             return;
         }
-
         view.setOnClickListener(pListener);
     }
 
     public String getTransactionTitle() {
         String barTitle = GlobalData.getStringResource(RS.string.walletsdk_string_bar_title);
-
         if (GlobalData.isTopupChannel()) {
             barTitle = GlobalData.getStringResource(RS.string.zpw_string_pay_title);
         } else if (GlobalData.isTranferMoneyChannel()) {
@@ -843,7 +798,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } else if (GlobalData.isWithDrawChannel()) {
             barTitle = GlobalData.getStringResource(RS.string.zpw_string_withdraw_title);
         }
-
         return barTitle;
     }
 
@@ -861,15 +815,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         final int ID = getViewID(pStrID);
         View textView = this.findViewById(ID);
 
-        if (textView == null)
+        if (textView == null) {
             return;
-
-        if (textView instanceof ToggleButton)
+        }
+        if (textView instanceof ToggleButton) {
             ((ToggleButton) this.findViewById(ID)).setText(pText);
-        else if (textView instanceof EditText) {
-            //SET HINT TO PARENT IF EDITTEXT'S PARENT IS TEXTINPUTLAYOUT
+        } else if (textView instanceof EditText) {
             EditText editText = ((EditText) this.findViewById(ID));
-
             if (editText instanceof VPaymentEditText && ((VPaymentEditText) editText).getTextInputLayout() instanceof TextInputLayout) {
                 TextInputLayout textInputLayout = ((VPaymentEditText) editText).getTextInputLayout();
                 textInputLayout.setHint(pText);
@@ -883,7 +835,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     /***
      * set text for by used in sdk
-     *
      * @param pID
      * @param pText
      */
@@ -895,11 +846,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
 
         if (view instanceof EditText) {
-            /***
-             * SET HINT TO PARENT IF EDITTEXT'S PARENT IS TEXTINPUTLAYOUT
-             */
             EditText editText = (EditText) view;
-
             if (editText instanceof VPaymentEditText && ((VPaymentEditText) editText).getTextInputLayout() instanceof TextInputLayout) {
                 TextInputLayout textInputLayout = ((VPaymentEditText) editText).getTextInputLayout();
                 textInputLayout.setHint(pText);
@@ -1150,7 +1097,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         if (this instanceof PaymentChannelActivity) {
             StatusResponse statusResponse = getAdapter().getResponseStatus();
-            /*res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
+            /*res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.shared(0);
             getAdapter().setmResponseStatus(res);*/
             // The inform text would be set from server
             if (statusResponse != null) {
@@ -1571,45 +1518,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     }
 
-    protected void resizePaymentButton() {
-        final View submitButton = findViewById(R.id.zpsdk_btn_submit);
-
-        if (submitButton != null) {
-            ViewTreeObserver vto = submitButton.getViewTreeObserver();
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-                @Override
-                public void onGlobalLayout() {
-                    ViewTreeObserver obs = submitButton.getViewTreeObserver();
-                    obs.removeGlobalOnLayoutListener(this);
-
-                    ScrollView scrollView = (ScrollView) findViewById(R.id.zpw_scrollview_container);
-                    if (scrollView != null) {
-                        try {
-                            if (scrollView.getLayoutParams() instanceof FrameLayout.LayoutParams) {
-                                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                        FrameLayout.LayoutParams.WRAP_CONTENT
-                                );
-                                params.setMargins(0, 0, 0, submitButton.getHeight());
-                                scrollView.setLayoutParams(params);
-                            } else if (scrollView.getLayoutParams() instanceof LinearLayout.LayoutParams) {
-                                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                                        FrameLayout.LayoutParams.MATCH_PARENT,
-                                        FrameLayout.LayoutParams.WRAP_CONTENT
-                                );
-                                params.setMargins(0, 0, 0, submitButton.getHeight());
-                                scrollView.setLayoutParams(params);
-                            }
-                        } catch (Exception e) {
-                            Log.e(this, e);
-                        }
-                    }
-                }
-            });
-        }
-    }
-
     /***
      * user level 1 can not tranfer money.
      * user level 1 can not withdraw.
@@ -1911,12 +1819,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
         isVisibilitySupport = false;
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setView(R.id.zpw_pay_support_buttom_view, false);
-            }
-        }, 300);
+        handler.postDelayed(() -> setView(R.id.zpw_pay_support_buttom_view, false), 300);
     }
 
     public boolean getVisibilitySupportView() {
@@ -1936,37 +1839,30 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         startActivity(intent);
     }
 
-    /***
-     * internal class for receiving networking event
-     */
-    public class NetworkingReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equalsIgnoreCase(Constants.FILTER_ACTION_NETWORKING_CHANGED)) {
-                //user sitting in the result screen
-                if (getCurrentActivity() instanceof PaymentChannelActivity && ((PaymentChannelActivity) getCurrentActivity()).getAdapter().isFinalScreen()) {
-                    return;
-                }
-                //come from api request fail with handshake
-                if (intent.getExtras() != null && intent.getExtras().getBoolean(Constants.NETWORKING_NOT_STABLE)) {
-                    showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_not_stable),
-                            GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_LONG, mOnCloseSnackBarListener);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnNetworkEvent(NetworkEventMessage pNetworkEventMessage) {
+        //user sitting in the result screen
+        if (getCurrentActivity() instanceof PaymentChannelActivity && ((PaymentChannelActivity) getCurrentActivity()).getAdapter().isFinalScreen()) {
+            Log.d(this, "onNetworkMessageEvent user is on fail screen...");
+            return;
+        }
+        //come from api request fail with handshake
+        if (pNetworkEventMessage.origin == Constants.API_ORIGIN) {
+            showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_not_stable),
+                    GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_LONG, mOnCloseSnackBarListener);
 
-                    Log.d(this, "===networking is not stable===");
-                }
-                //networking indeed offline
-                else if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-                    Log.d(this, "===networking is off===");
-                    showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
-                            GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
-                }
-                //networking online again
-                else {
-                    //DialogManager.closeNetworkingDialog();
-                    showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_online), null, TSnackbar.LENGTH_SHORT, null);
-                    Log.d(this, "===networking is online again===");
-                }
-            }
+            Log.d(this, "===networking is not stable===");
+        }
+        //networking indeed offline
+        else if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+            Log.d(this, "===networking is off===");
+            showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
+                    GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
+        }
+        //networking online again
+        else {
+            showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_online), null, TSnackbar.LENGTH_SHORT, null);
+            Log.d(this, "===networking is online again===");
         }
     }
     //endregion

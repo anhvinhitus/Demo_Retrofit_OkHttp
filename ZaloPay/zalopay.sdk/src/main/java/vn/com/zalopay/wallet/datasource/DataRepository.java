@@ -1,7 +1,5 @@
 package vn.com.zalopay.wallet.datasource;
 
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
@@ -30,6 +28,8 @@ import vn.com.zalopay.wallet.datasource.implement.GetPlatformInfoImpl;
 import vn.com.zalopay.wallet.datasource.interfaces.ITask;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.datasource.task.TPaymentTask;
+import vn.com.zalopay.wallet.eventmessage.NetworkEventMessage;
+import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
 import vn.com.zalopay.wallet.listener.IDataSourceListener;
 import vn.com.zalopay.wallet.listener.IPaymentApiCallBack;
 import vn.com.zalopay.wallet.utils.GsonUtils;
@@ -112,10 +112,9 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
 
     protected boolean verifyException(Throwable t) {
         if ((t instanceof SSLHandshakeException || t instanceof SSLPeerUnverifiedException)) {
-            Intent messageIntent = new Intent();
-            messageIntent.setAction(Constants.FILTER_ACTION_NETWORKING_CHANGED);
-            messageIntent.putExtra(Constants.NETWORKING_NOT_STABLE, true);
-            LocalBroadcastManager.getInstance(GlobalData.getAppContext()).sendBroadcast(messageIntent);
+            NetworkEventMessage networkEventMessage = new NetworkEventMessage();
+            networkEventMessage.origin = Constants.API_ORIGIN;
+            PaymentEventBus.shared().post(networkEventMessage);
             return true;
         }
         return false;

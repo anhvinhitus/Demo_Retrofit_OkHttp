@@ -1,19 +1,15 @@
 package vn.com.zalopay.wallet.view.component.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
-import java.lang.ref.WeakReference;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
@@ -31,8 +27,11 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
+import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
+import vn.com.zalopay.wallet.eventmessage.SmsEventMessage;
+import vn.com.zalopay.wallet.eventmessage.UnlockScreenEventMessage;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
+import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
@@ -46,11 +45,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     private boolean mIsRestart = false; //prevent duplicate on some function when activity resume.
     private boolean mIsStart = false;
     private boolean mIsSwitching = false;
-    private WeakReference<BankSmsReceiver> mSmsReceiver;
-    private WeakReference<UnlockSreenReceiver> mUnLockScreenReceiver;
     private ActivityRendering mActivityRender;
     private View.OnClickListener mOnClickExitListener = v -> {
-        //get status again if user back when payment in bank's site
+        //shared status again if user back when payment in bank's site
         if (getAdapter() != null && getAdapter().isCardFlowWeb() && (getAdapter().isCCFlow() || (getAdapter().isATMFlow() && ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).isOtpWebProcessing()))) {
             confirmQuitOrGetStatus();
             return;
@@ -101,40 +98,20 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         confirmQuitPayment();
     };
 
-    public PaymentPassword getmPaymentPassword() {
+    public PaymentPassword getPaymentPassword() {
         return mPaymentPassword;
     }
 
-    protected void fillCardNumberFromCache()
-    {
+    protected void fillCardNumberFromCache() {
         String pCardNumber = null;
-        try
-        {
+        try {
             pCardNumber = SharedPreferencesManager.getInstance().pickCachedCardNumber();
+        } catch (Exception e) {
+            Log.e(this, e);
         }
-        catch (Exception e)
-        {
-            Log.e(this,e);
-        }
-        if(! TextUtils.isEmpty(pCardNumber))
-        {
+        if (!TextUtils.isEmpty(pCardNumber)) {
             getAdapter().getGuiProcessor().setCardInfo(pCardNumber);
         }
-    }
-
-
-    public BankSmsReceiver getSmsReceiver() {
-        if (mSmsReceiver != null) {
-            return mSmsReceiver.get();
-        }
-        return null;
-    }
-
-    public UnlockSreenReceiver getUnLockScreenReceiver() {
-        if (mUnLockScreenReceiver != null) {
-            return mUnLockScreenReceiver.get();
-        }
-        return null;
     }
 
     @Override
@@ -193,8 +170,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
          */
         fillCardNumberFromCache();
 
-        if(mAdapter instanceof AdapterLinkAcc)
-        {
+        if (mAdapter instanceof AdapterLinkAcc) {
             ((AdapterLinkAcc) mAdapter).startFlow();
         }
     }
@@ -232,13 +208,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        if (getSmsReceiver() != null) {
-            LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(getSmsReceiver());
-        }
-        if (getUnLockScreenReceiver() != null) {
-            LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(getUnLockScreenReceiver());
-        }
 
         if (isFinishing() && getAdapter() != null) {
             getAdapter().onFinish();
@@ -319,8 +288,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         showKeyBoardOnFocusingViewAgain();
 
         //this is link account and the first call
-        if(GlobalData.isLinkAccChannel() && !mIsRestart)
-        {
+        if (GlobalData.isLinkAccChannel() && !mIsRestart) {
             try {
                 //check static resource whether ready or not
                 loadStaticReload();
@@ -360,20 +328,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 return;
             }
         }
-
         mIsRestart = true;
-
-        //Register the local broadcast receiver,for otp comming.
-        IntentFilter messageFilter = new IntentFilter();
-        messageFilter.addAction(Constants.FILTER_ACTION_BANK_SMS_RECEIVER);
-        mSmsReceiver = new WeakReference<BankSmsReceiver>(new BankSmsReceiver());
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(getSmsReceiver(), messageFilter);
-
-        // UnLock broadcast receiver change event
-        IntentFilter unlockFilter = new IntentFilter();
-        unlockFilter.addAction(Constants.ACTION_UNLOCK_SCREEN);
-        mUnLockScreenReceiver = new WeakReference<UnlockSreenReceiver>(new UnlockSreenReceiver());
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(getUnLockScreenReceiver(), unlockFilter);
     }
 
     protected void showKeyBoardOnFocusingViewAgain() {
@@ -574,12 +529,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         } else if (GlobalData.isWithDrawChannel()) {
             title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_confirm_withdraw);
         }
-
         setConfirmTitle(title);
     }
 
     protected void updateFontCardNumber() {
-        //update font
         new Handler().postDelayed(() -> ZPWUtils.applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium)), 500);
     }
 
@@ -706,12 +659,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             mPaymentPassword.reset();
         }
 
-        mPaymentPassword.setOnEnterPinListener(new PaymentPassword.onEnterPinListener() {
-            @Override
-            public void onEnterPinComplete() {
-                if (getAdapter() != null)
-                    getAdapter().onClickSubmission();
-            }
+        mPaymentPassword.setOnEnterPinListener(() -> {
+            if (getAdapter() != null)
+                getAdapter().onClickSubmission();
         });
 
         mPaymentPassword.showSoftKeyBoard();
@@ -808,38 +758,28 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
     }
 
-    //automatic get otp from comming message from bank and fill to layout
-    public class BankSmsReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equalsIgnoreCase(Constants.FILTER_ACTION_BANK_SMS_RECEIVER)) {
-                if (getAdapter() != null) {
-                    if ((getAdapter().isATMFlow() && ((BankCardGuiProcessor) (getAdapter()).getGuiProcessor()).isBankOtpPhase())
-                            || (getAdapter().isLinkAccFlow()) && ((LinkAccGuiProcessor) (getAdapter()).getGuiProcessor()).isLinkAccOtpPhase()) {
-                        String sender = intent.getExtras().getString(Constants.BANK_SMS_RECEIVER_SENDER);
-                        String body = intent.getExtras().getString(Constants.BANK_SMS_RECEIVER_BODY);
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void OnPaymentSmsEvent(SmsEventMessage pSmsEventMessage) {
+        if (getAdapter() != null) {
+            if ((getAdapter().isATMFlow() && ((BankCardGuiProcessor) (getAdapter()).getGuiProcessor()).isBankOtpPhase())
+                    || (getAdapter().isLinkAccFlow()) && ((LinkAccGuiProcessor) (getAdapter()).getGuiProcessor()).isLinkAccOtpPhase()) {
+                String sender = pSmsEventMessage.sender;
+                String body = pSmsEventMessage.message;
 
-                        if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
-                            (getAdapter()).autoFillOtp(sender, body);
-                        }
-                    }
+                if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
+                    (getAdapter()).autoFillOtp(sender, body);
                 }
             }
         }
+        PaymentEventBus.shared().removeStickyEvent(SmsEventMessage.class);
+        Log.d(this, "OnPaymentSmsMessageEvent " + GsonUtils.toJsonString(pSmsEventMessage));
     }
 
-    /***
-     * Check user unlock screen .
-     * When user unlock screen focus down item
-     */
-    public class UnlockSreenReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equalsIgnoreCase(Constants.ACTION_UNLOCK_SCREEN)) {
-                if (getAdapter() != null && mAdapter.isCardFlow()) {
-                    getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
-                }
-            }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnUnLockScreenEvent(UnlockScreenEventMessage pUnlockScreenEventMessage) {
+        if (getAdapter() != null && mAdapter.isCardFlow()) {
+            getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
         }
+        PaymentEventBus.shared().removeStickyEvent(UnlockScreenEventMessage.class);
     }
 }

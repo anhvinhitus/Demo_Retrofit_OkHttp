@@ -4,21 +4,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsMessage;
 import android.text.TextUtils;
 
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
+import vn.com.zalopay.wallet.eventmessage.SmsEventMessage;
 import vn.com.zalopay.wallet.utils.Log;
 
 /***
- * sms comming
+ * sms otp is comming
  */
 public class SmsReceiver extends BroadcastReceiver {
     //create message from pdus
-    private void prepareMessageAndSendBroadCast(Context pContext, Bundle pBundle) throws Exception {
-        String sender = null;
-        String body = null;//content sms
+    private void prepareMessageAndSendBroadCast(Bundle pBundle) throws Exception {
+        String sender;
+        String body;//content sms
         //concat  multiple sms
         Object[] pdus = (Object[]) pBundle.get("pdus");
 
@@ -28,18 +28,15 @@ public class SmsReceiver extends BroadcastReceiver {
         }
 
         SmsMessage sms = messages[0];
-
         if (sms == null) {
             throw new Exception("===sms=NULL");
         }
-        sender = sms.getOriginatingAddress();//get numberphone
-
+        sender = sms.getOriginatingAddress();//shared numberphone
         Log.d("SmsReceiver", "sender:" + sender);
 
         try {
             if (messages.length == 1 || sms.isReplace()) {
                 body = sms.getDisplayMessageBody();
-
                 Log.d("SmsReceiver", "content sms: " + body);
             } else {
                 //if sms has length over 160,it's devided by multipart to send
@@ -53,11 +50,10 @@ public class SmsReceiver extends BroadcastReceiver {
 
             if (!TextUtils.isEmpty(body)) {
                 //send otp to channel activity
-                Intent messageIntent = new Intent();
-                messageIntent.setAction(Constants.FILTER_ACTION_BANK_SMS_RECEIVER);
-                messageIntent.putExtra(Constants.BANK_SMS_RECEIVER_SENDER, sender);
-                messageIntent.putExtra(Constants.BANK_SMS_RECEIVER_BODY, body);
-                LocalBroadcastManager.getInstance(pContext).sendBroadcast(messageIntent);
+                SmsEventMessage smsEventMessage = new SmsEventMessage();
+                smsEventMessage.sender = sender;
+                smsEventMessage.message = body;
+                PaymentEventBus.shared().postSticky(smsEventMessage);
             }
         } catch (Exception e) {
             Log.e("SmsReceiver", e != null ? e.getMessage() : "error");
@@ -66,13 +62,12 @@ public class SmsReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //catch comming sms
         Bundle extras = intent.getExtras();
-        if (extras == null)
+        if (extras == null) {
             return;
-
+        }
         try {
-            prepareMessageAndSendBroadCast(context, extras);
+            prepareMessageAndSendBroadCast(extras);
         } catch (Exception e) {
             Log.e(this, e);
         }

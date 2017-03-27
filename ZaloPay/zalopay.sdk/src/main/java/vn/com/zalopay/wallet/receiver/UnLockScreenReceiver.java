@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
+import vn.com.zalopay.wallet.eventmessage.UnlockScreenEventMessage;
 import vn.com.zalopay.wallet.utils.Log;
 
 /***
@@ -17,11 +19,8 @@ public class UnLockScreenReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
-
             Log.d(this, "==== UnLock ====");
-            Intent messageIntent = new Intent();
-            messageIntent.setAction(Constants.ACTION_UNLOCK_SCREEN);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(messageIntent);
+            PaymentEventBus.shared().postSticky(new UnlockScreenEventMessage());
         }
 
     }

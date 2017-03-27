@@ -1205,8 +1205,8 @@ public abstract class AdapterBase {
                     mIsExitWithoutConfirm = false;
 
                     moveToRequirePin();
-                    if (getActivity().getmPaymentPassword() != null) {
-                        getActivity().getmPaymentPassword().setErrorPin(pStatusResponse.getMessage());
+                    if (getActivity().getPaymentPassword() != null) {
+                        getActivity().getPaymentPassword().setErrorPin(pStatusResponse.getMessage());
                     }
 
                 } else {

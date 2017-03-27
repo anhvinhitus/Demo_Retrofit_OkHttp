@@ -78,4 +78,6 @@ dependencies {
 
     compile libs.rxJava
     compile libs.rxAndroid
+
+    compile libs.eventbus
 }

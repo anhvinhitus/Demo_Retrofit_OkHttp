@@ -27,12 +27,6 @@ public class Constants {
     public static final int NOTIFICATION_NETWORKING_ID = 1001;
     public static final int REQUEST_CODE_SMS = 101;
     public static final String BITMAP_EXTENSION = ".png";
-    public static final String FILTER_ACTION_BANK_SMS_RECEIVER = "ACTION_BANK_SMS_COME";
-    public static final String BANK_SMS_RECEIVER_SENDER = "BANK_SMS_RECEIVER_SENDER";
-    public static final String BANK_SMS_RECEIVER_BODY = "BANK_SMS_RECEIVER_BODY";
-    public static final String FILTER_ACTION_NETWORKING_CHANGED = "ACTION_NETWORKING_CHANGE";
-    public static final String ACTION_UNLOCK_SCREEN = "ACTION_UNLOCK_SCREEN";
-    public static final String NETWORKING_NOT_STABLE = "NETWORKING_NOT_STABLE";
     public static final String SUPPORT_INTRO_ACTION_FEEDBACK = "vn.com.vng.zalopay.action.FEEDBACK";
     public static final String SUPPORT_INTRO_ACTION_SUPPORT_CENTER = "vn.com.vng.zalopay.action.SUPPORT_CENTER";
     public static final String SCREENSHOT = "screenshot";
@@ -79,6 +73,8 @@ public class Constants {
     public static final int INPUT_INVALID = -1;
     public static final int REQUIRE_PIN = 1;
     public static final int REQUIRE_OTP = 2;
+    public static final int RECEIVER_ORIGIN = -888;
+    public static final int API_ORIGIN = -999;
     public static int PAYMENT_INIT = 1;
     public static int INPUT_CARDINFO_PHARSE = 2;
     public static int ORDER_SUBMIT = 3;
@@ -100,5 +96,4 @@ public class Constants {
         public final static int LINKACC = 116;
         public final static int UNLINKACC = 115;
     }
-
 }
