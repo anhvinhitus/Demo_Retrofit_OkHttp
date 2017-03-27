@@ -11,6 +11,7 @@ import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.MiniApplicationBaseActivity;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.apploader.network.NetworkService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -113,6 +115,14 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Inject
     ZaloPayRepository mZaloPayRepository;
+
+    @Inject
+    @Named("NetworkServiceWithRetry")
+    NetworkService mNetworkServiceWithRetry;
+
+    @Inject
+    @Named("NetworkServiceWithoutRetry")
+    NetworkService mNetworkServiceWithoutRetry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,7 +244,10 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 notificationRepository, redPackageRepository,
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
-                mReactNativeHostable, appRepository, mUser, mZaloPayRepository);
+                mReactNativeHostable, appRepository, mUser, mZaloPayRepository,
+                mNetworkServiceWithRetry,
+                mNetworkServiceWithoutRetry
+        );
     }
 
     private void createUserComponent() {

@@ -6,6 +6,7 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.zalopay.apploader.ReactNativeHostable;
+import com.zalopay.apploader.network.NetworkService;
 import com.zalopay.apploader.zpmodal.ReactModalHostManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -54,6 +55,9 @@ public class ReactInternalPackage implements ReactPackage {
 
     private User mUser;
 
+    private final NetworkService mNetworkServiceWithRetry;
+    private final NetworkService mNetworkServiceWithoutRetry;
+
     public ReactInternalPackage(TransactionStore.Repository repository, NotificationStore.Repository notificationRepository,
                                 RedPacketStore.Repository redPackageRepository,
                                 FriendStore.Repository friendRepository,
@@ -64,7 +68,11 @@ public class ReactInternalPackage implements ReactPackage {
                                 EventBus eventBus,
                                 ReactNativeHostable reactNativeHostable,
                                 AppResourceStore.Repository resourceRepository,
-                                User user, ZaloPayRepository zaloPayRepository) {
+                                User user, ZaloPayRepository zaloPayRepository,
+                                NetworkService networkServiceWithRetry,
+                                NetworkService networkServiceWithoutRetry
+
+    ) {
         this.mTransactionRepository = repository;
         this.mNotificationRepository = notificationRepository;
         this.mRedPackageRepository = redPackageRepository;
@@ -78,6 +86,10 @@ public class ReactInternalPackage implements ReactPackage {
         this.resourceRepository = resourceRepository;
         this.mUser = user;
         this.mZaloPayRepository = zaloPayRepository;
+
+        this.mNetworkServiceWithRetry = networkServiceWithRetry;
+        this.mNetworkServiceWithoutRetry = networkServiceWithoutRetry;
+
     }
 
     @Override
@@ -85,7 +97,7 @@ public class ReactInternalPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new ReactInternalNativeModule(reactContext, navigator, resourceRepository, mNotificationRepository, mZaloPayRepository, mTransactionRepository, mBalanceRepository));
+        modules.add(new ReactInternalNativeModule(reactContext, navigator, resourceRepository, mNotificationRepository, mZaloPayRepository, mTransactionRepository, mBalanceRepository, mNetworkServiceWithRetry, mNetworkServiceWithoutRetry));
         modules.add(new ReactTransactionLogsNativeModule(reactContext, mTransactionRepository, mNotificationRepository, mEventBus));
         modules.add(new ReactRedPacketNativeModule(reactContext, mRedPackageRepository, mFriendRepository, mBalanceRepository, paymentService, mUser, sweetAlertDialog));
         modules.add(new ReactNotificationNativeModule(reactContext, mNotificationRepository, mEventBus));
