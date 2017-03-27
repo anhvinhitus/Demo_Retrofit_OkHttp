@@ -30,23 +30,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
-import vn.com.vng.zalopay.network.BaseNetworkInterceptor;
 import vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory;
 import vn.com.vng.zalopay.data.net.adapter.ToStringConverterFactory;
 import vn.com.vng.zalopay.data.ws.model.NotificationEmbedData;
 import vn.com.vng.zalopay.data.ws.parser.NotificationMessageDeserializer;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
+import vn.com.vng.zalopay.network.BaseNetworkInterceptor;
 import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 
-import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.PaymentAppWithRetry;
-import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.PaymentAppWithoutRetry;
-import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.RedPacket;
+import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.React;
 import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.ZaloPay;
 
 /**
  * Created by AnhHieu on 3/25/16.
- *
  */
 @Module
 public class NetworkModule {
@@ -162,32 +159,6 @@ public class NetworkModule {
                 .addConverterFactory(convertFactory)
                 .addCallAdapterFactory(callAdapter)
                 .baseUrl(BuildConfig.UPLOAD_PHOTO_HOST)
-                .validateEagerly(BuildConfig.DEBUG)
-                .client(okHttpClient)
-                .build();
-    }
-
-    @Provides
-    @Singleton
-    @Named("retrofitPaymentAppWithRetry")
-    Retrofit providePaymentAppWithRetry(Converter.Factory converter, HttpUrl baseUrl, OkHttpClient okHttpClient, Context context) {
-        return new Retrofit.Builder()
-                .addConverterFactory(converter)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, PaymentAppWithRetry))
-                .baseUrl(baseUrl)
-                .validateEagerly(BuildConfig.DEBUG)
-                .client(okHttpClient)
-                .build();
-    }
-
-    @Provides
-    @Singleton
-    @Named("retrofitPaymentAppWithoutRetry")
-    Retrofit providePaymentAppWithoutRetry(Converter.Factory converter, HttpUrl baseUrl, OkHttpClient okHttpClient, Context context) {
-        return new Retrofit.Builder()
-                .addConverterFactory(converter)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, PaymentAppWithoutRetry))
-                .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)
                 .build();

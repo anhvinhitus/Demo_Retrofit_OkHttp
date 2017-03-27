@@ -10,4 +10,6 @@ import rx.Observable;
  */
 public interface NetworkService {
     Observable<String> request(String baseUrl, ReadableMap rawContent);
+
+    Observable<String> requestWithoutRetry(String baseUrl, ReadableMap rawContent);
 }

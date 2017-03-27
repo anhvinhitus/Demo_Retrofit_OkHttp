@@ -96,17 +96,4 @@ public class AppReactNativeModule {
         return navigator;
     }
 
-    @Provides
-    @Singleton
-    @Named("NetworkServiceWithRetry")
-    NetworkService providesNetworkService(@Named("retrofitPaymentAppWithRetry") Retrofit retrofit) {
-        return new NetworkServiceImpl(retrofit.create(DynamicUrlService.class));
-    }
-
-    @Provides
-    @Singleton
-    @Named("NetworkServiceWithoutRetry")
-    NetworkService providesNetworkServiceWithRetry(@Named("retrofitPaymentAppWithoutRetry") Retrofit retrofit) {
-        return new NetworkServiceImpl(retrofit.create(DynamicUrlService.class));
-    }
 }

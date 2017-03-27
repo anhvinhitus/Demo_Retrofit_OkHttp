@@ -52,7 +52,6 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     private final IPaymentService mPaymentService;
     private final long mAppId; // AppId này là appid js cắm vào
     private final NetworkService mNetworkServiceWithRetry;
-    private final NetworkService mNetworkServiceWithoutRetry;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private final User mUser;
@@ -63,13 +62,11 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
                         IPaymentService paymentService,
                         long appId,
                         NetworkService networkServiceWithRetry,
-                        NetworkService networkServiceWithoutRetry,
                         Navigator navigator) {
         super(reactContext);
         this.mPaymentService = paymentService;
         this.mAppId = appId;
         this.mNetworkServiceWithRetry = networkServiceWithRetry;
-        this.mNetworkServiceWithoutRetry = networkServiceWithoutRetry;
         this.mUser = user;
         this.mNavigator = navigator;
 
@@ -265,9 +262,9 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void request(String baseUrl, ReadableMap content, Promise promise) {
-        Timber.d("request: baseUrl [%s] String content [%s]", baseUrl, content);
-
-        Subscription subscription = mNetworkServiceWithoutRetry.request(baseUrl, content)
+        Timber.d("requestWithoutRetry: baseUrl [%s] String content [%s]", baseUrl, content);
+        Subscription subscription = mNetworkServiceWithRetry.requestWithoutRetry(baseUrl, content)
+                .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         compositeSubscription.add(subscription);
@@ -275,9 +272,9 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void requestWithRetry(String baseUrl, ReadableMap content, Promise promise) {
-        Timber.d("request: baseUrl [%s] String content [%s]", baseUrl, content);
-
+        Timber.d("requestWithRetry: baseUrl [%s] String content [%s]", baseUrl, content);
         Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, content)
+                .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         compositeSubscription.add(subscription);

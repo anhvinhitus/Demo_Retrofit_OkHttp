@@ -25,8 +25,9 @@ import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
  * Created by longlv on 08/08/2016.
  * BaseCallAdapter for retry API request when has request error
  */
-public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
-    protected final int NUMBER_RETRY_REST;
+abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
+
+    protected final int mMaxRetries;
     protected final Context mContext;
     protected final int mApiEventId;
     protected final Type mResponseType;
@@ -34,11 +35,7 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
     protected int mRestRetryCount;
 
     public BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler) {
-        this.mContext = context;
-        this.mApiEventId = apiEventId;
-        this.mResponseType = responseType;
-        this.mScheduler = scheduler;
-        this.NUMBER_RETRY_REST = Constants.NUMBER_RETRY_REST;
+        this(context, apiEventId, responseType, scheduler, Constants.NUMBER_RETRY_REST);
     }
 
     public BaseCallAdapter(Context context, int apiEventId, Type responseType, Scheduler scheduler, int retryNumber) {
@@ -46,7 +43,7 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
         this.mApiEventId = apiEventId;
         this.mResponseType = responseType;
         this.mScheduler = scheduler;
-        this.NUMBER_RETRY_REST = retryNumber > 0 ? retryNumber : 0;
+        this.mMaxRetries = retryNumber >= 0 ? retryNumber : 0;
     }
 
     @Override
@@ -56,7 +53,7 @@ public abstract class BaseCallAdapter implements CallAdapter<Observable<?>> {
 
     @Override
     public <R> Observable<R> adapt(Call<R> call) {
-        mRestRetryCount = NUMBER_RETRY_REST;
+        mRestRetryCount = mMaxRetries;
         Observable<R> observable = Observable.create(new CallOnSubscribe<>(mContext, call, mApiEventId))
                 .retryWhen(errors -> errors.flatMap(error -> {
                     if (!call.request().method().equalsIgnoreCase("GET")) {

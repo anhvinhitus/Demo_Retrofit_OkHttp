@@ -49,7 +49,6 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
-import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * Created by huuhoa on 5/16/16.
@@ -81,10 +80,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     @Inject
     @Named("NetworkServiceWithRetry")
     NetworkService mNetworkServiceWithRetry;
-
-    @Inject
-    @Named("NetworkServiceWithoutRetry")
-    NetworkService mNetworkServiceWithoutRetry;
 
     private AppResource appResource;
 
@@ -265,7 +260,6 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
                 new ReactIAPPackage(paymentService,
                         mUser, appId,
                         mNetworkServiceWithRetry,
-                        mNetworkServiceWithoutRetry,
                         mNavigator,
                         mReactNativeHostable)
         );

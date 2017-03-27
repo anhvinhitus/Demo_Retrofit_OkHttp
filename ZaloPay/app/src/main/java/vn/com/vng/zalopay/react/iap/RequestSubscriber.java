@@ -24,8 +24,6 @@ final class RequestSubscriber extends DefaultSubscriber<String> {
 
     @Override
     public void onError(Throwable e) {
-
-        Timber.d(e, "request error");
         Promise promise = wrPromise.get();
         if (promise == null) {
             return;
@@ -49,7 +47,6 @@ final class RequestSubscriber extends DefaultSubscriber<String> {
 
     @Override
     public void onNext(String s) {
-        Timber.d("received response");
         Promise promise = wrPromise.get();
         if (promise == null) {
             return;

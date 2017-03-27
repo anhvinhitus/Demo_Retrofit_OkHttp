@@ -31,7 +31,18 @@ public class NetworkServiceImpl implements NetworkService {
         this.mRequestService = retrofit;
     }
 
-    public Observable<String> request(String baseUrl, ReadableMap content) {
+
+    @Override
+    public Observable<String> request(String baseUrl, ReadableMap rawContent) {
+        return request(baseUrl, rawContent, true);
+    }
+
+    @Override
+    public Observable<String> requestWithoutRetry(String baseUrl, ReadableMap rawContent) {
+        return request(baseUrl, rawContent, false);
+    }
+
+    private Observable<String> request(String baseUrl, ReadableMap content, boolean retry) {
         RawContentHttp rawContentHttp = null;
 
         try {
@@ -44,12 +55,16 @@ public class NetworkServiceImpl implements NetworkService {
             return Observable.error(new FormatException());
         }
 
-        return process(baseUrl, rawContentHttp.getMethod(), rawContentHttp.getHeaders(), rawContentHttp.getQuery(), rawContentHttp.getBody());
+        return process(baseUrl, rawContentHttp.getMethod(), rawContentHttp.getHeaders(), rawContentHttp.getQuery(), rawContentHttp.getBody(), retry);
     }
 
-    private Observable<String> process(String baseUrl, @NonNull String method,@NonNull Map<String, String> headers, @NonNull Map<String, String> query, @Nullable String body) {
+    private Observable<String> process(String baseUrl, @NonNull String method, @NonNull Map<String, String> headers, @NonNull Map<String, String> query, @Nullable String body, boolean retry) {
         if (method.equalsIgnoreCase("GET")) {
-            return get(baseUrl, headers, query);
+            if (retry) {
+                return get(baseUrl, headers, query);
+            } else {
+                return getWithoutRetry(baseUrl, headers, query);
+            }
         } else {
             return post(baseUrl, headers, query, body);
         }
@@ -57,6 +72,10 @@ public class NetworkServiceImpl implements NetworkService {
 
     private Observable<String> get(String url, Map<String, String> headers, Map<String, String> query) {
         return mRequestService.get(url, headers, query);
+    }
+
+    private Observable<String> getWithoutRetry(String url, Map<String, String> headers, Map<String, String> query) {
+        return mRequestService.getWithoutRetry(url, headers, query);
     }
 
     private Observable<String> post(String url, Map<String, String> headers, Map<String, String> query, String body) {

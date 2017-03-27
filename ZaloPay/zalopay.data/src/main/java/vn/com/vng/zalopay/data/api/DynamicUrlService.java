@@ -9,6 +9,7 @@ import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
+import vn.com.vng.zalopay.data.net.adapter.RETRY;
 
 /**
  * Created by AnhHieu on 9/20/16.
@@ -16,15 +17,16 @@ import rx.Observable;
  */
 public interface DynamicUrlService {
 
-    //maps don't allow null anywhere.
-
     @GET
     Observable<String> get(@Url String url, @HeaderMap Map<String, String> header, @QueryMap Map<String, String> query);
+
+    @RETRY(value = 0)
+    @GET
+    Observable<String> getWithoutRetry(@Url String url, @HeaderMap Map<String, String> header, @QueryMap Map<String, String> query);
 
     @POST
     Observable<String> post(@Url String url, @HeaderMap Map<String, String> header, @QueryMap Map<String, String> query, @Body String body);
 
     @POST
     Observable<String> post(@Url String url, @HeaderMap Map<String, String> header, @QueryMap Map<String, String> query);
-
 }

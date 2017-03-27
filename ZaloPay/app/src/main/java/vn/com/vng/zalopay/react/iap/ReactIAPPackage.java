@@ -27,21 +27,18 @@ public class ReactIAPPackage implements ReactPackage {
     private final User mUser;
     private final long appId;
     private final NetworkService mNetworkServiceWithRetry;
-    private final NetworkService mNetworkServiceWithoutRetry;
     private final Navigator mNavigator;
     private ReactNativeHostable mNativeHost;
 
     public ReactIAPPackage(IPaymentService paymentService,
                            User user, long appId,
                            NetworkService networkServiceWithRetry,
-                           NetworkService networkServiceWithoutRetry,
                            Navigator navigator,
                            ReactNativeHostable nativeHost) {
         this.paymentService = paymentService;
         this.mUser = user;
         this.appId = appId;
         this.mNetworkServiceWithRetry = networkServiceWithRetry;
-        this.mNetworkServiceWithoutRetry = networkServiceWithoutRetry;
         this.mNavigator = navigator;
         this.mNativeHost = nativeHost;
     }
@@ -50,7 +47,7 @@ public class ReactIAPPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new ZaloPayNativeModule(reactContext, mUser, paymentService, appId,
-                mNetworkServiceWithRetry, mNetworkServiceWithoutRetry, mNavigator));
+                mNetworkServiceWithRetry, mNavigator));
         return modules;
     }
 

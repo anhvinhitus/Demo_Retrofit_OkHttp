@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.internal.di.modules;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.zalopay.apploader.network.NetworkService;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -11,15 +12,13 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
+import vn.com.vng.zalopay.data.api.DynamicUrlService;
 import vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorCallFactory;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorService;
@@ -32,6 +31,9 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
+import vn.com.vng.zalopay.react.iap.NetworkServiceImpl;
+
+import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.React;
 
 /**
  * Created by hieuvm on 3/10/17.
@@ -101,7 +103,7 @@ public class UserSocketModule {
     }
 
     @Provides
-    @Singleton
+    @UserScope
     @Named("retrofitRedPacketApi")
     Retrofit provideRetrofitRedPacketApi(OkHttpClient okHttpClient, Context context,
                                          Converter.Factory convertFactory, PaymentConnectorCallFactory callFactory) {
@@ -110,6 +112,26 @@ public class UserSocketModule {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.RedPacket))
                 .callFactory(callFactory)
                 .baseUrl(BuildConfig.REDPACKET_HOST)
+                .validateEagerly(BuildConfig.DEBUG)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
+    @UserScope
+    @Named("NetworkServiceWithRetry")
+    NetworkService providesNetworkService(@Named("retrofitReact") Retrofit retrofit) {
+        return new NetworkServiceImpl(retrofit.create(DynamicUrlService.class));
+    }
+
+    @Provides
+    @UserScope
+    @Named("retrofitReact")
+    Retrofit providePaymentAppWithRetry(Converter.Factory converter, HttpUrl baseUrl, OkHttpClient okHttpClient, Context context) {
+        return new Retrofit.Builder()
+                .addConverterFactory(converter)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, React))
+                .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
                 .client(okHttpClient)
                 .build();

@@ -18,13 +18,9 @@ import vn.com.vng.zalopay.data.exception.HttpEmptyResponseException;
  * *
  */
 
-public class RNCallAdapter extends BaseCallAdapter {
+final class ReactNativeCallAdapter extends BaseCallAdapter {
 
-    public RNCallAdapter(Context context, int apiClientId, Type responseType, Scheduler scheduler) {
-        super(context, apiClientId, responseType, scheduler, 0);
-    }
-
-    public RNCallAdapter(Context context, int apiClientId, Type responseType, Scheduler scheduler, int retryNumber) {
+    ReactNativeCallAdapter(Context context, int apiClientId, Type responseType, Scheduler scheduler, int retryNumber) {
         super(context, apiClientId, responseType, scheduler, retryNumber);
     }
 
@@ -32,13 +28,10 @@ public class RNCallAdapter extends BaseCallAdapter {
     @Override
     protected <R> Observable<? extends R> makeObservableFromResponse(Response<R> response) {
         if (response == null) {
-            Timber.d("makeObservableFromResponse NULL response");
             return Observable.error(new HttpEmptyResponseException());
         }
 
         if (!response.isSuccessful()) {
-            Timber.d("makeObservableFromResponse UNSUCCESSFUL response");
-
             return Observable.error(new HttpException(response));
         }
 

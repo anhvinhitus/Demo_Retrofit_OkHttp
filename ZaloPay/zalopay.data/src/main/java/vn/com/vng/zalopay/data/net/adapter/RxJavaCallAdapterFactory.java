@@ -31,8 +31,7 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
     public enum AdapterType {
         ZaloPay,
         RedPacket,
-        PaymentAppWithRetry,
-        PaymentAppWithoutRetry
+        React,
     }
 
     /**
@@ -63,15 +62,24 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
     @Override
     public CallAdapter<?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
         int apiEventId = -1;
-        API_NAME apiNameAnnotation = getAnnotation(annotations);
-        if (apiNameAnnotation != null) {
-            apiEventId = apiNameAnnotation.value();
+        int maxRetries = Constants.NUMBER_RETRY_REST;
+
+        for (Annotation annotation : annotations) {
+
+            if (annotation instanceof API_NAME) {
+                apiEventId = ((API_NAME) annotation).value();
+                continue;
+            }
+
+            if (annotation instanceof RETRY) {
+                maxRetries = ((RETRY) annotation).value();
+            }
         }
 
-        return getCallAdapter(returnType, scheduler, apiEventId);
+        return getCallAdapter(returnType, scheduler, apiEventId, maxRetries);
     }
 
-    private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler, int apiEventId) {
+    private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler, int apiEventId, int maxRetries) {
         Type observableType = getParameterUpperBound(0, (ParameterizedType) returnType);
 
         switch (mAdapterType) {
@@ -79,21 +87,10 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
                 return new ZaloPayCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
             case RedPacket:
                 return new RedPacketCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
-            case PaymentAppWithRetry:
-                return new RNCallAdapter(mApplicationContext, apiEventId, observableType, scheduler, Constants.NUMBER_RETRY_REST);
-            case PaymentAppWithoutRetry:
-                return new RNCallAdapter(mApplicationContext, apiEventId, observableType, scheduler, 0);
+            case React:
+                return new ReactNativeCallAdapter(mApplicationContext, apiEventId, observableType, scheduler, maxRetries);
             default:
                 return new ZaloPayCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
         }
-    }
-
-    private API_NAME getAnnotation(Annotation[] annotations) {
-        for (Annotation annotation : annotations) {
-            if (API_NAME.class == annotation.annotationType()) {
-                return (API_NAME) annotation;
-            }
-        }
-        return null;
     }
 }
