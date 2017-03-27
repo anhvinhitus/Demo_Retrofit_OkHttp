@@ -447,7 +447,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         writableMap.putString("accesstoken", mUser.accesstoken);
         writableMap.putString("userid", mUser.zaloPayId);
 
-        Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, content)
+        Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, writableMap)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         mCompositeSubscription.add(subscription);
