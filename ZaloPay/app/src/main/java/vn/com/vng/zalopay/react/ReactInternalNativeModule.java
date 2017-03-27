@@ -17,6 +17,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.views.text.ReactFontManager;
 import com.google.gson.JsonObject;
+import com.zalopay.apploader.network.NetworkService;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 import rx.Subscription;
 import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
@@ -40,6 +42,7 @@ import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.react.iap.RequestSubscriber;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
 import vn.com.vng.zalopay.service.DefaultPaymentRedirectListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
@@ -66,13 +69,15 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     private NotificationStore.Repository mNotificationRepository;
 
+    private final NetworkService mNetworkServiceWithRetry;
 
     ReactInternalNativeModule(ReactApplicationContext reactContext,
                               INavigator navigator, AppResourceStore.Repository resourceRepository,
                               NotificationStore.Repository mNotificationRepository,
                               ZaloPayRepository zaloPayRepository,
                               TransactionStore.Repository transactionRepository,
-                              BalanceStore.Repository balanceRepository
+                              BalanceStore.Repository balanceRepository,
+                              NetworkService networkServiceWithRetry
     ) {
         super(reactContext);
         this.navigator = navigator;
@@ -81,6 +86,8 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
         this.mBalanceRepository = balanceRepository;
+
+        this.mNetworkServiceWithRetry = networkServiceWithRetry;
     }
 
     @Override
@@ -95,15 +102,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void show(String message, int duration) {
         Toast.makeText(getReactApplicationContext(), message, Toast.LENGTH_LONG).show();
-    }
-
-    /// Request ZaloPayInternal API
-    @ReactMethod
-    public void request(String methodName, ReadableMap parameters, Promise promise) {
-        WritableMap result = Arguments.createMap();
-        result.merge(parameters);
-        result.putString("method", methodName);
-        promise.resolve(result);
     }
 
     @ReactMethod
@@ -420,6 +418,24 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
                 Helpers.promiseResolveSuccess(mPromise.get(), null);
             }
         }
+    }
+
+    @ReactMethod
+    public void request(String baseUrl, ReadableMap content, Promise promise) {
+        Timber.d("requestWithoutRetry: baseUrl [%s] String content [%s]", baseUrl, content);
+        Subscription subscription = mNetworkServiceWithRetry.requestWithoutRetry(baseUrl, content)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new RequestSubscriber(promise));
+        mCompositeSubscription.add(subscription);
+    }
+
+    @ReactMethod
+    public void requestWithRetry(String baseUrl, ReadableMap content, Promise promise) {
+        Timber.d("requestWithRetry: baseUrl [%s] String content [%s]", baseUrl, content);
+        Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, content)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new RequestSubscriber(promise));
+        mCompositeSubscription.add(subscription);
     }
 
 }

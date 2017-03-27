@@ -11,6 +11,7 @@ import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.MiniApplicationBaseActivity;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.apploader.network.NetworkService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Subscription;
 import rx.schedulers.Schedulers;
@@ -46,13 +48,11 @@ import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.navigation.INavigator;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.ReactInternalPackage;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
 import vn.com.vng.zalopay.react.redpacket.IRedPacketPayService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
-import vn.com.vng.zalopay.utils.ToastUtil;
 
 /**
  * Created by huuhoa on 4/26/16.
@@ -113,6 +113,10 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
 
     @Inject
     ZaloPayRepository mZaloPayRepository;
+
+    @Inject
+    @Named("NetworkServiceWithRetry")
+    NetworkService mNetworkServiceWithRetry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,7 +238,9 @@ public class MiniApplicationActivity extends MiniApplicationBaseActivity {
                 notificationRepository, redPackageRepository,
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
-                mReactNativeHostable, appRepository, mUser, mZaloPayRepository);
+                mReactNativeHostable, appRepository, mUser, mZaloPayRepository,
+                mNetworkServiceWithRetry
+        );
     }
 
     private void createUserComponent() {

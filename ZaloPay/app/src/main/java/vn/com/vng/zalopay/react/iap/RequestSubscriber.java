@@ -14,11 +14,11 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
  * Created by AnhHieu on 9/21/16.
  * *
  */
-final class RequestSubscriber extends DefaultSubscriber<String> {
+public final class RequestSubscriber extends DefaultSubscriber<String> {
 
     private WeakReference<Promise> wrPromise;
 
-    RequestSubscriber(Promise promise) {
+    public RequestSubscriber(Promise promise) {
         wrPromise = new WeakReference<>(promise);
     }
 
