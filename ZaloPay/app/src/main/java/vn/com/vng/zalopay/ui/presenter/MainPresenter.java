@@ -229,15 +229,17 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
         getZaloFriend();
         warningRoot();
+        getTransaction(10);
     }
 
     private void warningRoot() {
-        Subscription subscription = ObservableHelper.makeObservable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return !RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted();
-            }
-        })
+        Subscription subscription = ObservableHelper
+                .makeObservable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return !RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted();
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {
@@ -340,7 +342,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
             return;
         }
         if (!isInitTransaction) {
-            this.getTransaction();
+            this.getTransaction(0);
         }
 
         if (!isLoadedGateWayInfo) {
@@ -440,7 +442,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     public void logout() {
         Subscription subscription = passportRepository.logout()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
 
         if (mEventBus.isRegistered(this)) {
@@ -564,18 +566,15 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     private void removeNotification(NotificationData notify) {
         Subscription subscription = mNotifyRepository.removeNotifyByType(notify.notificationtype, notify.appid, notify.transid)
+                .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e, "onError");
-                    }
-                });
+                .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
 
-    private void getTransaction() {
+    private void getTransaction(long delay) {
         Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistoryLatest()
+                .delaySubscription(delay, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
