@@ -19,7 +19,7 @@ import timber.log.Timber;
  * Class helps track user's location by GPS or network
  */
 
-public class TrackLocation extends Service {
+public class LocationProvider extends Service {
     private final static int TIME_REFRESH = 300000;
     private static LocationStore.Repository mRepository;
     private static Context mApplicationContext;

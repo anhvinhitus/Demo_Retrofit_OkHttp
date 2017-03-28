@@ -25,7 +25,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.location.AppLocation;
-import vn.com.vng.zalopay.location.TrackLocation;
+import vn.com.vng.zalopay.location.LocationProvider;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
@@ -410,7 +410,7 @@ public class PaymentWrapper {
         //lap vao ví appId = appUser = 1
         paymentInfo.appUser = order.appuser;
         paymentInfo.mac = order.mac;
-        paymentInfo.mLocation = transform(TrackLocation.getLocation());
+        paymentInfo.mLocation = transform(LocationProvider.getLocation());
         return paymentInfo;
     }
 
