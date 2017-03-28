@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_info_finish"
-    android:visibility="visible">
+    android:visibility="gone">
 
     <LinearLayout
         android:id="@+id/layout_top"
