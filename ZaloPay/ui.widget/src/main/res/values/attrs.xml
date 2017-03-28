@@ -106,6 +106,9 @@
         <!-- page animation time span -->
         <attr name="pager_animation_span" format="integer" />
 
+        <attr name="content_background_color" format="color" />
+        <attr name="content_height" format="dimension" />
+
     </declare-styleable>
 
     <declare-styleable name="PagerIndicator">
