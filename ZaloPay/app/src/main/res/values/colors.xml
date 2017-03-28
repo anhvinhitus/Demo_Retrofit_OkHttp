@@ -146,4 +146,14 @@
     <color name="arrow_right">#c7c7cc</color>
 
     <color name="loading_progress_bar">#04be04</color>
+    
+    <!-- Tab personal -->
+    <color name="personal_text">#24272b</color>
+    <color name="personal_zalopayid">#727f8c</color>
+    <color name="personal_ic_balance">#129d5a</color>
+    <color name="personal_ic_bank">#f6b501</color>
+    <color name="personal_ic_bill">#4286f5</color>
+    <color name="personal_ic_trans_history">#dd4337</color>
+    <color name="personal_ic_support">#53718b</color>
+    <color name="personal_ic_link">#008fe5</color>
 </resources>

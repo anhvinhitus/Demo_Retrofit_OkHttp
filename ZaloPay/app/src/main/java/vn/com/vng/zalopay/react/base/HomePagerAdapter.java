@@ -7,6 +7,7 @@ import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
 
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.ui.fragment.tabmain.PersonalFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
 /**
@@ -34,7 +35,8 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
             case TAB_SHOW_SHOW_INDEX:
                 return ExternalReactFragment.newInstance(PaymentAppConfig.getAppResource(22));
             case TAB_PROFILE_INDEX:
-                return ProfileFragment.newInstance();
+//                return ProfileFragment.newInstance();
+                return PersonalFragment.newInstance();
         }
 
         return null;
