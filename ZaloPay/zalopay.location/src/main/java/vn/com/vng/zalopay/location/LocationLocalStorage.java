@@ -5,6 +5,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.AppStorage;
+import vn.com.vng.zalopay.data.util.Utils;
 
 /**
  * Created by khattn on 3/22/17.
@@ -46,10 +47,10 @@ public class LocationLocalStorage implements LocationStore.LocalStorage {
             return null;
         }
 
-        double latitude = Double.valueOf(item.getOrDefault(LOCATION_LATITUDE, "0"));
-        double longitude = Double.valueOf(item.getOrDefault(LOCATION_LONGITUDE, "0"));
-        String address = item.getOrDefault(LOCATION_ADDRESS, "");
-        long timestamp = Long.valueOf(item.getOrDefault(LOCATION_TIMESTAMP, "0"));
+        double latitude = Double.valueOf(Utils.mapGetOrDefault(item, LOCATION_LATITUDE, "0"));
+        double longitude = Double.valueOf(Utils.mapGetOrDefault(item, LOCATION_LONGITUDE, "0"));
+        String address = Utils.mapGetOrDefault(item, LOCATION_ADDRESS, "");
+        long timestamp = Long.valueOf(Utils.mapGetOrDefault(item, LOCATION_TIMESTAMP, "0"));
         return new AppLocation(latitude, longitude, address, timestamp);
     }
 }

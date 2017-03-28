@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.util;
 
 import java.security.MessageDigest;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -43,4 +44,12 @@ public class Utils {
 
         return sha256Base(content);
     }
+
+    public static <K, V> V mapGetOrDefault(Map<K, V> map, K key, V defaultValue) {
+        V v;
+        return (((v = map.get(key)) != null) || map.containsKey(key))
+                ? v
+                : defaultValue;
+    }
+
 }
