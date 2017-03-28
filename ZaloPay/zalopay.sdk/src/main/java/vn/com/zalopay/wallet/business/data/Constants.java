@@ -39,6 +39,7 @@ public class Constants {
     public static final String TRANSACTIONID = "transactionid";
     public static final String CATEGORY = "category";
     public static final String DESCRIPTION = "description";
+    public static final String ERRORCODE = "errorcode";
     public static final int TIMES_DELAY_TO_GET_NOTIFY = 5000;//ms
     public static final int MAX_INTERVAL_OF_RETRY = 30000;//ms
     public static final int SLEEPING_INTERVAL_OF_RETRY = 1000;//ms
@@ -88,6 +89,7 @@ public class Constants {
     public static int STATUS_PHARSE = 7;
     public static int RESULT_PHARSE = 8;
     public static int UNDEFINE = 9;
+    public static int NULL_ERRORCODE = -747;
     public static String TRUE = "true";
 
     public static enum HostType {
