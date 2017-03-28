@@ -410,7 +410,7 @@ public class PaymentWrapper {
         //lap vao ví appId = appUser = 1
         paymentInfo.appUser = order.appuser;
         paymentInfo.mac = order.mac;
-        paymentInfo.mLocation = transform(TrackLocation.getLocation(mActivity.getApplicationContext()));
+        paymentInfo.mLocation = transform(TrackLocation.getLocation());
         return paymentInfo;
     }
 

@@ -261,7 +261,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     }
 
     private void loadGatewayInfoPaymentSDK() {
-        TrackLocation.findLocation(mView.getContext());
+        TrackLocation.findLocation();
         final ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
         UserInfo userInfo = new UserInfo();
         userInfo.zaloUserId = String.valueOf(mUser.zaloId);

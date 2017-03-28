@@ -161,7 +161,7 @@ public class AndroidApplication extends Application {
     }
 
     private void initLocation() {
-        TrackLocation.init(appComponent.locationRepository());
+        TrackLocation.init(appComponent.locationRepository(), this);
     }
 
     private void initAppComponent() {

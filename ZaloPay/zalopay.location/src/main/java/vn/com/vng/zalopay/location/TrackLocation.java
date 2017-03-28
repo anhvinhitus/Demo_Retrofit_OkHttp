@@ -22,6 +22,7 @@ import timber.log.Timber;
 public class TrackLocation extends Service {
     private final static int TIME_REFRESH = 300000;
     private static LocationStore.Repository mRepository;
+    private static Context mApplicationContext;
 
     private static Location location;
 
@@ -30,13 +31,14 @@ public class TrackLocation extends Service {
     private static Address address;
     private static boolean canGetLocation = false;
 
-    public static void init(LocationStore.Repository repository) {
+    public static void init(LocationStore.Repository repository, Context applicationContext) {
         mRepository = repository;
+        mApplicationContext = applicationContext;
     }
 
-    public static void findLocation(Context context) {
+    public static void findLocation() {
         try {
-            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+            LocationManager locationManager = (LocationManager) mApplicationContext.getSystemService(LOCATION_SERVICE);
             boolean checkGPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean checkNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
@@ -48,7 +50,7 @@ public class TrackLocation extends Service {
                 if (checkNetwork) {
                     try {
                         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        updateCoordinates(context);
+                        updateCoordinates(mApplicationContext);
                         Timber.d("Get location by network with lat: %s, long: %s", latitude, longitude);
                     } catch (SecurityException e) {
                         Timber.e("Get location by network failed with: %s", e.getMessage());
@@ -59,7 +61,7 @@ public class TrackLocation extends Service {
                     if (location == null) {
                         try {
                             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            updateCoordinates(context);
+                            updateCoordinates(mApplicationContext);
                             Timber.d("Get location by gps with lat: %s, long: %s", latitude, longitude);
                         } catch (SecurityException e) {
                             Timber.e("Get location by gps failed with: %s", e.getMessage());
@@ -110,9 +112,9 @@ public class TrackLocation extends Service {
         mRepository.saveLocationCache(latitude, longitude, getAddress(), System.currentTimeMillis());
     }
 
-    private static AppLocation getUpdateLocation(Context context, AppLocation location) {
+    private static AppLocation getUpdateLocation(AppLocation location) {
         if (location == null || Math.abs(System.currentTimeMillis() - location.timeget) > TIME_REFRESH) {
-            findLocation(context);
+            findLocation();
             if (canGetLocation && latitude != 0 || longitude != 0) {
                 saveLocation();
                 return new AppLocation(latitude, longitude, getAddress(), System.currentTimeMillis());
@@ -122,11 +124,11 @@ public class TrackLocation extends Service {
         return location;
     }
 
-    public static AppLocation getLocation(Context context) {
+    public static AppLocation getLocation() {
         if(mRepository == null) {
             return null;
         }
         AppLocation location = mRepository.getLocationCache();
-        return getUpdateLocation(context, location);
+        return getUpdateLocation(location);
     }
 }

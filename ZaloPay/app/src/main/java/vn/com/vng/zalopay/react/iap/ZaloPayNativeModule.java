@@ -148,7 +148,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
         } catch (Exception e) {
             Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(),
                     PaymentError.getErrorMessage(PaymentError.ERR_CODE_INPUT));
-            //e.printStackTrace();
+            Timber.d(e);
         }
     }
 
