@@ -5,8 +5,9 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import vn.com.vng.zalopay.data.cache.AppStorage;
+import vn.com.vng.zalopay.data.cache.AppStorageImpl;
 import vn.com.vng.zalopay.data.cache.global.DaoSession;
-import vn.com.vng.zalopay.location.LocationDataMapper;
 import vn.com.vng.zalopay.location.LocationLocalStorage;
 import vn.com.vng.zalopay.location.LocationRepository;
 import vn.com.vng.zalopay.location.LocationStore;
@@ -18,17 +19,21 @@ import vn.com.vng.zalopay.location.LocationStore;
 
 @Module
 public class AppLocationModule {
-
     @Singleton
     @Provides
-    LocationStore.LocalStorage provideLocationLocalStorage(@Named("globaldaosession") DaoSession session) {
-        return new LocationLocalStorage(session);
+    AppStorage provideAppStorage(@Named("globaldaosession") DaoSession session) {
+        return new AppStorageImpl(session);
     }
 
     @Singleton
     @Provides
-    LocationStore.Repository provideLocationRepository(LocationStore.LocalStorage localStorage,
-                                                       LocationDataMapper mapper) {
-        return new LocationRepository(localStorage, mapper);
+    LocationStore.LocalStorage provideLocationLocalStorage(AppStorage appStorage) {
+        return new LocationLocalStorage(appStorage);
+    }
+
+    @Singleton
+    @Provides
+    LocationStore.Repository provideLocationRepository(LocationStore.LocalStorage localStorage) {
+        return new LocationRepository(localStorage);
     }
 }

@@ -1,10 +1,10 @@
 package vn.com.vng.zalopay.location;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.cache.global.DaoSession;
-import vn.com.vng.zalopay.data.cache.global.LocationLogGD;
+import vn.com.vng.zalopay.data.cache.AppStorage;
 
 /**
  * Created by khattn on 3/22/17.
@@ -12,35 +12,40 @@ import vn.com.vng.zalopay.data.cache.global.LocationLogGD;
  */
 
 public class LocationLocalStorage implements LocationStore.LocalStorage {
-    private DaoSession mDaoSession;
+    private AppStorage mAppStorage;
 
-    public LocationLocalStorage(DaoSession daoSession) {
-        mDaoSession = daoSession;
+    public LocationLocalStorage(AppStorage appStorage) {
+        mAppStorage = appStorage;
     }
 
     @Override
-    public void save(LocationLogGD newLocation) {
-        LocationLogGD locationLogGD = new LocationLogGD();
-        locationLogGD.latitude = newLocation.latitude;
-        locationLogGD.longitude = newLocation.longitude;
-        locationLogGD.address = newLocation.address;
-        locationLogGD.timeget = newLocation.timeget;
-
+    public void save(AppLocation newLocation) {
         try {
-            mDaoSession.getLocationLogGDDao().insertOrReplaceInTx(locationLogGD);
+            Map<String, String> multi = new HashMap<>();
+            multi.put("location:timestamp", String.valueOf(newLocation.timeget));
+            multi.put("location:address", newLocation.address);
+            multi.put("location:latitude", String.valueOf(newLocation.latitude));
+            multi.put("location:longitude", String.valueOf(newLocation.longitude));
+            mAppStorage.putAll(multi);
         } catch (Exception e) {
             Timber.d(e, "Save location error");
         }
     }
 
     @Override
-    public LocationLogGD get() {
-        List<LocationLogGD> list = mDaoSession.getLocationLogGDDao()
-                .queryBuilder()
-                .list();
-        if (list == null || list.size() <= 0) {
+    public AppLocation get() {
+        Map<String, String> item = mAppStorage.getAll(
+            "location:timestamp", "location:address", "location:latitude", "location:longitude"
+        );
+
+        if (item == null) {
             return null;
         }
-        return list.get(list.size() - 1);
+
+        double latitude = Double.valueOf(item.getOrDefault("location:latitude", "0"));
+        double longitude = Double.valueOf(item.getOrDefault("location:longitude", "0"));
+        String address = item.getOrDefault("location:address", "");
+        long timestamp = Long.valueOf(item.getOrDefault("location:timestamp", "0"));
+        return new AppLocation(latitude, longitude, address, timestamp);
     }
 }

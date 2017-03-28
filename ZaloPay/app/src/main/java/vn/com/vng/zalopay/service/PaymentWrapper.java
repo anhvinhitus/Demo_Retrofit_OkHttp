@@ -420,8 +420,8 @@ public class PaymentWrapper {
         }
 
         PaymentLocation location = new PaymentLocation();
-        location.setLatitude(appLocation.latitude);
-        location.setLongitude(appLocation.longitude);
+        location.latitude = appLocation.latitude;
+        location.longitude = appLocation.longitude;
         return location;
     }
 
