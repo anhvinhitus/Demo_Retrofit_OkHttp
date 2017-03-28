@@ -42,6 +42,14 @@
                 android:textColor="@color/personal_zalopayid"
                 android:textSize="@dimen/personal.zalopayid" />
         </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/personal.margin"
+            android:layout_height="@dimen/personal.margin"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/personal.margin"
+            android:src="@drawable/ic_arrow_right" />
     </RelativeLayout>
 
     <LinearLayout
@@ -65,7 +73,7 @@
                 android:layout_marginLeft="@dimen/personal.margin"
                 android:layout_marginRight="@dimen/personal.margin"
                 android:gravity="center_vertical"
-                android:text="Số dư"
+                android:text="Số Dư"
                 android:textColor="@color/personal_text"
                 android:textSize="@dimen/personal.iconfont.text"
                 app:iconLeftColor="@color/personal_ic_balance"

@@ -13,7 +13,8 @@ import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
 
 /**
- * Created by anton on 11/12/15.
+ * Header view (collapse view)
+ * Define view and child's view actions
  */
 
 public class HeaderView extends LinearLayout {
@@ -37,11 +38,5 @@ public class HeaderView extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-//        ButterKnife.bind(this);
-//        init(getContext());
     }
-
-//    protected void init(Context context) {
-//
-//    }
 }

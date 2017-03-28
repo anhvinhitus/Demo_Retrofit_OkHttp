@@ -349,10 +349,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
         float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
 
         if (percentage == 0f) {
-            toolbarHeaderView.setTopView(true, percentage);
+//            toolbarHeaderView.setTopView(true, percentage);
 
         } else if (percentage > 0f && percentage <= 1f) {
-            toolbarHeaderView.setTopView(false, percentage);
+//            toolbarHeaderView.setTopView(false, percentage);
         }
     }
 

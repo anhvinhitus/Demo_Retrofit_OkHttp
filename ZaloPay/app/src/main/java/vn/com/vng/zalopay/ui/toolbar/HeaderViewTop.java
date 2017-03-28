@@ -11,14 +11,24 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import vn.com.vng.zalopay.R;
 
 /**
- * Created by anton on 11/12/15.
+ * Header top view (this view snap and change layout when toolbar collapsed)
+ * Define
  */
 
 public class HeaderViewTop extends LinearLayout {
-    private RelativeLayout rlHeaderNormal, rlHeaderCollapsed;
+    @BindView(R.id.header_top_rl_normal)
+    RelativeLayout rlHeaderNormal;
+
+    @BindView(R.id.header_top_rl_collapsed)
+    RelativeLayout rlHeaderCollapsed;
+
+    @BindView(R.id.header_top_rl_personal)
+    RelativeLayout rlHeaderPersonal;
 
     public HeaderViewTop(Context context) {
         super(context);
@@ -40,26 +50,33 @@ public class HeaderViewTop extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-//        ButterKnife.bind(this);
-        init();
+        ButterKnife.bind(this);
     }
 
-    protected void init() {
-        rlHeaderNormal = (RelativeLayout) findViewById(R.id.header_top_rl_normal);
-        rlHeaderCollapsed = (RelativeLayout) findViewById(R.id.header_top_rl_collapsed);
-    }
+    public void setHeaderTopStatus(int code, float alpha) {
 
-    public void setTopView(boolean isNormal, float alpha) {
-        if (isNormal == true) {
-            rlHeaderCollapsed.setVisibility(View.GONE);
-            rlHeaderNormal.setVisibility(View.VISIBLE);
-        } else {
-            if (alpha > 0.3f) {
+        switch (code) {
+            case 0:
+                rlHeaderCollapsed.setVisibility(View.GONE);
+                rlHeaderNormal.setVisibility(View.VISIBLE);
+                rlHeaderPersonal.setVisibility(View.GONE);
+                rlHeaderCollapsed.setAlpha(alpha);
+                rlHeaderNormal.setAlpha(1 - alpha);
+                break;
+            case 1:
+                rlHeaderPersonal.setVisibility(View.GONE);
+                if (alpha > 0.3f) {
+                    rlHeaderNormal.setVisibility(View.GONE);
+                    rlHeaderCollapsed.setVisibility(View.VISIBLE);
+                }
+                rlHeaderCollapsed.setAlpha(alpha);
+                rlHeaderNormal.setAlpha(1 - alpha);
+                break;
+            case 2:
+                rlHeaderPersonal.setVisibility(View.VISIBLE);
+                rlHeaderCollapsed.setVisibility(View.GONE);
                 rlHeaderNormal.setVisibility(View.GONE);
-                rlHeaderCollapsed.setVisibility(View.VISIBLE);
-            }
+                break;
         }
-        rlHeaderCollapsed.setAlpha(alpha);
-        rlHeaderNormal.setAlpha(1 - alpha);
     }
 }

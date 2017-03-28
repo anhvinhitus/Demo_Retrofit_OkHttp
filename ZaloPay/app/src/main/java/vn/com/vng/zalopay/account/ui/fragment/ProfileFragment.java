@@ -2,8 +2,10 @@ package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
@@ -115,7 +117,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         mPresenter.getProfile();
         mPresenter.checkShowOrHideChangePinView();
     }

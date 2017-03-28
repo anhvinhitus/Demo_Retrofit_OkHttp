@@ -10,7 +10,8 @@ import android.view.View;
 import vn.com.vng.zalopay.R;
 
 /**
- * Created by anton on 11/12/15.
+ * Set custom behavior for collapsing action (collapse toolbar)
+ * Define view and child's view actions
  */
 
 public class HeaderBehavior extends CoordinatorLayout.Behavior<HeaderView> {

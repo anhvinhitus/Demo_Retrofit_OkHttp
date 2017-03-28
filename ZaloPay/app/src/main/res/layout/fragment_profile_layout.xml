@@ -5,23 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/back_ground_blue">
-
-        <TextView
-            android:id="@+id/txtTitle"
-            style="@style/Toolbar.TitleText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/spacing.medium"
-            android:layout_marginRight="@dimen/spacing.small"
-            android:text="@string/title.activity.profile"
-            android:visibility="visible" />
-    </RelativeLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
@@ -122,13 +123,13 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
             @Override
             public void onPageSelected(int position) {
                 if (position == HomePagerAdapter.TAB_MAIN_INDEX) {
-//                    showToolbarSearch();
-                    showToolbar();
+                    setToolbarViewStatus(HomePagerAdapter.TAB_MAIN_INDEX);
+
                 } else if (position == HomePagerAdapter.TAB_SHOW_SHOW_INDEX) {
-                    hideToolbar();
-                } else if (position == HomePagerAdapter.TAB_PROFILE_INDEX) {
-//                    showToolbarTitle(R.string.title_activity_profile);
-                    hideToolbar();
+                    setToolbarViewStatus(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
+
+                } else if (position == HomePagerAdapter.TAB_PERSONAL_INDEX) {
+                    setToolbarViewStatus(HomePagerAdapter.TAB_PERSONAL_INDEX);
                 }
             }
 
@@ -157,8 +158,8 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                     mViewPager.setCurrentItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
                     break;
                 case R.id.menu_profile:
-                    updateIconFontState(HomePagerAdapter.TAB_PROFILE_INDEX);
-                    mViewPager.setCurrentItem(HomePagerAdapter.TAB_PROFILE_INDEX);
+                    updateIconFontState(HomePagerAdapter.TAB_PERSONAL_INDEX);
+                    mViewPager.setCurrentItem(HomePagerAdapter.TAB_PERSONAL_INDEX);
                     break;
             }
             return true;
@@ -199,7 +200,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                                 .setIcon(R.string.tab_showshow)
                                 .setResourcesColor(R.color.txt_item_sub)
                                 .setResourcesSize(R.dimen.font_size_tab_icon));
-                menu.getItem(HomePagerAdapter.TAB_PROFILE_INDEX)
+                menu.getItem(HomePagerAdapter.TAB_PERSONAL_INDEX)
                         .setIcon(new IconFontDrawable(this)
                                 .setIcon(R.string.tab_personal)
                                 .setResourcesColor(R.color.txt_item_sub)
@@ -216,13 +217,13 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                                 .setIcon(R.string.tab_showshow_active)
                                 .setResourcesColor(R.color.colorPrimary)
                                 .setResourcesSize(R.dimen.font_size_tab_icon));
-                menu.getItem(HomePagerAdapter.TAB_PROFILE_INDEX)
+                menu.getItem(HomePagerAdapter.TAB_PERSONAL_INDEX)
                         .setIcon(new IconFontDrawable(this)
                                 .setIcon(R.string.tab_personal)
                                 .setResourcesColor(R.color.txt_item_sub)
                                 .setResourcesSize(R.dimen.font_size_tab_icon));
                 break;
-            case HomePagerAdapter.TAB_PROFILE_INDEX:
+            case HomePagerAdapter.TAB_PERSONAL_INDEX:
                 menu.getItem(HomePagerAdapter.TAB_MAIN_INDEX)
                         .setIcon(new IconFontDrawable(this)
                                 .setIcon(R.string.tab_home)
@@ -233,7 +234,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                                 .setIcon(R.string.tab_showshow)
                                 .setResourcesColor(R.color.txt_item_sub)
                                 .setResourcesSize(R.dimen.font_size_tab_icon));
-                menu.getItem(HomePagerAdapter.TAB_PROFILE_INDEX)
+                menu.getItem(HomePagerAdapter.TAB_PERSONAL_INDEX)
                         .setIcon(new IconFontDrawable(this)
                                 .setIcon(R.string.tab_personal_active)
                                 .setResourcesColor(R.color.colorPrimary)
@@ -249,7 +250,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         }
     }
 
-    public int getStatusBarHeight() {
+    private int getStatusBarHeight() {
         int result = 0;
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
@@ -258,32 +259,59 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         return result;
     }
 
-    private void hideToolbar() {
-        CoordinatorLayout.LayoutParams coordinatorLayoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        coordinatorLayoutParams.height = getStatusBarHeight();
-        headerView.setVisibility(View.GONE);
-
-        AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
-        toolbarLayoutParams.setScrollFlags(0);
-        appBarLayout.setVisibility(View.GONE);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
+    private int getToolbarHeight() {
+        int result = 0;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            result = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
+        return result;
     }
 
-    private void showToolbar() {
+    private void setToolbarViewStatus(int status) {
         CoordinatorLayout.LayoutParams coordinatorLayoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        coordinatorLayoutParams.height = getStatusBarHeight() + (int) AndroidUtils.dpToPixels(getActivity(), 180);
-        headerView.setVisibility(View.VISIBLE);
-
         AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
-        toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
-                | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
-                | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-        collapsingToolbarLayout.setLayoutParams(toolbarLayoutParams);
-        appBarLayout.setVisibility(View.VISIBLE);
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().show();
+        switch (status) {
+            case HomePagerAdapter.TAB_MAIN_INDEX:
+                coordinatorLayoutParams.height = getStatusBarHeight() + (int) AndroidUtils.dpToPixels(getActivity(), 180);
+                headerView.setVisibility(View.VISIBLE);
+
+                toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+                        | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
+                        | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+
+                collapsingToolbarLayout.setLayoutParams(toolbarLayoutParams);
+                appBarLayout.setVisibility(View.VISIBLE);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().show();
+                }
+                break;
+
+            case HomePagerAdapter.TAB_SHOW_SHOW_INDEX:
+                coordinatorLayoutParams.height = getStatusBarHeight();
+                headerView.setVisibility(View.GONE);
+
+                toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+
+                appBarLayout.setVisibility(View.GONE);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().hide();
+                }
+                break;
+
+            case HomePagerAdapter.TAB_PERSONAL_INDEX:
+                coordinatorLayoutParams.height = getStatusBarHeight() + getToolbarHeight();
+                headerView.setVisibility(View.GONE);
+
+                toolbarHeaderView.setHeaderTopStatus(2, 0.0f);
+
+                toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+
+                appBarLayout.setVisibility(View.VISIBLE);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().show();
+                }
+                break;
         }
     }
 
@@ -403,10 +431,10 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
 
         if (percentage == 0f) {
-            toolbarHeaderView.setTopView(true, percentage);
+            toolbarHeaderView.setHeaderTopStatus(0, percentage);
 
         } else if (percentage > 0f && percentage <= 1f) {
-            toolbarHeaderView.setTopView(false, percentage);
+            toolbarHeaderView.setHeaderTopStatus(1, percentage);
         }
     }
 }
