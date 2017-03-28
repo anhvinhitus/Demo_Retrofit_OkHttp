@@ -18,7 +18,7 @@ public class SubmitOrderImpl implements ITask {
                 pParams.get(ConstantParams.DEVICE_ID), pParams.get(ConstantParams.DEVICE_MODEL), pParams.get(ConstantParams.APP_VERSION), pParams.get(ConstantParams.SDK_VERSION),
                 pParams.get(ConstantParams.OS_VERSION), pParams.get(ConstantParams.CONN_TYPE), pParams.get(ConstantParams.MNO), pParams.get(ConstantParams.PMC_ID), pParams.get(ConstantParams.CHARGE_INFO),
                 pParams.get(ConstantParams.PIN), pParams.get(ConstantParams.TRANS_TYPE), pParams.get(ConstantParams.ACCESS_TOKEN),
-                pParams.get(ConstantParams.USER_ID));
+                pParams.get(ConstantParams.USER_ID),pParams.get(ConstantParams.LATTITUDE),pParams.get(ConstantParams.LONGITUDE));
     }
 
     @Override

@@ -297,15 +297,8 @@ public class DataParameter {
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         params.put(ConstantParams.ZALO_ID, GlobalData.getPaymentInfo().userInfo.zaloUserId);
-
-        if (TextUtils.isEmpty(params.get(ConstantParams.AMOUNT)) || TextUtils.isEmpty(params.get(ConstantParams.PMC_ID))
-                || TextUtils.isEmpty(params.get(ConstantParams.APP_ID))) {
-            return false;
-        }
-
-        if (params.get(ConstantParams.AMOUNT).equals("0") || params.get(ConstantParams.PMC_ID).equals("0") || params.get(ConstantParams.APP_ID).equals("0")) {
-            return false;
-        }
+        params.put(ConstantParams.LATTITUDE, String.valueOf(GlobalData.getPaymentInfo().mLocation.latitude));
+        params.put(ConstantParams.LONGITUDE,String.valueOf(GlobalData.getPaymentInfo().mLocation.longitude));
         return true;
     }
 

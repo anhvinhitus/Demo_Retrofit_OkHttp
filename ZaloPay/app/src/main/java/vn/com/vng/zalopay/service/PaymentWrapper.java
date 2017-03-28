@@ -24,8 +24,11 @@ import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.location.AppLocation;
+import vn.com.vng.zalopay.location.TrackLocation;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
@@ -96,6 +99,7 @@ public class PaymentWrapper {
 
     public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
+        mActivity = activity;
         ZPWPaymentInfo paymentInfo = transform(order);
         paymentInfo.userInfo = createUserInfo(displayName, avatar, phoneNumber, zaloPayName);
         callPayAPI(activity, paymentInfo, forcedPaymentChannel);
@@ -406,7 +410,19 @@ public class PaymentWrapper {
         //lap vao ví appId = appUser = 1
         paymentInfo.appUser = order.appuser;
         paymentInfo.mac = order.mac;
+        paymentInfo.mLocation = transform(TrackLocation.getLocation(mActivity.getApplicationContext()));
         return paymentInfo;
+    }
+
+    private PaymentLocation transform(AppLocation appLocation) {
+        if(appLocation == null) {
+            return null;
+        }
+
+        PaymentLocation location = new PaymentLocation();
+        location.setLatitude(appLocation.latitude);
+        location.setLongitude(appLocation.longitude);
+        return location;
     }
 
     void startDepositForResult() {

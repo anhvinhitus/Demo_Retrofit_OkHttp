@@ -24,12 +24,11 @@ public class ZPWPaymentInfo extends BaseEntity<ZPWPaymentInfo> {
     public DBaseMap mapBank;
     public UserInfo userInfo;
     public LinkAccInfo linkAccInfo;
-
     public int[] forceChannelIds;
-
     public ZPWPaymentInfo() {
         mapBank = new DMappedCard();
     }
+    public PaymentLocation mLocation = new PaymentLocation();
 
     public static ZPWPaymentInfo fromJson(String pJson) {
         return (new Gson()).fromJson(pJson, ZPWPaymentInfo.class);

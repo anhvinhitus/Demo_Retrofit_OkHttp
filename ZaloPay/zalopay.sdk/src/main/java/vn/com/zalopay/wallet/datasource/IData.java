@@ -251,7 +251,9 @@ public interface IData {
                                      @Query(ConstantParams.PIN) String pin,
                                      @Query(ConstantParams.TRANS_TYPE) String transType,
                                      @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
-                                     @Query(ConstantParams.USER_ID) String userID);
+                                     @Query(ConstantParams.USER_ID) String userID,
+                                     @Query(ConstantParams.LATTITUDE) String longitude,
+                                     @Query(ConstantParams.LONGITUDE) String latitude);
 
     @POST(Constants.URL_VERIFY_CARDMAP)
     Call<StatusResponse> verfiyCardMap(

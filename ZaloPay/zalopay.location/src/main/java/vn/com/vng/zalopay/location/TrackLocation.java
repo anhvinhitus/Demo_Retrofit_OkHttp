@@ -113,7 +113,7 @@ public class TrackLocation extends Service {
     private static AppLocation getUpdateLocation(Context context, AppLocation location) {
         if (location == null || Math.abs(System.currentTimeMillis() - location.timeget) > TIME_REFRESH) {
             findLocation(context);
-            if (canGetLocation) {
+            if (canGetLocation && latitude != 0 || longitude != 0) {
                 saveLocation();
                 return new AppLocation(latitude, longitude, getAddress(), System.currentTimeMillis());
             }
