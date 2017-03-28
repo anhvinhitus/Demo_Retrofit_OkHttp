@@ -1,3 +1,21 @@
+Zalo Pay (Production v2.9.0 - build 204) - Released on 2017-03-28
+- Fix logic get transaction
+
+Zalo Pay (Production v2.9.0 - build 203) - Released on 2017-03-27
+- Phân biệt message khi bảo trì ngân hàng theo chức năng.
+
+Zalo Pay (Staging v2.9.0 - build 202) - Released on 2017-03-24
+- Change package from "vn.com.vng.zalopay" to "vn.com.vng.zalopay.sb1" (Support multiple versions of Zalo Pay app.)
+
+Zalo Pay (Sandbox v2.9.0 - build 201) - Released on 2017-03-24
+- Thêm User Agent khi launch app Dịch Vụ.
+- Xóa cookie FB cho app Dịch Vụ.
+- Off kênh JCB.
+- Fix lỗi mất thẻ khi up level 3.
+- Zalo Integration - handle scheme zalopay-zapi-29.
+- Update phần đo thời gian API.
+- Cập nhật Zalo SDK: fix security compromise.
+
 Zalo Pay (Production v2.8.0 - build 179) - Released on 2017-03-01
 - Fix không quét được QRCode khi "QRCode -> PaymentChannel -> Nạp Tiền -> PaymentChannel -> QRCode".
 
