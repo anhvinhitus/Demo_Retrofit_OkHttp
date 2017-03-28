@@ -10,9 +10,12 @@ elif [ "$BUILD_TYPE" = "production" ]
 then
 	./gradlew clean assembleProductionRelease
 	./gradlew crashlyticsUploadDistributionProductionRelease
-else 
+elif [ "$BUILD_TYPE" = "sandbox" ]
+then
 	./gradlew clean assembleSandboxRelease
 	./gradlew crashlyticsUploadDistributionSandboxRelease
+else 
+	echo "Environment invalid -> * Try: [sandbox/staging/production]"
 fi
 
 exit
