@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.data.appresources;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -75,28 +74,38 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         this.mListExcludeApp = listExcludeApp;
     }
 
+    private Boolean ensureResourceAvailable() {
+        Timber.d("Ensure resource available, download if necessary.");
+        if (mTaskQueue.isRunningDownloadService()) {
+            Timber.d("Service download resource is running. Return and wait result.");
+            return Boolean.FALSE;
+        }
+
+        List<AppResourceEntity> appLists = mLocalStorage.getAllAppResource();
+
+        if (Lists.isEmptyOrNull(appLists)) {
+            return Boolean.TRUE;
+        }
+
+        List<AppResourceEntity> listAppDownload = new ArrayList<>();
+        for (AppResourceEntity app : appLists) {
+            if (shouldDownloadApp(app)) {
+                listAppDownload.add(app);
+            }
+        }
+
+        if (!listAppDownload.isEmpty()) {
+            startDownloadService(listAppDownload);
+            return Boolean.FALSE;
+        } else {
+            return Boolean.TRUE;
+        }
+
+    }
+
     @Override
     public Observable<Boolean> ensureAppResourceAvailable() {
-        return makeObservable(() -> {
-            List<AppResourceEntity> appLists = mLocalStorage.getAllAppResource();
-
-            if (Lists.isEmptyOrNull(appLists)) {
-                return Boolean.TRUE;
-            }
-
-            List<AppResourceEntity> listAppDownload = new ArrayList<>();
-            for (AppResourceEntity app : appLists) {
-                if (shouldDownloadApp(app)) {
-                    listAppDownload.add(app);
-                }
-            }
-
-            if (!listAppDownload.isEmpty()) {
-                startDownloadService(listAppDownload, null);
-            }
-
-            return Boolean.TRUE;
-        });
+        return makeObservable(this::ensureResourceAvailable);
     }
 
     @Override
@@ -122,6 +131,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
         return mRequestService.getinsideappresource(appIds, checkSum, mRequestParameters, mAppVersion)
                 .doOnNext(this::processAppResourceResponse)
+                .doOnTerminate(this::ensureResourceAvailable)
                 ;
     }
 
@@ -164,11 +174,17 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
         if (!Lists.isEmptyOrNull(resourceResponse.resourcelist)) {
             List<AppResourceEntity> resourcelist = new ArrayList<>();
+            String baseUrl = resourceResponse.baseurl;
             for (int i = 0; i < resourceResponse.resourcelist.size(); i++) {
                 AppResourceEntity appResourceEntity = resourceResponse.resourcelist.get(i);
                 int index = resourceResponse.orderedInsideApps.indexOf(appResourceEntity.appid);
-                Timber.d("processAppResourceResponse appId [%s] index [%s]", appResourceEntity.appid, index);
+                Timber.d("Process app resource response, appId [%s] index [%s]",
+                        appResourceEntity.appid, index);
                 appResourceEntity.sortOrder = index;
+                if (!TextUtils.isEmpty(baseUrl)) {
+                    appResourceEntity.imageurl = baseUrl + appResourceEntity.imageurl;
+                    appResourceEntity.jsurl = baseUrl + appResourceEntity.jsurl;
+                }
                 if (mListAppIdExcludeDownload != null
                         && mListAppIdExcludeDownload.contains(appResourceEntity.appid)) {
                     appResourceEntity.needdownloadrs = 0;
@@ -176,9 +192,10 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                 resourcelist.add(appResourceEntity);
             }
 
-            Timber.d("baseUrl [%s] resourceListSize [%s]", resourceResponse.baseurl, resourcelist.size());
-            startDownloadService(resourcelist, resourceResponse.baseurl);
+            Timber.d("Process app resource response, baseUrl [%s] resourceListSize [%s]",
+                    baseUrl, resourcelist.size());
             mLocalStorage.put(resourcelist);
+            stopDownloadService(); //stop download older resource before start download new resource.
         } else if (!Lists.isEmptyOrNull(resourceResponse.orderedInsideApps)) {
             updateInsideAppIndex(resourceResponse.orderedInsideApps);
         }
@@ -203,21 +220,18 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         mLocalStorage.sortApplication(orderedInsideApps);
     }
 
+    private void stopDownloadService() {
+        mTaskQueue.clearTaskAndStopDownloadService();
+    }
 
-    private void startDownloadService(List<AppResourceEntity> resource, String baseUrl) {
-        Timber.d("startDownloadService mDownloadAppResource [%s]", mDownloadAppResource);
+    private void startDownloadService(List<AppResourceEntity> resource) {
         if (!mDownloadAppResource) {
+            Timber.d("Download service terminate because config DOWNLOAD_APP_RESOURCE is false.");
             return;
         }
 
         List<DownloadAppResourceTask> needDownloadList = new ArrayList<>();
         for (AppResourceEntity appResourceEntity : resource) {
-
-            if (!TextUtils.isEmpty(baseUrl)) {
-                appResourceEntity.jsurl = baseUrl + appResourceEntity.jsurl;
-                appResourceEntity.imageurl = baseUrl + appResourceEntity.imageurl;
-            }
-
             if (appResourceEntity.needdownloadrs == 1) {
                 createTask(appResourceEntity, needDownloadList);
                 mLocalStorage.resetStateDownload(appResourceEntity.appid);
@@ -225,10 +239,11 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         }
 
         if (needDownloadList.isEmpty()) {
+            Timber.d("No app need download resource.");
             return;
         }
 
-        Timber.d("Start download %s", needDownloadList.size());
+        Timber.d("Start download service, size [%s]", needDownloadList.size());
         mTaskQueue.enqueue(needDownloadList);
     }
 
@@ -256,7 +271,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             Timber.d("existResource appId [%s] state [%s]", appId, entity.stateDownload);
             boolean downloadSuccess = (entity.stateDownload >= DownloadState.STATE_SUCCESS);
             if (!downloadSuccess) {
-                startDownloadService(Collections.singletonList(entity), null);
+                startDownloadService(Collections.singletonList(entity));
             }
             return downloadSuccess;
         });
@@ -295,6 +310,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private Observable<AppResourceResponse> fetchAppResource(String appIds, String checkSum) {
         return mRequestService.getinsideappresource(appIds, checkSum, mRequestParameters, mAppVersion)
                 .doOnNext(this::processAppResourceResponse)
+                .doOnTerminate(this::ensureResourceAvailable)
                 ;
     }
 
@@ -342,7 +358,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     private List<AppResource> listAppInHomePage(List<AppResource> resources) {
         ArrayList<AppResource> listApp = new ArrayList<>(mListDefaultApp);
-        Timber.d("app default size [%s]", listApp.size());
+        Timber.d("Get list app in home, app default size [%s]", listApp.size());
         if (resources.containsAll(listApp)) {
             resources.removeAll(listApp);
         }

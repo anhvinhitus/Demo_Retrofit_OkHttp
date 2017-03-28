@@ -244,13 +244,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         mSubscription.add(subscription);
     }
 
-    private void ensureAppResourceAvailable() {
-        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
-        mSubscription.add(subscription);
-    }
-
     private void refreshBanners() {
         isLoadedGateWayInfo = true;
         mEventBus.post(new RefreshPlatformInfoEvent());
@@ -338,8 +331,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         if (!isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
-
-        ensureAppResourceAvailable();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
