@@ -14,4 +14,8 @@ public class BaseResponse extends BaseEntity<BaseResponse> {
     public String getSuggestMessage() {
         return suggestmessage;
     }
+
+    public int[] getSuggestactions() {
+        return suggestactions;
+    }
 }

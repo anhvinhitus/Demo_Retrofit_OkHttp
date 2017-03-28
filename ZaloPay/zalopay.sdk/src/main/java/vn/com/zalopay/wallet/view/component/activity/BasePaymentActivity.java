@@ -31,6 +31,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -47,6 +48,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
+import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
@@ -564,8 +566,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         synchronized (mZaloaPayActivitiesStack) {
-            if (mZaloaPayActivitiesStack == null)
-            {
+            if (mZaloaPayActivitiesStack == null) {
                 mZaloaPayActivitiesStack = new Stack<>();
             }
             mZaloaPayActivitiesStack.push(this);
@@ -772,8 +773,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     private View setMarginBottom(int pID, int margin) {
         View view = this.findViewById(pID);
-        if (view == null)
-        {
+        if (view == null) {
             return view;
         }
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
@@ -1104,16 +1104,21 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (statusResponse != null) {
                 setText(R.id.zpw_textview_update_level_inform, statusResponse.getSuggestMessage());
                 setView(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(statusResponse.getSuggestMessage()));
+
+//            int[] status = new int[]{2};
+                if(statusResponse.getSuggestactions() != null && statusResponse.getSuggestactions().length > 0) {
+                    setLayoutBasedOnSuggestActions(statusResponse.getSuggestactions());
+                } else {
+                    setView(R.id.zpw_payment_fail_rl_update_info, false);
+                    setView(R.id.zpw_payment_fail_rl_support, false);
+                }
             } else {
                 setView(R.id.zpw_textview_update_level_inform, false);
-            }
-            //exception case for payment overlimit per day
-            if (PaymentStatusHelper.isPaymentOverLimitPerDay(getAdapter().getResponseStatus())) {
-                setView(R.id.zpw_payment_fail_rl_update_info, true);
-            } else {
                 setView(R.id.zpw_payment_fail_rl_update_info, false);
+                setView(R.id.zpw_payment_fail_rl_support, false);
             }
         }
+        
         setView(R.id.zpw_pay_info_buttom_view, true);
 
         if (!TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0) {
@@ -1142,6 +1147,36 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         animateImageViewFail();
 
+    }
+
+    private void setLayoutBasedOnSuggestActions(int[] suggestActions) {
+        // Define view to set view position based on suggest action from server response
+        View rlUpdateInfo = findViewById("zpw_payment_fail_rl_update_info");
+        View rlSupport = findViewById("zpw_payment_fail_rl_support");
+
+        RelativeLayout.LayoutParams pUpdateInfo = (RelativeLayout.LayoutParams) rlUpdateInfo.getLayoutParams();
+        RelativeLayout.LayoutParams pSupport = (RelativeLayout.LayoutParams) rlSupport.getLayoutParams();
+
+        if (Arrays.equals(ESuggestActionType.UPDATE_INFO_DISPLAY.getValue(), suggestActions)) {
+            setView(R.id.zpw_payment_fail_rl_update_info, true);
+            setView(R.id.zpw_payment_fail_rl_support, false);
+
+        } else if (Arrays.equals(ESuggestActionType.SUPPORT_DISPLAY.getValue(), suggestActions)) {
+            setView(R.id.zpw_payment_fail_rl_update_info, false);
+            setView(R.id.zpw_payment_fail_rl_support, true);
+
+        } else if (Arrays.equals(ESuggestActionType.UPDATE_INFO_ABOVE.getValue(), suggestActions)) {
+            setView(R.id.zpw_payment_fail_rl_update_info, true);
+            setView(R.id.zpw_payment_fail_rl_support, true);
+            pSupport.addRule(RelativeLayout.BELOW, rlUpdateInfo.getId());
+            rlSupport.setLayoutParams(pSupport);
+
+        } else if (Arrays.equals(ESuggestActionType.SUPPORT_ABOVE.getValue(), suggestActions)) {
+            setView(R.id.zpw_payment_fail_rl_update_info, true);
+            setView(R.id.zpw_payment_fail_rl_support, true);
+            pUpdateInfo.addRule(RelativeLayout.BELOW, rlSupport.getId());
+            rlUpdateInfo.setLayoutParams(pUpdateInfo);
+        }
     }
 
     public void showPaymentSuccessContent(String pTransID) throws Exception {
