@@ -12,6 +12,10 @@ import vn.com.vng.zalopay.data.cache.AppStorage;
  */
 
 public class LocationLocalStorage implements LocationStore.LocalStorage {
+    private static final String LOCATION_TIMESTAMP = "location:timestamp";
+    private static final String LOCATION_ADDRESS = "location:address";
+    private static final String LOCATION_LATITUDE = "location:latitude";
+    private static final String LOCATION_LONGITUDE = "location:longitude";
     private AppStorage mAppStorage;
 
     public LocationLocalStorage(AppStorage appStorage) {
@@ -22,10 +26,10 @@ public class LocationLocalStorage implements LocationStore.LocalStorage {
     public void save(AppLocation newLocation) {
         try {
             Map<String, String> multi = new HashMap<>();
-            multi.put("location:timestamp", String.valueOf(newLocation.timeget));
-            multi.put("location:address", newLocation.address);
-            multi.put("location:latitude", String.valueOf(newLocation.latitude));
-            multi.put("location:longitude", String.valueOf(newLocation.longitude));
+            multi.put(LOCATION_TIMESTAMP, String.valueOf(newLocation.timeget));
+            multi.put(LOCATION_ADDRESS, newLocation.address);
+            multi.put(LOCATION_LATITUDE, String.valueOf(newLocation.latitude));
+            multi.put(LOCATION_LONGITUDE, String.valueOf(newLocation.longitude));
             mAppStorage.putAll(multi);
         } catch (Exception e) {
             Timber.d(e, "Save location error");
@@ -35,17 +39,17 @@ public class LocationLocalStorage implements LocationStore.LocalStorage {
     @Override
     public AppLocation get() {
         Map<String, String> item = mAppStorage.getAll(
-            "location:timestamp", "location:address", "location:latitude", "location:longitude"
+            LOCATION_TIMESTAMP, LOCATION_ADDRESS, LOCATION_LATITUDE, LOCATION_LONGITUDE
         );
 
         if (item == null) {
             return null;
         }
 
-        double latitude = Double.valueOf(item.getOrDefault("location:latitude", "0"));
-        double longitude = Double.valueOf(item.getOrDefault("location:longitude", "0"));
-        String address = item.getOrDefault("location:address", "");
-        long timestamp = Long.valueOf(item.getOrDefault("location:timestamp", "0"));
+        double latitude = Double.valueOf(item.getOrDefault(LOCATION_LATITUDE, "0"));
+        double longitude = Double.valueOf(item.getOrDefault(LOCATION_LONGITUDE, "0"));
+        String address = item.getOrDefault(LOCATION_ADDRESS, "");
+        long timestamp = Long.valueOf(item.getOrDefault(LOCATION_TIMESTAMP, "0"));
         return new AppLocation(latitude, longitude, address, timestamp);
     }
 }
