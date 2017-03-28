@@ -22,9 +22,9 @@ public class SQLiteObject extends JSONObject {
             valuesField.setAccessible(true);
             valuesField.set(this, new LinkedHashMap<String, Object>(size));
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 }

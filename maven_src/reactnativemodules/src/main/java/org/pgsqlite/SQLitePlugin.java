@@ -632,7 +632,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                             needRawQuery = false;
                         } catch (SQLiteException ex) {
                             // Indicate problem & stop this query:
-                            ex.printStackTrace();
+//                            ex.printStackTrace();
                             errorMessage = ex.getMessage();
                             Log.v("executeSqlBatch", "SQLiteStatement.executeUpdateDelete(): Error=" + errorMessage);
                             needRawQuery = false;
@@ -675,7 +675,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                     } catch (SQLiteException ex) {
                         // report error result with the error message
                         // could be constraint violation or some other error
-                        ex.printStackTrace();
+//                        ex.printStackTrace();
                         errorMessage = ex.getMessage();
                         Log.v("executeSqlBatch", "SQLiteDatabase.executeInsert(): Error=" + errorMessage);
                     }
@@ -689,7 +689,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                         queryResult = new JSONObject();
                         queryResult.put("rowsAffected", 0);
                     } catch (SQLiteException ex) {
-                        ex.printStackTrace();
+//                        ex.printStackTrace();
                         errorMessage = ex.getMessage();
                         Log.v("executeSqlBatch", "SQLiteDatabase.beginTransaction(): Error=" + errorMessage);
                     }
@@ -704,7 +704,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                         queryResult = new JSONObject();
                         queryResult.put("rowsAffected", 0);
                     } catch (SQLiteException ex) {
-                        ex.printStackTrace();
+//                        ex.printStackTrace();
                         errorMessage = ex.getMessage();
                         Log.v("executeSqlBatch", "SQLiteDatabase.setTransactionSuccessful/endTransaction(): Error=" + errorMessage);
                     }
@@ -718,7 +718,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                         queryResult = new JSONObject();
                         queryResult.put("rowsAffected", 0);
                     } catch (SQLiteException ex) {
-                        ex.printStackTrace();
+//                        ex.printStackTrace();
                         errorMessage = ex.getMessage();
                         Log.v("executeSqlBatch", "SQLiteDatabase.endTransaction(): Error=" + errorMessage);
                     }
@@ -733,7 +733,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                     }
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+//                ex.printStackTrace();
                 errorMessage = ex.getMessage();
                 Log.v("executeSqlBatch", "SQLitePlugin.executeSql[Batch](): Error=" + errorMessage);
             }
@@ -759,7 +759,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                     batchResults.put(r);
                 }
             } catch (JSONException ex) {
-                ex.printStackTrace();
+//                ex.printStackTrace();
                 Log.v("executeSqlBatch", "SQLitePlugin.executeSql[Batch](): Error=" + ex.getMessage());
             }
         }
@@ -898,7 +898,7 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
 
             cur = mydb.rawQuery(query, params);
         } catch (Exception ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
             String errorMessage = ex.getMessage();
             Log.v("executeSqlBatch", "SQLitePlugin.executeSql[Batch](): Error=" + errorMessage);
             throw ex;
@@ -933,14 +933,14 @@ public class SQLitePlugin extends ReactContextBaseJavaModule {
                     rowsArrayResult.put(row);
 
                 } catch (JSONException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
             } while (cur.moveToNext());
 
             try {
                 rowsResult.put("rows", rowsArrayResult);
             } catch (JSONException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             }
         }
 

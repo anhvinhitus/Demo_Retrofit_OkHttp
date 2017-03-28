@@ -22,9 +22,9 @@ public class SQLiteArray extends JSONArray {
             valuesField.setAccessible(true);
             valuesField.set(this, new ArrayList<>(size));
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
