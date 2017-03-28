@@ -386,5 +386,17 @@
     <string name="search_representative_app">ỨNG DỤNG TIÊU BIỂU</string>
     <string name="search_app">ỨNG DỤNG</string>
     <string name="search_friend">BẠN BÈ</string>
+
+    <!-- tab personal -->
+    <string name="personal_item_balance_title">Số Dư</string>
+    <string name="personal_item_bank_title">Ngân Hàng</string>
+    <string name="personal_item_bill_title">Hoá Đơn</string>
+    <string name="personal_item_trans_history_title">Lịch Sử Giao Dịch</string>
+    <string name="personal_item_support_center_title">Trung Tâm Hỗ Trợ</string>
+    <string name="personal_item_quick_feedback_title">Góp Ý Nhanh</string>
+    <string name="personal_item_app_info_title">Thông Tin Ứng Dụng</string>
+    <string name="personal_link_now_text">Liên kết ngay</string>
+    <string name="personal_view_detail_text">Xem chi tiết</string>
+
 </resources>
 

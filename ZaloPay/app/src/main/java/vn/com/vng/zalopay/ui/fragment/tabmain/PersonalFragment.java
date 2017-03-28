@@ -124,13 +124,19 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
         tvBalance.setText(span);
     }
 
+    @OnClick(R.id.tab_personal_rl_info)
+    public void onProfileInfoClick() {
+        navigator.startProfileInfoActivity(getContext());
+    }
+
     @OnClick(R.id.tab_personal_rl_balance)
     public void onBalanceClick() {
+        navigator.startBalanceManagementActivity(getContext());
     }
 
     @OnClick(R.id.tab_personal_rl_bank)
     public void onLinkCardClick() {
-        navigator.startLinkCardActivity(getActivity());
+        navigator.startLinkCardActivity(getContext());
     }
 
     @OnClick(R.id.tab_personal_rl_transaction_history)

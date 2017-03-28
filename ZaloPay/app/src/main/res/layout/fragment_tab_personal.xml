@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/tab_personal_rl_info"
         android:layout_width="match_parent"
-        android:layout_height="62dp"
+        android:layout_height="@dimen/personal.info.height"
         android:background="@color/white">
 
         <com.facebook.drawee.view.SimpleDraweeView
@@ -73,7 +73,7 @@
                 android:layout_marginLeft="@dimen/personal.margin"
                 android:layout_marginRight="@dimen/personal.margin"
                 android:gravity="center_vertical"
-                android:text="Số Dư"
+                android:text="@string/personal_item_balance_title"
                 android:textColor="@color/personal_text"
                 android:textSize="@dimen/personal.iconfont.text"
                 app:iconLeftColor="@color/personal_ic_balance"
@@ -97,7 +97,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="@dimen/separate"
             android:layout_marginLeft="44dp"
             android:background="@color/separate" />
 
@@ -113,7 +113,8 @@
                 android:layout_marginLeft="@dimen/personal.margin"
                 android:layout_marginRight="@dimen/personal.margin"
                 android:gravity="center_vertical"
-                android:text="Ngân Hàng"
+                android:text="@string/personal_item_bank_title"
+
                 android:textColor="@color/personal_text"
                 android:textSize="@dimen/personal.iconfont.text"
                 app:iconLeftColor="@color/personal_ic_bank"
@@ -130,14 +131,14 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="36dp"
-                android:text="Liên kết ngay"
+                android:text="@string/personal_link_now_text"
                 android:textColor="@color/personal_ic_link"
                 android:textSize="@dimen/personal.link.text" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="@dimen/separate"
             android:layout_marginLeft="44dp"
             android:background="@color/separate" />
 
@@ -153,7 +154,7 @@
                 android:layout_marginLeft="@dimen/personal.margin"
                 android:layout_marginRight="@dimen/personal.margin"
                 android:gravity="center_vertical"
-                android:text="Hoá Đơn"
+                android:text="@string/personal_item_bill_title"
                 android:textColor="@color/personal_text"
                 android:textSize="@dimen/personal.iconfont.text"
                 app:iconLeftColor="@color/personal_ic_bill"
@@ -170,14 +171,14 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="36dp"
-                android:text="Xem chi tiết"
+                android:text="@string/personal_view_detail_text"
                 android:textColor="@color/personal_ic_link"
                 android:textSize="@dimen/personal.link.text" />
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="@dimen/separate"
             android:layout_marginLeft="44dp"
             android:background="@color/separate" />
 
@@ -193,7 +194,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/personal.margin"
                 android:layout_marginRight="@dimen/personal.margin"
-                android:text="Lịch Sử Giao Dịch"
+                android:text="@string/personal_item_trans_history_title"
                 android:textColor="@color/personal_text"
                 android:textSize="@dimen/personal.iconfont.text"
                 app:iconLeftColor="@color/personal_ic_trans_history"
@@ -223,7 +224,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/personal.margin"
             android:paddingRight="@dimen/personal.margin"
-            android:text="Trung Tâm Hỗ Trợ"
+            android:text="@string/personal_item_support_center_title"
             android:textColor="@color/txt_item_main"
             android:textSize="@dimen/personal.iconfont.text"
             app:iconLeftColor="@color/personal_ic_support"
@@ -248,7 +249,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/personal.margin"
             android:paddingRight="@dimen/personal.margin"
-            android:text="Góp Ý Nhanh"
+            android:text="@string/personal_item_quick_feedback_title"
             android:textColor="@color/txt_item_main"
             android:textSize="@dimen/personal.iconfont.text"
             app:iconLeftColor="@color/personal_ic_support"
@@ -273,7 +274,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/personal.margin"
             android:paddingRight="@dimen/personal.margin"
-            android:text="Thông Tin Ứng Dụng"
+            android:text="@string/personal_item_app_info_title"
             android:textColor="@color/txt_item_main"
             android:textSize="@dimen/personal.iconfont.text"
             app:iconLeftColor="@color/personal_ic_support"
@@ -293,7 +294,7 @@
         android:layout_marginTop="@dimen/personal.margin"
         android:background="@drawable/default_white_selector"
         android:gravity="center"
-        android:text="Đăng Xuất"
+        android:text="@string/txt_leftmenu_sigout"
         android:textColor="@color/txt_item_main"
         android:textSize="@dimen/personal.iconfont.text" />
 

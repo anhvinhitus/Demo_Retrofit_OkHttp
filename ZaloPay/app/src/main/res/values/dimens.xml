@@ -145,5 +145,6 @@
     <dimen name="personal.link.text">12dp</dimen>
     <dimen name="personal.balance">18dp</dimen>
     <dimen name="personal.menu_item_height">48dp</dimen>
+    <dimen name="personal.info.height">62dp</dimen>
 
 </resources>
