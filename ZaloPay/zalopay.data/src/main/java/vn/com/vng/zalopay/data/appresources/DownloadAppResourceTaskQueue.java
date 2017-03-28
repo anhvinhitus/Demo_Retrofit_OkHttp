@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.data.appresources;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 
@@ -22,6 +23,22 @@ public class DownloadAppResourceTaskQueue {
         this.mTasklist = new LinkedList<>();
         this.mContext = context;
         this.mServiceClass = serviceClass;
+    }
+
+    boolean isRunningDownloadService() {
+        ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (mServiceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void clearTaskAndStopDownloadService() {
+        Timber.d("Clear task and stop service, tasks size %s", mTasklist.size());
+        mTasklist.clear();
+        mContext.stopService(new Intent(mContext, mServiceClass));
     }
 
     public boolean isEmpty() {

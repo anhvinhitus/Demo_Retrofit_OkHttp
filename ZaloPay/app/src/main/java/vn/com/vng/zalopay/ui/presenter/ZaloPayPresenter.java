@@ -123,7 +123,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         this.getListAppResource();
         this.getTotalNotification(2000);
         this.getBalance();
-        this.ensureAppResourceAvailable();
     }
 
     @Override
