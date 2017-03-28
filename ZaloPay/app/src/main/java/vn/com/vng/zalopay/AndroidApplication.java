@@ -90,12 +90,10 @@ public class AndroidApplication extends Application {
         Fabric.with(this, new Crashlytics());
         initializeFresco();
 
-        // Initialize ZPAnalytics
-        initializeZaloPayAnalytics();
 
         initAppComponent();
 
-        initializeTrackApptransid();
+        initializeZaloPayAnalytics();
 
         Timber.d("onCreate %s", appComponent);
         ZaloSDKApplication.wrap(this);
@@ -147,9 +145,6 @@ public class AndroidApplication extends Application {
         ZPAnalytics.addDefaultTracker();
         ZPAnalytics.addTracker(new ZPTrackerGA(tracker));
         ZPAnalytics.addTracker(new ZPTrackerAnswers());
-    }
-
-    private void initializeTrackApptransid() {
         ZPAnalytics.addTracker(new ZPTrackerApptransid(appComponent.appTransIdLogRepository()));
     }
 

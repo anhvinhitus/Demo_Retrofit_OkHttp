@@ -16,7 +16,7 @@ import vn.com.zalopay.wallet.utils.Log;
 
 public class ZPTrackerApptransid implements ZPTracker {
 
-    private static ApptransidLogStore.Repository mRepository;
+    private ApptransidLogStore.Repository mRepository;
 
     public ZPTrackerApptransid(ApptransidLogStore.Repository logLocalStorage) {
         this.mRepository = logLocalStorage;
