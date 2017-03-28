@@ -58,7 +58,7 @@ public class LocationProvider extends Service {
                 }
 
                 if (checkGPS) {
-                    if (location == null) {
+//                    if (location == null) {
                         try {
                             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                             updateCoordinates(mApplicationContext);
@@ -66,7 +66,7 @@ public class LocationProvider extends Service {
                         } catch (SecurityException e) {
                             Timber.e("Get location by gps failed with: %s", e.getMessage());
                         }
-                    }
+//                    }
                 }
 
                 saveLocation();
