@@ -453,6 +453,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                         intent.putExtra(Constants.TRANSACTIONID, mFeedback.transID);
                         intent.putExtra(Constants.SCREENSHOT, mFeedback.imgByteArray);
                         intent.putExtra(Constants.DESCRIPTION, mFeedback.description);
+                        intent.putExtra(Constants.ERRORCODE, mFeedback.errorCode);
 
                     } else {
                         Log.d("support_button", "FeedBack == null");
@@ -1838,7 +1839,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (GlobalData.isLinkCardChannel()) {
                 transactionTitle = GlobalData.getStringResource(RS.string.zpw_string_credit_card_link);
             }
-            mFeedback = new Feedback(byteArray, getMessageFailView(), transactionTitle, pTransactionID);
+            int errorcode = getAdapter().getResponseStatus() != null ? getAdapter().getResponseStatus().returncode : Constants.NULL_ERRORCODE;
+            //Create Parcelable Feedback
+            mFeedback = new Feedback(byteArray, getMessageFailView(), transactionTitle, pTransactionID, errorcode);
             setVisible(R.id.zpw_pay_support_buttom_view, true);
             isVisibilitySupport = true;
             View view_support = findViewById(R.id.zpw_pay_support_buttom_view);

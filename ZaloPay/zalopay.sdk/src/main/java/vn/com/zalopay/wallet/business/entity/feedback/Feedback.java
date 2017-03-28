@@ -7,34 +7,18 @@ import android.os.Parcelable;
  * Created by lytm on 06/01/2017.
  */
 public class Feedback implements Parcelable {
-    public static final Creator<Feedback> CREATOR = new Creator<Feedback>() {
-        @Override
-        public Feedback createFromParcel(Parcel source) {
-            return new Feedback(source);
-        }
-
-        @Override
-        public Feedback[] newArray(int size) {
-            return new Feedback[size];
-        }
-    };
     public byte[] imgByteArray;
     public String transID;
     public String category;
     public String description;
+    public int errorCode;
 
-    public Feedback(byte[] imgByteArray, String description, String category, String transID) {
+    public Feedback(byte[] imgByteArray, String description, String category, String transID, int pErrorCode) {
         this.imgByteArray = imgByteArray;
         this.transID = transID;
         this.category = category;
         this.description = description;
-    }
-
-    protected Feedback(Parcel in) {
-        this.imgByteArray = in.createByteArray();
-        this.transID = in.readString();
-        this.category = in.readString();
-        this.description = in.readString();
+        this.errorCode = pErrorCode;
     }
 
     @Override
@@ -48,5 +32,26 @@ public class Feedback implements Parcelable {
         dest.writeString(this.transID);
         dest.writeString(this.category);
         dest.writeString(this.description);
+        dest.writeInt(this.errorCode);
     }
+
+    protected Feedback(Parcel in) {
+        this.imgByteArray = in.createByteArray();
+        this.transID = in.readString();
+        this.category = in.readString();
+        this.description = in.readString();
+        this.errorCode = in.readInt();
+    }
+
+    public static final Creator<Feedback> CREATOR = new Creator<Feedback>() {
+        @Override
+        public Feedback createFromParcel(Parcel source) {
+            return new Feedback(source);
+        }
+
+        @Override
+        public Feedback[] newArray(int size) {
+            return new Feedback[size];
+        }
+    };
 }
