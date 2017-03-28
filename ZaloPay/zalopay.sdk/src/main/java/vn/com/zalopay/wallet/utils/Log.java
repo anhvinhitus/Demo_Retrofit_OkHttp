@@ -25,6 +25,12 @@ public class Log {
         }
     }
 
+    public static void d(String pObject, Throwable pException) {
+        if (IS_LOG_ENABLE) {
+            Timber.tag(!TextUtils.isEmpty(pObject) ? pObject : TAG).d("%s", pException != null ? pException.getMessage() : DEFAULT_ERROR);
+        }
+    }
+
     public static void e(Object pObject, Exception pException) {
         Timber.tag((pObject != null) ? pObject.getClass().getName() : TAG).e("%s", pException != null ? pException.getMessage() : DEFAULT_ERROR);
     }

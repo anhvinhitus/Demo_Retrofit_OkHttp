@@ -11,6 +11,7 @@ import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
+import rx.Observable;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
@@ -50,6 +51,13 @@ public interface IData {
      */
     @GET(Constants.URL_GET_BANKLIST)
     Call<BankConfigResponse> getBankList(@QueryMap Map<String, String> params);
+
+    /**
+     * load bank list
+     * @return
+     */
+    @GET(Constants.URL_GET_BANKLIST)
+    Observable<BankConfigResponse> loadBankList(@QueryMap Map<String, String> params);
 
     /**
      * Api get banlance

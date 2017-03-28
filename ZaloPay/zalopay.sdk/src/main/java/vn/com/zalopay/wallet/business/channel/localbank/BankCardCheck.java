@@ -43,16 +43,16 @@ public class BankCardCheck extends CardCheck {
 
     public BankCardCheck() {
         super();
-
         this.mSelectedBank = null;
         this.mCardIndentifier = ResourceManager.getInstance(null).getBankCardIdentifier();
-
         BankLoader.loadBankList(null);
     }
 
     public static BankCardCheck getInstance() {
         if (BankCardCheck._object == null)
+        {
             BankCardCheck._object = new BankCardCheck();
+        }
         return BankCardCheck._object;
     }
 
@@ -60,7 +60,6 @@ public class BankCardCheck extends CardCheck {
     public void reset() {
         mSelectedBank = null;
         mFoundIdentifier = null;
-
     }
 
     public void dispose() {
@@ -115,7 +114,7 @@ public class BankCardCheck extends CardCheck {
         //TRY GET BANK CODE IN BANK MAP.
         String bankCode = null;
         for (int i = 3; i <= pCardNumber.length(); i++) {
-            bankCode = mBankMap.get(pCardNumber.substring(0, i));
+            bankCode = BankLoader.mapBank.get(pCardNumber.substring(0, i));
             if (!TextUtils.isEmpty(bankCode)) {
                 break;
             }

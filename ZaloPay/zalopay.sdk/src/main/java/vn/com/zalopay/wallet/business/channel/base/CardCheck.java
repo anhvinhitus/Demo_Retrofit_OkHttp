@@ -18,7 +18,6 @@ import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 
 public class CardCheck extends SingletonBase {
-    public static Map<String, String> mBankMap;
     public String mCardNumber;
     public String mTempCardNumber;
     protected ZPWOnDetectCardListener mDetectCardListener;

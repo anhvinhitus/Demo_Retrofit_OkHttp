@@ -37,7 +37,7 @@ public class TPaymentTask extends TaskBase {
     @Override
     public Call doTask(IData pIData, HashMap<String, String> pParams) throws Exception {
         if (mTask == null) {
-            throw new Exception("Can not run task because of mTask == null");
+            throw new Exception("Can not run task because of mTRequest == null");
         }
         return mTask.doTask(pIData, pParams);
     }

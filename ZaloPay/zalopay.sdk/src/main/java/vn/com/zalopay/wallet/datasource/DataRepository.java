@@ -12,6 +12,9 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -25,7 +28,9 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.implement.GetPlatformInfoImpl;
+import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 import vn.com.zalopay.wallet.datasource.interfaces.ITask;
+import vn.com.zalopay.wallet.datasource.request.BaseTask;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.datasource.task.TPaymentTask;
 import vn.com.zalopay.wallet.eventmessage.NetworkEventMessage;
@@ -45,7 +50,8 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private Call mCallableGetStatus;//keep the request to retry get status
     private int retryCount = 1;
     private WeakReference<ITask> mCurrentTask = null;
-
+    private WeakReference<IRequest> mCurrentRequest = null;
+    private Subscription mSubscription;
     public DataRepository() {
         super();
         mInjectionWrapper = new InjectionWrapper();
@@ -70,7 +76,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         if (DataRepository._object == null) {
             DataRepository._object = new DataRepository();
         }
-        DataRepository._object.setRetryCountNumber();
         return DataRepository._object;
     }
 
@@ -261,6 +266,41 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         } catch (Exception e) {
             Log.e(this, e);
             onErrorRequest(e.getMessage());
+        }
+    }
+
+    public synchronized void loadData(final IRequest pRequest, HashMap<String, String> pParams, BaseTask pTask) {
+        if (haveRequestRunning()) {
+            Log.d(this, pTask.toString() + " there're a task is running...");
+            return;
+        }
+        inProgress();
+        mCurrentRequest = new WeakReference<IRequest>(pRequest);
+        try {
+            mSubscription = pRequest.getRequest(mDataSource, pParams)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<T>() {
+                        @Override
+                        public void onCompleted() {
+                            Log.d(this, "onCompleted");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.d(this, "onError");
+                            pTask.onRequestFail(e);
+                            releaseLock();
+                        }
+
+                        @Override
+                        public void onNext(T result) {
+                            Log.d(this, "onNext");
+                            pTask.onRequestSuccess(result);
+                            releaseLock();
+                        }
+                    });
+        } catch (Exception ex) {
+            Log.e(this, ex);
         }
     }
 
@@ -461,10 +501,20 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
      * @return
      */
     private boolean haveRequestRunning() {
-        if (mIsRequesting) {
-            Log.d(this, "There're a task request api have already run");
-        }
         return mIsRequesting;
+    }
+
+    protected void releaseLock() {
+        mIsRequesting = false;
+        unSubscribe();
+        Log.d(this, "released lock requesting...");
+    }
+
+    protected void unSubscribe() {
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+            mSubscription = null;
+        }
     }
 
     /***

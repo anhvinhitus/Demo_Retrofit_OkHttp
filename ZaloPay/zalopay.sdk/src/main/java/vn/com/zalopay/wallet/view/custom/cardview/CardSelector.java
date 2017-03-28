@@ -158,8 +158,7 @@ public class CardSelector {
 
     protected void populateCardSelector() {
         if (BankLoader.existedBankListOnMemory()) {
-            Iterator it = BankCardCheck.mBankMap.entrySet().iterator();
-
+            Iterator it = BankLoader.mapBank.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry) it.next();
 

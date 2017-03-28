@@ -78,14 +78,11 @@ public class TaskGetCardSupportList extends TaskBase {
         }
 
         //load bank
-        if (BankCardCheck.mBankMap != null) {
-            Iterator it = BankCardCheck.mBankMap.entrySet().iterator();
-
+        if (BankLoader.mapBank != null) {
+            Iterator it = BankLoader.mapBank.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry) it.next();
-
                 String bankCode = String.valueOf(pair.getValue());
-
                 if (!TextUtils.isEmpty(bankCode)) {
                     boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);
                     ZPCard zpCard = new ZPCard(bankCode, getCardBitmapName(bankCode), isBankAccount);
@@ -97,7 +94,6 @@ public class TaskGetCardSupportList extends TaskBase {
         }
 
         Log.d(this, "===cardSupportHashMap.size()=" + cardArrayList.size());
-
         return cardArrayList;
     }
 }

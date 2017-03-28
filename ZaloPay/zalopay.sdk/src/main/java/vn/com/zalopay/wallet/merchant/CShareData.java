@@ -102,8 +102,8 @@ public class CShareData extends SingletonBase {
         public void onComplete() {
             List<BankConfig> bankConfigList = new ArrayList<>();
 
-            if (BankCardCheck.mBankMap != null) {
-                Iterator it = BankCardCheck.mBankMap.entrySet().iterator();
+            if (BankLoader.mapBank != null) {
+                Iterator it = BankLoader.mapBank.entrySet().iterator();
 
                 while (it.hasNext()) {
                     Map.Entry pair = (Map.Entry) it.next();
