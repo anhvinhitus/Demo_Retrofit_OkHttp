@@ -10,6 +10,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.global.DaoSession;
 import vn.com.vng.zalopay.data.cache.global.KeyValueGD;
 import vn.com.vng.zalopay.data.cache.global.KeyValueGDDao;
+import vn.com.vng.zalopay.data.util.Strings;
 
 /**
  * Created by huuhoa on 3/28/17.
@@ -56,7 +57,7 @@ public class AppStorageImpl implements AppStorage {
     @Override
     public Map<String, String> getAll(String... keys) {
         try {
-            List<KeyValueGD> result = daoSession.getKeyValueGDDao().queryRaw("WHERE " + KeyValueGDDao.Properties.Key.columnName + " IN (?)", keys);
+            List<KeyValueGD> result = daoSession.getKeyValueGDDao().queryRaw("WHERE " + KeyValueGDDao.Properties.Key.columnName + " IN (?)", Strings.joinWithDelimiter(",", keys));
             HashMap<String, String> retVal = new HashMap<>();
             for (KeyValueGD item : result) {
                 retVal.put(item.key, item.value);
