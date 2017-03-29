@@ -8,7 +8,6 @@ import com.zalopay.apploader.network.NetworkService;
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -19,7 +18,6 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.DynamicUrlService;
-import vn.com.vng.zalopay.data.net.adapter.DefaultCallAdapterFactory;
 import vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory;
 import vn.com.vng.zalopay.data.net.adapter.ToStringConverterFactory;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorCallFactory;
@@ -36,6 +34,7 @@ import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.react.iap.NetworkServiceImpl;
 
 import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.React;
+import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.RedPacket;
 
 /**
  * Created by hieuvm on 3/10/17.
@@ -80,23 +79,6 @@ public class UserSocketModule {
                                        CallAdapter.Factory callAdapter,
                                        Converter.Factory convertFactory,
                                        PaymentConnectorCallFactory callFactory) {
-
-        return new Retrofit.Builder()
-                .addCallAdapterFactory(callAdapter)
-                .addConverterFactory(convertFactory)
-                .callFactory(callFactory)
-                .baseUrl(baseUrl)
-                .validateEagerly(BuildConfig.DEBUG)
-                .build();
-    }
-
-    @Provides
-    @UserScope
-    @Named("retrofitConnectorSdk")
-    Retrofit providesRetrofitConnectorForSdk(HttpUrl baseUrl,
-                                             CallAdapter.Factory callAdapter,
-                                             Converter.Factory convertFactory,
-                                             PaymentConnectorCallFactory callFactory) {
         return new Retrofit.Builder()
                 .addCallAdapterFactory(callAdapter)
                 .addConverterFactory(convertFactory)
@@ -112,7 +94,7 @@ public class UserSocketModule {
     Retrofit provideRetrofitRedPacketApi(OkHttpClient okHttpClient, Context context,
                                          Converter.Factory convertFactory, PaymentConnectorCallFactory callFactory) {
         return new Retrofit.Builder()
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.RedPacket))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RedPacket))
                 .addConverterFactory(convertFactory)
                 .callFactory(callFactory)
                 .baseUrl(BuildConfig.REDPACKET_HOST)

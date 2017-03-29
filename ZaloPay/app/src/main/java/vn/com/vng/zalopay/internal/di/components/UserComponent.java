@@ -119,7 +119,7 @@ public interface UserComponent {
 
     ReactNativeHostable reactNativeInstanceManager();
 
-    @Named("retrofitConnectorSdk")
+    @Named("retrofitConnector")
     Retrofit retrofitConnector();
 
     PaymentConnectorService connectorService();
