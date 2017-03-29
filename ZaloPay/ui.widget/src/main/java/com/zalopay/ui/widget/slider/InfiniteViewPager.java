@@ -20,13 +20,8 @@ public class InfiniteViewPager extends ViewPagerEx {
     }
 
     public void setSliderTransformDuration(int period, Interpolator interpolator) {
-        try {
-            Field mScroller = ViewPagerEx.class.getDeclaredField("mScroller");
-            mScroller.setAccessible(true);
-            FixedSpeedScroller scroller = new FixedSpeedScroller(getContext(), interpolator, period);
-            mScroller.set(this, scroller);
-        } catch (Exception ignore) {
-        }
+        FixedSpeedScroller scroller = new FixedSpeedScroller(getContext(), interpolator, period);
+        setScroller(scroller);
     }
 
     private static final class FixedSpeedScroller extends Scroller {

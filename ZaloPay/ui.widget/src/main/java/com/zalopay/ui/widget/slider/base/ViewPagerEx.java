@@ -136,7 +136,7 @@ public class ViewPagerEx extends ViewGroup {
     private int mRestoredCurItem = -1;
     private Parcelable mRestoredAdapterState = null;
     private ClassLoader mRestoredClassLoader = null;
-    private Scroller mScroller;
+    public Scroller mScroller;
     private PagerObserver mObserver;
 
     private int mPageMargin;
@@ -2644,5 +2644,9 @@ public class ViewPagerEx extends ViewGroup {
             }
             return llp.position - rlp.position;
         }
+    }
+
+    protected void setScroller(Scroller scroller) {
+        this.mScroller = scroller;
     }
 }

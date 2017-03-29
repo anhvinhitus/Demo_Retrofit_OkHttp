@@ -13,7 +13,7 @@ import java.util.List;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.adapter.HomeAdapter;
-import vn.com.vng.zalopay.ui.adapter.view.DefaultSliderView;
+import vn.com.vng.zalopay.ui.adapter.view.BannerSliderView;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
@@ -22,8 +22,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
  */
 
 public class BannerModel extends SimpleEpoxyModel {
-
-    private static final String KEY_BANNER = "banner";
 
     private List<DBanner> banners;
     private final Context context;
@@ -42,15 +40,13 @@ public class BannerModel extends SimpleEpoxyModel {
         super.bind(itemView);
         mSliderLayout = (SliderLayout) itemView;
         SliderLayout sliderLayout = (SliderLayout) itemView;
-        List<DefaultSliderView> list = new ArrayList<>();
+        List<BannerSliderView> list = new ArrayList<>();
         for (DBanner banner : banners) {
-            DefaultSliderView slider = new DefaultSliderView(context);
-            slider.mUrl = banner.logourl;
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(KEY_BANNER, banner);
+            if (banner == null) {
+                continue;
+            }
 
-            slider.mBundle = bundle;
-
+            BannerSliderView slider = new BannerSliderView(context, banner);
             slider.setOnSliderClickListener(sliderClickListener);
             list.add(slider);
         }
@@ -64,16 +60,10 @@ public class BannerModel extends SimpleEpoxyModel {
         mSliderLayout = null;
     }
 
-    private final BaseSliderView.OnSliderClickListener sliderClickListener = slider -> {
-        if (clickListener == null || slider.mBundle == null) {
-            return;
+    private final BannerSliderView.OnSliderClickListener sliderClickListener = banner -> {
+        if (clickListener != null) {
+            clickListener.onClickBanner(banner, banners.indexOf(banner));
         }
-
-        DBanner banner = slider.mBundle.getParcelable(KEY_BANNER);
-        if (banner == null) {
-            return;
-        }
-        clickListener.onClickBanner(banner, banners.indexOf(banner));
     };
 
     public BannerModel setClickListener(HomeAdapter.OnClickAppItemListener clickListener) {
