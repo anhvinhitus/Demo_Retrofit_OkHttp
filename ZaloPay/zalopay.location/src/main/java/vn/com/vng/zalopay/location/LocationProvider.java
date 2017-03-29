@@ -3,14 +3,12 @@ package vn.com.vng.zalopay.location;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
 
-import java.util.List;
-import java.util.Locale;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import timber.log.Timber;
 
@@ -28,7 +26,7 @@ public class LocationProvider extends Service {
 
     private static double latitude;
     private static double longitude;
-    private static Address address;
+//    private static Address address;
     private static boolean canGetLocation = false;
 
     public static void init(LocationStore.Repository repository, Context applicationContext) {
@@ -50,7 +48,7 @@ public class LocationProvider extends Service {
                 if (checkNetwork) {
                     try {
                         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        updateCoordinates(mApplicationContext);
+                        updateCoordinates();
                         Timber.d("Get location by network with lat: %s, long: %s", latitude, longitude);
                     } catch (SecurityException e) {
                         Timber.e("Get location by network failed with: %s", e.getMessage());
@@ -61,7 +59,7 @@ public class LocationProvider extends Service {
 //                    if (location == null) {
                         try {
                             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            updateCoordinates(mApplicationContext);
+                            updateCoordinates();
                             Timber.d("Get location by gps with lat: %s, long: %s", latitude, longitude);
                         } catch (SecurityException e) {
                             Timber.e("Get location by gps failed with: %s", e.getMessage());
@@ -76,29 +74,29 @@ public class LocationProvider extends Service {
         }
     }
 
-    private static void updateCoordinates(Context context) throws Exception {
+    private static void updateCoordinates() throws Exception {
         if (location != null) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
 
-            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if (addresses != null) {
-                address = addresses.get(0);
-            }
+//            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+//            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+//            if (addresses != null) {
+//                address = addresses.get(0);
+//            }
         }
     }
 
-    private static String getAddress() {
-        if (address != null) {
-            return String.format("%s, %s, %s, %s",
-                    address.getAddressLine(0),
-                    address.getAddressLine(1),
-                    address.getAddressLine(2),
-                    address.getAddressLine(3));
-        }
-        return null;
-    }
+//    private static String getAddress() {
+//        if (address != null) {
+//            return String.format("%s, %s, %s, %s",
+//                    address.getAddressLine(0),
+//                    address.getAddressLine(1),
+//                    address.getAddressLine(2),
+//                    address.getAddressLine(3));
+//        }
+//        return null;
+//    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -109,15 +107,15 @@ public class LocationProvider extends Service {
         if(mRepository == null) {
             return;
         }
-        mRepository.saveLocationCache(latitude, longitude, getAddress(), System.currentTimeMillis());
+        mRepository.saveLocation(latitude, longitude, System.currentTimeMillis()).subscribe();
     }
 
     private static AppLocation getUpdateLocation(AppLocation location) {
-        if (location == null || Math.abs(System.currentTimeMillis() - location.timeget) > TIME_REFRESH) {
+        if (location == null || Math.abs(System.currentTimeMillis() - location.timestamp) > TIME_REFRESH) {
             findLocation();
             if (canGetLocation && latitude != 0 || longitude != 0) {
                 saveLocation();
-                return new AppLocation(latitude, longitude, getAddress(), System.currentTimeMillis());
+                return new AppLocation(latitude, longitude, System.currentTimeMillis());
             }
             return null;
         }
@@ -128,7 +126,8 @@ public class LocationProvider extends Service {
         if(mRepository == null) {
             return null;
         }
-        AppLocation location = mRepository.getLocationCache();
+        AppLocation location = mRepository.getLocation();
+        Timber.d("location in get location: %s", location.latitude);
         return getUpdateLocation(location);
     }
 }

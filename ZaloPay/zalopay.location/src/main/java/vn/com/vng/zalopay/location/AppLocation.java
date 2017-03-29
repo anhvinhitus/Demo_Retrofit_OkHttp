@@ -10,18 +10,11 @@ public class AppLocation {
 
     public double longitude;
 
-    public String address;
+    public long timestamp;
 
-    public long timeget;
-
-    public AppLocation() {
-
-    }
-
-    public AppLocation(double latitude, double longitude, String address, long timeget) {
+    public AppLocation(double latitude, double longitude, long timestamp) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.address = address;
-        this.timeget = timeget;
+        this.timestamp = timestamp;
     }
 }
