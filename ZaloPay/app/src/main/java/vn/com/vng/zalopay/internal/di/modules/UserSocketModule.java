@@ -19,6 +19,7 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.DynamicUrlService;
+import vn.com.vng.zalopay.data.net.adapter.DefaultCallAdapterFactory;
 import vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory;
 import vn.com.vng.zalopay.data.net.adapter.ToStringConverterFactory;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorCallFactory;
@@ -81,8 +82,8 @@ public class UserSocketModule {
                                        PaymentConnectorCallFactory callFactory) {
 
         return new Retrofit.Builder()
-                .addConverterFactory(convertFactory)
                 .addCallAdapterFactory(callAdapter)
+                .addConverterFactory(convertFactory)
                 .callFactory(callFactory)
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)
@@ -93,9 +94,11 @@ public class UserSocketModule {
     @UserScope
     @Named("retrofitConnectorSdk")
     Retrofit providesRetrofitConnectorForSdk(HttpUrl baseUrl,
+                                             CallAdapter.Factory callAdapter,
                                              Converter.Factory convertFactory,
                                              PaymentConnectorCallFactory callFactory) {
         return new Retrofit.Builder()
+                .addCallAdapterFactory(callAdapter)
                 .addConverterFactory(convertFactory)
                 .callFactory(callFactory)
                 .baseUrl(baseUrl)
@@ -109,8 +112,8 @@ public class UserSocketModule {
     Retrofit provideRetrofitRedPacketApi(OkHttpClient okHttpClient, Context context,
                                          Converter.Factory convertFactory, PaymentConnectorCallFactory callFactory) {
         return new Retrofit.Builder()
-                .addConverterFactory(convertFactory)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RxJavaCallAdapterFactory.AdapterType.RedPacket))
+                .addConverterFactory(convertFactory)
                 .callFactory(callFactory)
                 .baseUrl(BuildConfig.REDPACKET_HOST)
                 .validateEagerly(BuildConfig.DEBUG)
