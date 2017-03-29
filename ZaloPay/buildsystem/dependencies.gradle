@@ -66,6 +66,9 @@ ext {
 
     lambdaVersion = "3.2.5"
 
+    epoxyAdatperVersion = "1.7.5"
+    smarttabVersion = "1.6.1@aar"
+
     libraries = [
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
             dagger                 : "com.google.dagger:dagger:${daggerVersion}",
@@ -115,7 +118,13 @@ ext {
             circularreveal         : "com.github.ozodrukh:CircularReveal:${CircularRevealVersion}",
 
             dialogplus             : "com.orhanobut:dialogplus:${dialogPlusVersion}",
+
             zxingAndroidEmbedded   : "com.journeyapps:zxing-android-embedded:${zxingAndroidEmbeddedVersion}",
+            epoxyAdapter           : "com.airbnb.android:epoxy:${epoxyAdatperVersion}",
+            epoxyAnnotation        : "com.airbnb.android:epoxy-processor:${epoxyAdatperVersion}",
+
+            smarttablayout         : "com.ogaclejapan.smarttablayout:library:${smarttabVersion}",
+            smarttablayoutUtil     : "com.ogaclejapan.smarttablayout:utils-v4:${smarttabVersion}"
     ]
 
     testingLibraries = [
