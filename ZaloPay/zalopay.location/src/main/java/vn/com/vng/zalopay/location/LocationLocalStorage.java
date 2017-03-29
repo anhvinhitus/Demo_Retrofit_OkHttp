@@ -15,26 +15,18 @@ import vn.com.vng.zalopay.data.util.Utils;
  */
 
 public class LocationLocalStorage implements LocationStore.LocalStorage {
-    private static final String LOCATION = "location";
     private static final String LOCATION_TIMESTAMP = "location:timestamp";
 //    private static final String LOCATION_ADDRESS = "location:address";
     private static final String LOCATION_LATITUDE = "location:latitude";
     private static final String LOCATION_LONGITUDE = "location:longitude";
     private AppStorage mAppStorage;
 
-    private LruCache<String, AppLocation> mLocationCache = new LruCache<>(1);
-
     public LocationLocalStorage(AppStorage appStorage) {
         mAppStorage = appStorage;
     }
 
     @Override
-    public void saveCache(AppLocation newLocation) {
-        mLocationCache.put(LOCATION, newLocation);
-    }
-
-    @Override
-    public void saveStorage(AppLocation newLocation) {
+    public void save(AppLocation newLocation) {
         try {
             Map<String, String> multi = new HashMap<>();
             multi.put(LOCATION_TIMESTAMP, String.valueOf(newLocation.timestamp));
@@ -48,12 +40,7 @@ public class LocationLocalStorage implements LocationStore.LocalStorage {
     }
 
     @Override
-    public AppLocation getCache() {
-        return mLocationCache.get(LOCATION);
-    }
-
-    @Override
-    public AppLocation getStorage() {
+    public AppLocation get() {
         Map<String, String> item = mAppStorage.getAll(
                 LOCATION_TIMESTAMP, /*LOCATION_ADDRESS,*/ LOCATION_LATITUDE, LOCATION_LONGITUDE
         );

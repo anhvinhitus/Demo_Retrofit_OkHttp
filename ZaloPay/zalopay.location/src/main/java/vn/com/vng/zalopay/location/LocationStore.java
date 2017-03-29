@@ -10,13 +10,9 @@ import rx.Observable;
 public interface LocationStore {
 
     interface LocalStorage {
-        void saveCache(AppLocation newLocation);
+        void save(AppLocation newLocation);
 
-        void saveStorage(AppLocation newLocation);
-
-        AppLocation getCache();
-
-        AppLocation getStorage();
+        AppLocation get();
     }
 
     interface Repository {

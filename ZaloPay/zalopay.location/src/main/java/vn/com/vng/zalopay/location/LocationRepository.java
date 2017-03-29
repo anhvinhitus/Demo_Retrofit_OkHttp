@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.location;
 
+import android.util.LruCache;
+
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -10,7 +12,10 @@ import vn.com.vng.zalopay.data.util.ObservableHelper;
  */
 
 public class LocationRepository implements LocationStore.Repository {
+    private static final String LOCATION = "location";
+
     private final LocationStore.LocalStorage mLocalStore;
+    private LruCache<String, AppLocation> mLocationCache = new LruCache<>(1);
 
     public LocationRepository(LocationStore.LocalStorage localStorage) {
         this.mLocalStore = localStorage;
@@ -24,18 +29,23 @@ public class LocationRepository implements LocationStore.Repository {
             }
 
             AppLocation location = new AppLocation(latitude, longitude, timestamp);
-            mLocalStore.saveCache(location);
-            mLocalStore.saveStorage(location);
+            // save cache
+            mLocationCache.put(LOCATION, location);
+            // save storage
+            mLocalStore.save(location);
             return Boolean.TRUE;
         });
     }
 
     @Override
     public AppLocation getLocation() {
-        AppLocation location = mLocalStore.getCache();
+        // get cache
+        AppLocation location = mLocationCache.get(LOCATION);
         Timber.d("location in cache: %s", location == null ? "null" : "not null");
+
         if (location == null || location.latitude == 0 && location.longitude == 0) {
-            location = mLocalStore.getStorage();
+            // get storage
+            location = mLocalStore.get();
         }
         return location;
     }
