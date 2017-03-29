@@ -31,6 +31,7 @@ class SSLClient implements SocketClient {
     private final Handler mEventHandler;
     private Listener mListener;
     private Socket mSslSocket = null;
+    private boolean mIsConnecting;
 
     private DataInputStream mInputStream;
 
@@ -38,6 +39,7 @@ class SSLClient implements SocketClient {
         mHostname = hostname;
         mPort = port;
         mListener = listener;
+        mIsConnecting = false;
 
         // event handler thread - all socket events are processed mInputStream that thread
         // such as: data received, socket connected, socket disconnected, socket error
@@ -62,7 +64,7 @@ class SSLClient implements SocketClient {
     public void connect() {
         Timber.d("Request to make connection");
         mConnectionHandler.post(() -> {
-            if (mSslSocket != null && mSslSocket.isConnected()) {
+            if (isConnected() || isConnecting()) {
                 Timber.d("[CONNECTION] Skip create new connection");
                 return;
             }
@@ -72,6 +74,8 @@ class SSLClient implements SocketClient {
                     mSslSocket.close();
                 }
 
+                mIsConnecting = true;
+
                 SSLContext context = SSLContext.getInstance("TLSv1.2");
                 context.init(null, null, new java.security.SecureRandom());
                 SSLSocketFactory sf = context.getSocketFactory();
@@ -79,6 +83,7 @@ class SSLClient implements SocketClient {
                 mInputStream = new DataInputStream(mSslSocket.getInputStream());
 
                 if (isConnected()) {
+                    mIsConnecting = false;
                     postConnectedEvent();
                 }
 
@@ -150,11 +155,13 @@ class SSLClient implements SocketClient {
 
     @Override
     public boolean isConnecting() {
-        return mSslSocket != null && mSslSocket.isConnected();
+        return mIsConnecting;
     }
 
     private void disposeConnection() {
         mEventHandler.post(() -> {
+            mIsConnecting = false;
+
             if (mSslSocket == null) {
                 return;
             }
