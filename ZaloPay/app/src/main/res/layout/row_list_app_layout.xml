@@ -1,31 +1,21 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.zalopay.ui.widget.IconFontTextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/itemLayout"
+    android:id="@+id/tvInsideApp"
+    style="@style/HomePage.Title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/default_white_selector"
-    android:baselineAligned="false"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
+    android:gravity="top|center_horizontal"
+    android:lines="2"
+    android:maxLines="2"
     android:paddingBottom="8dp"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
-    android:paddingTop="16dp">
-
-    <com.zalopay.ui.widget.IconFontTextView
-        android:id="@+id/tvInsideApp"
-        style="@style/HomePage.Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="top|center_horizontal"
-        android:lines="2"
-        android:maxLines="2"
-        tools:text="@string/transfer.money"
-        app:iconTopSize="@dimen/font_size_home_inside_app"
-        app:iconTopPadding="@dimen/spacing.small"/>
-</LinearLayout>
+    android:paddingTop="16dp"
+    app:iconTopPadding="@dimen/spacing.small"
+    app:iconTopSize="@dimen/font_size_home_inside_app"
+    tools:text="@string/transfer.money" />
 
 
 
