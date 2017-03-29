@@ -426,13 +426,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void request(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("requestWithoutRetry: baseUrl [%s] String content [%s]", baseUrl, content);
-
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.merge(content);
-        writableMap.putString("accesstoken", mUser.accesstoken);
-        writableMap.putString("userid", mUser.zaloPayId);
-
-        Subscription subscription = mNetworkServiceWithRetry.requestWithoutRetry(baseUrl, writableMap)
+        Subscription subscription = mNetworkServiceWithRetry.requestWithoutRetry(baseUrl, addQueriesUser(content))
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         mCompositeSubscription.add(subscription);
@@ -441,16 +435,29 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void requestWithRetry(String baseUrl, ReadableMap content, Promise promise) {
         Timber.d("requestWithRetry: baseUrl [%s] String content [%s]", baseUrl, content);
-
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.merge(content);
-        writableMap.putString("accesstoken", mUser.accesstoken);
-        writableMap.putString("userid", mUser.zaloPayId);
-
-        Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, writableMap)
+        Subscription subscription = mNetworkServiceWithRetry.request(baseUrl, addQueriesUser(content))
                 .subscribeOn(Schedulers.io())
                 .subscribe(new RequestSubscriber(promise));
         mCompositeSubscription.add(subscription);
+    }
+
+
+    private ReadableMap addQueriesUser(ReadableMap content) {
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(content);
+
+        WritableMap queries = Arguments.createMap();
+        if (content.hasKey("query")) {
+            ReadableMap map = content.getMap("query");
+            queries.merge(map);
+        }
+
+        queries.putString("accesstoken", mUser.accesstoken);
+        queries.putString("userid", mUser.zaloPayId);
+
+        writableMap.putMap("query", queries);
+
+        return writableMap;
     }
 
 }
