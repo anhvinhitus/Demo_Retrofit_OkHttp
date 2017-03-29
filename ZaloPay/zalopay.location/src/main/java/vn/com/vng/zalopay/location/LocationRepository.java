@@ -43,7 +43,7 @@ public class LocationRepository implements LocationStore.Repository {
         AppLocation location = mLocationCache.get(LOCATION);
         Timber.d("location in cache: %s", location == null ? "null" : "not null");
 
-        if (location == null || location.latitude == 0 && location.longitude == 0) {
+        if (location == null || (location.latitude == 0 && location.longitude == 0)) {
             // get storage
             location = mLocalStore.get();
         }
