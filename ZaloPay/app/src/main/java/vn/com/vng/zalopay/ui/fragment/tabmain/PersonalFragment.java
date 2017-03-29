@@ -81,9 +81,9 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        presenter.initialize();
+    public void onResume() {
+        super.onResume();
+        presenter.resume();
     }
 
     @Override

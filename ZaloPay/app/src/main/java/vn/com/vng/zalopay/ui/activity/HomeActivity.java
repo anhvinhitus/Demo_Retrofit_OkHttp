@@ -124,12 +124,15 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
             public void onPageSelected(int position) {
                 if (position == HomePagerAdapter.TAB_MAIN_INDEX) {
                     setToolbarViewStatus(HomePagerAdapter.TAB_MAIN_INDEX);
+                    mPresenter.subscibeBusComponent();
 
                 } else if (position == HomePagerAdapter.TAB_SHOW_SHOW_INDEX) {
                     setToolbarViewStatus(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
+                    mPresenter.unregisterBusComponent();
 
                 } else if (position == HomePagerAdapter.TAB_PERSONAL_INDEX) {
                     setToolbarViewStatus(HomePagerAdapter.TAB_PERSONAL_INDEX);
+                    mPresenter.unregisterBusComponent();
                 }
             }
 

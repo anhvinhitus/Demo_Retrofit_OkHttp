@@ -34,6 +34,7 @@ import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.BusComponent;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
@@ -70,6 +71,8 @@ import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
+
+import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
 
 /**
  * Created by longlv on 3/21/17.
@@ -116,7 +119,8 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                   BalanceStore.Repository balanceRepository,
                   ZaloPayRepository zaloPayRepository,
                   TransactionStore.Repository transactionRepository,
-                  FriendStore.Repository friendRepository) {
+                  FriendStore.Repository friendRepository,
+                  NotificationStore.Repository notificationRepository) {
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
         this.mApplicationContext = applicationContext;
@@ -173,8 +177,8 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
+        subscibeBusComponent();
         mUserSession.beginSession();
-
         Timber.d("ApplicationState object [%s]", mApplicationState);
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_CREATED);
     }
@@ -192,11 +196,15 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     public void resume() {
         mUserSession.ensureNotifyConnect();
         GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
-        if (message != null && mView != null) {
-            SweetAlertDialog alertDialog = new SweetAlertDialog(mView.getContext(), message.messageType, R.style.alert_dialog);
-            alertDialog.setConfirmText(message.title);
-            alertDialog.setContentText(message.content);
-            alertDialog.show();
+        if (mView != null) {
+            if(message != null) {
+                SweetAlertDialog alertDialog = new SweetAlertDialog(mView.getContext(), message.messageType, R.style.alert_dialog);
+                alertDialog.setConfirmText(message.title);
+                alertDialog.setContentText(message.content);
+                alertDialog.show();
+            }
+            mView.setBalance(mBalanceRepository.currentBalance());
+            getBalance();
         }
 
     }
@@ -204,6 +212,14 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     @Override
     public void destroy() {
         super.destroy();
+    }
+
+    public void subscibeBusComponent() {
+        BusComponent.subscribe(APP_SUBJECT, this, new HomePresenter.ComponentSubscriber(), AndroidSchedulers.mainThread());
+    }
+
+    public void unregisterBusComponent() {
+        BusComponent.unregister(this);
     }
 
     public void initialize() {
@@ -214,19 +230,9 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
 
         loadGatewayInfoPaymentSDK();
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
-        fetchBalance();
         ensureAppResourceAvailable();
         getZaloFriend();
         warningRoot();
-        getBalance();
-    }
-
-    private void fetchBalance() {
-        Subscription subscription = mBalanceRepository.balance()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<>());
-        mSubscription.add(subscription);
     }
 
     private void warningRoot() {
@@ -333,7 +339,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         if (!isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
-        fetchBalance();
+        getBalance();
         ensureAppResourceAvailable();
     }
 
@@ -573,37 +579,37 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         mView.setBalance(balance);
     }
 
-//    private class ComponentSubscriber extends DefaultSubscriber<Object> {
-//        @Override
-//        public void onNext(Object event) {
-//            if (event instanceof ChangeBalanceEvent) {
-//                if (mView != null) {
-//                    mView.setBalance(((ChangeBalanceEvent) event).balance);
-//                }
-//            } else if (event instanceof NotificationChangeEvent) {
-//                if (!((NotificationChangeEvent) event).isRead()) {
-//                    getTotalNotification(0);
-//                }
-//            }
-//        }
-//    }
+    private class ComponentSubscriber extends DefaultSubscriber<Object> {
+        @Override
+        public void onNext(Object event) {
+            if (event instanceof ChangeBalanceEvent) {
+                if (mView != null) {
+                    mView.setBalance(((ChangeBalanceEvent) event).balance);
+                }
+            } else if (event instanceof NotificationChangeEvent) {
+                if (!((NotificationChangeEvent) event).isRead()) {
+                    getTotalNotification(0);
+                }
+            }
+        }
+    }
 
-//    public void getTotalNotification(long delay) {
-//        Subscription subscription = mNotificationRepository.totalNotificationUnRead()
-//                .delaySubscription(delay, TimeUnit.MILLISECONDS)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new MainPresenter.NotificationSubscriber());
-//        mSubscription.add(subscription);
-//    }
-//
-//    private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
-//        @Override
-//        public void onNext(Integer integer) {
-//            Timber.d("Got total %s unread notification messages", integer);
-//            if (mView != null) {
-//                mView.setTotalNotify(integer);
-//            }
-//        }
-//    }
+    public void getTotalNotification(long delay) {
+        Subscription subscription = mNotifyRepository.totalNotificationUnRead()
+                .delaySubscription(delay, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new HomePresenter.NotificationSubscriber());
+        mSubscription.add(subscription);
+    }
+
+    private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
+        @Override
+        public void onNext(Integer integer) {
+            Timber.d("Got total %s unread notification messages", integer);
+            if (mView != null) {
+                mView.setTotalNotify(integer);
+            }
+        }
+    }
 }

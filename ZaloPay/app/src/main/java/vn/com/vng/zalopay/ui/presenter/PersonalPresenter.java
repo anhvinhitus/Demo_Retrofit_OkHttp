@@ -15,6 +15,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
+import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -70,6 +71,12 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         super.detachView();
     }
 
+    @Override
+    public void resume() {
+        super.resume();
+        initialize();
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEventMainThread(ZaloProfileInfoEvent event) {
         //UPDATE USERINFO
@@ -84,6 +91,20 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         mEventBus.removeStickyEvent(ZaloProfileInfoEvent.class);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
+        if (mView != null) {
+            mView.setZaloPayName(event.zaloPayName);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onZaloPayUpdateBalanceMainThread(ChangeBalanceEvent event) {
+        if (mView != null) {
+            mView.setBalance(event.balance);
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNetworkChange(NetworkChangeEvent event) {
         if (!event.isOnline) {
@@ -96,15 +117,9 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onZaloPayNameEventMainThread(ZaloPayNameEvent event) {
-        if (mView != null) {
-            mView.setZaloPayName(event.zaloPayName);
-        }
-    }
-
     public void initialize() {
         mView.setUserInfo(mUser);
+        mView.setBalance(mBalanceRepository.currentBalance());
         getBalanceLocal();
     }
 
