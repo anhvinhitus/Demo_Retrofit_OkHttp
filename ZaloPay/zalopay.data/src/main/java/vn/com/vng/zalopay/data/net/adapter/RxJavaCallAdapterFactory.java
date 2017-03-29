@@ -80,8 +80,12 @@ public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
     }
 
     private CallAdapter<Observable<?>> getCallAdapter(Type returnType, Scheduler scheduler, int apiEventId, int maxRetries) {
-        Type observableType = getParameterUpperBound(0, (ParameterizedType) returnType);
+        Class<?> rawType = getRawType(returnType);
+        if (rawType != Observable.class) {
+            return null;
+        }
 
+        Type observableType = getParameterUpperBound(0, (ParameterizedType) returnType);
         switch (mAdapterType) {
             case ZaloPay:
                 return new ZaloPayCallAdapter(mApplicationContext, apiEventId, observableType, scheduler);
