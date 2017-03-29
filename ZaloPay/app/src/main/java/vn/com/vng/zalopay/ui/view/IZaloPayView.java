@@ -6,6 +6,7 @@ import android.content.Context;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by AnhHieu on 5/9/16.
@@ -13,13 +14,9 @@ import vn.com.vng.zalopay.domain.model.AppResource;
  */
 public interface IZaloPayView {
 
-    Context getContext();
-
     Activity getActivity();
 
-    void refreshIconFont();
-
-    void refreshInsideApps(List<AppResource> list);
+    void setAppItems(List<AppResource> list);
 
     void setTotalNotify(int total);
 
@@ -41,7 +38,7 @@ public interface IZaloPayView {
 
     void enableShowShow(boolean isEnable);
 
-    int getAppCount();
-
     void setRefreshing(boolean val);
+
+    void setBanner(List<DBanner> lists);
 }

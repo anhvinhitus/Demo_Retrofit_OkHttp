@@ -5,9 +5,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.TextUtils;
 import android.util.SparseIntArray;
+import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,25 +27,30 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.ui.adapter.HomeAdapter;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
-import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
+import vn.com.vng.zalopay.ui.widget.HomeSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by AnhHieu on 4/11/16.
  * Display PaymentApps in Grid layout
  */
 public class ZaloPayFragment extends RuntimePermissionFragment implements ListAppRecyclerAdapter.OnClickAppListener,
-        IZaloPayView, SwipeRefreshLayout.OnRefreshListener {
+        IZaloPayView, SwipeRefreshLayout.OnRefreshListener, HomeAdapter.OnClickAppItemListener {
 
     public static ZaloPayFragment newInstance() {
         Bundle args = new Bundle();
@@ -52,16 +60,14 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     }
 
     private final static int SPAN_COUNT_APPLICATION = 3;
-    private boolean isEnableShowShow;
-
 
     @Inject
     ZaloPayPresenter presenter;
 
-//    @BindView(R.id.home_top_layout)
-//    View mTopLayout;
+    @BindView(R.id.home_top_layout)
+    View mTopLayout;
 
-    private ListAppRecyclerAdapter mAdapter;
+    private HomeAdapter mAdapter;
 
     @BindView(R.id.listView)
     RecyclerView listView;
@@ -94,7 +100,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAdapter = new ListAppRecyclerAdapter(getContext(), this);
+        mAdapter = new HomeAdapter(getContext(), this);
+        mAdapter.setSpanCount(SPAN_COUNT_APPLICATION);
     }
 
     @Override
@@ -104,17 +111,19 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         presenter.attachView(this);
 
         listView.setHasFixedSize(true);
-        listView.setLayoutManager(new StaggeredGridLayoutManager(SPAN_COUNT_APPLICATION, StaggeredGridLayoutManager.VERTICAL));
-        listView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
+        HomeSpacingItemDecoration itemDecoration = new HomeSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false);
+        listView.addItemDecoration(itemDecoration);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION);
+        gridLayoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());
+        listView.setLayoutManager(gridLayoutManager);
         listView.setAdapter(mAdapter);
-        listView.setFocusable(false);
 
         setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
                 getString(R.string.check_internet));
         mSwipeRefreshLayout.setSwipeableChildren(R.id.listView);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        //hideTextAds();
     }
 
     private void setInternetConnectionError(String message, String spannedMessage) {
@@ -179,17 +188,20 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @Override
     public void onResume() {
         presenter.resume();
+        mAdapter.resume();
         super.onResume();
     }
 
     @Override
     public void onPause() {
         presenter.pause();
+        mAdapter.pause();
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
+        listView.setAdapter(null);
         presenter.detachView();
         super.onDestroyView();
     }
@@ -200,22 +212,9 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         super.onDestroy();
     }
 
-   /* private void hideTextAds() {
-        if (mTvAdsSubContent != null) {
-            mTvAdsSubContent.setVisibility(View.GONE);
-        }
-    }*/
-
     @Override
     public void onClickAppListener(AppResource app, int position) {
-        presenter.handleLaunchApp(app);
-        this.logActionApp(position);
-    }
 
-    private void logActionApp(int position) {
-        Timber.d("Tap on app at position %d", position);
-
-        ZPAnalytics.trackEvent(sActionMap.get(position));
     }
 
 //    @OnClick(R.id.btn_link_card)
@@ -241,32 +240,15 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
-        // datnt 09.03.2017 deleted >>
-//        if (mTopLayout != null) {
-//            mTopLayout.invalidate();
-//        }
-        // datnt 09.03.2017 deleted <<
+
+        if (mTopLayout != null) {
+            mTopLayout.invalidate();
+        }
     }
 
     @Override
-    public void refreshInsideApps(List<AppResource> list) {
-        Timber.d("refreshInsideApps list: [%s]", list.size());
-//        if (mAdapter == null || mAdapterBottomApp == null) {
-//            return;
-//        }
-//        mAdapter.setData(presenter.getTopAndBottomApp(list,true));
-//        if(list.size() > presenter.mNumberTopApp) {
-//            mAdapterBottomApp.setData(presenter.getTopAndBottomApp(list,false));
-//            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list,false).size() ,SPAN_COUNT_APPLICATION));
-//        }
-
-        if (mAdapter == null) {
-            return;
-        }
-
-        List<AppResource> listNew = presenter.setBannerInListApp(list);
-        mAdapter.setData(listNew);
-
+    public void setAppItems(List<AppResource> list) {
+        mAdapter.setAppItems(list);
     }
 
     @Override
@@ -319,8 +301,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     }
 
     @Override
-    public int getAppCount() {
-        return mAdapter.getItemCount() - 1;
+    public void setBanner(List<DBanner> lists) {
+        mAdapter.setBanners(lists);
     }
 
     @Override
@@ -378,24 +360,15 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         mSwipeRefreshLayout.setRefreshing(val);
     }
 
-    static SparseIntArray sActionMap;
 
-    static {
-        sActionMap = new SparseIntArray(15);
-        sActionMap.put(0, ZPEvents.TAPAPPICON_1_1);
-        sActionMap.put(1, ZPEvents.TAPAPPICON_1_2);
-        sActionMap.put(2, ZPEvents.TAPAPPICON_1_3);
-        sActionMap.put(3, ZPEvents.TAPAPPICON_2_1);
-        sActionMap.put(4, ZPEvents.TAPAPPICON_2_2);
-        sActionMap.put(5, ZPEvents.TAPAPPICON_2_3);
-        sActionMap.put(6, ZPEvents.TAPAPPICON_3_1);
-        sActionMap.put(7, ZPEvents.TAPAPPICON_3_2);
-        sActionMap.put(8, ZPEvents.TAPAPPICON_3_3);
-        sActionMap.put(9, ZPEvents.TAPAPPICON_4_1);
-        sActionMap.put(10, ZPEvents.TAPAPPICON_4_2);
-        sActionMap.put(11, ZPEvents.TAPAPPICON_4_3);
-        sActionMap.put(12, ZPEvents.TAPAPPICON_5_1);
-        sActionMap.put(13, ZPEvents.TAPAPPICON_5_2);
-        sActionMap.put(14, ZPEvents.TAPAPPICON_5_3);
+    @Override
+    public void onClickBanner(DBanner banner, int index) {
+        presenter.launchBanner(banner, index);
+    }
+
+    @Override
+    public void onClickAppItem(AppResource app, int position) {
+        presenter.launchApp(app, position);
+
     }
 }

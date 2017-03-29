@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import vn.com.vng.zalopay.domain.model.AppResource;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by AnhHieu on 5/9/16.
@@ -11,7 +12,7 @@ public interface IZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView
 
     void startServiceWebViewActivity(long appId, String webViewUrl);
 
-    void startPaymentApp(AppResource app);
+    void launchApp(AppResource app, int position);
 
-    void handleLaunchApp(AppResource app);
+    void launchBanner(DBanner banner, int index);
 }

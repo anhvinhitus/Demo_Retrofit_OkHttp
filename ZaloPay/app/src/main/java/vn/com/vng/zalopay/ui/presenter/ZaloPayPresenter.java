@@ -1,5 +1,8 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.util.SparseIntArray;
 import android.view.View;
 
 import com.zalopay.apploader.internal.ModuleName;
@@ -14,10 +17,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
+import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -39,6 +45,10 @@ import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.Constants;
@@ -56,12 +66,13 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     private AppResourceStore.Repository mAppResourceRepository;
     private NotificationStore.Repository mNotificationRepository;
     private Navigator mNavigator;
-    public final int mNumberTopApp = 6;
+
+    private Context mContext;
 
     private long mLastTimeRefreshApp;
 
     @Inject
-    ZaloPayPresenter(MerchantStore.Repository mMerchantRepository,
+    ZaloPayPresenter(Context context, MerchantStore.Repository mMerchantRepository,
                      EventBus eventBus,
                      BalanceStore.Repository balanceRepository,
                      AppResourceStore.Repository appResourceRepository,
@@ -73,6 +84,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         this.mAppResourceRepository = appResourceRepository;
         this.mNotificationRepository = notificationRepository;
         this.mNavigator = navigator;
+        this.mContext = context;
     }
 
     @Override
@@ -101,8 +113,10 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     @Override
     public void resume() {
-        if (NetworkHelper.isNetworkAvailable(mView.getContext())) {
-            mView.hideNetworkError();
+        if (NetworkHelper.isNetworkAvailable(mContext)) {
+            if (mView != null) {
+                mView.hideNetworkError();
+            }
         }
     }
 
@@ -120,6 +134,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         getListAppHomeLocal();
         getTotalNotification(100);
         getBalanceLocal();
+        this.getBanners();
     }
 
     private void getBalanceLocal() {
@@ -140,8 +155,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mSubscription.add(subscription);
     }
 
-    @Override
-    public void startPaymentApp(AppResource app) {
+    private void startExternalApp(AppResource app) {
         Subscription subscription = mAppResourceRepository.existResource(app.appid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -150,8 +164,10 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     }
 
     @Override
-    public void handleLaunchApp(AppResource app) {
-        Timber.d("onclick app %s %s %s ", app.appType, app.appid, app.appname);
+    public void launchApp(AppResource app, int position) {
+
+        Timber.d("launchApp appType [%s] appid [%s] appname [%s] ", app.appType, app.appid, app.appname);
+
         if (app.appType == PaymentAppTypeEnum.REACT_NATIVE.getValue()) {
             if (app.appid == PaymentAppConfig.Constants.RED_PACKET) {
                 mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.RED_PACKET);
@@ -160,7 +176,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                 if (appResource == null) {
                     appResource = new AppResource(app.appid);
                 }
-                startPaymentApp(appResource);
+                startExternalApp(appResource);
             }
         } else if (app.appType == PaymentAppTypeEnum.WEBVIEW.getValue()) {
             startServiceWebViewActivity(app.appid, app.webUrl);
@@ -168,9 +184,37 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             if (app.appid == PaymentAppConfig.Constants.TRANSFER_MONEY) {
                 mNavigator.startTransferMoneyActivity(mView.getActivity());
             } else if (app.appid == PaymentAppConfig.Constants.RECEIVE_MONEY) {
-                mNavigator.startReceiveMoneyActivity(mView.getContext());
+                mNavigator.startReceiveMoneyActivity(mView.getActivity());
             }
         }
+
+        Timber.d("Tap on app at position %d", position);
+
+        int action = sActionMap.get(position, -1);
+        if (action >= 0) {
+            ZPAnalytics.trackEvent(sActionMap.get(position));
+        }
+    }
+
+    private final static SparseIntArray sActionMap;
+
+    static {
+        sActionMap = new SparseIntArray(15);
+        sActionMap.put(0, ZPEvents.TAPAPPICON_1_1);
+        sActionMap.put(1, ZPEvents.TAPAPPICON_1_2);
+        sActionMap.put(2, ZPEvents.TAPAPPICON_1_3);
+        sActionMap.put(3, ZPEvents.TAPAPPICON_2_1);
+        sActionMap.put(4, ZPEvents.TAPAPPICON_2_2);
+        sActionMap.put(5, ZPEvents.TAPAPPICON_2_3);
+        sActionMap.put(6, ZPEvents.TAPAPPICON_3_1);
+        sActionMap.put(7, ZPEvents.TAPAPPICON_3_2);
+        sActionMap.put(8, ZPEvents.TAPAPPICON_3_3);
+        sActionMap.put(9, ZPEvents.TAPAPPICON_4_1);
+        sActionMap.put(10, ZPEvents.TAPAPPICON_4_2);
+        sActionMap.put(11, ZPEvents.TAPAPPICON_4_3);
+        sActionMap.put(12, ZPEvents.TAPAPPICON_5_1);
+        sActionMap.put(13, ZPEvents.TAPAPPICON_5_2);
+        sActionMap.put(14, ZPEvents.TAPAPPICON_5_3);
     }
 
     private void getListAppHomeLocal() {
@@ -238,7 +282,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         }
 
         mView.enableShowShow(isEnableShowShow);
-        mView.refreshInsideApps(resources);
+        mView.setAppItems(resources);
         mView.setRefreshing(false);
     }
 
@@ -345,6 +389,9 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent e) {
         Timber.d("onRefreshPlatformInfoEvent");
+
+        getBanners();
+
         if (System.currentTimeMillis() / 1000 - mLastTimeRefreshApp <= 120) {
             return;
         }
@@ -356,6 +403,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AppResourceSubscriber());
         mSubscription.add(subscription);
+
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -365,42 +413,81 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             mView.refreshIconFont();
         }
     }
-
-    public List<AppResource> setBannerInListApp(List<AppResource> pFullListApp) {
-
-        List<AppResource> mNewListApp = new ArrayList<>();
-        int inDex = 0;
-        for (AppResource pItem : pFullListApp) {
-            mNewListApp.add(pItem);
-
-            if (pItem != null && inDex == mNumberTopApp - 1) {
-                //hardcode test
-                AppResource banner = new AppResource(0101, 0101, "Banner");
-                mNewListApp.add(banner);
-            }
-            inDex++;
-        }
-        return mNewListApp;
+    private void ensureAppResourceAvailable() {
+        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
     }
 
-    public int getHeightViewBottomView(View pTopView, int pNumberItemView, int pNumberApp) {
-        double heightItem = pTopView.getHeight() / 2;
-        int numberRow = (int) Math.ceil((pNumberItemView / (double) pNumberApp));
-        return (int) (heightItem * numberRow);
+    private void getBanners() {
+        Subscription subscription = getListBanner()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<List<DBanner>>() {
+                    @Override
+                    public void onNext(List<DBanner> banners) {
+                        if (mView != null) {
+                            mView.setBanner(banners);
+                        }
+                    }
+                });
+        mSubscription.add(subscription);
     }
 
-   /* private class ComponentSubscriber extends DefaultSubscriber<Object> {
-        @Override
-        public void onNext(Object event) {
-            if (event instanceof ChangeBalanceEvent) {
-                if (mView != null) {
-                    mView.setBalance(((ChangeBalanceEvent) event).balance);
-                }
-            } else if (event instanceof NotificationChangeEvent) {
-                if (!((NotificationChangeEvent) event).isRead()) {
-                    getTotalNotification(0);
-                }
-            }
+    private Observable<List<DBanner>> getListBanner() {
+        return ObservableHelper.makeObservable(CShareDataWrapper::getBannerList);
+    }
+
+    public void launchBanner(DBanner banner, int position) {
+
+        if (banner == null) {
+            return;
         }
-    }*/
+
+        if (banner.bannertype == BannerType.InternalFunction.getValue()) {
+            if (banner.function == BannerInternalFunction.Deposit.getValue()) {
+                mNavigator.startDepositActivity(mView.getActivity());
+            } else if (banner.function == BannerInternalFunction.WithDraw.getValue()) {
+                mNavigator.startBalanceManagementActivity(mView.getActivity());
+            } else if (banner.function == BannerInternalFunction.SaveCard.getValue()) {
+                mNavigator.startLinkCardActivity(mView.getActivity());
+            } else if (banner.function == BannerInternalFunction.Pay.getValue()) {
+                mNavigator.startScanToPayActivity(mView.getActivity());
+            } else if (banner.function == BannerInternalFunction.TransferMoney.getValue()) {
+                mNavigator.startTransferMoneyActivity(mView.getActivity());
+            } else if (banner.function == BannerInternalFunction.RedPacket.getValue()) {
+                mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.RED_PACKET);
+            }
+        } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
+            startExternalApp(new AppResource(banner.appid));
+        } else if (banner.bannertype == BannerType.ServiceWebView.getValue()) {
+            startServiceWebViewActivity(banner.appid, banner.webviewurl);
+        } else if (banner.bannertype == BannerType.WebPromotion.getValue()) {
+            mNavigator.startWebViewActivity(mView.getActivity(), banner.webviewurl);
+        }
+        trackBannerEvent(position);
+    }
+
+    private void trackBannerEvent(int position) {
+        switch (position) {
+            case 0:
+                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
+                break;
+            case 1:
+                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
+                break;
+            case 2:
+                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
+                break;
+            case 3:
+                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
+                break;
+            case 4:
+                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
+                break;
+            default:
+                break;
+        }
+    }
 }

@@ -1,5 +1,8 @@
 package vn.com.vng.zalopay.utils;
 
+import android.support.annotation.NonNull;
+
+import java.util.Collections;
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.User;
@@ -96,8 +99,11 @@ public class CShareDataWrapper {
     }
 
 
+    @NonNull
     public static List<DBanner> getBannerList() {
-        return CShareData.getInstance().getBannerList();
+        List<DBanner> list = CShareData.getInstance().getBannerList();
+        return list == null ? Collections.emptyList() : list;
+
     }
 
     public static void pushNotificationToSdk(int notificationType, String message) {
