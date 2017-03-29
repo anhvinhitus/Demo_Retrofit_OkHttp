@@ -80,6 +80,34 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
     @BindView(R.id.navigation)
     BottomNavigationView mBottomNavigationView;
 
+    /*
+    * Click event for 3 main button on collapse toolbar
+    */
+    @OnClick(R.id.btn_link_card)
+    public void onBtnLinkCardClick() {
+        navigator.startLinkCardActivity(getActivity());
+        ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
+    }
+
+    @OnClick(R.id.btn_scan_to_pay)
+    public void onScanToPayClick() {
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
+        navigator.startScanToPayActivity(getActivity());
+    }
+
+    @OnClick(R.id.btn_balance)
+    public void onClickBalance() {
+        navigator.startBalanceManagementActivity(getContext());
+    }
+
+    @OnClick(R.id.header_top_rl_notification)
+    public void onBtnNotificationClick() {
+        navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
+        ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
+    }
+
 //    private FrameLayout.LayoutParams mToolbarParams;
 //    private int mMarginBottom;
 
@@ -113,6 +141,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
 
         HomePagerAdapter mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mHomePagerAdapter);
+        mViewPager.setOffscreenPageLimit(mHomePagerAdapter.getCount() - 1);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -372,34 +401,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         if (mViewPager != null) {
             updateIconFontState(mViewPager.getCurrentItem());
         }
-    }
-
-    /*
-    * Click event for 3 main button on collapse toolbar
-    */
-    @OnClick(R.id.btn_link_card)
-    public void onBtnLinkCardClick() {
-        navigator.startLinkCardActivity(getActivity());
-        ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
-    }
-
-    @OnClick(R.id.btn_scan_to_pay)
-    public void onScanToPayClick() {
-        getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
-        getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
-        getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
-        navigator.startScanToPayActivity(getActivity());
-    }
-
-    @OnClick(R.id.btn_balance)
-    public void onClickBalance() {
-        navigator.startBalanceManagementActivity(getContext());
-    }
-
-    @OnClick(R.id.header_top_rl_notification)
-    public void onBtnNotificationClick() {
-        navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
-        ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
     }
 
     @Override

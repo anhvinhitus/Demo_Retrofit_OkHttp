@@ -5,11 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,13 +18,13 @@ import vn.com.vng.zalopay.R;
 
 public class HeaderViewTop extends LinearLayout {
     @BindView(R.id.header_top_rl_normal)
-    RelativeLayout rlHeaderNormal;
+    View rlHeaderNormal;
 
     @BindView(R.id.header_top_rl_collapsed)
-    RelativeLayout rlHeaderCollapsed;
+    View rlHeaderCollapsed;
 
     @BindView(R.id.header_top_rl_personal)
-    RelativeLayout rlHeaderPersonal;
+    View rlHeaderPersonal;
 
     public HeaderViewTop(Context context) {
         super(context);

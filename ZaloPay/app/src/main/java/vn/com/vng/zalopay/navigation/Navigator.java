@@ -207,9 +207,9 @@ public class Navigator implements INavigator {
         activity.startActivityForResult(intent, Constants.REQUEST_CODE_DEPOSIT);
     }
 
-    public void startScanToPayActivity(Activity activity) {
-        Intent intent = new Intent(activity, ScanToPayActivity.class);
-        activity.startActivity(intent);
+    public void startScanToPayActivity(Context context) {
+        Intent intent = new Intent(context, ScanToPayActivity.class);
+        context.startActivity(intent);
     }
 
     private void showUpdateProfileInfoDialog(final Context context) {
