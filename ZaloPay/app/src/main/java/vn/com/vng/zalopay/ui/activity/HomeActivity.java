@@ -108,6 +108,21 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
     }
 
+    @OnClick(R.id.header_view_top_qrcode)
+    public void onClickQRCodeInToolbar() {
+        navigator.startScanToPayActivity(this);
+    }
+
+    @OnClick(R.id.header_view_top_balance)
+    public void onClickBalanceInToolbar() {
+        navigator.startBalanceManagementActivity(this);
+    }
+
+    @OnClick(R.id.header_view_top_linkbank)
+    public void onClickLinkBankInToolbar() {
+        navigator.startLinkCardActivity(this);
+    }
+
 //    private FrameLayout.LayoutParams mToolbarParams;
 //    private int mMarginBottom;
 
@@ -435,10 +450,19 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
 
         if (percentage == 0f) {
+            enableOnClickHeader();
             toolbarHeaderView.setHeaderTopStatus(0, percentage);
-
         } else if (percentage > 0f && percentage <= 1f) {
+            disableOnClickHeader();
             toolbarHeaderView.setHeaderTopStatus(1, percentage);
         }
+    }
+
+    private void disableOnClickHeader() {
+        headerView.setVisibility(View.GONE);
+    }
+
+    private void enableOnClickHeader() {
+        headerView.setVisibility(View.VISIBLE);
     }
 }
