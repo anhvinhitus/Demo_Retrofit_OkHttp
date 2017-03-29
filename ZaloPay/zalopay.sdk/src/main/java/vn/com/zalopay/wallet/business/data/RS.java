@@ -48,7 +48,7 @@ public class RS {
     }
 
     public static final class string {
-        public static final String payment_success_label    =   "payment_success_label";
+        public static final String payment_success_label = "payment_success_label";
         public static final String zpw_update_level_inform_content = "zpw_update_level_inform_content";
         public static final String zpw_payment_fail_rl_update_info = "zpw_payment_fail_rl_update_info";
         public static final String zpw_payment_fail_rl_support = "zpw_payment_fail_rl_support";
@@ -229,7 +229,12 @@ public class RS {
         public static final String zingpaysdk_alert_network_error = "zingpaysdk_alert_network_error";
         public static final String zpw_alert_networking_off_in_transaction = "zpw_alert_networking_off_in_transaction";
 
-        public static final String zpw_alert_network_error_getappinfo = "zpw_alert_network_error_getappinfo";
+        public static final String zpw_alert_network_error_loadappinfo = "zpw_alert_network_error_loadappinfo";
+        public static final String zpw_alert_network_error_loadbanklist = "zpw_alert_network_error_loadbanklist";
+        public static final String zpw_alert_network_error_loadplatforminfo = "zpw_alert_network_error_loadplatforminfo";
+        public static final String zpw_alert_network_error_loadmapcardlist = "zpw_alert_network_error_loadmapcardlist";
+        public static final String zpw_alert_network_error_loadmapbankaccountlist = "zpw_alert_network_error_loadmapbankaccountlist";
+
         public static final String zingpaysdk_missing_app_user = "zingpaysdk_missing_app_user";
 
         public static final String zpw_alert_networking_error_check_status = "zpw_alert_networking_error_check_status";

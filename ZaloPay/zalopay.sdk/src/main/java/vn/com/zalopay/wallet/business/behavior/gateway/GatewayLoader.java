@@ -29,8 +29,7 @@ public class GatewayLoader extends SingletonBase {
         @Override
         public void onSuccess() {
             Log.d(this, "====onSuccess=====");
-            if (mCheckResourceStatisListener != null)
-            {
+            if (mCheckResourceStatisListener != null) {
                 mCheckResourceStatisListener.onCheckResourceStaticComplete(true, null);
             }
         }
@@ -49,8 +48,7 @@ public class GatewayLoader extends SingletonBase {
             } catch (Exception e) {
                 Log.d(this, e);
             }
-            if (mCheckResourceStatisListener != null)
-            {
+            if (mCheckResourceStatisListener != null) {
                 mCheckResourceStatisListener.onCheckResourceStaticComplete(false, pMessage);
             }
         }
@@ -73,8 +71,7 @@ public class GatewayLoader extends SingletonBase {
             if (pMessage != null) {
                 ErrorManager.updateTransactionResult(pMessage.returncode);
             }
-            if (mCheckResourceStatisListener != null)
-            {
+            if (mCheckResourceStatisListener != null) {
                 mCheckResourceStatisListener.onCheckResourceStaticComplete(false, pMessage != null ? pMessage.returnmessage : null);
             }
         }
@@ -85,8 +82,7 @@ public class GatewayLoader extends SingletonBase {
             if (!pForceUpdate) {
                 initResource(mLoadResourceListener);
             }
-            if (mCheckResourceStatisListener != null)
-            {
+            if (mCheckResourceStatisListener != null) {
                 mCheckResourceStatisListener.onUpVersion(pForceUpdate, pVersion, pMessage);
             }
         }
@@ -109,6 +105,7 @@ public class GatewayLoader extends SingletonBase {
             }
         }
     };
+
     public GatewayLoader() {
         super();
     }
@@ -145,8 +142,7 @@ public class GatewayLoader extends SingletonBase {
                 Log.e(this, e);
                 throw e;
             }
-        }
-        else if (!BGatewayInfo.isValidConfig()) {
+        } else if (!BGatewayInfo.isValidConfig()) {
             Log.d(this, "===resource wasnt download===reload again===");
             if (mCheckResourceStatisListener != null) {
                 mCheckResourceStatisListener.onCheckResourceStaticInProgress();
@@ -181,7 +177,6 @@ public class GatewayLoader extends SingletonBase {
         String resourceVersion = SharedPreferencesManager.getInstance().getResourceVersion();
         String resourceDownloadUrl = SharedPreferencesManager.getInstance().getResourceDownloadUrl();
         String unzipFolder = StorageUtil.prepareUnzipFolder();
-
         if (!TextUtils.isEmpty(resourceDownloadUrl) && !TextUtils.isEmpty(resourceVersion) && !TextUtils.isEmpty(unzipFolder)) {
             retryLoadResource(resourceDownloadUrl, unzipFolder, resourceVersion);
         } else {
@@ -192,13 +187,13 @@ public class GatewayLoader extends SingletonBase {
     /***
      * after download resource successfully.
      * need to load to memory.
-     *
      * @param pCallback
      */
     private void initResource(ZPWInitResourceListener pCallback) {
         BundleResourceLoader initResourceTask = new BundleResourceLoader(pCallback);
         initResourceTask.execute();
     }
+
     // retry downloading resource
     private void retryLoadResource(String pUrl, String pUnzipFolder, String pResourceVersion) {
         DownloadBundle downloadResourceTask = new DownloadBundle(mDownloadResourceListener, pUrl, pUnzipFolder, pResourceVersion);
@@ -208,8 +203,7 @@ public class GatewayLoader extends SingletonBase {
 
     //retry load gateway info
     private void retryLoadGateway(boolean pForceReload) throws Exception {
-        if (getGatewayInfoTask == null)
-        {
+        if (getGatewayInfoTask == null) {
             getGatewayInfoTask = GetPlatformInfo.getInstance(mLoadGatewayInfoListener, pForceReload);
         }
         getGatewayInfoTask.makeRequest();
@@ -218,9 +212,7 @@ public class GatewayLoader extends SingletonBase {
 
     public interface onCheckResourceStaticListener {
         void onCheckResourceStaticComplete(boolean isSuccess, String pError);
-
         void onCheckResourceStaticInProgress();
-
         void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage);
     }
 }

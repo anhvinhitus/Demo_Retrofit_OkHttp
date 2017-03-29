@@ -42,12 +42,11 @@ import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
-import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.request.BaseRequest;
+import vn.com.zalopay.wallet.datasource.request.BaseTask;
 import vn.com.zalopay.wallet.datasource.request.CheckOrderStatusFailSubmit;
-import vn.com.zalopay.wallet.datasource.request.GetBankAccountList;
-import vn.com.zalopay.wallet.datasource.request.GetMapCardInfoList;
+import vn.com.zalopay.wallet.datasource.request.MapCardListTask;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.datasource.request.SendLog;
 import vn.com.zalopay.wallet.datasource.request.TrustSDKReport;
@@ -219,6 +218,7 @@ public abstract class AdapterBase {
             }
         }
     };
+
     public AdapterBase(PaymentChannelActivity pOwnerActivity) {
         if (pOwnerActivity != null) {
             mOwnerActivity = new WeakReference<PaymentChannelActivity>(pOwnerActivity);
@@ -565,7 +565,6 @@ public abstract class AdapterBase {
             //reload map card list
             if (pEventType == EEventType.ON_GET_CARDINFO_LIST_COMPLETE) {
                 showProgressBar(false, null);
-
                 try {
                     CardInfoListResponse cardInfoListResponse = (CardInfoListResponse) pAdditionParams[0];
 
@@ -586,11 +585,8 @@ public abstract class AdapterBase {
                 showProgressBar(false, null);
                 try {
                     BankAccountListResponse cardInfoListResponse = (BankAccountListResponse) pAdditionParams[0];
-
                     if (cardInfoListResponse.returncode < 0 && !TextUtils.isEmpty(cardInfoListResponse.getMessage())) {
                         getActivity().showInfoDialog(null, cardInfoListResponse.getMessage());
-                    } else if (BankAccountHelper.isNeedUpdateBankAccountInfoOnCache(cardInfoListResponse.bankaccountchecksum)) {
-                        BankAccountHelper.updateBankAccountListOnCache(cardInfoListResponse.bankaccountchecksum, cardInfoListResponse.bankaccounts);
                     }
                 } catch (Exception ex) {
                     if (getActivity() != null && isTransactionSuccess()) {
@@ -821,8 +817,7 @@ public abstract class AdapterBase {
                         DataRepository.shareInstance().cancelRequest();//cancel current request
                         GetStatus.cancelRetryRequest();//cancel timer retry get status
                         DialogManager.closeAllDialog();//close dialog
-                        if(mResponseStatus != null)
-                        {
+                        if (mResponseStatus != null) {
                             mResponseStatus.returncode = 1;
                             mResponseStatus.returnmessage = GlobalData.getStringResource(RS.string.payment_success_label);
                         }
@@ -1394,38 +1389,25 @@ public abstract class AdapterBase {
             if (isNeedToNotifyMapCardToApp(pCardInfoResponse)) {
                 //get new map card to notify
                 String cardKey = getCard().getCardKey();
-
                 if (TextUtils.isEmpty(cardKey)) {
                     Log.d(this, "===processCardInfoListResponse===cardKey=NULL");
                     return;
                 }
-
                 DMappedCard mappedCard = null;
-
                 for (DMappedCard card : pCardInfoResponse.cardinfos) {
                     if (card.getCardKey().equals(cardKey)) {
                         mappedCard = card.clone();
                         break;
                     }
                 }
-
                 if (mappedCard != null) {
                     MapCardHelper.notifyNewMapCardToApp(mappedCard);
                 }
             }
 
             //this is redpacket channel
-            //update new card info to card
             //quit sdk right away
             if (GlobalData.isRedPacketChannel()) {
-                if (MapCardHelper.isNeedUpdateMapCardInfoOnCache(pCardInfoResponse.cardinfochecksum)) {
-                    try {
-                        MapCardHelper.updateMapCardInfoListOnCache(pCardInfoResponse.cardinfochecksum, pCardInfoResponse.cardinfos);
-                    } catch (Exception ex) {
-                        Log.e(this, ex);
-                    }
-                }
-
                 onClickSubmission();
                 return;
             }
@@ -1435,13 +1417,7 @@ public abstract class AdapterBase {
                 Log.d(this, "this card is maped by other account");
                 return;
             }
-            if (MapCardHelper.isNeedUpdateMapCardInfoOnCache(pCardInfoResponse.cardinfochecksum)) {
-                try {
-                    MapCardHelper.updateMapCardInfoListOnCache(pCardInfoResponse.cardinfochecksum, pCardInfoResponse.cardinfos);
-                } catch (Exception ex) {
-                    Log.e(this, ex);
-                }
-            } else if (PaymentStatusHelper.isErrorResponse(pCardInfoResponse)) {
+            if (PaymentStatusHelper.isErrorResponse(pCardInfoResponse)) {
                 showDialog(pCardInfoResponse.getMessage());
             } else if (PaymentStatusHelper.isNetworkingErrorResponse(pCardInfoResponse)) {
                 showDialog(GlobalData.getStringResource(RS.string.zpw_string_save_card_error));
@@ -1908,15 +1884,7 @@ public abstract class AdapterBase {
         if (pIsShowProgress) {
             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_get_card_info_processing));
         }
-        BaseRequest getCardInfoList = new GetMapCardInfoList(this);
-        getCardInfoList.makeRequest();
-    }
-
-    protected void getBankAccountInfoList(boolean pIsShowProgress) {
-        if (pIsShowProgress) {
-            showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_get_card_info_processing));
-        }
-        BaseRequest getCardInfoList = new GetBankAccountList(this);
+        BaseTask getCardInfoList = new MapCardListTask(this);
         getCardInfoList.makeRequest();
     }
 

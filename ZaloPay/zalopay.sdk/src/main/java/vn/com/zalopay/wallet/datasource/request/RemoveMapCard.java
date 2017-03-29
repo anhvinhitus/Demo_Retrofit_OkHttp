@@ -4,6 +4,9 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -39,19 +42,24 @@ public class RemoveMapCard extends BaseRequest<BaseResponse> {
         userInfo.accessToken = mMapCardParams.accessToken;
         GlobalData.setUserInfo(userInfo);
 
-        MapCardHelper.loadMapCardList(true, new IReloadMapInfoListener<DMappedCard>() {
-            @Override
-            public void onComplete(List<DMappedCard> pMapCardList) {
-                callbackSuccessToMerchant();
-                Log.d(this, "===onComplete===" + GsonUtils.toJsonString(pMapCardList));
-            }
+        MapCardHelper.loadMapCardList(true)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<BaseResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        callbackSuccessToMerchant();
+                    }
 
-            @Override
-            public void onError(String pErrorMess) {
-                callbackSuccessToMerchant();
-                Log.d(this, "===onError=" + pErrorMess);
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("loadMapCardList",e);
+                    }
+
+                    @Override
+                    public void onNext(BaseResponse response) {
+                    }
+                });
     }
 
     private void callbackSuccessToMerchant() {

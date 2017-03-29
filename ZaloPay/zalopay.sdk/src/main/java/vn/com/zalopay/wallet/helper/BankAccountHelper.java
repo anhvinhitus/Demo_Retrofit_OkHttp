@@ -4,6 +4,10 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -12,15 +16,15 @@ import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.datasource.request.BaseRequest;
-import vn.com.zalopay.wallet.datasource.request.GetBankAccountList;
+import vn.com.zalopay.wallet.datasource.request.BaseTask;
+import vn.com.zalopay.wallet.datasource.request.MapBankAccountListTask;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
-import vn.com.zalopay.wallet.listener.IGetBankAccountList;
-import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
 public class BankAccountHelper {
+    private static final String TAG = BankAccountHelper.class.getCanonicalName();
+
     public static boolean isBankAccount(String pBankCode) {
         return !TextUtils.isEmpty(pBankCode) && pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     }
@@ -36,37 +40,44 @@ public class BankAccountHelper {
             return existedBankAccount;
 
         } catch (Exception e) {
-            Log.e("hasBankAccountOnCache", e);
+            Log.e(TAG, e);
         }
         return false;
     }
 
     public static void existBankAccount(boolean pReloadList, final ICheckExistBankAccountListener pListener, final String pBankCode) {
         try {
-            loadBankAccountList(pReloadList, new IReloadMapInfoListener<DBankAccount>() {
-                @Override
-                public void onComplete(List<DBankAccount> pMapList) {
-                    DBankAccount bankAccount = new DBankAccount();
-                    bankAccount.bankcode = pBankCode;
+            loadBankAccountList(pReloadList)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<BaseResponse>() {
+                        @Override
+                        public void onCompleted() {
 
-                    if (pMapList != null && pMapList.size() > 0 && pListener != null) {
-                        pListener.onCheckExistBankAccountComplete(pMapList.contains(bankAccount));
-                    } else if (pListener != null) {
-                        pListener.onCheckExistBankAccountComplete(false);
-                    } else {
-                        Log.e(this, "existBankAccount===pListener=NULL");
-                    }
-                }
+                        }
 
-                @Override
-                public void onError(String pErrorMess) {
-                    if (pListener != null) {
-                        pListener.onCheckExistBankAccountFail(pErrorMess);
-                    }
-                }
-            });
+                        @Override
+                        public void onError(Throwable e) {
+                            if (pListener != null) {
+                                pListener.onCheckExistBankAccountFail(null);
+                            }
+                        }
+
+                        @Override
+                        public void onNext(BaseResponse response) {
+                            DBankAccount bankAccount = new DBankAccount();
+                            bankAccount.bankcode = pBankCode;
+                            if (response instanceof BankAccountListResponse) {
+                                pListener.onCheckExistBankAccountComplete(((BankAccountListResponse) response).bankaccounts.contains(bankAccount));
+                            } else if (pListener != null) {
+                                pListener.onCheckExistBankAccountComplete(false);
+                            } else {
+                                Log.e(this, "pListener = NULL");
+                            }
+                        }
+                    });
         } catch (Exception ex) {
-            Log.e("existBankAccount", ex);
+            Log.e(TAG, ex);
             if (pListener != null) {
                 pListener.onCheckExistBankAccountFail(null);
             }
@@ -76,80 +87,45 @@ public class BankAccountHelper {
 
     /***
      * reload bank account list
-     *
      * @param pReload
-     * @param pReloadBankAccountInfoListener
      */
-    public static void loadBankAccountList(boolean pReload, final IReloadMapInfoListener pReloadBankAccountInfoListener) {
-        try {
-            if (pReload) {
-                SharedPreferencesManager.getInstance().setBankAccountCheckSum(null);
-            }
-
-            BaseRequest getBankAccount = new GetBankAccountList(new IGetBankAccountList() {
-
-                @Override
-                public void onGetBankAccountListComplete(BaseResponse pResponse) {
-
-                    if (pResponse instanceof BankAccountListResponse
-                            && BankAccountHelper.isNeedUpdateBankAccountInfoOnCache(((BankAccountListResponse) pResponse).bankaccountchecksum)) {
-                        try {
-                            //for testing
-                            /*
-                            DBankAccount bankAccount = new DBankAccount();
-                            bankAccount.bankcode = "ZPVCB";
-                            bankAccount.firstaccountno = "042100";
-                            bankAccount.lastaccountno = "6723";
-                            if(((BankAccountListResponse) pResponse).bankaccounts == null)
-                            {
-                                ((BankAccountListResponse) pResponse).bankaccounts = new ArrayList<>();
-                            }
-                            ((BankAccountListResponse) pResponse).bankaccounts.add(bankAccount);
-                            */
-                            BankAccountHelper.updateBankAccountListOnCache(((BankAccountListResponse) pResponse).bankaccountchecksum, ((BankAccountListResponse) pResponse).bankaccounts);
-                        } catch (Exception e) {
-                            Log.e(this, e);
-                        }
-
-                        if (pReloadBankAccountInfoListener != null) {
-                            pReloadBankAccountInfoListener.onComplete(((BankAccountListResponse) pResponse).bankaccounts);
-                        }
-                    } else if (pResponse != null && pResponse.returncode == 1 && pReloadBankAccountInfoListener != null) {
-                        pReloadBankAccountInfoListener.onComplete(null);
-                    } else if (pReloadBankAccountInfoListener != null) {
-                        pReloadBankAccountInfoListener.onError(null);
-                    }
+    public static Observable<BaseResponse> loadBankAccountList(boolean pReload) {
+        return Observable.create(subscriber -> {
+            try {
+                if (pReload) {
+                    SharedPreferencesManager.getInstance().setBankAccountCheckSum(null);
                 }
-            });
+                BaseTask getBankAccount = new MapBankAccountListTask(pResponse -> {
+                    subscriber.onNext(pResponse);
+                    subscriber.onCompleted();
+                });
+                getBankAccount.makeRequest();
 
-            getBankAccount.makeRequest();
-
-        } catch (Exception e) {
-            if (pReloadBankAccountInfoListener != null) {
-                pReloadBankAccountInfoListener.onError(null);
+            } catch (Exception e) {
+                Log.e(Log.TAG, e);
+                subscriber.onError(e);
+                subscriber.onCompleted();
             }
-            Log.e("loadMapCardList", e);
-        }
+        });
     }
 
-    public static boolean isNeedUpdateBankAccountInfoOnCache(String pBankAccountCheckSum) {
+    public static boolean needUpdateMapBankAccountListOnCache(String pBankAccountCheckSum) {
         try {
             String bankAccountCheckSumOnCache = SharedPreferencesManager.getInstance().getBankAccountCheckSum();
             if (TextUtils.isEmpty(bankAccountCheckSumOnCache) || (!TextUtils.isEmpty(bankAccountCheckSumOnCache) && !bankAccountCheckSumOnCache.equals(pBankAccountCheckSum))) {
                 return true;
             }
         } catch (Exception e) {
-            Log.e("isNeedUpdateBankAccountInfoOnCache", e);
+            Log.e(TAG, e);
         }
 
         return false;
     }
 
-    public static void updateBankAccountListOnCache(String pInfoCheckSum, List<DBankAccount> pMapList) throws Exception {
+    public static void saveMapBankAccountListToCache(String pInfoCheckSum, List<DBankAccount> pMapList) throws Exception {
         //update checksum
         SharedPreferencesManager.getInstance().setBankAccountCheckSum(pInfoCheckSum);
-        Log.d("updateBankAccountListOnCache", "===pInfoCheckSum=" + pInfoCheckSum);
-        Log.d("updateBankAccountListOnCache", "===pMapList=" + GsonUtils.toJsonString(pMapList));
+        Log.d(TAG, "saved bank account list checksum " + pInfoCheckSum);
         //map card list
         if (pMapList != null && pMapList.size() > 0) {
             StringBuilder mappedCardID = new StringBuilder();
@@ -165,11 +141,11 @@ public class BankAccountHelper {
             }
             //cache map list
             SharedPreferencesManager.getInstance().setBankAccountKeyList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, mappedCardID.toString());
-            Log.d("updateBankAccountListOnCache", "====mapp account ID===" + mappedCardID.toString());
+            Log.d(TAG, "saved map bank account list ids " + mappedCardID.toString());
         } else {
             //clear back account list
             SharedPreferencesManager.getInstance().resetBankListOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
-            Log.d("updateBankAccountListOnCache", "===clearing bank account===");
+            Log.d(TAG, "cleared map bank account list");
         }
     }
 }

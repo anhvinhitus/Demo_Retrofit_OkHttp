@@ -12,7 +12,6 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DChannelMapApp;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
-import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.RequestKeeper;
@@ -201,7 +200,7 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         }
 
         //need to update card info again on cache
-        if (MapCardHelper.isNeedUpdateMapCardInfoOnCache(pResponse.cardinfochecksum)) {
+        if (MapCardHelper.needUpdateMapCardListOnCache(pResponse.cardinfochecksum)) {
 
             //for testing
             /*
@@ -211,15 +210,14 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
             mappedCard.last4cardno  = "1017";
             pResponse.cardinfos.add(mappedCard);
             */
-            MapCardHelper.updateMapCardInfoListOnCache(pResponse.cardinfochecksum, pResponse.cardinfos);
             try {
-                MapCardHelper.updateMapCardInfoListOnCache(pResponse.cardinfochecksum, pResponse.cardinfos);
+                MapCardHelper.saveMapCardListToCache(pResponse.cardinfochecksum, pResponse.cardinfos);
             } catch (Exception ex) {
                 Log.e(this, ex);
             }
         }
         //update bank account info on cache
-        if (BankAccountHelper.isNeedUpdateBankAccountInfoOnCache(pResponse.bankaccountchecksum)) {
+        if (BankAccountHelper.needUpdateMapBankAccountListOnCache(pResponse.bankaccountchecksum)) {
             //for testing
             /*
             DBankAccount dBankAccount = new DBankAccount();
@@ -228,7 +226,7 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
 			dBankAccount.lastaccountno = "9460";
 			pResponse.bankaccounts.add(dBankAccount);
 			*/
-            BankAccountHelper.updateBankAccountListOnCache(pResponse.bankaccountchecksum, pResponse.bankaccounts);
+            BankAccountHelper.saveMapBankAccountListToCache(pResponse.bankaccountchecksum, pResponse.bankaccounts);
         }
 
         if (mNoDownloadResource) {

@@ -11,8 +11,8 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.datasource.request.BaseRequest;
-import vn.com.zalopay.wallet.datasource.request.GetPlatformInfo;
+import vn.com.zalopay.wallet.datasource.request.BaseTask;
+import vn.com.zalopay.wallet.datasource.request.PlatformInfoTask;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
 import vn.com.zalopay.wallet.utils.Log;
@@ -25,10 +25,9 @@ import vn.com.zalopay.wallet.utils.ZPWUtils;
  */
 public class BGatewayInfo extends SingletonBase {
     public static final int MAX_RETRY_REFRESH = 5;
-    private int count = 1;
     private static BGatewayInfo mGatewayInfo = null;
-    //prevent duplicate thread
-    private boolean mProcessing;
+    private int count = 1;
+    private boolean mProcessing;//prevent duplicate thread
     private ZPWGatewayInfoCallback mClientCallback;
     private ZPWGetGatewayInfoListener mListener = new ZPWGetGatewayInfoListener() {
 
@@ -101,16 +100,13 @@ public class BGatewayInfo extends SingletonBase {
 
     /***
      * is file config.json existed?
-     *
      * @return
      */
     public static boolean isValidConfig() {
-        String path = null;
         try {
-            path = SharedPreferencesManager.getInstance().getUnzipPath();
+            String path = SharedPreferencesManager.getInstance().getUnzipPath();
             File file = new File(path + File.separator + ResourceManager.CONFIG_FILE);
-            // Check if res is missing ??
-            return !TextUtils.isEmpty(path) && file.exists();
+            return !TextUtils.isEmpty(path) && file.exists();//Check if res is missing
         } catch (Exception e) {
             Log.e("isValidConfig", e);
         }
@@ -120,7 +116,6 @@ public class BGatewayInfo extends SingletonBase {
     public boolean isProcessing() {
         return mProcessing;
     }
-
     /***
      * call get platform info
      *
@@ -142,20 +137,13 @@ public class BGatewayInfo extends SingletonBase {
                 return;
             }
             this.mClientCallback.onProcessing();
-            try {
-                Log.d(getClass().getName(), "Get gateway from server");
-                getPlatformInfo(new GetPlatformInfo(mListener, false, false, true));
-            } catch (Exception e) {
-                Log.d(this, e);
-                if (this.mClientCallback != null) {
-                    this.mClientCallback.onError(e != null ? e.getMessage() : null);
-                }
-            }
+            Log.d(this, "get platforminfo from server");
+            getPlatformInfo(new PlatformInfoTask(mListener, false, false, true));
+        } else if (mClientCallback != null) {
+            Log.d(getClass().getName(), "get platforminfo from cache");
+            mClientCallback.onFinish();
         } else {
-            Log.d(getClass().getName(), "Get gateway from cache");
-            if (mClientCallback != null) {
-                mClientCallback.onFinish();
-            }
+            Log.d(this, "mClientCallback = NULL");
         }
 
     }
@@ -166,10 +154,10 @@ public class BGatewayInfo extends SingletonBase {
      */
 
     public synchronized void refreshPlatformInfo(ZPWGatewayInfoCallback pListener) {
-        this.mClientCallback = pListener;
         try {
+            this.mClientCallback = pListener;
             if (isProcessing() && count <= MAX_RETRY_REFRESH) {
-                Log.d(this, "there're a task platforminfo is runing, so delay refresh to 5s...count="+count);
+                Log.d(this, "there're a task platforminfo is runing, so delay refresh to 5s...count=" + count);
                 count++;
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -178,18 +166,18 @@ public class BGatewayInfo extends SingletonBase {
                         refreshPlatformInfo(mClientCallback);
                     }
                 }, 5000);
-            } else if(!isProcessing()){
-                getPlatformInfo(new GetPlatformInfo(mListener, true, true));
+            } else if (!isProcessing()) {
+                getPlatformInfo(new PlatformInfoTask(mListener, true, true));
             }
         } catch (Exception e) {
-            Log.e(this, e);
             if (this.mClientCallback != null) {
                 this.mClientCallback.onError(e != null ? e.getMessage() : null);
             }
+            Log.e(this, e);
         }
     }
 
-    protected void getPlatformInfo(BaseRequest task) {
+    protected void getPlatformInfo(BaseTask task) {
         if (task != null) {
             this.mProcessing = true;
             task.makeRequest();

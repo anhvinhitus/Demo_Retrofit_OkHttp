@@ -12,6 +12,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.GatewayLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
@@ -23,6 +26,8 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
+import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
@@ -496,12 +501,35 @@ public class CShareData extends SingletonBase {
             if (pParams != null && pParams.mapCard != null) {
                 SharedPreferencesManager.getInstance().removeMappedCard(pParams.userID + Constants.COMMA + pParams.mapCard.getCardKey());
             }
-
             UserInfo userInfo = new UserInfo();
             userInfo.zaloPayUserId = pParams.userID;
             userInfo.accessToken = pParams.accessToken;
             setUserInfo(userInfo);
-            MapCardHelper.loadMapCardList(true, pReloadMapCardInfoListener);
+            MapCardHelper.loadMapCardList(true)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<BaseResponse>() {
+                        @Override
+                        public void onCompleted() {
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            pReloadMapCardInfoListener.onError(null);
+                        }
+
+                        @Override
+                        public void onNext(BaseResponse response) {
+                            if(response instanceof CardInfoListResponse && response.returncode == 1)
+                            {
+                                pReloadMapCardInfoListener.onComplete(((CardInfoListResponse) response).cardinfos);
+                            }
+                            else
+                            {
+                                pReloadMapCardInfoListener.onError(response.getMessage());
+                            }
+                        }
+                    });
         } catch (Exception e) {
             Log.e(this, e);
         }

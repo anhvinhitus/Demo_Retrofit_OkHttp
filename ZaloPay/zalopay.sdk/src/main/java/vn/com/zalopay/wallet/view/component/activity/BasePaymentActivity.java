@@ -35,6 +35,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -45,6 +51,7 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
@@ -64,7 +71,6 @@ import vn.com.zalopay.wallet.eventmessage.NetworkEventMessage;
 import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
-import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWOnCloseDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -74,7 +80,6 @@ import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
-import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
@@ -113,13 +118,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
-    protected boolean mLoadingMapCard = false, mLoadingBankAccount = false;
     protected int numberOfRetryOpenNetwoking = 0;
     protected boolean isAllowLinkCardATM = true;
     protected boolean isAllowLinkCardCC = true;
-
-    private boolean isVisibilitySupport = false;
-    private Feedback mFeedback = null;
     /**
      * show more info icon click listener
      */
@@ -228,6 +229,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
+    private boolean isVisibilitySupport = false;
+    private Feedback mFeedback = null;
     /***
      * check static resource listener.
      */
@@ -235,8 +238,16 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         @Override
         public void onCheckResourceStaticComplete(boolean isSuccess, String pError) {
             if (isSuccess) {
-                reloadMapCardList();
-                reloadBankAccountList();
+                Observable.zip(MapCardHelper.loadMapCardList(false),
+                        BankAccountHelper.loadBankAccountList(false), (response, response2) -> true)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<Boolean>() {
+                            @Override
+                            public void call(Boolean aBoolean) {
+                                readyForPayment();
+                                Log.d(this,"readyForPayment");
+                            }
+                        });
             } else {
                 //notify error and close sdk
                 String message = pError;
@@ -616,53 +627,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      * load app info from cache or api
      */
     protected void checkAppInfo() {
-        AppInfoLoader.getInstance().setOnLoadAppInfoListener(loadAppInfoListener).execute();
-    }
-
-    protected void reloadMapCardList() {
-        Log.d(this, "===starting reload map card list====");
-        mLoadingMapCard = true;
-        MapCardHelper.loadMapCardList(false, new IReloadMapInfoListener<DMappedCard>() {
-            @Override
-            public void onComplete(List<DMappedCard> pMapCardList) {
-                Log.d("loadMapCardList", "===onComplete===" + GsonUtils.toJsonString(pMapCardList));
-                mLoadingMapCard = false;
-                checkLoadMapCardAndBankAccountToFinish();
-            }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Log.d("loadMapCardList", "===onError=" + pErrorMess);
-                mLoadingMapCard = false;
-                checkLoadMapCardAndBankAccountToFinish();
-            }
-        });
-    }
-
-    protected void reloadBankAccountList() {
-        Log.d(this, "===starting reload bank account list====");
-        mLoadingBankAccount = true;
-        BankAccountHelper.loadBankAccountList(false, new IReloadMapInfoListener<DBankAccount>() {
-            @Override
-            public void onComplete(List<DBankAccount> pMapList) {
-                Log.d("reloadBankAccountList", "===onComplete===" + GsonUtils.toJsonString(pMapList));
-                mLoadingBankAccount = false;
-                checkLoadMapCardAndBankAccountToFinish();
-            }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Log.d("reloadBankAccountList", "===onError=" + pErrorMess);
-                mLoadingBankAccount = false;
-                checkLoadMapCardAndBankAccountToFinish();
-            }
-        });
-    }
-
-    protected synchronized void checkLoadMapCardAndBankAccountToFinish() {
-        if (!mLoadingBankAccount && !mLoadingMapCard) {
-            readyForPayment();
-        }
+        AppInfoLoader.get(GlobalData.appID, GlobalData.getTransactionType(), GlobalData.getPaymentInfo().userInfo.zaloPayUserId,
+                GlobalData.getPaymentInfo().userInfo.accessToken).setOnLoadAppInfoListener(loadAppInfoListener).execute();
     }
 
     public View setKeyBoard(String pStrID, EKeyBoardType pKeyBoardType) {
@@ -1106,7 +1072,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setView(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(statusResponse.getSuggestMessage()));
 
 //            int[] status = new int[]{2};
-                if(statusResponse.getSuggestactions() != null && statusResponse.getSuggestactions().length > 0) {
+                if (statusResponse.getSuggestactions() != null && statusResponse.getSuggestactions().length > 0) {
                     setLayoutBasedOnSuggestActions(statusResponse.getSuggestactions());
                 } else {
                     setView(R.id.zpw_payment_fail_rl_update_info, false);
@@ -1118,7 +1084,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setView(R.id.zpw_payment_fail_rl_support, false);
             }
         }
-        
+
         setView(R.id.zpw_pay_info_buttom_view, true);
 
         if (!TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0) {

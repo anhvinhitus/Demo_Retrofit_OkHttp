@@ -5,6 +5,7 @@ import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -22,12 +23,11 @@ import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
-import vn.com.zalopay.wallet.business.entity.zalopay.ZaloPayBalance;
 
 public interface IData {
 
     /**
-     * Api get platforminfo
+     * load platforminfo
      *
      * @param params
      * @return
@@ -35,38 +35,25 @@ public interface IData {
     @GET(Constants.URL_PLATFORM_INFO)
     Call<DPlatformInfo> getPlatformInfo(@QueryMap Map<String, String> params);
 
+    @GET(Constants.URL_PLATFORM_INFO)
+    Observable<Response<DPlatformInfo>> loadPlatformInfo(@QueryMap Map<String, String> params);
+
     /**
-     * Api get appinfo
+     * load appinfo
      *
      * @param params
      * @return
      */
     @GET(Constants.URL_APP_INFO)
-    Call<DAppInfoResponse> getAppInfo(@QueryMap Map<String, String> params);
-
-    /**
-     * Api getbanklist
-     *
-     * @return
-     */
-    @GET(Constants.URL_GET_BANKLIST)
-    Call<BankConfigResponse> getBankList(@QueryMap Map<String, String> params);
+    Observable<Response<DAppInfoResponse>> loadAppInfo(@QueryMap Map<String, String> params);
 
     /**
      * load bank list
+     *
      * @return
      */
     @GET(Constants.URL_GET_BANKLIST)
-    Observable<BankConfigResponse> loadBankList(@QueryMap Map<String, String> params);
-
-    /**
-     * Api get banlance
-     *
-     * @param params
-     * @return
-     */
-    @GET(Constants.URL_GETBALANCE_ZALOPAY)
-    Call<ZaloPayBalance> getBalance(@QueryMap Map<String, String> params);
+    Observable<Response<BankConfigResponse>> loadBankList(@QueryMap Map<String, String> params);
 
     /**
      * get transaction status
@@ -78,22 +65,20 @@ public interface IData {
     Call<StatusResponse> getStatus(@QueryMap Map<String, String> params);
 
     /***
-     * get card info list
-     *
+     * get map card info list
      * @param params
      * @return
      */
     @GET(Constants.URL_LISTCARDINFO)
-    Call<CardInfoListResponse> getMapCardInfoList(@QueryMap Map<String, String> params);
+    Observable<Response<CardInfoListResponse>> loadMapCardList(@QueryMap Map<String, String> params);
 
     /***
      * get bank account list(vietcombank)
-     *
      * @param params
      * @return
      */
     @GET(Constants.URL_LISTBANKACCCOUNT)
-    Call<BankAccountListResponse> getBankAccountList(@QueryMap Map<String, String> params);
+    Observable<Response<BankAccountListResponse>> loadMapBankAccountList(@QueryMap Map<String, String> params);
 
     /***
      * get status by apptrans id which is created by app when creating order.

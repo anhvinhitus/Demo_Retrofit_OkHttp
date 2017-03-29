@@ -41,6 +41,7 @@ public class Constants {
     public static final int PROGRESS_DIALOG_TIMEOUT = 35000;//ms
     public static final int API_PLATFORM_TIMEOUT = 30000;//ms
     public static final int API_MAX_RETRY = 3;
+    public static final int API_DELAY_RETRY = 500;//ms
     public static final int PLATFORM_RETRY_INTERVAL = 7000;//ms.
     public static final int PLATFORM_MAX_RETRY = 10;
     public static final int DOWNLOAD_RESOURCE_RETRY_INTERVAL = 10000;//ms.

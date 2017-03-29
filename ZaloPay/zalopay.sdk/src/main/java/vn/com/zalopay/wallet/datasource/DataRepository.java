@@ -1,7 +1,5 @@
 package vn.com.zalopay.wallet.datasource;
 
-import android.text.TextUtils;
-
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
@@ -12,15 +10,16 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import rx.Observer;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
@@ -31,7 +30,6 @@ import vn.com.zalopay.wallet.datasource.implement.GetPlatformInfoImpl;
 import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 import vn.com.zalopay.wallet.datasource.interfaces.ITask;
 import vn.com.zalopay.wallet.datasource.request.BaseTask;
-import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.datasource.task.TPaymentTask;
 import vn.com.zalopay.wallet.eventmessage.NetworkEventMessage;
 import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
@@ -52,6 +50,39 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private WeakReference<ITask> mCurrentTask = null;
     private WeakReference<IRequest> mCurrentRequest = null;
     private Subscription mSubscription;
+    protected final Action0 completeAction = new Action0() {
+        @Override
+        public void call() {
+            Log.d(this, "onCompleted");
+            releaseLock();
+        }
+    };
+    private BaseTask mTask;
+    protected final Action1<Throwable> errorAction = new Action1<Throwable>() {
+        @Override
+        public void call(Throwable throwable) {
+            mTask.onRequestFail(throwable);
+            releaseLock();
+        }
+    };
+    protected final Action1<Response<T>> doOnNextAction = new Action1<Response<T>>() {
+        @Override
+        public void call(Response<T> response) {
+            mTask.onDoTaskOnResponse(response.body());
+            if (mCurrentRequest != null && mCurrentRequest.get() != null && PaymentPermission.allowUseTrackingTiming()) {
+                Long timeRequest = response.raw().receivedResponseAtMillis() - response.raw().sentRequestAtMillis();
+                ZPAnalytics.trackTiming(mCurrentRequest.get().getRequestEventId(), timeRequest);//send tracking timing to tracking source, for example : GA,vvv
+                Log.d(this, "===ZPAnalytics.trackTiming===" + mCurrentRequest.get().getRequestEventId() + " timing(ms)=" + (timeRequest));
+            }
+        }
+    };
+    protected final Action1<Response<T>> nextAction = new Action1<Response<T>>() {
+        @Override
+        public void call(Response<T> response) {
+            mTask.onRequestSuccess(response.body());
+        }
+    };
+
     public DataRepository() {
         super();
         mInjectionWrapper = new InjectionWrapper();
@@ -91,6 +122,11 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         SingletonLifeCircleManager.disposeDataRepository();
     }
 
+    public DataRepository setTask(BaseTask mTask) {
+        this.mTask = mTask;
+        return this;
+    }
+
     public void cancelRequest() {
         if (mCallable != null && !mCallable.isCanceled() && mCallable.isExecuted()) {
             mCallable.cancel();
@@ -113,7 +149,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         verifyException(t);
         return true;
     }
-
 
     protected boolean verifyException(Throwable t) {
         if ((t instanceof SSLHandshakeException || t instanceof SSLPeerUnverifiedException)) {
@@ -147,49 +182,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         this.mDataSourceLitener = pListener;
 
         return this;
-    }
-
-    protected void sendErrorLogHttpErrorCode(Response pResponse) {
-        if (mCurrentTask != null && mCurrentTask.get() != null && mCurrentTask.get().getTaskEventId() == ZPEvents.API_V001_TPE_SDKERRORREPORT) {
-            return;
-        }
-        if (pResponse != null && pResponse.code() >= 400) {
-            String paymentError = getErrorMessageFormat(pResponse.code(), GsonUtils.toJsonString(pResponse));
-            if (!TextUtils.isEmpty(paymentError)) {
-                SDKReport.makeReportError(SDKReport.API_ERROR, paymentError);
-            }
-        } else if (pResponse == null) {
-            String paymentError = getErrorMessageFormat(-1, "pResponse=NULL");
-            if (!TextUtils.isEmpty(paymentError)) {
-                SDKReport.makeReportError(SDKReport.API_ERROR, paymentError);
-            }
-        }
-    }
-
-    protected void sendErrorLogResponseNULL(Throwable pError) {
-        String paymentError = getErrorMessageFormat(-1, GsonUtils.toJsonString(pError));
-        if (!TextUtils.isEmpty(paymentError)) {
-            SDKReport.makeReportError(paymentError);
-        }
-    }
-
-    protected String getErrorMessageFormat(int pCode, String pErrorMessage) {
-        try {
-            String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
-            if (!TextUtils.isEmpty(paymentError)) {
-                int apitrackingID = 0;
-                if (mCurrentTask != null && mCurrentTask.get() != null) {
-                    apitrackingID = mCurrentTask.get().getTaskEventId();
-                }
-                paymentError = String.format(paymentError, apitrackingID, pCode, pErrorMessage);
-
-                return paymentError;
-            }
-
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
-        return null;
     }
 
     protected void onRequest(Call pCall, final IPaymentApiCallBack pCallback) {
@@ -269,36 +261,24 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         }
     }
 
-    public synchronized void loadData(final IRequest pRequest, HashMap<String, String> pParams, BaseTask pTask) {
+    protected <T> Observable.Transformer<T, T> applySchedulers() {
+        return observable -> observable.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public synchronized void loadData(IRequest pRequest, HashMap<String, String> pParams) {
         if (haveRequestRunning()) {
-            Log.d(this, pTask.toString() + " there're a task is running...");
+            Log.d(this, mTask.toString() + " there're a task is running...");
             return;
         }
         inProgress();
         mCurrentRequest = new WeakReference<IRequest>(pRequest);
         try {
             mSubscription = pRequest.getRequest(mDataSource, pParams)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<T>() {
-                        @Override
-                        public void onCompleted() {
-                            Log.d(this, "onCompleted");
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Log.d(this, "onError");
-                            pTask.onRequestFail(e);
-                            releaseLock();
-                        }
-
-                        @Override
-                        public void onNext(T result) {
-                            Log.d(this, "onNext");
-                            pTask.onRequestSuccess(result);
-                            releaseLock();
-                        }
-                    });
+                    .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
+                    .doOnNext(doOnNextAction)
+                    .compose(applySchedulers())
+                    .subscribe(nextAction, errorAction, completeAction);
         } catch (Exception ex) {
             Log.e(this, ex);
         }
@@ -394,7 +374,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
 
     /***
      * download resource file
-     *
      * @param pUrl
      * @return
      */
@@ -402,7 +381,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         try {
             Call<ResponseBody> callBack = mDataSource.getFile(pUrl);
             return callBack.execute();
-
         } catch (Exception e) {
             Log.e(this, e);
 
@@ -507,6 +485,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     protected void releaseLock() {
         mIsRequesting = false;
         unSubscribe();
+        dispose();
         Log.d(this, "released lock requesting...");
     }
 
@@ -524,6 +503,11 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
         mIsRequesting = true;
         if (mDataSourceLitener != null) {
             mDataSourceLitener.onRequestAPIProgress();
+        }
+
+        if(mTask != null)
+        {
+            mTask.onRequestInProcess();
         }
     }
 

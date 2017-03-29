@@ -23,8 +23,7 @@ import vn.com.zalopay.wallet.utils.ZPWUtils;
  */
 public class DownloadBundle extends AsyncTask<Void, Void, Boolean> {
     public static String errorMessage = null;
-    //prevent duplicate request
-    public static boolean processing = false;
+    public static boolean processing = false;//prevent duplicate request
     private String mResourceZipFileURL;
     private String mUnzipFolder;
     private String mResrcVer;
@@ -61,7 +60,6 @@ public class DownloadBundle extends AsyncTask<Void, Void, Boolean> {
      * 2.clear folder.
      * 3.extract
      * 4.save version to cache.
-     *
      * @return
      */
     private boolean downloadResourceZipFile() throws Exception {
@@ -82,7 +80,6 @@ public class DownloadBundle extends AsyncTask<Void, Void, Boolean> {
 
         if (mResourceZipFileURL == null || mResrcVer == null) {
             Log.e(this, "mResourceZipFileURL == null || resrcVer == null");
-
             errorMessage = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error_download_resource);
             return false;
         } else {
@@ -131,7 +128,6 @@ public class DownloadBundle extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         processing = false;
-
         if (!result) {
             /***
              * fail loading resource app, need to start service to retry to loading in background.
@@ -150,8 +146,9 @@ public class DownloadBundle extends AsyncTask<Void, Void, Boolean> {
         if (this.mCallBack != null) {
             //stop service download if it still is running.
             if (!TextUtils.isEmpty(DownloadResourceService.urlResourceToDownload))
+            {
                 DownloadResourceService.stop(GlobalData.getAppContext());
-
+            }
             this.mCallBack.onLoadResourceComplete(result);
         }
     }

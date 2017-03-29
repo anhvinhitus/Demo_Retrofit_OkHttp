@@ -291,25 +291,19 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         //we don't have any channel now
         if (baseChannelInjector.isChannelEmpty()) {
             isUniqueChannel = true;
-
             String alertMessage = getAmountAlert();
-
             if (TextUtils.isEmpty(alertMessage)) {
                 /***
                  * this is withdraw link card and no mapped card.
                  * need remind user go to link card to can withdraw
                  */
-
                 if (GlobalData.isWithDrawChannel()) {
                     confirmLinkCard();
                     return;
                 }
-
                 alertMessage = GlobalData.getStringResource(RS.string.zpw_app_info_exclude_channel);
             }
-
             onReturnCancel(alertMessage);
-
             return;
         }
 

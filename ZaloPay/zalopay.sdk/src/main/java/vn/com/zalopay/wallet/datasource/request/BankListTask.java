@@ -19,6 +19,7 @@ import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
 public class BankListTask extends BaseTask<BankConfigResponse> {
+    private static final String TAG = BankListTask.class.getCanonicalName();
     private ILoadBankListListener mILoadBankListListener;
 
     public BankListTask(ILoadBankListListener pILoadBankListListener) {
@@ -29,11 +30,10 @@ public class BankListTask extends BaseTask<BankConfigResponse> {
     @Override
     protected void doRequest() {
         try {
-            shareDataRepository().loadData(new LoadBankListImpl(this), getDataParams(), this);
+            shareDataRepository().setTask(this).loadData(new LoadBankListImpl(), getDataParams());
         } catch (Exception e) {
+            onRequestFail(null);
             Log.e(this, e);
-
-            onRequestFail(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
         }
     }
 
@@ -61,8 +61,13 @@ public class BankListTask extends BaseTask<BankConfigResponse> {
     }
 
     @Override
-    public BankConfigResponse onSaveResponseToDisk(BankConfigResponse pResponse) {
+    public void onDoTaskOnResponse(BankConfigResponse pResponse) {
         Log.d(this, "onSaveResponseToDisk");
+        if(pResponse == null || pResponse.returncode != 1)
+        {
+            Log.d(this,"request not success...stopping saving response to cache");
+            return;
+        }
         if (isChangedCheckSumBankList(pResponse.checksum)) {
             try {
                 saveBankListToCache(pResponse);
@@ -82,38 +87,28 @@ public class BankListTask extends BaseTask<BankConfigResponse> {
                 Log.e(this, e);
             }
         }
-        return pResponse;
     }
 
     @Override
     public void onRequestSuccess(BankConfigResponse pResponse) {
-        setResponse(pResponse);
-        if (!(getResponse() instanceof BankConfigResponse)) {
-            onRequestFail(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
-        } else if (getResponse().returncode < 1) {
-            onRequestFail(getResponse().getMessage());
+        if (!(pResponse instanceof BankConfigResponse)) {
+            onRequestFail(null);
+        } else if (pResponse.returncode < 0 && mILoadBankListListener != null) {
+            mILoadBankListListener.onError(pResponse.getMessage());
+        } else if (mILoadBankListListener != null) {
+            mILoadBankListListener.onComplete();
         } else {
-            if (mILoadBankListListener != null) {
-                mILoadBankListListener.onComplete();
-            }
+            Log.d(this, "mILoadBankListListener = NULL");
         }
         Log.d(this, "onRequestSuccess");
     }
 
     @Override
-    public void onRequestFail(String e) {
-        if (mILoadBankListListener != null) {
-            mILoadBankListListener.onError(!TextUtils.isEmpty(e) ? e : GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
-        }
-        Log.d("onRequestFail", e);
-    }
-
-    @Override
     public void onRequestFail(Throwable e) {
         if (mILoadBankListListener != null) {
-            mILoadBankListListener.onError(e != null ? e.getMessage() : GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+            mILoadBankListListener.onError(getDefaulErrorNetwork());
         }
-        Log.d("onRequestFail", e);
+        Log.d(TAG, e);
     }
 
     @Override
@@ -124,15 +119,20 @@ public class BankListTask extends BaseTask<BankConfigResponse> {
     }
 
     @Override
+    public String getDefaulErrorNetwork() {
+        return GlobalData.getStringResource(RS.string.zpw_alert_network_error_loadbanklist);
+    }
+
+    @Override
     protected boolean doParams() {
         try {
             String pCheckSum = SharedPreferencesManager.getInstance().getCheckSumBankList();
             DataParameter.prepareGetBankList(mDataParams, pCheckSum);
+            return true;
         } catch (Exception e) {
+            onRequestFail(null);
             Log.e(this, e);
-            onRequestFail(GlobalData.getStringResource(RS.string.zpw_string_error_layout));
             return false;
         }
-        return true;
     }
 }

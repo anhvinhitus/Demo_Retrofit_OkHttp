@@ -26,7 +26,6 @@ import vn.com.zalopay.wallet.di.module.PaymentSessionModule;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
-import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
@@ -75,7 +74,6 @@ public class SDKApplication extends Application {
 
     /***
      * this call by app to delete 1 map card.
-     *
      * @param pParams
      * @param pListener
      */
@@ -94,16 +92,6 @@ public class SDKApplication extends Application {
             Log.e("removeCardMap", e);
         }
     }
-
-    /***
-     *this is not run any more
-     *
-     * @param pPaymentInfo
-     * @param pListener
-     */
-    public synchronized static void saveCardMap(ZPWPaymentInfo pPaymentInfo, ZPWSaveMapCardListener pListener) {
-    }
-
     /***
      * clear all cache if user use
      * newer version
@@ -190,7 +178,7 @@ public class SDKApplication extends Application {
      * @param pAccessToken
      */
     private static void loadAppWalletInfo(String pZaloPayUserId, String pAccessToken) {
-        AppInfoLoader.getInstance(BuildConfig.ZALOAPP_ID, ETransactionType.WALLET_TRANSFER, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
+        AppInfoLoader.get(BuildConfig.ZALOAPP_ID, ETransactionType.WALLET_TRANSFER, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
             @Override
             public void onProcessing() {
                 Log.d("loadAppWalletInfo", "onProcessing");
@@ -205,7 +193,7 @@ public class SDKApplication extends Application {
             public void onError(DAppInfoResponse message) {
                 Log.d("loadAppWalletInfo", "onError");
             }
-        }).execureForMerchant();
+        }).execute();
     }
 
     /***
@@ -215,7 +203,7 @@ public class SDKApplication extends Application {
      * @param pAccessToken
      */
     private static void loadAppWithDrawInfo(String pZaloPayUserId, String pAccessToken) {
-        AppInfoLoader.getInstance(BuildConfig.WITHDRAWAPP_ID, ETransactionType.WITHDRAW, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
+        AppInfoLoader.get(BuildConfig.WITHDRAWAPP_ID, ETransactionType.WITHDRAW, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
             @Override
             public void onProcessing() {
                 Log.d("loadAppWithDrawInfo", "onProcessing");
@@ -230,7 +218,7 @@ public class SDKApplication extends Application {
             public void onError(DAppInfoResponse message) {
                 Log.d("loadAppWithDrawInfo", "onError");
             }
-        }).execureForMerchant();
+        }).execute();
     }
 
     public static Application getApplication() {

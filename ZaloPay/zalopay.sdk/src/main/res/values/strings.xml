@@ -70,7 +70,12 @@
     <string name="zingpaysdk_alert_network_error">Vui lòng kiểm tra kết nối mạng và thử lại!</string>
     <string name="zpw_alert_networking_off_in_transaction">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại giao dịch</string>
 
-    <string name="zpw_alert_network_error_getappinfo">Mạng không ổn định, không kiểm tra được thông tin.\nVui lòng kiểm tra lại kết nối mạng</string>
+    <string name="zpw_alert_network_error_loadappinfo">Mạng không ổn định, không kiểm tra được thông tin app.\nVui lòng kiểm tra lại kết nối mạng</string>
+    <string name="zpw_alert_network_error_loadbanklist">Mạng không ổn định, không tải được thông tin ngân hàng.\nVui lòng kiểm tra lại kết nối mạng</string>
+    <string name="zpw_alert_network_error_loadplatforminfo">Mạng không ổn định, không tải được thông tin platform.\nVui lòng kiểm tra lại kết nối mạng</string>
+    <string name="zpw_alert_network_error_loadmapcardlist">Mạng không ổn định, không tải được thông tin thẻ đã lưu.\nVui lòng kiểm tra lại kết nối mạng</string>
+    <string name="zpw_alert_network_error_loadmapbankaccountlist">Mạng không ổn định, không tải được thông tin tài khoản ngân hàng đã liên kết.\nVui lòng kiểm tra lại kết nối mạng</string>
+
 
     <string name="zpw_alert_networking_error_check_status">Vui lòng xem lịch sử để kiểm tra trạng thái giao dịch</string>
 
