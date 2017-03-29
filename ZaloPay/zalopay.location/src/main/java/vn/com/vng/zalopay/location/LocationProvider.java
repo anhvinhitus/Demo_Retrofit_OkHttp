@@ -7,10 +7,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 
 /**
  * Created by khattn on 3/20/17.
@@ -34,7 +32,7 @@ public class LocationProvider extends Service {
         mApplicationContext = applicationContext;
     }
 
-    public static void findLocation() {
+    public static Boolean findLocation() {
         try {
             LocationManager locationManager = (LocationManager) mApplicationContext.getSystemService(LOCATION_SERVICE);
             boolean checkGPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -72,6 +70,8 @@ public class LocationProvider extends Service {
         } catch (Exception e) {
             Timber.e("Get location failed with: %s", e.getMessage());
         }
+
+        return canGetLocation;
     }
 
     private static void updateCoordinates() throws Exception {
@@ -110,24 +110,26 @@ public class LocationProvider extends Service {
         mRepository.saveLocation(latitude, longitude, System.currentTimeMillis()).subscribe();
     }
 
-    private static AppLocation getUpdateLocation(AppLocation location) {
+    public static void updateLocation() {
+        AppLocation location = getLocation();
         if (location == null || Math.abs(System.currentTimeMillis() - location.timestamp) > TIME_REFRESH) {
-            findLocation();
+            ObservableHelper.makeObservable(LocationProvider::findLocation).subscribe();
             if (canGetLocation && latitude != 0 || longitude != 0) {
                 saveLocation();
-                return new AppLocation(latitude, longitude, System.currentTimeMillis());
             }
-            return null;
         }
-        return location;
     }
 
     public static AppLocation getLocation() {
         if(mRepository == null) {
             return null;
         }
+
         AppLocation location = mRepository.getLocation();
-        Timber.d("location in get location: %s", location.latitude);
-        return getUpdateLocation(location);
+
+        if(location.latitude == 0 && location.longitude == 0) {
+            return null;
+        }
+        return location;
     }
 }
