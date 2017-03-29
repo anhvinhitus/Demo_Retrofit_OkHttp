@@ -103,10 +103,6 @@ public class ExternalReactFragment extends ReactBaseFragment implements IExterna
     @Named("NetworkServiceWithRetry")
     NetworkService mNetworkServiceWithRetry;
 
-    @Inject
-    @Named("NetworkServiceWithoutRetry")
-    NetworkService mNetworkServiceWithoutRetry;
-
     private AppResource mAppResource;
 
     @Inject
@@ -144,7 +140,6 @@ public class ExternalReactFragment extends ReactBaseFragment implements IExterna
                 new ReactIAPPackage(paymentService,
                         mUser, appId,
                         mNetworkServiceWithRetry,
-                        mNetworkServiceWithoutRetry,
                         mNavigator,
                         mReactNativeHostable)
         );

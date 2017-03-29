@@ -243,7 +243,5 @@ public interface UserComponent {
 
     void inject(ExternalReactFragment f);
 
-    void inject(SearchCategoryFragment f);
-
     void inject(HomeActivity activity);
 }

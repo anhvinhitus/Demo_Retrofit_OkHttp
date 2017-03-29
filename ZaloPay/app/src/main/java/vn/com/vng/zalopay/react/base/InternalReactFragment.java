@@ -9,6 +9,7 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.zalopay.apploader.BundleReactConfig;
 import com.zalopay.apploader.ReactBaseFragment;
 import com.zalopay.apploader.ReactNativeHostable;
+import com.zalopay.apploader.network.NetworkService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.subscriptions.CompositeSubscription;
 import vn.com.vng.zalopay.AndroidApplication;
@@ -70,6 +72,11 @@ public class InternalReactFragment extends ReactBaseFragment {
         return fragment;
     }
 
+
+    @Inject
+    @Named("NetworkServiceWithRetry")
+    NetworkService mNetworkServiceWithRetry;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -94,7 +101,8 @@ public class InternalReactFragment extends ReactBaseFragment {
                 notificationRepository, redPackageRepository,
                 friendRepository, mBalanceRepository, paymentService,
                 sweetAlertDialog, navigator, eventBus,
-                mReactNativeHostable, appRepository, mUser, mZaloPayRepository);
+                mReactNativeHostable, appRepository, mUser,
+                mZaloPayRepository, mNetworkServiceWithRetry);
     }
 
     @Override

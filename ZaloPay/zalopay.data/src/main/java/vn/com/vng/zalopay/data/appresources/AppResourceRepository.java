@@ -271,7 +271,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
             Timber.d("existResource appId [%s] state [%s]", appId, entity.stateDownload);
             boolean downloadSuccess = (entity.stateDownload >= DownloadState.STATE_SUCCESS);
             if (!downloadSuccess && downloadIfNeed) {
-                startDownloadService(Collections.singletonList(entity), null);
+                startDownloadService(Collections.singletonList(entity));
             }
             return downloadSuccess;
         });
