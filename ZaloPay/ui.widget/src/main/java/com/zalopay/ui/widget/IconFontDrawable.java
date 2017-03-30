@@ -28,6 +28,7 @@ import timber.log.Timber;
 public class IconFontDrawable extends Drawable {
 
     private final Context mContext;
+    private TypefaceEnum mTypefaceEnum;
     private String mText;
     private TextPaint mPaint;
     private int mSize = -1;
@@ -42,7 +43,7 @@ public class IconFontDrawable extends Drawable {
         mPaint.setColor(Color.BLACK);
         mPaint.setAntiAlias(true);
 
-        setTypefaceWithoutStyle(IconFontHelper.getInstance().getCurrentTypeface());
+        setTypefaceDefault();
     }
 
     public IconFontDrawable(Context context, String fontAsset) {
@@ -57,7 +58,7 @@ public class IconFontDrawable extends Drawable {
         if (!TextUtils.isEmpty(fontAsset)) {
             setTypefaceFromAsset(fontAsset);
         } else {
-            setTypefaceWithoutStyle(IconFontHelper.getInstance().getCurrentTypeface());
+            setTypefaceDefault();
         }
     }
 
@@ -89,7 +90,7 @@ public class IconFontDrawable extends Drawable {
     }
 
     public IconFontDrawable setColor(String color) {
-        if(!TextUtils.isEmpty(color)) {
+        if (!TextUtils.isEmpty(color)) {
             mPaint.setColor(Color.parseColor(color));
             invalidateSelf();
         }
@@ -122,6 +123,7 @@ public class IconFontDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
         if (!TextUtils.isEmpty(mText)) {
+            refreshTypeface();
             mPaint.setTextSize(getBounds().height());
             Rect textBounds = new Rect();
             mPaint.getTextBounds(mText, 0, 1, textBounds);
@@ -189,6 +191,13 @@ public class IconFontDrawable extends Drawable {
         return mBottomPadding;
     }
 
+    private void refreshTypeface() {
+        if (mTypefaceEnum == TypefaceEnum.DEFAULT
+                && mPaint.getTypeface() != getZaloPayTypeface()) {
+            setTypefaceDefault();
+        }
+    }
+
     private void setTypefaceFromAsset(String fontAsset) {
         if (TextUtils.isEmpty(fontAsset)
                 || mContext == null
@@ -200,8 +209,19 @@ public class IconFontDrawable extends Drawable {
             Timber.d("Could not create a typeface from asset: %s", fontAsset);
         } else {
             setTypefaceWithoutStyle(typeface);
+            mTypefaceEnum = TypefaceEnum.ASSET;
         }
     }
+
+    private Typeface getZaloPayTypeface() {
+        return IconFontHelper.getInstance().getCurrentTypeface();
+    }
+
+    private void setTypefaceDefault() {
+        setTypefaceWithoutStyle(getZaloPayTypeface());
+        mTypefaceEnum = TypefaceEnum.DEFAULT;
+    }
+
 
     private void setTypefaceWithoutStyle(Typeface typeface) {
         if (typeface == null) {

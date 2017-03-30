@@ -197,7 +197,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         mUserSession.ensureNotifyConnect();
         GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
         if (mView != null) {
-            if(message != null) {
+            if (message != null) {
                 SweetAlertDialog alertDialog = new SweetAlertDialog(mView.getContext(), message.messageType, R.style.alert_dialog);
                 alertDialog.setConfirmText(message.title);
                 alertDialog.setContentText(message.content);
@@ -401,6 +401,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onLoadIconFontSuccess(LoadIconFontEvent event) {
+        mEventBus.removeStickyEvent(LoadIconFontEvent.class);
         if (mView != null) {
             mView.refreshIconFont();
         }

@@ -419,6 +419,8 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         if (mViewPager != null) {
             updateIconFontState(mViewPager.getCurrentItem());
         }
+        headerView.invalidate();
+        toolbarHeaderView.invalidate();
     }
 
     @Override
@@ -459,7 +461,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
             toolbarHeaderView.setHeaderTopStatus(0, percentage);
             isToolbarExpanded = true;
         } else if (percentage > 0f && percentage <= 1f) {
-            if(percentage > 0.5f) {
+            if (percentage > 0.5f) {
                 headerView.setVisibility(View.GONE);
             } else {
                 headerView.setVisibility(View.VISIBLE);
