@@ -40,8 +40,8 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
 
     @Test
     public void testSql() {
-        System.out.println(mFriendLocalStorage.getSelectDeep());
-        System.out.println(mFriendLocalStorage.searchUserZalo("hieuvm"));
+        System.out.println(mFriendLocalStorage.getSelectDeep(true));
+        System.out.println(mFriendLocalStorage.searchUserZalo("hieuvm", true));
 
         Assert.assertTrue(true);
     }
@@ -138,7 +138,7 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
         List<Contact> contacts = listContact();
         mFriendLocalStorage.putContacts(contacts);
 
-        Cursor cursor = mFriendLocalStorage.getZaloUserCursor();
+        Cursor cursor = mFriendLocalStorage.getZaloUserCursor(true);
 
         System.out.println("cursor : " + cursor + " " + cursor.getCount());
 
@@ -229,7 +229,7 @@ public class FriendLocalStorageTest extends ApplicationTestCase {
         mFriendLocalStorage.putZaloPayUser(zaloPay);
         mFriendLocalStorage.putContacts(Arrays.asList(contact));
 
-        Cursor cursor = mFriendLocalStorage.searchZaloFriendList("hieu");
+        Cursor cursor = mFriendLocalStorage.searchZaloFriendList("hieu", true);
 
         System.out.println("cursor : " + cursor.getCount());
         Assert.assertTrue(cursor.getCount() == 1);
