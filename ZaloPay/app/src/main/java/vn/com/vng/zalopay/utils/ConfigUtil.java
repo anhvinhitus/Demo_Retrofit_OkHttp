@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.utils;
 
 import android.content.res.AssetManager;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -15,6 +16,7 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.util.InsideAppUtil;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.domain.model.Config;
 
 /**
@@ -24,6 +26,11 @@ import vn.com.vng.zalopay.domain.model.Config;
 
 public class ConfigUtil {
     private final static String CONFIG_FILE_PATH = "config/zalopay_config.json";
+    private static Config mConfig;
+
+    static {
+        mConfig = new Config();
+    }
 
     private static String getFileConfigPath(long appId) {
         return String.format(Locale.getDefault(), "%s/%s",
@@ -65,16 +72,38 @@ public class ConfigUtil {
         if (TextUtils.isEmpty(jsonConfig)) {
             return false;
         }
+
         Gson gson = new Gson();
         Config config = gson.fromJson(jsonConfig, Config.class);
-        return loadConfigPhoneFormat(config) && loadConfigInsideApp(config);
+        if (config != null) {
+            mConfig = config;
+            loadConfigPhoneFormat(config);
+            loadConfigInsideApp(config);
+            FriendConfig.sEnableContact = isSyncContact();
+            return true;
+        }
+
+        return false;
     }
 
-    private static boolean loadConfigPhoneFormat(Config config) {
-        return config != null && PhoneUtil.setPhoneFormat(config.mPhoneFormat);
+    private static boolean loadConfigPhoneFormat(@NonNull Config config) {
+        return PhoneUtil.setPhoneFormat(config.mPhoneFormat);
     }
 
-    private static boolean loadConfigInsideApp(Config config) {
-        return config != null && InsideAppUtil.setInsideApps(config.mInsideAppList);
+    private static boolean loadConfigInsideApp(@NonNull Config config) {
+        return InsideAppUtil.setInsideApps(config.mInsideAppList);
+    }
+
+    /**
+     * Chế độ bật/tắt việc merge tên hiển thị từ danh bạ điện thoại cho danh sách bạn Zalo
+     * Mặc định là TRUE.
+     */
+
+    private static boolean isSyncContact() {
+        if (mConfig != null && mConfig.friendConfig != null) {
+            return mConfig.friendConfig.enableMergeContactName != 0;
+        }
+        return true;
     }
 }
+

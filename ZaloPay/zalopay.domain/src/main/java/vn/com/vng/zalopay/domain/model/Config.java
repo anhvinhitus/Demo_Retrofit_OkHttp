@@ -16,4 +16,13 @@ public class Config {
 
     @SerializedName("inside_app")
     public List<InsideApp> mInsideAppList;
+
+    @SerializedName("friend_config")
+    public FriendConfig friendConfig;
+
+    public static class FriendConfig {
+        @SerializedName("enable_merge_contact_name")
+        public int enableMergeContactName = 1;
+    }
+
 }
