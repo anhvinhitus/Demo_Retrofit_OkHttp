@@ -56,28 +56,21 @@
             layout="@layout/zp_control_top_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/scrollView"
+            android:layout_above="@+id/pager"
             android:layout_below="@+id/appbar"
             app:layout_behavior="vn.com.vng.zalopay.ui.toolbar.HeaderBehavior" />
 
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/scrollView"
+        <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
+            android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:fillViewport="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </android.support.v4.widget.NestedScrollView>
+            android:layout_marginBottom="56dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
