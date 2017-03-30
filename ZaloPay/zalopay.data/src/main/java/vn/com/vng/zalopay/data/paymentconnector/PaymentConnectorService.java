@@ -107,12 +107,21 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
 
     @Nullable
     private PaymentConnectorCallback findCallbackById(long requestId) {
-        return mPaymentCallBackArray.get(requestId);
+        try {
+            return mPaymentCallBackArray.get(requestId);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Timber.d("Request %s is no longer available", requestId);
+            return null;
+        }
     }
 
     private void removeCallback(long requestId) {
-        synchronized (mPaymentCallBackArray) {
-            mPaymentCallBackArray.remove(requestId);
+        try {
+            synchronized (mPaymentCallBackArray) {
+                mPaymentCallBackArray.remove(requestId);
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Timber.d("Request %s is no longer available. Skip removing.", requestId);
         }
     }
 
