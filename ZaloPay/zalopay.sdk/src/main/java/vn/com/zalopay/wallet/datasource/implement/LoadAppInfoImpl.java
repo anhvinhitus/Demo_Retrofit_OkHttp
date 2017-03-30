@@ -12,12 +12,7 @@ import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 public class LoadAppInfoImpl implements IRequest<DAppInfoResponse> {
 
     @Override
-    public Observable<Response<DAppInfoResponse>> getRequest(IData pIData, HashMap<String, String> pParams) {
+    public Observable<DAppInfoResponse> getRequest(IData pIData, HashMap<String, String> pParams) {
         return pIData.loadAppInfo(pParams);
-    }
-
-    @Override
-    public int getRequestEventId() {
-        return ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO;
     }
 }

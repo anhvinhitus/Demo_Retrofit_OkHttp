@@ -12,7 +12,7 @@ import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 
 public class RemoveMapCardImpl implements IRequest<BaseResponse> {
     @Override
-    public Observable<Response<BaseResponse>> getRequest(IData pIData, HashMap<String, String> pParams) {
+    public Observable<BaseResponse> getRequest(IData pIData, HashMap<String, String> pParams) {
         return pIData.removeCard(pParams.get(ConstantParams.USER_ID),
                 pParams.get(ConstantParams.ACCESS_TOKEN),
                 pParams.get(ConstantParams.CARD_NAME),
@@ -20,10 +20,5 @@ public class RemoveMapCardImpl implements IRequest<BaseResponse> {
                 pParams.get(ConstantParams.LAST4_CARDNO),
                 pParams.get(ConstantParams.BANK_CODE),
                 pParams.get(ConstantParams.APP_VERSION));
-    }
-
-    @Override
-    public int getRequestEventId() {
-        return ZPEvents.CONNECTOR_V001_TPE_REMOVEMAPCARD;
     }
 }

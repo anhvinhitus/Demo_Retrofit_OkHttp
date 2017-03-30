@@ -32,7 +32,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_PLATFORM_INFO)
-    Observable<Response<DPlatformInfo>> loadPlatformInfo(@QueryMap Map<String, String> params);
+    Observable<DPlatformInfo> loadPlatformInfo(@QueryMap Map<String, String> params);
 
     /**
      * load appinfo
@@ -41,7 +41,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_APP_INFO)
-    Observable<Response<DAppInfoResponse>> loadAppInfo(@QueryMap Map<String, String> params);
+    Observable<DAppInfoResponse> loadAppInfo(@QueryMap Map<String, String> params);
 
     /**
      * load bank list
@@ -49,7 +49,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_GET_BANKLIST)
-    Observable<Response<BankConfigResponse>> loadBankList(@QueryMap Map<String, String> params);
+    Observable<BankConfigResponse> loadBankList(@QueryMap Map<String, String> params);
 
     /**
      * get transaction status
@@ -58,7 +58,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_GET_STATUS)
-    Observable<Response<StatusResponse>> getStatus(@QueryMap Map<String, String> params);
+    Observable<StatusResponse> getStatus(@QueryMap Map<String, String> params);
 
     /***
      * get map card info list
@@ -66,7 +66,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_LISTCARDINFO)
-    Observable<Response<CardInfoListResponse>> loadMapCardList(@QueryMap Map<String, String> params);
+    Observable<CardInfoListResponse> loadMapCardList(@QueryMap Map<String, String> params);
 
     /***
      * get bank account list(vietcombank)
@@ -74,7 +74,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_LISTBANKACCCOUNT)
-    Observable<Response<BankAccountListResponse>> loadMapBankAccountList(@QueryMap Map<String, String> params);
+    Observable<BankAccountListResponse> loadMapBankAccountList(@QueryMap Map<String, String> params);
 
     /***
      * get status by apptrans id which is created by app when creating order.
@@ -83,7 +83,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_CHECK_SUBMIT_ORDER_STATUS)
-    Observable<Response<StatusResponse>> checkOrderStatusFailSubmit(@QueryMap Map<String, String> params);
+    Observable<StatusResponse> checkOrderStatusFailSubmit(@QueryMap Map<String, String> params);
 
     /**
      * get resource file
@@ -104,7 +104,7 @@ public interface IData {
      * @return
      */
     @POST(Constants.URL_ATM_AUTHEN)
-    Observable<Response<StatusResponse>> atmAuthen(@Query(ConstantParams.USER_ID) String userID,
+    Observable<StatusResponse> atmAuthen(@Query(ConstantParams.USER_ID) String userID,
                                    @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                    @Query(ConstantParams.ZP_TRANSID) String zpTransid,
                                    @Query(ConstantParams.AUTHEN_TYPE) String authenType,
@@ -113,7 +113,7 @@ public interface IData {
 
 
     @POST(Constants.URL_REPORT_ERROR)
-    Observable<Response<SaveCardResponse>> sdkReport(@Query(ConstantParams.USER_ID) String userID,
+    Observable<SaveCardResponse> sdkReport(@Query(ConstantParams.USER_ID) String userID,
                                      @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                      @Query(ConstantParams.TRANSID) String transid,
                                      @Query(ConstantParams.BANK_CODE) String bankCode,
@@ -132,7 +132,7 @@ public interface IData {
      * @return
      */
     @POST(Constants.URL_REMOVE_MAPCARD)
-    Observable<Response<BaseResponse>> removeCard(@Query(ConstantParams.USER_ID) String userID,
+    Observable<BaseResponse> removeCard(@Query(ConstantParams.USER_ID) String userID,
                                   @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                   @Query(ConstantParams.CARD_NAME) String cardName,
                                   @Query(ConstantParams.FIRST6_CARDNO) String first6Cardno,
@@ -154,7 +154,7 @@ public interface IData {
      * @return
      */
     @POST(Constants.URL_TRACKING_LOG)
-    Observable<Response<BaseResponse>> sendLog(@Query(ConstantParams.USER_ID) String userID,
+    Observable<BaseResponse> sendLog(@Query(ConstantParams.USER_ID) String userID,
                                @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                @Query(ConstantParams.PMC_ID) String pmcID,
                                @Query(ConstantParams.TRANS_ID) String transID,
@@ -195,7 +195,7 @@ public interface IData {
      * @return
      */
     @POST(Constants.URL_SUBMIT_ORDER)
-    Observable<Response<StatusResponse>> submitOrder(@Query(ConstantParams.APP_ID) String appID,
+    Observable<StatusResponse> submitOrder(@Query(ConstantParams.APP_ID) String appID,
                                      @Query(ConstantParams.ZALO_ID) String zaloID,
                                      @Query(ConstantParams.APP_TRANS_ID) String appTransaction,
                                      @Query(ConstantParams.APP_USER) String appUser,
@@ -224,7 +224,7 @@ public interface IData {
                                      @Query(ConstantParams.LONGITUDE) String latitude);
 
     @POST(Constants.URL_VERIFY_CARDMAP)
-    Observable<Response<StatusResponse>> verfiyCardMap(
+    Observable<StatusResponse> verfiyCardMap(
             @Query(ConstantParams.USER_ID) String userId,
             @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
             @Query(ConstantParams.ZALO_ID) String zaloId,
@@ -239,10 +239,10 @@ public interface IData {
             @Query(ConstantParams.APP_VERSION) String appver);
 
     @GET(Constants.URL_GET_STATUS_MAPCARD)
-    Observable<Response<StatusResponse>> getMapCardStatus(@QueryMap Map<String, String> params);
+    Observable<StatusResponse> getMapCardStatus(@QueryMap Map<String, String> params);
 
     @POST(Constants.URL_AUTHEN_CARD_MAP)
-    Observable<Response<StatusResponse>> authenMapCard(@Query(ConstantParams.USER_ID) String userID,
+    Observable<StatusResponse> authenMapCard(@Query(ConstantParams.USER_ID) String userID,
                                        @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                        @Query(ConstantParams.ZP_TRANSID) String zpTransid,
                                        @Query(ConstantParams.AUTHEN_TYPE) String authenType,
@@ -267,7 +267,7 @@ public interface IData {
      * @return
      */
     @POST(Constants.URL_SUBMIT_MAP_ACCOUNT)
-    Observable<Response<StatusResponse>> submitMapAccount(@Query(ConstantParams.USER_ID) String userID,
+    Observable<StatusResponse> submitMapAccount(@Query(ConstantParams.USER_ID) String userID,
                                           @Query(ConstantParams.ZALO_ID) String zaloID,
                                           @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                           @Query(ConstantParams.BANK_ACCOUNT_INFO) String bankAccountInfo,

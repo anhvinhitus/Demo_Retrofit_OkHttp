@@ -10,12 +10,7 @@ import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 
 public class LoadMapBankAccountListImpl implements IRequest<BankAccountListResponse> {
     @Override
-    public Observable<Response<BankAccountListResponse>> getRequest(IData pIData, HashMap<String, String> pParams) {
+    public Observable<BankAccountListResponse> getRequest(IData pIData, HashMap<String, String> pParams) {
         return pIData.loadMapBankAccountList(pParams);
-    }
-
-    @Override
-    public int getRequestEventId() {
-        return 0;
     }
 }

@@ -9,6 +9,5 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.datasource.IData;
 
 public interface IRequest<T> {
-    Observable<Response<T>> getRequest(IData pIData, HashMap<String, String> pParams);
-    int getRequestEventId();
+    Observable<T> getRequest(IData pIData, HashMap<String, String> pParams);
 }

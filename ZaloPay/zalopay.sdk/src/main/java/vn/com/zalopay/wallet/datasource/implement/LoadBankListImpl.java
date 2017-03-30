@@ -10,13 +10,9 @@ import vn.com.zalopay.wallet.datasource.IData;
 import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 
 public class LoadBankListImpl implements IRequest<BankConfigResponse> {
-    @Override
-    public int getRequestEventId() {
-        return ZPEvents.CONNECTOR_V001_TPE_GETBANKLIST;
-    }
 
     @Override
-    public Observable<Response<BankConfigResponse>> getRequest(IData pIData, HashMap<String, String> pParams) {
+    public Observable<BankConfigResponse> getRequest(IData pIData, HashMap<String, String> pParams) {
         return pIData.loadBankList(pParams);
     }
 }

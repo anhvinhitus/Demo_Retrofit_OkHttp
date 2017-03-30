@@ -12,7 +12,7 @@ import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 
 public class SendLogImpl implements IRequest<BaseResponse> {
     @Override
-    public Observable<Response<BaseResponse>> getRequest(IData pIData, HashMap<String, String> pParams) {
+    public Observable<BaseResponse> getRequest(IData pIData, HashMap<String, String> pParams) {
         return pIData.sendLog(
                 pParams.get(ConstantParams.USER_ID),
                 pParams.get(ConstantParams.ACCESS_TOKEN),
@@ -23,10 +23,5 @@ public class SendLogImpl implements IRequest<BaseResponse> {
                 pParams.get(ConstantParams.ATM_OTP_BEGINDATE),
                 pParams.get(ConstantParams.ATM_OTP_ENDDATE),
                 pParams.get(ConstantParams.APP_VERSION));
-    }
-
-    @Override
-    public int getRequestEventId() {
-        return ZPEvents.CONNECTOR_V001_TPE_SDKWRITEATMTIME;
     }
 }

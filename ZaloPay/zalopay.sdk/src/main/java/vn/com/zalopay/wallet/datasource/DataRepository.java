@@ -33,7 +33,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
     protected InjectionWrapper mInjectionWrapper;
     private IData mDataSource;
     private boolean mIsRequesting = false;//prevent duplicate request
-    private WeakReference<IRequest> mCurrentRequest = null;
     private Subscription mSubscription;
     private BaseTask mTask;
 
@@ -45,23 +44,18 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             verifyException(throwable);
         }
     };
-    protected final Action1<Response<T>> doOnNextAction = new Action1<Response<T>>() {
+    protected final Action1<T> doOnNextAction = new Action1<T>() {
         @Override
-        public void call(Response<T> response) {
-            mTask.onDoTaskOnResponse(response.body());
-            if (mCurrentRequest != null && mCurrentRequest.get() != null && PaymentPermission.allowUseTrackingTiming()) {
-                Long timeRequest = response.raw().receivedResponseAtMillis() - response.raw().sentRequestAtMillis();
-                ZPAnalytics.trackTiming(mCurrentRequest.get().getRequestEventId(), timeRequest);//send tracking timing to tracking source, for example : GA,vvv
-                Log.d(this, "===ZPAnalytics.trackTiming===" + mCurrentRequest.get().getRequestEventId() + " timing(ms)=" + (timeRequest));
-            }
+        public void call(T response) {
+            mTask.onDoTaskOnResponse(response);
         }
     };
-    protected final Action1<Response<T>> nextAction = new Action1<Response<T>>() {
+    protected final Action1<T> nextAction = new Action1<T>() {
         @Override
-        public void call(Response<T> response) {
+        public void call(T response) {
             releaseLock();
-            mTask.onRequestSuccess(response.body());
-            GlobalData.checkForUpdateAccessTokenToApp(response.body()); //update access token if have new
+            mTask.onRequestSuccess(response);
+            GlobalData.checkForUpdateAccessTokenToApp(response); //update access token if have new
         }
     };
 
@@ -157,7 +151,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             return;
         }
         inProgress();
-        mCurrentRequest = new WeakReference<IRequest>(pRequest);
         mSubscription = pRequest.getRequest(mDataSource, pParams)
                 .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
                 .doOnNext(doOnNextAction)
@@ -171,7 +164,6 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             return;
         }
         inProgress();
-        mCurrentRequest = new WeakReference<IRequest>(pRequest);
         mSubscription = pRequest.getRequest(mDataSource, pParams)
                 .doOnNext(doOnNextAction)
                 .compose(applySchedulers())

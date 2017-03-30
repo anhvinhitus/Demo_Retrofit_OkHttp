@@ -11,12 +11,7 @@ import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 
 public class CheckOrderStatusFailSubmitImpl implements IRequest<StatusResponse> {
     @Override
-    public Observable<Response<StatusResponse>> getRequest(IData pIData, HashMap<String, String> pParams) {
+    public Observable<StatusResponse> getRequest(IData pIData, HashMap<String, String> pParams) {
         return pIData.checkOrderStatusFailSubmit(pParams);
-    }
-
-    @Override
-    public int getRequestEventId() {
-        return ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT;
     }
 }
