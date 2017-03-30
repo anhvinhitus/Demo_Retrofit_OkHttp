@@ -3,6 +3,7 @@ package com.zalopay.ui.widget;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.ColorRes;
@@ -24,6 +25,9 @@ import timber.log.Timber;
  */
 
 public class IconFont extends android.support.v7.widget.AppCompatTextView {
+
+    private TypefaceEnum mTypefaceEnum;
+
     public IconFont(Context context) {
         this(context, null);
     }
@@ -51,7 +55,7 @@ public class IconFont extends android.support.v7.widget.AppCompatTextView {
             if (!TextUtils.isEmpty(fontAsset)) {
                 setTypefaceFromAsset(fontAsset);
             } else {
-                setTypefaceWithoutStyle(IconFontHelper.getInstance().getCurrentTypeface());
+                setTypefaceDefault();
             }
             setIcon(iconName);
         } catch (RuntimeException e) {
@@ -74,6 +78,12 @@ public class IconFont extends android.support.v7.widget.AppCompatTextView {
         } catch (RuntimeException e) {
             Timber.d(e, "recycle typedArray throw RuntimeException");
         }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        refreshTypeface();
+        super.onDraw(canvas);
     }
 
     public void setIconColor(@ColorRes int color) {
@@ -110,6 +120,13 @@ public class IconFont extends android.support.v7.widget.AppCompatTextView {
         }
     }
 
+    private void refreshTypeface() {
+        if (mTypefaceEnum == TypefaceEnum.DEFAULT
+                && getTypeface() != getZaloPayTypeface()) {
+            setTypefaceDefault();
+        }
+    }
+
     public void setTypefaceFromAsset(String fontAsset) {
         if (TextUtils.isEmpty(fontAsset)
                 || getContext() == null
@@ -121,11 +138,22 @@ public class IconFont extends android.support.v7.widget.AppCompatTextView {
             Timber.d("Could not create a typeface from asset: %s", fontAsset);
         } else {
             setTypefaceWithoutStyle(typeface);
+            mTypefaceEnum = TypefaceEnum.ASSET;
         }
+    }
+
+    private Typeface getZaloPayTypeface() {
+        return IconFontHelper.getInstance().getCurrentTypeface();
+    }
+
+    private void setTypefaceDefault() {
+        setTypefaceWithoutStyle(getZaloPayTypeface());
+        mTypefaceEnum = TypefaceEnum.DEFAULT;
     }
 
     private void setTypefaceWithoutStyle(Typeface typeface) {
         if (typeface == null) {
+            Timber.w("setTypefaceWithoutStyle typeface null/empty");
             return;
         }
         int style = Typeface.NORMAL;
