@@ -14,7 +14,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -22,8 +21,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -42,7 +39,6 @@ import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -61,7 +57,6 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
-import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
@@ -100,7 +95,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     private User mUser;
     private FriendStore.Repository mFriendRepository;
     private Subscription mRefPlatformSubscription;
-    private Runnable mRunnableRefreshIconFont;
     private NotificationStore.Repository mNotificationRepository;
 
     @Inject
@@ -140,43 +134,14 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
         this.mUser = user;
         this.mNotificationRepository = notificationRepository;
 
-//    @Inject
-//    MainPresenter(User user, EventBus eventBus,
-//                  AppResourceStore.Repository appResourceRepository,
-//                  Context applicationContext,
-//                  Navigator navigator,
-//                  PassportRepository passportRepository,
-//                  BalanceStore.Repository balanceRepository,
-//                  ZaloPayRepository zaloPayRepository,
-//                  TransactionStore.Repository transactionRepository,
-//                  FriendStore.Repository friendRepository) {
-//        this.mEventBus = eventBus;
-//        this.mAppResourceRepository = appResourceRepository;
-//        this.mApplicationContext = applicationContext;
-//        this.mNavigator = navigator;
-//        this.passportRepository = passportRepository;
-//        this.mBalanceRepository = balanceRepository;
-//        this.mZaloPayRepository = zaloPayRepository;
-//        this.mTransactionRepository = transactionRepository;
-//        this.mFriendRepository = friendRepository;
-//        this.mUser = user;
     }
 
     private void getZaloFriend() {
         Subscription subscription = retrieveZaloFriendsAsNeeded()
-                .doOnTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        syncContact();
-                    }
-                })
+                .doOnTerminate(this::syncContact)
+                .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e, "Get zalo friend error");
-                    }
-                });
+                .subscribe(new DefaultSubscriber<>());
 
         mSubscription.add(subscription);
     }
@@ -184,26 +149,17 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     private Observable<Boolean> retrieveZaloFriendsAsNeeded() {
         return mFriendRepository.retrieveZaloFriendsAsNeeded()
                 .delaySubscription(5, TimeUnit.SECONDS)
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends Boolean>>() {
-                    @Override
-                    public Observable<? extends Boolean> call(Throwable throwable) {
-                        Timber.d(throwable, "retrieve zalo friends exception");
-                        return Observable.empty();
-                    }
-                });
+                .doOnError(Timber::d)
+                .onErrorResumeNext(throwable -> Observable.empty());
     }
 
     private void syncContact() {
         boolean granted = PermissionUtil.verifyPermission(mApplicationContext, new String[]{Manifest.permission.READ_CONTACTS});
         if (granted) {
             Subscription subscription = mFriendRepository.syncContact()
+                    .doOnError(Timber::d)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new DefaultSubscriber<Boolean>() {
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.d(e, "Sync contact exception");
-                        }
-                    });
+                    .subscribe(new DefaultSubscriber<>());
             mSubscription.add(subscription);
         }
     }
@@ -260,17 +216,15 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     }
 
     private void warningRoot() {
-        Subscription subscription = ObservableHelper.makeObservable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return !RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted();
-            }
-        })
+        Subscription subscription = ObservableHelper
+                .makeObservable(() ->
+                        !RootUtils.isDeviceRooted() || RootUtils.isHideWarningRooted()
+                )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
+                .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
-                    public void call(Boolean aBoolean) {
+                    public void onNext(Boolean aBoolean) {
                         if (!aBoolean && mView != null) {
                             mNavigator.startWarningRootedActivity(mView.getContext());
                         }
@@ -352,9 +306,9 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<Long>() {
+                .subscribe(new DefaultSubscriber<Long>() {
                     @Override
-                    public void call(Long aLong) {
+                    public void onNext(Long aLong) {
                         Timber.d("call refresh platform info");
                         loadGatewayInfoPaymentSDK();
                         mEventBus.post(new RefreshPlatformInfoEvent());
@@ -468,7 +422,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     public void logout() {
         Subscription subscription = passportRepository.logout()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
 
         if (mEventBus.isRegistered(this)) {
@@ -592,13 +546,9 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
 
     private void removeNotification(NotificationData notify) {
         Subscription subscription = mNotifyRepository.removeNotifyByType(notify.notificationtype, notify.appid, notify.transid)
+                .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e, "onError");
-                    }
-                });
+                .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
 
@@ -612,14 +562,6 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                     }
                 });
         mSubscription.add(subscriptionSuccess);
-    }
-
-    public void startPaymentApp(AppResource app) {
-        Subscription subscription = mAppResourceRepository.existResource(app.appid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new StartPaymentAppSubscriber(mNavigator, mView.getActivity(), app));
-        mSubscription.add(subscription);
     }
 
     public void getBalance() {
