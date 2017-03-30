@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
@@ -44,7 +45,6 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
         return new ViewHolder(mInflater.inflate(R.layout.row_bank_card_layout, parent, false), onItemClickListener);
     }
 
-
     private OnItemClickListener onItemClickListener = new OnItemClickListener() {
         @Override
         public void onListItemClick(View anchor, int position) {
@@ -60,7 +60,6 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
                     listener.onClickMenu(bankCard);
                 }
             }
-
         }
 
         @Override
@@ -69,13 +68,11 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
         }
     };
 
-
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         onItemClickListener = null;
         listener = null;
-        Timber.i("Detached");
     }
 
     @Override
@@ -120,7 +117,6 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
         }
 
         public void bindView(final BankCard bankCard, boolean isLastItem) {
-            Timber.d("bindView bankCard.type:%s", bankCard.type);
             bindBankCard(mRoot, imgLogo, bankCard, true);
             String bankCardNumber = BankUtils.formatBankCardNumber(bankCard.first6cardno, bankCard.last4cardno);
             mCardNumber.setText(Html.fromHtml(bankCardNumber));
@@ -138,14 +134,6 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
             }
             params.setMargins(margin, margin, margin, marginBottom);
             mRoot.setLayoutParams(params);
-        }
-    }
-
-    private int getColorFromResource(int resource) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getContext().getColor(resource);
-        } else {
-            return getContext().getResources().getColor(resource);
         }
     }
 
@@ -168,9 +156,9 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
         }
 
         int[] colors = new int[3];
-        colors[0] = getColorFromResource(bankCardStyle.backgroundGradientStart);
-        colors[1] = getColorFromResource(bankCardStyle.backgroundGradientEnd);
-        colors[2] = getColorFromResource(bankCardStyle.backgroundGradientStart);
+        colors[0] = ContextCompat.getColor(getContext(), bankCardStyle.backgroundGradientStart);
+        colors[1] = ContextCompat.getColor(getContext(), bankCardStyle.backgroundGradientEnd);
+        colors[2] = ContextCompat.getColor(getContext(), bankCardStyle.backgroundGradientStart);
 
         GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.TL_BR, colors);
         gradientDrawable.setGradientType(GradientDrawable.LINEAR_GRADIENT);

@@ -33,7 +33,7 @@ final class DownloadAppResourceTask {
         try {
             isDownloadSuccess = download(downloadInfo);
 
-            Timber.d("isDownload %s", isDownloadSuccess);
+            Timber.d("result download app : appId [%s] isSuccess [%s]", downloadInfo.appid, isDownloadSuccess);
 
             if (isDownloadSuccess) {
                 mLocalStorage.increaseStateDownload(downloadInfo.appid);
@@ -50,13 +50,14 @@ final class DownloadAppResourceTask {
 
     /**
      * Synchronous call to download resources from server
+     *
      * @return true if download success
      */
     private boolean download(DownloadInfo downloadInfo) {
 
-        Timber.d("url download %s", downloadInfo.url);
+
         String destinationPath = getExternalBundleFolder(downloadInfo.appid);
-        Timber.d("destinationPath %s", destinationPath);
+        Timber.d("Begin download resource : url [%s] destination [%s]", downloadInfo.url, destinationPath);
 
         FileUtil.ensureDirectory(mBundleRootFolder);
         FileUtil.ensureDirectory(destinationPath);

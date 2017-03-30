@@ -78,12 +78,9 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode);
             try {
                 bankCard.type = detectCardType(card.bankcode, card.first6cardno);
-                Timber.d("transform bankCard.type:%s", bankCard.type);
-                Timber.d("transform cardname:%s", card.cardname);
-                Timber.d("transform first:%s", card.first6cardno);
-                Timber.d("transform last:%s", card.last4cardno);
+                Timber.d("transform bankCard : type %s cardname %s first %s last %s", bankCard.type, card.cardname, card.first6cardno, card.last4cardno);
             } catch (Exception e) {
-                Timber.e(e, "transform DMappedCard to BankCard exception [%s]", e.getMessage());
+                Timber.d(e, "transform DMappedCard to BankCard exception [%s]", e.getMessage());
             }
         }
 
@@ -157,7 +154,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
         @Override
         public void onError(BaseResponse pMessage) {
-            Timber.d("RemoveMapCard onError: %s", pMessage);
+            Timber.d("Remove map card error : message [%s]", pMessage);
             if (mView == null) {
                 return;
             }
@@ -172,7 +169,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
                 mEventBus.postSticky(new TokenPaymentExpiredEvent());
             } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
-                Timber.e("err removed map card %s", pMessage.returnmessage);
+                Timber.d("err removed map card %s", pMessage.returnmessage);
                 showErrorView(pMessage.returnmessage);
             }
         }
@@ -190,25 +187,10 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                 // because it is handled from event subscribers
                 return;
             }
-
-            Timber.e(e, "LinkCardSubscriber ");
         }
 
         @Override
         public void onNext(List<BankCard> bankCards) {
-            /*ArrayList<BankCard> tmp = new ArrayList<>();
-            BankCard vtbCard = new BankCard("Nguyen Van V", "970415", "3538", ECardType.PVTB.toString());
-            vtbCard.type = vtbCard.bankcode;
-            tmp.add(vtbCard);
-            BankCard vcbCard = new BankCard("Nguyen Van A", "686868", "1231", ECardType.PVCB.toString());
-            vcbCard.type = vcbCard.bankcode;
-            tmp.add(vcbCard);
-            BankCard sCard = new BankCard("Nguyen Van W", "970403", "1234", ECardType.PSCB.toString());
-            sCard.type = sCard.bankcode;
-            tmp.add(sCard);
-            BankCard sgCard = new BankCard("Nguyen Van S", "157979", "9999", ECardType.PSGCB.toString());
-            sgCard.type = sgCard.bankcode;
-            tmp.add(sgCard);*/
             LinkCardPresenter.this.onGetLinkCardSuccess(bankCards);
         }
     }

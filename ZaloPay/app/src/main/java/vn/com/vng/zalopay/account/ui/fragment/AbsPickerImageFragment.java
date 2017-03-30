@@ -50,7 +50,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
             }
         }
 
-        Timber.d("getCaptureImageOutputUri %s", photoFile);
+        Timber.d("Get capture image output : Uri %s", photoFile);
         if (photoFile != null) {
             outputFileUri = FileProvider.getUriForFile(getContext(), getString(R.string.file_provider), photoFile);
         }
@@ -58,7 +58,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
     }
 
     protected Uri getPickImageResultUri(Intent data, String name) {
-        Timber.d("getPickImageResultUri: data %s", data);
+        Timber.d("Get pick image result uri : data %s", data);
         if (data != null && data.getData() != null) {
             return data.getData();
         }
@@ -78,7 +78,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
             i.setType("image/*");
             startActivityForResult(i, requestCode);
         } catch (Exception ex) {
-            Timber.w(ex, "startPickImage");
+            Timber.d(ex, "Start pick image");
         }
     }
 
@@ -93,7 +93,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
         try {
             Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             Uri contentUri = getCaptureImageOutputUri(name, true);
-            Timber.d("startCaptureImage: capture uri %s", contentUri.toString());
+            Timber.d("Start capture image : uri [%s]", contentUri.toString());
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
@@ -114,7 +114,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
 
             startActivityForResult(i, requestCode);
         } catch (Exception ex) {
-            Timber.w(ex, "startCaptureImage");
+            Timber.w(ex, "Start capture image");
         }
     }
 

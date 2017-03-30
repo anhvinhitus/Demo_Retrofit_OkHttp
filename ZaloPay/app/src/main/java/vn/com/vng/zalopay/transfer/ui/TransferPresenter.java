@@ -237,7 +237,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
         @Override
         public void onNext(Person person) {
-            Timber.d("onNext displayName %s avatar %s", person.displayName, person.avatar);
+            Timber.d("Get user success : displayName [%s] avatar [%s]", person.displayName, person.avatar);
 
             if (!TextUtils.isEmpty(person.avatar)) {
                 mTransaction.avatar = person.avatar;

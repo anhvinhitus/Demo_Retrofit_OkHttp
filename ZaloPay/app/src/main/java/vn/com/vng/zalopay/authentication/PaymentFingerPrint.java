@@ -77,7 +77,7 @@ public class PaymentFingerPrint implements IPaymentFingerPrint {
 
     @Override
     public void updatePassword(String s, String s1) throws Exception {
-        Timber.d("updatePassword: passwordOld %s passwordNew %s", s, s1);
+        Timber.d("Update password : passwordOld %s passwordNew %s", s, s1);
         if (!TextUtils.isEmpty(s1) && !s1.equals(s)) {
             mKeyTools.updatePassword(s1);
         }

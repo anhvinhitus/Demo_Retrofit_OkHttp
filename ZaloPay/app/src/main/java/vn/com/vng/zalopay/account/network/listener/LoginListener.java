@@ -29,14 +29,13 @@ public class LoginListener extends OAuthCompleteListener {
 
     @Override
     public void onSkipProtectAcc(Dialog dialog) {
-        Timber.d("onSkipProtectAcc: onSkipProtectAcc");
+        Timber.d("Skip protect account");
         dialog.dismiss();
     }
 
     @Override
     public void onProtectAccComplete(int errorCode, String message, Dialog dialog) {
-
-        Timber.d("onProtectAccComplete");
+        Timber.d("Protect account complete");
         if (errorCode == 0) {
 
             ZaloSDK.Instance.isAuthenticate(new ValidateOAuthCodeCallback() {
@@ -69,7 +68,7 @@ public class LoginListener extends OAuthCompleteListener {
         String channel = String.valueOf(response.getChannel());
         String oauthCode = String.valueOf(response.getOauthCode());
 
-        Timber.d("onGetOAuthComplete userId %s oauthCode %s channel %s", userId, oauthCode, channel);
+        Timber.d("Get authenticate complete : userId %s oauthCode %s channel %s", userId, oauthCode, channel);
 
         if (mListener != null) {
             mListener.onGetOAuthComplete(userId, oauthCode, channel);
@@ -78,11 +77,10 @@ public class LoginListener extends OAuthCompleteListener {
 
     @Override
     protected void onRequestAccountProtect(int errorCode, String errorMsg) {
-        Timber.d("onRequestAccountProtect");
     }
 
     @Override
     public void onFinishLoading() {
-        Timber.d("onFinishLoading");
+        Timber.d("Finish loading");
     }
 }

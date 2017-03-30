@@ -102,19 +102,19 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         mGetCardSupportListListener = new IGetCardSupportListListener() {
             @Override
             public void onProcess() {
-                Timber.d("getCardSupportList onProcess");
+                Timber.d("Get card support list on process");
             }
 
             @Override
             public void onComplete(ArrayList<ZPCard> cardSupportList) {
-                Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
+                Timber.d("Get card support onComplete : cardSupportList [%s]", cardSupportList);
                 hideLoadingView();
                 onGetCardSupportSuccess(cardSupportList);
             }
 
             @Override
             public void onError(String pErrorMess) {
-                Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
+                Timber.d("Get card support error : message [%s]", pErrorMess);
                 hideLoadingView();
                 showRetryDialog(getContext().getString(R.string.exception_generic),
                         new ZPWOnEventConfirmDialogListener() {
@@ -230,7 +230,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             }
             ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
             if (paymentInfo == null || paymentInfo.mapBank == null) {
-                Timber.d("onResponseSuccess paymentInfo null");
+                Timber.d("On response success paymentInfo null");
                 return;
             }
             onAddCardSuccess(paymentInfo.mapBank);
@@ -243,7 +243,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
         @Override
         public void onPreComplete(boolean isSuccessful, String tId, String pAppTransId) {
-            Timber.d("onPreComplete isSuccessful [%s]", isSuccessful);
+            Timber.d("onPreComplete : transactionId %s isSuccessful [%s] pAppTransId [%s]", tId, isSuccessful, pAppTransId);
             if (isSuccessful) {
                 AbstractLinkCardPresenter.this.onPreComplete();
             }
@@ -273,10 +273,12 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         } else if (bankcode.equals(ECardType.UNDEFINE.toString())) {
             return ECardType.UNDEFINE.toString();
         } else {
+
+            UserInfo userInfo = new UserInfo();
+            userInfo.zaloPayUserId = mUser.zaloPayId;
+            userInfo.accessToken = mUser.accesstoken;
+
             try {
-                UserInfo userInfo = new UserInfo();
-                userInfo.zaloPayUserId = mUser.zaloPayId;
-                userInfo.accessToken = mUser.accesstoken;
                 return CShareDataWrapper.detectCardType(userInfo, first6cardno).toString();
             } catch (Exception e) {
                 Timber.w(e, "detectCardType exception [%s]", e.getMessage());

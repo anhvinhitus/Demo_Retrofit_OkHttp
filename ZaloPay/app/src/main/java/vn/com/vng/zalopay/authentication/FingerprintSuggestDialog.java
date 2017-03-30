@@ -123,7 +123,6 @@ public class FingerprintSuggestDialog extends DialogFragment {
 
     @Override
     public void onDestroyView() {
-        Timber.d("onDestroyView: ");
         saveConfigShowSuggest();
         mUnbinder.unbind();
         super.onDestroyView();
@@ -136,7 +135,7 @@ public class FingerprintSuggestDialog extends DialogFragment {
 
     @OnClick(R.id.second_dialog_button)
     public void onSecondClick(View v) {
-        Timber.d("onSecondClick: %s", mHashPassword);
+        Timber.d("on Second Click : mHashPassword [%s]", mHashPassword);
         mKeytool.updatePassword(mHashPassword);
         dismiss();
     }

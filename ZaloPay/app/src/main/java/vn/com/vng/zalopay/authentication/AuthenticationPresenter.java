@@ -147,7 +147,7 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
     @Override
     public void onError(Throwable e) {
-        Timber.d(e, "onError: ");
+        Timber.d(e, "Authentication error");
         if (mStage == Stage.FINGERPRINT_DECRYPT) {
             handleErrorFingerprint(e);
         } else {

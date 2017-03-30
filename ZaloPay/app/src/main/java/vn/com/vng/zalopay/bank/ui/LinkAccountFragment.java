@@ -123,7 +123,6 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Timber.d("setUserVisibleHint visible[%s]", isVisibleToUser);
         if (isVisibleToUser) {
             AndroidUtils.runOnUIThread(mRunnable, 200);
         } else {
@@ -275,7 +274,6 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @Override
     public void onResume() {
-        Timber.d("onResume");
         super.onResume();
         mPresenter.resume();
     }

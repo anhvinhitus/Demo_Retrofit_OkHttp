@@ -134,7 +134,7 @@ public class FingerprintProvider implements AuthenticationProvider {
         final Cipher c = result.getCryptoObject().getCipher();
         String string = mKeyTools.decrypt(c);
         if (TextUtils.isEmpty(string)) {
-            Timber.d("onAuthenticationSucceeded: decrypt empty");
+            Timber.d("on Authentication succeeded : decrypt empty");
             return;
         }
         mCallback.onAuthenticated(string);
