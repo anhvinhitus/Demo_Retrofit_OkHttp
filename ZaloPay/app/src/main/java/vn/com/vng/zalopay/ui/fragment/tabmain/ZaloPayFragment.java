@@ -4,23 +4,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
-import android.text.Spanned;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
-import android.text.style.RelativeSizeSpan;
 import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
-import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
@@ -29,12 +24,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
-import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
-import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
@@ -42,12 +34,8 @@ import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-
-import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.Constants;
-import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /**
  * Created by AnhHieu on 4/11/16.
@@ -69,22 +57,14 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Inject
     ZaloPayPresenter presenter;
+
 //    @BindView(R.id.home_top_layout)
 //    View mTopLayout;
 
-    /* Advertisement START */
-    @BindView(R.id.tvAdsSubContent)
-    TextView mTvAdsSubContent;
-    /* Advertisement END */
-
     private ListAppRecyclerAdapter mAdapter;
-    private ListAppRecyclerAdapter mAdapterBottomApp;
 
     @BindView(R.id.listView)
     RecyclerView listView;
-
-    @BindView(R.id.listViewBottom)
-    RecyclerView listViewBottom;
 
 //    @BindView(R.id.tv_balance)
 //    TextView mBalanceView;
@@ -115,7 +95,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mAdapter = new ListAppRecyclerAdapter(getContext(), this);
-        mAdapterBottomApp = new ListAppRecyclerAdapter(getContext(), this);
     }
 
     @Override
@@ -125,24 +104,17 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         presenter.attachView(this);
 
         listView.setHasFixedSize(true);
-        listView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
+        listView.setLayoutManager(new StaggeredGridLayoutManager(SPAN_COUNT_APPLICATION, StaggeredGridLayoutManager.VERTICAL));
         listView.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
         listView.setAdapter(mAdapter);
         listView.setFocusable(false);
 
-
-        listViewBottom.setHasFixedSize(true);
-        listViewBottom.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION));
-        listViewBottom.addItemDecoration(new GridSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false));
-        listViewBottom.setAdapter(mAdapterBottomApp);
-        listViewBottom.setFocusable(false);
-
         setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
                 getString(R.string.check_internet));
-        mSwipeRefreshLayout.setSwipeableChildren(R.id.scrollView);
+        mSwipeRefreshLayout.setSwipeableChildren(R.id.listView);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        hideTextAds();
+        //hideTextAds();
     }
 
     private void setInternetConnectionError(String message, String spannedMessage) {
@@ -228,11 +200,11 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         super.onDestroy();
     }
 
-    private void hideTextAds() {
+   /* private void hideTextAds() {
         if (mTvAdsSubContent != null) {
             mTvAdsSubContent.setVisibility(View.GONE);
         }
-    }
+    }*/
 
     @Override
     public void onClickAppListener(AppResource app, int position) {
@@ -269,9 +241,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
-        if (mAdapterBottomApp != null) {
-            mAdapterBottomApp.notifyDataSetChanged();
-        }
         // datnt 09.03.2017 deleted >>
 //        if (mTopLayout != null) {
 //            mTopLayout.invalidate();
@@ -291,7 +260,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 //            listViewBottom.setMinimumHeight(presenter.getHeightViewBottomView(listView, presenter.getTopAndBottomApp(list,false).size() ,SPAN_COUNT_APPLICATION));
 //        }
 
-        if(mAdapter == null) {
+        if (mAdapter == null) {
             return;
         }
 
@@ -351,7 +320,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     public int getAppCount() {
-        return mAdapter.getItemCount() + mAdapterBottomApp.getItemCount();
+        return mAdapter.getItemCount() - 1;
     }
 
     @Override
