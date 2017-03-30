@@ -292,8 +292,13 @@ public class DataParameter {
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         params.put(ConstantParams.ZALO_ID, GlobalData.getPaymentInfo().userInfo.zaloUserId);
-        params.put(ConstantParams.LATTITUDE, String.valueOf(GlobalData.getPaymentInfo().mLocation.latitude));
-        params.put(ConstantParams.LONGITUDE, String.valueOf(GlobalData.getPaymentInfo().mLocation.longitude));
+        double lat = 0, lng = 0;
+        if (GlobalData.getPaymentInfo().mLocation != null) {
+            lat = GlobalData.getPaymentInfo().mLocation.latitude;
+            lng = GlobalData.getPaymentInfo().mLocation.longitude;
+        }
+        params.put(ConstantParams.LATTITUDE, String.valueOf(lat));
+        params.put(ConstantParams.LONGITUDE, String.valueOf(lng));
         return true;
     }
 
