@@ -155,6 +155,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
         UserComponent userComponent = AndroidApplication.instance().getUserComponent();
         if (userComponent != null) {
             userComponent.connectorService().cancelAll();
+            userComponent.userSession().endSession();
         }
         // move to login
         ZaloSDK.Instance.unauthenticate();
