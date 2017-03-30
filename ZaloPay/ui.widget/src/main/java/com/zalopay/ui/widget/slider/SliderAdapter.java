@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 
 public class SliderAdapter extends PagerAdapter {
 
@@ -87,13 +89,25 @@ public class SliderAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
+        BaseSliderView sliderView = null;
+        try {
+            sliderView = mImageContents.get(position);
+        } catch (IndexOutOfBoundsException e) {
+            Timber.d(e);
+        }
+
+        View item = (View) object;
+
+        if (sliderView != null) {
+            sliderView.destroyItem(item);
+        }
+        container.removeView(item);
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         BaseSliderView b = mImageContents.get(position);
-        View v = b.getView();
+        View v = b.getView(container);
         container.addView(v);
         return v;
     }

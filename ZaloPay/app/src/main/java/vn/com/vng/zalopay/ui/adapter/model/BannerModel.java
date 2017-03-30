@@ -1,11 +1,8 @@
 package vn.com.vng.zalopay.ui.adapter.model;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.view.View;
 
 import com.airbnb.epoxy.SimpleEpoxyModel;
-import com.zalopay.ui.widget.slider.BaseSliderView;
 import com.zalopay.ui.widget.slider.SliderLayout;
 
 import java.util.ArrayList;
@@ -24,15 +21,13 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 public class BannerModel extends SimpleEpoxyModel {
 
     private List<DBanner> banners;
-    private final Context context;
     private SliderLayout mSliderLayout;
 
     private HomeAdapter.OnClickAppItemListener clickListener;
 
-    public BannerModel(Context context) {
+    public BannerModel() {
         super(R.layout.row_banner_layout);
         this.banners = new ArrayList<>();
-        this.context = context;
     }
 
     @Override
@@ -46,7 +41,7 @@ public class BannerModel extends SimpleEpoxyModel {
                 continue;
             }
 
-            BannerSliderView slider = new BannerSliderView(context, banner);
+            BannerSliderView slider = new BannerSliderView(banner);
             slider.setOnSliderClickListener(sliderClickListener);
             list.add(slider);
         }

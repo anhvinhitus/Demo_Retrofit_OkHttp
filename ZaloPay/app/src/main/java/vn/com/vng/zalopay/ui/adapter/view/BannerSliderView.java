@@ -1,14 +1,12 @@
 package vn.com.vng.zalopay.ui.adapter.view;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.slider.BaseSliderView;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.internal.DebouncingOnClickListener;
 import vn.com.vng.zalopay.R;
@@ -27,18 +25,15 @@ public class BannerSliderView implements BaseSliderView {
 
     private OnSliderClickListener mOnSliderClickListener;
 
-    protected final WeakReference<Context> mContext;
-
     private final DBanner mBanner;
 
-    public BannerSliderView(@NonNull Context context,@NonNull DBanner banner) {
-        mContext = new WeakReference<>(context);
+    public BannerSliderView(@NonNull DBanner banner) {
         mBanner = banner;
     }
 
     @Override
-    public View getView() {
-        SimpleDraweeView target = (SimpleDraweeView) LayoutInflater.from(mContext.get()).inflate(R.layout.banner_item, null);
+    public View getView(ViewGroup container) {
+        SimpleDraweeView target = (SimpleDraweeView) LayoutInflater.from(container.getContext()).inflate(R.layout.banner_item, null);
         target.setImageURI(mBanner.logourl);
         target.setOnClickListener(new DebouncingOnClickListener() {
             @Override
@@ -51,6 +46,10 @@ public class BannerSliderView implements BaseSliderView {
         return target;
     }
 
+    @Override
+    public void destroyItem(View view) {
+
+    }
 
     public void setOnSliderClickListener(OnSliderClickListener l) {
         mOnSliderClickListener = l;

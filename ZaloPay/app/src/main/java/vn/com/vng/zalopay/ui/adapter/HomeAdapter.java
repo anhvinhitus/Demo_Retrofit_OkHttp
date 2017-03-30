@@ -39,7 +39,7 @@ public class HomeAdapter extends EpoxyAdapter {
     public HomeAdapter(Context context, OnClickAppItemListener listener) {
         super();
         clickListener = listener;
-        bannerModel = new BannerModel(context);
+        bannerModel = new BannerModel();
         bannerModel.setClickListener(clickListener);
         enableDiffing();
     }
