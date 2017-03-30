@@ -14,6 +14,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.domain.model.Config;
 
 /**
@@ -23,6 +24,11 @@ import vn.com.vng.zalopay.domain.model.Config;
 
 public class ConfigUtil {
     private final static String CONFIG_FILE_PATH = "config/zalopay_config.json";
+    private static Config mConfig;
+
+    static {
+        mConfig = new Config();
+    }
 
     private static String getFileConfigPath(long appId) {
         return String.format(Locale.getDefault(), "%s/%s",
@@ -66,10 +72,24 @@ public class ConfigUtil {
         }
         Gson gson = new Gson();
         Config config = gson.fromJson(jsonConfig, Config.class);
-        return loadConfigPhoneFormat(config);
+        if (config != null) {
+            mConfig = config;
+            loadConfigPhoneFormat(config);
+            FriendConfig.sEnableContact = isSyncContact();
+            return true;
+        }
+        
+        return false;
     }
 
     private static boolean loadConfigPhoneFormat(Config config) {
         return config != null && PhoneUtil.setPhoneFormat(config.mPhoneFormat);
+    }
+
+    private static boolean isSyncContact() {
+        if (mConfig != null && mConfig.friendConfig != null) {
+            return mConfig.friendConfig.enableMergeContactName != 0;
+        }
+        return true;
     }
 }

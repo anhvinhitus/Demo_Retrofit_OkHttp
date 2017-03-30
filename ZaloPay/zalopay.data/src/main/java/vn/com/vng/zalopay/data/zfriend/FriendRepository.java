@@ -35,6 +35,7 @@ import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
  * Implementation for FriendStore.Repository
  */
 public class FriendRepository implements FriendStore.Repository {
+
     private final int TIME_RELOAD = 5 * 60; //5'
 
     private static final int TIMEOUT_REQUEST_FRIEND = 10;
@@ -62,7 +63,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Boolean> fetchZaloFriends() {
-        Timber.d("fetchZaloFriends");
+        Timber.d("Fetch zalo friend");
         return mZaloRequestService.fetchFriendList()
                 .doOnNext(mLocalStorage::putZaloUser)
                 .last()
@@ -72,16 +73,9 @@ public class FriendRepository implements FriendStore.Repository {
                 ;
     }
 
-    @Override
-    public Observable<Cursor> fetchZaloFriendList() {
-        return fetchZaloFriends()
-                .flatMap(aBoolean -> getZaloFriendsCursorLocal())
-                ;
-    }
 
     @Override
     public Observable<Boolean> retrieveZaloFriendsAsNeeded() {
-        Timber.d("Retrieve Zalo Friends AsNeeded");
         return shouldUpdateFriendList()
                 .filter(Boolean::booleanValue)
                 .flatMap(aBoolean -> fetchZaloFriendFullInfo());
@@ -120,16 +114,14 @@ public class FriendRepository implements FriendStore.Repository {
         });
     }
 
-
     private void updateTimeStamp() {
-        Timber.d("Request to update DB timestamp for ZaloFriendList");
         mLocalStorage.insertDataManifest(Constants.MANIF_LASTTIME_UPDATE_ZALO_FRIEND,
                 String.valueOf(System.currentTimeMillis() / 1000));
     }
 
     @Override
     public Observable<Cursor> getZaloFriendsCursorLocal() {
-        return makeObservable(() -> mLocalStorage.getZaloUserCursor());
+        return makeObservable(() -> mLocalStorage.getZaloUserCursor(FriendConfig.sEnableContact));
     }
 
     @Override
@@ -145,7 +137,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Cursor> searchZaloFriend(String s) {
-        return makeObservable(() -> mLocalStorage.searchZaloFriendList(s));
+        return makeObservable(() -> mLocalStorage.searchZaloFriendList(s, FriendConfig.sEnableContact));
     }
 
     @Override
@@ -162,8 +154,7 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     private Observable<List<ZaloFriend>> getFriendLocal() {
-        Timber.d("get friend zalo local");
-        return makeObservable(() -> mLocalStorage.getZaloUserCursor())
+        return getZaloFriendsCursorLocal()
                 .map(cursor -> {
                     List<ZaloFriend> ret = transformZaloFriend(cursor);
                     if (cursor != null && !cursor.isClosed()) {
@@ -193,7 +184,6 @@ public class FriendRepository implements FriendStore.Repository {
 
         return ret;
     }
-
 
     /**
      * Kiểm tra trong db có friend nào chưa có zalopay thì request
@@ -226,7 +216,7 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     private Observable<List<ZaloPayUserEntity>> fetchZaloPayUserByZaloId(String zaloidlist) {
-        Timber.d("fetching zalopay info");
+        Timber.d("Fetching zalopay info : zaloidlist [%s]", zaloidlist);
         return mRequestService.checklistzaloidforclient(mUser.zaloPayId, mUser.accesstoken, zaloidlist)
                 .map(response -> response.userList)
                 .doOnNext(mLocalStorage::putZaloPayUser)
@@ -261,7 +251,7 @@ public class FriendRepository implements FriendStore.Repository {
             try {
                 listUserWithZaloPayId.add(Long.valueOf(entity.zaloID));
             } catch (NumberFormatException e) {
-                Timber.e(e, "error pasre zaloId [%s]", entity.zaloID);
+                Timber.e(e, "Error pasre zaloId [%s]", entity.zaloID);
             }
         }
 
@@ -269,7 +259,7 @@ public class FriendRepository implements FriendStore.Repository {
 
         listUserWithoutZaloPayId.addAll(listZaloId);
         listUserWithoutZaloPayId.removeAll(listUserWithZaloPayId);
-        Timber.d("list User Without ZaloPayId: [%s]", listUserWithoutZaloPayId.size());
+        Timber.d("List user without zalopayid: size [%s]", listUserWithoutZaloPayId.size());
         return listUserWithoutZaloPayId;
     }
 
@@ -278,7 +268,7 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     private Observable<List<RedPacketUserEntity>> fetchListUserZaloPay(List<Long> listUserWithoutId, List<Long> listZaloId) {
-        Timber.d("fetchListUserZaloPay [%s]", listUserWithoutId.size());
+        Timber.d("Fetch list user zalopay: size [%s]", listUserWithoutId.size());
         return fetchZaloPayUserByZaloId(Strings.joinWithDelimiter(",", listUserWithoutId))
                 .onErrorResumeNext(throwable -> Observable.just(new ArrayList<>()))
                 .flatMap(entities -> getListUserZaloPayLocal(listZaloId));
@@ -292,7 +282,7 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     private Observable<Boolean> beginSync() {
-        Timber.d("begin Sync contact");
+        Timber.d("Begin sync contact");
         return makeObservable(() -> {
             ArrayList<Contact> listContact = mContactFetcher.fetchAll();
             mLocalStorage.putContacts(listContact);
@@ -328,7 +318,6 @@ public class FriendRepository implements FriendStore.Repository {
 
         Observable<ZaloPayUserEntity> mFetchObservable = fetchZaloPayUserByZaloId(String.valueOf(zaloid))
                 .flatMap(entities -> {
-                    Timber.d("list fetch zalopay user %s", entities);
                     if (Lists.isEmptyOrNull(entities)) {
                         return Observable.error(new UserNotFoundException());
                     }
@@ -363,7 +352,7 @@ public class FriendRepository implements FriendStore.Repository {
         try {
             person.zaloId = Long.valueOf(entity.zaloid);
         } catch (NumberFormatException e) {
-            Timber.e(e, "transform: zalopayId %s zaloid %s", entity.userid, entity.zaloid);
+            Timber.e(e, "Transform error : zalopayId [%s] zaloid [%s]", entity.userid, entity.zaloid);
         }
 
         person.avatar = entity.avatar;

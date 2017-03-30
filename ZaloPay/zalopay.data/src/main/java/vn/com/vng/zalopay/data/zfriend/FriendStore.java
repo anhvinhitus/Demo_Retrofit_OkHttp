@@ -61,9 +61,9 @@ public interface FriendStore {
 
         void putContacts(@Nullable List<Contact> contacts);
 
-        Cursor getZaloUserCursor();
+        Cursor getZaloUserCursor(boolean enableContact);
 
-        Cursor searchZaloFriendList(String s);
+        Cursor searchZaloFriendList(String s, boolean enableContact);
 
         @NonNull
         List<ZaloUserEntity> getZaloUserWithoutZaloPayId();
@@ -94,8 +94,6 @@ public interface FriendStore {
         Observable<Boolean> shouldUpdateFriendList();
 
         Observable<Boolean> fetchZaloFriends();
-
-        Observable<Cursor> fetchZaloFriendList();
 
         Observable<Cursor> getZaloFriendsCursor();
 
