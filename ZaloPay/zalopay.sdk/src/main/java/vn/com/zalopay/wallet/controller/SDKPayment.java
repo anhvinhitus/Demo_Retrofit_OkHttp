@@ -17,7 +17,7 @@ import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.business.validation.CValidation;
-import vn.com.zalopay.wallet.datasource.request.SDKReport;
+import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
@@ -230,7 +230,7 @@ public class SDKPayment {
      */
     private static void onReturnCancel(final String pMessage, final EPayError pPayError) {
         if (pPayError == EPayError.DATA_INVALID) {
-            SDKReport.makeReportError(SDKReport.INVALID_PAYMENTINFO, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
+            SDKReportTask.makeReportError(SDKReportTask.INVALID_PAYMENTINFO, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
         }
         DialogManager.closeProcessDialog();
         DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.WARNING_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_warning), pMessage, pIndex -> {

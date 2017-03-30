@@ -11,7 +11,7 @@ import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 
 public class LoadMapCardListImpl implements IRequest<CardInfoListResponse> {
     @Override
-    public Observable<Response<CardInfoListResponse>> getRequest(IData pIData, HashMap<String, String> pParams) throws Exception {
+    public Observable<Response<CardInfoListResponse>> getRequest(IData pIData, HashMap<String, String> pParams) {
         return pIData.loadMapCardList(pParams);
     }
 

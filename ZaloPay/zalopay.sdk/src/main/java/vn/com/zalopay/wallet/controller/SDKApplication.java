@@ -14,9 +14,9 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
-import vn.com.zalopay.wallet.datasource.request.BaseRequest;
-import vn.com.zalopay.wallet.datasource.request.RemoveMapCard;
-import vn.com.zalopay.wallet.datasource.request.SDKReport;
+import vn.com.zalopay.wallet.datasource.task.BaseTask;
+import vn.com.zalopay.wallet.datasource.task.RemoveMapCardTask;
+import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.di.component.ApplicationComponent;
 import vn.com.zalopay.wallet.di.component.DaggerApplicationComponent;
 import vn.com.zalopay.wallet.di.component.PaymentSessionComponent;
@@ -67,7 +67,7 @@ public class SDKApplication extends Application {
     }
 
     private static void handleUncaughtException(Thread thread, Throwable e) {
-        SDKReport.makeReportError(null, e != null ? GsonUtils.toJsonString(e) : "handleUncaughtException e=null");
+        SDKReportTask.makeReportError(null, e != null ? GsonUtils.toJsonString(e) : "handleUncaughtException e=null");
         Log.e("handleUncaughtException", e != null ? GsonUtils.toJsonString(e) : "error");
         //System.exit(1); // kill off the crashed app
     }
@@ -79,7 +79,7 @@ public class SDKApplication extends Application {
      */
     public synchronized static void removeCardMap(ZPWRemoveMapCardParams pParams, ZPWRemoveMapCardListener pListener) {
         try {
-            BaseRequest removeMapCardTask = new RemoveMapCard(pParams, pListener);
+            BaseTask removeMapCardTask = new RemoveMapCardTask(pParams, pListener);
             removeMapCardTask.makeRequest();
 
         } catch (Exception e) {

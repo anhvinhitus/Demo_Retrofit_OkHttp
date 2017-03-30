@@ -15,7 +15,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 
 public class StorageUtil {
@@ -61,43 +60,29 @@ public class StorageUtil {
 
 
     /***
-     * internal folder to extract resource file.
-     *
+     * internal folder to extract resource file
      * @return
      */
     public static String prepareUnzipFolder() {
-        /***
-         * try on internal storage first
-         */
-
+        //try on internal storage first
         String unzipFolder = null;
-
         try {
             unzipFolder = GlobalData.getAppContext().getFilesDir().getPath() + BuildConfig.FOLDER_RESOURCE;
-
             File f = new File(unzipFolder);
-
             if (!f.isDirectory() || !f.exists()) {
                 f.mkdirs();
             }
-
-            Log.d("===prepareUnzipFolder===", "folder to extract resource file :" + unzipFolder + ", available size : " + getAvailableMemorySize(unzipFolder));
-
+            Log.d("prepareUnzipFolder", "folder to extract resource file :" + unzipFolder + ", available size : " + getAvailableMemorySize(unzipFolder));
             return unzipFolder;
-
         } catch (Exception e) {
             Log.e("prepareUnzipFolder", e);
         }
 
-        /***
-         * try on external storage if can not access internal storage
-         */
+        //try on external storage if can not access internal storage
         try {
             if (StorageUtil.isExternalStorageAvailable()) {
                 unzipFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + BuildConfig.FOLDER_RESOURCE;
-
                 File f = new File(unzipFolder);
-
                 if (!f.isDirectory() || !f.exists()) {
                     f.mkdirs();
                 }
@@ -108,15 +93,11 @@ public class StorageUtil {
                     unzipFolder = downloadFolder.getAbsolutePath();
                 }
             }
-
-            Log.d("===prepareUnzipFolder===", "folder to extract resource file :" + unzipFolder + ",available size : " + getAvailableMemorySize(unzipFolder));
-
+            Log.d("prepareUnzipFolder", "folder to extract resource file :" + unzipFolder + ",available size : " + getAvailableMemorySize(unzipFolder));
             return unzipFolder;
-
         } catch (Exception e) {
             Log.e("prepareUnzipFolder", e);
         }
-
         return null;
     }
 

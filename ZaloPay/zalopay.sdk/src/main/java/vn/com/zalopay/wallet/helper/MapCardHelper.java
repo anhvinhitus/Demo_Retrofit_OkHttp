@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-import rx.Observable;
+import rx.Single;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -17,8 +17,8 @@ import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.datasource.request.BaseTask;
-import vn.com.zalopay.wallet.datasource.request.MapCardListTask;
+import vn.com.zalopay.wallet.datasource.task.BaseTask;
+import vn.com.zalopay.wallet.datasource.task.MapCardListTask;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
@@ -27,20 +27,18 @@ public class MapCardHelper {
     /***
      * reload map card list info
      */
-    public static Observable<BaseResponse> loadMapCardList(boolean pReload) {
-        return Observable.create(subscriber -> {
+    public static Single<BaseResponse> loadMapCardList(boolean pReload) {
+        return Single.create(subscriber -> {
             try {
                 if (pReload) {
                     SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
                 }
                 BaseTask tGetCardInfoList = new MapCardListTask(pResponse -> {
-                    subscriber.onNext(pResponse);
-                    subscriber.onCompleted();
+                    subscriber.onSuccess(pResponse);
                 });
                 tGetCardInfoList.makeRequest();
             } catch (Exception e) {
                 subscriber.onError(e);
-                subscriber.onCompleted();
                 Log.e("loadMapCardList", e);
             }
         });

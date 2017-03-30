@@ -32,26 +32,21 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Stack;
 
-import rx.Observable;
-import rx.Observer;
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
-import vn.com.zalopay.wallet.business.behavior.gateway.GatewayLoader;
+import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
@@ -60,15 +55,12 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
-import vn.com.zalopay.wallet.datasource.request.DownloadBundle;
-import vn.com.zalopay.wallet.datasource.request.SDKReport;
-import vn.com.zalopay.wallet.eventmessage.NetworkEventMessage;
-import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
+import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
+import vn.com.zalopay.wallet.message.NetworkEventMessage;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
@@ -185,7 +177,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
                         if (getAdapter() != null) {
                             try {
-                                getAdapter().sdkReportError(SDKReport.TIMEOUT_WEBSITE);
+                                getAdapter().sdkReportError(SDKReportTask.TIMEOUT_WEBSITE);
                             } catch (Exception e) {
                                 Log.d(this, e);
                             }
@@ -200,7 +192,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                         //send logs timeout
                         if (getAdapter() != null) {
                             try {
-                                getAdapter().sdkTrustReportError(SDKReport.TIMEOUT_WEBSITE);
+                                getAdapter().sdkTrustReportError(SDKReportTask.TIMEOUT_WEBSITE);
                             } catch (Exception e) {
                                 Log.d(this, e);
                             }
@@ -221,7 +213,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
                 if (getAdapter() != null) {
                     try {
-                        getAdapter().sdkReportError(SDKReport.GENERAL_EXCEPTION, ex != null ? ex.getMessage() : "onProgressTimeout");
+                        getAdapter().sdkReportError(SDKReportTask.GENERAL_EXCEPTION, ex != null ? ex.getMessage() : "onProgressTimeout");
                     } catch (Exception e) {
                         Log.d(this, e);
                     }
@@ -234,18 +226,23 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     /***
      * check static resource listener.
      */
-    private GatewayLoader.onCheckResourceStaticListener checkResourceStaticListener = new GatewayLoader.onCheckResourceStaticListener() {
+    private PlatformInfoLoader.onCheckResourceStaticListener checkResourceStaticListener = new PlatformInfoLoader.onCheckResourceStaticListener() {
         @Override
         public void onCheckResourceStaticComplete(boolean isSuccess, String pError) {
             if (isSuccess) {
-                Observable.zip(MapCardHelper.loadMapCardList(false),
-                        BankAccountHelper.loadBankAccountList(false), (response, response2) -> true)
+                Single.zip(MapCardHelper.loadMapCardList(false),
+                        BankAccountHelper.loadBankAccountList(false), (t1, t2) -> true)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<Boolean>() {
+                        .subscribe(new SingleSubscriber<Boolean>() {
                             @Override
-                            public void call(Boolean aBoolean) {
+                            public void onSuccess(Boolean aBoolean) {
                                 readyForPayment();
-                                Log.d(this,"readyForPayment");
+                            }
+
+                            @Override
+                            public void onError(Throwable error) {
+                                showDialogAndExit(GlobalData.getStringResource(RS.string.zpw_generic_error),true);
+                                Log.d("onError",error);
                             }
                         });
             } else {
@@ -253,9 +250,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 String message = pError;
                 if (TextUtils.isEmpty(message)) {
                     message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
-                }
-                if (!TextUtils.isEmpty(DownloadBundle.errorMessage)) {
-                    message = DownloadBundle.errorMessage;
                 }
                 showDialogAndExit(message, ErrorManager.shouldShowDialog());
             }
@@ -268,7 +262,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         @Override
         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
-            showProgress(false, null);
+            //showProgress(false, null);
             notifyUpVersionToApp(pForceUpdate, pVersion, pMessage);
         }
     };
@@ -429,7 +423,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void loadStaticReload() {
         //check static resource whether ready or not
         try {
-            GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+            PlatformInfoLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
         } catch (Exception e) {
             if (checkResourceStaticListener != null) {
                 checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);

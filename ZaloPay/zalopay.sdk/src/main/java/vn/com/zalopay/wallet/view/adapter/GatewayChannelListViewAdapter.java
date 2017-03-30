@@ -20,7 +20,7 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
-import vn.com.zalopay.wallet.datasource.request.SDKReport;
+import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
@@ -188,7 +188,7 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
                                 }
                             }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
 
-                            SDKReport.makeReportError(SDKReport.INVALID_USERPROFILE, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
+                            SDKReportTask.makeReportError(SDKReportTask.INVALID_USERPROFILE, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
 
                         }
                         //not allow zalopay
@@ -212,7 +212,7 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
                                 }
                             }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
 
-                            SDKReport.makeReportError(SDKReport.INVALID_USERPROFILE, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
+                            SDKReportTask.makeReportError(SDKReportTask.INVALID_USERPROFILE, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
 
                         }
                         //not allow bank account

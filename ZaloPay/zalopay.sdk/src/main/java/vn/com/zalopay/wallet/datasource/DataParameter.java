@@ -14,7 +14,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.creditcard.DMappedCreditCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.datasource.request.SDKReport;
+import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.DeviceUtil;
 import vn.com.zalopay.wallet.utils.DimensionUtil;
@@ -54,7 +54,7 @@ public class DataParameter {
     }
 
     /**
-     * Add params ATM AuthenPayer
+     * Add params ATM AuthenPayerTask
      *
      * @param params
      * @param pTransID
@@ -71,7 +71,7 @@ public class DataParameter {
     }
 
     /**
-     * Add param RemoveMapCard
+     * Add param RemoveMapCardTask
      *
      * @param params
      * @param pCard
@@ -94,7 +94,7 @@ public class DataParameter {
             params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
             params.put(ConstantParams.TRANSID, !TextUtils.isEmpty(pTranID) ? pTranID : "");
             params.put(ConstantParams.BANK_CODE, !TextUtils.isEmpty(pBankCode) ? pBankCode : "");
-            params.put(ConstantParams.EXINFO, (pExInfo != SDKReport.DEFAULT) ? String.valueOf(pExInfo) : "");
+            params.put(ConstantParams.EXINFO, (pExInfo != SDKReportTask.DEFAULT) ? String.valueOf(pExInfo) : "");
             params.put(ConstantParams.EXCEPTION, !TextUtils.isEmpty(pException) ? pException : "");
             return true;
         } catch (Exception ex) {
@@ -268,16 +268,13 @@ public class DataParameter {
      * @param params
      */
     public static boolean prepareSubmitTransactionParams(AdapterBase pAdapter, String pmcID, HashMap<String, String> params) throws Exception {
-
         putBaseParameter(params);
-
-        if (pAdapter != null)
+        if (pAdapter != null) {
             params.put(ConstantParams.PMC_ID, pAdapter.getChannelID());
-
-        if (!TextUtils.isEmpty(pmcID))
+        }
+        if (!TextUtils.isEmpty(pmcID)) {
             params.put(ConstantParams.PMC_ID, pmcID);
-
-
+        }
         if (GlobalData.isMapCardChannel() && GlobalData.getPaymentInfo().mapBank.isValid()) {
             DMappedCreditCard mapCard = new DMappedCreditCard((DMappedCard) GlobalData.getPaymentInfo().mapBank);
             params.put(ConstantParams.CHARGE_INFO, mapCard.toJsonString());
@@ -288,17 +285,15 @@ public class DataParameter {
         } else {
             params.put(ConstantParams.CHARGE_INFO, "");
         }
-
         if (!TextUtils.isEmpty(GlobalData.getTransactionPin())) {
             params.put(ConstantParams.PIN, GlobalData.getTransactionPin());
         }
-
         params.put(ConstantParams.TRANS_TYPE, GlobalData.getTransactionType().toString());
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         params.put(ConstantParams.ZALO_ID, GlobalData.getPaymentInfo().userInfo.zaloUserId);
         params.put(ConstantParams.LATTITUDE, String.valueOf(GlobalData.getPaymentInfo().mLocation.latitude));
-        params.put(ConstantParams.LONGITUDE,String.valueOf(GlobalData.getPaymentInfo().mLocation.longitude));
+        params.put(ConstantParams.LONGITUDE, String.valueOf(GlobalData.getPaymentInfo().mLocation.longitude));
         return true;
     }
 

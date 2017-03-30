@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.text.TextUtils;
 
-import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
-import vn.com.zalopay.wallet.eventmessage.SmsEventMessage;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
+import vn.com.zalopay.wallet.message.SmsEventMessage;
 import vn.com.zalopay.wallet.utils.Log;
 
 /***

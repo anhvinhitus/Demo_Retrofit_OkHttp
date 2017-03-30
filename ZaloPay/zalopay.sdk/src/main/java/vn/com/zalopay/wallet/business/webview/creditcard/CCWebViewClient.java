@@ -6,13 +6,12 @@ import android.webkit.WebView;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
-import vn.com.zalopay.wallet.datasource.request.SDKReport;
+import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
@@ -80,7 +79,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
             errStringBuilder.append(description);
             errStringBuilder.append(failingUrl);
             try {
-                getAdapter().sdkReportError(SDKReport.ERROR_WEBSITE, errStringBuilder.toString());
+                getAdapter().sdkReportError(SDKReportTask.ERROR_WEBSITE, errStringBuilder.toString());
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -96,7 +95,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
         if (getAdapter() != null) {
             getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewError(SSL_ERROR, null));
             try {
-                getAdapter().sdkReportError(SDKReport.ERROR_SSL, GsonUtils.toJsonString(error));
+                getAdapter().sdkReportError(SDKReportTask.ERROR_SSL, GsonUtils.toJsonString(error));
             } catch (Exception e) {
                 Log.e(this, e);
             }

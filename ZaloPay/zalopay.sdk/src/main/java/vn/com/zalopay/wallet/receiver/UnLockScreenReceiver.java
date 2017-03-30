@@ -3,11 +3,9 @@ package vn.com.zalopay.wallet.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 
-import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
-import vn.com.zalopay.wallet.eventmessage.UnlockScreenEventMessage;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
+import vn.com.zalopay.wallet.message.UnlockScreenEventMessage;
 import vn.com.zalopay.wallet.utils.Log;
 
 /***

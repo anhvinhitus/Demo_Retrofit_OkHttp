@@ -75,7 +75,13 @@
     <string name="zpw_alert_network_error_loadplatforminfo">Mạng không ổn định, không tải được thông tin platform.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_loadmapcardlist">Mạng không ổn định, không tải được thông tin thẻ đã lưu.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_loadmapbankaccountlist">Mạng không ổn định, không tải được thông tin tài khoản ngân hàng đã liên kết.\nVui lòng kiểm tra lại kết nối mạng</string>
+    <string name="zpw_alert_network_error_submitorder">Mạng không ổn định, không gửi được hóa đơn.\nVui lòng kiểm tra lại kết nối mạng</string>
+    <string name="zpw_alert_network_error_verifymapcard">Mạng không ổn định, không thể liên kết thẻ.\nVui lòng kiểm tra lại kết nối mạng</string>
+    <string name="zpw_alert_network_error_submitbankaccount">Mạng không ổn định, không thể liên kết tài khoản.\nVui lòng kiểm tra lại kết nối mạng</string>
+    <string name="zpw_alert_network_error_removemapcard">Mạng không ổn định,không thể xóa thẻ.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
+    <string name="zpw_alert_network_error_authenpayer">Mạng không ổn định,không thể xác thực thông tin otp.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
 
+    <string name="zpw_generic_error">Có lỗi xảy ra.Vui lòng thử lại</string>
 
     <string name="zpw_alert_networking_error_check_status">Vui lòng xem lịch sử để kiểm tra trạng thái giao dịch</string>
 
@@ -429,8 +435,6 @@
     <string name="zpw_string_alert_networking_offline">Không có kết nối mạng.</string>
     <string name="zpw_string_alert_networking_online">Kết nối mạng đã bật</string>
     <string name="zpw_string_remind_turn_on_networking">Kiểm tra kết nối!</string>
-
-    <string name="zpw_string_alert_remove_mapcard_error_networking">Không thể xóa thẻ đã lưu.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
 
     <string name="zpw_string_number_card_format_wrong">Số thẻ không hợp lệ</string>
     <string name="zpw_string_credit_card_cvv_wrong">CVV không hợp lệ</string>

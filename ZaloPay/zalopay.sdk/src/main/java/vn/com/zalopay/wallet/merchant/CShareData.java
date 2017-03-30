@@ -12,14 +12,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import rx.Observer;
+import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
-import vn.com.zalopay.wallet.business.behavior.gateway.GatewayLoader;
+import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
-import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -69,7 +68,7 @@ public class CShareData extends SingletonBase {
     /***
      * load resource static listener
      */
-    protected GatewayLoader.onCheckResourceStaticListener checkResourceStaticListener = new GatewayLoader.onCheckResourceStaticListener() {
+    protected PlatformInfoLoader.onCheckResourceStaticListener checkResourceStaticListener = new PlatformInfoLoader.onCheckResourceStaticListener() {
         @Override
         public void onCheckResourceStaticComplete(boolean isSuccess, String pError) {
             if (isSuccess && mMerchantTask != null) {
@@ -266,7 +265,7 @@ public class CShareData extends SingletonBase {
     protected void checkStaticResource() {
         //check static resource whether ready or not
         try {
-            GatewayLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+            PlatformInfoLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
         } catch (Exception e) {
             if (checkResourceStaticListener != null) {
                 checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
@@ -508,18 +507,9 @@ public class CShareData extends SingletonBase {
             MapCardHelper.loadMapCardList(true)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<BaseResponse>() {
+                    .subscribe(new SingleSubscriber<BaseResponse>() {
                         @Override
-                        public void onCompleted() {
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            pReloadMapCardInfoListener.onError(null);
-                        }
-
-                        @Override
-                        public void onNext(BaseResponse response) {
+                        public void onSuccess(BaseResponse response) {
                             if(response instanceof CardInfoListResponse && response.returncode == 1)
                             {
                                 pReloadMapCardInfoListener.onComplete(((CardInfoListResponse) response).cardinfos);
@@ -528,6 +518,11 @@ public class CShareData extends SingletonBase {
                             {
                                 pReloadMapCardInfoListener.onError(response.getMessage());
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable error) {
+                            pReloadMapCardInfoListener.onError(null);
                         }
                     });
         } catch (Exception e) {

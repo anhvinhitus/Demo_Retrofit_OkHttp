@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-import rx.Observable;
-import rx.Observer;
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -16,8 +16,8 @@ import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.datasource.request.BaseTask;
-import vn.com.zalopay.wallet.datasource.request.MapBankAccountListTask;
+import vn.com.zalopay.wallet.datasource.task.BaseTask;
+import vn.com.zalopay.wallet.datasource.task.MapBankAccountListTask;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
@@ -50,21 +50,9 @@ public class BankAccountHelper {
             loadBankAccountList(pReloadList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<BaseResponse>() {
+                    .subscribe(new SingleSubscriber<BaseResponse>() {
                         @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            if (pListener != null) {
-                                pListener.onCheckExistBankAccountFail(null);
-                            }
-                        }
-
-                        @Override
-                        public void onNext(BaseResponse response) {
+                        public void onSuccess(BaseResponse response) {
                             DBankAccount bankAccount = new DBankAccount();
                             bankAccount.bankcode = pBankCode;
                             if (response instanceof BankAccountListResponse) {
@@ -73,6 +61,13 @@ public class BankAccountHelper {
                                 pListener.onCheckExistBankAccountComplete(false);
                             } else {
                                 Log.e(this, "pListener = NULL");
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable error) {
+                            if (pListener != null) {
+                                pListener.onCheckExistBankAccountFail(null);
                             }
                         }
                     });
@@ -89,22 +84,20 @@ public class BankAccountHelper {
      * reload bank account list
      * @param pReload
      */
-    public static Observable<BaseResponse> loadBankAccountList(boolean pReload) {
-        return Observable.create(subscriber -> {
+    public static Single<BaseResponse> loadBankAccountList(boolean pReload) {
+        return Single.create(subscriber -> {
             try {
                 if (pReload) {
                     SharedPreferencesManager.getInstance().setBankAccountCheckSum(null);
                 }
                 BaseTask getBankAccount = new MapBankAccountListTask(pResponse -> {
-                    subscriber.onNext(pResponse);
-                    subscriber.onCompleted();
+                    subscriber.onSuccess(pResponse);
                 });
                 getBankAccount.makeRequest();
 
             } catch (Exception e) {
                 Log.e(Log.TAG, e);
                 subscriber.onError(e);
-                subscriber.onCompleted();
             }
         });
     }

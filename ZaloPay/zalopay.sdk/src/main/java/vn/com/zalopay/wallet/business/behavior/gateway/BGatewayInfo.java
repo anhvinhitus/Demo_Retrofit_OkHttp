@@ -11,8 +11,8 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.datasource.request.BaseTask;
-import vn.com.zalopay.wallet.datasource.request.PlatformInfoTask;
+import vn.com.zalopay.wallet.datasource.task.BaseTask;
+import vn.com.zalopay.wallet.datasource.task.PlatformInfoTask;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
 import vn.com.zalopay.wallet.utils.Log;
@@ -94,7 +94,7 @@ public class BGatewayInfo extends SingletonBase {
         String checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();
         String userID = SharedPreferencesManager.getInstance().getCurrentUserID();
         boolean isNewUser = GlobalData.isNewUser();
-        Log.d("isNeedToGetPlatformInfo", "==== BGatewayInfo.execute ====user id====" + userID);
+        Log.d("isNeedToGetPlatformInfo", "user id " + userID);
         return currentTime > expiredTime || !ZPWUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV) || !isValidConfig() || isNewUser;
     }
 
@@ -126,7 +126,6 @@ public class BGatewayInfo extends SingletonBase {
         //keep weak merchant listener to callback in case need to retry platforminfo
         GlobalData.setMerchantCallBack(pListener);
         boolean isNeedToReloadPlatformInfo = isNeedToGetPlatformInfo();
-        Log.d(this, "===isNeedToReloadPlatformInfo=" + isNeedToReloadPlatformInfo);
         if (isNeedToReloadPlatformInfo) {
             // Check if the task has finished yet?
             if (mProcessing) {

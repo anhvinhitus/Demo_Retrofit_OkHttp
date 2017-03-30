@@ -2,19 +2,17 @@ package vn.com.zalopay.wallet.datasource.implement;
 
 import java.util.HashMap;
 
-import retrofit2.Call;
+import retrofit2.Response;
+import rx.Observable;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
+import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.datasource.IData;
-import vn.com.zalopay.wallet.datasource.interfaces.ITask;
+import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 
-/**
- * Created by cpu11843-local on 1/10/17.
- */
-
-public class SubmitMapAccountImpl implements ITask {
+public class SubmitMapAccountImpl implements IRequest<StatusResponse> {
     @Override
-    public Call doTask(IData pIData, HashMap<String, String> pParams) throws Exception {
+    public Observable<Response<StatusResponse>> getRequest(IData pIData, HashMap<String, String> pParams) {
         return pIData.submitMapAccount(
                 pParams.get(ConstantParams.USER_ID),
                 pParams.get(ConstantParams.ZALO_ID),
@@ -32,7 +30,7 @@ public class SubmitMapAccountImpl implements ITask {
     }
 
     @Override
-    public int getTaskEventId() {
+    public int getRequestEventId() {
         return ZPEvents.CONNECTOR_V001_TPE_SUBMITMAPACCOUNT;
     }
 }

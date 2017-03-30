@@ -32,7 +32,7 @@ import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.datasource.request.SubmitMapAccount;
+import vn.com.zalopay.wallet.datasource.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
@@ -241,7 +241,7 @@ public class AdapterLinkAcc extends AdapterBase {
         }
 
         String jsonSt = json.toString();
-        SubmitMapAccount submitMapAccount = new SubmitMapAccount(this, jsonSt);
+        SubmitMapAccountTask submitMapAccount = new SubmitMapAccountTask(this, jsonSt);
         submitMapAccount.makeRequest();
     }
 

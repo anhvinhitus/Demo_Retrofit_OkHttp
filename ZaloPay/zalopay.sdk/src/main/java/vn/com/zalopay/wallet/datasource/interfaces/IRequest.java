@@ -8,7 +8,7 @@ import rx.functions.Action1;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.datasource.IData;
 
-public interface IRequest<T extends BaseResponse> {
-    Observable<Response<T>> getRequest(IData pIData, HashMap<String, String> pParams) throws Exception;
+public interface IRequest<T> {
+    Observable<Response<T>> getRequest(IData pIData, HashMap<String, String> pParams);
     int getRequestEventId();
 }

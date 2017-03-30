@@ -16,7 +16,7 @@ public class LoadBankListImpl implements IRequest<BankConfigResponse> {
     }
 
     @Override
-    public Observable<Response<BankConfigResponse>> getRequest(IData pIData, HashMap<String, String> pParams) throws Exception {
+    public Observable<Response<BankConfigResponse>> getRequest(IData pIData, HashMap<String, String> pParams) {
         return pIData.loadBankList(pParams);
     }
 }

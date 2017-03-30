@@ -41,6 +41,12 @@ public class Log {
         }
     }
 
+    public static void d(Object pObject, Throwable pException) {
+        if (IS_LOG_ENABLE) {
+            Timber.tag((pObject != null) ? pObject.getClass().getName() : TAG).d("%s", pException != null ? pException.getMessage() : DEFAULT_ERROR);
+        }
+    }
+
     public static void d(Object pObject, Exception pException) {
         if (IS_LOG_ENABLE) {
             Timber.tag((pObject != null) ? pObject.getClass().getName() : TAG).d("%s", pException != null ? pException.getMessage() : DEFAULT_ERROR);

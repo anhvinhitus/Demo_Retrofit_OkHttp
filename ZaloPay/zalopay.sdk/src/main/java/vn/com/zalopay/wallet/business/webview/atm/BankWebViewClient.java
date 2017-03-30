@@ -26,7 +26,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EJavaScriptType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentReturnCode;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
-import vn.com.zalopay.wallet.datasource.request.SDKReport;
+import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
@@ -361,7 +361,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
                     }
 
                     try {
-                        getAdapter().sdkReportError(SDKReport.ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
+                        getAdapter().sdkReportError(SDKReportTask.ERROR_WEBSITE, !TextUtils.isEmpty(paymentError) ? paymentError : pHtml);
                     } catch (Exception e) {
                         Log.e(this, e);
                     }

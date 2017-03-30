@@ -4,16 +4,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.text.TextUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.datasource.request.DownloadBundle;
-import vn.com.zalopay.wallet.listener.ZPWDownloadResourceListener;
-import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.Log;
 
 /***
@@ -25,15 +21,6 @@ public class DownloadResourceService extends Service {
     public static String resrcVer;
     private static int countRetry;
     private Timer mTimer;
-    private ZPWDownloadResourceListener mDownloadResourceListener = new ZPWDownloadResourceListener() {
-        @Override
-        public void onLoadResourceComplete(boolean isSuccess) {
-            if (isSuccess) {
-                Log.d(this, "downloaded resource success in service count: " + countRetry);
-                stopService();
-            }
-        }
-    };
 
     /**
      * Start service download resource
@@ -87,7 +74,7 @@ public class DownloadResourceService extends Service {
         Log.d(getClass().getName(), "===starting download resource again in service===count: " + countRetry);
         Log.d(getClass().getName(), "===url resource to download ===" + urlResourceToDownload + "==folder to unzip:" + resourcePathInStorage + "==version==" + resrcVer);
 
-        if (DownloadBundle.processing) {
+        /*if (DownloadBundle.processing) {
             Log.d(getClass().getName(), "===there're a task is running in background===count: " + countRetry);
             return;
         }
@@ -95,7 +82,7 @@ public class DownloadResourceService extends Service {
         if (!TextUtils.isEmpty(urlResourceToDownload) && ConnectionUtil.isOnline(getApplicationContext())) {
             DownloadBundle downloadResourceTask = new DownloadBundle(mDownloadResourceListener, urlResourceToDownload, resourcePathInStorage, resrcVer);
             downloadResourceTask.execute();
-        }
+        }*/
     }
 
     @Override

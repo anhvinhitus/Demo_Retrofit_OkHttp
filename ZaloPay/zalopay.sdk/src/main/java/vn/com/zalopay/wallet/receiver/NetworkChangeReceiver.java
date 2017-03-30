@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.eventmessage.NetworkEventMessage;
-import vn.com.zalopay.wallet.eventmessage.PaymentEventBus;
+import vn.com.zalopay.wallet.message.NetworkEventMessage;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.utils.Log;
 
 /***

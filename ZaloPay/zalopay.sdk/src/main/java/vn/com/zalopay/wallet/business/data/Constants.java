@@ -11,7 +11,6 @@ public class Constants {
     public static final String URL_GET_STATUS = "v001/tpe/gettransstatus";
     public static final String URL_CHECK_SUBMIT_ORDER_STATUS = "v001/tpe/getstatusbyapptransidforclient";
     public static final String URL_SAVE_CARD = "v001/tpe/mapcard";
-    public static final String URL_GETBALANCE_ZALOPAY = "v001/tpe/getbalance";
     public static final String URL_APP_INFO = "v001/tpe/getappinfo";
     public static final String URL_REMOVE_MAPCARD = "v001/tpe/removemapcard";
     public static final String URL_GET_BANKLIST = "v001/tpe/getbanklist";
@@ -53,7 +52,6 @@ public class Constants {
     public static final int MIN_ATM_LENGTH = 6;
     public static final int MAX_COUNT_RETRY_PIN = 5;
     public static final int MAX_COUNT_RETRY_CAPTCHA = 5;
-    public static final int MAX_COUNT_RETRY_SAVE_CARD = 3;
     public static final int MAX_RETRY_OPEN_NETWORKING = 3;
     public static final int PIN_WRONG_RETURN_CODE = -117;
     public static final int CARD_ALREADY_MAP = -164;
@@ -86,12 +84,6 @@ public class Constants {
     public static int RESULT_PHARSE = 8;
     public static int UNDEFINE = 9;
     public static String TRUE = "true";
-
-    public static enum HostType {
-        LIVE,
-        STAGING,
-        SANDBOX
-    }
 
     public static class NOTIFY_TYPE {
         public final static int LINKACC = 116;

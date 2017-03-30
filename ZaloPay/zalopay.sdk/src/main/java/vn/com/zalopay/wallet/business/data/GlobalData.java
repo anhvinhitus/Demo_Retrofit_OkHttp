@@ -147,7 +147,6 @@ public class GlobalData {
     /***
      * check soft token
      * if has new accesstoken, must notify to app to update new token to cache again
-     *
      * @param pResponse
      * @return
      */
@@ -164,16 +163,12 @@ public class GlobalData {
 
         Log.d("checkForUpdateAccessTokenToApp", "old token = " + GlobalData.mPaymentInfo.userInfo.accessToken);
         Log.d("checkForUpdateAccessTokenToApp", "new token = " + pResponse.accesstoken);
-
         if (GlobalData.getPaymentListener() != null && !TextUtils.isEmpty(GlobalData.mPaymentInfo.userInfo.accessToken) && !GlobalData.mPaymentInfo.userInfo.accessToken.equals(pResponse.accesstoken)) {
             //we need to callback to app to update new access token
             GlobalData.getPaymentListener().onUpdateAccessToken(pResponse.accesstoken);
-
             GlobalData.mPaymentInfo.userInfo.accessToken = pResponse.accesstoken;
-
             return true;
         }
-
         return false;
     }
 

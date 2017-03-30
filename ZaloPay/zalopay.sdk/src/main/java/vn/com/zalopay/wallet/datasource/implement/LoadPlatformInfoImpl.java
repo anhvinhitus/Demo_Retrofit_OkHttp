@@ -12,7 +12,7 @@ import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 public class LoadPlatformInfoImpl implements IRequest<DPlatformInfo> {
 
     @Override
-    public Observable<Response<DPlatformInfo>> getRequest(IData pIData, HashMap<String, String> pParams) throws Exception {
+    public Observable<Response<DPlatformInfo>> getRequest(IData pIData, HashMap<String, String> pParams) {
         return pIData.loadPlatformInfo(pParams);
     }
 

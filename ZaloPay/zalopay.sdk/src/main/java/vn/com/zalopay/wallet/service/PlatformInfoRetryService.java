@@ -12,7 +12,6 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.datasource.RequestKeeper;
-import vn.com.zalopay.wallet.datasource.request.GetPlatformInfo;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.Log;
@@ -23,7 +22,7 @@ import vn.com.zalopay.wallet.utils.Log;
 public class PlatformInfoRetryService extends Service {
     private static int countRetry;
     private Timer mTimer;
-    private GetPlatformInfo getGatewayInfoTask;
+    //private GetPlatformInfo getGatewayInfoTask;
 
     private ZPWGetGatewayInfoListener mLoadGatewayInfoListener = new ZPWGetGatewayInfoListener() {
         @Override
@@ -93,7 +92,7 @@ public class PlatformInfoRetryService extends Service {
             return;
         }
 
-        if (getGatewayInfoTask != null && getGatewayInfoTask.isProcessing()) {
+       /* if (getGatewayInfoTask != null && getGatewayInfoTask.isProcessing()) {
             Log.d(getClass().getName(), "===there're a task retry platforminfo is running in background===count: " + countRetry);
 
             return;
@@ -111,7 +110,7 @@ public class PlatformInfoRetryService extends Service {
         if (RequestKeeper.isCanRetryFlatformInfo())
             getGatewayInfoTask.makeRetry();
         else
-            getGatewayInfoTask.makeRequest();
+            getGatewayInfoTask.makeRequest();*/
     }
 
     @Override

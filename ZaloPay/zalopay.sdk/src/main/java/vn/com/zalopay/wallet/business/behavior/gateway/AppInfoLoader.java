@@ -6,8 +6,8 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.datasource.request.AppInfoTask;
-import vn.com.zalopay.wallet.datasource.request.BaseTask;
+import vn.com.zalopay.wallet.datasource.task.AppInfoTask;
+import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.utils.Log;
 

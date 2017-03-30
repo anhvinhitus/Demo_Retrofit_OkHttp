@@ -43,15 +43,13 @@ import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.datasource.DataRepository;
-import vn.com.zalopay.wallet.datasource.request.BaseRequest;
-import vn.com.zalopay.wallet.datasource.request.BaseTask;
-import vn.com.zalopay.wallet.datasource.request.CheckOrderStatusFailSubmit;
-import vn.com.zalopay.wallet.datasource.request.MapCardListTask;
-import vn.com.zalopay.wallet.datasource.request.SDKReport;
-import vn.com.zalopay.wallet.datasource.request.SendLog;
-import vn.com.zalopay.wallet.datasource.request.TrustSDKReport;
-import vn.com.zalopay.wallet.datasource.request.getstatus.GetStatus;
-import vn.com.zalopay.wallet.helper.BankAccountHelper;
+import vn.com.zalopay.wallet.datasource.task.BaseTask;
+import vn.com.zalopay.wallet.datasource.task.CheckOrderStatusFailSubmit;
+import vn.com.zalopay.wallet.datasource.task.MapCardListTask;
+import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
+import vn.com.zalopay.wallet.datasource.task.SendLogTask;
+import vn.com.zalopay.wallet.datasource.task.TrustSDKReportTask;
+import vn.com.zalopay.wallet.datasource.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -815,7 +813,7 @@ public abstract class AdapterBase {
                     String transId = String.valueOf(pAdditionParams[0]);
                     if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
                         DataRepository.shareInstance().cancelRequest();//cancel current request
-                        GetStatus.cancelRetryRequest();//cancel timer retry get status
+                        GetStatus.cancelRetryTimer();//cancel timer retry get status
                         DialogManager.closeAllDialog();//close dialog
                         if (mResponseStatus != null) {
                             mResponseStatus.returncode = 1;
@@ -842,18 +840,14 @@ public abstract class AdapterBase {
     /***
      * check networking is on/off
      * if off then open dialog networking for requesting open network again
-     *
      * @return
      */
     public boolean checkNetworkingAndShowRequest() {
         boolean isNetworkingOpen = ConnectionUtil.isOnline(GlobalData.getAppContext());
-
         if (!isNetworkingOpen) {
             showProgressBar(false, null);
-
             processNetworkingOff();
         }
-
         return isNetworkingOpen;
     }
 
@@ -868,8 +862,7 @@ public abstract class AdapterBase {
             if (!shouldSendLogToServer()) {
                 return;
             }
-
-            BaseRequest sendLogTask = new SendLog(mConfig.pmcid, mTransactionID, mCaptchaBeginTime, mCaptchaEndTime, mOtpBeginTime, mOtpEndTime);
+            BaseTask sendLogTask = new SendLogTask(mConfig.pmcid, mTransactionID, mCaptchaBeginTime, mCaptchaEndTime, mOtpBeginTime, mOtpEndTime);
             sendLogTask.makeRequest();
         } catch (Exception e) {
             Log.e(this, e);
@@ -1176,9 +1169,8 @@ public abstract class AdapterBase {
     protected void checkTransactionStatus(String pAppTransID, String pMessage) {
         isAlreadyCheckStatusFailSubmit = true;
         showProgressBar(true, TextUtils.isEmpty(pMessage) ? GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing) : pMessage);
-
-        BaseRequest getStatusTask = new CheckOrderStatusFailSubmit(this, pAppTransID, false);
-        getStatusTask.makeRequest();
+        BaseTask checkOrderStatusFailSubmit = new CheckOrderStatusFailSubmit(this, pAppTransID);
+        checkOrderStatusFailSubmit.makeRequest();
     }
 
     /**
@@ -1252,7 +1244,7 @@ public abstract class AdapterBase {
     }
 
     private void makeRequestCheckStatusAfterSubmitFail(String pAppTransID) {
-        BaseRequest getStatusTask = new CheckOrderStatusFailSubmit(this, pAppTransID, false);
+        BaseTask getStatusTask = new CheckOrderStatusFailSubmit(this, pAppTransID);
         getStatusTask.makeRequest();
     }
 
@@ -1993,7 +1985,7 @@ public abstract class AdapterBase {
         if (!TextUtils.isEmpty(paymentError)) {
             paymentError = String.format(paymentError, pPharse, 200, pMessage);
             try {
-                sdkReportError(SDKReport.TRANSACTION_FAIL, paymentError);
+                sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -2006,7 +1998,7 @@ public abstract class AdapterBase {
                 String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
                 if (!TextUtils.isEmpty(paymentError)) {
                     paymentError = String.format(paymentError, Constants.RESULT_PHARSE, 200, GsonUtils.toJsonString(mResponseStatus));
-                    sdkReportError(SDKReport.TRANSACTION_FAIL, paymentError);
+                    sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
                 }
             }
         } catch (Exception e) {
@@ -2024,7 +2016,7 @@ public abstract class AdapterBase {
             } catch (Exception ex) {
                 Log.d(this, ex);
             }
-            SDKReport.makeReportError(pErrorCode, mTransactionID, pMessage, bankCode);
+            SDKReportTask.makeReportError(pErrorCode, mTransactionID, pMessage, bankCode);
         } catch (Exception e) {
             throw e;
         }
@@ -2041,7 +2033,7 @@ public abstract class AdapterBase {
             } catch (Exception ex) {
                 Log.d(this, ex);
             }
-            SDKReport.makeReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
+            SDKReportTask.makeReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
         } catch (Exception e) {
             throw e;
         }
@@ -2062,7 +2054,7 @@ public abstract class AdapterBase {
             } catch (Exception ex) {
                 Log.d(this, ex);
             }
-            TrustSDKReport.makeTrustReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
+            TrustSDKReportTask.makeTrustReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
         } catch (Exception e) {
             throw e;
         }
