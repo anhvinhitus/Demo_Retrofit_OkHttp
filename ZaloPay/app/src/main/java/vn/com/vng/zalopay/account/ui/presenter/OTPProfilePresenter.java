@@ -53,6 +53,7 @@ public class OTPProfilePresenter extends AbstractPresenter<IOTPProfileView> {
     public void verifyOtp(String otp) {
         showLoading();
         Subscription subscription = mAccountRepository.verifyOTPProfile(otp)
+                .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new VerifyOTPProfileSubscriber());
@@ -77,7 +78,6 @@ public class OTPProfilePresenter extends AbstractPresenter<IOTPProfileView> {
                 return;
             }
 
-            Timber.d(e, "onError %s", e.getMessage());
             OTPProfilePresenter.this.onConfirmOTPError(e);
         }
     }

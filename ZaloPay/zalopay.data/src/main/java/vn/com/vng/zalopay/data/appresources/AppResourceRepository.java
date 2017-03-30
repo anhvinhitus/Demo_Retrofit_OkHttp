@@ -127,7 +127,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         String appIds = appidlist.toString().replaceAll("\\s", "");
         String checkSum = checksumlist.toString();
 
-        Timber.d("appIds react-native %s checkSum %s", appIds, checkSum);
+        Timber.d("Fetch insdie app : appIds [%s] checkSum [%s]", appIds, checkSum);
 
         return mRequestService.getinsideappresource(appIds, checkSum, mRequestParameters, mAppVersion)
                 .doOnNext(this::processAppResourceResponse)
@@ -147,9 +147,9 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     }
 
     private boolean shouldDownloadApp(AppResourceEntity app) {
-        Timber.d("shouldDownloadApp appId[%s] stateDownload[%s]", app.appid, app.stateDownload);
+        Timber.d("Should download app : appId [%s] stateDownload [%s]", app.appid, app.stateDownload);
         if (mListAppIdExcludeDownload != null && mListAppIdExcludeDownload.contains(app.appid)) {
-            Timber.d("Exclude download app[%s]", app.appid);
+            Timber.d("Exclude download : appId [%s]", app.appid);
             return false;
         }
         if (app.stateDownload < DownloadState.STATE_SUCCESS) {
@@ -268,7 +268,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     public Observable<Boolean> existResource(long appId, boolean downloadIfNeed) {
         return makeObservable(() -> {
             AppResourceEntity entity = mLocalStorage.get(appId);
-            Timber.d("existResource appId [%s] state [%s]", appId, entity.stateDownload);
+            Timber.d("Exist resource : appId [%s] state [%s]", appId, entity.stateDownload);
             boolean downloadSuccess = (entity.stateDownload >= DownloadState.STATE_SUCCESS);
             if (!downloadSuccess && downloadIfNeed) {
                 startDownloadService(Collections.singletonList(entity));
@@ -299,7 +299,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
 
     private Observable<AppResourceResponse> fetchAppResource(List<AppResourceEntity> entities) {
         Timber.d("Fetch app resource");
-
         List<String> appidlist = new ArrayList<>();
         List<String> checksumlist = new ArrayList<>();
         listAppIdAndChecksum(appidlist, checksumlist, entities);
@@ -309,7 +308,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     private Observable<AppResourceResponse> fetchAppResource(List<String> appidlist, List<String> checksumlist) {
         String appIds = appidlist.toString().replaceAll("\\s", "");
         String checkSum = checksumlist.toString();
-        Timber.d("Fetch application resource appId [%s] checkSum [%s] ", appIds, checkSum);
+        Timber.d("Fetch application resource : appId [%s] checkSum [%s] ", appIds, checkSum);
         return fetchAppResource(appIds, checkSum);
     }
 
@@ -378,19 +377,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         listApp.removeAll(mListExcludeApp);
         Timber.d("app show in home page: %s", listApp.size());
         return listApp;
-    }
-
-
-    private boolean isUpToDate() {
-        boolean isUpToDate = false;
-        if (mLastTimeFetchApplication > 0) {
-            long time = Math.abs(System.currentTimeMillis() / 1000 - mLastTimeFetchApplication);
-            if (time < 3 * 60) { // 3min
-                isUpToDate = true;
-            }
-        }
-        Timber.d("isUpToDate: [%s]", isUpToDate);
-        return isUpToDate;
     }
 
 }

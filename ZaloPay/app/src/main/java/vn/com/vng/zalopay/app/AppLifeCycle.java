@@ -116,14 +116,14 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
 
     private void createUserComponent() {
 
-        Timber.d(" user component %s", getUserComponent());
+        Timber.d("UserComponent [%s]", getUserComponent());
 
         if (getUserComponent() != null) {
             return;
         }
 
         UserConfig userConfig = getAppComponent().userConfig();
-        Timber.d(" isSignIn %s", userConfig.isSignIn());
+        Timber.d("User is sign in %s", userConfig.isSignIn());
         if (userConfig.isSignIn()) {
             userConfig.loadConfig();
             AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());

@@ -280,7 +280,6 @@ public class ChangePinFragment extends BaseFragment implements IChangePinView, F
     }
 
     public void showKeyboard() {
-        Timber.d("showKeyboard");
         AndroidUtils.runOnUIThread(mKeyboardRunnable, 250);
     }
 

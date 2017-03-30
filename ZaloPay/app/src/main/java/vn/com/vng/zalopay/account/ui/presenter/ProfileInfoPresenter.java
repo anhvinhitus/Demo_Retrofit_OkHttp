@@ -50,8 +50,6 @@ public class ProfileInfoPresenter extends AbstractPresenter<IProfileInfoView> {
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEventMainThread(ZaloProfileInfoEvent event) {
-        Timber.d("onEventMainThread event %s", event);
-        //UPDATE USERINFO
         if (mView != null) {
             mView.updateUserInfo(mUser);
         }

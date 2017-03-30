@@ -157,7 +157,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     }
 
     private void setBirthDay(long time) {
-        Timber.d("setBirthDay: time %s", time);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String birthday = simpleDateFormat.format(new Date(time * 1000));
         tvBirthday.setText(birthday);

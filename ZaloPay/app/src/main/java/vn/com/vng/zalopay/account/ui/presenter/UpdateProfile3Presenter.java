@@ -53,7 +53,7 @@ public class UpdateProfile3Presenter extends AbstractPresenter<IUpdateProfile3Vi
     }
 
     private Observable<byte[]> resizeImage(final Uri imgPath) {
-        Timber.d("resizeImage path[%s]", imgPath);
+        Timber.d("Resize image path[%s]", imgPath);
         return ObservableHelper.makeObservable(new Callable<byte[]>() {
             @Override
             public byte[] call() throws Exception {
@@ -192,9 +192,10 @@ public class UpdateProfile3Presenter extends AbstractPresenter<IUpdateProfile3Vi
         @Override
         public void onNext(ProfileInfo3 profile) {
 
-            Timber.d("onNext: email [%s] cmnd [%s] avatar %s", profile.email, profile.identity, profile.avatarImg);
-
-            mView.setProfileInfo(profile.email, profile.identity, profile.foregroundImg, profile.backgroundImg, profile.avatarImg);
+            Timber.d("Get profile info success : email [%s] cmnd [%s] avatar %s", profile.email, profile.identity, profile.avatarImg);
+            if (mView != null) {
+                mView.setProfileInfo(profile.email, profile.identity, profile.foregroundImg, profile.backgroundImg, profile.avatarImg);
+            }
         }
     }
 }

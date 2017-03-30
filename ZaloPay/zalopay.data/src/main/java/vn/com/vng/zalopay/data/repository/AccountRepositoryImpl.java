@@ -129,7 +129,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
     @Override
     public Observable<Person> getUserInfoByZaloPayId(String zaloPayId) {
         Person cachedItem = mLocalStore.getById(zaloPayId);
-        Timber.d("getUserInfoByZaloPayId, cachedItem [%s]", cachedItem);
+        Timber.d("Get user info by zalopayId : cachedItem [%s]", cachedItem);
         if (cachedItem != null) {
             return Observable.just(cachedItem);
         } else {
@@ -271,7 +271,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
 
     @Override
     public Observable<Void> saveProfileInfo2(String phoneNumber, boolean receiveOtp) {
-        Timber.d("saveProfileInfo2 phone [%s] receiveOtp [%s]",
+        Timber.d("Save profile 2 : phone [%s] receiveOtp [%s]",
                 phoneNumber, receiveOtp);
         return ObservableHelper.makeObservable(() -> {
             mLocalStore.saveProfileInfo2(phoneNumber, receiveOtp);

@@ -119,16 +119,9 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
     }
 
     private class FriendListSubscriber extends DefaultSubscriber<Cursor> {
-        int next;
-
-        @Override
-        public void onCompleted() {
-            Timber.d("onCompleted");
-        }
 
         @Override
         public void onNext(Cursor cursor) {
-            Timber.d("onNext:  %s %s", next++, cursor);
             if (mView == null) {
                 return;
             }

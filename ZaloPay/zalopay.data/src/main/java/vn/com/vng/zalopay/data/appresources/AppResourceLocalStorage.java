@@ -34,7 +34,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
                     .list();
             return Lists.transform(list, platformDaoMapper::transform);
         } catch (android.database.sqlite.SQLiteException e) {
-            Timber.e(e, "Exception");
+            Timber.d(e, "Get all app resource error");
             return new ArrayList<>();
         }
     }
@@ -87,7 +87,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
     @Override
     public void increaseStateDownload(long appId) {
-        Timber.d("increaseStateDownload appId %s", appId);
+        Timber.d("Increase state download : appId [%s]", appId);
         List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder()
                 .where(AppResourceGDDao.Properties.Appid.eq(appId))
                 .list();
@@ -97,10 +97,10 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
         for (AppResourceGD app : appResourceGD) {
 
-            long state = app.stateDownload == null ? 0: app.stateDownload + 1;
+            long state = app.stateDownload == null ? 0 : app.stateDownload + 1;
             app.stateDownload = state;
             if (state >= 2) {
-                app.numRetry= (0L);
+                app.numRetry = (0L);
                 app.timeDownload = (0L);
             }
         }
@@ -145,7 +145,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
         }
 
         for (AppResourceGD resourceGD : appResourceGD) {
-            resourceGD.sortOrder = (long)(list.indexOf(resourceGD.appid));
+            resourceGD.sortOrder = (long) (list.indexOf(resourceGD.appid));
         }
 
         getAppInfoDao().insertOrReplaceInTx(appResourceGD);

@@ -435,7 +435,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
     }
 
     private void loadFrontImage(@Nullable Uri uri) {
-        Timber.d("loadFrontImage uri[%s]", uri);
+        Timber.d("Load front image : uri [%s]", uri);
 
         if (uri == null) {
             clearFrontImage();
@@ -468,7 +468,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
             clearAvatar();
             return;
         }
-        Timber.d("loadAvatar uri[%s]", uri);
+        Timber.d("Load avatar image : uri [%s]", uri);
         mAvatarView.setImageURI(uri);
         mAvatarView.setVisibility(View.VISIBLE);
 
@@ -521,7 +521,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @Override
     public void setProfileInfo(String email, String identity, String foregroundImg, String backgroundImg, String avatarImg) {
-        Timber.d("setProfileInfo: foregroundImg %s backgroundImg %s avatarImg %s", foregroundImg, backgroundImg, avatarImg);
+        Timber.d("Set profile info : foregroundImg %s backgroundImg %s avatarImg %s", foregroundImg, backgroundImg, avatarImg);
 
         if (!TextUtils.isEmpty(email)) {
             setEmail(email);
@@ -566,7 +566,6 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
     @OnFocusChange({R.id.edtEmail, R.id.edtIdentity})
     public void onFocusChange(View v, boolean hasView) {
-        Timber.d("onFocusChange %s", hasView);
         mBtnContinue.setEnabled(mEdtEmailView.isValid() && mEdtIdentityView.isValid());
     }
 
@@ -586,9 +585,7 @@ public class UpdateProfile3Fragment extends AbsPickerImageFragment implements IU
 
         if (mEdtEmailView.isFocused()) {
             int[] location = new int[2];
-            Timber.d("onKeyBoardShow scroll to Top");
             mEdtIdentityView.getLocationInWindow(location);
-            Timber.d("onKeyBoardShow: mEdtIdentityView.y %s", location[1]);
             mScrollView.smoothScrollBy(0, location[1]);
         } else if (mEdtIdentityView.isFocused()) {
             mScrollView.smoothScrollBy(0, mScrollView.getBottom());

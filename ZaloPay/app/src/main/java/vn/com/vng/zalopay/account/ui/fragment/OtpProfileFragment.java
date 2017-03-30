@@ -188,7 +188,8 @@ public class OtpProfileFragment extends RuntimePermissionFragment implements IOT
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onReceiveOTP(ReceiveOTPEvent event) {
 
-        Timber.d("onReceiveOTP %s", event.otp);
+        Timber.d("On receive otp : %s", event.otp);
+
         if (getUserVisibleHint()) {
             if (mEdtOTPView != null) {
                 mEdtOTPView.setText(event.otp);
@@ -204,18 +205,15 @@ public class OtpProfileFragment extends RuntimePermissionFragment implements IOT
 
     @Override
     public void onStartFragment() {
-        Timber.d("onStartFragment");
         isPermissionGrantedAndRequest(Manifest.permission.RECEIVE_SMS, PERMISSION_CODE.RECEIVE_SMS);
     }
 
     @Override
     public void onStopFragment() {
-        Timber.d("onStopFragment");
     }
 
     @Override
     protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
-        Timber.d("permissionGranted: %s", permissionRequestCode);
     }
 
     public boolean onBackPressed() {

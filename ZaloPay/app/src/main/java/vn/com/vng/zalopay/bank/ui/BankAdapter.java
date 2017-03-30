@@ -45,7 +45,6 @@ class BankAdapter extends AbsRecyclerAdapter<ZPCard, BankAdapter.ViewHolder> {
         super.onDetachedFromRecyclerView(recyclerView);
         onItemClickListener = null;
         mListener = null;
-        Timber.i("Detached");
     }
 
     @Override

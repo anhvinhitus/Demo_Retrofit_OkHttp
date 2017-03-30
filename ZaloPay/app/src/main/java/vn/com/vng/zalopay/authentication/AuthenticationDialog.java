@@ -315,8 +315,6 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     @Override
     public void onAuthenticated(String password) {
-        Timber.d("onAuthenticated");
-
         if (pendingIntent != null) {
             startActivity(pendingIntent);
             if (isFinish) {
@@ -334,8 +332,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     @Override
     public void onAuthenticationFailure() {
-        Timber.d("onAuthenticationFailure");
-
+        Timber.d("on Authentication failure");
         isCancel = false;
         if (mCallback != null) {
             mCallback.onAuthenticationFailure();
@@ -397,7 +394,7 @@ public class AuthenticationDialog extends DialogFragment implements IAuthenticat
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        Timber.d("onDismiss: %s", isCancel);
+        Timber.d("on dismiss dialog : isCancel %s", isCancel);
         AndroidUtils.cancelRunOnUIThread(mResetErrorTextRunnable);
         if (mCallback != null && isCancel) {
             mCallback.onCancel();

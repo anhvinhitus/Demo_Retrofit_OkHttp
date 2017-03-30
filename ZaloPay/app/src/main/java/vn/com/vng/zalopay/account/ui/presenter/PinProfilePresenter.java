@@ -58,7 +58,6 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
 
         @Override
         public void onNext(Boolean result) {
-            Timber.d("updateProfile reult %s", result);
             PinProfilePresenter.this.onUpdateProfileSuccess(phone);
         }
 
@@ -72,7 +71,7 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
                 return;
             }
 
-            Timber.e(e, "update Profile Subscriber onError [%s]", e.getMessage());
+            Timber.d(e, "Update profile error");
             if (e instanceof BodyException) {
                 PinProfilePresenter.this.onUpdateProfileError(e.getMessage());
             } else {
@@ -95,7 +94,7 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
     }
 
     private void showProfileLevel2Cache() {
-        mAccountRepository.getProfileLevel2Cache()
+        Subscription subscription = mAccountRepository.getProfileLevel2Cache()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<ProfileLevel2>() {
@@ -104,13 +103,15 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
                         if (profileLevel2 == null) {
                             return;
                         }
-                        Timber.d("showProfileLevel2Cache phone [%s]", profileLevel2.phoneNumber);
-                        Timber.d("showProfileLevel2Cache isReceivedOtp [%s]", profileLevel2.isReceivedOtp);
+                        Timber.d("Show profile cache : phone [%s] isReceivedOtp [%s]", profileLevel2.phoneNumber, profileLevel2.isReceivedOtp);
+
                         if (!TextUtils.isEmpty(profileLevel2.phoneNumber)) {
                             mView.setPhoneNumber(profileLevel2.phoneNumber);
                         }
                     }
                 });
+
+        mSubscription.add(subscription);
     }
 
     public void saveProfileInfo2Cache(final String phone) {
@@ -141,7 +142,7 @@ public class PinProfilePresenter extends AbstractPresenter<IPinProfileView> {
     }
 
     private void saveProfileInfo2Cache(String phone, boolean receiveOtp) {
-        Timber.d("saveProfileInfo2Cache phone [%s] receiveOtp [%s]",
+        Timber.d("Save profile info : phone [%s] receiveOtp [%s]",
                 phone, receiveOtp);
         mAccountRepository.saveProfileInfo2(phone, receiveOtp)
                 .subscribeOn(Schedulers.io())

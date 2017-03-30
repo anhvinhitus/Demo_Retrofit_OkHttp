@@ -47,8 +47,9 @@ public class PreProfilePresenter extends AbstractPresenter<IPreProfileView> {
                             mView.initPagerContent(0);
                             return;
                         }
-                        Timber.d("initPagerContent phone [%s]", profileLevel2.phoneNumber);
-                        Timber.d("initPagerContent isReceivedOtp [%s]", profileLevel2.isReceivedOtp);
+
+                        Timber.d("Show profile cache : phone [%s] isReceivedOtp [%s]", profileLevel2.phoneNumber, profileLevel2.isReceivedOtp);
+
                         mView.updateCurrentPhone(profileLevel2.phoneNumber);
                         if (!TextUtils.isEmpty(profileLevel2.phoneNumber)
                                 && profileLevel2.isReceivedOtp) {

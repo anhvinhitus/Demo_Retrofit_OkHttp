@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,12 +44,6 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(mInflater.inflate(R.layout.row_bank_account_layout, parent, false),
                 onItemClickListener);
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        Timber.i("Detached");
     }
 
     @Override
@@ -139,14 +134,6 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         }
     }
 
-    private int getColorFromResource(int resource) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getContext().getColor(resource);
-        } else {
-            return getContext().getResources().getColor(resource);
-        }
-    }
-
     private void setBankIcon(ImageView imgLogo, @StringRes int bankIcon) {
         if (imgLogo == null) {
             return;
@@ -168,6 +155,6 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
 
     private void setLineStyle(View lineVertical, int lineColor) {
         GradientDrawable bgShape = (GradientDrawable) lineVertical.getBackground();
-        bgShape.setColor(getColorFromResource(lineColor));
+        bgShape.setColor(ContextCompat.getColor(getContext(), lineColor));
     }
 }

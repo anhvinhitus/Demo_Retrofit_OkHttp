@@ -38,7 +38,6 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
         mGetCardSupportListListener = new IGetCardSupportListListener() {
             @Override
             public void onProcess() {
-                Timber.d("getCardSupportList onProcess");
             }
 
             @Override
@@ -66,7 +65,6 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
     }
 
     void getCardSupport() {
-        Timber.d("Get card support");
         showLoading();
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mUser.zaloPayId;

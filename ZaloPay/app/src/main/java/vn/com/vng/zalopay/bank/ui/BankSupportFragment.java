@@ -95,7 +95,7 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
             return;
         }
         mAutoLoadData = bundle.getBoolean(Constants.ARG_AUTO_LOAD_DATA, false);
-        Timber.d("initData mAutoLoadData[%s]", mAutoLoadData);
+        Timber.d("Auto load data : mAutoLoadData [%s]", mAutoLoadData);
     }
 
     @Override
@@ -119,7 +119,6 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
         mLinkAccRecyclerView.setAdapter(mLinkAccAdapter);
         mLinkAccRecyclerView.setFocusable(false);
 
-        Timber.d("onViewCreated mAutoLoadData[%s]", mAutoLoadData);
         if (mAutoLoadData) {
             getCardSupport();
         }

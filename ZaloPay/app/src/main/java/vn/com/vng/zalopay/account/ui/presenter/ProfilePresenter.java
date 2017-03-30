@@ -95,7 +95,7 @@ public class ProfilePresenter extends AbstractPresenter<IProfileView> {
             boolean isShow = mUser.profilelevel >= 2;
             mView.showHideChangePinView(isShow);
         } catch (Exception e) {
-            Timber.d(e, "checkShowOrHideChangePinView");
+            Timber.d(e);
         }
     }
 

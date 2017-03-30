@@ -34,12 +34,6 @@ class BankSupportLinkCardAdapter extends AbsRecyclerAdapter<ZPCard, BankSupportL
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        Timber.i("Detached");
-    }
-
-    @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ZPCard item = getItem(position);
         holder.bindView(item);

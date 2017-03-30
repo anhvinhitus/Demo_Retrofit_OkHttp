@@ -55,6 +55,7 @@ public class TransferHomePresenter extends AbstractPresenter<ITransferHomeView> 
 
     private void getRecent() {
         Subscription subscription = mTransferRepository.getRecent()
+                .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RecentSubscriber());
@@ -64,14 +65,11 @@ public class TransferHomePresenter extends AbstractPresenter<ITransferHomeView> 
     private class RecentSubscriber extends DefaultSubscriber<List<RecentTransaction>> {
 
         @Override
-        public void onError(Throwable e) {
-            Timber.d(e, "onError");
-        }
-
-        @Override
         public void onNext(List<RecentTransaction> recentTransactions) {
-            Timber.d("onNext %s", recentTransactions.size());
-            mView.setData(recentTransactions);
+            Timber.d("Get list recent success : size [%s]", recentTransactions.size());
+            if (mView != null) {
+                mView.setData(recentTransactions);
+            }
         }
     }
 

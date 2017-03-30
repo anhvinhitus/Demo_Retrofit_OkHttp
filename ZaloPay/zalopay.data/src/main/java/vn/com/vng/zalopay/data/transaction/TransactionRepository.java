@@ -359,7 +359,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     @Override
     public Observable<TransHistory> reloadTransactionHistory(long transId, long time) {
         long timestamp = time + 5000;
-        Timber.d("reloadTransactionHistory: transactionId %s  timeStamp %s", transId, timestamp);
+        Timber.d("Reload transaction history: transactionId [%s] timeStamp [%s]", transId, timestamp);
         Observable<List<TransHistoryEntity>> observableSuccess = fetchTransactionToBackup(timestamp, TRANSACTION_LENGTH, TRANSACTION_STATUS_SUCCESS)
                 .onErrorResumeNext(throwable -> Observable.just(Collections.emptyList()));
         Observable<List<TransHistoryEntity>> observableFail = fetchTransactionToBackup(timestamp, TRANSACTION_LENGTH, TRANSACTION_STATUS_FAIL)
