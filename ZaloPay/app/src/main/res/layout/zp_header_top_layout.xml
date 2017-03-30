@@ -78,20 +78,20 @@
                     app:iconSize="30dp" />
 
                 <com.zalopay.ui.widget.IconFont
-                    android:id="@+id/header_view_top_balance"
+                    android:id="@+id/header_view_top_linkbank"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:padding="@dimen/spacing.medium.s"
                     android:textColor="@color/white"
-                    app:iconName="@string/header_overbalance"
+                    app:iconName="@string/header_linkbank"
                     app:iconSize="30dp" />
 
                 <com.zalopay.ui.widget.IconFont
                     android:id="@+id/header_view_top_search"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:padding="@dimen/spacing.medium.s"
                     android:textColor="@color/white"
                     app:iconName="@string/general_search"

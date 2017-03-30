@@ -115,14 +115,14 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         navigator.startScanToPayActivity(this);
     }
 
-    @OnClick(R.id.header_view_top_balance)
-    public void onClickBalanceInToolbar() {
-        navigator.startBalanceManagementActivity(this);
+    @OnClick(R.id.header_view_top_linkbank)
+    public void onClickLinkBankInToolbar() {
+        navigator.startLinkCardActivity(this);
     }
 
     @OnClick(R.id.header_view_top_search)
-    public void onClickLinkBankInToolbar() {
-//        navigator.startLinkCardActivity(this);
+    public void onClickSearchInToolbar() {
+        showToast("Event search clicked!");
     }
 
 //    private FrameLayout.LayoutParams mToolbarParams;
@@ -461,6 +461,8 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         } else if (percentage > 0f && percentage <= 1f) {
             if(percentage > 0.5f) {
                 headerView.setVisibility(View.GONE);
+            } else {
+                headerView.setVisibility(View.VISIBLE);
             }
             toolbarHeaderView.setHeaderTopStatus(1, percentage);
             isToolbarExpanded = false;
