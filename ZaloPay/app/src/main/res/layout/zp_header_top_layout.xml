@@ -10,96 +10,105 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/header_top_rl_normal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:descendantFocusability="beforeDescendants"
-            android:focusableInTouchMode="true"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/header_top_et_search"
-                style="@style/Toolbar.SearchText"
+            <RelativeLayout
+                android:id="@+id/header_top_rl_normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/spacing.small"
                 android:layout_toLeftOf="@+id/header_top_rl_notification"
-                android:background="@color/white_transparent_2"
-                android:drawablePadding="@dimen/spacing.small"
-                android:drawableRight="@drawable/ic_search"
-                android:hint="@string/search"
-                android:lines="1"
-                android:padding="@dimen/spacing.small.t"
-                android:singleLine="true"
-                android:textCursorDrawable="@drawable/cursor_white"
-                android:visibility="visible" />
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
 
-            <RelativeLayout
-                android:id="@+id/header_top_rl_showshow"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                <EditText
+                    android:id="@+id/header_top_et_search"
+                    style="@style/Toolbar.SearchText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/spacing.small"
+                    android:background="@color/white_transparent_2"
+                    android:drawablePadding="@dimen/spacing.small"
+                    android:drawableRight="@drawable/ic_search"
+                    android:hint="@string/search"
+                    android:lines="1"
+                    android:padding="@dimen/spacing.small.t"
+                    android:singleLine="true"
+                    android:textCursorDrawable="@drawable/cursor_white"
+                    android:visibility="visible" />
+
+                <!--<RelativeLayout-->
+                <!--android:id="@+id/header_top_rl_showshow"-->
+                <!--android:layout_width="48dp"-->
+                <!--android:layout_height="48dp"-->
+                <!--android:layout_toLeftOf="@+id/header_top_rl_notification"-->
+                <!--android:visibility="gone">-->
+
+                <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:adjustViewBounds="true"-->
+                <!--android:src="@drawable/ic_showshow" />-->
+                <!--</RelativeLayout>-->
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/header_top_rl_collapsed"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_toLeftOf="@+id/header_top_rl_notification"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:visibility="gone">
 
-                <ImageView
+                <com.zalopay.ui.widget.IconFont
+                    android:id="@+id/header_view_top_qrcode"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/ic_showshow" />
-            </RelativeLayout>
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing.medium.s"
+                    android:textColor="@color/white"
+                    app:iconName="@string/header_payqrcode"
+                    app:iconSize="30dp" />
+
+                <com.zalopay.ui.widget.IconFont
+                    android:id="@+id/header_view_top_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing.medium.s"
+                    android:textColor="@color/white"
+                    app:iconName="@string/header_overbalance"
+                    app:iconSize="30dp" />
+
+                <com.zalopay.ui.widget.IconFont
+                    android:id="@+id/header_view_top_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing.medium.s"
+                    android:textColor="@color/white"
+                    app:iconName="@string/general_search"
+                    app:iconSize="30dp" />
+            </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/header_top_rl_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true">
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true">
 
                 <include layout="@layout/notification_menu_item" />
             </RelativeLayout>
 
         </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/header_top_rl_collapsed"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <com.zalopay.ui.widget.IconFont
-                android:id="@+id/header_view_top_qrcode"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:padding="@dimen/spacing.medium.s"
-                android:textColor="@color/white"
-                app:iconName="@string/header_payqrcode"
-                app:iconSize="30dp" />
-
-            <com.zalopay.ui.widget.IconFont
-                android:id="@+id/header_view_top_balance"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:padding="@dimen/spacing.medium.s"
-                android:textColor="@color/white"
-                app:iconName="@string/header_overbalance"
-                app:iconSize="30dp" />
-
-            <com.zalopay.ui.widget.IconFont
-                android:id="@+id/header_view_top_linkbank"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:padding="@dimen/spacing.medium.s"
-                android:textColor="@color/white"
-                app:iconName="@string/header_linkbank"
-                app:iconSize="30dp" />
-        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/header_top_rl_personal"

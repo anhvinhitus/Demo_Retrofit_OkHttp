@@ -307,10 +307,10 @@ public class MainActivity extends BaseToolBarActivity implements MenuClickListen
     /*
     * Click event for 2 buttons : nearby and notification
     */
-    @OnClick(R.id.header_top_rl_showshow)
-    public void onBtnNearbyClick() {
-        presenter.startPaymentApp(getAppResource(PaymentAppConfig.Constants.SHOW_SHOW));
-    }
+//    @OnClick(R.id.header_top_rl_showshow)
+//    public void onBtnNearbyClick() {
+//        presenter.startPaymentApp(getAppResource(PaymentAppConfig.Constants.SHOW_SHOW));
+//    }
 
     @OnClick(R.id.header_top_rl_notification)
     public void onBtnNotificationClick() {

@@ -17,10 +17,6 @@ import vn.com.vng.zalopay.R;
 public class HeaderBehavior extends CoordinatorLayout.Behavior<HeaderView> {
 
     private Context mContext;
-    private int mStartMarginLeft;
-    private int mEndMarginLeft;
-    private int mMarginRight;
-    private int mStartMarginBottom;
     private boolean isHide;
 
     public HeaderBehavior(Context context, AttributeSet attrs) {
@@ -49,7 +45,6 @@ public class HeaderBehavior extends CoordinatorLayout.Behavior<HeaderView> {
 
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, HeaderView child, View dependency) {
-        shouldInitProperties();
         int maxScroll = ((AppBarLayout) dependency).getTotalScrollRange() - getToolbarHeight(mContext);
         float percentage = Math.abs(dependency.getY()) / (float) maxScroll;
         float childPosition = dependency.getHeight()
@@ -57,40 +52,19 @@ public class HeaderBehavior extends CoordinatorLayout.Behavior<HeaderView> {
                 - child.getHeight()
                 - (getToolbarHeight(mContext) - child.getHeight()) * percentage / 2;
 
-        childPosition = childPosition - mStartMarginBottom;
-
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
 
-        lp.rightMargin = mMarginRight;
         child.setLayoutParams(lp);
         child.setY(childPosition);
-        child.setAlpha(1f - (percentage));
-
-        if (isHide && percentage < 1) {
-            child.setVisibility(View.VISIBLE);
-            isHide = false;
-        } else if (!isHide && percentage == 1) {
-            child.setVisibility(View.GONE);
-            isHide = true;
-        }
+//        child.setAlpha(1f - (percentage));
+//
+//        if (isHide && percentage < 1) {
+//            child.setVisibility(View.VISIBLE);
+//            isHide = false;
+//        } else if (!isHide && percentage == 1) {
+//            child.setVisibility(View.GONE);
+//            isHide = true;
+//        }
         return true;
-    }
-
-    private void shouldInitProperties() {
-        if (mStartMarginLeft == 0) {
-            mStartMarginLeft = mContext.getResources().getDimensionPixelOffset(R.dimen.header_view_start_margin_left);
-        }
-
-        if (mEndMarginLeft == 0) {
-            mEndMarginLeft = mContext.getResources().getDimensionPixelOffset(R.dimen.header_view_end_margin_left);
-        }
-
-        if (mStartMarginBottom == 0) {
-            mStartMarginBottom = mContext.getResources().getDimensionPixelOffset(R.dimen.header_view_start_margin_bottom);
-        }
-
-        if (mMarginRight == 0) {
-            mMarginRight = mContext.getResources().getDimensionPixelOffset(R.dimen.header_view_end_margin_right);
-        }
     }
 }

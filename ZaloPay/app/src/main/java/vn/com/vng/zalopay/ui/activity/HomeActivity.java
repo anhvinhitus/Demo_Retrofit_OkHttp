@@ -80,6 +80,8 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
     @BindView(R.id.navigation)
     BottomNavigationView mBottomNavigationView;
 
+    private static boolean isToolbarExpanded = true;
+
     /*
     * Click event for 3 main button on collapse toolbar
     */
@@ -118,9 +120,9 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         navigator.startBalanceManagementActivity(this);
     }
 
-    @OnClick(R.id.header_view_top_linkbank)
+    @OnClick(R.id.header_view_top_search)
     public void onClickLinkBankInToolbar() {
-        navigator.startLinkCardActivity(this);
+//        navigator.startLinkCardActivity(this);
     }
 
 //    private FrameLayout.LayoutParams mToolbarParams;
@@ -320,7 +322,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
         switch (status) {
             case HomePagerAdapter.TAB_MAIN_INDEX:
-                coordinatorLayoutParams.height = getStatusBarHeight() + (int) AndroidUtils.dpToPixels(getActivity(), 180);
+                coordinatorLayoutParams.height = (int) AndroidUtils.dpToPixels(getActivity(), 180);
                 headerView.setVisibility(View.VISIBLE);
 
                 toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
@@ -328,6 +330,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                         | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
 
                 collapsingToolbarLayout.setLayoutParams(toolbarLayoutParams);
+                appBarLayout.setExpanded(isToolbarExpanded, false);
                 appBarLayout.setVisibility(View.VISIBLE);
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().show();
@@ -449,20 +452,18 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         int maxScroll = appBarLayout.getTotalScrollRange();
         float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
 
+        headerView.setAlpha(1 - percentage);
+
         if (percentage == 0f) {
-            enableOnClickHeader();
+            headerView.setVisibility(View.VISIBLE);
             toolbarHeaderView.setHeaderTopStatus(0, percentage);
+            isToolbarExpanded = true;
         } else if (percentage > 0f && percentage <= 1f) {
-            disableOnClickHeader();
+            if(percentage > 0.5f) {
+                headerView.setVisibility(View.GONE);
+            }
             toolbarHeaderView.setHeaderTopStatus(1, percentage);
+            isToolbarExpanded = false;
         }
-    }
-
-    private void disableOnClickHeader() {
-        headerView.setVisibility(View.GONE);
-    }
-
-    private void enableOnClickHeader() {
-        headerView.setVisibility(View.VISIBLE);
     }
 }
