@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
@@ -189,9 +190,16 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         setEnabledTransfer(mAmountView.isValid());
     }
 
+    @OnFocusChange(R.id.edtAmount)
+    public void onFocusChangeAmount(View v) {
+        setEnabledTransfer(mAmountView.isValid());
+    }
+
     @OnClick(R.id.btnContinue)
     public void onClickContinue() {
-        mPresenter.handleOnClickContinue();
+        if (mAmountView.validate()) {
+            mPresenter.doClickTransfer(getAmount());
+        }
     }
 
     @Override
@@ -207,6 +215,11 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     }
 
     private void setInitialFixedValue(long currentAmount, String currentMessage) {
+        mEdtMessageView.setText(currentMessage);
+        mAmountView.setText(currentAmount <= 0 ? "" : String.valueOf(currentAmount));
+        mAmountView.setEnabled(false);
+        mEdtMessageView.setEnabled(false);
+
         mTxtAmount.setText(CurrencyUtil.formatCurrency(currentAmount, false));
         mTxtTransferMsg.setText(currentMessage);
 
@@ -216,13 +229,12 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     }
 
     private void setInitialDynamicValue(long currentAmount, String currentMessage) {
-        mEdtMessageView.setText(currentMessage);
 
-        if (currentAmount > 0) {
-            mAmountView.setText(String.valueOf(currentAmount));
-        } else {
-            mAmountView.setText("");
-        }
+        mAmountView.setEnabled(true);
+        mEdtMessageView.setEnabled(true);
+
+        mEdtMessageView.setText(currentMessage);
+        mAmountView.setText(currentAmount <= 0 ? "" : String.valueOf(currentAmount));
 
         mAmountView.setSelection(mAmountView.length());
         mAmountView.validate();
@@ -234,13 +246,9 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     @Override
     public long getAmount() {
-
-        Timber.d("amount %s", mAmountView.getAmount());
-
         if (mAmountView != null) {
             return mAmountView.getAmount();
         }
-
         return 0;
     }
 
@@ -297,11 +305,6 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
             mTextViewZaloPayName.setText(TextUtils.isEmpty(object.zalopayname) ? getString(R.string.not_update_zalopay_id) : object.zalopayname);
         }
 
-    }
-
-    @Override
-    public boolean validateEdtAmount() {
-        return mAmountView.validate();
     }
 
     @Override

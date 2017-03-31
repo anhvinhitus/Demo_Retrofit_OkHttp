@@ -274,37 +274,9 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 || mTransferObject.activateSource == Constants.ActivateSource.FromWebApp_QRType2);
     }
 
-    void handleOnClickContinue() {
-
-        if (isTransferFixedMoney()) {
-            if (validateFixedMoney()) {
-                handleDoTransfer(mView.getAmount());
-            } else {
-                mView.setEnabledTransfer(false);
-            }
-        } else {
-            if (mView.validateEdtAmount()) {
-                handleDoTransfer(mView.getAmount());
-            } else {
-                mView.setEnabledTransfer(false);
-            }
-        }
-    }
-
-    private void handleDoTransfer(long amount) {
-
+    void doClickTransfer(long amount) {
         Timber.d("Handle do transfer : amount [%s]", amount);
-
-        if (amount < mMinAmount || amount > mMaxAmount) {
-            return;
-        }
-
-        if (TextUtils.isEmpty(mTransferObject.zalopayId)) {
-            return;
-        }
-
         doTransfer(amount);
-
         ZPAnalytics.trackEvent(amount == 0 ? ZPEvents.MONEYTRANSFER_INPUTNODESCRIPTION : ZPEvents.MONEYTRANSFER_INPUTDESCRIPTION);
         ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TAPCONTINUE);
     }
@@ -467,6 +439,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             mMaxAmount = Constants.MAX_TRANSFER_MONEY;
         }
 
+        Timber.d("Limit transfer : min [%s] max [%s]", mMinAmount, mMaxAmount);
+
         if (mView != null) {
             mView.setMinMaxMoney(mMinAmount, mMaxAmount);
         }
@@ -491,6 +465,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             mView.showErrorTransferFixedMoney(error);
             return false;
         }
+
         mView.hideErrorTransferFixedMoney();
         return true;
     }

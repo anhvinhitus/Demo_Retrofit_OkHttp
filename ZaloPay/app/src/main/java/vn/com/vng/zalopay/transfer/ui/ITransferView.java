@@ -22,8 +22,6 @@ public interface ITransferView extends ILoadDataView {
 
     void setMinMaxMoney(long min, long max);
 
-    boolean validateEdtAmount();
-
     long getAmount();
 
     String getMessage();
