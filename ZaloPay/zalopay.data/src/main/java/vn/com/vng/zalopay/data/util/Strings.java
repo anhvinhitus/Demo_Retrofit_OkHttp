@@ -127,4 +127,12 @@ public final class Strings {
 
         return -1;
     }
+
+    public static String getRawQueryMultipleValue(String... keys) {
+        String[] params = new String[keys.length];
+        for(int i = 0; i < params.length; i++) {
+            params[i] = "?";
+        }
+        return "(" + joinWithDelimiter(",", params) + ")";
+    }
 }

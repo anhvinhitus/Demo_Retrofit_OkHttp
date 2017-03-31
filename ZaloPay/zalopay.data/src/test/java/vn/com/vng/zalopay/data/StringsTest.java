@@ -144,4 +144,12 @@ public class StringsTest {
         Assert.assertEquals(-1, Strings.getIndexOfSearchString(string, search4));
         Assert.assertEquals(2, Strings.getIndexOfSearchString(string, search5));
     }
+
+    @Test
+    public void testGetRawQueryMultipleValue() throws Exception {
+        Assert.assertEquals("(?,?,?)", Strings.getRawQueryMultipleValue("a", "b", "c"));
+        Assert.assertEquals("(?,?,?,?,?)", Strings.getRawQueryMultipleValue("a", "b", "c", "d", "d"));
+        Assert.assertEquals("(?)", Strings.getRawQueryMultipleValue("a"));
+    }
+
 }
