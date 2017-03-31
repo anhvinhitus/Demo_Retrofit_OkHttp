@@ -144,15 +144,17 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            Bundle result = data.getExtras();
-            int code = result.getInt("code");
-            String param = result.getString("param");
-            if (code == 1) {
-                if(mResponseListener != null) {
-                    mResponseListener.onPaySuccess();
+            if (requestCode == Constants.REQUEST_CODE_TRANSFER) {
+                if (mResponseListener == null) {
+                    return;
                 }
-            } else {
-                if(mResponseListener != null) {
+
+                Bundle result = data.getExtras();
+                int code = result.getInt("code");
+                String param = result.getString("param");
+                if (code == 1) {
+                    mResponseListener.onPaySuccess();
+                } else {
                     code = Arrays.asList(mZPTransfer.errorCodeList).contains(code) ? code : 5;
                     mResponseListener.onPayError(code, param);
                 }
