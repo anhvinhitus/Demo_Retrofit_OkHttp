@@ -43,6 +43,7 @@ import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptInput;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.entity.linkacc.DResponse;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
 /**
@@ -69,7 +70,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     private LinkAccWebView mWebPaymentBridge = null;
 
     private List<DBankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
-    ;
     private String mCurrentUrlPattern = null;
     private String mStartedtUrl = null;
     private String mCurrentUrl = null;
@@ -196,7 +196,19 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
         Log.e("Error", "++++ Current error SSL on page: " + mStartedtUrl);
-        handler.proceed(); // Ignore SSL certificate errors
+        getAdapter().getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
+            @Override
+            public void onCancelEvent() {
+                mAdapter.onEvent(EEventType.ON_FAIL);
+                mAdapter.getActivity().onBackPressed();
+            }
+            @Override
+            public void onOKevent() {
+                handler.proceed(); // Ignore SSL certificate errors
+            }
+        },mAdapter.getActivity().getString(R.string.zpw_alert_ssl_error_parse_website),mAdapter.getActivity().getString(R.string.dialog_continue_button),mAdapter.getActivity().getString(R.string.dialog_close_button));
+
+
     }
 
     @Override
