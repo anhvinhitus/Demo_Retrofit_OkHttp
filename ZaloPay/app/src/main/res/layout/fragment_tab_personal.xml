@@ -52,13 +52,15 @@
                         android:textSize="@dimen/personal.zalopayid" />
                 </LinearLayout>
 
-                <ImageView
-                    android:layout_width="@dimen/personal.margin"
-                    android:layout_height="@dimen/personal.margin"
+                <com.zalopay.ui.widget.IconFont
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/personal.margin"
-                    android:src="@drawable/ic_arrow_right" />
+                    android:textColor="@color/arrow_right"
+                    app:iconName="@string/general_arrowright"
+                    app:iconSize="@dimen/personal.margin" />
             </RelativeLayout>
 
             <LinearLayout
