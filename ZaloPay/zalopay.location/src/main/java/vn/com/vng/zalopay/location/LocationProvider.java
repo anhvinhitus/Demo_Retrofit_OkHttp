@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
 
+import rx.Observer;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 
@@ -25,7 +26,6 @@ public class LocationProvider extends Service {
     private static double latitude;
     private static double longitude;
 //    private static Address address;
-    private static boolean canGetLocation = false;
 
     public static void init(LocationStore.Repository repository, Context applicationContext) {
         mRepository = repository;
@@ -33,6 +33,7 @@ public class LocationProvider extends Service {
     }
 
     public static Boolean findLocation() {
+        boolean canGetLocation = false;
         try {
             LocationManager locationManager = (LocationManager) mApplicationContext.getSystemService(LOCATION_SERVICE);
             boolean checkGPS = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -113,10 +114,24 @@ public class LocationProvider extends Service {
     public static void updateLocation() {
         AppLocation location = getLocation();
         if (location == null || Math.abs(System.currentTimeMillis() - location.timestamp) > TIME_REFRESH) {
-            ObservableHelper.makeObservable(LocationProvider::findLocation).subscribe();
-            if (canGetLocation && latitude != 0 || longitude != 0) {
-                saveLocation();
-            }
+            ObservableHelper.makeObservable(LocationProvider::findLocation).subscribe(new Observer<Boolean>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Boolean aBoolean) {
+                    if (aBoolean && latitude != 0 || longitude != 0) {
+                        saveLocation();
+                    }
+                }
+            });
         }
     }
 
@@ -127,7 +142,8 @@ public class LocationProvider extends Service {
 
         AppLocation location = mRepository.getLocation();
 
-        if(location.latitude == 0 && location.longitude == 0) {
+        if((location.latitude == 0 && location.longitude == 0) ||
+                ((System.currentTimeMillis() - location.timestamp) > TIME_REFRESH)) {
             return null;
         }
         return location;
