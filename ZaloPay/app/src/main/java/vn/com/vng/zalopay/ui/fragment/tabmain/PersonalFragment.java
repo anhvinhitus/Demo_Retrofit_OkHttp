@@ -23,8 +23,6 @@ import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.ImageLoader;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -96,6 +94,9 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
 
     @Override
     public void setAvatar(String avatar) {
+        if (TextUtils.isEmpty(avatar)) {
+            return;
+        }
         imageLoader.loadImage(ivAvatar, avatar);
     }
 

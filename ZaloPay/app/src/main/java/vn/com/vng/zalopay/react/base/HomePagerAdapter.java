@@ -7,6 +7,7 @@ import com.zalopay.ui.widget.viewpager.AbsFragmentPagerAdapter;
 
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
+import vn.com.vng.zalopay.promotion.PromotionFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.PersonalFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
@@ -17,10 +18,11 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 
 public class HomePagerAdapter extends AbsFragmentPagerAdapter {
 
-    private static final int TAB_COUNT = 3;
+    private static final int TAB_COUNT = 4;
     public static final int TAB_MAIN_INDEX = 0;
     public static final int TAB_SHOW_SHOW_INDEX = 1;
-    public static final int TAB_PERSONAL_INDEX = 2;
+    public static final int TAB_PROMOTION_INDEX = 2;
+    public static final int TAB_PERSONAL_INDEX = 3;
 
     public HomePagerAdapter(FragmentManager fm) {
         super(fm);
@@ -34,6 +36,8 @@ public class HomePagerAdapter extends AbsFragmentPagerAdapter {
                 return ZaloPayFragment.newInstance();
             case TAB_SHOW_SHOW_INDEX:
                 return ExternalReactFragment.newInstance(PaymentAppConfig.getAppResource(22));
+            case TAB_PROMOTION_INDEX:
+                return PromotionFragment.newInstance();
             case TAB_PERSONAL_INDEX:
                 return PersonalFragment.newInstance();
         }

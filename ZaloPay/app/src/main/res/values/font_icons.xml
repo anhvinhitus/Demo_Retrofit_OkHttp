@@ -63,6 +63,8 @@
     <string name="tab_history_active">tab_history_active</string>
     <string name="tab_showshow">tab_showshow</string>
     <string name="tab_showshow_active">tab_showshow_active</string>
+    <string name="tab_promotion">tab_promotion</string>
+    <string name="tab_promotion_active">tab_promotion_active</string>
     <string name="tab_personal">tab_personal</string>
     <string name="tab_personal_active">tab_personal_active</string>
     <!--Tab in Home END-->

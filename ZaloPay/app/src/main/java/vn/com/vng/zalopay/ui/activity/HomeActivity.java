@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.ui.toolbar.HeaderView;
 import vn.com.vng.zalopay.ui.toolbar.HeaderViewTop;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.BottomNavigationViewHelper;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -180,6 +181,9 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                 } else if (position == HomePagerAdapter.TAB_SHOW_SHOW_INDEX) {
                     setToolbarViewStatus(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
 
+                } else if (position == HomePagerAdapter.TAB_PROMOTION_INDEX) {
+                    setToolbarViewStatus(HomePagerAdapter.TAB_PROMOTION_INDEX);
+
                 } else if (position == HomePagerAdapter.TAB_PERSONAL_INDEX) {
                     setToolbarViewStatus(HomePagerAdapter.TAB_PERSONAL_INDEX);
                 }
@@ -197,7 +201,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         updateIconFontState(HomePagerAdapter.TAB_MAIN_INDEX);
 
         //Use this function to show titles of all menu elements when bottomNavigationBar has 4 tabs.
-        //BottomNavigationViewHelper.disableShiftMode(mBottomNavigationView);
+        BottomNavigationViewHelper.disableShiftMode(mBottomNavigationView);
 
         mBottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -208,6 +212,10 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                 case R.id.menu_nearby:
                     updateIconFontState(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
                     mViewPager.setCurrentItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
+                    break;
+                case R.id.menu_promotion:
+                    updateIconFontState(HomePagerAdapter.TAB_PROMOTION_INDEX);
+                    mViewPager.setCurrentItem(HomePagerAdapter.TAB_PROMOTION_INDEX);
                     break;
                 case R.id.menu_profile:
                     updateIconFontState(HomePagerAdapter.TAB_PERSONAL_INDEX);
@@ -242,57 +250,94 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         Menu menu = mBottomNavigationView.getMenu();
         switch (currentIndex) {
             case HomePagerAdapter.TAB_MAIN_INDEX:
-                menu.getItem(HomePagerAdapter.TAB_MAIN_INDEX)
-                        .setIcon(new IconFontDrawable(this)
-                                .setIcon(R.string.tab_home_active)
-                                .setResourcesColor(R.color.colorPrimary)
-                                .setResourcesSize(R.dimen.font_size_tab_icon));
-                menu.getItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX)
-                        .setIcon(new IconFontDrawable(this)
-                                .setIcon(R.string.tab_showshow)
-                                .setResourcesColor(R.color.txt_item_sub)
-                                .setResourcesSize(R.dimen.font_size_tab_icon));
-                menu.getItem(HomePagerAdapter.TAB_PERSONAL_INDEX)
-                        .setIcon(new IconFontDrawable(this)
-                                .setIcon(R.string.tab_personal)
-                                .setResourcesColor(R.color.txt_item_sub)
-                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                setIconTabMain(menu, true);
+                setIconTabShowShow(menu, false);
+                setIconTabPromotion(menu, false);
+                setIconTabProfile(menu, false);
                 break;
             case HomePagerAdapter.TAB_SHOW_SHOW_INDEX:
-                menu.getItem(HomePagerAdapter.TAB_MAIN_INDEX)
-                        .setIcon(new IconFontDrawable(this)
-                                .setIcon(R.string.tab_home)
-                                .setResourcesColor(R.color.txt_item_sub)
-                                .setResourcesSize(R.dimen.font_size_tab_icon));
-                menu.getItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX)
-                        .setIcon(new IconFontDrawable(this)
-                                .setIcon(R.string.tab_showshow_active)
-                                .setResourcesColor(R.color.colorPrimary)
-                                .setResourcesSize(R.dimen.font_size_tab_icon));
-                menu.getItem(HomePagerAdapter.TAB_PERSONAL_INDEX)
-                        .setIcon(new IconFontDrawable(this)
-                                .setIcon(R.string.tab_personal)
-                                .setResourcesColor(R.color.txt_item_sub)
-                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                setIconTabMain(menu, false);
+                setIconTabShowShow(menu, true);
+                setIconTabPromotion(menu, false);
+                setIconTabProfile(menu, false);
+                break;
+            case HomePagerAdapter.TAB_PROMOTION_INDEX:
+                setIconTabMain(menu, false);
+                setIconTabShowShow(menu, false);
+                setIconTabPromotion(menu, true);
+                setIconTabProfile(menu, false);
                 break;
             case HomePagerAdapter.TAB_PERSONAL_INDEX:
-                menu.getItem(HomePagerAdapter.TAB_MAIN_INDEX)
-                        .setIcon(new IconFontDrawable(this)
-                                .setIcon(R.string.tab_home)
-                                .setResourcesColor(R.color.txt_item_sub)
-                                .setResourcesSize(R.dimen.font_size_tab_icon));
-                menu.getItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX)
-                        .setIcon(new IconFontDrawable(this)
-                                .setIcon(R.string.tab_showshow)
-                                .setResourcesColor(R.color.txt_item_sub)
-                                .setResourcesSize(R.dimen.font_size_tab_icon));
-                menu.getItem(HomePagerAdapter.TAB_PERSONAL_INDEX)
-                        .setIcon(new IconFontDrawable(this)
-                                .setIcon(R.string.tab_personal_active)
-                                .setResourcesColor(R.color.colorPrimary)
-                                .setResourcesSize(R.dimen.font_size_tab_icon));
+                setIconTabMain(menu, false);
+                setIconTabShowShow(menu, false);
+                setIconTabPromotion(menu, false);
+                setIconTabProfile(menu, true);
                 break;
         }
+    }
+
+    private void setIconTabMain(Menu menu, boolean isActive) {
+        IconFontDrawable iconFontDrawable;
+        if (isActive) {
+            iconFontDrawable = new IconFontDrawable(this)
+                    .setIcon(R.string.tab_home_active)
+                    .setResourcesColor(R.color.colorPrimary)
+                    .setResourcesSize(R.dimen.font_size_tab_icon);
+        } else {
+            iconFontDrawable = new IconFontDrawable(this)
+                    .setIcon(R.string.tab_home)
+                    .setResourcesColor(R.color.txt_item_sub)
+                    .setResourcesSize(R.dimen.font_size_tab_icon);
+        }
+        menu.getItem(HomePagerAdapter.TAB_MAIN_INDEX).setIcon(iconFontDrawable);
+    }
+
+    private void setIconTabShowShow(Menu menu, boolean isActive) {
+        IconFontDrawable iconFontDrawable;
+        if (isActive) {
+            iconFontDrawable = new IconFontDrawable(this)
+                    .setIcon(R.string.tab_showshow_active)
+                    .setResourcesColor(R.color.colorPrimary)
+                    .setResourcesSize(R.dimen.font_size_tab_icon);
+        } else {
+            iconFontDrawable = new IconFontDrawable(this)
+                    .setIcon(R.string.tab_showshow)
+                    .setResourcesColor(R.color.txt_item_sub)
+                    .setResourcesSize(R.dimen.font_size_tab_icon);
+        }
+        menu.getItem(HomePagerAdapter.TAB_SHOW_SHOW_INDEX).setIcon(iconFontDrawable);
+    }
+
+    private void setIconTabPromotion(Menu menu, boolean isActive) {
+        IconFontDrawable iconFontDrawable;
+        if (isActive) {
+            iconFontDrawable = new IconFontDrawable(this)
+                    .setIcon(R.string.tab_promotion_active)
+                    .setResourcesColor(R.color.colorPrimary)
+                    .setResourcesSize(R.dimen.font_size_tab_icon);
+        } else {
+            iconFontDrawable = new IconFontDrawable(this)
+                    .setIcon(R.string.tab_promotion)
+                    .setResourcesColor(R.color.txt_item_sub)
+                    .setResourcesSize(R.dimen.font_size_tab_icon);
+        }
+        menu.getItem(HomePagerAdapter.TAB_PROMOTION_INDEX).setIcon(iconFontDrawable);
+    }
+
+    private void setIconTabProfile(Menu menu, boolean isActive) {
+        IconFontDrawable iconFontDrawable;
+        if (isActive) {
+            iconFontDrawable = new IconFontDrawable(this)
+                    .setIcon(R.string.tab_personal_active)
+                    .setResourcesColor(R.color.colorPrimary)
+                    .setResourcesSize(R.dimen.font_size_tab_icon);
+        } else {
+            iconFontDrawable = new IconFontDrawable(this)
+                    .setIcon(R.string.tab_personal)
+                    .setResourcesColor(R.color.txt_item_sub)
+                    .setResourcesSize(R.dimen.font_size_tab_icon);
+        }
+        menu.getItem(HomePagerAdapter.TAB_PERSONAL_INDEX).setIcon(iconFontDrawable);
     }
 
     private void initToolbar() {
@@ -320,9 +365,24 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
         return result;
     }
 
+    private void hideToolbar(CoordinatorLayout.LayoutParams coordinatorLayoutParams,
+                             AppBarLayout.LayoutParams toolbarLayoutParams) {
+        coordinatorLayoutParams.height = getStatusBarHeight();
+        headerView.setVisibility(View.GONE);
+
+        toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+
+        appBarLayout.setVisibility(View.GONE);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+    }
+
     private void setToolbarViewStatus(int status) {
-        CoordinatorLayout.LayoutParams coordinatorLayoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
+        CoordinatorLayout.LayoutParams coordinatorLayoutParams = (CoordinatorLayout.LayoutParams)
+                appBarLayout.getLayoutParams();
+        AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams)
+                collapsingToolbarLayout.getLayoutParams();
         switch (status) {
             case HomePagerAdapter.TAB_MAIN_INDEX:
                 coordinatorLayoutParams.height = (int) AndroidUtils.dpToPixels(getActivity(), 180);
@@ -341,15 +401,11 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                 break;
 
             case HomePagerAdapter.TAB_SHOW_SHOW_INDEX:
-                coordinatorLayoutParams.height = getStatusBarHeight();
-                headerView.setVisibility(View.GONE);
+                hideToolbar(coordinatorLayoutParams, toolbarLayoutParams);
+                break;
 
-                toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-
-                appBarLayout.setVisibility(View.GONE);
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().hide();
-                }
+            case HomePagerAdapter.TAB_PROMOTION_INDEX:
+                hideToolbar(coordinatorLayoutParams, toolbarLayoutParams);
                 break;
 
             case HomePagerAdapter.TAB_PERSONAL_INDEX:
@@ -367,35 +423,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                 break;
         }
     }
-
-//    private void hideToolbar() {
-//        mToolbarParams.setMargins(0, 0, 0, mMarginBottom);
-//        mViewPager.setLayoutParams(mToolbarParams);
-//        if (getSupportActionBar() != null) {
-//            getSupportActionBar().hide();
-//        }
-//    }
-
-//    private void showToolbarSearch() {
-//        if (getSupportActionBar() != null) {
-//            mToolbarParams.setMargins(0, getSupportActionBar().getHeight(), 0, mMarginBottom);
-//            mViewPager.setLayoutParams(mToolbarParams);
-//            mEdtSearch.setVisibility(View.VISIBLE);
-//            mTxtTitle.setVisibility(View.GONE);
-//            getSupportActionBar().show();
-//        }
-//    }
-
-//    private void showToolbarTitle(@StringRes int strResource) {
-//        if (getSupportActionBar() != null) {
-////            mEdtSearch.setVisibility(View.GONE);
-////            mTxtTitle.setVisibility(View.VISIBLE);
-////            mTxtTitle.setText(strResource);
-//            getSupportActionBar().show();
-////            mToolbarParams.setMargins(0, getSupportActionBar().getHeight(), 0, mMarginBottom);
-////            mViewPager.setLayoutParams(mToolbarParams);
-//        }
-//    }
 
     @Override
     public void showLoading() {
