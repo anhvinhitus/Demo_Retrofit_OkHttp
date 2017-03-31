@@ -6,15 +6,15 @@ import android.util.Pair;
 import java.util.List;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.protobuf.MessageConnectionInfo;
-import vn.com.vng.zalopay.data.protobuf.MessageLogin;
-import vn.com.vng.zalopay.data.protobuf.MessageRecoveryRequest;
-import vn.com.vng.zalopay.data.protobuf.MessageStatus;
-import vn.com.vng.zalopay.data.protobuf.MessageType;
-import vn.com.vng.zalopay.data.protobuf.NameValuePair;
-import vn.com.vng.zalopay.data.protobuf.PaymentRequestMessage;
-import vn.com.vng.zalopay.data.protobuf.RecoveryOrder;
-import vn.com.vng.zalopay.data.protobuf.StatusMessageClient;
+import vn.com.vng.zalopay.network.protobuf.MessageConnectionInfo;
+import vn.com.vng.zalopay.network.protobuf.MessageLogin;
+import vn.com.vng.zalopay.network.protobuf.MessageRecoveryRequest;
+import vn.com.vng.zalopay.network.protobuf.MessageStatus;
+import vn.com.vng.zalopay.network.protobuf.MessageType;
+import vn.com.vng.zalopay.network.protobuf.NameValuePair;
+import vn.com.vng.zalopay.network.protobuf.PaymentRequestMessage;
+import vn.com.vng.zalopay.network.protobuf.RecoveryOrder;
+import vn.com.vng.zalopay.network.protobuf.StatusMessageClient;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.Enums;
 

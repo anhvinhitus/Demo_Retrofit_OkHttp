@@ -9,24 +9,24 @@ import java.io.IOException;
 
 import okio.ByteString;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.protobuf.PaymentResponseMessage;
+import vn.com.vng.zalopay.network.protobuf.PaymentResponseMessage;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
 import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
-import vn.com.vng.zalopay.data.protobuf.DataRecoveryResponse;
-import vn.com.vng.zalopay.data.protobuf.DataResponseUser;
-import vn.com.vng.zalopay.data.protobuf.MessageConnectionInfo;
-import vn.com.vng.zalopay.data.protobuf.MessageStatus;
-import vn.com.vng.zalopay.data.protobuf.RecoveryMessage;
-import vn.com.vng.zalopay.data.protobuf.ResultAuth;
-import vn.com.vng.zalopay.data.protobuf.ServerMessageType;
+import vn.com.vng.zalopay.network.protobuf.DataRecoveryResponse;
+import vn.com.vng.zalopay.network.protobuf.DataResponseUser;
+import vn.com.vng.zalopay.network.protobuf.MessageConnectionInfo;
+import vn.com.vng.zalopay.network.protobuf.MessageStatus;
+import vn.com.vng.zalopay.network.protobuf.RecoveryMessage;
+import vn.com.vng.zalopay.network.protobuf.ResultAuth;
+import vn.com.vng.zalopay.network.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.domain.Enums;
 
-import static vn.com.vng.zalopay.data.protobuf.ServerMessageType.PAYMENT_RESPONSE;
-import static vn.com.vng.zalopay.data.protobuf.ServerMessageType.RECOVERY_RESPONSE;
+import static vn.com.vng.zalopay.network.protobuf.ServerMessageType.PAYMENT_RESPONSE;
+import static vn.com.vng.zalopay.network.protobuf.ServerMessageType.RECOVERY_RESPONSE;
 
 /**
  * Created by AnhHieu on 6/14/16.
