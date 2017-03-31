@@ -38,6 +38,7 @@ public class AppStorageImpl implements AppStorage {
             KeyValueGD item = new KeyValueGD();
             item.key = entry.getKey();
             item.value = entry.getValue();
+            items.add(item);
         }
 
         daoSession.getKeyValueGDDao().insertOrReplaceInTx(items);
@@ -57,7 +58,8 @@ public class AppStorageImpl implements AppStorage {
     @Override
     public Map<String, String> getAll(String... keys) {
         try {
-            List<KeyValueGD> result = daoSession.getKeyValueGDDao().queryRaw("WHERE " + KeyValueGDDao.Properties.Key.columnName + " IN (?)", Strings.joinWithDelimiter(",", keys));
+            List<KeyValueGD> result = daoSession.getKeyValueGDDao().queryRaw(
+                    "WHERE " + KeyValueGDDao.Properties.Key.columnName + " IN (?, ?, ?)", keys);
             HashMap<String, String> retVal = new HashMap<>();
             for (KeyValueGD item : result) {
                 retVal.put(item.key, item.value);
