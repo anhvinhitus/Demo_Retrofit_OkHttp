@@ -17,10 +17,10 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.R;
 import vn.com.vng.zalopay.data.exception.PaymentConnectorException;
-import vn.com.vng.zalopay.data.exception.WriteSocketException;
+import vn.com.vng.zalopay.network.WriteSocketException;
 import vn.com.vng.zalopay.network.protobuf.PaymentCode;
 import vn.com.vng.zalopay.network.NetworkHelper;
-import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
+import vn.com.vng.zalopay.network.OnReceivedPushMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
@@ -34,7 +34,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
  * Connector Service
  */
 
-public class PaymentConnectorService implements OnReceiverMessageListener {
+public class PaymentConnectorService implements OnReceivedPushMessageListener {
 
     private static final int CONNECT_TIMEOUT = 5; // 5 SECONDS
 
@@ -132,7 +132,7 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
     }
 
     @Override
-    public void onReceiverEvent(PushMessage pushMessage) {
+    public void onReceivedPushMessage(PushMessage pushMessage) {
         if (pushMessage instanceof AuthenticationData) {
             executeNext();
         } else if (pushMessage instanceof PaymentRequestData) {

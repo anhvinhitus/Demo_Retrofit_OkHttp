@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.exception;
+package vn.com.vng.zalopay.network;
 
 import java.io.IOException;
 

@@ -1,10 +1,10 @@
-package vn.com.vng.zalopay.data.ws.connection;
+package vn.com.vng.zalopay.network;
 
 /**
  * Created by huuhoa on 9/4/16.
  * Define common error codes for socket connection
  */
-enum ConnectionErrorCode {
+public enum ConnectionErrorCode {
     UNKNOWN_ERROR(0),
     SUCCESS(1),
     DISCONNECT_FINALIZE(2),

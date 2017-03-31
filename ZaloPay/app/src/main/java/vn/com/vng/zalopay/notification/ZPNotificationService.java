@@ -26,7 +26,7 @@ import vn.com.vng.zalopay.data.exception.ServerMaintainException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.network.NetworkHelper;
-import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
+import vn.com.vng.zalopay.network.OnReceivedPushMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
@@ -41,7 +41,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.TokenGCMRefreshEvent;
 
-public class ZPNotificationService implements OnReceiverMessageListener, NotificationService {
+public class ZPNotificationService implements OnReceivedPushMessageListener, NotificationService {
 
     /*Server API Key: AIzaSyCweupE81mBm3_m8VOoFTUbuhBF82r_GwI
     Sender ID: 386726389536*/
@@ -156,7 +156,7 @@ public class ZPNotificationService implements OnReceiverMessageListener, Notific
     }
 
     @Override
-    public void onReceiverEvent(PushMessage pushMessage) {
+    public void onReceivedPushMessage(PushMessage pushMessage) {
         Timber.d("Notification message: [mtuid: %s]", pushMessage.mtuid);
         if (pushMessage instanceof AuthenticationData) {
             AuthenticationData authenticationData = (AuthenticationData) pushMessage;
@@ -372,7 +372,7 @@ public class ZPNotificationService implements OnReceiverMessageListener, Notific
     }*/
 
     @Override
-    public void addReceiverListener(OnReceiverMessageListener listener) {
+    public void addReceiverListener(OnReceivedPushMessageListener listener) {
         mWsConnection.addReceiverListener(listener);
     }
 

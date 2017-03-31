@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
+import vn.com.vng.zalopay.network.OnReceivedPushMessageListener;
 import vn.com.vng.zalopay.network.PushMessage;
 
 /**
@@ -34,7 +34,7 @@ public abstract class Connection {
     public static final int LENGTH_FIELD_LENGTH = 4;
     public static final int HEADER_LENGTH = TYPE_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
 
-    private final List<OnReceiverMessageListener> listCallBack = new ArrayList<>();
+    private final List<OnReceivedPushMessageListener> listCallBack = new ArrayList<>();
 
     Connection() {
         HandlerThread messageThread = new HandlerThread("message-thread");
@@ -60,7 +60,7 @@ public abstract class Connection {
         return mState;
     }
 
-    public void addReceiverListener(OnReceiverMessageListener listener) {
+    public void addReceiverListener(OnReceivedPushMessageListener listener) {
         if (listCallBack.contains(listener)) {
             return;
         }
@@ -68,7 +68,7 @@ public abstract class Connection {
         listCallBack.add(listener);
     }
 
-    public void removeReceiverListener(OnReceiverMessageListener listener) {
+    public void removeReceiverListener(OnReceivedPushMessageListener listener) {
         listCallBack.remove(listener);
     }
 
@@ -113,7 +113,7 @@ public abstract class Connection {
     private void onPostExecute(PushMessage pushMessage) {
         try {
             for (int i = listCallBack.size() - 1; i >= 0; i--) {
-                listCallBack.get(i).onReceiverEvent(pushMessage);
+                listCallBack.get(i).onReceivedPushMessage(pushMessage);
             }
         } catch (Exception ex) {
             Timber.w(ex);

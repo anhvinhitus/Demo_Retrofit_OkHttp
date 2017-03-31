@@ -17,28 +17,31 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.exception.WriteSocketException;
+import vn.com.vng.zalopay.network.WriteSocketException;
+import vn.com.vng.zalopay.network.ConnectionErrorCode;
+import vn.com.vng.zalopay.network.ConnectorListener;
+import vn.com.vng.zalopay.network.SocketConnector;
 
 /**
  * Created by huuhoa on 12/20/16.
  * Implement SSL socket client
  */
 
-class SSLClient implements SocketClient {
+class SSLClientConnector implements SocketConnector {
     private final String mHostname;
     private final int mPort;
     private final Handler mConnectionHandler;
     private final Handler mEventHandler;
-    private Listener mListener;
+    private ConnectorListener mConnectorListener;
     private Socket mSslSocket = null;
     private boolean mIsConnecting;
 
     private DataInputStream mInputStream;
 
-    SSLClient(String hostname, int port, Listener listener) {
+    SSLClientConnector(String hostname, int port, ConnectorListener listener) {
         mHostname = hostname;
         mPort = port;
-        mListener = listener;
+        mConnectorListener = listener;
         mIsConnecting = false;
 
         // event handler thread - all socket events are processed mInputStream that thread
@@ -178,8 +181,8 @@ class SSLClient implements SocketClient {
 
             mSslSocket = null;
 
-            if (mListener != null) {
-                mListener.onDisconnected(ConnectionErrorCode.DISCONNECT_FINALIZE, "");
+            if (mConnectorListener != null) {
+                mConnectorListener.onDisconnected(ConnectionErrorCode.DISCONNECT_FINALIZE, "");
             }
         });
     }
@@ -246,26 +249,26 @@ class SSLClient implements SocketClient {
     }
 
     private void postReceivedDataEvent(byte[] data) {
-        if (mListener == null) {
+        if (mConnectorListener == null) {
             return;
         }
 
-        mEventHandler.post(() -> mListener.onMessage(data));
+        mEventHandler.post(() -> mConnectorListener.onMessage(data));
     }
 
     private void postConnectedEvent() {
-        if (mListener == null) {
+        if (mConnectorListener == null) {
             return;
         }
 
-        mEventHandler.post(() -> mListener.onConnected());
+        mEventHandler.post(() -> mConnectorListener.onConnected());
     }
 
     private void postErrorEvent(Throwable e) {
-        if (mListener == null) {
+        if (mConnectorListener == null) {
             return;
         }
 
-        mEventHandler.post(() -> mListener.onError(e));
+        mEventHandler.post(() -> mConnectorListener.onError(e));
     }
 }

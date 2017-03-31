@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.ws.connection;
+package vn.com.vng.zalopay.network;
 
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -9,10 +9,10 @@ import timber.log.Timber;
  * Created by huuhoa on 8/12/16.
  * Implementation for connection events
  */
-class ConnectionListener implements ConnectionListenable {
-    private WeakReference<TCPClient> mTcpClient;
+class TCPConnectionListener implements NioSocketClientListener {
+    private WeakReference<TCPClientConnector> mTcpClient;
 
-    ConnectionListener(TCPClient tcpClient) {
+    TCPConnectionListener(TCPClientConnector tcpClient) {
         mTcpClient = new WeakReference<>(tcpClient);
     }
 

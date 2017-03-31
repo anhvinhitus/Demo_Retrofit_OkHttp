@@ -1,6 +1,6 @@
 package vn.com.vng.zalopay.data.ws.connection;
 
-import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
+import vn.com.vng.zalopay.network.OnReceivedPushMessageListener;
 
 /**
  * Created by hieuvm on 3/8/17.
@@ -11,7 +11,7 @@ public interface NotificationService {
 
     void stop();
 
-    void addReceiverListener(OnReceiverMessageListener listener);
+    void addReceiverListener(OnReceivedPushMessageListener listener);
 
     void send(NotificationApiMessage message);
 

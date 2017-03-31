@@ -1,10 +1,12 @@
-package vn.com.vng.zalopay.data.ws.connection;
+package vn.com.vng.zalopay.network;
+
+import vn.com.vng.zalopay.network.ConnectionErrorCode;
 
 /**
  * Created by hieuvm on 12/20/16.
  */
 
-public interface ConnectionListenable {
+interface NioSocketClientListener {
     void onConnected();
 
     void onReceived(byte[] data);

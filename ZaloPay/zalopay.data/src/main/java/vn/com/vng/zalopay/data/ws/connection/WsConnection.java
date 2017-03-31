@@ -17,6 +17,9 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
+import vn.com.vng.zalopay.network.ConnectionErrorCode;
+import vn.com.vng.zalopay.network.ConnectorListener;
+import vn.com.vng.zalopay.network.SocketConnector;
 import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.network.PushMessage;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
@@ -44,7 +47,7 @@ public class WsConnection extends Connection {
     private final Parser parser;
     private final User mUser;
 
-    private final SocketClient mSocketClient;
+    private final SocketConnector mSocketConnector;
     private RxBus mServerPongBus;
 
     private final Handler mConnectionHandler;
@@ -68,8 +71,8 @@ public class WsConnection extends Connection {
         this.context = context;
         this.parser = parser;
         this.mUser = user;
-        // mSocketClient = new TCPClient(host, port, new ConnectionListener());
-        mSocketClient = new SSLClient(host, port, new ConnectionListener());
+        // mSocketConnector = new TCPClientConnector(host, port, new ConnectionListener());
+        mSocketConnector = new SSLClientConnector(host, port, new ConnectionConnectorListener());
         HandlerThread thread = new HandlerThread("wsconnection");
         thread.start();
         mConnectionHandler = new Handler(thread.getLooper());
@@ -94,8 +97,8 @@ public class WsConnection extends Connection {
                 Observable.interval(TIMER_CONNECTION_CHECK, TimeUnit.SECONDS)
                         .map((value) -> mCheckCountDown--)
                         .filter((value) ->
-                                !mSocketClient.isConnected() &&
-                                        !mSocketClient.isConnecting() &&
+                                !mSocketConnector.isConnected() &&
+                                        !mSocketConnector.isConnecting() &&
                                         (mNextConnectionState == NextState.RETRY_CONNECT ||
                                                 mNextConnectionState == NextState.RETRY_AFTER_KICKEDOUT) &&
                                         NetworkHelper.isNetworkAvailable(context) &&
@@ -115,7 +118,7 @@ public class WsConnection extends Connection {
     private void subscribeKeepClientHeartBeatEvent() {
         Subscription subscription =
                 Observable.interval(TIMER_HEARTBEAT, TimeUnit.SECONDS)
-                        .filter((value) -> mSocketClient.isConnected())
+                        .filter((value) -> mSocketConnector.isConnected())
                         .subscribe((value) -> {
                             Timber.d("Begin send heart beat [%s]", value);
                             ping();
@@ -135,7 +138,7 @@ public class WsConnection extends Connection {
         mServerPongBus = new RxBus();
         Subscription subscription =
                 mServerPongBus.toObserverable()
-                        .filter((obj) -> mSocketClient.isConnected() && this.isUserLoggedIn())
+                        .filter((obj) -> mSocketConnector.isConnected() && this.isUserLoggedIn())
                         .debounce(SERVER_TIMEOUT, TimeUnit.SECONDS)
                         .filter((obj) -> this.isUserLoggedIn() &&
                                 (mNextConnectionState == NextState.RETRY_CONNECT))
@@ -159,8 +162,8 @@ public class WsConnection extends Connection {
             compositeSubscription.clear();
         }
 
-        if (mSocketClient != null) {
-            mSocketClient.disconnect();
+        if (mSocketConnector != null) {
+            mSocketConnector.disconnect();
         }
     }
 
@@ -171,13 +174,13 @@ public class WsConnection extends Connection {
             mConnectionHandler.post(this::connect);
         } else {
             Timber.d("Trigger new connection inside looper");
-            if (mSocketClient.isConnected() || mSocketClient.isConnecting()) {
+            if (mSocketConnector.isConnected() || mSocketConnector.isConnecting()) {
                 Timber.d("Skip because connection is on the go");
                 return;
             }
 
             mNextConnectionState = NextState.RETRY_CONNECT;
-            mSocketClient.connect();
+            mSocketConnector.connect();
         }
     }
 
@@ -216,24 +219,24 @@ public class WsConnection extends Connection {
 
 
     private void doDisconnect() {
-        if (mSocketClient != null) {
-            mSocketClient.disconnect();
+        if (mSocketConnector != null) {
+            mSocketConnector.disconnect();
         }
     }
 
     @Override
     public boolean isConnected() {
-        return mSocketClient.isConnected();
+        return mSocketConnector.isConnected();
     }
 
     @Override
     public boolean isConnecting() {
-        return mSocketClient.isConnecting();
+        return mSocketConnector.isConnecting();
     }
 
     @Override
     public boolean send(int msgType, byte[] data) {
-        if (mSocketClient == null || data == null) {
+        if (mSocketConnector == null || data == null) {
             return false;
         }
 
@@ -241,7 +244,7 @@ public class WsConnection extends Connection {
         bufTemp.putInt(data.length + TYPE_FIELD_LENGTH);
         bufTemp.put((byte) msgType);
         bufTemp.put(data);
-        mSocketClient.send(bufTemp.array());
+        mSocketConnector.send(bufTemp.array());
 
         return true;
     }
@@ -303,7 +306,7 @@ public class WsConnection extends Connection {
         }
     }
 
-    private class ConnectionListener implements Listener {
+    private class ConnectionConnectorListener implements ConnectorListener {
 
         @Override
         public void onConnected() {
@@ -371,8 +374,8 @@ public class WsConnection extends Connection {
             mState = Connection.State.Disconnected;
             mIsAuthenSuccess = false;
 
-            if (mSocketClient != null) {
-                mSocketClient.disconnect();
+            if (mSocketConnector != null) {
+                mSocketConnector.disconnect();
             }
 
             Timber.d("Next expected network state: %s", mNextConnectionState);

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.ws.connection;
+package vn.com.vng.zalopay.network;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,55 +23,55 @@ import timber.log.Timber;
  * Created by huuhoa on 8/11/16.
  * Non-blocking socket communication
  */
-class SocketChannelConnection {
-    private final ConnectionListenable mListenable;
+class NioSocketClient {
+    private final NioSocketClientListener mListenable;
     private final List<ByteBuffer> mWriteQueue = new LinkedList<>();
     private final ByteBuffer mReadBuffer = ByteBuffer.allocate(4096);
     // A list of ChangeRequest instances
     private final List<ChangeRequest> mChangeRequests = new LinkedList<>();
 
     boolean isConnected() {
-        return mConnectionState == ConnectionState.CONNECTED;
+        return mConnectionState == NioConnectionState.CONNECTED;
     }
 
     boolean isConnecting() {
-        return mConnectionState == ConnectionState.CONNECTING;
+        return mConnectionState == NioConnectionState.CONNECTING;
     }
 
     public void close() {
         handleDisconnected(ConnectionErrorCode.TRIGGER_DISCONNECT);
     }
 
-    private ConnectionState mConnectionState;
+    private NioConnectionState mConnectionState;
     private Selector mSelector;
     private SocketChannel mChannel;
     private String mAddress;
     private int mPort;
 
-    SocketChannelConnection(String address, int port, ConnectionListenable listenable) {
+    NioSocketClient(String address, int port, NioSocketClientListener listenable) {
         mListenable = listenable;
 
         mAddress = address;
         mPort = port;
 
-        mConnectionState = ConnectionState.NOT_CONNECTED;
+        mConnectionState = NioConnectionState.NOT_CONNECTED;
     }
 
 
     boolean startConnect() throws Exception {
         Timber.d("Start connecting");
         synchronized (this) {
-            if (mConnectionState == ConnectionState.CONNECTED) {
+            if (mConnectionState == NioConnectionState.CONNECTED) {
                 Timber.d("Connection is already made.");
                 throw new AlreadyConnectedException();
             }
 
-            if (mConnectionState == ConnectionState.CONNECTING) {
+            if (mConnectionState == NioConnectionState.CONNECTING) {
                 Timber.d("Connection is initializing");
                 throw new ConnectionPendingException();
             }
 
-            mConnectionState = ConnectionState.CONNECTING;
+            mConnectionState = NioConnectionState.CONNECTING;
 
             mSelector = Selector.open();
             mChannel = SocketChannel.open();
@@ -195,7 +195,7 @@ class SocketChannelConnection {
             // this will raise an IOException.
             if (channel.finishConnect()) {
 //                Timber.d("connection made");
-                mConnectionState = ConnectionState.CONNECTED;
+                mConnectionState = NioConnectionState.CONNECTED;
                 mListenable.onConnected();
                 key.interestOps(SelectionKey.OP_READ);
             } else {
@@ -205,7 +205,7 @@ class SocketChannelConnection {
             return true;
         } catch (IOException e) {
             Timber.d(e, "exception while handling connection");
-            mConnectionState = ConnectionState.NOT_CONNECTED;
+            mConnectionState = NioConnectionState.NOT_CONNECTED;
 
             // Cancel the channel's registration with our selector
             key.cancel();
@@ -270,8 +270,8 @@ class SocketChannelConnection {
     }
 
     private void handleDisconnected(ConnectionErrorCode reason) {
-        if (mConnectionState != ConnectionState.CONNECTED &&
-                mConnectionState != ConnectionState.CONNECTING) {
+        if (mConnectionState != NioConnectionState.CONNECTED &&
+                mConnectionState != NioConnectionState.CONNECTING) {
             return;
         }
 
@@ -286,7 +286,7 @@ class SocketChannelConnection {
                 mChangeRequests.clear();
             }
 
-            mConnectionState = ConnectionState.DISCONNECTED;
+            mConnectionState = NioConnectionState.DISCONNECTED;
             mSelector.close();
             mChannel.socket().close();
             mChannel.close();

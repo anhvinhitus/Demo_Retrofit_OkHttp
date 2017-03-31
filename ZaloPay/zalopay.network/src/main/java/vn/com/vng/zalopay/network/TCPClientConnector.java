@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.ws.connection;
+package vn.com.vng.zalopay.network;
 
 import android.content.Context;
 import android.os.Handler;
@@ -15,17 +15,17 @@ import timber.log.Timber;
  * Created by AnhHieu on 7/24/16.
  * TCP nonblocking socket
  */
-class TCPClient implements SocketClient {
-    private Listener mListener;
+class TCPClientConnector implements SocketConnector {
+    private ConnectorListener mConnectorListener;
 
     private final Handler mConnectionHandler;
 
     private final Handler mEventHandler;
 
-    private final SocketChannelConnection mConnection;
+    private final NioSocketClient mConnection;
 
-    TCPClient(Context context, String hostname, int port, Listener listener) {
-        mListener = listener;
+    TCPClientConnector(Context context, String hostname, int port, ConnectorListener listener) {
+        mConnectorListener = listener;
 
         // event handler thread - all socket events are processed in that thread
         // such as: data received, socket connected, socket disconnected, socket error
@@ -44,7 +44,7 @@ class TCPClient implements SocketClient {
         mEventHandler = new Handler(eventHandlerThread.getLooper());
         mConnectionHandler = new Handler(connectionThread.getLooper());
 
-        mConnection = new SocketChannelConnection(hostname, port, new ConnectionListener(this));
+        mConnection = new NioSocketClient(hostname, port, new TCPConnectionListener(this));
     }
 
     public void connect() {
@@ -125,11 +125,11 @@ class TCPClient implements SocketClient {
     }
 
     void postDisconnectedEvent(ConnectionErrorCode reason) {
-        if (mListener == null) {
+        if (mConnectorListener == null) {
             return;
         }
 
-        mEventHandler.post(() -> mListener.onDisconnected(reason, ""));
+        mEventHandler.post(() -> mConnectorListener.onDisconnected(reason, ""));
     }
 
     private void postWriteData(byte[] data) {
@@ -137,26 +137,26 @@ class TCPClient implements SocketClient {
     }
 
     void postReceivedDataEvent(byte[] data) {
-        if (mListener == null) {
+        if (mConnectorListener == null) {
             return;
         }
 
-        mEventHandler.post(() -> mListener.onMessage(data));
+        mEventHandler.post(() -> mConnectorListener.onMessage(data));
     }
 
     void postConnectedEvent() {
-        if (mListener == null) {
+        if (mConnectorListener == null) {
             return;
         }
 
-        mEventHandler.post(() -> mListener.onConnected());
+        mEventHandler.post(() -> mConnectorListener.onConnected());
     }
 
     private void postErrorEvent(Throwable e) {
-        if (mListener == null) {
+        if (mConnectorListener == null) {
             return;
         }
 
-        mEventHandler.post(() -> mListener.onError(e));
+        mEventHandler.post(() -> mConnectorListener.onError(e));
     }
 }
