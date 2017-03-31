@@ -80,4 +80,6 @@ dependencies {
     compile libs.rxAndroid
 
     compile libs.eventbus
+
+    compile project(":zalopay.network")
 }

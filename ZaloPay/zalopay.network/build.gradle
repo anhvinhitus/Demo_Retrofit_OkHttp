@@ -8,7 +8,6 @@ buildscript {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
-
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
@@ -22,6 +21,9 @@ android {
     defaultConfig {
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode 1
+        versionName "1.0"
     }
     buildTypes {
         debug {
@@ -46,18 +48,6 @@ android {
         exclude 'META-INF/LICENSE'
         exclude "META-INF/io.netty.versions.properties"
     }
-
-    lintOptions {
-        quiet true
-        abortOnError false
-        ignoreWarnings true
-        disable 'InvalidPackage'
-        disable 'OldTargetApi'
-    }
-
-    testOptions {
-        unitTests.returnDefaultValues = true
-    }
 }
 
 retrolambda {
@@ -69,31 +59,9 @@ dependencies {
     def libs = rootProject.ext.libraries
     def tests = rootProject.ext.testingLibraries
 
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
     testCompile tests.junit
-    testCompile tests.robolectric
-
     compile libs.support_appcompat_v7
-    compile libs.support_annotations
-    compile libs.dagger
-    apt libs.daggerCompiler
-    provided libs.javaxAnnotation
-
-    compile libs.rxJava
-    compile libs.rxAndroid
-
-    compile libs.retrofit
-    compile libs.retrofitAdapter
-    compile libs.retrofitConverter
-    compile libs.retrofitLogging
-    compile libs.okHttp
-    compile libs.greenDao
-    compile libs.timber
-    compile libs.eventbus
-    compile libs.gson
-    compile libs.wire_runtime
-    compile libs.zalopay_analytics
-
-    compile project(':zalopay.domain')
-    compile project(':zalopay.feedback')
-    compile project(':zalopay.network')
 }
