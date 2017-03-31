@@ -45,7 +45,6 @@ public class LocationLocalStorage implements LocationStore.LocalStorage {
                 LOCATION_TIMESTAMP, /*LOCATION_ADDRESS,*/ LOCATION_LATITUDE, LOCATION_LONGITUDE
         );
 
-        Timber.d("item: %s", item);
         if (item == null) {
             return null;
         }
