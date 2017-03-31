@@ -12,7 +12,7 @@ import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.TransHistoryEntity;
 import vn.com.vng.zalopay.data.api.response.TransactionHistoryResponse;
-import vn.com.vng.zalopay.data.net.adapter.API_NAME;
+import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.vng.zalopay.domain.model.TransHistory;
 import vn.com.zalopay.analytics.ZPEvents;
 

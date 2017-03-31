@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
-import vn.com.vng.zalopay.data.net.adapter.RETRY;
+import vn.com.vng.zalopay.network.RETRY;
 
 /**
  * Created by AnhHieu on 9/20/16.

@@ -13,6 +13,7 @@ import retrofit2.http.QueryMap;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 import rx.Observable;
+import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfigResponse;
@@ -23,6 +24,7 @@ import vn.com.zalopay.wallet.business.entity.base.SaveCardResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
+import vn.com.vng.zalopay.network.API_NAME;
 
 public interface IData {
 
@@ -32,6 +34,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_PLATFORM_INFO)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_V001GETPLATFORMINFO)
     Observable<DPlatformInfo> loadPlatformInfo(@QueryMap Map<String, String> params);
 
     /**
@@ -41,6 +44,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_APP_INFO)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETAPPINFO)
     Observable<DAppInfoResponse> loadAppInfo(@QueryMap Map<String, String> params);
 
     /**
@@ -49,6 +53,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_GET_BANKLIST)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETBANKLIST)
     Observable<BankConfigResponse> loadBankList(@QueryMap Map<String, String> params);
 
     /**
@@ -58,6 +63,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_GET_STATUS)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETTRANSSTATUS)
     Observable<StatusResponse> getStatus(@QueryMap Map<String, String> params);
 
     /***
@@ -66,6 +72,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_LISTCARDINFO)
+    @API_NAME(ZPEvents.CONNECTOR_UM_LISTCARDINFOFORCLIENT)
     Observable<CardInfoListResponse> loadMapCardList(@QueryMap Map<String, String> params);
 
     /***
@@ -74,6 +81,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_LISTBANKACCCOUNT)
+    // @TODO
     Observable<BankAccountListResponse> loadMapBankAccountList(@QueryMap Map<String, String> params);
 
     /***
@@ -83,6 +91,7 @@ public interface IData {
      * @return
      */
     @GET(Constants.URL_CHECK_SUBMIT_ORDER_STATUS)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSBYAPPTRANSIDFORCLIENT)
     Observable<StatusResponse> checkOrderStatusFailSubmit(@QueryMap Map<String, String> params);
 
     /**
@@ -104,6 +113,7 @@ public interface IData {
      * @return
      */
     @POST(Constants.URL_ATM_AUTHEN)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_ATMAUTHENPAYER)
     Observable<StatusResponse> atmAuthen(@Query(ConstantParams.USER_ID) String userID,
                                    @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                    @Query(ConstantParams.ZP_TRANSID) String zpTransid,
@@ -113,6 +123,7 @@ public interface IData {
 
 
     @POST(Constants.URL_REPORT_ERROR)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SDKERRORREPORT)
     Observable<SaveCardResponse> sdkReport(@Query(ConstantParams.USER_ID) String userID,
                                      @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                      @Query(ConstantParams.TRANSID) String transid,
@@ -132,6 +143,7 @@ public interface IData {
      * @return
      */
     @POST(Constants.URL_REMOVE_MAPCARD)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_REMOVEMAPCARD)
     Observable<BaseResponse> removeCard(@Query(ConstantParams.USER_ID) String userID,
                                   @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                   @Query(ConstantParams.CARD_NAME) String cardName,
@@ -154,6 +166,7 @@ public interface IData {
      * @return
      */
     @POST(Constants.URL_TRACKING_LOG)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SDKWRITEATMTIME)
     Observable<BaseResponse> sendLog(@Query(ConstantParams.USER_ID) String userID,
                                @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                @Query(ConstantParams.PMC_ID) String pmcID,
@@ -195,6 +208,7 @@ public interface IData {
      * @return
      */
     @POST(Constants.URL_SUBMIT_ORDER)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SUBMITTRANS)
     Observable<StatusResponse> submitOrder(@Query(ConstantParams.APP_ID) String appID,
                                      @Query(ConstantParams.ZALO_ID) String zaloID,
                                      @Query(ConstantParams.APP_TRANS_ID) String appTransaction,
@@ -224,6 +238,7 @@ public interface IData {
                                      @Query(ConstantParams.LONGITUDE) String latitude);
 
     @POST(Constants.URL_VERIFY_CARDMAP)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_VERIFYCARDFORMAPPING)
     Observable<StatusResponse> verfiyCardMap(
             @Query(ConstantParams.USER_ID) String userId,
             @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
@@ -239,9 +254,11 @@ public interface IData {
             @Query(ConstantParams.APP_VERSION) String appver);
 
     @GET(Constants.URL_GET_STATUS_MAPCARD)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_GETSTATUSMAPCARD)
     Observable<StatusResponse> getMapCardStatus(@QueryMap Map<String, String> params);
 
     @POST(Constants.URL_AUTHEN_CARD_MAP)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_AUTHCARDHOLDERFORMAPPING)
     Observable<StatusResponse> authenMapCard(@Query(ConstantParams.USER_ID) String userID,
                                        @Query(ConstantParams.ACCESS_TOKEN) String accessToken,
                                        @Query(ConstantParams.ZP_TRANSID) String zpTransid,
@@ -267,6 +284,7 @@ public interface IData {
      * @return
      */
     @POST(Constants.URL_SUBMIT_MAP_ACCOUNT)
+    @API_NAME(ZPEvents.CONNECTOR_V001_TPE_SUBMITMAPACCOUNT)
     Observable<StatusResponse> submitMapAccount(@Query(ConstantParams.USER_ID) String userID,
                                           @Query(ConstantParams.ZALO_ID) String zaloID,
                                           @Query(ConstantParams.ACCESS_TOKEN) String accessToken,

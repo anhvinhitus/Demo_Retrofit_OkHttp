@@ -11,7 +11,7 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.GetMerchantUserInfoResponse;
 import vn.com.vng.zalopay.data.api.response.ListMUIResponse;
 import vn.com.vng.zalopay.data.cache.model.MerchantUser;
-import vn.com.vng.zalopay.data.net.adapter.API_NAME;
+import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.vng.zalopay.domain.model.MerchantUserInfo;
 import vn.com.zalopay.analytics.ZPEvents;
 

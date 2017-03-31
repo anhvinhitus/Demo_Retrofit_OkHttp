@@ -10,7 +10,7 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.entity.ApptransidLogEntity;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.model.ApptransidLogGD;
-import vn.com.vng.zalopay.data.net.adapter.API_NAME;
+import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 
 /**

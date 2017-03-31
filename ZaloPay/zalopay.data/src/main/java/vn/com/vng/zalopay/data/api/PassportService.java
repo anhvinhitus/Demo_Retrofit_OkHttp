@@ -9,7 +9,7 @@ import vn.com.vng.zalopay.data.Constants;
 import vn.com.vng.zalopay.data.api.response.LoginResponse;
 import vn.com.vng.zalopay.data.api.response.LogoutResponse;
 import vn.com.vng.zalopay.data.api.response.VerifyInvitationCodeResponse;
-import vn.com.vng.zalopay.data.net.adapter.API_NAME;
+import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 
 /**

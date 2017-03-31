@@ -26,6 +26,8 @@ import retrofit2.Retrofit;
 import rx.Observable;
 import rx.Scheduler;
 import vn.com.vng.zalopay.data.Constants;
+import vn.com.vng.zalopay.network.API_NAME;
+import vn.com.vng.zalopay.network.RETRY;
 
 public final class RxJavaCallAdapterFactory extends CallAdapter.Factory {
     public enum AdapterType {

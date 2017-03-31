@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.net.adapter;
+package vn.com.vng.zalopay.network;
 
 import android.support.annotation.Keep;
 
@@ -10,13 +10,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Created by huuhoa on 1/10/17.
- * Annotation for retry network
+ * Annotation for API NAME in tracking API timing
  */
 
 @Keep
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface RETRY {
+public @interface API_NAME {
     @Keep
-    int value() default 3;
+    int value();
 }
