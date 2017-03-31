@@ -18,21 +18,21 @@ public class DownloadAppResourceTaskQueue {
     private final LinkedList<DownloadAppResourceTask> mTasklist;
     private final Context mContext;
     private final Class<?> mServiceClass;
+    private boolean mIsRunningDownloadService;
 
     public DownloadAppResourceTaskQueue(Context context, Class<?> serviceClass) {
         this.mTasklist = new LinkedList<>();
         this.mContext = context;
         this.mServiceClass = serviceClass;
+        this.mIsRunningDownloadService = false;
     }
 
     boolean isRunningDownloadService() {
-        ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (mServiceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
+        return mIsRunningDownloadService;
+    }
+
+    void setRunningDownloadService(boolean isRunning) {
+        mIsRunningDownloadService = isRunning;
     }
 
     void clearTaskAndStopDownloadService() {

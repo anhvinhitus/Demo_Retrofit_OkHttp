@@ -33,12 +33,12 @@ final class DownloadAppResourceTask {
         try {
             isDownloadSuccess = download(downloadInfo);
 
-            Timber.d("result download app : appId [%s] isSuccess [%s]", downloadInfo.appid, isDownloadSuccess);
-
             if (isDownloadSuccess) {
                 mLocalStorage.increaseStateDownload(downloadInfo.appid);
+                Timber.d("Download app %s success", downloadInfo.appid);
             } else {
                 mLocalStorage.increaseRetryDownload(downloadInfo.appid);
+                Timber.d("Download app %s fail", downloadInfo.appid);
             }
         } catch (Throwable t) {
             Timber.w(t, "Error while executing download task");

@@ -13,6 +13,7 @@ import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 
 /**
  * Created by AnhHieu on 5/20/16.
+ * Service execute task which retrieves from DownloadAppResourceTaskQueue.
  */
 public abstract class AbsDownloadService extends IntentService {
 
@@ -24,8 +25,6 @@ public abstract class AbsDownloadService extends IntentService {
     public DownloadAppResourceTaskQueue mTaskQueue;
 
     private final static String TAG = "DownloadService";
-
-    private boolean mRunning;
 
     public AbsDownloadService(int zaloPayAppId) {
         super(TAG);
@@ -47,23 +46,24 @@ public abstract class AbsDownloadService extends IntentService {
 
     @Override
     public void onDestroy() {
+        mTaskQueue.setRunningDownloadService(false);
         super.onDestroy();
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Timber.d("onHandleIntent");
+        Timber.d("Handle new intent.");
         executeNext();
     }
 
     private void executeNext() {
-        Timber.d("executeNext");
-        if (mRunning) {
-            Timber.d("Skip executeing download since there is running task");
+        if (mTaskQueue.isRunningDownloadService()) {
+            Timber.d("Skip executing download since there is running task");
             return; // Only one task at a time.
         }
+        mTaskQueue.setRunningDownloadService(true);
 
-        Timber.d(" executeNext isEmpty %s", mTaskQueue.isEmpty());
+        Timber.d("Check task queue before execute, queue isEmpty: %s", mTaskQueue.isEmpty());
         while (!mTaskQueue.isEmpty()) {
             DownloadAppResourceTask task = mTaskQueue.peek();
 
@@ -71,7 +71,6 @@ public abstract class AbsDownloadService extends IntentService {
                 break;
             }
 
-            mRunning = true;
             boolean result = task.execute();
 
             if (task.getDownloadInfo().appid == mZaloPayAppId) {
@@ -80,17 +79,10 @@ public abstract class AbsDownloadService extends IntentService {
                 EventBus.getDefault().postSticky(new DownloadAppEvent(result, task.getDownloadInfo()));
             }
 
-            if (result) {
-                Timber.d("download success");
-            } else {
-                Timber.d("download failed");
-            }
-
-            mRunning = false;
             mTaskQueue.dequeue();
         }
 
-        Timber.d("Service stopping!");
+        Timber.d("Download service stopping!");
         stopSelf(); // No more tasks are present. Stop.
     }
 }
