@@ -7,6 +7,7 @@
     <string name="header_overbalance">header_overbalance</string>
     <string name="header_linkcard">header_linkcard</string>
     <string name="header_linkbank">header_linkbank</string>
+    <string name="header_search">header_search</string>
     <!--HomePage END-->
 
     <!--Menu START-->
@@ -68,4 +69,14 @@
     <string name="tab_personal">tab_personal</string>
     <string name="tab_personal_active">tab_personal_active</string>
     <!--Tab in Home END-->
+
+    <!--Tab in Personal START-->
+    <string name="personal_balance">personal_balance</string>
+    <string name="personal_linkbank">personal_linkbank</string>
+    <string name="personal_bill">personal_bill</string>
+    <string name="personal_history">personal_history</string>
+    <string name="personal_supportcenter">personal_supportcenter</string>
+    <string name="personal_feedback">personal_feedback</string>
+    <string name="personal_infomation">personal_infomation</string>
+    <!--Tab in Personal END-->
 </resources>
