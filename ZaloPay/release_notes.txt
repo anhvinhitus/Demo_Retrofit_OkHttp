@@ -1,21 +1,4 @@
-Zalo Pay (Sandbox v2.9.0 - build 194) - Released on 2017-03-02
-- Update vị trí Banner trên trang Home
-- Xóa cookie trong app dịch vụ khi login facebook
-- Update UI Liên kết ngân hàng.
-
-Zalo Pay (Sandbox v2.9.0 - build 193) - Released on 2017-02-28
-- Fix bug icon vcb
-
-Zalo Pay (Sandbox v2.9.0 - build 191) - Released on 2017-02-28
-- Fix rút tiền VCB.
-
-Zalo Pay (Sandbox v2.9.0 - build 190) - Released on 2017-02-27
-- Build sandbox
-
-Zalo Pay (v2.9.0 - build 180) - Released on 2017-02-09
-- Hỗ trợ ngân hàng vietcombank.
-- Thêm Zalo Integration
-- Sửa recovery notification.
-- Update UI: Liên Kết Thẻ, Điều kiện rút tiền.
-- Quét QR với Zing Pay url
+Zalo Pay (Sandbox v2.11.0 - build 211) - Released on 2017-03-31
+- Cập nhật trang Home dạng Tab-based UI
+- Cập nhật trang Profile.
 
