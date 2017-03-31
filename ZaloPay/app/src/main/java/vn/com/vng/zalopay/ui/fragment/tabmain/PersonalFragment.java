@@ -141,6 +141,22 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
         navigator.startLinkCardActivity(getContext());
     }
 
+    @OnClick(R.id.tab_personal_tv_bank_link_now)
+    public void onBankLinkNowClick() {
+        showToast("Quick link bank clicked");
+    }
+
+    @OnClick(R.id.tab_personal_rl_bill)
+    public void onBillClick() {
+
+    }
+
+    @OnClick(R.id.tab_personal_tv_bill_detail)
+    public void onBillDetailClick() {
+        showToast("Bill detail clicked");
+    }
+
+
     @OnClick(R.id.tab_personal_rl_transaction_history)
     public void onTransHistoryClick() {
         navigator.startTransactionHistoryList(getContext());

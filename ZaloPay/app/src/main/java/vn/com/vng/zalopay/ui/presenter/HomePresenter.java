@@ -189,6 +189,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         unsubscribeIfNotNull(mRefPlatformSubscription);
         CShareDataWrapper.dispose();
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
+        unregisterBusComponent();
         super.detachView();
     }
 

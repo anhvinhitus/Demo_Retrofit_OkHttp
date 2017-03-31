@@ -111,19 +111,25 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
     }
 
     @OnClick(R.id.header_view_top_qrcode)
-    public void onClickQRCodeInToolbar() {
+    public void onClickQRCodeOnToolbar() {
         navigator.startScanToPayActivity(this);
     }
 
     @OnClick(R.id.header_view_top_linkbank)
-    public void onClickLinkBankInToolbar() {
+    public void onClickLinkBankOnToolbar() {
         navigator.startLinkCardActivity(this);
     }
 
     @OnClick(R.id.header_view_top_search)
-    public void onClickSearchInToolbar() {
+    public void onClickSearchOnToolbar() {
         showToast("Event search clicked!");
     }
+
+    @OnClick(R.id.header_top_rl_search_view)
+    public void onClickSearchViewOnToolbar() {
+        showToast("Event search clicked");
+    }
+
 
 //    private FrameLayout.LayoutParams mToolbarParams;
 //    private int mMarginBottom;
@@ -170,15 +176,12 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
             public void onPageSelected(int position) {
                 if (position == HomePagerAdapter.TAB_MAIN_INDEX) {
                     setToolbarViewStatus(HomePagerAdapter.TAB_MAIN_INDEX);
-                    mPresenter.subscibeBusComponent();
 
                 } else if (position == HomePagerAdapter.TAB_SHOW_SHOW_INDEX) {
                     setToolbarViewStatus(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
-                    mPresenter.unregisterBusComponent();
 
                 } else if (position == HomePagerAdapter.TAB_PERSONAL_INDEX) {
                     setToolbarViewStatus(HomePagerAdapter.TAB_PERSONAL_INDEX);
-                    mPresenter.unregisterBusComponent();
                 }
             }
 

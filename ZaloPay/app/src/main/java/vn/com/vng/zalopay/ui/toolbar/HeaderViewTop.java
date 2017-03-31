@@ -17,8 +17,8 @@ import vn.com.vng.zalopay.R;
  */
 
 public class HeaderViewTop extends LinearLayout {
-    @BindView(R.id.header_top_rl_normal)
-    View rlHeaderNormal;
+    @BindView(R.id.header_top_rl_search_view)
+    View rlHeaderSearchView;
 
     @BindView(R.id.header_top_rl_collapsed)
     View rlHeaderCollapsed;
@@ -54,24 +54,24 @@ public class HeaderViewTop extends LinearLayout {
         switch (code) {
             case 0:
                 rlHeaderCollapsed.setVisibility(View.GONE);
-                rlHeaderNormal.setVisibility(View.VISIBLE);
+                rlHeaderSearchView.setVisibility(View.VISIBLE);
                 rlHeaderPersonal.setVisibility(View.GONE);
                 rlHeaderCollapsed.setAlpha(alpha);
-                rlHeaderNormal.setAlpha(1 - alpha);
+                rlHeaderSearchView.setAlpha(1 - alpha);
                 break;
             case 1:
                 rlHeaderPersonal.setVisibility(View.GONE);
                 if (alpha > 0.3f) {
-                    rlHeaderNormal.setVisibility(View.GONE);
+                    rlHeaderSearchView.setVisibility(View.GONE);
                     rlHeaderCollapsed.setVisibility(View.VISIBLE);
                 }
                 rlHeaderCollapsed.setAlpha(alpha);
-                rlHeaderNormal.setAlpha(1 - alpha);
+                rlHeaderSearchView.setAlpha(1 - alpha);
                 break;
             case 2:
                 rlHeaderPersonal.setVisibility(View.VISIBLE);
                 rlHeaderCollapsed.setVisibility(View.GONE);
-                rlHeaderNormal.setVisibility(View.GONE);
+                rlHeaderSearchView.setVisibility(View.GONE);
                 break;
         }
     }

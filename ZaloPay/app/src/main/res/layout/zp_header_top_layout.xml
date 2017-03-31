@@ -14,49 +14,25 @@
             android:layout_height="match_parent">
 
             <RelativeLayout
-                android:id="@+id/header_top_rl_normal"
+                android:id="@+id/header_top_rl_search_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/header_top_rl_notification"
-                android:descendantFocusability="beforeDescendants"
-                android:focusableInTouchMode="true"
-                android:orientation="horizontal">
+                android:layout_toLeftOf="@+id/header_top_rl_notification">
 
-                <EditText
-                    android:id="@+id/header_top_et_search"
-                    style="@style/Toolbar.SearchText"
+                <com.zalopay.ui.widget.IconFontTextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/spacing.small"
-                    android:background="@color/white_transparent_2"
-                    android:drawablePadding="@dimen/spacing.small"
-                    android:drawableRight="@drawable/ic_search"
-                    android:hint="@string/search"
-                    android:lines="1"
-                    android:padding="@dimen/spacing.small.t"
-                    android:singleLine="true"
-                    android:textCursorDrawable="@drawable/cursor_white"
-                    android:visibility="visible" />
-
-                <!--<RelativeLayout-->
-                <!--android:id="@+id/header_top_rl_showshow"-->
-                <!--android:layout_width="48dp"-->
-                <!--android:layout_height="48dp"-->
-                <!--android:layout_toLeftOf="@+id/header_top_rl_notification"-->
-                <!--android:visibility="gone">-->
-
-                <!--<ImageView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_centerInParent="true"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:adjustViewBounds="true"-->
-                <!--android:src="@drawable/ic_showshow" />-->
-                <!--</RelativeLayout>-->
-
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/zpw_padding_8"
+                    android:paddingRight="@dimen/zpw_padding_8"
+                    android:text="@string/search"
+                    android:textColor="@color/white_transparent_3"
+                    app:iconRightColor="@color/white_transparent_3"
+                    app:iconRightName="@string/general_search"
+                    app:iconRightSize="12dp" />
             </RelativeLayout>
+
 
             <LinearLayout
                 android:id="@+id/header_top_rl_collapsed"

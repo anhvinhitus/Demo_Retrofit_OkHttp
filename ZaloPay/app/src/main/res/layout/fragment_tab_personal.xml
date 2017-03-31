@@ -113,17 +113,17 @@
                 <RelativeLayout
                     android:id="@+id/tab_personal_rl_bank"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/personal.menu_item_height">
+                    android:layout_height="@dimen/personal.menu_item_height"
+                    android:background="@drawable/default_white_selector">
 
                     <com.zalopay.ui.widget.IconFontTextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_centerVertical="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
                         android:layout_marginLeft="@dimen/personal.margin"
-                        android:layout_marginRight="@dimen/personal.margin"
                         android:gravity="center_vertical"
                         android:text="@string/personal_item_bank_title"
-
                         android:textColor="@color/personal_text"
                         android:textSize="@dimen/personal.iconfont.text"
                         app:iconLeftColor="@color/personal_ic_bank"
@@ -135,6 +135,7 @@
                         app:iconRightSize="@dimen/font_size_arrow_right" />
 
                     <TextView
+                        android:id="@+id/tab_personal_tv_bank_link_now"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -154,7 +155,8 @@
                 <RelativeLayout
                     android:id="@+id/tab_personal_rl_bill"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/personal.menu_item_height">
+                    android:layout_height="@dimen/personal.menu_item_height"
+                    android:background="@drawable/default_white_selector">
 
                     <com.zalopay.ui.widget.IconFontTextView
                         android:layout_width="match_parent"
@@ -175,6 +177,7 @@
                         app:iconRightSize="@dimen/font_size_arrow_right" />
 
                     <TextView
+                        android:id="@+id/tab_personal_tv_bill_detail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"

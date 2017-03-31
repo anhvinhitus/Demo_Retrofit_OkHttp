@@ -37,6 +37,8 @@
     <color name="separate">#e3e6e7</color>
     <color name="separate.transparent">#00e3e6e7</color>
     <color name="white_transparent_2">#33FFFFFF</color>
+    <color name="white_transparent_3">#B3FFFFFF</color>
+
     <!-- Holo Colors -->
     <color name="holo_blue_light">#33B5E5</color>
     <color name="holo_blue_dark">#0099CC</color>
