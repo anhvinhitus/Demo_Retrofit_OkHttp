@@ -179,6 +179,12 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         onViewCreated();
     }
 
+    public void onViewCreated() {
+        initLimitAmount();
+        checkShowButtonTransfer();
+        ensureHaveProfile();
+    }
+
     private class ZaloPayUserSubscriber extends DefaultSubscriber<Person> {
 
         private String toZalopayName;
@@ -279,6 +285,25 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         doTransfer(amount);
         ZPAnalytics.trackEvent(amount == 0 ? ZPEvents.MONEYTRANSFER_INPUTNODESCRIPTION : ZPEvents.MONEYTRANSFER_INPUTDESCRIPTION);
         ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_TAPCONTINUE);
+    }
+
+    private void doTransfer(long amount) {
+        if (mView == null) {
+            Timber.d("mView is null");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mTransferObject.zalopayId)) {
+            Timber.w("ZalopayId is empty");
+            return;
+        }
+
+        if (mUser.zaloPayId.equals(mTransferObject.zalopayId)) {
+            mView.showError(applicationContext.getString(R.string.exception_transfer_for_self));
+            return;
+        }
+
+        transferMoney(amount);
     }
 
     private void transferMoney(long amount) {
@@ -396,29 +421,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         recent.zaloPayName = object.zalopayName;
         recent.phoneNumber = object.phoneNumber;
         return recent;
-    }
-
-    private void doTransfer(long amount) {
-
-        Timber.d("Do transfer: amount [%s]", amount);
-
-        if (mView == null) {
-            Timber.d("mView is null");
-            return;
-        }
-
-        if (mUser.zaloPayId.equals(mTransferObject.zalopayId)) {
-            mView.showError(applicationContext.getString(R.string.exception_transfer_for_self));
-            return;
-        }
-
-        transferMoney(amount);
-    }
-
-    public void onViewCreated() {
-        initLimitAmount();
-        checkShowButtonTransfer();
-        ensureHaveProfile();
     }
 
     private void ensureHaveProfile() {
