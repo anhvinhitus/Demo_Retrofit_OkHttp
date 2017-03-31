@@ -31,7 +31,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory;
-import vn.com.vng.zalopay.data.net.adapter.ToStringConverterFactory;
+import vn.com.vng.zalopay.network.ToStringConverterFactory;
 import vn.com.vng.zalopay.data.ws.model.NotificationEmbedData;
 import vn.com.vng.zalopay.data.ws.parser.NotificationMessageDeserializer;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
@@ -39,7 +39,6 @@ import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.network.BaseNetworkInterceptor;
 import vn.com.vng.zalopay.utils.HttpLoggingInterceptor;
 
-import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.React;
 import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.ZaloPay;
 
 /**

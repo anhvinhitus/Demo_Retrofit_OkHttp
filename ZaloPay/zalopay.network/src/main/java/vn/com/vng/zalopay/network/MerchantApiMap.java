@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.net.adapter;
+package vn.com.vng.zalopay.network;
 
 import java.util.HashMap;
 import java.util.Map;

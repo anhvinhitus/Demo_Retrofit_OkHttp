@@ -9,7 +9,7 @@ import org.greenrobot.eventbus.EventBus;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.network.BaseNetworkInterceptor;
-import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 

@@ -19,10 +19,8 @@ import vn.com.vng.zalopay.data.NetworkError;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.GenericException;
-import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
-import vn.com.vng.zalopay.data.exception.ServerMaintainException;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.TokenException;
-import vn.com.vng.zalopay.data.exception.UserNotFoundException;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 

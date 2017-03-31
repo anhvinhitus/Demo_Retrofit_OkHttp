@@ -19,7 +19,7 @@ import vn.com.vng.zalopay.data.R;
 import vn.com.vng.zalopay.data.exception.PaymentConnectorException;
 import vn.com.vng.zalopay.data.exception.WriteSocketException;
 import vn.com.vng.zalopay.data.protobuf.PaymentCode;
-import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
 import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;

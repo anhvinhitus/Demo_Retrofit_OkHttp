@@ -7,9 +7,7 @@ import com.crashlytics.android.Crashlytics;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.exception.BodyException;
-import vn.com.vng.zalopay.data.exception.InvitationCodeException;
-import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
-import vn.com.vng.zalopay.data.exception.TokenException;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 
 /**
  * Created by huuhoa on 12/7/16.

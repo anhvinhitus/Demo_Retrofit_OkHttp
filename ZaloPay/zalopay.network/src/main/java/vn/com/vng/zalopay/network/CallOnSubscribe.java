@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.net.adapter;
+package vn.com.vng.zalopay.network;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -13,8 +13,9 @@ import rx.Subscriber;
 import rx.exceptions.Exceptions;
 import rx.subscriptions.Subscriptions;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.exception.NetworkConnectionException;
-import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.network.MerchantApiMap;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
+import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -22,12 +23,12 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Created by huuhoa on 7/4/16.
  * Trigger call on subscribing
  */
-final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
+public final class CallOnSubscribe<T> implements Observable.OnSubscribe<Response<T>> {
     private final Context mContext;
     private final Call<T> mOriginalCall;
     private final int mApiClientId;
 
-    CallOnSubscribe(Context context, Call<T> originalCall, int apiClientId) {
+    public CallOnSubscribe(Context context, Call<T> originalCall, int apiClientId) {
         this.mContext = context;
         this.mOriginalCall = originalCall;
         this.mApiClientId = apiClientId;

@@ -11,7 +11,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.util.NetworkHelper;
+import vn.com.vng.zalopay.network.NetworkHelper;
 
 /**
  * A simple {@link BaseFragment} subclass.

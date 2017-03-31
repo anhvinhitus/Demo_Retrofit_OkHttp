@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.net.adapter;
+package vn.com.vng.zalopay.network;
 
 /**
  * Created by AnhHieu on 9/20/16.

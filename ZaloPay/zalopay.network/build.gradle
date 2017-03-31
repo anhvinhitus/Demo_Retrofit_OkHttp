@@ -64,4 +64,17 @@ dependencies {
     })
     testCompile tests.junit
     compile libs.support_appcompat_v7
+    provided libs.javaxAnnotation
+
+    compile libs.rxJava
+    compile libs.rxAndroid
+
+    compile libs.retrofit
+    compile libs.retrofitAdapter
+    compile libs.retrofitConverter
+    compile libs.retrofitLogging
+    compile libs.okHttp
+    compile libs.timber
+    compile libs.wire_runtime
+    compile libs.zalopay_analytics
 }

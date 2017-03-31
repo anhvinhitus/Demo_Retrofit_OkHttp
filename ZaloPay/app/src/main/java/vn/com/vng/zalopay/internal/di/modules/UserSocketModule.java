@@ -19,7 +19,7 @@ import retrofit2.Retrofit;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.DynamicUrlService;
 import vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory;
-import vn.com.vng.zalopay.data.net.adapter.ToStringConverterFactory;
+import vn.com.vng.zalopay.network.ToStringConverterFactory;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorCallFactory;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorService;
 import vn.com.vng.zalopay.data.ws.connection.Connection;

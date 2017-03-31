@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.util;
+package vn.com.vng.zalopay.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
