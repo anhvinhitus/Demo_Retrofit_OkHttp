@@ -38,6 +38,8 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
 class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
 
+    private static final int TRANSFER_MONEY_WEB_APP_REQUEST_CODE = 101;
+
     private IPaymentListener mResponseListener;
     private AccountStore.Repository mAccountRepository;
 
@@ -145,7 +147,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == Constants.REQUEST_CODE_TRANSFER) {
+            if (requestCode == TRANSFER_MONEY_WEB_APP_REQUEST_CODE) {
                 if (mResponseListener == null) {
                     return;
                 }
@@ -204,7 +206,7 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
         object.activateSource = Constants.ActivateSource.FromWebApp_QRType2;
         object.transferMode = Constants.TransferMode.TransferToZaloPayID;
 
-        mNavigator.startActivityForResult(getFragment(), object, Constants.REQUEST_CODE_TRANSFER);
+        mNavigator.startActivityForResult(getFragment(), object, TRANSFER_MONEY_WEB_APP_REQUEST_CODE);
     }
 
     private class UserInfoSubscriber extends DefaultSubscriber<Person> {
