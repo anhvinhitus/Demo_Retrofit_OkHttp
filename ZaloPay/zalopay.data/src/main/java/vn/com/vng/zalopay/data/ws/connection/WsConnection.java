@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.network.PushMessage;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
+import vn.com.vng.zalopay.network.SocketConnectorFactory;
 import vn.com.vng.zalopay.network.protobuf.ServerMessageType;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -71,8 +72,8 @@ public class WsConnection extends Connection {
         this.context = context;
         this.parser = parser;
         this.mUser = user;
-        // mSocketConnector = new TCPClientConnector(host, port, new ConnectionListener());
-        mSocketConnector = new SSLClientConnector(host, port, new ConnectionConnectorListener());
+
+        mSocketConnector = SocketConnectorFactory.create(host, port, new ConnectionConnectorListener());
         HandlerThread thread = new HandlerThread("wsconnection");
         thread.start();
         mConnectionHandler = new Handler(thread.getLooper());

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.ws.connection;
+package vn.com.vng.zalopay.network;
 
 import android.os.Handler;
 import android.os.HandlerThread;

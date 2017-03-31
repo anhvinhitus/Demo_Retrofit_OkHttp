@@ -10,8 +10,8 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Hold map between merchant api path to tracker event
  */
 
-public class MerchantApiMap {
-    public static Map<String, Integer> gApiMapEvent;
+class MerchantApiMap {
+    static Map<String, Integer> gApiMapEvent;
 
     static {
         gApiMapEvent = new HashMap<>();
