@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui;
 
+import android.graphics.drawable.AnimationDrawable;
+
 import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.Person;
@@ -17,4 +19,6 @@ public interface ITransferHomeView extends ILoadDataView {
     void onGetProfileSuccess(Person person, String zaloPayName);
 
     void reloadIntroAnimation();
+
+    void setIntroductionAnimation(AnimationDrawable animationDrawable);
 }
