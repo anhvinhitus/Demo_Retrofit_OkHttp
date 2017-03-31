@@ -25,7 +25,7 @@ import vn.com.vng.zalopay.data.ws.connection.Connection;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
-import vn.com.vng.zalopay.data.ws.model.Event;
+import vn.com.vng.zalopay.network.PushMessage;
 import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 
@@ -132,11 +132,11 @@ public class PaymentConnectorService implements OnReceiverMessageListener {
     }
 
     @Override
-    public void onReceiverEvent(Event event) {
-        if (event instanceof AuthenticationData) {
+    public void onReceiverEvent(PushMessage pushMessage) {
+        if (pushMessage instanceof AuthenticationData) {
             executeNext();
-        } else if (event instanceof PaymentRequestData) {
-            handleResult((PaymentRequestData) event);
+        } else if (pushMessage instanceof PaymentRequestData) {
+            handleResult((PaymentRequestData) pushMessage);
         }
     }
 

@@ -1,9 +1,9 @@
-package vn.com.vng.zalopay.data.ws.model;
+package vn.com.vng.zalopay.network;
 
 /**
  * Created by AnhHieu on 6/16/16.
  */
-public class Event {
+public class PushMessage {
 
     public int msgType;
 
@@ -15,10 +15,10 @@ public class Event {
     
     public boolean hasData;
 
-    public Event(int msgType) {
+    public PushMessage(int msgType) {
         this.msgType = msgType;
     }
 
-    public Event() {
+    public PushMessage() {
     }
 }

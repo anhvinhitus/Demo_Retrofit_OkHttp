@@ -3,15 +3,17 @@ package vn.com.vng.zalopay.data.ws.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.vng.zalopay.network.PushMessage;
+
 /**
  * Created by AnhHieu on 10/4/16.
  * *
  */
 
-public class RecoveryMessageEvent extends Event {
+public class RecoveryPushMessage extends PushMessage {
     public List<NotificationData> listNotify;
 
-    public RecoveryMessageEvent() {
+    public RecoveryPushMessage() {
         this.listNotify = new ArrayList<>();
     }
 

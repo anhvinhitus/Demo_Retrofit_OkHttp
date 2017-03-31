@@ -5,11 +5,12 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import vn.com.vng.zalopay.domain.Enums;
+import vn.com.vng.zalopay.network.PushMessage;
 
 /**
  * Created by AnhHieu on 6/20/16.
  */
-public class NotificationData extends Event {
+public class NotificationData extends PushMessage {
 
     @SerializedName("transid")
     public long transid;

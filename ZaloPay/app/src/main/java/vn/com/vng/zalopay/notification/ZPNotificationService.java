@@ -32,9 +32,9 @@ import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
 import vn.com.vng.zalopay.data.ws.connection.NotificationApiMessage;
 import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
-import vn.com.vng.zalopay.data.ws.model.Event;
+import vn.com.vng.zalopay.network.PushMessage;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
-import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
+import vn.com.vng.zalopay.data.ws.model.RecoveryPushMessage;
 import vn.com.vng.zalopay.domain.executor.ThreadExecutor;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -156,28 +156,28 @@ public class ZPNotificationService implements OnReceiverMessageListener, Notific
     }
 
     @Override
-    public void onReceiverEvent(Event event) {
-        Timber.d("Notification message: [mtuid: %s]", event.mtuid);
-        if (event instanceof AuthenticationData) {
-            AuthenticationData authenticationData = (AuthenticationData) event;
+    public void onReceiverEvent(PushMessage pushMessage) {
+        Timber.d("Notification message: [mtuid: %s]", pushMessage.mtuid);
+        if (pushMessage instanceof AuthenticationData) {
+            AuthenticationData authenticationData = (AuthenticationData) pushMessage;
             if (authenticationData.result != NetworkError.SUCCESSFUL) {
                 handlerAuthenticationError(authenticationData);
             } else {
                 Timber.d("Socket authentication succeeded");
                 this.recoveryNotification(true);
             }
-        } else if (event instanceof NotificationData) {
+        } else if (pushMessage instanceof NotificationData) {
             if (mNotificationHelper == null) {
                 return;
             }
 
-            mNotificationHelper.processImmediateNotification((NotificationData) event);
-        } else if (event instanceof RecoveryMessageEvent) {
+            mNotificationHelper.processImmediateNotification((NotificationData) pushMessage);
+        } else if (pushMessage instanceof RecoveryPushMessage) {
             if (mTimeoutRecoverySubscription != null) {
                 mTimeoutRecoverySubscription.unsubscribe();
             }
 
-            final List<NotificationData> listMessage = ((RecoveryMessageEvent) event).listNotify;
+            final List<NotificationData> listMessage = ((RecoveryPushMessage) pushMessage).listNotify;
             Timber.d("Receive notification %s", listMessage);
 
             if (mNotificationHelper != null && !Lists.isEmptyOrNull(listMessage)) {

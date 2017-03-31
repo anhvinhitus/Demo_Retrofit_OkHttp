@@ -18,7 +18,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.network.NetworkHelper;
-import vn.com.vng.zalopay.data.ws.model.Event;
+import vn.com.vng.zalopay.network.PushMessage;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.data.ws.parser.Parser;
 import vn.com.vng.zalopay.network.protobuf.ServerMessageType;
@@ -284,10 +284,10 @@ public class WsConnection extends Connection {
         return uid;
     }
 
-    private boolean sendFeedbackStatus(Event event) {
+    private boolean sendFeedbackStatus(PushMessage pushMessage) {
         try {
-            long mtaid = event.mtaid;
-            long mtuid = event.mtuid;
+            long mtaid = pushMessage.mtaid;
+            long mtuid = pushMessage.mtuid;
             long uid = getCurrentUserId();
 
             if (mtaid <= 0 && mtuid <= 0) {
@@ -322,7 +322,7 @@ public class WsConnection extends Connection {
         @Override
         public void onMessage(byte[] data) {
 //            Timber.v("onReceived: %s bytes", data.length);
-            Event message = parser.parserMessage(data);
+            PushMessage message = parser.parserMessage(data);
             if (message == null) {
                 return;
             }

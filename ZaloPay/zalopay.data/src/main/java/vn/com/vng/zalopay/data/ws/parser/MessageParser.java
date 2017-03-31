@@ -9,12 +9,12 @@ import java.io.IOException;
 
 import okio.ByteString;
 import timber.log.Timber;
+import vn.com.vng.zalopay.network.PushMessage;
 import vn.com.vng.zalopay.network.protobuf.PaymentResponseMessage;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
-import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.ws.model.PaymentRequestData;
-import vn.com.vng.zalopay.data.ws.model.RecoveryMessageEvent;
+import vn.com.vng.zalopay.data.ws.model.RecoveryPushMessage;
 import vn.com.vng.zalopay.data.ws.model.ServerPongData;
 import vn.com.vng.zalopay.network.protobuf.DataRecoveryResponse;
 import vn.com.vng.zalopay.network.protobuf.DataResponseUser;
@@ -41,9 +41,9 @@ public class MessageParser implements Parser {
     }
 
     @Override
-    public Event parserMessage(byte[] msg) {
+    public PushMessage parserMessage(byte[] msg) {
 
-        Event ret = null;
+        PushMessage ret = null;
         if (msg.length != 0) {
             try {
                 ret = processMessage(msg);
@@ -55,51 +55,51 @@ public class MessageParser implements Parser {
         return ret;
     }
 
-    private Event processMessage(byte[] msg) throws Exception {
+    private PushMessage processMessage(byte[] msg) throws Exception {
         DataResponseUser respMsg = DataResponseUser.ADAPTER.decode(msg);
 
-        Event event = null;
+        PushMessage pushMessage = null;
 
         if (respMsg.data != null) {
             ByteString data = respMsg.data;
 
             ServerMessageType messageType = ServerMessageType.fromValue(respMsg.msgtype);
             if (messageType == ServerMessageType.KICK_OUT_USER) {
-                event = processKickOutUser(data);
+                pushMessage = processKickOutUser(data);
             } else if (messageType == ServerMessageType.PUSH_NOTIFICATION) {
-                event = processPushMessage(data);
+                pushMessage = processPushMessage(data);
             } else if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {
-                event = processAuthenticationLoginSuccess(data);
+                pushMessage = processAuthenticationLoginSuccess(data);
             } else if (messageType == ServerMessageType.PONG_CLIENT) {
-                event = parsePongMessage(data);
+                pushMessage = parsePongMessage(data);
             } else if (messageType == RECOVERY_RESPONSE) {
-                event = parseRecoveryResponse(data);
+                pushMessage = parseRecoveryResponse(data);
             } else if (messageType == PAYMENT_RESPONSE) {
-                event = parsePaymentRequestResponse(data);
+                pushMessage = parsePaymentRequestResponse(data);
             }
         }
 
-        if (event == null) {
-            event = new Event();
+        if (pushMessage == null) {
+            pushMessage = new PushMessage();
         }
-        event.msgType = respMsg.msgtype;
+        pushMessage.msgType = respMsg.msgtype;
 
         if (respMsg.mtaid != null) {
-            event.mtaid = respMsg.mtaid;
+            pushMessage.mtaid = respMsg.mtaid;
         }
 
         if (respMsg.mtuid != null) {
-            event.mtuid = respMsg.mtuid;
+            pushMessage.mtuid = respMsg.mtuid;
         }
 
         if (respMsg.sourceid != null) {
-            event.sourceid = respMsg.sourceid;
+            pushMessage.sourceid = respMsg.sourceid;
         }
 
-        return event;
+        return pushMessage;
     }
 
-    private Event processAuthenticationLoginSuccess(ByteString data) {
+    private PushMessage processAuthenticationLoginSuccess(ByteString data) {
 
         try {
             AuthenticationData event = new AuthenticationData();
@@ -116,12 +116,12 @@ public class MessageParser implements Parser {
         return null;
     }
 
-    private Event parseRecoveryResponse(ByteString data) {
+    private PushMessage parseRecoveryResponse(ByteString data) {
         try {
             DataRecoveryResponse recoverMessage = DataRecoveryResponse.ADAPTER.decode(data);
             Timber.d("parseRecoveryResponse: recoverMessage %s", recoverMessage.messages.size());
 
-            RecoveryMessageEvent recoveryMessageEvent = new RecoveryMessageEvent();
+            RecoveryPushMessage recoveryMessageEvent = new RecoveryPushMessage();
 
             for (RecoveryMessage message : recoverMessage.messages) {
                 NotificationData event = processRecoveryMessage(message);
@@ -138,7 +138,7 @@ public class MessageParser implements Parser {
         return null;
     }
 
-    private Event parsePaymentRequestResponse(ByteString data) {
+    private PushMessage parsePaymentRequestResponse(ByteString data) {
         try {
             PaymentResponseMessage message = PaymentResponseMessage.ADAPTER.decode(data);
             Timber.d("parsePaymentRequestResponse: %s", message);
@@ -161,17 +161,17 @@ public class MessageParser implements Parser {
             return null;
         }
 
-        Event event = processPushMessage(message.data);
-        Timber.d("event %s", event);
-        if (event instanceof NotificationData) {
-            NotificationData notificationData = (NotificationData) event;
+        PushMessage pushMessage = processPushMessage(message.data);
+        Timber.d("event %s", pushMessage);
+        if (pushMessage instanceof NotificationData) {
+            NotificationData notificationData = (NotificationData) pushMessage;
 
             if (message.mtaid != null) {
-                event.mtaid = message.mtaid;
+                pushMessage.mtaid = message.mtaid;
             }
 
             if (message.mtuid != null) {
-                event.mtuid = message.mtuid;
+                pushMessage.mtuid = message.mtuid;
             }
 
             notificationData.notificationstate = (Enums.NotificationState.UNREAD.getId());
@@ -185,7 +185,7 @@ public class MessageParser implements Parser {
         return null;
     }
 
-    private Event parsePongMessage(ByteString data) {
+    private PushMessage parsePongMessage(ByteString data) {
         if (data == null) {
             return null;
         }
@@ -201,13 +201,13 @@ public class MessageParser implements Parser {
         }
     }
 
-    private Event processKickOutUser(ByteString data) {
+    private PushMessage processKickOutUser(ByteString data) {
         Timber.d("Connection was kicked out by server");
         return null;
     }
 
 
-    private Event processPushMessage(ByteString data) {
+    private PushMessage processPushMessage(ByteString data) {
 
         try {
             NotificationData event;

@@ -6,13 +6,12 @@ import android.os.Looper;
 import android.os.Message;
 
 import java.lang.ref.WeakReference;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.ws.callback.OnReceiverMessageListener;
-import vn.com.vng.zalopay.data.ws.model.Event;
+import vn.com.vng.zalopay.network.PushMessage;
 
 /**
  * Created by AnhHieu on 6/14/16.
@@ -77,7 +76,7 @@ public abstract class Connection {
         listCallBack.clear();
     }
 
-    Message postResult(Event message) {
+    Message postResult(PushMessage message) {
 
         Message uiMsg = new Message();
         uiMsg.what = MESSAGE_POST_RESULT;
@@ -111,10 +110,10 @@ public abstract class Connection {
         }
     }
 
-    private void onPostExecute(Event event) {
+    private void onPostExecute(PushMessage pushMessage) {
         try {
             for (int i = listCallBack.size() - 1; i >= 0; i--) {
-                listCallBack.get(i).onReceiverEvent(event);
+                listCallBack.get(i).onReceiverEvent(pushMessage);
             }
         } catch (Exception ex) {
             Timber.w(ex);
@@ -146,7 +145,7 @@ public abstract class Connection {
 
             switch (msg.what) {
                 case MESSAGE_POST_RESULT:
-                    connection.onPostExecute((Event) msg.obj);
+                    connection.onPostExecute((PushMessage) msg.obj);
                     break;
                 case MESSAGE_POSt_ERROR:
                     connection.onErrorExecute((Throwable) msg.obj);
