@@ -49,6 +49,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPaymentPresenter;
 import vn.com.vng.zalopay.ui.view.IQRScanView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
@@ -435,24 +436,24 @@ public final class QRCodePresenter extends AbstractPaymentPresenter<IQRScanView>
 
     private void startMoneyTransfer(Long zaloPayId, String zaloPayName, long amount, String message,
                                     Constants.TransferMode mode, Constants.ActivateSource activateSource) {
-        RecentTransaction item = new RecentTransaction();
+        TransferObject object = new TransferObject();
         if (zaloPayId != null) {
-            item.zaloPayId = String.valueOf(zaloPayId);
+            object.zalopayId = String.valueOf(zaloPayId);
         }
+
         if (!TextUtils.isEmpty(zaloPayName)) {
-            item.zaloPayName = zaloPayName;
-        }
-        if (amount != -1) {
-            item.amount = amount;
+            object.zalopayName = zaloPayName;
         }
 
-        item.message = message;
+        if (amount >= 0) {
+            object.amount = amount;
+        }
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Constants.ARG_MONEY_TRANSFER_MODE, mode);
-        bundle.putSerializable(Constants.ARG_MONEY_ACTIVATE_SOURCE, activateSource);
-        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
-        mNavigator.startTransferActivity(mView.getContext(), bundle, false);
+        object.message = message;
+        object.activateSource = activateSource;
+        object.transferMode = mode;
+
+        mNavigator.startTransferActivity(mView.getContext(), object, false);
     }
 
     private void showDialogDataInvalid() {

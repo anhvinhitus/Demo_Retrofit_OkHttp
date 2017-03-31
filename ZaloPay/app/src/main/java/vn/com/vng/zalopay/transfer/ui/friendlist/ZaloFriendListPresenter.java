@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.DialogHelper;
 
@@ -101,9 +102,12 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
         }
 
         if (zaloFriend.status == 1) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(Constants.ARG_ZALO_FRIEND, zaloFriend);
-            mNavigator.startTransferActivity(fragment, bundle);
+
+            TransferObject object = new TransferObject(zaloFriend);
+            object.transferMode = Constants.TransferMode.TransferToZaloFriend;
+            object.activateSource = Constants.ActivateSource.FromTransferActivity;
+
+            mNavigator.startActivityForResult(fragment, object, Constants.REQUEST_CODE_TRANSFER);
         } else {
             showDialogNotUsingApp(zaloFriend);
         }

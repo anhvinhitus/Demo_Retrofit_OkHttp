@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.KeyboardFrameLayout;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
@@ -24,13 +23,13 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import timber.log.Timber;
-import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.domain.model.Person;
+import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.MoneyEditText;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.vng.zalopay.utils.ImageLoader;
 
 
 /**
@@ -42,17 +41,16 @@ import vn.com.vng.zalopay.utils.ImageLoader;
  */
 public class TransferFragment extends BaseFragment implements ITransferView, OnKeyboardStateChangeListener {
 
-    public static TransferFragment newInstance(Bundle bundle) {
+    public static TransferFragment newInstance(TransferObject object) {
         TransferFragment fragment = new TransferFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("transfer", object);
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Inject
     TransferPresenter mPresenter;
-
-    @Inject
-    ImageLoader mImageLoader;
 
     @BindView(R.id.rootView)
     KeyboardFrameLayout mRootView;
@@ -100,6 +98,8 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     @BindView(R.id.btnContinue)
     View btnContinue;
 
+    TransferObject mTransferObject;
+
     @Override
     protected void setupFragmentComponent() {
         getUserComponent().inject(this);
@@ -113,21 +113,23 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        handleData(savedInstanceState == null ? getArguments() : savedInstanceState);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Bundle argument = getArguments();
-        if (argument == null) {
-            return;
-        }
-
         mPresenter.attachView(this);
+        mPresenter.setTransferObject(mTransferObject);
         mRootView.setOnKeyboardStateListener(this);
+    }
 
-        mPresenter.initData(argument);
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mTransferObject.amount = getAmount();
+        mTransferObject.message = getMessage();
+        outState.putParcelable("transfer", mTransferObject);
     }
 
     @Override
@@ -135,19 +137,17 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         if (mEdtMessageView == null || mScrollView == null) {
             return;
         }
-        Timber.d("onKeyBoardShow: mEdtMessageView.isFocused() %s", mEdtMessageView.isFocused());
+
         if (mEdtMessageView.isFocused()) {
             mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
             mEdtMessageView.requestFocusFromTouch();
         } else {
-            //Scroll down 24dp (height of error text)
             mScrollView.scrollBy(0, AndroidUtils.dp(24));
         }
     }
 
     @Override
     public void onKeyBoardHide() {
-        Timber.d("onKeyBoardHide");
     }
 
     @Override
@@ -184,14 +184,9 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     }
 
     @OnTextChanged(callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED, value = R.id.edtAmount)
-    public void OnAfterAmountChanged(Editable s) {
+    public void onAfterAmountChanged(Editable s) {
         Timber.d("OnTextChangedAmount %s", mAmountView.isValid());
-        setEnableBtnContinue(mAmountView.isValid() && !TextUtils.isEmpty(mPresenter.getZaloPayId()));
-    }
-
-    @OnTextChanged(R.id.edtTransferMsg)
-    public void onTextChanged(CharSequence s) {
-        mPresenter.updateMessage(TextUtils.isEmpty(s) ? "" : s.toString());
+        setEnabledTransfer(mAmountView.isValid());
     }
 
     @OnClick(R.id.btnContinue)
@@ -211,8 +206,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         mTxtError.setVisibility(View.GONE);
     }
 
-    @Override
-    public void setInitialFixedValue(long currentAmount, String currentMessage) {
+    private void setInitialFixedValue(long currentAmount, String currentMessage) {
         mTxtAmount.setText(CurrencyUtil.formatCurrency(currentAmount, false));
         mTxtTransferMsg.setText(currentMessage);
 
@@ -221,8 +215,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         mLayoutFixedMoney.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void setInitialDynamicValue(long currentAmount, String currentMessage) {
+    private void setInitialDynamicValue(long currentAmount, String currentMessage) {
         mEdtMessageView.setText(currentMessage);
 
         if (currentAmount > 0) {
@@ -240,8 +233,70 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     }
 
     @Override
-    public long getEdtAmount() {
-        return mAmountView.getAmount();
+    public long getAmount() {
+
+        Timber.d("amount %s", mAmountView.getAmount());
+
+        if (mAmountView != null) {
+            return mAmountView.getAmount();
+        }
+
+        return 0;
+    }
+
+    @Override
+    public String getMessage() {
+        if (mEdtMessageView != null) {
+            return mEdtMessageView.getText().toString();
+        }
+        return "";
+    }
+
+    @Override
+    public void setTransferInfo(TransferObject object, boolean amountDynamic) {
+
+        if (tvDisplayName != null) {
+            tvDisplayName.setText(object.displayName);
+        }
+
+        if (imgAvatar != null) {
+            imgAvatar.setImageURI(object.avatar);
+        }
+
+        if (mTextViewZaloPayName != null) {
+            mTextViewZaloPayName.setText(TextUtils.isEmpty(object.zalopayName) ? getString(R.string.not_update_zalopay_id) : object.zalopayName);
+        }
+
+       /* if (mEdtMessageView != null) {
+            mEdtMessageView.setText(object.message);
+        }
+
+        if (mAmountView != null) {
+            mAmountView.setText(String.valueOf(object.amount));
+        }*/
+
+        if (amountDynamic) {
+            setInitialDynamicValue(object.amount, object.message);
+        } else {
+            setInitialFixedValue(object.amount, object.message);
+        }
+
+    }
+
+    @Override
+    public void setUserInfo(Person object) {
+        if (tvDisplayName != null) {
+            tvDisplayName.setText(object.displayName);
+        }
+
+        if (imgAvatar != null) {
+            imgAvatar.setImageURI(object.avatar);
+        }
+
+        if (mTextViewZaloPayName != null) {
+            mTextViewZaloPayName.setText(TextUtils.isEmpty(object.zalopayname) ? getString(R.string.not_update_zalopay_id) : object.zalopayname);
+        }
+
     }
 
     @Override
@@ -261,69 +316,6 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
         }
     }
 
-    /**
-     * Set Receiver info when view had created
-     *
-     * @param displayName displayName
-     * @param avatar      avatar
-     * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view
-     */
-    @Override
-    public void setReceiverInfo(String displayName, String avatar, String zalopayName) {
-        Timber.d("setReceiverInfo displayName %s avatar %s", displayName, avatar);
-        setDisplayName(displayName);
-        setAvatar(avatar);
-        setZaloPayName(zalopayName);
-    }
-
-    /**
-     * Set Receiver info when server return user info
-     *
-     * @param displayName displayName
-     * @param avatar      avatar
-     * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view else invisible zaloPayName
-     */
-    @Override
-    public void updateReceiverInfo(String displayName, String avatar, String zalopayName) {
-        Timber.d("updateReceiverInfo displayName %s avatar %s", displayName, avatar);
-        setDisplayName(displayName);
-        setAvatar(avatar);
-        udpateZaloPayName(zalopayName);
-
-    }
-
-    private void setZaloPayName(String zalopayName) {
-        if (TextUtils.isEmpty(zalopayName)) {
-            mTextViewZaloPayName.setVisibility(View.INVISIBLE);
-        } else if (!TextUtils.isEmpty(zalopayName)) {
-            mTextViewZaloPayName.setText(zalopayName);
-            mTextViewZaloPayName.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void udpateZaloPayName(String zalopayName) {
-        if (TextUtils.isEmpty(zalopayName)) {
-            mTextViewZaloPayName.setText(getString(R.string.not_update_zalopay_id));
-        } else if (!TextUtils.isEmpty(zalopayName)) {
-            mTextViewZaloPayName.setText(zalopayName);
-        }
-        mTextViewZaloPayName.setVisibility(View.VISIBLE);
-    }
-
-    private void setAvatar(String avatar) {
-        if (TextUtils.isEmpty(avatar)) {
-            return;
-        }
-        mImageLoader.loadImage(imgAvatar, avatar);
-    }
-
-    private void setDisplayName(String displayName) {
-        if (TextUtils.isEmpty(displayName)) {
-            return;
-        }
-        tvDisplayName.setText(displayName);
-    }
-
     @Override
     public void setMinMaxMoney(long min, long max) {
         if (mAmountView != null) {
@@ -332,29 +324,10 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
     }
 
     @Override
-    public void setEnableBtnContinue(boolean isEnable) {
+    public void setEnabledTransfer(boolean enabled) {
         if (btnContinue != null) {
-            btnContinue.setEnabled(isEnable);
+            btnContinue.setEnabled(enabled);
         }
-    }
-
-    @Override
-    public void confirmTransferUnRegistryZaloPay() {
-        showConfirmDialog("Người nhận chưa đăng ký sử dụng Zalo Pay. Bạn có muốn tiếp tục chuyển tiền không?",
-                getString(R.string.btn_confirm), getString(R.string.btn_cancel), new ZPWOnEventConfirmDialogListener() {
-                    @Override
-                    public void onCancelEvent() {
-
-                    }
-
-                    @Override
-                    public void onOKevent() {
-                        if (mPresenter == null) {
-                            return;
-                        }
-                        mPresenter.transferMoney();
-                    }
-                });
     }
 
     @Override
@@ -380,9 +353,7 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
 
     @Override
     public void showError(String message) {
-        showErrorDialog(message, () -> {
-            mPresenter.shouldFinishTransfer();
-        });
+        showErrorDialog(message, () -> mPresenter.shouldFinishTransfer());
     }
 
     @Override
@@ -393,12 +364,14 @@ public class TransferFragment extends BaseFragment implements ITransferView, OnK
             return;
         }
 
-        mImageLoader.loadImage(imgAvatar, "");
-        mPresenter.initView(bundle.getParcelable(Constants.ARG_ZALO_FRIEND),
-                bundle.getParcelable(Constants.ARG_TRANSFERRECENT),
-                bundle.getLong(Constants.ARG_AMOUNT),
-                bundle.getString(Constants.ARG_MESSAGE));
+        handleData(bundle);
+        mPresenter.setTransferObject(mTransferObject);
+    }
 
-        mPresenter.onViewCreated();
+    private void handleData(Bundle bundle) {
+        TransferObject object = bundle.getParcelable("transfer");
+        if (object != null) {
+            mTransferObject = object;
+        }
     }
 }

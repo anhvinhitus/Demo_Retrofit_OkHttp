@@ -19,11 +19,12 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
+import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+
 
 /**
  * A fragment representing a list of Items.
@@ -172,17 +173,6 @@ public class TransferHomeFragment extends BaseFragment implements
     }
 
     @Override
-    public void onGetProfileSuccess(Person person, String zaloPayName) {
-        RecentTransaction item = new RecentTransaction();
-        item.avatar = person.avatar;
-        item.zaloPayId = person.zaloPayId;
-        item.displayName = person.displayName;
-        item.phoneNumber = String.valueOf(person.phonenumber);
-        item.zaloPayName = zaloPayName;
-        onItemRecentClick(item);
-    }
-
-    @Override
     public void reloadIntroAnimation() {
         if (presenter != null) {
             presenter.loadAnimationFromResource();
@@ -196,26 +186,27 @@ public class TransferHomeFragment extends BaseFragment implements
 
     @Override
     public void onItemRecentClick(RecentTransaction item) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
-        navigator.startTransferActivity(this, bundle);
+
+        TransferObject object = new TransferObject(item);
+        object.activateSource = Constants.ActivateSource.FromTransferActivity;
+        object.transferMode = Constants.TransferMode.TransferToZaloPayID;
+
+        navigator.startActivityForResult(this, object, Constants.REQUEST_CODE_TRANSFER);
         ZPAnalytics.trackEvent(ZPEvents.MONEYTRANSFER_CHOOSERECENTTRANSACTION);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.REQUEST_CODE_TRANSFER) {
-            if (resultCode == Activity.RESULT_OK) {
-                getActivity().finish();
-                return;
-            }
-        }
-        if (requestCode == Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID) {
-            if (resultCode == Activity.RESULT_OK) {
-                getActivity().finish();
-                return;
-            }
-        }
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == Constants.REQUEST_CODE_TRANSFER) {
+            getActivity().finish();
+        } else if (requestCode == Constants.REQUEST_CODE_TRANSFER_VIA_ZALOPAYID) {
+            getActivity().finish();
+        }
     }
 }

@@ -50,6 +50,7 @@ import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
 import vn.com.vng.zalopay.service.UserSession;
+import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferActivity;
 import vn.com.vng.zalopay.transfer.ui.TransferHomeActivity;
@@ -474,22 +475,22 @@ public class Navigator implements INavigator {
         fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
     }
 
-    public void startTransferActivity(Fragment fragment, Bundle bundle) {
+    public void startActivityForResult(Fragment fragment, TransferObject object, int requestCode) {
         Intent intent = new Intent(fragment.getContext(), TransferActivity.class);
-        intent.putExtras(bundle);
-        fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER);
+        intent.putExtra("transfer", object);
+        fragment.startActivityForResult(intent, requestCode);
     }
 
-    public void startTransferActivity(Context context, Bundle bundle) {
+    public void startTransferActivity(Context context, TransferObject object) {
         Intent intent = new Intent(context, TransferActivity.class);
-        intent.putExtras(bundle);
+        intent.putExtra("transfer", object);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-    public void startTransferActivity(Context context, Bundle bundle, boolean forwardResult) {
+    public void startTransferActivity(Context context, TransferObject object, boolean forwardResult) {
         Intent intent = new Intent(context, TransferActivity.class);
-        intent.putExtras(bundle);
+        intent.putExtra("transfer", object);
         if (forwardResult) {
             intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         }

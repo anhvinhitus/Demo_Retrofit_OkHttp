@@ -97,6 +97,7 @@ public class TransferHomePresenter extends AbstractPresenter<ITransferHomeView> 
         if (mView == null || mView.getContext() == null) {
             return;
         }
+
         try {
             Observable.zip(getDrawableFromFile(mView.getContext().getString(R.string.ic_chuyentien_ani_1)),
                     getDrawableFromFile(mView.getContext().getString(R.string.ic_chuyentien_ani_2)),

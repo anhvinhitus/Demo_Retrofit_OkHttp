@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -292,14 +293,14 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
     }
 
     private void startTransfer(long sender, long receiver) {
-        Timber.d("startTransfer sender %s receiver %s", sender, receiver);
-        RecentTransaction item = new RecentTransaction();
-        item.zaloId = receiver;
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Constants.ARG_MONEY_TRANSFER_MODE, Constants.TransferMode.TransferToZaloFriend);
-        bundle.putSerializable(Constants.ARG_MONEY_ACTIVATE_SOURCE, Constants.ActivateSource.FromZalo);
-        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
-        mNavigator.startTransferActivity(mView.getContext(), bundle);
+        Timber.d("Start transfer : sender [%s] receiver [%s]", sender, receiver);
+
+        TransferObject object = new TransferObject();
+        object.zaloId = receiver;
+        object.activateSource = Constants.ActivateSource.FromZalo;
+        object.transferMode = Constants.TransferMode.TransferToZaloFriend;
+
+        mNavigator.startTransferActivity(mView.getContext(), object);
     }
 
     private boolean insidePaymentOrder(final Context context) {

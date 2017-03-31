@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.presenter.AbstractPaymentPresenter;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 
@@ -196,20 +197,14 @@ class WebAppPresenter extends AbstractPaymentPresenter<IWebAppView> {
 
     private void onGetProfileSuccess(Person person, String zaloPayName) {
         Timber.d("Got profile for %s: %s", zaloPayName, person);
-        RecentTransaction item = new RecentTransaction();
-        item.avatar = person.avatar;
-        item.zaloPayId = person.zaloPayId;
-        item.displayName = person.displayName;
-        item.phoneNumber = String.valueOf(person.phonenumber);
-        item.zaloPayName = zaloPayName;
-        item.amount = mZPTransfer.amount;
-        item.message = mZPTransfer.message;
+      
+        TransferObject object = new TransferObject(person);
+        object.amount = mZPTransfer.amount;
+        object.message = mZPTransfer.message;
+        object.activateSource = Constants.ActivateSource.FromWebApp_QRType2;
+        object.transferMode = Constants.TransferMode.TransferToZaloPayID;
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
-        bundle.putSerializable(Constants.ARG_MONEY_TRANSFER_MODE, Constants.TransferMode.TransferToZaloPayID);
-        bundle.putSerializable(Constants.ARG_MONEY_ACTIVATE_SOURCE, Constants.ActivateSource.FromWebApp_QRType2);
-        mNavigator.startTransferActivity(getFragment(), bundle);
+        mNavigator.startActivityForResult(getFragment(), object, Constants.REQUEST_CODE_TRANSFER);
     }
 
     private class UserInfoSubscriber extends DefaultSubscriber<Person> {

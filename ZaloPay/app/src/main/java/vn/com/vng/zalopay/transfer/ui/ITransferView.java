@@ -3,6 +3,8 @@ package vn.com.vng.zalopay.transfer.ui;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 
+import vn.com.vng.zalopay.domain.model.Person;
+import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 /**
@@ -14,41 +16,23 @@ public interface ITransferView extends ILoadDataView {
 
     Fragment getFragment();
 
-    void setEnableBtnContinue(boolean isEnable);
-
-    /**
-     * Set Receiver info when view had created
-     *
-     * @param displayName displayName
-     * @param avatar      avatar
-     * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view
-     */
-    void setReceiverInfo(String displayName, String avatar, String zalopayName);
-
-    /**
-     * Set Receiver info when server return user info
-     *
-     * @param displayName displayName
-     * @param avatar      avatar
-     * @param zalopayName If zaloPayName isn't not null or empty then set zaloPayName to view else invisible zaloPayName
-     */
-    void updateReceiverInfo(String displayName, String avatar, String zalopayName);
-
-    void setInitialDynamicValue(long currentAmount, String currentMessage);
-
-    void setInitialFixedValue(long currentAmount, String currentMessage);
+    void setEnabledTransfer(boolean enabled);
 
     void showDialogThenClose(String content, String title, int dialogType);
-
-    void confirmTransferUnRegistryZaloPay();
 
     void setMinMaxMoney(long min, long max);
 
     boolean validateEdtAmount();
 
-    long getEdtAmount();
+    long getAmount();
+
+    String getMessage();
 
     void showErrorTransferFixedMoney(String error);
 
     void hideErrorTransferFixedMoney();
+
+    void setTransferInfo(TransferObject object, boolean amountDynamic);
+
+    void setUserInfo(Person person);
 }

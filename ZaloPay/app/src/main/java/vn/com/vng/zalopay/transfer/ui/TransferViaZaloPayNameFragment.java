@@ -21,6 +21,7 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.view.ITransferMoneyView;
 import vn.com.vng.zalopay.ui.widget.validate.MinCharactersValidate;
@@ -118,16 +119,8 @@ public class TransferViaZaloPayNameFragment extends BaseFragment implements ITra
         showError(null);
 
         Timber.d("Got profile for %s: %s", zaloPayName, person);
-        RecentTransaction item = new RecentTransaction();
-        item.avatar = person.avatar;
-        item.zaloPayId = person.zaloPayId;
-        item.displayName = person.displayName;
-        item.phoneNumber = String.valueOf(person.phonenumber);
-        item.zaloPayName = zaloPayName;
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.ARG_TRANSFERRECENT, item);
-        navigator.startTransferActivity(this, bundle);
+        TransferObject object = new TransferObject(person);
+        navigator.startActivityForResult(this, object, Constants.REQUEST_CODE_TRANSFER);
     }
 
     @Override

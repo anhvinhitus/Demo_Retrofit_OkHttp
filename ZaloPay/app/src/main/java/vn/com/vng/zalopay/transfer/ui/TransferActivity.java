@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -14,38 +15,23 @@ public class TransferActivity extends BaseToolBarActivity {
     Constants.ActivateSource mActivateSource = Constants.ActivateSource.FromTransferActivity;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initMode(getIntent());
-        Timber.d("onCreate: taskid %s", getTaskId());
-    }
-
-    @Override
     public BaseFragment getFragmentToHost() {
-        return TransferFragment.newInstance(getIntent().getExtras());
+        TransferObject object = getIntent().getParcelableExtra("transfer");
+        mActivateSource = object.activateSource;
+        return TransferFragment.newInstance(object);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        initMode(intent);
-        Timber.d("onNewIntent: ");
-    }
-
-    private void initMode(Intent intent) {
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            mActivateSource = (Constants.ActivateSource) bundle.getSerializable(Constants.ARG_MONEY_ACTIVATE_SOURCE);
-            if(mActivateSource == null) {
-                mActivateSource = Constants.ActivateSource.FromTransferActivity;
-            }
-        }
+        TransferObject object = intent.getParcelableExtra("transfer");
+        mActivateSource = object.activateSource;
     }
 
     @Override
     public void finish() {
 
-        Timber.d("finish mode %s ", mActivateSource);
+        Timber.d("Finish : Activate source [%s] ", mActivateSource);
 
         if (mActivateSource != Constants.ActivateSource.FromZalo) {
             super.finish();
