@@ -443,6 +443,8 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
         Timber.d("Limit transfer : min [%s] max [%s]", mMinAmount, mMaxAmount);
 
+        // View sẽ sử dụng 2 tham số minAmount và maxAmount trong việc kiểm tra giá trị amount
+        // mà người dùng nhập vào có phù hợp hay không
         if (mView != null) {
             mView.setMinMaxMoney(mMinAmount, mMaxAmount);
         }
