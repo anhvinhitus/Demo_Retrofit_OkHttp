@@ -251,21 +251,45 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             hideLoading();
             checkShowButtonTransfer();
         }
+    }
 
-        private void updateTransferObject(Person person) {
+    private void updateTransferObject(Person person) {
 
-            mTransferObject.zalopayId = person.zaloPayId;
-            mTransferObject.zalopayName = person.zalopayname;
+        mTransferObject.zalopayId = person.zaloPayId;
+        mTransferObject.zalopayName = person.zalopayname;
 
-            if (!TextUtils.isEmpty(person.displayName)) {
-                mTransferObject.displayName = person.displayName;
-            }
-            if (!TextUtils.isEmpty(person.avatar)) {
-                mTransferObject.avatar = person.avatar;
-            }
-
-            mTransferObject.phoneNumber = PhoneUtil.formatPhoneNumber(person.phonenumber);
+        if (!TextUtils.isEmpty(person.displayName)) {
+            mTransferObject.displayName = person.displayName;
         }
+        if (!TextUtils.isEmpty(person.avatar)) {
+            mTransferObject.avatar = person.avatar;
+        }
+
+        mTransferObject.phoneNumber = PhoneUtil.formatPhoneNumber(person.phonenumber);
+    }
+
+    private void updateTransferObject(ZPPaymentResult paymentResult) {
+        long amount = 0;
+        String message = null;
+
+        if (paymentResult != null && paymentResult.paymentInfo != null) {
+            amount = paymentResult.paymentInfo.amount;
+            message = paymentResult.paymentInfo.description;
+        }
+
+        Timber.d("Complete transfer zalo : amount [%s] message [%s]", amount, message);
+
+        if (amount == 0) {
+            amount = mView.getAmount();
+        }
+
+        if (message == null) {
+            message = mView.getMessage();
+        }
+
+        mTransferObject.amount = amount;
+        mTransferObject.message = message;
+
     }
 
     void shouldFinishTransfer() {
@@ -330,7 +354,6 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
 
         @Override
         public void onNext(Order order) {
-            Timber.d("Create order success [%s]", order);
             TransferPresenter.this.onCreateWalletOrderSuccess(order);
         }
 
@@ -341,13 +364,13 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 // because it is handled from event subscribers
                 return;
             }
-
-            Timber.d(e, "Server responses with error");
             TransferPresenter.this.onCreateWalletOrderError(e);
         }
     }
 
     private void onCreateWalletOrderError(Throwable e) {
+        Timber.d(e, "Server responses with error");
+
         if (mView == null) {
             return;
         }
@@ -382,7 +405,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         hideLoading();
     }
 
-    private void saveTransferRecentToDB() {
+    private void saveTransferRecent() {
         int transactionType;
 
         try {
@@ -581,15 +604,17 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         }
 
         @Override
-        public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            super.onResponseSuccess(zpPaymentResult);
+        public void onResponseSuccess(ZPPaymentResult paymentResult) {
+            super.onResponseSuccess(paymentResult);
 
             if (mView == null || mView.getActivity() == null) {
                 return;
             }
 
+            updateTransferObject(paymentResult);
+
             if (mTransferObject.activateSource == Constants.ActivateSource.FromZalo) {
-                handleCompletedTransferZalo(mView.getActivity(), zpPaymentResult);
+                handleCompletedTransferZalo(mView.getActivity());
             } else if (mTransferObject.activateSource == Constants.ActivateSource.FromWebApp_QRType2) {
                 handleCompletedTransferWeb(mView.getActivity());
             } else {
@@ -597,7 +622,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 mView.getActivity().finish();
             }
 
-            saveTransferRecentToDB();
+            saveTransferRecent();
         }
 
         @Override
@@ -627,30 +652,11 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
             }
         }
 
-        private void handleCompletedTransferZalo(Activity activity, ZPPaymentResult zpPaymentResult) {
-
-            long amount = 0;
-            String message = null;
-
-            if (zpPaymentResult != null && zpPaymentResult.paymentInfo != null) {
-                amount = zpPaymentResult.paymentInfo.amount;
-                message = zpPaymentResult.paymentInfo.description;
-            }
-
-            Timber.d("Complete transfer zalo : amount [%s] message [%s]", amount, message);
-
-            if (amount == 0) {
-                amount = mView.getAmount();
-            }
-
-            if (message == null) {
-                message = mView.getMessage();
-            }
-
+        private void handleCompletedTransferZalo(Activity activity) {
             Intent data = new Intent();
             data.putExtra("code", 1);
-            data.putExtra("amount", amount);
-            data.putExtra("message", message);
+            data.putExtra("amount", mTransferObject.amount);
+            data.putExtra("message", mTransferObject.message);
             data.putExtra("transactionId", transactionId == null ? "" : transactionId);
             ZPAnalytics.trackEvent(ZPEvents.ZALO_PAYMENT_COMPLETED);
             activity.setResult(Activity.RESULT_OK, data);
