@@ -5,12 +5,10 @@ ext {
     configuration = [
             applicationId    : "vn.com.vng.zalopay",
             buildToolsVersion: "25.0.0",
-            compileVersion   : 24,
+            compileVersion   : 25,
             minSdk           : 16,
-            targetSdk        : 23,
+            targetSdk        : 23
     ]
-
-
 }
 
 buildscript {
