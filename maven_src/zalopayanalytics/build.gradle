@@ -1,6 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: '../maven-push.gradle'
+
+def libs = rootProject.ext.libraries;
 def cfg = rootProject.ext.configuration
+def tests = rootProject.ext.testingLibraries
+
+
 android {
     compileSdkVersion cfg.compileVersion
     buildToolsVersion cfg.buildToolsVersion
@@ -21,6 +26,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    testCompile 'junit:junit:4.12'
-    compile 'com.jakewharton.timber:timber:4.1.2'
+    testCompile tests.junit
+    compile libs.timber
 }

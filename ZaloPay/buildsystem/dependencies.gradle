@@ -42,8 +42,9 @@ ext {
     leakCanaryVersion = '1.4-beta2'
     robolectricVersion = '3.0'
 
-    zxingVersion = "3.2.1"
-    zxingAndroidCoreVersion = "3.2.1"
+    zxingVersion = "3.3.0"
+    zxingAndroidCoreVersion = "3.3.0"
+    zxingAndroidEmbeddedVersion = "3.4.0"
 
     reactNativeVersion = "0.31.1"
     animatedGifVersion = "1.0.0"
@@ -113,7 +114,8 @@ ext {
 
             circularreveal         : "com.github.ozodrukh:CircularReveal:${CircularRevealVersion}",
 
-            dialogplus             : "com.orhanobut:dialogplus:${dialogPlusVersion}"
+            dialogplus             : "com.orhanobut:dialogplus:${dialogPlusVersion}",
+            zxingAndroidEmbedded   : "com.journeyapps:zxing-android-embedded:${zxingAndroidEmbeddedVersion}",
     ]
 
     testingLibraries = [

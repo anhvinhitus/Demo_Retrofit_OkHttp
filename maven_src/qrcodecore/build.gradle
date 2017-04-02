@@ -1,7 +1,9 @@
 apply plugin: 'com.android.library'
 apply from: '../maven-push.gradle'
 
+def libs = rootProject.ext.libraries;
 def cfg = rootProject.ext.configuration
+def tests = rootProject.ext.testingLibraries
 
 android {
     compileSdkVersion cfg.compileVersion
@@ -10,8 +12,6 @@ android {
     defaultConfig {
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 1
-        versionName "1.0"
     }
     buildTypes {
         release {
@@ -23,8 +23,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    def libs = rootProject.ext.libraries
-    def tests = rootProject.ext.testingLibraries
 
     testCompile tests.junit
     compile libs.support_appcompat_v7

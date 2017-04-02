@@ -10,12 +10,10 @@ android {
     buildToolsVersion cfg.buildToolsVersion
 
     defaultConfig {
-//        applicationId "com.zing.zalo.zalosdk"
         minSdkVersion cfg.minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 1
-        versionName "1.0"
     }
+
     buildTypes {
         release {
             minifyEnabled false
