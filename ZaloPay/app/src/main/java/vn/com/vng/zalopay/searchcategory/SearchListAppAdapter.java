@@ -18,14 +18,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.functions.Func2;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.InsideApp;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
  * Created by khattn on 3/14/17.
@@ -134,13 +131,10 @@ public class SearchListAppAdapter extends AbsRecyclerAdapter<InsideApp, Recycler
         @BindView(R.id.viewSeparate)
         View viewSeparate;
 
-        ImageLoader mImageLoader;
-
         public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             this.listener = listener;
             ButterKnife.bind(this, itemView);
-            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
         }
 
         @OnClick(R.id.itemLayout)

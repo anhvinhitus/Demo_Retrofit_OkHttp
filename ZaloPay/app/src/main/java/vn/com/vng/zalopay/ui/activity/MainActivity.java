@@ -16,10 +16,10 @@ import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
 import java.lang.ref.WeakReference;
@@ -28,31 +28,21 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.menu.utils.MenuItemUtil;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
-import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.fragment.LeftMenuFragment;
 import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.MainPresenter;
-import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
-import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.toolbar.HeaderViewTop;
 import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
-
-import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.getAppResource;
 
 /**
  * Created by AnhHieu on 5/24/16.

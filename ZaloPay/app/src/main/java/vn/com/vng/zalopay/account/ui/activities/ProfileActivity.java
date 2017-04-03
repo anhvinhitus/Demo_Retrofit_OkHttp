@@ -18,12 +18,10 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.fragment.ProfileFragment;
 import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
-import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -54,9 +52,6 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
     User user;
 
     @Inject
-    ImageLoader mImageLoader;
-
-    @Inject
     ZaloSdkApi mZaloSdkApi;
 
     @OnClick(R.id.layoutProfileInfo)
@@ -77,8 +72,7 @@ public class ProfileActivity extends BaseToolBarActivity implements IProfileInfo
             return;
         }
         tvName.setText(user.displayName);
-        mImageLoader.loadImage(imgAvatar, user.avatar, R.drawable.ic_avatar_default,
-                R.drawable.ic_avatar_default, ImageLoader.ScaleType.CENTER);
+        imgAvatar.setImageURI(user.avatar);
         setZaloPayName(user.zalopayname);
     }
 

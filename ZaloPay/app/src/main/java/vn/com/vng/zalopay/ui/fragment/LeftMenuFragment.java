@@ -22,16 +22,15 @@ import butterknife.BindView;
 import butterknife.OnItemClick;
 import butterknife.internal.DebouncingOnClickListener;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.react.base.HomePagerActivity;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.menu.model.MenuItem;
 import vn.com.vng.zalopay.menu.model.MenuItemType;
 import vn.com.vng.zalopay.menu.ui.adapter.MenuItemAdapter;
+import vn.com.vng.zalopay.react.base.HomePagerActivity;
 import vn.com.vng.zalopay.ui.callback.MenuClickListener;
 import vn.com.vng.zalopay.ui.presenter.LeftMenuPresenter;
 import vn.com.vng.zalopay.ui.view.ILeftMenuView;
-import vn.com.vng.zalopay.utils.ImageLoader;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -76,9 +75,6 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
 
     @Inject
     LeftMenuPresenter presenter;
-
-    @Inject
-    ImageLoader mImageLoader;
 
     @Override
     public void onAttach(Context context) {
@@ -201,7 +197,9 @@ public class LeftMenuFragment extends BaseFragment implements ILeftMenuView {
 
     @Override
     public void setAvatar(String avatar) {
-        mImageLoader.loadImage(mImageAvatarView, avatar);
+        if (mImageAvatarView != null) {
+            mImageAvatarView.setImageURI(avatar);
+        }
     }
 
     @Override

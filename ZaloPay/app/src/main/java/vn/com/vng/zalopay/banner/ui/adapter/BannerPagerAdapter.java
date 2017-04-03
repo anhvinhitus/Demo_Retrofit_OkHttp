@@ -13,9 +13,7 @@ import java.util.List;
 
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.ImageLoader;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
@@ -29,8 +27,6 @@ public class BannerPagerAdapter extends PagerAdapter {
     private List<DBanner> mResources = new ArrayList<>();
     private IBannerClick mListener;
 
-    ImageLoader mImageLoader;
-
     public interface IBannerClick {
         void onBannerItemClick(DBanner banner, int position);
     }
@@ -40,7 +36,6 @@ public class BannerPagerAdapter extends PagerAdapter {
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mResources = resources;
         mListener = iBannerClick;
-        mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
     }
 
     public void setData(List<DBanner> banners) {
@@ -49,7 +44,7 @@ public class BannerPagerAdapter extends PagerAdapter {
             return;
         }
         mResources.clear();
-        if (banners != null && banners.size() >0) {
+        if (banners != null && banners.size() > 0) {
             mResources.addAll(banners);
         }
         notifyDataSetChanged();
@@ -72,7 +67,7 @@ public class BannerPagerAdapter extends PagerAdapter {
         if (banner == null) {
             return imageView;
         }
-        mImageLoader.loadImage(imageView, banner.logourl);
+        imageView.setImageURI(banner.logourl);
         imageView.setOnClickListener(new DebouncingOnClickListener() {
             @Override
             public void doClick(View v) {

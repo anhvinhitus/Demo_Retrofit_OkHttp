@@ -23,7 +23,6 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
  * Created by Duke on 3/27/17.
@@ -44,9 +43,6 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
 
     @Inject
     PersonalPresenter presenter;
-
-    @Inject
-    ImageLoader imageLoader;
 
     public static PersonalFragment newInstance() {
 
@@ -97,7 +93,7 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
         if (TextUtils.isEmpty(avatar)) {
             return;
         }
-        imageLoader.loadImage(ivAvatar, avatar);
+        ivAvatar.setImageURI(avatar);
     }
 
     @Override

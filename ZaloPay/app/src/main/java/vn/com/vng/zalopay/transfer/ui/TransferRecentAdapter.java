@@ -5,9 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
@@ -19,7 +19,6 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
-import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
  * Created by AnhHieu on 8/17/16.
@@ -33,7 +32,7 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
 
     private OnClickTransferRecentListener listener;
 
-    public TransferRecentAdapter(Context context, OnClickTransferRecentListener listener) {
+    TransferRecentAdapter(Context context, OnClickTransferRecentListener listener) {
         super(context);
         this.listener = listener;
     }
@@ -78,12 +77,10 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
         TextView mTvPhone;
 
         @BindView(R.id.imgAvatar)
-        ImageView mImgAvatar;
+        SimpleDraweeView mImgAvatar;
 
         @BindView(R.id.imgTransferType)
         IconFont mImgTransferType;
-
-        ImageLoader mImageLoader;
 
         Context context;
 
@@ -92,11 +89,10 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
             ButterKnife.bind(this, itemView);
             this.listener = listener;
             context = AndroidApplication.instance();
-            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
         }
 
         private void bindView(RecentTransaction item) {
-            loadImage(mImgAvatar, item.avatar);
+            mImgAvatar.setImageURI(item.avatar);
             mTvDisplayName.setText(item.displayName);
 
             String phone = PhoneUtil.formatPhoneNumber(item.phoneNumber);
@@ -115,10 +111,6 @@ public class TransferRecentAdapter extends AbsRecyclerAdapter<RecentTransaction,
                 mImgTransferType.setIcon(R.string.sendmoney_friend);
                 mImgTransferType.setIconColor(R.color.menu_font_ic_blue);
             }
-        }
-
-        private void loadImage(ImageView image, String url) {
-            mImageLoader.loadImage(image, url);
         }
 
         @OnClick(R.id.itemLayout)

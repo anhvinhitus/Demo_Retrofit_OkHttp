@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zalopay.ui.widget.IconFontDrawable;
+import com.zalopay.ui.widget.IconFontTextView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 
@@ -18,14 +20,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.functions.Func2;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import com.zalopay.ui.widget.IconFontDrawable;
-import com.zalopay.ui.widget.IconFontTextView;
-import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
  * Created by AnhHieu on 5/25/16.
@@ -34,7 +32,8 @@ import vn.com.vng.zalopay.utils.ImageLoader;
 public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, ListAppRecyclerAdapter.ViewHolder> {
 
     private OnClickAppListener listener;
-    private final int  TYPE_BANNER = 0101;
+    private final int TYPE_BANNER = 0101;
+
     public ListAppRecyclerAdapter(Context context, OnClickAppListener listener) {
         super(context);
         this.listener = listener;
@@ -65,13 +64,10 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolder pView ;
-        if(viewType != TYPE_BANNER)
-        {
+        ViewHolder pView;
+        if (viewType != TYPE_BANNER) {
             pView = new ViewHolder(mInflater.inflate(R.layout.row_list_app_layout, parent, false), mOnItemClickListener);
-        }
-        else
-        {
+        } else {
             pView = new ViewHolder(mInflater.inflate(R.layout.row_list_app_layout_banner, parent, false), mOnItemClickListener);
         }
         return pView;
@@ -80,19 +76,17 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
     @Override
     public int getItemViewType(int position) {
 
-        return ((getItem(position).appType == TYPE_BANNER) ? TYPE_BANNER: 0 );
+        return ((getItem(position).appType == TYPE_BANNER) ? TYPE_BANNER : 0);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         AppResource item = getItem(position);
 
-        if (item != null ) {
-            if(getItemViewType(position)!= TYPE_BANNER) {
+        if (item != null) {
+            if (getItemViewType(position) != TYPE_BANNER) {
                 holder.bindView(item);
-            }
-            else
-            {
+            } else {
                 // Span the item if active
                 final ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
                 if (lp instanceof StaggeredGridLayoutManager.LayoutParams) {
@@ -105,6 +99,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         }
 
     }
+
     @Override
     public void insertItems(List<AppResource> items) {
         if (items == null || items.isEmpty()) return;
@@ -143,13 +138,10 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
         @BindView(R.id.tvInsideApp)
         IconFontTextView tvInsideApp;
 
-        ImageLoader mImageLoader;
-
         public ViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
             this.listener = listener;
             ButterKnife.bind(this, itemView);
-            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
         }
 
         @OnClick(R.id.itemLayout)

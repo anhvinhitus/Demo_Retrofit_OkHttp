@@ -14,19 +14,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.zalopay.ui.widget.IconFontTextView;
 import com.zalopay.ui.widget.recyclerview.AbsRecyclerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.PersonTransfer;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
-import com.zalopay.ui.widget.IconFontTextView;
-import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
  * Created by AnhHieu on 8/31/16.
@@ -135,11 +133,8 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
         @BindView(R.id.tvAmount)
         TextView tvAmountView;
 
-        ImageLoader mImageLoader;
-
         public ViewHolder(View itemView) {
             super(itemView);
-            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
             ButterKnife.bind(this, itemView);
         }
 
@@ -161,7 +156,7 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
         }
 
         private void loadImage(SimpleDraweeView imageView, String url) {
-            mImageLoader.loadImage(imageView, url);
+            imageView.setImageURI(url);
         }
 
     }
@@ -200,11 +195,8 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
 
         private long mTotal;
 
-        ImageLoader mImageLoader;
-
         public HeaderViewHolder(View itemView) {
             super(itemView);
-            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
             ButterKnife.bind(this, itemView);
         }
 
@@ -255,7 +247,7 @@ final class PersonTransferAdapter extends AbsRecyclerAdapter<PersonTransfer, Rec
         }
 
         private void loadImage(SimpleDraweeView imageView, String url) {
-            mImageLoader.loadImage(imageView, url);
+            imageView.setImageURI(url);
         }
 
         private Runnable mRunnable = new Runnable() {
