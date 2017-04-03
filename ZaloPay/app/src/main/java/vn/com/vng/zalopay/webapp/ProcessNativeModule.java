@@ -1,10 +1,11 @@
 package vn.com.vng.zalopay.webapp;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+
 import org.json.JSONObject;
 
 import vn.com.vng.webapp.framework.NativeModule;
 import vn.com.vng.webapp.framework.Promise;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by khattn on 2/20/17.

@@ -10,7 +10,7 @@
         android:fromAlpha="0"
         android:toAlpha="1" />
 
-    <sweet:vn.com.zalopay.wallet.view.dialog.Rotate3dAnimation
+    <sweet:com.zalopay.ui.widget.dialog.Rotate3dAnimation
         android:duration="400"
         sweet:fromDeg="100"
         sweet:pivotX="50%"

@@ -6,6 +6,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ScrollView;
 
+import com.zalopay.ui.widget.dialog.DialogManager;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.R;
@@ -52,8 +56,6 @@ import vn.com.zalopay.wallet.datasource.task.TrustSDKReportTask;
 import vn.com.zalopay.wallet.datasource.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
@@ -63,7 +65,6 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public abstract class AdapterBase {
 

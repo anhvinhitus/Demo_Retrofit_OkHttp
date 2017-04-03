@@ -5,12 +5,13 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnCloseDialogListener;
+
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.listener.ZPWOnCloseDialogListener;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
 import vn.com.zalopay.wallet.view.adapter.CreditCardSupportGridViewAdapter;
 

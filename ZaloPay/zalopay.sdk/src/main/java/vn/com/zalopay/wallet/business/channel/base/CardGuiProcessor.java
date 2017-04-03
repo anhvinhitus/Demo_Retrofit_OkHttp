@@ -19,6 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.dialog.DialogManager;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnCloseDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
+
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.R;
@@ -38,10 +43,7 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.listener.ZPWOnCloseDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnDetectCardListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.utils.ViewUtils;
@@ -58,7 +60,6 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardIssueFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CreditCardFragment;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /***
  * card processor class

@@ -17,6 +17,7 @@ import com.zalopay.apploader.ReactBaseFragment;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.apploader.network.NetworkService;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.zcontacts.ZContactsPackage;
 
 import org.greenrobot.eventbus.EventBus;
@@ -47,8 +48,6 @@ import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
-
 /**
  * Created by hieuvm on 2/23/17.
  * *

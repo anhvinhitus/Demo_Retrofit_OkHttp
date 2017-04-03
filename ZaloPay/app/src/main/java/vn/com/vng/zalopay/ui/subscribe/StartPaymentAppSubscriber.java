@@ -2,6 +2,8 @@ package vn.com.vng.zalopay.ui.subscribe;
 
 import android.app.Activity;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+
 import java.lang.ref.WeakReference;
 
 import vn.com.vng.zalopay.R;
@@ -9,7 +11,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by longlv on 12/14/16.

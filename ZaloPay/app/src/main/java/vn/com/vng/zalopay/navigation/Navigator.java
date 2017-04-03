@@ -14,6 +14,7 @@ import android.text.TextUtils;
 
 import com.facebook.react.bridge.Promise;
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.util.TimeUtils;
 
 import java.util.ArrayList;
@@ -77,7 +78,6 @@ import vn.com.vng.zalopay.withdraw.ui.activities.WithdrawConditionActivity;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /*
 * Navigator

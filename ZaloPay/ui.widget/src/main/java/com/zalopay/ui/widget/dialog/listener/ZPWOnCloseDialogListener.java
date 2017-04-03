@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.listener;
+package com.zalopay.ui.widget.dialog.listener;
 
 public interface ZPWOnCloseDialogListener {
     void onCloseCardSupportDialog();

@@ -3,10 +3,10 @@ package vn.com.vng.zalopay.service;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.react.redpacket.AlertDialogProvider;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
-
 /**
  * Created by longlv on 20/07/2016.
  * Implement AlertDialogProvider

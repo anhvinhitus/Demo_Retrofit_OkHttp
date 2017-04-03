@@ -18,6 +18,7 @@ import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.views.text.ReactFontManager;
 import com.google.gson.JsonObject;
 import com.zalopay.apploader.network.NetworkService;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -53,7 +54,6 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.FileDownloader;
 import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 4/25/16.

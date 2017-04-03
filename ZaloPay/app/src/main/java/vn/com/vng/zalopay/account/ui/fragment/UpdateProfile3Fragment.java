@@ -19,6 +19,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.KeyboardLinearLayout;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.edittext.ZPEditText;
 import com.zalopay.ui.widget.layout.OnKeyboardStateChangeListener;
 
@@ -37,7 +38,6 @@ import vn.com.vng.zalopay.ui.widget.validate.EmailValidate;
 import vn.com.vng.zalopay.ui.widget.validate.PassportValidate;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.ValidateUtil;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by AnhHieu on 6/30/16.

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.apploader.internal.ModuleName;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
 import javax.inject.Inject;
 
@@ -23,7 +24,6 @@ import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.vng.zalopay.utils.ImageLoader;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by Duke on 3/27/17.

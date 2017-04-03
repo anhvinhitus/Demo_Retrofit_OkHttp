@@ -7,6 +7,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnCloseDialogListener;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -14,7 +16,6 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
-import vn.com.zalopay.wallet.listener.ZPWOnCloseDialogListener;
 import vn.com.zalopay.wallet.view.adapter.GatewayChannelListViewAdapter;
 import vn.com.zalopay.wallet.view.custom.ZPWRippleButton;
 

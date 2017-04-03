@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zing.zalo.zalosdk.oauth.LoginVia;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
@@ -40,7 +41,7 @@ import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.view.ILoginView;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
+
 
 /**
  * Created by AnhHieu on 3/26/16.

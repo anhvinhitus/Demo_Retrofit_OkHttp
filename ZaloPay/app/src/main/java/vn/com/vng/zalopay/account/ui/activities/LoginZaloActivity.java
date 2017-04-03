@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+
 import javax.inject.Inject;
 
 import butterknife.OnClick;
@@ -21,7 +23,6 @@ import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 public class LoginZaloActivity extends BaseActivity implements ILoginView {

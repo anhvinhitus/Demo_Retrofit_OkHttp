@@ -82,4 +82,5 @@ dependencies {
     compile libs.eventbus
 
     compile project(":zalopay.network")
+    compile project(':ui.widget')
 }

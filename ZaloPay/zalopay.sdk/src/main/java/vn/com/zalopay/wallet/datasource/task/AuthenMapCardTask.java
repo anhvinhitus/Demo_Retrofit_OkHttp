@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.datasource.task;
 
+import com.zalopay.ui.widget.dialog.DialogManager;
+
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -9,7 +11,6 @@ import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.AuthenMapCardImpl;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 public class AuthenMapCardTask extends BaseTask<StatusResponse> {
     private AdapterBase mAdapter;

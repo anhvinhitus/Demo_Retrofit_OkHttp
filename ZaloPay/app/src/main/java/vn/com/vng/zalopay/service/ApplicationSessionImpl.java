@@ -5,6 +5,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
 import com.google.android.gms.iid.InstanceID;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zing.zalo.zalosdk.oauth.ZaloSDK;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,7 +32,6 @@ import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
  * Created by huuhoa on 6/14/16.

@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.zalopay.ui.widget.dialog.DialogManager;
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -27,8 +30,6 @@ import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /***
  * payment controller class

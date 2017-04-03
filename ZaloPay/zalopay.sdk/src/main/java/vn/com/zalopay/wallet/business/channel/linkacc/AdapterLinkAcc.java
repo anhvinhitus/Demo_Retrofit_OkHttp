@@ -7,6 +7,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import com.zalopay.ui.widget.dialog.DialogManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,7 +51,6 @@ import vn.com.zalopay.wallet.utils.ViewUtils;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
  * Created by SinhTT on 14/11/2016.

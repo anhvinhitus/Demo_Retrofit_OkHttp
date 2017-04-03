@@ -10,6 +10,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.zalopay.ui.widget.dialog.DialogManager;
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import java.util.ArrayList;
 
 import vn.com.zalopay.wallet.R;
@@ -30,7 +33,6 @@ import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
@@ -38,7 +40,6 @@ import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.view.adapter.GatewayChannelListViewAdapter;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /***
  * payment channel list screen.

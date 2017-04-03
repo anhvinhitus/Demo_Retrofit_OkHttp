@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
+import com.zalopay.ui.widget.dialog.SweetAlertDialog;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -51,7 +53,6 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
-import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 
 /**

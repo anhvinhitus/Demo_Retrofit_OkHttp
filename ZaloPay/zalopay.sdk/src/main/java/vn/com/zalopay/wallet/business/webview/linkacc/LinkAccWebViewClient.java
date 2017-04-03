@@ -25,6 +25,8 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
 import java.util.List;
 
 import vn.com.zalopay.wallet.R;
@@ -41,9 +43,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptInput;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
-import vn.com.zalopay.wallet.business.entity.linkacc.DResponse;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
-import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
 /**
