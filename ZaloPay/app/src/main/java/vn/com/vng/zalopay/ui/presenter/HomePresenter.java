@@ -136,37 +136,27 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     private void getZaloFriend() {
         Subscription subscription = retrieveZaloFriendsAsNeeded()
                 .doOnTerminate(this::syncContact)
+                .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e, "Get zalo friend error");
-                    }
-                });
+                .subscribe(new DefaultSubscriber<>());
 
         mSubscription.add(subscription);
     }
 
     private Observable<Boolean> retrieveZaloFriendsAsNeeded() {
         return mFriendRepository.retrieveZaloFriendsAsNeeded()
+                .doOnError(Timber::d)
                 .delaySubscription(5, TimeUnit.SECONDS)
-                .onErrorResumeNext(throwable -> {
-                    Timber.d(throwable, "retrieve zalo friends exception");
-                    return Observable.empty();
-                });
+                .onErrorResumeNext(Observable.empty());
     }
 
     private void syncContact() {
         boolean granted = PermissionUtil.verifyPermission(mApplicationContext, new String[]{Manifest.permission.READ_CONTACTS});
         if (granted) {
             Subscription subscription = mFriendRepository.syncContact()
+                    .doOnError(Timber::d)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new DefaultSubscriber<Boolean>() {
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.d(e, "Sync contact exception");
-                        }
-                    });
+                    .subscribe(new DefaultSubscriber<>());
             mSubscription.add(subscription);
         }
     }
@@ -538,13 +528,9 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
 
     private void removeNotification(NotificationData notify) {
         Subscription subscription = mNotifyRepository.removeNotifyByType(notify.notificationtype, notify.appid, notify.transid)
+                .doOnError(Timber::d)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e, "onError");
-                    }
-                });
+                .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
 
@@ -579,7 +565,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     }
 
     private void onGetBalanceSuccess(Long balance) {
-        Timber.d("onGetBalanceSuccess %s", balance);
+        Timber.d("Get balance success : balance [%s]", balance);
         mView.setBalance(balance);
     }
 

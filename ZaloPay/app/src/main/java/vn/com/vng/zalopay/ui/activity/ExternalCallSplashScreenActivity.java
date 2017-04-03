@@ -46,8 +46,6 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
 
         restarted = savedInstanceState != null;
         initializeCallingPackage(this);
-
-        Timber.d("onCreate new ExternalCallSplashScreenActivity");
         mPresenter.attachView(this);
         mPresenter.handleIntent(getIntent());
 

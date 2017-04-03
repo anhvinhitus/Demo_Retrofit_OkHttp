@@ -38,7 +38,6 @@ import vn.com.vng.zalopay.notification.NotificationType;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 
 /**
  * Created by huuhoa on 8/28/16.
@@ -116,7 +115,7 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
             }
 
             String checksum = Utils.sha256(fields.toArray(new String[0])).substring(0, 8);
-            Timber.d("generateQrContent: checksum %s", checksum);
+            Timber.d("generate QR content : checksum %s", checksum);
             jsonObject.put("checksum", checksum);
             return jsonObject.toString();
         } catch (Exception ex) {
@@ -184,7 +183,7 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
 
             mMessageToUserId.add(notify.mtuid);
 
-            Timber.d("Embed data: %s", embedData);
+            Timber.d("on Receiver money : embedData [%s]", embedData);
 //            jsonObject.addProperty("type", Constants.QRCode.RECEIVE_MONEY);
 //            jsonObject.addProperty("displayname", user.displayName);
 //            jsonObject.addProperty("avatar", user.avatar);
@@ -302,7 +301,7 @@ final class ReceiveMoneyPresenter extends AbstractPresenter<IReceiveMoneyView>
         if (existTransaction(transId)) {
             return;
         }
-        
+
         trackEvent(mCountReceiveSuccess++);
         mView.displayReceivedMoney(senderDisplayName, senderAvatar, amount, transId);
     }

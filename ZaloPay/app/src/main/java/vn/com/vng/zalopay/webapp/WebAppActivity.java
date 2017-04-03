@@ -1,13 +1,12 @@
 package vn.com.vng.zalopay.webapp;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
+
+import com.zalopay.ui.widget.IconFontDrawable;
 
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import com.zalopay.ui.widget.IconFontDrawable;
 
 public class WebAppActivity extends BaseToolBarActivity {
     @Override
@@ -20,7 +19,6 @@ public class WebAppActivity extends BaseToolBarActivity {
         return R.layout.activity_common_actionbar_white;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

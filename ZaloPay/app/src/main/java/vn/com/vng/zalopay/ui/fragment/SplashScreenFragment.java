@@ -100,12 +100,4 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
         navigator.startIntroAppActivity(getContext());
         getActivity().finish();
     }
-
-    @Override
-    public void showLoading() {
-    }
-
-    @Override
-    public void hideLoading() {
-    }
 }

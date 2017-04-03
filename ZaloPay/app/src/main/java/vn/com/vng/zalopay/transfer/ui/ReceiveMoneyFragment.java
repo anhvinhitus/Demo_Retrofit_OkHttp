@@ -227,21 +227,21 @@ public class ReceiveMoneyFragment extends BaseFragment implements IReceiveMoneyV
 
     @Override
     public void addPersonTransfer(PersonTransfer person) {
-        Timber.d("replacePersonTransfer");
+        Timber.d("add Person : [%s]", person.displayName);
         mAdapter.insert(person);
         checkShowTotalView();
     }
 
     @Override
     public void replacePersonTransfer(int position, PersonTransfer person) {
-        Timber.d("replacePersonTransfer: position %s state %s", position, person.state);
+        Timber.d("replace Person : position %s state %s", position, person.state);
         mAdapter.replace(position, person);
         checkShowTotalView();
     }
 
     @Override
     public void insertPersonTransfer(int position, PersonTransfer person) {
-        Timber.d("replacePersonTransfer: position %s state %s", position, person.state);
+        Timber.d("replace Person : position %s state %s", position, person.state);
         mAdapter.insert(person, position);
         checkShowTotalView();
     }

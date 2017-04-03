@@ -13,9 +13,5 @@ public interface ISplashScreenView {
 
     void gotoLoginScreen();
 
-    void showLoading();
-
-    void hideLoading();
-
     void gotoOnBoardingScreen();
 }

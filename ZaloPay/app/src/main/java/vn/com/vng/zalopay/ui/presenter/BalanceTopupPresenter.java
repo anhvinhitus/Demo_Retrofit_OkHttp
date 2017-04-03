@@ -137,12 +137,12 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
                 return;
             }
 
-            Timber.w(e, "onError");
             BalanceTopupPresenter.this.onCreateWalletOrderError(e);
         }
     }
 
     private void onCreateWalletOrderError(Throwable e) {
+        Timber.d(e, "Create wallet order error");
         hideLoading();
         if (mView == null || mView.getContext() == null) {
             return;
