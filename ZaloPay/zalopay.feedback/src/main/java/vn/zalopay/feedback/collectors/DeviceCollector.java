@@ -114,6 +114,7 @@ public class DeviceCollector implements IFeedbackCollector {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static long getTotalMemorySize(StatFs statFs) {
         long blockSize, totalBlocks;
         if (Build.VERSION.SDK_INT >= 18) {
