@@ -50,6 +50,7 @@ import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.exception.PaymentWrapperException;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.location.LocationProvider;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
@@ -221,6 +222,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
 
         loadGatewayInfoPaymentSDK();
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
+        LocationProvider.findLocation();
         ensureAppResourceAvailable();
         getZaloFriend();
         warningRoot();
