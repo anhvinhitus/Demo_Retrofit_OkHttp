@@ -44,14 +44,15 @@ import java.util.Stack;
 
 import rx.Single;
 import rx.SingleSubscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subscriptions.CompositeSubscription;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -67,16 +68,15 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
-import vn.com.zalopay.wallet.message.NetworkEventMessage;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
+import vn.com.zalopay.wallet.message.NetworkEventMessage;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.PermissionUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
@@ -87,13 +87,10 @@ import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 public abstract class BasePaymentActivity extends FragmentActivity {
-    //stack to keep activity
-    private static Stack<BasePaymentActivity> mZaloaPayActivitiesStack = new Stack<BasePaymentActivity>();
-    //app info
-    public DAppInfo appEntity;
+    private static Stack<BasePaymentActivity> mActivityStack = new Stack<BasePaymentActivity>();//stack to keep activity
     public boolean mIsBackClick = true;
-    //this is flag prevent user back when user is submitting trans,authen payer,getstatus.
-    public boolean processingOrder = false;
+    public boolean processingOrder = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
+    protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
     protected String mTitleHeaderText;
     //dialog asking open networking listener
     public ZPWPaymentOpenNetworkingDialogListener paymentOpenNetworkingDialogListener = new ZPWPaymentOpenNetworkingDialogListener() {
@@ -111,7 +108,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     };
-    protected int numberOfRetryOpenNetwoking = 0;
+    protected int numberOfRetryOpenNetwoking = 0;//number of openning networking dialog retry
     protected boolean isAllowLinkCardATM = true;
     protected boolean isAllowLinkCardCC = true;
     /**
@@ -151,9 +148,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                             getAdapter().getOneShotTransactionStatus();
                             return;
                         }
-
                         numberOfRetryTimeout++;
-
                         DialogManager.showSweetDialogOptionNotice(activity.get(),
                                 GlobalData.getStringResource(RS.string.zpw_string_load_website_timeout_message),
                                 GlobalData.getStringResource(RS.string.dialog_continue_load_button),
@@ -183,13 +178,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                                 Log.d(this, e);
                             }
                         }
-
                         return;
                     }
                     //load web timeout, need to shared oneshot to server to check status again
                     if (ConnectionUtil.isOnline(GlobalData.getAppContext()) && getAdapter().isParseWebFlow() && getAdapter().shouldGetOneShotTransactionStatus()) {
                         getAdapter().getOneShotTransactionStatus();
-
                         //send logs timeout
                         if (getAdapter() != null) {
                             try {
@@ -211,7 +204,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 }
             } catch (Exception ex) {
                 ((PaymentChannelActivity) activity.get()).getAdapter().showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
-
                 if (getAdapter() != null) {
                     try {
                         getAdapter().sdkReportError(SDKReportTask.GENERAL_EXCEPTION, ex != null ? ex.getMessage() : "onProgressTimeout");
@@ -231,7 +223,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         @Override
         public void onCheckResourceStaticComplete(boolean isSuccess, String pError) {
             if (isSuccess) {
-                Single.zip(MapCardHelper.loadMapCardList(false),
+                Subscription subscription = Single.zip(MapCardHelper.loadMapCardList(false),
                         BankAccountHelper.loadBankAccountList(false), (t1, t2) -> true)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new SingleSubscriber<Boolean>() {
@@ -242,17 +234,17 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
                             @Override
                             public void onError(Throwable error) {
-                                showDialogAndExit(GlobalData.getStringResource(RS.string.zpw_generic_error),true);
-                                Log.d("onError",error);
+                                showDialogAndExit(GlobalData.getStringResource(RS.string.zpw_generic_error), true);
+                                Log.d("onError", error);
                             }
                         });
+                mCompositeSubscription.add(subscription);
             } else {
-                //notify error and close sdk
                 String message = pError;
                 if (TextUtils.isEmpty(message)) {
                     message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
                 }
-                showDialogAndExit(message, ErrorManager.shouldShowDialog());
+                showDialogAndExit(message, ErrorManager.shouldShowDialog());   //notify error and close sdk
             }
         }
 
@@ -278,13 +270,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         @Override
         public void onSuccess() {
-            Log.d(this, "===onSuccess===");
-
+            Log.d(this, "load appinfo success");
             if (!GlobalData.isAllowApplication()) {
                 actionIfPreventApp();
                 return;
             }
-
             try {
                 showApplicationInfo();
             } catch (Exception e) {
@@ -295,24 +285,19 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         @Override
         public void onError(DAppInfoResponse pMessage) {
-            Log.d(this, "===onError===");
-
+            Log.d(this, "load appinfo on error");
             showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
-
             String message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
-
             if (pMessage != null && !TextUtils.isEmpty(pMessage.getMessage())) {
                 message = pMessage.getMessage();
             }
-
             if (pMessage != null && pMessage.returncode < 0) {
                 //sometimes shared app info return empty message and return code -2.that mean app not allow from backend.
-                if (pMessage.returncode == -2 && TextUtils.isEmpty(pMessage.getMessage()))
+                if (pMessage.returncode == -2 && TextUtils.isEmpty(pMessage.getMessage())) {
                     message = GlobalData.getStringResource(RS.string.zpw_not_allow_payment_app);
-
+                }
                 ErrorManager.updateTransactionResult(pMessage.returncode);
             }
-
             showDialogAndExit(message, ErrorManager.shouldShowDialog());
         }
     };
@@ -326,15 +311,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 int i = view.getId();
 
                 if (i == R.id.question_button) {
-                    Log.d("OnClickListener", "question_button");
-
                     Intent intent = new Intent();
                     intent.setAction(Constants.SUPPORT_INTRO_ACTION_SUPPORT_CENTER);
                     startActivity(intent);
 
                 } else if (i == R.id.support_button) {
-                    Log.d("OnClickListener", "support_button");
-
                     Intent intent = new Intent();
                     intent.setAction(Constants.SUPPORT_INTRO_ACTION_FEEDBACK);
                     if (mFeedback != null) {
@@ -347,17 +328,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                         Log.d("support_button", "FeedBack == null");
                     }
                     startActivity(intent);
-
                 } else if (i == R.id.zpw_pay_support_buttom_view) {
                     Log.d("OnClickListener", "zpw_pay_support_buttom_view");
 
                 } else if (i == R.id.cancel_button) {
                     Log.d("OnClickListener", "cancel_button");
-
                 }
-
                 closeSupportView();
-
             } catch (Exception ex) {
                 Log.e(this, ex);
             }
@@ -365,42 +342,38 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     };
 
     public static Activity getCurrentActivity() {
-        synchronized (mZaloaPayActivitiesStack) {
-            if (mZaloaPayActivitiesStack == null || mZaloaPayActivitiesStack.size() == 0) {
+        synchronized (mActivityStack) {
+            if (mActivityStack == null || mActivityStack.size() == 0) {
                 return GlobalData.getMerchantActivity();
             }
-
-            return mZaloaPayActivitiesStack.peek();
+            return mActivityStack.peek();
         }
     }
 
     public static int getCurrentActivityCount() {
-        if (mZaloaPayActivitiesStack != null) {
-            return mZaloaPayActivitiesStack.size();
+        if (mActivityStack != null) {
+            return mActivityStack.size();
         }
-
         return 0;
     }
 
     public static BasePaymentActivity getPaymentGatewayActivity() {
-        if (mZaloaPayActivitiesStack == null || mZaloaPayActivitiesStack.size() <= 0) {
+        if (mActivityStack == null || mActivityStack.size() <= 0) {
             return null;
         }
-
-        for (BasePaymentActivity activity : mZaloaPayActivitiesStack) {
+        for (BasePaymentActivity activity : mActivityStack) {
             if (activity instanceof PaymentGatewayActivity) {
                 return activity;
             }
         }
-
         return null;
     }
 
     public static BasePaymentActivity getPaymentChannelActivity() {
-        if (mZaloaPayActivitiesStack == null || mZaloaPayActivitiesStack.size() <= 0) {
+        if (mActivityStack == null || mActivityStack.size() <= 0) {
             return null;
         }
-        for (BasePaymentActivity activity : mZaloaPayActivitiesStack) {
+        for (BasePaymentActivity activity : mActivityStack) {
             if (activity instanceof PaymentChannelActivity) {
                 return activity;
             }
@@ -411,19 +384,18 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public static void resetAttributeCascade(boolean... pAttr) {
         try {
-            if (mZaloaPayActivitiesStack != null && mZaloaPayActivitiesStack.size() == 2) {
-                mZaloaPayActivitiesStack.get(0).mIsBackClick = pAttr[0];
-                mZaloaPayActivitiesStack.get(1).mIsBackClick = pAttr[0];
+            if (mActivityStack != null && mActivityStack.size() == 2) {
+                mActivityStack.get(0).mIsBackClick = pAttr[0];
+                mActivityStack.get(1).mIsBackClick = pAttr[0];
             }
-
         } catch (Exception e) {
 
         }
     }
 
     protected void loadStaticReload() {
-        //check static resource whether ready or not
         try {
+            Log.d(this, "check static resource start");
             PlatformInfoLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
         } catch (Exception e) {
             if (checkResourceStaticListener != null) {
@@ -446,12 +418,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return null;
     }
 
-    protected ZPWOnCloseDialogListener getCloseDialog() {
-        return mCloseDialog;
-    }
-
     protected void onCloseDialogSelection() {
-
     }
 
     protected String getCloseButtonText() {
@@ -465,7 +432,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public boolean isAllowLinkCardCC() {
         return isAllowLinkCardCC;
     }
-    //
 
     protected void onReturnCancel(final String pMessage) {
         showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
@@ -487,9 +453,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
         //continue to show dialog and quit.
         String message = pMessage;
-
-        if (TextUtils.isEmpty(message))
+        if (TextUtils.isEmpty(message)) {
             message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+        }
 
         showWarningDialog(() -> recycleActivity(), message);
     }
@@ -504,9 +470,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public synchronized void recycleGateway() {
         setEnableView(R.id.zpsdk_exit_ctl, false);
-
         finish();
-
         if (GlobalData.getPaymentListener() != null) {
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
         }
@@ -526,8 +490,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     public void requestPermission(Context pContext) {
-        if (PermissionUtils.isNeedToRequestPermissionAtRuntime() && !PermissionUtils.checkIfAlreadyhavePermission(pContext))
+        if (PermissionUtils.isNeedToRequestPermissionAtRuntime() && !PermissionUtils.checkIfAlreadyhavePermission(pContext)) {
             PermissionUtils.requestForSpecificPermission(this);
+        }
     }
 
     @Override
@@ -570,28 +535,23 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        synchronized (mZaloaPayActivitiesStack) {
-            if (mZaloaPayActivitiesStack == null) {
-                mZaloaPayActivitiesStack = new Stack<>();
+        synchronized (mActivityStack) {
+            if (mActivityStack == null) {
+                mActivityStack = new Stack<>();
             }
-            mZaloaPayActivitiesStack.push(this);
+            mActivityStack.push(this);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        Log.d(this, "===onResume===");
+        Log.d(this, "on resume");
         //clear snackbar if has networkign again when user resume
         if (ConnectionUtil.isOnline(this)) {
-            Log.d(this, "===networking is on===");
             PaymentSnackBar.getInstance().dismiss();
-
             numberOfRetryOpenNetwoking = 0;
         } else {
-            Log.d(this, "===networking is off===");
             showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
                     GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
         }
@@ -601,13 +561,15 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        synchronized (mZaloaPayActivitiesStack) {
-            mZaloaPayActivitiesStack.remove(this);
-
+        synchronized (mActivityStack) {
+            mActivityStack.remove(this);
             if (getCurrentActivityCount() == 0) {
                 //dispose all instance and static resource.
                 SingletonLifeCircleManager.disposeAll();
+                if (mCompositeSubscription.hasSubscriptions()) {
+                    mCompositeSubscription.unsubscribe();
+                    Log.d(this, "unsubscribe all subscriptions");
+                }
             }
         }
     }
@@ -626,11 +588,16 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 GlobalData.getPaymentInfo().userInfo.accessToken).setOnLoadAppInfoListener(loadAppInfoListener).execute();
     }
 
+    /***
+     * set keyboard type for edittext from config.json
+     * @param pStrID
+     * @param pKeyBoardType
+     * @return
+     */
     public View setKeyBoard(String pStrID, EKeyBoardType pKeyBoardType) {
         final int ID = getViewID(pStrID);
         View view = this.findViewById(ID);
-        if (view == null && isViewVisible(view)) {
-            Log.d("setKeyBoard", "===pStrID==NULL or NOT VISIBLE");
+        if (view == null && isVisible(view)) {
             return view;
         }
         if (pKeyBoardType == EKeyBoardType.NUMBER && view instanceof EditText) {
@@ -643,21 +610,20 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } else if (pKeyBoardType == EKeyBoardType.TEXT && view instanceof EditText) {
             ((EditText) view).setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         }
-
         return view;
     }
 
     public void setViewColor(int pId, int pColor) {
         try {
             View view = findViewById(pId);
-
-            if (view != null && view instanceof TextView)
+            if (view != null && view instanceof TextView) {
                 ((TextView) view).setTextColor(pColor);
+            }
         } catch (Exception e) {
         }
     }
 
-    public boolean isViewVisible(View view) {
+    public boolean isVisible(View view) {
         if (view == null) {
             return false;
         }
@@ -667,9 +633,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void setTextHtml(int pId, String pHtmlText) {
         try {
             View view = findViewById(pId);
-
-            if (view != null && view instanceof TextView)
+            if (view != null && view instanceof TextView) {
                 ((TextView) view).setText(Html.fromHtml(pHtmlText));
+            }
         } catch (Exception e) {
         }
     }
@@ -677,9 +643,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void setEnableView(int pId, boolean pIsEnable) {
         try {
             View view = findViewById(pId);
-
-            if (view != null)
+            if (view != null) {
                 view.setEnabled(pIsEnable);
+            }
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -689,7 +655,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return this.getResources().getIdentifier(pStrID, "id", this.getPackageName());
     }
 
-    public View setView(String pStrID, boolean pIsVisible) {
+    public View setVisible(String pStrID, boolean pIsVisible) {
         final int ID = getViewID(pStrID);
         View view = this.findViewById(ID);
         if (view == null) {
@@ -703,7 +669,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return view;
     }
 
-    public void setView(int pId, boolean pIsVisible) {
+    public void setVisible(int pId, boolean pIsVisible) {
         View view = findViewById(pId);
         if (view != null) {
             view.setVisibility(pIsVisible ? View.VISIBLE : View.GONE);
@@ -767,12 +733,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         setBarTitle(getTransactionTitle());
     }
 
-    /***
-     * set text for view ,use by bundle
-     *
-     * @param pStrID
-     * @param pText
-     */
     public void setText(String pStrID, String pText) {
         final int ID = getViewID(pStrID);
         View textView = this.findViewById(ID);
@@ -795,18 +755,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    /***
-     * set text for by used in sdk
-     * @param pID
-     * @param pText
-     */
     public void setText(int pID, String pText) {
         View view = this.findViewById(pID);
-
         if (view == null) {
             return;
         }
-
         if (view instanceof EditText) {
             EditText editText = (EditText) view;
             if (editText instanceof VPaymentEditText && ((VPaymentEditText) editText).getTextInputLayout() instanceof TextInputLayout) {
@@ -820,17 +773,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    /***
-     * set bitmap for imageview ,used by bundle
-     *
-     * @param pStrID
-     * @param pBitmap
-     */
     public void setImage(String pStrID, Bitmap pBitmap) {
         int ID = getViewID(pStrID);
-
         ImageView imageView = ((ImageView) this.findViewById(ID));
-
         if (imageView != null) {
             if (pBitmap == null) {
                 imageView.setVisibility(View.GONE);
@@ -842,7 +787,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public void setImage(int pId, Bitmap pBitmap) {
         View view = findViewById(pId);
-
         if (view != null && view instanceof ImageView) {
             if (pBitmap == null) {
                 view.setVisibility(View.GONE);
@@ -856,24 +800,17 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         return findViewById(RS.getID(pName));
     }
 
-    /***
-     * show app name
-     */
     protected void showApplicationInfo() throws Exception {
-        if (appEntity == null) {
-            appEntity = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(GlobalData.appID)), DAppInfo.class);
-        }
-
         //withdraw no need to show app name
         if (GlobalData.isWithDrawChannel()) {
             return;
         }
-
-        if (appEntity != null && !TextUtils.isEmpty(appEntity.appname)) {
-            setText(R.id.zalosdk_bill_info_ctl, appEntity.appname);
-            setView(R.id.zalosdk_bill_info_ctl, true);
+        DAppInfo appInfo = AppInfoLoader.getAppInfo();
+        if (appInfo != null && !TextUtils.isEmpty(appInfo.appname)) {
+            setText(R.id.zalosdk_bill_info_ctl, appInfo.appname);
+            setVisible(R.id.zalosdk_bill_info_ctl, true);
         } else {
-            setView(R.id.zalosdk_bill_info_ctl, false);
+            setVisible(R.id.zalosdk_bill_info_ctl, false);
         }
     }
 
@@ -924,59 +861,48 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     public void visibleAppInfo(boolean pIsVisible) {
-        setView(R.id.zpsdk_app_info, pIsVisible);
+        setVisible(R.id.zpsdk_app_info, pIsVisible);
     }
 
     public void visibleCardInfo(boolean pIsVisible) {
-        setView(R.id.zpw_card_info, pIsVisible);
+        setVisible(R.id.zpw_card_info, pIsVisible);
     }
 
     public void visibleTranferWalletInfo(boolean pIsVisible) {
-        setView(R.id.zpsdk_transfer_info, pIsVisible);
+        setVisible(R.id.zpsdk_transfer_info, pIsVisible);
     }
 
     public void visibleSubmitButton(boolean pIsVisible) {
-        setView(R.id.zpw_submit_view, pIsVisible);
+        setVisible(R.id.zpw_submit_view, pIsVisible);
     }
 
     public void visibleCardViewNavigateButton(boolean pIsVisible) {
-        setView(R.id.zpw_switch_card_button, pIsVisible);
+        setVisible(R.id.zpw_switch_card_button, pIsVisible);
     }
 
     public void visibleInputCardView(boolean pIsVisible) {
-        setView(R.id.localcard_view_root, pIsVisible);
+        setVisible(R.id.localcard_view_root, pIsVisible);
     }
 
     public void visibleWebView(boolean pIsVisible) {
-        setView(R.id.zpw_threesecurity_webview, pIsVisible);
+        setVisible(R.id.zpw_threesecurity_webview, pIsVisible);
     }
 
     public void visiblePinView(boolean pIsVisible) {
-        setView(R.id.zpsdk_pin_layout, pIsVisible);
+        setVisible(R.id.zpsdk_pin_layout, pIsVisible);
     }
 
     public void visibleConfirmView(boolean pIsVisible) {
-        setView(R.id.zpw_confirm, pIsVisible);
-    }
-
-    public int getVisible(int pID) {
-        View view = findViewById(pID);
-
-        if (view != null) {
-            return view.getVisibility();
-        }
-        return -1;
+        setVisible(R.id.zpw_confirm, pIsVisible);
     }
 
     public void setBarTitle(String pTitle) {
         setText(R.id.payment_method_name, pTitle);
-
         mTitleHeaderText = pTitle;
     }
 
     public void setTitle() {
         String title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway);
-
         if (GlobalData.isTopupChannel()) {
             title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_topup);
         } else if (GlobalData.isTranferMoneyChannel()) {
@@ -984,7 +910,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } else if (GlobalData.isWithDrawChannel()) {
             title = GlobalData.getStringResource(RS.string.zpw_string_title_payment_gateway_withdraw);
         }
-
         setText(R.id.title_payment_method, title);
     }
 
@@ -1005,14 +930,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void showOrderFeeView() {
 
         if (GlobalData.orderAmountFee > 0) {
-            setView(R.id.zpw_fee_view_wrapper, true);
-            setView(R.id.zpw_total_view_wrapper, true);
-
+            setVisible(R.id.zpw_fee_view_wrapper, true);
+            setVisible(R.id.zpw_total_view_wrapper, true);
             setText(R.id.zpw_payment_channel_fee, StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountFee)));
-
             setText(R.id.zpw_payment_channel_total_pay,
                     StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal)));
-
             ZPWUtils.applyFont(findViewById(R.id.zpw_payment_channel_total_pay),
                     GlobalData.getStringResource(RS.string.zpw_font_medium));
         }
@@ -1028,8 +950,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setText(R.id.payment_currency_label, GlobalData.getStringResource(RS.string.zpw_string_payment_currency_label));
 
             } else {
-                setView(R.id.payment_method_amount, false);
-                setView(R.id.payment_currency_label, false);
+                setVisible(R.id.payment_method_amount, false);
+                setVisible(R.id.payment_currency_label, false);
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -1064,48 +986,45 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             // The inform text would be set from server
             if (statusResponse != null) {
                 setText(R.id.zpw_textview_update_level_inform, statusResponse.getSuggestMessage());
-                setView(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(statusResponse.getSuggestMessage()));
+                setVisible(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(statusResponse.getSuggestMessage()));
 
 //            int[] status = new int[]{2};
                 if (statusResponse.getSuggestactions() != null && statusResponse.getSuggestactions().length > 0) {
                     setLayoutBasedOnSuggestActions(statusResponse.getSuggestactions());
                 } else {
-                    setView(R.id.zpw_payment_fail_rl_update_info, false);
-                    setView(R.id.zpw_payment_fail_rl_support, false);
+                    setVisible(R.id.zpw_payment_fail_rl_update_info, false);
+                    setVisible(R.id.zpw_payment_fail_rl_support, false);
                 }
             } else {
-                setView(R.id.zpw_textview_update_level_inform, false);
-                setView(R.id.zpw_payment_fail_rl_update_info, false);
-                setView(R.id.zpw_payment_fail_rl_support, false);
+                setVisible(R.id.zpw_textview_update_level_inform, false);
+                setVisible(R.id.zpw_payment_fail_rl_update_info, false);
+                setVisible(R.id.zpw_payment_fail_rl_support, false);
             }
         }
 
-        setView(R.id.zpw_pay_info_buttom_view, true);
+        setVisible(R.id.zpw_pay_info_buttom_view, true);
 
         if (!TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0) {
-            setView(R.id.zpw_transaction_wrapper, true);
+            setVisible(R.id.zpw_transaction_wrapper, true);
             setText(R.id.zpw_textview_transaction, pTransID);
-            setView(R.id.zpw_notransid_textview, false);
+            setVisible(R.id.zpw_notransid_textview, false);
         } else {
-            setView(R.id.zpw_transaction_wrapper, false);
-            setView(R.id.zpw_notransid_textview, true);
+            setVisible(R.id.zpw_transaction_wrapper, false);
+            setVisible(R.id.zpw_notransid_textview, true);
         }
 
         // set color for text in linkacc
         if (GlobalData.isLinkAccChannel()) {
             if (getAdapter().getPageName().equals(AdapterBase.PAGE_LINKACC_FAIL)) { // linkacc fail
-                setView(R.id.zpw_payment_fail_textview, true);
+                setVisible(R.id.zpw_payment_fail_textview, true);
             } else { // unlinkacc fail
-                setView(R.id.zpw_payment_fail_textview, false);
+                setVisible(R.id.zpw_payment_fail_textview, false);
             }
         }
-
         ZPWUtils.applyFont(findViewById(R.id.zpw_textview_transaction),
                 GlobalData.getStringResource(RS.string.zpw_font_medium));
-
         //re-align top
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
-
         animateImageViewFail();
 
     }
@@ -1119,22 +1038,22 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         RelativeLayout.LayoutParams pSupport = (RelativeLayout.LayoutParams) rlSupport.getLayoutParams();
 
         if (Arrays.equals(ESuggestActionType.UPDATE_INFO_DISPLAY.getValue(), suggestActions)) {
-            setView(R.id.zpw_payment_fail_rl_update_info, true);
-            setView(R.id.zpw_payment_fail_rl_support, false);
+            setVisible(R.id.zpw_payment_fail_rl_update_info, true);
+            setVisible(R.id.zpw_payment_fail_rl_support, false);
 
         } else if (Arrays.equals(ESuggestActionType.SUPPORT_DISPLAY.getValue(), suggestActions)) {
-            setView(R.id.zpw_payment_fail_rl_update_info, false);
-            setView(R.id.zpw_payment_fail_rl_support, true);
+            setVisible(R.id.zpw_payment_fail_rl_update_info, false);
+            setVisible(R.id.zpw_payment_fail_rl_support, true);
 
         } else if (Arrays.equals(ESuggestActionType.UPDATE_INFO_ABOVE.getValue(), suggestActions)) {
-            setView(R.id.zpw_payment_fail_rl_update_info, true);
-            setView(R.id.zpw_payment_fail_rl_support, true);
+            setVisible(R.id.zpw_payment_fail_rl_update_info, true);
+            setVisible(R.id.zpw_payment_fail_rl_support, true);
             pSupport.addRule(RelativeLayout.BELOW, rlUpdateInfo.getId());
             rlSupport.setLayoutParams(pSupport);
 
         } else if (Arrays.equals(ESuggestActionType.SUPPORT_ABOVE.getValue(), suggestActions)) {
-            setView(R.id.zpw_payment_fail_rl_update_info, true);
-            setView(R.id.zpw_payment_fail_rl_support, true);
+            setVisible(R.id.zpw_payment_fail_rl_update_info, true);
+            setVisible(R.id.zpw_payment_fail_rl_support, true);
             pUpdateInfo.addRule(RelativeLayout.BELOW, rlSupport.getId());
             rlUpdateInfo.setLayoutParams(pUpdateInfo);
         }
@@ -1142,11 +1061,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public void showPaymentSuccessContent(String pTransID) throws Exception {
         setText(R.id.zpw_textview_transaction, pTransID);
-        setView(R.id.zpw_pay_info_buttom_view, true);
+        setVisible(R.id.zpw_pay_info_buttom_view, true);
         //show a different view for lixi.
         if (GlobalData.isRedPacketChannel()) {
-            setView(R.id.zpw_transaction_wrapper, false);
-            setView(R.id.zpw_textview_transaction_lixi_label, true);
+            setVisible(R.id.zpw_transaction_wrapper, false);
+            setVisible(R.id.zpw_textview_transaction_lixi_label, true);
             String formattedString = "<b>" + GlobalData.getStringResource(RS.string.zpw_string_lixi_notice_title_02) + "</b>";
             setTextHtml(R.id.zpw_textview_transaction_lixi_label, String.format(GlobalData.getStringResource(RS.string.zpw_string_lixi_notice_title), formattedString));
         }
@@ -1157,14 +1076,14 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
             setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal)));
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().description)) {
-                setView(R.id.payment_description_label, true);
+                setVisible(R.id.payment_description_label, true);
                 setText(R.id.payment_description_label, GlobalData.getPaymentInfo().description);
             } else
-                setView(R.id.payment_description_label, false);
+                setVisible(R.id.payment_description_label, false);
         } else if (GlobalData.isLinkAccChannel()) { // show label for linkAcc
             if (getAdapter().getPageName().equals(AdapterBase.PAGE_LINKACC_SUCCESS)) {
                 setViewColor(R.id.zpw_payment_success_textview, getResources().getColor(R.color.text_color_primary));
-                setView(R.id.payment_description_label, true);
+                setVisible(R.id.payment_description_label, true);
 
                 String desc = GlobalData.getStringResource(RS.string.zpw_string_linkacc_notice_description);
                 if (getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
@@ -1172,23 +1091,23 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
                 }
                 setText(R.id.payment_description_label, desc);
-                setView(R.id.price_linearlayout, false);
+                setVisible(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_medium_label));
             } else {
-                setView(R.id.zpw_payment_success_textview, false);
-                setView(R.id.payment_description_label, true);
+                setVisible(R.id.zpw_payment_success_textview, false);
+                setVisible(R.id.payment_description_label, true);
                 String desc = GlobalData.getStringResource(RS.string.zpw_string_unlinkacc_notice_description);
                 if (getPaymentChannelActivity().getAdapter() instanceof AdapterLinkAcc &&
                         ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification() != null) {
                     desc = ((AdapterLinkAcc) getPaymentChannelActivity().getAdapter()).getNotification().getMsg();
                 }
                 setText(R.id.payment_description_label, desc);
-                setView(R.id.price_linearlayout, false);
+                setVisible(R.id.price_linearlayout, false);
                 setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
             }
         } else {
-            setView(R.id.payment_description_label, false);
-            setView(R.id.price_linearlayout, false);
+            setVisible(R.id.payment_description_label, false);
+            setVisible(R.id.price_linearlayout, false);
             setMarginBottom(R.id.zpw_payment_success_textview, (int) getResources().getDimension(R.dimen.zpw_margin_top_supper_supper_label));
 
         }
@@ -1206,19 +1125,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             findViewById(R.id.zpw_textview_transaction_amount).setVisibility(View.GONE);
         }
 
-        //set app name
-        try {
-            if (appEntity == null)
-                appEntity = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(GlobalData.appID)), DAppInfo.class);
-        } catch (Exception e) {
-            Log.d(this, e);
-        }
-
-        if (appEntity != null && appEntity.viewresulttype == 2) {
-            setView(R.id.zpw_textview_transaction_description, true);
-            setText(R.id.zpw_textview_transaction_description, appEntity.appname);
+        DAppInfo appInfo = AppInfoLoader.getAppInfo();
+        if (appInfo != null && appInfo.viewresulttype == 2) {
+            setVisible(R.id.zpw_textview_transaction_description, true);
+            setText(R.id.zpw_textview_transaction_description, appInfo.appname);
         } else
-            setView(R.id.zpw_textview_transaction_description, false);
+            setVisible(R.id.zpw_textview_transaction_description, false);
 
         //set time transaction
         try {
@@ -1228,23 +1140,17 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } catch (Exception e) {
             Log.e(this, e);
         }
-
         //re-margin title header.
         setMarginLeft(R.id.payment_method_name, (int) getResources().getDimension(R.dimen.zpw_header_label_margin));
-
         //animate icon
         animationImageViewSuccessSpecial();
     }
 
     protected void showBalanceContent(DPaymentChannel pConfig) throws Exception {
-
         setText(R.id.zalopay_bill_info, StringUtil.formatVnCurrence(String.valueOf(GlobalData.getBalance())));
-
-        setView(R.id.zpw_channel_layout, true);
-        setView(R.id.zpw_channel_label_textview, false);
+        setVisible(R.id.zpw_channel_layout, true);
+        setVisible(R.id.zpw_channel_label_textview, false);
         setText(R.id.zpw_channel_name_textview, pConfig != null ? pConfig.pmcname : GlobalData.getStringResource(RS.string.zpw_string_zalopay_wallet_method_name));
-
-
         if (GlobalData.getBalance() < GlobalData.orderAmountTotal) {
             setText(R.id.zalopay_info_error, GlobalData.getStringResource(RS.string.zpw_string_zalopay_balance_error_label));
             setViewColor(R.id.zalopay_info_error, getResources().getColor(R.color.holo_red_light));
@@ -1252,7 +1158,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setText(R.id.zalopay_info_error, GlobalData.getStringResource(RS.string.zpw_string_zalopay_balance_label));
             setViewColor(R.id.zalopay_info_error, getResources().getColor(R.color.text_color));
         }
-
     }
 
     public void showMessageSnackBar(View pRootView, String pMessage, String pActionMessage, int pDuration, onCloseSnackBar pOnCloseListener) {
@@ -1307,20 +1212,20 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().userInfo.userName))
             setText(R.id.zpw_wallet_transfer_user, GlobalData.getPaymentInfo().userInfo.userName);
         else
-            setView(R.id.tranfer_user_name_relative_wrapper, false);
+            setVisible(R.id.tranfer_user_name_relative_wrapper, false);
 
         //zalopay name
         if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().userInfo.zaloPayName))
             setText(R.id.zpw_zalopay_name_textview, GlobalData.getPaymentInfo().userInfo.zaloPayName);
         else
-            setView(R.id.zalopay_name_relative_wrapper, false);
+            setVisible(R.id.zalopay_name_relative_wrapper, false);
 
         //description
         if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().description)) {
-            setView(R.id.zpw_wallet_transfer_description, true);
+            setVisible(R.id.zpw_wallet_transfer_description, true);
             setText(R.id.zpw_wallet_transfer_description, GlobalData.getPaymentInfo().description);
         } else
-            setView(R.id.zpw_wallet_transfer_description, false);
+            setVisible(R.id.zpw_wallet_transfer_description, false);
 
         //amount
         if (GlobalData.getPaymentInfo().amount > 0) {
@@ -1355,8 +1260,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             visibleAppInfo(false);
 
             if (pShow && GlobalData.orderAmountFee > 0) {
-                setView(R.id.zpw_wallet_transfer_layout_price, true);
-                setView(R.id.zpw_wallet_transfer_layout_payamont, true);
+                setVisible(R.id.zpw_wallet_transfer_layout_price, true);
+                setVisible(R.id.zpw_wallet_transfer_layout_payamont, true);
 
                 if (pChannel != null) {
                     String txtprice = StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountFee));
@@ -1373,8 +1278,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     Log.e(this, e);
                 }
             } else {
-                setView(R.id.zpw_wallet_transfer_layout_price, false);
-                setView(R.id.zpw_wallet_transfer_layout_payamont, false);
+                setVisible(R.id.zpw_wallet_transfer_layout_price, false);
+                setVisible(R.id.zpw_wallet_transfer_layout_payamont, false);
             }
         } else if (GlobalData.isChannelHasInputCard()) {
             visibleTranferWalletInfo(false);
@@ -1390,8 +1295,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         //linkcard channel
         if (GlobalData.isLinkCardChannel()) {
 
-            setView(R.id.app_info_linerlayout, false);
-            setView(R.id.linkcard_channel_desc_textview, true);
+            setVisible(R.id.app_info_linerlayout, false);
+            setVisible(R.id.linkcard_channel_desc_textview, true);
 
             String linkcardChannelDesc = GlobalData.getStringResource(RS.string.zpw_conf_wallet_linkcard_desc);
 
@@ -1431,30 +1336,21 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     protected void resizeGridPasswordView() {
         final View passwordView = findViewById(R.id.zpw_gridview_pin);
-
         if (passwordView != null) {
             ViewTreeObserver vto = passwordView.getViewTreeObserver();
-
             vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
                 @Override
                 public void onGlobalLayout() {
                     ViewTreeObserver obs = passwordView.getViewTreeObserver();
                     obs.removeGlobalOnLayoutListener(this);
-
                     int width = ZPWUtils.widthScreen(getCurrentActivity());
-
                     int pinLength = getResources().getInteger(R.integer.wallet_pin_length);
-
                     int margin = (int) ZPWUtils.convertDpToPixel(getResources().getDimension(R.dimen.zpw_pin_margin), getApplicationContext());
-
                     width = width - margin * 2;
-
                     int height = width / pinLength;
 
                     if (width == 0 || height == 0)
                         return;
-
                     passwordView.getLayoutParams().height = height;
                     passwordView.getLayoutParams().width = width;
                 }
@@ -1468,7 +1364,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      * @param viewEnd successview or failview
      */
     public void setMarginSubmitButtonTop(boolean viewEnd) {
-
         View submitButton = findViewById(R.id.zpw_submit_view);
         View confirmRootView = findViewById(R.id.zpw_payment_confirm_root_view);
         View authenLocalView = findViewById(R.id.linearlayout_selection_authen);
@@ -1504,15 +1399,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone), 0, 0);
                 else
                     params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_tab), 0, 0);
-
                 submitButton.setLayoutParams(params);
                 submitButton.requestLayout();
             }
-
             Log.d(this, "setMarginSubmitButtonTop  Tab");
         }
-
-
     }
 
     /***
@@ -1532,7 +1423,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         } catch (Exception e) {
             Log.e(this, e);
         }
-
         return userLevelValid;
     }
 
@@ -1544,11 +1434,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         ZPWUtils.overrideFonts(viewGroup, GlobalData.getStringResource(RS.string.zpw_font_regular));
         ZPWUtils.applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
         ZPWUtils.applyFont(findViewById(R.id.payment_method_name), GlobalData.getStringResource(RS.string.zpw_font_medium));
-    }
-
-    protected void performClick(int id) {
-        setVisible(false);
-        findViewById(id).performClick();
     }
 
     protected void setListener() {
@@ -1565,7 +1450,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void showServerMaintenanceDialog(String pStatusMessage) {
         String mMessage = GlobalData.getStringResource(RS.string.zpw_string_alert_maintenance);
         if (!TextUtils.isEmpty(pStatusMessage)) {
-
             mMessage = pStatusMessage;
         }
 
@@ -1651,14 +1535,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             Log.d(this, "===showWarningDialog===params=NULL");
             return;
         }
-
         String message = params[0];
         String closeButtonText = null;
-
         if (params.length >= 2) {
             closeButtonText = params[1];
         }
-
         if (TextUtils.isEmpty(closeButtonText)) {
             closeButtonText = GlobalData.getStringResource(RS.string.dialog_close_button);
         }
@@ -1670,7 +1551,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     /***
      * warning dialog
-     *
      * @param pDialogListener
      * @param params
      */
@@ -1690,7 +1570,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         if (TextUtils.isEmpty(closeButtonText)) {
             closeButtonText = GlobalData.getStringResource(RS.string.dialog_close_button);
         }
-        //Show dialog WARNING_TYPE
         DialogManager.showSweetDialogCustom(this,
                 message, closeButtonText,
                 SweetAlertDialog.WARNING_TYPE, pDialogListener);
@@ -1698,7 +1577,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     /***
      * info dialog
-     *
      * @param pDialogListener
      * @param params
      */
@@ -1707,14 +1585,11 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             Log.d(this, "===showWarningDialog===params=NULL");
             return;
         }
-
         String message = params[0];
         String closeButtonText = null;
-
         if (params.length >= 2) {
             closeButtonText = params[1];
         }
-
         if (TextUtils.isEmpty(closeButtonText)) {
             closeButtonText = GlobalData.getStringResource(RS.string.dialog_close_button);
         }
@@ -1728,27 +1603,20 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             Log.d(this, "===showWarningDialog===params=NULL");
             return;
         }
-
         String message = params[0];
         String leftButtonText = null, rightButtonText = null;
-
         if (params.length >= 2) {
             leftButtonText = params[1];
         }
-
         if (params.length >= 3) {
             rightButtonText = params[2];
         }
-
         if (TextUtils.isEmpty(leftButtonText)) {
             leftButtonText = GlobalData.getStringResource(RS.string.dialog_upgrade_button);
         }
-
         if (TextUtils.isEmpty(rightButtonText)) {
             rightButtonText = GlobalData.getStringResource(RS.string.dialog_cancel_button);
         }
-
-        //Show dialog DialogOptionNotice
         DialogManager.showSweetDialogOptionNotice(this, message,
                 leftButtonText,
                 rightButtonText, pDialogListener);
@@ -1767,7 +1635,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     /***
      * Show support view
      */
-
     public void showSupportView(String pTransactionID) {
         try {
             Bitmap mBitmap = ZPWUtils.CaptureScreenshot(getCurrentActivity());
@@ -1780,11 +1647,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (GlobalData.isLinkCardChannel()) {
                 transactionTitle = GlobalData.getStringResource(RS.string.zpw_string_credit_card_link);
             }
-
-            //Create Parcelable Feedback
             mFeedback = new Feedback(byteArray, getMessageFailView(), transactionTitle, pTransactionID);
-
-            setView(R.id.zpw_pay_support_buttom_view, true);
+            setVisible(R.id.zpw_pay_support_buttom_view, true);
             isVisibilitySupport = true;
             View view_support = findViewById(R.id.zpw_pay_support_buttom_view);
             View btn_question = findViewById(R.id.question_button);
@@ -1815,7 +1679,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
         isVisibilitySupport = false;
         final Handler handler = new Handler();
-        handler.postDelayed(() -> setView(R.id.zpw_pay_support_buttom_view, false), 300);
+        handler.postDelayed(() -> setVisible(R.id.zpw_pay_support_buttom_view, false), 300);
     }
 
     public boolean getVisibilitySupportView() {
@@ -1828,7 +1692,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     public void showSelectionBankAccountDialog() {
-        MapListSelectionActivity.setCloseDialogListener(getCloseDialog());
+        MapListSelectionActivity.setCloseDialogListener(mCloseDialog);
         Intent intent = new Intent(getApplicationContext(), MapListSelectionActivity.class);
         intent.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
         intent.putExtra(MapListSelectionActivity.BUTTON_LEFT_TEXT_EXTRA, getCloseButtonText());
@@ -1847,20 +1711,19 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_not_stable),
                     GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_LONG, mOnCloseSnackBarListener);
 
-            Log.d(this, "===networking is not stable===");
+            Log.d(this, "networking is not stable");
         }
         //networking indeed offline
         else if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-            Log.d(this, "===networking is off===");
+            Log.d(this, "networking is off");
             showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_offline),
                     GlobalData.getStringResource(RS.string.zpw_string_remind_turn_on_networking), TSnackbar.LENGTH_INDEFINITE, mOnCloseSnackBarListener);
         }
         //networking online again
         else {
             showMessageSnackBar(findViewById(R.id.supperRootView), GlobalData.getStringResource(RS.string.zpw_string_alert_networking_online), null, TSnackbar.LENGTH_SHORT, null);
-            Log.d(this, "===networking is online again===");
+            Log.d(this, "networking is online again");
         }
     }
-    //endregion
 
 }

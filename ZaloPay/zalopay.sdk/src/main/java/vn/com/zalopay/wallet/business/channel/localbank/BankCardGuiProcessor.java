@@ -326,9 +326,9 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
             moveToAuthenOptionView();
         } else {
-            getAdapter().getActivity().setView(R.id.zpsdk_app_info, false);
+            getAdapter().getActivity().setVisible(R.id.zpsdk_app_info, false);
 
-            getAdapter().getActivity().setView(R.id.linearlayout_input_local_card, false);
+            getAdapter().getActivity().setVisible(R.id.linearlayout_input_local_card, false);
             getAdapter().getActivity().visibleCardViewNavigateButton(false);
 
             getAdapter().getActivity().visibleSubmitButton(true);
@@ -449,12 +449,12 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     public void visualOtpToken(boolean pVisible) {
-        getAdapter().getActivity().setView(R.id.linearlayout_authenticate_local_card, pVisible);
+        getAdapter().getActivity().setVisible(R.id.linearlayout_authenticate_local_card, pVisible);
     }
 
     public void goBackInputCard() {
         if (getAdapter().getActivity() != null) {
-            getAdapter().getActivity().setView(R.id.linearlayout_input_local_card, true);
+            getAdapter().getActivity().setVisible(R.id.linearlayout_input_local_card, true);
             getAdapter().getActivity().visibleCardViewNavigateButton(true);
 
             getAdapter().getActivity().visibleSubmitButton(false);
@@ -615,10 +615,10 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     }
 
     private void moveToAuthenOptionView() {
-        getAdapter().getActivity().setView(R.id.zpsdk_app_info, false);
+        getAdapter().getActivity().setVisible(R.id.zpsdk_app_info, false);
 
         ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getAdapter().getActivity());
-        getAdapter().getActivity().setView(R.id.linearlayout_input_local_card, false);
+        getAdapter().getActivity().setVisible(R.id.linearlayout_input_local_card, false);
         getAdapter().getActivity().visibleCardViewNavigateButton(false);
 
         getAdapter().getActivity().visibleSubmitButton(true);

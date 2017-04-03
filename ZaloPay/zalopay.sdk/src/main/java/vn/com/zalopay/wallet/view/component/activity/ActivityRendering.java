@@ -129,7 +129,7 @@ public class ActivityRendering {
                 View lastView = null;
 
                 for (Entry<String, Boolean> entry : pDynamicViewGroup.View.entrySet()) {
-                    view = mOwnerActivity.setView(entry.getKey(), entry.getValue());
+                    view = mOwnerActivity.setVisible(entry.getKey(), entry.getValue());
 
                     if (entry.getValue()) {
                         if (view instanceof EditText && entry.getValue()) {

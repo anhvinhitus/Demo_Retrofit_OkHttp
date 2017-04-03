@@ -173,7 +173,6 @@ public class SDKApplication extends Application {
 
     /***
      * load app wallet info
-     *
      * @param pZaloPayUserId
      * @param pAccessToken
      */

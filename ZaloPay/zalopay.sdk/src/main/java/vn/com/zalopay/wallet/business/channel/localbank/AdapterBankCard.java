@@ -164,7 +164,7 @@ public class AdapterBankCard extends AdapterBase {
                         }
 
                         ((BankCardGuiProcessor) getGuiProcessor()).setOtp(otp);
-                        getActivity().setView(R.id.txtOtpInstruction, false);
+                        getActivity().setVisible(R.id.txtOtpInstruction, false);
                         break;
                     }
                 }
@@ -358,7 +358,7 @@ public class AdapterBankCard extends AdapterBase {
                 }
 
                 if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
-                    getActivity().setView(R.id.txtOtpInstruction, true);
+                    getActivity().setVisible(R.id.txtOtpInstruction, true);
 
                     //testing broadcast otp viettinbak
                     /*

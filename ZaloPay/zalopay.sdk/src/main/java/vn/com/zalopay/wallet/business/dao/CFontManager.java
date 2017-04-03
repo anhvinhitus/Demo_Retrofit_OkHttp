@@ -22,9 +22,9 @@ public class CFontManager extends SingletonBase {
     }
 
     public synchronized static CFontManager getInstance() {
-        if (CFontManager._object == null)
+        if (CFontManager._object == null) {
             CFontManager._object = new CFontManager();
-
+        }
         return CFontManager._object;
     }
 
@@ -40,10 +40,9 @@ public class CFontManager extends SingletonBase {
         if (tf == null) {
             try {
                 tf = Typeface.createFromFile(new File(ResourceManager.getPathFont(), pFontName + ".ttf"));
-
-                if (tf != null)
+                if (tf != null) {
                     fontMap.put(pFontName, tf);
-
+                }
             } catch (Exception e) {
                 Log.d(this, e);
             }

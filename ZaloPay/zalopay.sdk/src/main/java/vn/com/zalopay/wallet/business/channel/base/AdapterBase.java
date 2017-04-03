@@ -13,6 +13,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import java.lang.ref.WeakReference;
 
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.view.ChannelStartProcessor;
 import vn.com.zalopay.wallet.business.channel.creditcard.AdapterCreditCard;
@@ -1440,16 +1441,8 @@ public abstract class AdapterBase {
      * each type have each type of interface
      */
     protected void getSuccessPageType() {
-        DAppInfo appEntity = getActivity().appEntity;
-
-        try {
-            if (appEntity == null)
-                appEntity = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(GlobalData.appID)), DAppInfo.class);
-        } catch (Exception e) {
-            Log.d(this, e);
-        }
-
-        if (appEntity != null && appEntity.viewresulttype == 2) {
+        DAppInfo appInfo = AppInfoLoader.getAppInfo();
+        if (appInfo != null && appInfo.viewresulttype == 2) {
             mPageCode = PAGE_SUCCESS_SPECIAL;
         } else
             mPageCode = PAGE_SUCCESS;
@@ -1671,9 +1664,9 @@ public abstract class AdapterBase {
             DPaymentChannelView channel = ChannelStartProcessor.getInstance(null).getChannel();
             if (channel != null) {
                 getActivity().setImage(R.id.zpw_zalopay_logo_imageview, ResourceManager.getImage(channel.channel_icon));
-                getActivity().setView(R.id.linearlayout_price, false);
-                getActivity().setView(R.id.zalopay_info_error, false);
-                getActivity().setView(R.id.zpw_channel_layout, true);
+                getActivity().setVisible(R.id.linearlayout_price, false);
+                getActivity().setVisible(R.id.zalopay_info_error, false);
+                getActivity().setVisible(R.id.zpw_channel_layout, true);
 
                 getActivity().setText(R.id.zpw_channel_name_textview, channel.pmcname);
             }
