@@ -149,9 +149,9 @@
         <item name="tabIndicatorColor">@color/separate</item>
     </style>
 
-    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Intro.TextView.Title" parent="android:Widget.TextView">
         <item name="android:textSize">20sp</item>
@@ -206,6 +206,7 @@
     <style name="RoundedCornerDraweeView" parent="AvatarDraweeView">
         <item name="roundAsCircle">false</item>
         <item name="roundedCornerRadius">6dp</item>
+        <item name="failureImage">@color/silver</item>
     </style>
 
     <style name="BannerDraweeView" parent="NormalDraweeView">

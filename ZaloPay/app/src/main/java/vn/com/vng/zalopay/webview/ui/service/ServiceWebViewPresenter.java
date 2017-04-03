@@ -83,8 +83,8 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
 
         final String url = String.format(
                 WebViewConfig.getHistoryWebViewUrl(mHost),
-                mAppGamePayInfo.getUid(),
-                mAppGamePayInfo.getAccessToken());
+                mAppGamePayInfo.uid,
+                mAppGamePayInfo.accessToken);
         Timber.d("getHistoryWebViewUrl url [%s]", url);
         return url;
     }
@@ -97,9 +97,9 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
 
         final String url = String.format(
                 WebViewConfig.getWebViewUrl(mHost),
-                mAppGamePayInfo.getUid(),
-                mAppGamePayInfo.getAccessToken(),
-                mAppGamePayInfo.getAppId());
+                mAppGamePayInfo.uid,
+                mAppGamePayInfo.accessToken,
+                mAppGamePayInfo.appId);
         Timber.d("getWebViewUrl url [%s]", url);
         return url;
     }
@@ -173,22 +173,20 @@ public class ServiceWebViewPresenter extends AbstractPresenter<IWebView> {
 
         @Override
         public void onResponseSuccess(ZPPaymentResult zpPaymentResult) {
-            Timber.d("onResponseSuccess zpPaymentResult [%s]", zpPaymentResult);
-            if (zpPaymentResult == null || mView == null || mAppGamePayInfo == null) {
+            if (zpPaymentResult == null || zpPaymentResult.paymentInfo == null || mView == null || mAppGamePayInfo == null) {
                 return;
             }
-            mAppGamePayInfo.setApptransid(zpPaymentResult.paymentInfo.appTransID);
 
-            Timber.d("onResponseSuccess appGamePayInfo [%s]", mAppGamePayInfo);
-            Timber.d("onResponseSuccess getAccessToken [%s]", mAppGamePayInfo.getAccessToken());
-            Timber.d("onResponseSuccess getAppId [%s]", mAppGamePayInfo.getAppId());
-            Timber.d("onResponseSuccess getApptransid [%s]", mAppGamePayInfo.getApptransid());
-            Timber.d("onResponseSuccess getUid [%s]", mAppGamePayInfo.getUid());
-            mAppGamePayInfo.setApptransid(mAppGamePayInfo.getApptransid());
+            Timber.d("onResponseSuccess uid [%s] accessToken [%s] appId [%s] transid [%s]", mAppGamePayInfo.uid,
+                    mAppGamePayInfo.accessToken, mAppGamePayInfo.appId, mAppGamePayInfo.apptransid);
 
-            final String urlPage = String.format(WebViewConfig.getResultWebViewUrl(mHost), mAppGamePayInfo.getApptransid(),
-                    mAppGamePayInfo.getUid(), mAppGamePayInfo.getAccessToken());
-            Timber.d("onResponseSuccess url [%s]", urlPage);
+            mAppGamePayInfo.apptransid = (zpPaymentResult.paymentInfo.appTransID);
+
+            String urlPage = String.format(WebViewConfig.getResultWebViewUrl(mHost), mAppGamePayInfo.apptransid,
+                    mAppGamePayInfo.uid, mAppGamePayInfo.accessToken);
+
+            Timber.d("Page url : [%s]", urlPage);
+
             mView.loadUrl(urlPage);
         }
 

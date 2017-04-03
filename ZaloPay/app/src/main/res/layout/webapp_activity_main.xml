@@ -7,7 +7,6 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/toolbarLayout"
         layout="@layout/toolbar_game" />
 
     <FrameLayout

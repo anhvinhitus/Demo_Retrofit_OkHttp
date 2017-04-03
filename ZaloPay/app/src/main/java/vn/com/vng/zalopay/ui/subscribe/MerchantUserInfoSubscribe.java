@@ -44,9 +44,9 @@ public class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInf
             return;
         }
         WebViewPayInfo gamePayInfo = new WebViewPayInfo();
-        gamePayInfo.setUid(merchantUserInfo.muid);
-        gamePayInfo.setAccessToken(merchantUserInfo.maccesstoken);
-        gamePayInfo.setAppId(mAppId);
+        gamePayInfo.uid = (merchantUserInfo.muid);
+        gamePayInfo.accessToken = (merchantUserInfo.maccesstoken);
+        gamePayInfo.appId = (mAppId);
         mNavigator.startServiceWebViewActivity(mActivity.get(), gamePayInfo, mWebViewUrl);
     }
 
