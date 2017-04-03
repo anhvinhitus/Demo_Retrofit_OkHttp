@@ -134,14 +134,12 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
 
     @OnTouch(R.id.swcTouchId)
     public boolean onTouchTouchId(View view, MotionEvent event) {
-        Timber.d("onTouchTouchId");
         mPresenter.useFingerprintToAuthenticate(!mSwcTouchIdView.isChecked());
         return false;
     }
 
     @OnTouch(R.id.swcProtectAccount)
     public boolean onTouchProtectAccount(View v, MotionEvent event) {
-        Timber.d("onTouchProtectAccount");
         mPresenter.userProtectAccount(!mSwcProtectAccountView.isChecked());
         return false;
     }

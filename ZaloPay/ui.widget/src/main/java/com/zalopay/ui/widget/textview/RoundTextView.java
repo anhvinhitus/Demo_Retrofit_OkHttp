@@ -2,16 +2,16 @@ package com.zalopay.ui.widget.textview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 /**
  * Created by AnhHieu on 1/11/16.
  */
-public class RoundTextView extends TextView {
+public class RoundTextView extends AppCompatTextView {
     private RoundViewDelegate delegate;
     private float density = 0;
 
@@ -27,13 +27,6 @@ public class RoundTextView extends TextView {
         super(context, attrs, defStyleAttr);
         density = getResources().getDisplayMetrics().density;
         delegate = new RoundViewDelegate(this, context, attrs);
-    }
-
-    /**
-     * use delegate to set attr
-     */
-    public RoundViewDelegate getDelegate() {
-        return delegate;
     }
 
     @Override

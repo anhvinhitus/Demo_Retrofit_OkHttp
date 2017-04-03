@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.zalopay.ui.widget.R;
 
-public class RoundViewDelegate {
+final class RoundViewDelegate {
     private View view;
     private Context context;
     private GradientDrawable gd_background = new GradientDrawable();
@@ -40,10 +40,10 @@ public class RoundViewDelegate {
     private boolean isRippleEnable;
     private float[] radiusArr = new float[8];
 
-    public RoundViewDelegate(View view, Context context, AttributeSet attrs) {
+    RoundViewDelegate(View view, Context context, AttributeSet attrs) {
         this.view = view;
         this.context = context;
-      obtainAttributes(context, attrs);
+        obtainAttributes(context, attrs);
     }
 
     private void obtainAttributes(Context context, AttributeSet attrs) {
@@ -66,17 +66,7 @@ public class RoundViewDelegate {
         ta.recycle();
     }
 
-    public void setBackgroundColor(int backgroundColor) {
-        this.backgroundColor = backgroundColor;
-        setBgSelector();
-    }
-
-    public void setBackgroundPressColor(int backgroundPressColor) {
-        this.backgroundPressColor = backgroundPressColor;
-        setBgSelector();
-    }
-
-    public void setCornerRadius(int cornerRadius) {
+    void setCornerRadius(int cornerRadius) {
         this.cornerRadius = dp2px(cornerRadius);
         setBgSelector();
     }
@@ -91,58 +81,6 @@ public class RoundViewDelegate {
         setBgSelector();
     }
 
-    public void setStrokePressColor(int strokePressColor) {
-        this.strokePressColor = strokePressColor;
-        setBgSelector();
-    }
-
-    public void setTextPressColor(int textPressColor) {
-        this.textPressColor = textPressColor;
-        setBgSelector();
-    }
-
-    public void setIsRadiusHalfHeight(boolean isRadiusHalfHeight) {
-        this.isRadiusHalfHeight = isRadiusHalfHeight;
-        setBgSelector();
-    }
-
-    public void setIsWidthHeightEqual(boolean isWidthHeightEqual) {
-        this.isWidthHeightEqual = isWidthHeightEqual;
-        setBgSelector();
-    }
-
-    public void setCornerRadius_TL(int cornerRadius_TL) {
-        this.cornerRadius_TL = cornerRadius_TL;
-        setBgSelector();
-    }
-
-    public void setCornerRadius_TR(int cornerRadius_TR) {
-        this.cornerRadius_TR = cornerRadius_TR;
-        setBgSelector();
-    }
-
-    public void setCornerRadius_BL(int cornerRadius_BL) {
-        this.cornerRadius_BL = cornerRadius_BL;
-        setBgSelector();
-    }
-
-    public void setCornerRadius_BR(int cornerRadius_BR) {
-        this.cornerRadius_BR = cornerRadius_BR;
-        setBgSelector();
-    }
-
-    public int getBackgroundColor() {
-        return backgroundColor;
-    }
-
-    public int getBackgroundPressColor() {
-        return backgroundPressColor;
-    }
-
-    public int getCornerRadius() {
-        return cornerRadius;
-    }
-
     public int getStrokeWidth() {
         return strokeWidth;
     }
@@ -151,46 +89,17 @@ public class RoundViewDelegate {
         return strokeColor;
     }
 
-    public int getStrokePressColor() {
-        return strokePressColor;
-    }
-
-    public int getTextPressColor() {
-        return textPressColor;
-    }
-
-    public boolean isRadiusHalfHeight() {
+    boolean isRadiusHalfHeight() {
         return isRadiusHalfHeight;
     }
 
-    public boolean isWidthHeightEqual() {
+    boolean isWidthHeightEqual() {
         return isWidthHeightEqual;
     }
 
-    public int getCornerRadius_TL() {
-        return cornerRadius_TL;
-    }
-
-    public int getCornerRadius_TR() {
-        return cornerRadius_TR;
-    }
-
-    public int getCornerRadius_BL() {
-        return cornerRadius_BL;
-    }
-
-    public int getCornerRadius_BR() {
-        return cornerRadius_BR;
-    }
-
-    protected int dp2px(float dp) {
+    private int dp2px(float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
-    }
-
-    protected int sp2px(float sp) {
-        final float scale = this.context.getResources().getDisplayMetrics().scaledDensity;
-        return (int) (sp * scale + 0.5f);
     }
 
     private void setDrawable(GradientDrawable gd, int color, int strokeColor) {
@@ -214,7 +123,7 @@ public class RoundViewDelegate {
         gd.setStroke(strokeWidth, strokeColor);
     }
 
-    public void setBgSelector() {
+    void setBgSelector() {
         StateListDrawable bg = new StateListDrawable();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isRippleEnable) {
@@ -242,7 +151,6 @@ public class RoundViewDelegate {
         if (view instanceof TextView) {
             if (textPressColor != Integer.MAX_VALUE) {
                 ColorStateList textColors = ((TextView) view).getTextColors();
-//              Log.d("AAA", textColors.getColorForState(new int[]{-android.R.attr.state_pressed}, -1) + "");
                 ColorStateList colorStateList = new ColorStateList(
                         new int[][]{new int[]{-android.R.attr.state_pressed}, new int[]{android.R.attr.state_pressed}},
                         new int[]{textColors.getDefaultColor(), textPressColor});
