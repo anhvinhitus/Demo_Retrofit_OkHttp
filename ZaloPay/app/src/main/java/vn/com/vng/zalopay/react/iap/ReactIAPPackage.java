@@ -16,7 +16,6 @@ import java.util.List;
 
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.react.widget.icon.ReactIconTextViewManager;
 
 /**
  * Created by AnhHieu on 5/16/16.
@@ -59,7 +58,6 @@ public class ReactIAPPackage implements ReactPackage {
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         List<ViewManager> viewManagers = new ArrayList<>();
-        viewManagers.add(new ReactIconTextViewManager());
         viewManagers.add(new ReactDialogPickerManager(mNativeHost));
         viewManagers.add(new ReactDropdownPickerManager(mNativeHost));
         return viewManagers;
