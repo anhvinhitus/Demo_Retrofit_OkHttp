@@ -32,24 +32,11 @@ public class TransferViaZaloPayNamePresenter extends AbstractPresenter<ITransfer
     }
 
     void getUserInfo(String zpName) {
-        showLoadingView();
         Subscription subscription = mAccountRepository.getUserInfoByZaloPayName(zpName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UserInfoSubscriber(zpName));
         mSubscription.add(subscription);
-    }
-
-    private void showLoadingView() {
-        if (mView != null) {
-            mView.showLoading();
-        }
-    }
-
-    private void hideLoadingView() {
-        if (mView != null) {
-            mView.hideLoading();
-        }
     }
 
     private class UserInfoSubscriber extends DefaultSubscriber<Person> {
@@ -60,21 +47,36 @@ public class TransferViaZaloPayNamePresenter extends AbstractPresenter<ITransfer
             this.zaloPayName = zaloPayName;
         }
 
+
+        @Override
+        public void onStart() {
+            if (mView != null) {
+                mView.showLoading();
+            }
+        }
+
         @Override
         public void onError(Throwable e) {
-            Timber.d(e, "onError");
             if (ResponseHelper.shouldIgnoreError(e)) {
                 return;
             }
-            
-            hideLoadingView();
+
+            if (mView == null) {
+                return;
+            }
+
+            mView.hideLoading();
             String message = ErrorMessageFactory.create(mApplicationContext, e);
             mView.showError(message);
         }
 
         @Override
         public void onNext(Person person) {
-            hideLoadingView();
+            if (mView == null) {
+                return;
+            }
+
+            mView.hideLoading();
             mView.onGetProfileSuccess(person, zaloPayName);
         }
     }
