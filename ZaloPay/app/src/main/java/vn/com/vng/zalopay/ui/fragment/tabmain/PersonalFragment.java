@@ -41,6 +41,9 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
     @BindView(R.id.tab_personal_tv_balance_value)
     TextView tvBalance;
 
+    @BindView(R.id.tab_personal_tv_bank_link_now)
+    TextView tvBankLink;
+
     @Inject
     PersonalPresenter presenter;
 
@@ -123,6 +126,20 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
         }
     }
 
+    @Override
+    public void setBankLinkText(int textCode) {
+        if (tvBankLink != null) {
+            switch (textCode) {
+                case 0:
+                    tvBankLink.setText(getString(R.string.personal_link_now_text));
+                    break;
+                default:
+                    tvBankLink.setText("1 thẻ");
+                    break;
+            }
+        }
+    }
+
     @OnClick(R.id.tab_personal_rl_info)
     public void onProfileInfoClick() {
         navigator.startProfileInfoActivity(getContext());
@@ -141,11 +158,13 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
     @OnClick(R.id.tab_personal_tv_bank_link_now)
     public void onBankLinkNowClick() {
         showToast("Quick link bank clicked");
+        if(presenter.getLinkCardType() == 0) {
+            navigator.startLinkCardActivity(getContext(), true);
+        }
     }
 
     @OnClick(R.id.tab_personal_rl_bill)
     public void onBillClick() {
-
     }
 
     @OnClick(R.id.tab_personal_tv_bill_detail)

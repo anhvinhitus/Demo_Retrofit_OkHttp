@@ -383,6 +383,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                 appBarLayout.getLayoutParams();
         AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams)
                 collapsingToolbarLayout.getLayoutParams();
+
         switch (status) {
             case HomePagerAdapter.TAB_MAIN_INDEX:
                 coordinatorLayoutParams.height = (int) AndroidUtils.dpToPixels(getActivity(), 180);

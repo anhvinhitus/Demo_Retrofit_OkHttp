@@ -49,6 +49,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     private BankCard mCurrentBankCard;
     private LinkCardAdapter mAdapter;
     private BankSupportFragment mBankSupportFragment;
+//    private Bundle bundle;
 
     @BindView(R.id.layoutLinkCardEmpty)
     View mLayoutLinkCardEmpty;
@@ -263,6 +264,12 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     public void onResume() {
         super.onResume();
         mPresenter.resume();
+//        bundle = getArguments();
+//        boolean yes = false;
+//        if (bundle != null)
+//            yes = bundle.getBoolean("QUICK_LINK_CARD_ACCESS");
+//        if (yes) mPresenter.addLinkCard();
+//        bundle = null;
     }
 
     @Override

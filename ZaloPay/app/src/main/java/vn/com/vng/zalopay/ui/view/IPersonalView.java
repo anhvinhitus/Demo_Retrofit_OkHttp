@@ -19,5 +19,7 @@ public interface IPersonalView {
 
     void setBalance(long balance);
 
+    void setBankLinkText(int textCode);
+
     Context getContext();
 }

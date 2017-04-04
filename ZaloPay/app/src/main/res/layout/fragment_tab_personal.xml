@@ -143,7 +143,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="36dp"
                         android:gravity="center_vertical"
-                        android:text="@string/personal_link_now_text"
                         android:textColor="@color/personal_ic_link"
                         android:textSize="@dimen/personal.link.text" />
                 </RelativeLayout>
