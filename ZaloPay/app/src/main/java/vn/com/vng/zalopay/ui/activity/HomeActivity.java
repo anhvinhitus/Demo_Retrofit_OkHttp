@@ -17,10 +17,10 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.zalopay.apploader.internal.ModuleName;
-import com.zalopay.ui.widget.IconFontDrawable;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
 import javax.inject.Inject;
@@ -36,6 +36,7 @@ import vn.com.vng.zalopay.ui.presenter.HomePresenter;
 import vn.com.vng.zalopay.ui.toolbar.HeaderView;
 import vn.com.vng.zalopay.ui.toolbar.HeaderViewTop;
 import vn.com.vng.zalopay.ui.view.IHomeView;
+import vn.com.vng.zalopay.ui.widget.BottomNavigationDrawable;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.BottomNavigationViewHelper;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
@@ -80,6 +81,9 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
 
     @BindView(R.id.navigation)
     BottomNavigationView mBottomNavigationView;
+
+    // TODO: 4/4/17 - longlv: hardcode for test.
+    private boolean mNewPromotion = true;
 
     private static boolean isToolbarExpanded = true;
 
@@ -277,30 +281,31 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
     }
 
     private void setIconTabMain(Menu menu, boolean isActive) {
-        IconFontDrawable iconFontDrawable;
+        BottomNavigationDrawable iconFontDrawable;
         if (isActive) {
-            iconFontDrawable = new IconFontDrawable(this)
+            iconFontDrawable = new BottomNavigationDrawable(this)
                     .setIcon(R.string.tab_home_active)
                     .setResourcesColor(R.color.colorPrimary)
                     .setResourcesSize(R.dimen.font_size_tab_icon);
         } else {
-            iconFontDrawable = new IconFontDrawable(this)
+            iconFontDrawable = new BottomNavigationDrawable(this)
                     .setIcon(R.string.tab_home)
                     .setResourcesColor(R.color.txt_item_sub)
                     .setResourcesSize(R.dimen.font_size_tab_icon);
         }
+
         menu.getItem(HomePagerAdapter.TAB_MAIN_INDEX).setIcon(iconFontDrawable);
     }
 
     private void setIconTabShowShow(Menu menu, boolean isActive) {
-        IconFontDrawable iconFontDrawable;
+        BottomNavigationDrawable iconFontDrawable;
         if (isActive) {
-            iconFontDrawable = new IconFontDrawable(this)
+            iconFontDrawable = new BottomNavigationDrawable(this)
                     .setIcon(R.string.tab_showshow_active)
                     .setResourcesColor(R.color.colorPrimary)
                     .setResourcesSize(R.dimen.font_size_tab_icon);
         } else {
-            iconFontDrawable = new IconFontDrawable(this)
+            iconFontDrawable = new BottomNavigationDrawable(this)
                     .setIcon(R.string.tab_showshow)
                     .setResourcesColor(R.color.txt_item_sub)
                     .setResourcesSize(R.dimen.font_size_tab_icon);
@@ -309,30 +314,41 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
     }
 
     private void setIconTabPromotion(Menu menu, boolean isActive) {
-        IconFontDrawable iconFontDrawable;
+        BottomNavigationDrawable iconFontDrawable;
         if (isActive) {
-            iconFontDrawable = new IconFontDrawable(this)
+            mNewPromotion = false;
+            iconFontDrawable = new BottomNavigationDrawable(this)
                     .setIcon(R.string.tab_promotion_active)
                     .setResourcesColor(R.color.colorPrimary)
                     .setResourcesSize(R.dimen.font_size_tab_icon);
         } else {
-            iconFontDrawable = new IconFontDrawable(this)
+            iconFontDrawable = new BottomNavigationDrawable(this)
                     .setIcon(R.string.tab_promotion)
                     .setResourcesColor(R.color.txt_item_sub)
                     .setResourcesSize(R.dimen.font_size_tab_icon);
+            if (mNewPromotion) {
+                View view = mBottomNavigationView.findViewById(R.id.menu_promotion);
+                View imageView = view.findViewById(android.support.design.R.id.icon);
+                if (imageView != null) {
+                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) imageView.getLayoutParams();
+                    layoutParams.width = (int) getResources().getDimension(R.dimen.bottom_navigation_item_image_width);
+                }
+                iconFontDrawable.setSubIcon(getString(R.string.tab_notifynew))
+                        .setPxSizeSubIcon(R.dimen.font_size_tab_sub_icon);
+            }
         }
         menu.getItem(HomePagerAdapter.TAB_PROMOTION_INDEX).setIcon(iconFontDrawable);
     }
 
     private void setIconTabProfile(Menu menu, boolean isActive) {
-        IconFontDrawable iconFontDrawable;
+        BottomNavigationDrawable iconFontDrawable;
         if (isActive) {
-            iconFontDrawable = new IconFontDrawable(this)
+            iconFontDrawable = new BottomNavigationDrawable(this)
                     .setIcon(R.string.tab_personal_active)
                     .setResourcesColor(R.color.colorPrimary)
                     .setResourcesSize(R.dimen.font_size_tab_icon);
         } else {
-            iconFontDrawable = new IconFontDrawable(this)
+            iconFontDrawable = new BottomNavigationDrawable(this)
                     .setIcon(R.string.tab_personal)
                     .setResourcesColor(R.color.txt_item_sub)
                     .setResourcesSize(R.dimen.font_size_tab_icon);

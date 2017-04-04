@@ -27,12 +27,12 @@ import timber.log.Timber;
 
 public class IconFontDrawable extends Drawable {
 
-    private final Context mContext;
+    protected final Context mContext;
     private TypefaceEnum mTypefaceEnum;
     private String mText;
     private TextPaint mPaint;
     private int mSize = -1;
-    private int mLeftPadding = 0, mTopPadding = 0, mRightPadding = 0, mBottomPadding = 0;
+    protected int mLeftPadding = 0, mTopPadding = 0, mRightPadding = 0, mBottomPadding = 0;
 
     public IconFontDrawable(Context context) {
         this.mContext = context;
@@ -122,8 +122,8 @@ public class IconFontDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        refreshTypeface();
         if (!TextUtils.isEmpty(mText)) {
-            refreshTypeface();
             mPaint.setTextSize(getBounds().height());
             Rect textBounds = new Rect();
             mPaint.getTextBounds(mText, 0, 1, textBounds);
@@ -213,7 +213,7 @@ public class IconFontDrawable extends Drawable {
         }
     }
 
-    private Typeface getZaloPayTypeface() {
+    protected Typeface getZaloPayTypeface() {
         return IconFontHelper.getInstance().getCurrentTypeface();
     }
 
@@ -223,7 +223,7 @@ public class IconFontDrawable extends Drawable {
     }
 
 
-    private void setTypefaceWithoutStyle(Typeface typeface) {
+    protected void setTypefaceWithoutStyle(Typeface typeface) {
         if (typeface == null) {
             return;
         }

@@ -17,7 +17,8 @@
     <dimen name="font_size_icon_in_text_large">18dp</dimen>
     <dimen name="font_size_icon_in_text">12dp</dimen>
     <dimen name="font_size_arrow_right">12dp</dimen>
-    <dimen name="font_size_tab_icon">22dp</dimen>
+    <dimen name="font_size_tab_icon">30dp</dimen>
+    <dimen name="font_size_tab_sub_icon">15dp</dimen>
 
     <dimen name="textsize.card.number">18sp</dimen>
     <dimen name="textsize.text.main">15sp</dimen>
@@ -147,4 +148,5 @@
     <dimen name="personal.menu_item_height">48dp</dimen>
     <dimen name="personal.info.height">62dp</dimen>
 
+    <dimen name="bottom.navigation.item.image.width">48dp</dimen>
 </resources>
