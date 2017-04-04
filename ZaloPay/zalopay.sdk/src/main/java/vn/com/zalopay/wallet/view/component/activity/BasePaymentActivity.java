@@ -1015,14 +1015,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         // set color for text in linkacc
         if (GlobalData.isLinkAccChannel()) {
-            if (getAdapter().getPageName().equals(AdapterBase.PAGE_LINKACC_FAIL)) { // linkacc fail
+            if (getAdapter().getPageName().equals(AdapterLinkAcc.PAGE_LINKACC_FAIL)) {
                 setVisible(R.id.zpw_payment_fail_textview, true);
             } else { // unlinkacc fail
                 setVisible(R.id.zpw_payment_fail_textview, false);
             }
         }
-        ZPWUtils.applyFont(findViewById(R.id.zpw_textview_transaction),
-                GlobalData.getStringResource(RS.string.zpw_font_medium));
+        ZPWUtils.applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
         //re-align top
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animateImageViewFail();
@@ -1031,8 +1030,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     private void setLayoutBasedOnSuggestActions(int[] suggestActions) {
         // Define view to set view position based on suggest action from server response
-        View rlUpdateInfo = findViewById("zpw_payment_fail_rl_update_info");
-        View rlSupport = findViewById("zpw_payment_fail_rl_support");
+        View rlUpdateInfo = findViewById(R.id.zpw_payment_fail_rl_update_info);
+        View rlSupport = findViewById(R.id.zpw_payment_fail_rl_support);
 
         RelativeLayout.LayoutParams pUpdateInfo = (RelativeLayout.LayoutParams) rlUpdateInfo.getLayoutParams();
         RelativeLayout.LayoutParams pSupport = (RelativeLayout.LayoutParams) rlSupport.getLayoutParams();
@@ -1081,7 +1080,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             } else
                 setVisible(R.id.payment_description_label, false);
         } else if (GlobalData.isLinkAccChannel()) { // show label for linkAcc
-            if (getAdapter().getPageName().equals(AdapterBase.PAGE_LINKACC_SUCCESS)) {
+            if (getAdapter().getPageName().equals(AdapterLinkAcc.PAGE_LINKACC_SUCCESS)) {
                 setViewColor(R.id.zpw_payment_success_textview, getResources().getColor(R.color.text_color_primary));
                 setVisible(R.id.payment_description_label, true);
 
@@ -1725,5 +1724,4 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             Log.d(this, "networking is online again");
         }
     }
-
 }

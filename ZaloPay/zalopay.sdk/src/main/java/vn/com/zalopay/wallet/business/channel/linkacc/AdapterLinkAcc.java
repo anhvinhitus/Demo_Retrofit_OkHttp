@@ -64,6 +64,16 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
 
+    public static String SCREEN_LINK_ACC = RS.layout.screen__link__acc;
+
+    public static String PAGE_VCB_LOGIN = RS.layout.screen__vcb__login;
+    public static String PAGE_VCB_CONFIRM_LINK = RS.layout.screen__vcb__confirm_link;
+    public static String PAGE_VCB_OTP = RS.layout.screen_vcb_otp;
+    public static String PAGE_VCB_CONFIRM_UNLINK = RS.layout.screen__vcb__confirm_unlink;
+    public static String PAGE_LINKACC_SUCCESS = RS.layout.screen__linkacc__success;
+    public static String PAGE_LINKACC_FAIL = RS.layout.screen__linkacc__fail;
+    public static String PAGE_UNLINKACC_SUCCESS = RS.layout.screen__unlinkacc__success;
+    public static String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
     protected ZPWNotification mNotification;
     protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
@@ -150,6 +160,32 @@ public class AdapterLinkAcc extends AdapterBase {
         super(pOwnerActivity);
         mLayoutId = SCREEN_LINK_ACC;
         mPageCode = SCREEN_LINK_ACC;
+    }
+
+    @Override
+    public boolean isFinalStep() {
+        boolean finalStep = super.isFinalStep();
+        return finalStep && !getPageName().equals(SCREEN_LINK_ACC) && !getPageName().equals(PAGE_VCB_LOGIN) && !getPageName().equals(PAGE_VCB_CONFIRM_LINK)
+                && !getPageName().equals(PAGE_LINKACC_SUCCESS) && !getPageName().equals(PAGE_LINKACC_FAIL)
+                && !getPageName().equals(PAGE_UNLINKACC_SUCCESS) && !getPageName().equals(PAGE_UNLINKACC_FAIL)
+                && !getPageName().equals(PAGE_VCB_OTP) && !getPageName().equals(PAGE_VCB_CONFIRM_UNLINK);
+    }
+
+    @Override
+    public boolean isTransactionFail() {
+        return super.isTransactionFail() || getPageName().equals(PAGE_LINKACC_FAIL)
+                || getPageName().equals(PAGE_UNLINKACC_FAIL);
+    }
+
+    @Override
+    public boolean isLinkAccSuccess() {
+        return getPageName().equals(PAGE_LINKACC_SUCCESS) || getPageName().equals(PAGE_UNLINKACC_SUCCESS);
+    }
+
+    @Override
+    public boolean isFinalScreen() {
+        return super.isFinalScreen() || getPageName().equals(PAGE_LINKACC_SUCCESS) || getPageName().equals(PAGE_LINKACC_FAIL)
+                || getPageName().equals(PAGE_UNLINKACC_SUCCESS) || getPageName().equals(PAGE_UNLINKACC_FAIL);
     }
 
     public void startFlow() {

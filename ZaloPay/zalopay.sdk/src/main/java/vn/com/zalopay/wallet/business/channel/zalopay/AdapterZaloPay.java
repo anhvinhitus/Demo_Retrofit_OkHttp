@@ -49,9 +49,7 @@ public class AdapterZaloPay extends AdapterBase {
 
     @Override
     public boolean isFinalStep() {
-        if (mPageCode.equals(PAGE_CONFIRM))
-            return true;
-        return false;
+        return mPageCode.equals(PAGE_CONFIRM);
     }
 
     @Override
