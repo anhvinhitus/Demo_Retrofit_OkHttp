@@ -111,7 +111,7 @@ public class ConfigUtil {
      * Default sử dụng https
      */
     public static boolean isHttpsRoute() {
-        boolean isHttpsRoute = mConfig == null || "https".equals(mConfig.apiRoute);
+        boolean isHttpsRoute = mConfig == null || !"connector".equals(mConfig.apiRoute);
         Timber.d("Network use Https route : [%s]", isHttpsRoute);
         return isHttpsRoute;
     }
