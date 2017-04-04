@@ -121,7 +121,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Cursor> getZaloFriendsCursorLocal() {
-        return makeObservable(() -> mLocalStorage.getZaloUserCursor(FriendConfig.sEnableContact));
+        return makeObservable(() -> mLocalStorage.getZaloUserCursor(FriendConfig.sEnableSyncContact));
     }
 
     @Override
@@ -137,7 +137,7 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Cursor> searchZaloFriend(String s) {
-        return makeObservable(() -> mLocalStorage.searchZaloFriendList(s, FriendConfig.sEnableContact));
+        return makeObservable(() -> mLocalStorage.searchZaloFriendList(s, FriendConfig.sEnableSyncContact));
     }
 
     @Override
@@ -276,7 +276,9 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Override
     public Observable<Boolean> syncContact() {
-        return makeObservable(() -> mLocalStorage.lastTimeSyncContact())
+        return Observable.just(FriendConfig.sEnableSyncContact)
+                .filter(Boolean::booleanValue)
+                .flatMap(aBoolean -> makeObservable(() -> mLocalStorage.lastTimeSyncContact()))
                 .filter(lastTime -> Math.abs(System.currentTimeMillis() / 1000 - lastTime) >= 259200) //3 Ngày.
                 .flatMap(aLong -> beginSync());
     }

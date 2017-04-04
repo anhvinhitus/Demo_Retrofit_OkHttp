@@ -79,7 +79,7 @@ public class ConfigUtil {
             mConfig = config;
             loadConfigPhoneFormat(config);
             loadConfigInsideApp(config);
-            FriendConfig.sEnableContact = isSyncContact();
+            FriendConfig.sEnableSyncContact = isSyncContact();
             return true;
         }
 
