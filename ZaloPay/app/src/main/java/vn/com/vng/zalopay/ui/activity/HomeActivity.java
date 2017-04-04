@@ -327,17 +327,25 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
                     .setResourcesColor(R.color.txt_item_sub)
                     .setResourcesSize(R.dimen.font_size_tab_icon);
             if (mNewPromotion) {
-                View view = mBottomNavigationView.findViewById(R.id.menu_promotion);
-                View imageView = view.findViewById(android.support.design.R.id.icon);
-                if (imageView != null) {
-                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) imageView.getLayoutParams();
-                    layoutParams.width = (int) getResources().getDimension(R.dimen.bottom_navigation_item_image_width);
-                }
+                increaseIconWidth();
                 iconFontDrawable.setSubIcon(getString(R.string.tab_notifynew))
                         .setPxSizeSubIcon(R.dimen.font_size_tab_sub_icon);
             }
         }
         menu.getItem(HomePagerAdapter.TAB_PROMOTION_INDEX).setIcon(iconFontDrawable);
+    }
+
+    /**
+     * Increase icon width to append sub icon at top right corner.
+     * Default icon in BottomNavigationItemView is 24dp, increase 36dp.
+     */
+    private void increaseIconWidth() {
+        View view = mBottomNavigationView.findViewById(R.id.menu_promotion);
+        View imageView = view.findViewById(android.support.design.R.id.icon);
+        if (imageView != null) {
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) imageView.getLayoutParams();
+            layoutParams.width = (int) getResources().getDimension(R.dimen.bottom_navigation_item_image_width);
+        }
     }
 
     private void setIconTabProfile(Menu menu, boolean isActive) {
