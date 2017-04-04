@@ -14,6 +14,7 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.creditcard.DMappedCreditCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.DeviceUtil;
@@ -72,7 +73,6 @@ public class DataParameter {
 
     /**
      * Add param RemoveMapCardTask
-     *
      * @param params
      * @param pCard
      */
@@ -158,14 +158,13 @@ public class DataParameter {
 
     /***
      * get card info params
-     *
      * @param params
      * @throws Exception
      */
-    public static void prepareGetCardInfoListParams(HashMap<String, String> params) throws Exception {
+    public static void prepareGetCardInfoListParams(HashMap<String, String> params,UserInfo pUserInfo) throws Exception {
         putBase(params);
-        params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
+        params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accessToken);
+        params.put(ConstantParams.USER_ID, pUserInfo.zaloPayUserId);
 
         String checkSum = SharedPreferencesManager.getInstance().getCardInfoCheckSum();
         if (checkSum == null) {

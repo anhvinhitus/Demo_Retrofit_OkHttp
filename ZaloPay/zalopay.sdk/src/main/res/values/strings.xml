@@ -78,7 +78,7 @@
     <string name="zpw_alert_network_error_submitorder">Mạng không ổn định, không gửi được hóa đơn.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_verifymapcard">Mạng không ổn định, không thể liên kết thẻ.\nVui lòng kiểm tra lại kết nối mạng</string>
     <string name="zpw_alert_network_error_submitbankaccount">Mạng không ổn định, không thể liên kết tài khoản.\nVui lòng kiểm tra lại kết nối mạng</string>
-    <string name="zpw_alert_network_error_removemapcard">Mạng không ổn định,không thể xóa thẻ.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
+    <string name="zpw_alert_network_error_removemapcard">Mạng không ổn định, không thể xóa thẻ.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
     <string name="zpw_alert_network_error_authenpayer">Mạng không ổn định,không thể xác thực thông tin otp.\nVui lòng kiểm trả kết nối mạng và thử lại!</string>
 
     <string name="zpw_generic_error">Có lỗi xảy ra.Vui lòng thử lại</string>

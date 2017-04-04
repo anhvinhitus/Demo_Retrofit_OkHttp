@@ -1850,7 +1850,7 @@ public abstract class AdapterBase {
                 mappedCardList += (Constants.COMMA + pMappedCard.getCardKey());
             }
 
-            SharedPreferencesManager.getInstance().setMapCard(pMappedCard.getCardKey(), GsonUtils.toJsonString(pMappedCard));
+            SharedPreferencesManager.getInstance().setMapCard(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, pMappedCard.getCardKey(), GsonUtils.toJsonString(pMappedCard));
             SharedPreferencesManager.getInstance().setMapCardList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, mappedCardList);
 
             GlobalData.getPaymentInfo().mapBank = pMappedCard;
@@ -1870,7 +1870,7 @@ public abstract class AdapterBase {
         if (pIsShowProgress) {
             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_get_card_info_processing));
         }
-        BaseTask getCardInfoList = new MapCardListTask(this);
+        BaseTask getCardInfoList = new MapCardListTask(this,GlobalData.getPaymentInfo().userInfo);
         getCardInfoList.makeRequest();
     }
 

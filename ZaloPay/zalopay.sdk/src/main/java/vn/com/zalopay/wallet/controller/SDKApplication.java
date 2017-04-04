@@ -73,24 +73,13 @@ public class SDKApplication extends Application {
     }
 
     /***
-     * this call by app to delete 1 map card.
+     * this call by app to delete map card.
      * @param pParams
      * @param pListener
      */
     public synchronized static void removeCardMap(ZPWRemoveMapCardParams pParams, ZPWRemoveMapCardListener pListener) {
-        try {
-            BaseTask removeMapCardTask = new RemoveMapCardTask(pParams, pListener);
-            removeMapCardTask.makeRequest();
-
-        } catch (Exception e) {
-            if (pListener != null) {
-                BaseResponse baseResponse = new BaseResponse();
-                baseResponse.returnmessage = "Không thể xóa thẻ đã lưu.Vui lòng kiểm tra kết nối mạng và thử lại!";
-                baseResponse.returncode = -1;
-                pListener.onError(baseResponse);
-            }
-            Log.e("removeCardMap", e);
-        }
+        BaseTask removeMapCardTask = new RemoveMapCardTask(pParams, pListener);
+        removeMapCardTask.makeRequest();
     }
     /***
      * clear all cache if user use

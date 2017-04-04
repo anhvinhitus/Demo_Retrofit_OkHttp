@@ -5,38 +5,45 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.LoadMapCardListImpl;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.IGetMapCardInfo;
 import vn.com.zalopay.wallet.utils.Log;
 
+/***
+ * get map card list
+ */
 public class MapCardListTask extends BaseTask<CardInfoListResponse> {
-    private AdapterBase mAdapter;
-    private IGetMapCardInfo mGetCardInfoCallBack;
+    protected AdapterBase mAdapter;
+    protected IGetMapCardInfo mGetCardInfoCallBack;
+    protected UserInfo mUserInfo;
 
-    public MapCardListTask(AdapterBase pAdapter) {
+    public MapCardListTask(AdapterBase pAdapter, UserInfo pUserInfo) {
         super();
         this.mAdapter = pAdapter;
         this.mGetCardInfoCallBack = null;
+        this.mUserInfo = pUserInfo;
     }
 
-    public MapCardListTask(IGetMapCardInfo pGetCardInfoCallBack) {
+    public MapCardListTask(IGetMapCardInfo pGetCardInfoCallBack, UserInfo pUserInfo) {
         super();
         this.mAdapter = null;
         this.mGetCardInfoCallBack = pGetCardInfoCallBack;
+        this.mUserInfo = pUserInfo;
     }
 
     @Override
     public void onDoTaskOnResponse(CardInfoListResponse pResponse) {
-        Log.d(this, "onDoTaskOnResponse");
+        Log.d(this, "do task after response");
         if (pResponse == null || pResponse.returncode != 1) {
             Log.d(this, "request not success...stopping saving response to cache");
             return;
         }
         if (MapCardHelper.needUpdateMapCardListOnCache(pResponse.cardinfochecksum)) {
             try {
-                MapCardHelper.saveMapCardListToCache(pResponse.cardinfochecksum, pResponse.cardinfos);
+                MapCardHelper.saveMapCardListToCache(mUserInfo.zaloPayUserId, pResponse.cardinfochecksum, pResponse.cardinfos);
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -88,7 +95,7 @@ public class MapCardListTask extends BaseTask<CardInfoListResponse> {
     @Override
     protected boolean doParams() {
         try {
-            DataParameter.prepareGetCardInfoListParams(getDataParams());
+            DataParameter.prepareGetCardInfoListParams(getDataParams(), mUserInfo);
             return true;
         } catch (Exception e) {
             onRequestFail(e);

@@ -17,8 +17,10 @@ import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.MapCardListTask;
+import vn.com.zalopay.wallet.listener.IGetMapCardInfo;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
@@ -27,16 +29,14 @@ public class MapCardHelper {
     /***
      * reload map card list info
      */
-    public static Single<BaseResponse> loadMapCardList(boolean pReload) {
+    public static Single<BaseResponse> loadMapCardList(boolean pReload, UserInfo pUserInfo) {
         return Single.create(subscriber -> {
             try {
                 if (pReload) {
                     SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
                 }
-                BaseTask tGetCardInfoList = new MapCardListTask(pResponse -> {
-                    subscriber.onSuccess(pResponse);
-                });
-                tGetCardInfoList.makeRequest();
+                BaseTask getCardInfoList = new MapCardListTask(subscriber::onSuccess,pUserInfo);
+                getCardInfoList.makeRequest();
             } catch (Exception e) {
                 subscriber.onError(e);
                 Log.e("loadMapCardList", e);
@@ -71,7 +71,7 @@ public class MapCardHelper {
      * @param pMapCardList
      * @throws Exception
      */
-    public static void saveMapCardListToCache(String pCheckSum, List<DMappedCard> pMapCardList) throws Exception {
+    public static void saveMapCardListToCache(String pUserId, String pCheckSum, List<DMappedCard> pMapCardList) throws Exception {
         SharedPreferencesManager.getInstance().setCardInfoCheckSum(pCheckSum);
         Log.d(TAG, "saved card info list checksum " + pCheckSum);
         if (pMapCardList != null && pMapCardList.size() > 0) {
@@ -79,18 +79,18 @@ public class MapCardHelper {
             int count = 0;
             for (DBaseMap mappedCard : pMapCardList) {
                 count++;
-                SharedPreferencesManager.getInstance().setMapCard(mappedCard.getCardKey(), GsonUtils.toJsonString(mappedCard));
+                SharedPreferencesManager.getInstance().setMapCard(pUserId, mappedCard.getCardKey(), GsonUtils.toJsonString(mappedCard));
                 mappedCardID.append(mappedCard.getCardKey());
                 if (count < pMapCardList.size()) {
                     mappedCardID.append(Constants.COMMA);
                 }
             }
             //cache map list
-            SharedPreferencesManager.getInstance().setMapCardList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, mappedCardID.toString());
+            SharedPreferencesManager.getInstance().setMapCardList(pUserId, mappedCardID.toString());
             Log.d(TAG, "saved map card list ids " + mappedCardID.toString());
         } else {
             //clear map card list
-            SharedPreferencesManager.getInstance().resetMapCardListOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
+            SharedPreferencesManager.getInstance().resetMapCardListOnCache(pUserId);
             Log.d(TAG, "cleared map card");
         }
     }

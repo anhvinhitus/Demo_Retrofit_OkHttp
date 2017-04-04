@@ -10,11 +10,11 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.RemoveMapCardImpl;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
+import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
@@ -32,9 +32,8 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mMapCardParams.userID;
         userInfo.accessToken = mMapCardParams.accessToken;
-        GlobalData.setUserInfo(userInfo);
 
-        MapCardHelper.loadMapCardList(true)
+        MapCardHelper.loadMapCardList(true, userInfo)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleSubscriber<BaseResponse>() {
@@ -55,7 +54,6 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
         if (mListener != null) {
             mListener.onSuccess(mMapCardParams.mapCard);
         }
-        SingletonLifeCircleManager.disposeAll();
     }
 
     @Override
@@ -67,17 +65,16 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
     public void onRequestSuccess(BaseResponse pResponse) {
         if (!(pResponse instanceof BaseResponse)) {
             onRequestFail(null);
-        }
-        if (pResponse.returncode < 0 && mListener != null) {
-            this.mListener.onError(pResponse);
-        } else if (mListener != null) {
+        } else if (pResponse.returncode >= 0) {
             try {
                 SharedPreferencesManager.getInstance().removeMappedCard(mMapCardParams.userID + Constants.COMMA + mMapCardParams.mapCard.getCardKey());
-                reloadMapCardList();
+                reloadMapCardList();//reload map card list to refresh checksum and map list on cache
             } catch (Exception e) {
                 Log.e(this, e);
                 callbackSuccessToMerchant();
             }
+        } else if (mListener != null) {
+            mListener.onError(pResponse);
         } else {
             Log.e(this, "mListener = NULL");
         }
@@ -86,11 +83,16 @@ public class RemoveMapCardTask extends BaseTask<BaseResponse> {
 
     @Override
     public void onRequestFail(Throwable e) {
-        if (mListener != null) {
+        if (ConnectionUtil.isOnline(GlobalData.getAppContext())) // has error network but device is online::need to reload map list
+        {
+            reloadMapCardList();
+        } else if (mListener != null) {
             BaseResponse baseResponse = new BaseResponse();
             baseResponse.returncode = -1;
             baseResponse.returnmessage = getDefaulErrorNetwork();
             mListener.onError(baseResponse);
+        } else {
+            Log.e(this, "mListener = NULL");
         }
         Log.d(this, e);
     }

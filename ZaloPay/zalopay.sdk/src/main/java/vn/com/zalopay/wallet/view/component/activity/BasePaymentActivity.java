@@ -223,7 +223,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         @Override
         public void onCheckResourceStaticComplete(boolean isSuccess, String pError) {
             if (isSuccess) {
-                Subscription subscription = Single.zip(MapCardHelper.loadMapCardList(false),
+                Subscription subscription = Single.zip(MapCardHelper.loadMapCardList(false,GlobalData.getPaymentInfo().userInfo),
                         BankAccountHelper.loadBankAccountList(false), (t1, t2) -> true)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new SingleSubscriber<Boolean>() {

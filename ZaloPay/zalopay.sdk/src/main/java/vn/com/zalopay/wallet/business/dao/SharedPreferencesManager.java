@@ -401,9 +401,9 @@ public class SharedPreferencesManager extends SingletonBase {
     /***
      * save map card
      */
-    public boolean setMapCard(String pKey, String pConfig) {
+    public boolean setMapCard(String pUserId, String pKey, String pConfig) {
         try {
-            return setString(GlobalData.getPaymentInfo().userInfo.zaloPayUserId + Constants.COMMA + pKey, pConfig);
+            return setString(pUserId + Constants.COMMA + pKey, pConfig);
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -513,7 +513,7 @@ public class SharedPreferencesManager extends SingletonBase {
 
         if (!TextUtils.isEmpty(keyList)) {
             for (String key : keyList.split(Constants.COMMA)) {
-                setMapCard(key, null);
+                setMapCard(pUserId, key, null);
             }
         }
 
@@ -525,16 +525,14 @@ public class SharedPreferencesManager extends SingletonBase {
 
     /***
      * clear bank list map on cache
-     *
      * @param pUserId
      * @return
      */
     public boolean resetBankListOnCache(String pUserId) {
-        //remove all card info
         String keyList = getBankAccountKeyList(pUserId);
         if (!TextUtils.isEmpty(keyList)) {
             for (String key : keyList.split(Constants.COMMA)) {
-                setMapCard(key, null);
+                setMapCard(pUserId, key, null);
             }
         }
         //remove bank id list

@@ -126,7 +126,7 @@ public class BankAccountHelper {
             for (DBaseMap mappedCard : pMapList) {
                 count++;
                 //cache card info
-                SharedPreferencesManager.getInstance().setMapCard(mappedCard.getCardKey(), GsonUtils.toJsonString(mappedCard));
+                SharedPreferencesManager.getInstance().setMapCard(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, mappedCard.getCardKey(), GsonUtils.toJsonString(mappedCard));
                 mappedCardID.append(mappedCard.getCardKey());
                 if (count < pMapList.size()) {
                     mappedCardID.append(Constants.COMMA);

@@ -133,7 +133,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
         }
         //need to update card info again on cache
         if (MapCardHelper.needUpdateMapCardListOnCache(pResponse.cardinfochecksum)) {
-            MapCardHelper.saveMapCardListToCache(pResponse.cardinfochecksum, pResponse.cardinfos);
+            MapCardHelper.saveMapCardListToCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, pResponse.cardinfochecksum, pResponse.cardinfos);
         }
         //update bank account info on cache
         if (BankAccountHelper.needUpdateMapBankAccountListOnCache(pResponse.bankaccountchecksum)) {

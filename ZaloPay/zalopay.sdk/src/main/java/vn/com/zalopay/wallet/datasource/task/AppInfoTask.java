@@ -27,11 +27,6 @@ public class AppInfoTask extends BaseTask<DAppInfoResponse> {
     private String mUserId;
     private String mAccessToken;
 
-    /***
-     * constructor
-     * this is used in sdk
-     * @param pListener
-     */
     public AppInfoTask(ILoadAppInfoListener pListener, String pAppId, String pUserId, String pAccessToken) {
         super();
         mLoadAppInfoListener = pListener;

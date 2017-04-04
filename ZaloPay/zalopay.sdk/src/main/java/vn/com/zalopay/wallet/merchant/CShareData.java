@@ -258,7 +258,6 @@ public class CShareData extends SingletonBase {
 
     public CShareData setUserInfo(UserInfo pUserInfo) {
         GlobalData.setUserInfo(pUserInfo);
-
         return this;
     }
 
@@ -503,8 +502,7 @@ public class CShareData extends SingletonBase {
             UserInfo userInfo = new UserInfo();
             userInfo.zaloPayUserId = pParams.userID;
             userInfo.accessToken = pParams.accessToken;
-            setUserInfo(userInfo);
-            MapCardHelper.loadMapCardList(true)
+            MapCardHelper.loadMapCardList(true,userInfo)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new SingleSubscriber<BaseResponse>() {
