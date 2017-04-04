@@ -929,6 +929,15 @@
         "code": "\ue901", 
         "rawcode": 59649
     }, 
+    "tab_notifynew": {
+        "colors": [
+            {
+                "fill": "rgb(255, 56, 36)"
+            }
+        ], 
+        "code": "\ue9ad", 
+        "rawcode": 59821
+    }, 
     "general_history": {
         "colors": [
             {
