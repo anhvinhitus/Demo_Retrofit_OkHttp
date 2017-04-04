@@ -77,9 +77,7 @@ public class CShareData extends SingletonBase {
                 if (mMerchantTask != null)
                     mMerchantTask.onTaskError(null);
             }
-
             Log.d(this, "===onCheckResourceStaticComplete===" + "===isSuccess=" + isSuccess + "===pError=" + pError);
-
         }
 
         @Override
@@ -93,7 +91,6 @@ public class CShareData extends SingletonBase {
             if (mMerchantTask != null && pForceUpdate) {
                 mMerchantTask.onUpVersion(pForceUpdate, pVersion, pMessage);
             }
-
             Log.d(this, "===onUpVersion===pForceUpdate=" + pForceUpdate + "===pVersion=" + pVersion + "===pMessage=" + pMessage);
         }
     };
@@ -154,8 +151,8 @@ public class CShareData extends SingletonBase {
      * app need to call this to release all resource after not use anymore
      */
     public static void dispose() {
-        Log.d("CShareData", "prepare to dispose merchant");
         SingletonLifeCircleManager.disposeMerchant();
+        Log.d("CShareData", "dispose merchant");
     }
 
     public static DConfigFromServer getConfigResource() {
@@ -164,26 +161,22 @@ public class CShareData extends SingletonBase {
 
     /***
      * load config from json file
-     *
      * @return
      */
     public static DConfigFromServer loadConfigBundle() {
         if (mConfigFromServer == null || mConfigFromServer.CCIdentifier == null) {
             try {
                 String json = ResourceManager.loadResourceFile();
-
                 mConfigFromServer = (new DConfigFromServer()).fromJsonString(json);
             } catch (Exception e) {
                 Log.e("===loadConfigBundle===", e);
             }
         }
-
         return mConfigFromServer;
     }
 
     /***
      * push notify to SDK to finish flow vcb account link
-     *
      * @param pNotification
      */
     public void notifyLinkBankAccountFinish(ZPWNotification pNotification) {
@@ -280,28 +273,8 @@ public class CShareData extends SingletonBase {
     public void getCardSupportList(IGetCardSupportListListener pListener) {
         mMerchantTask = new TaskGetCardSupportList();
         mMerchantTask.setTaskListener(pListener);
-
         mMerchantTask.onPrepareTaskComplete();
-        //check resource statis first
-        //checkStaticResource();
     }
-
-    /***
-     * 1 zalopay id map to 1 vietcombank's account only
-     * check this user has 1 vietcombank account is linked
-     *
-     * @param pUserId
-     * @return
-     */
-    public boolean hasVietcomBank(String pUserId) {
-        try {
-            return BankAccountHelper.hasBankAccountOnCache(pUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
-        return false;
-    }
-
     /***
      * get map card list of user
      *
@@ -380,22 +353,6 @@ public class CShareData extends SingletonBase {
         return 0;
     }
 
-    /****
-     * amount money for link card channel
-     *
-     * @return
-     */
-    public long getLinkCardValue() {
-        try {
-            return Long.parseLong(GlobalData.getStringResource(RS.string.zpw_conf_wallet_amount));
-
-        } catch (Exception ex) {
-            Log.e(this, ex);
-        }
-
-        return 20000;
-    }
-
     public WDMaintenance getWithdrawMaintenance() {
         try {
             String maintenanceOb = SharedPreferencesManager.getInstance().getMaintenanceWithDraw();
@@ -414,7 +371,6 @@ public class CShareData extends SingletonBase {
     /****
      * show/hide deposite.
      * this get config from server.
-     *
      * @return true/false
      */
     public boolean isEnableDeposite() {
@@ -435,14 +391,12 @@ public class CShareData extends SingletonBase {
 
     /***
      * return banner list for top menu on app
-     *
      * @return
      */
     public List<DBanner> getBannerList() {
         try {
             List<DBanner> bannerList = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBannerList(), new TypeToken<List<DBanner>>() {
             }.getType());
-
             return bannerList;
         } catch (Exception e) {
             Log.e(this, e);
@@ -528,45 +482,8 @@ public class CShareData extends SingletonBase {
         }
     }
 
-    public int getZaloChannelId() {
-        int channelId = 0;
-
-        try {
-            channelId = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay));
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-
-        return channelId;
-    }
-
-    public int getATMChannelId() {
-        int channelId = 0;
-
-        try {
-            channelId = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm));
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-
-        return channelId;
-    }
-
-    public int getCreditCardChannelId() {
-        int channelId = 0;
-
-        try {
-            channelId = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card));
-        } catch (Exception e) {
-            Log.e(this, e);
-        }
-
-        return channelId;
-    }
-
     /***
      * support app detect type of visa card.
-     *
      * @param pCardNumber
      * @return type card
      */
@@ -586,7 +503,6 @@ public class CShareData extends SingletonBase {
     /***
      * detect type of visa card.
      * use this for sure that nessesary resource all always is downloaded before detecting
-     *
      * @param pCardNumber
      * @param pDetectCardTypeListener
      */
