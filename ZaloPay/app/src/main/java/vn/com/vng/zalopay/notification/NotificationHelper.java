@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -49,7 +48,7 @@ import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.ui.activity.NotificationActivity;
+import vn.com.vng.zalopay.ui.activity.NotificationEmptyActivity;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 
 /**
@@ -393,7 +392,7 @@ public class NotificationHelper {
 
         throwNotification(mContext,
                 NOTIFICATION_ID,
-                new Intent(mContext, NotificationActivity.class),
+                new Intent(mContext, NotificationEmptyActivity.class),
                 R.mipmap.ic_launcher,
                 mContext.getString(R.string.app_name),
                 String.format(mContext.getString(R.string.you_have_unread_messages), numberUnread));
@@ -409,7 +408,7 @@ public class NotificationHelper {
         if (embedDataGcm == null) {
             throwNotification(mContext,
                     NOTIFICATION_ID,
-                    new Intent(mContext, NotificationActivity.class),
+                    new Intent(mContext, NotificationEmptyActivity.class),
                     R.mipmap.ic_launcher,
                     mContext.getString(R.string.app_name),
                     message);
@@ -429,7 +428,7 @@ public class NotificationHelper {
                             putNotification(notificationData);
                             throwNotification(mContext,
                                     NOTIFICATION_ID,
-                                    new Intent(mContext, NotificationActivity.class),
+                                    new Intent(mContext, NotificationEmptyActivity.class),
                                     R.mipmap.ic_launcher,
                                     mContext.getString(R.string.app_name),
                                     message);

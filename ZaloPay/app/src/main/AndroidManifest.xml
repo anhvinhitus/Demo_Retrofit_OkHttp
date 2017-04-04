@@ -189,13 +189,6 @@
             android:windowSoftInputMode="adjustNothing" />
 
         <activity
-            android:name=".ui.activity.QRCodeScannerActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
-            android:label="@string/title_activity_qr_code"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".scanners.ui.ScanToPayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
             android:label="@string/title_activity_scan_to_pay"
@@ -307,8 +300,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".ui.activity.NotificationActivity"
-            android:label="@string/notification" />
+            android:name=".ui.activity.NotificationEmptyActivity"
+            android:label="@string/notification"
+            android:theme="@android:style/Theme.NoDisplay" />
 
         <receiver
             android:name=".receivers.NetworkReceiver"

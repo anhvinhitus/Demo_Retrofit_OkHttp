@@ -9,8 +9,9 @@ import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 
 /**
  * Created by AnhHieu on 7/29/16.
+ * Để active app khi click từ notify
  */
-public class NotificationActivity extends Activity {
+public class NotificationEmptyActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +22,7 @@ public class NotificationActivity extends Activity {
                 applicationComponent.navigator().startHomeActivity(this, true);
             }
         }
-        
+
         finish();
     }
 }
