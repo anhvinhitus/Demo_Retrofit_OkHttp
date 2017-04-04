@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.react.iap;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -197,7 +198,7 @@ class ZaloPayNativeModule extends ReactContextBaseJavaModule
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
         if (mPaymentService != null) {
             mPaymentService.onActivityResult(requestCode, resultCode, data);

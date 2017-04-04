@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.react.qrcode;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -110,7 +111,7 @@ final class ReactReceiveMoneyModule extends ReactContextBaseJavaModule implement
     }
 
     @Override
-    public void onActivityResult(int i, int i1, Intent intent) {
+    public void onActivityResult(Activity activity, int i, int i1, Intent intent) {
 
     }
 

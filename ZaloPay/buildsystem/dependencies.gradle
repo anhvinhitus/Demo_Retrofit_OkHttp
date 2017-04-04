@@ -46,7 +46,7 @@ ext {
     zxingAndroidCoreVersion = "3.3.0"
     zxingAndroidEmbeddedVersion = "3.4.0"
 
-    reactNativeVersion = "0.31.1"
+    reactNativeVersion = "0.42.3"
     animatedGifVersion = "1.0.0"
     frescoVersion = "1.0.0"
 

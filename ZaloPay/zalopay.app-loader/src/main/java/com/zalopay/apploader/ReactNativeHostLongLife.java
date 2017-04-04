@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.facebook.react.LifecycleState;
+import com.facebook.react.ReactInstanceManagerBuilder;
+import com.facebook.react.common.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 
@@ -46,7 +47,7 @@ public class ReactNativeHostLongLife implements ReactNativeHostable {
         }
 
         Timber.i("create new react instance manager");
-        ReactInstanceManager.Builder builder = ReactInstanceManager.builder()
+        ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
                 .setApplication(activity.getApplication())
                 .setJSMainModuleName(activity.getJSMainModuleName())
                 .setUseDeveloperSupport(activity.getUseDeveloperSupport())

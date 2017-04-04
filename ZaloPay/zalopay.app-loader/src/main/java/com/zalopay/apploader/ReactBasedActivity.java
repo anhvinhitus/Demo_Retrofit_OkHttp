@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.common.logging.FLog;
-import com.facebook.react.LifecycleState;
+import com.facebook.react.common.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
@@ -216,7 +216,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onActivityResult(requestCode, resultCode, data);
+            mReactInstanceManager.onActivityResult(this, requestCode, resultCode, data);
         }
     }
 

@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.react.LifecycleState;
+import com.facebook.react.common.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
@@ -101,7 +101,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onActivityResult(requestCode, resultCode, data);
+            mReactInstanceManager.onActivityResult(getActivity(), requestCode, resultCode, data);
         }
     }
 

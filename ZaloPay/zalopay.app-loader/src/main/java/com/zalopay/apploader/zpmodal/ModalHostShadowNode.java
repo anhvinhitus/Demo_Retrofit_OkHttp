@@ -16,8 +16,8 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.facebook.csslayout.CSSNode;
 import com.facebook.react.uimanager.LayoutShadowNode;
+import com.facebook.react.uimanager.ReactShadowNode;
 
 /**
  * We implement the Modal by using an Android Dialog. That will fill the entire window of the
@@ -42,7 +42,7 @@ class ModalHostShadowNode extends LayoutShadowNode {
    */
   @Override
   @TargetApi(16)
-  public void addChildAt(CSSNode child, int i) {
+  public void addChildAt(ReactShadowNode child, int i) {
     super.addChildAt(child, i);
 
     Context context = getThemedContext();

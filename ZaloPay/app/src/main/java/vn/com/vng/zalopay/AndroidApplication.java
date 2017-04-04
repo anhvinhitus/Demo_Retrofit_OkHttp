@@ -136,7 +136,7 @@ public class AndroidApplication extends Application {
                 .setReleaseBuild(!BuildConfig.DEBUG)
                 .setBaseHostUrl(BuildConfig.HOST)
                 .build();
-        SDKApplication.initialize(this,sdkConfig);
+        SDKApplication.initialize(this, sdkConfig);
     }
 
     private void initializeZaloPayAnalytics() {
@@ -151,13 +151,13 @@ public class AndroidApplication extends Application {
     }
 
     private void initializeFresco() {
-        // if (!Fresco.hasBeenInitialized()) {
-        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
-                .setDownsampleEnabled(true)
-                .build();
-        Fresco.initialize(this, config);
-        FrescoModule.sHasBeenInitialized = true;
-        //   }
+        if (!Fresco.hasBeenInitialized()) {
+            ImagePipelineConfig config = ImagePipelineConfig.newBuilder(this)
+                    .setDownsampleEnabled(true)
+                    .build();
+            Fresco.initialize(this, config);
+            FrescoModule.sHasBeenInitialized = true;
+        }
     }
 
     private void initLocation() {
