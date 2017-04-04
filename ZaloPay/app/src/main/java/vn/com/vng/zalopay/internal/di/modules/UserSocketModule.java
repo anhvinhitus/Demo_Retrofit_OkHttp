@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.notification.NotificationHelper;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.react.iap.NetworkServiceImpl;
+import vn.com.vng.zalopay.utils.ConfigUtil;
 
 import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.React;
 import static vn.com.vng.zalopay.data.net.adapter.RxJavaCallAdapterFactory.AdapterType.RedPacket;
@@ -75,17 +76,22 @@ public class UserSocketModule {
     @Provides
     @UserScope
     @Named("retrofitConnector")
-    Retrofit providesRetrofitConnector(HttpUrl baseUrl,
+    Retrofit providesRetrofitConnector(HttpUrl baseUrl, OkHttpClient okHttpClient,
                                        CallAdapter.Factory callAdapter,
                                        Converter.Factory convertFactory,
                                        PaymentConnectorCallFactory callFactory) {
-        return new Retrofit.Builder()
+        Retrofit.Builder builder = new Retrofit.Builder()
                 .addCallAdapterFactory(callAdapter)
                 .addConverterFactory(convertFactory)
-                .callFactory(callFactory)
                 .baseUrl(baseUrl)
-                .validateEagerly(BuildConfig.DEBUG)
-                .build();
+                .validateEagerly(BuildConfig.DEBUG);
+
+        if (ConfigUtil.isHttpsRoute()) {
+            builder.client(okHttpClient);
+        } else {
+            builder.callFactory(callFactory);
+        }
+        return builder.build();
     }
 
     @Provides
@@ -93,14 +99,20 @@ public class UserSocketModule {
     @Named("retrofitRedPacketApi")
     Retrofit provideRetrofitRedPacketApi(OkHttpClient okHttpClient, Context context,
                                          Converter.Factory convertFactory, PaymentConnectorCallFactory callFactory) {
-        return new Retrofit.Builder()
+
+        Retrofit.Builder builder = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, RedPacket))
                 .addConverterFactory(convertFactory)
-                .callFactory(callFactory)
                 .baseUrl(BuildConfig.REDPACKET_HOST)
-                .validateEagerly(BuildConfig.DEBUG)
-                .client(okHttpClient)
-                .build();
+                .validateEagerly(BuildConfig.DEBUG);
+
+        if (ConfigUtil.isHttpsRoute()) {
+            builder.client(okHttpClient);
+        } else {
+            builder.callFactory(callFactory);
+        }
+
+        return builder.build();
     }
 
     @Provides
@@ -113,9 +125,9 @@ public class UserSocketModule {
     @Provides
     @UserScope
     @Named("retrofitReact")
-    Retrofit providePaymentAppWithRetry(ToStringConverterFactory converter, HttpUrl baseUrl, OkHttpClient okHttpClient, Context context) {
+    Retrofit providePaymentAppWithRetry(Context context, HttpUrl baseUrl, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
-                .addConverterFactory(converter)
+                .addConverterFactory(new ToStringConverterFactory())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create(context, React))
                 .baseUrl(baseUrl)
                 .validateEagerly(BuildConfig.DEBUG)

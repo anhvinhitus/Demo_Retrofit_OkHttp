@@ -20,6 +20,10 @@ public class Config {
     @SerializedName("friend_config")
     public FriendConfig friendConfig;
 
+
+    @SerializedName("api_route")
+    public String apiRoute = "https"; //"https|connector"
+
     public static class FriendConfig {
         @SerializedName("enable_merge_contact_name")
         public int enableMergeContactName = 1;

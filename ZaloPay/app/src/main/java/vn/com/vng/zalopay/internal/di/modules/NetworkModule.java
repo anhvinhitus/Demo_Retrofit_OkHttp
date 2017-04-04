@@ -118,18 +118,6 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    GsonConverterFactory providesGsonConverterFactory(Gson gson) {
-        return GsonConverterFactory.create(gson);
-    }
-
-    @Provides
-    @Singleton
-    ToStringConverterFactory providesStringConverterFactory() {
-        return new ToStringConverterFactory();
-    }
-
-    @Provides
-    @Singleton
     Converter.Factory providesConvertFactory(Gson gson) {
         return GsonConverterFactory.create(gson);
     }
