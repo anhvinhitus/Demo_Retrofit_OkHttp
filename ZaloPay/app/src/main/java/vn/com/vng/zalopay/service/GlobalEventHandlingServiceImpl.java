@@ -12,6 +12,7 @@ import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
@@ -80,7 +81,7 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
     @Subscribe
     public void onPaymentAppException(PaymentAppExceptionEvent event) {
         enqueueMessage(SweetAlertDialog.WARNING_TYPE, "ĐÓNG", "Có lỗi xảy ra trong quá trình thực thi ứng dụng.");
-        Crashlytics.log(Log.ERROR, "EXCEPTION", String.format("Payment App %d causes exception: %s", event.getAppId(), event.getInnerException().getMessage()));
+        Crashlytics.log(Log.ERROR, "EXCEPTION", String.format(Locale.getDefault(), "Payment App %d causes exception: %s", event.getAppId(), event.getInnerException().getMessage()));
         Crashlytics.logException(event.getInnerException());
         Answers.getInstance().logCustom(new CustomEvent("EXCEPTION APP " + String.valueOf(event.getAppId())));
     }

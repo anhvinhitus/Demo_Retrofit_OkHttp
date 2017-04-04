@@ -235,7 +235,7 @@ public class NotificationHelper {
     }
 
     private void shouldUpdateTransAndBalance(NotificationData notify) {
-        Timber.d("should Update Trans And Balance");
+        Timber.d("Should update transaction and balance");
         if (NotificationType.isTransactionNotification(notify.notificationtype)) {
             this.updateTransaction();
             this.updateBalance();
@@ -249,12 +249,12 @@ public class NotificationHelper {
     }
 
     private void extractRedPacketFromNotification(NotificationData data, boolean addToRecovery) {
-        try {
-            JsonObject embeddata = data.getEmbeddata();
-            if (embeddata == null) {
-                return;
-            }
 
+        JsonObject embeddata = data.getEmbeddata();
+        if (embeddata == null) {
+            return;
+        }
+        try {
             long bundleid = embeddata.get("bundleid").getAsLong();
             long packageid = embeddata.get("packageid").getAsLong();
             String senderAvatar = embeddata.get("avatar").getAsString();
@@ -263,15 +263,16 @@ public class NotificationHelper {
 
             Subscription subscription = mRedPacketRepository.addReceivedRedPacket(packageid, bundleid, senderName, senderAvatar, message)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(new DefaultSubscriber<>());
+                    .subscribe(new DefaultSubscriber<Void>());
             mCompositeSubscription.add(subscription);
 
             if (addToRecovery) {
                 mListPacketIdToRecovery.add(packageid);
             }
         } catch (Exception ex) {
-            Timber.e(ex, "Extract RedPacket error");
+            Timber.d(ex, "Extract RedPacket error");
         }
+
     }
 
     private void removeLinkCard(NotificationData data) {
@@ -304,7 +305,7 @@ public class NotificationHelper {
 
     private void payOrderFromNotify(NotificationData notify) {
         JsonObject embeddata = notify.getEmbeddata();
-        Timber.d("pay order notificationId [%s] embeddata %s", notify.notificationId, embeddata);
+        Timber.d("pay order notificationId [%s] embeddata [%s]", notify.notificationId, embeddata);
         if (embeddata == null) {
             return;
         }
@@ -340,20 +341,23 @@ public class NotificationHelper {
 
 
     private void updateProfilePermission(NotificationData notify) {
+
+        JsonObject embeddata = notify.getEmbeddata();
+        if (embeddata == null) {
+            return;
+        }
+
         try {
-            JsonObject embeddata = notify.getEmbeddata();
-            if (embeddata != null) {
-                int status = embeddata.get("status").getAsInt();
-                int profileLevel = embeddata.get("profilelevel").getAsInt();
-                if (profileLevel > 2 && status == 1) {
-                    Subscription subscription = mAccountRepository.getUserProfileLevelCloud()
-                            .subscribeOn(Schedulers.io())
-                            .subscribe(new DefaultSubscriber<>());
-                    mCompositeSubscription.add(subscription);
-                }
+            int status = embeddata.get("status").getAsInt();
+            int profileLevel = embeddata.get("profilelevel").getAsInt();
+            if (profileLevel > 2 && status == 1) {
+                Subscription subscription = mAccountRepository.getUserProfileLevelCloud()
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new DefaultSubscriber<>());
+                mCompositeSubscription.add(subscription);
             }
         } catch (Exception ex) {
-            Timber.e(ex, "exception");
+            Timber.d(ex);
         }
     }
 
@@ -381,7 +385,7 @@ public class NotificationHelper {
      * Show notification numbers
      */
     private void showNotificationSystem(int numberUnread) {
-        Timber.d("Show notification system numberUnread %s", numberUnread);
+        Timber.d("Show notification system : numberUnread [%s]", numberUnread);
 
         if (numberUnread == 0) {
             return;
@@ -467,7 +471,7 @@ public class NotificationHelper {
      * Sau đó save all notify
      */
     Observable<Void> recoveryNotification(List<NotificationData> listMessage) {
-        Timber.d("Recovery notification size [%s]", listMessage.size());
+        Timber.d("Recovery notification : size [%s]", listMessage.size());
         return Observable.from(listMessage)
                 .filter(notify -> !mNotifyRepository.isNotifyExisted(notify.mtaid, notify.mtuid))
                 .doOnNext(this::processRecoveryNotification)
@@ -493,7 +497,7 @@ public class NotificationHelper {
     }
 
     void recoveryTransaction() {
-        Timber.d("recovery Transaction");
+        Timber.d("Recovery transaction");
         Subscription subscription = mNotifyRepository.getOldestTimeNotification()
                 .filter(time -> time > 0)
                 .flatMap(mTransactionRepository::fetchTransactionHistoryOldest)

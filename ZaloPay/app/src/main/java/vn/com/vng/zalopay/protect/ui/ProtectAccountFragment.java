@@ -112,13 +112,6 @@ public class ProtectAccountFragment extends BaseFragment implements IProtectAcco
     }
 
     @Override
-    public void setCheckedTouchId(boolean checked) {
-        if (mSwcTouchIdView != null) {
-            mSwcTouchIdView.setChecked(checked);
-        }
-    }
-
-    @Override
     public void setCheckedProtectAccount(boolean checked) {
         if (mSwcProtectAccountView != null) {
             mSwcProtectAccountView.setChecked(checked);

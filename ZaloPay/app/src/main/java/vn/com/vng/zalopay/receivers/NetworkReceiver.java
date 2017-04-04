@@ -27,7 +27,7 @@ public class NetworkReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         boolean isOnline = NetworkHelper.isNetworkAvailable(context);
-        Timber.d("Network State Change %s", isOnline);
+        Timber.d("Network State Change : isOnline %s", isOnline);
         eventBus.post(new NetworkChangeEvent(isOnline));
         if (isOnline) {
             BaseNetworkInterceptor.CONNECTION_TYPE = AndroidUtils.getNetworkClass();

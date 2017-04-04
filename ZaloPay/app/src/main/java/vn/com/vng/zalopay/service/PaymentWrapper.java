@@ -213,15 +213,12 @@ public class PaymentWrapper {
             return;
         }
 
-        Timber.d("continuePayPendingOrder");
         //Require reset forceChannelIds & mappedCreditCard before continue payment
-        if (mPendingOrder != null) {
-            mPendingOrder.forceChannelIds = null;
-            mPendingOrder.mapBank = null;
-        }
-        Timber.d("userInfo: [%s]", mPendingOrder.userInfo);
-        Timber.d("userInfo accessToken: [%s]", mPendingOrder.userInfo.accessToken);
-        Timber.d("userInfo zaloPayUserId: [%s]", mPendingOrder.userInfo.zaloPayUserId);
+        mPendingOrder.forceChannelIds = null;
+        mPendingOrder.mapBank = null;
+
+        Timber.d("Continue pay pending order : userInfo [%s] zalopayId [%s] accessToken [%s]", mPendingOrder.userInfo, mPendingOrder.userInfo.zaloPayUserId, mPendingOrder.userInfo.accessToken);
+
         callPayAPI(mActivity, mPendingOrder, mPendingChannel);
     }
 
@@ -415,7 +412,7 @@ public class PaymentWrapper {
     }
 
     private PaymentLocation transform(AppLocation appLocation) {
-        if(appLocation == null) {
+        if (appLocation == null) {
             return null;
         }
 
@@ -486,13 +483,13 @@ public class PaymentWrapper {
 
         @Override
         public void onNext(Order order) {
-            Timber.d("getOrder response: %s", order.item);
+            Timber.d("getOrder response : item [%s]", order.item);
             payWithOrder(mActivity, order);
         }
 
         @Override
         public void onError(Throwable e) {
-            Timber.w(e, "onError %s", e.getMessage());
+            Timber.d(e, "Get order error");
             if (ResponseHelper.shouldIgnoreError(e)) {
                 // simply ignore the error
                 // because it is handled from event subscribers

@@ -58,7 +58,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
 
     @ReactMethod
     public void getNotification(int pageIndex, int count, Promise promise) {
-        Timber.d("get notification index %s count %s", pageIndex, count);
+        Timber.d("get notification : index [%s] count [%s]", pageIndex, count);
         Subscription subscription = mNotificationRepository.getNotification(pageIndex, count)
                 .map(new Func1<List<NotificationData>, WritableArray>() {
 
@@ -73,7 +73,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
 
     @ReactMethod
     public void updateStateReadWithNotificationId(String notificationid, Promise promise) {
-        Timber.d("updateStateReadWithNotificationId %s ", notificationid);
+        Timber.d("updateStateReadWithNotificationId : notifyId [%s]", notificationid);
         long notifyId;
         try {
             notifyId = Long.parseLong(notificationid);
@@ -262,14 +262,4 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
             Helpers.promiseResolveSuccess(promise, null);
         }
     }
-
-   /* private class ComponentSubscriber extends DefaultSubscriber<Object> {
-        @Override
-        public void onNext(Object event) {
-            if (event instanceof NotificationChangeEvent) {
-                Timber.d("on receive notification event");
-                sendEvent("zalopayNotificationsAdded");
-            }
-        }
-    }*/
 }

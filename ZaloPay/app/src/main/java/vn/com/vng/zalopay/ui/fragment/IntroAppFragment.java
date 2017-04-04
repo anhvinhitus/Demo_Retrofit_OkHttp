@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.adapter.IntroAppPagerAdapter;
 import vn.com.vng.zalopay.utils.IntroAppUtils;
@@ -66,10 +64,6 @@ public class IntroAppFragment extends BaseFragment {
 
     private IntroAppPagerAdapter mPagerAdapter;
 
-    public IntroAppFragment() {
-        // Required empty public constructor
-    }
-
     private List<Integer> getIntroResourceIds() {
         List<Integer> introResourceIds = new ArrayList<>();
         introResourceIds.add(R.layout.fragment_intro_app_step1);
@@ -102,14 +96,8 @@ public class IntroAppFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Timber.d("onViewCreated..............");
         mPagerAdapter = new IntroAppPagerAdapter(getChildFragmentManager(), getIntroResourceIds());
         mViewPager.setAdapter(mPagerAdapter);
         mIndicator.setViewPager(mViewPager);
@@ -139,15 +127,5 @@ public class IntroAppFragment extends BaseFragment {
             }
         });
         IntroAppUtils.setShowedIntro(true);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 }

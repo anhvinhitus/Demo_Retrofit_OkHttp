@@ -117,7 +117,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void navigateLinkCard() {
-        Timber.d("navigateLinkCard");
         if (getCurrentActivity() != null) {
             navigator.startLinkCardActivity(getCurrentActivity());
         }
@@ -125,7 +124,6 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void navigateProfile() {
-        Timber.d("navigateProfile");
         if (getCurrentActivity() != null) {
             navigator.startProfileInfoActivity(getCurrentActivity());
         }
@@ -141,7 +139,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void showDetail(final int appid, final String transid) {
-        Timber.d("show Detail appid %s transid %s", appid, transid);
+        Timber.d("Show detail : appid [%s] transid [%s]", appid, transid);
         Subscription subscription = mResourceRepository.existResource(appid)
                 .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
@@ -182,7 +180,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void promptPIN(final int channel, final Promise promise) {
-        Timber.d("promptPIN: channel %s", channel);
+        Timber.d("promptPIN : channel %s", channel);
         AndroidUtils.runOnUIThread(new Runnable() {
             @Override
             public void run() {
@@ -212,7 +210,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void showDialogWithMessage(String message, String lblCancel, String lblConfirm, final Promise promise) {
-        Timber.d("showDialogWithMessage %s", message);
+        Timber.d("showDialogWithMessage : [%s]", message);
         WritableNativeArray btnArray = new WritableNativeArray();
         btnArray.pushString(lblCancel);
         btnArray.pushString(lblConfirm);
@@ -221,7 +219,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void showDialogErrorWithMessage(String message, String lblCancel, final Promise promise) {
-        Timber.d("showDialogErrorWithMessage %s", message);
+        Timber.d("showDialogErrorWithMessage : [%s]", message);
         WritableNativeArray btnArray = new WritableNativeArray();
         btnArray.pushString(lblCancel);
         showDialog(SweetAlertDialog.ERROR_TYPE, null, message, btnArray, promise);
@@ -306,7 +304,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
     }
 
     private void removeNotify(long notifyId) {
-        Timber.d("removeNotify: %s", notifyId);
+        Timber.d("Remove notify : notifyId [%s]", notifyId);
         Subscription subscription = mNotificationRepository.removeNotify(notifyId)
                 .subscribe(new DefaultSubscriber<Boolean>());
         mCompositeSubscription.add(subscription);
@@ -314,7 +312,7 @@ final class ReactInternalNativeModule extends ReactContextBaseJavaModule {
 
     private void payOrder(NotificationData notify) {
         JsonObject embeddata = notify.getEmbeddata();
-        Timber.d("pay Order notificationId [%s] embeddata %s", notify.notificationId, embeddata);
+        Timber.d("Pay order : notificationId [%s] embeddata [%s]", notify.notificationId, embeddata);
         if (embeddata == null) {
             return;
         }

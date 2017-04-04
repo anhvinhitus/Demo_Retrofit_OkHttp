@@ -4,6 +4,6 @@ import android.net.Uri;
 
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
-public interface IRequestSupportView extends ILoadDataView {
+interface IRequestSupportView extends ILoadDataView {
     void insertScreenshot(Uri uri);
 }

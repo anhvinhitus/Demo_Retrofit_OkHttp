@@ -142,6 +142,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
 
     @Override
     public void clearUserSessionWithoutSignOut() {
+        Timber.d("Clear user session");
         eventBus.removeAllStickyEvents();
         eventBus.post(new SignOutEvent());
         //cancel notification
@@ -165,6 +166,7 @@ public class ApplicationSessionImpl implements ApplicationSession {
         userConfig.clearConfig();
         userConfig.setCurrentUser(null);
 
+        Timber.d("release UserComponent");
         AndroidApplication.instance().releaseUserComponent();
 
     }

@@ -23,8 +23,6 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
     @Override
     public void startUpdateProfileLevel() {
         Object context = getContext();
-        Timber.d("startUpdateProfileLevel context [%s] navigator[%s]",
-                context, mNavigator);
         if (context == null || mNavigator == null) {
             return;
         }
@@ -38,7 +36,6 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
     @Override
     public void startDepositForResult() {
         Object context = getContext();
-        Timber.d("startDepositForResult context [%s] navigator[%s]", context, mNavigator);
         if (context == null || mNavigator == null) {
             return;
         }
@@ -52,7 +49,6 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
     @Override
     public void startLinkAccountActivity() {
         Object context = getContext();
-        Timber.d("startLinkAccountActivity context [%s] navigator[%s]", context, mNavigator);
         if (context == null || mNavigator == null) {
             return;
         }
@@ -66,7 +62,6 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
     @Override
     public void startUpdateProfileBeforeLinkAcc() {
         Object context = getContext();
-        Timber.d("startUpdateProfileBeforeLinkAcc context [%s] navigator[%s]", context, mNavigator);
         if (context == null || mNavigator == null) {
             return;
         }

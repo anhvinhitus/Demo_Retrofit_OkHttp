@@ -15,11 +15,11 @@ import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
  * *
  */
 
-public final class ScanToPayPagerAdapter extends AbsFragmentPagerAdapter {
+final class ScanToPayPagerAdapter extends AbsFragmentPagerAdapter {
 
     static final int TAB_NFC = 1;
     static final int TAB_BEACON = 2;
-//    static final int TAB_SOUND = 3;
+    //    static final int TAB_SOUND = 3;
     static final int TAB_QR = 0;
 
     static final int TAB_TOTAL = 3;

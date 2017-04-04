@@ -23,7 +23,6 @@ public abstract class AbsPWResponseListener extends DefaultPaymentResponseListen
     public abstract void onCompleted();
 
     private WeakReference<Activity> mAct;
-    private Navigator mNavigator;
 
     public AbsPWResponseListener(Activity activity) {
         this(new WeakReference<>(activity));
@@ -31,7 +30,6 @@ public abstract class AbsPWResponseListener extends DefaultPaymentResponseListen
 
     public AbsPWResponseListener(WeakReference<Activity> activity) {
         mAct = activity;
-        mNavigator = AndroidApplication.instance().getAppComponent().navigator();
     }
 
     @Override

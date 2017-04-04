@@ -107,7 +107,7 @@ public class UserSession {
     }
 
     public void ensureUserInitialized() {
-        Timber.d("ensureUserInitialized");
+        Timber.d("Ensure user initialized");
         beginSession();
     }
 

@@ -35,7 +35,7 @@ public class GcmHelper {
     }
 
     public static void subscribeTopics(Context context, String token) throws IOException {
-        Timber.d("subscribeTopics mIsSubscribeGcm[%s]", token);
+        Timber.d("Subscribe topics");
         GcmPubSub pubSub = GcmPubSub.getInstance(context);
         for (String topic : TOPICS) {
             pubSub.subscribe(token, "/topics/" + topic, null);

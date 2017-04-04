@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
  * Search Category interface helps communicate presenter and view
  */
 
-public interface ISearchCategoryView extends ILoadDataView {
+interface ISearchCategoryView extends ILoadDataView {
     Activity getActivity();
 
     void showSearchResultView(boolean isShow);

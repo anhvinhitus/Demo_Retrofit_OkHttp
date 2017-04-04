@@ -51,7 +51,6 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
         getAppComponent().inject(this);
     }
 
-
     @BindView(R.id.passCodeInput)
     EditText mILCodeView;
 
@@ -81,12 +80,6 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     @Override
     protected int getResLayoutId() {
         return R.layout.fragment_invitation_code;
-    }
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -134,8 +127,6 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
 
         boolean isScrollable = mScrollView.getHeight() < childHeight + mScrollView.getPaddingTop() + mScrollView.getPaddingBottom();
 
-        Timber.d("onKeyBoardShow: height %s childHeight %s isScrollable %s", height, childHeight, isScrollable);
-
         if (isScrollable) {
             ViewCompat.setPivotX(mLogoView, mLogoView.getWidth() / 2);
             ViewCompat.setScaleX(mLogoView, 0.89f);
@@ -152,7 +143,6 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
     public void onKeyBoardHide() {
         ViewCompat.setScaleX(mLogoView, 1f);
         ViewCompat.setScaleY(mLogoView, 1f);
-        Timber.d("onKeyBoardHide");
     }
 
     @Override
@@ -230,9 +220,4 @@ public class InvitationCodeFragment extends BaseFragment implements IInvitationC
             Timber.d("Could not find any invitation code");
         }
     }
-
-
-  /*  ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView);
-    int childHeight = ((LinearLayout)findViewById(R.id.scrollContent)).getHeight();
-    boolean isScrollable = scrollView.getHeight() < childHeight + scrollView.getPaddingTop() + scrollView.getPaddingBottom();*/
 }

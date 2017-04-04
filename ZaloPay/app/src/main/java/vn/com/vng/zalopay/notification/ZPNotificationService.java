@@ -157,7 +157,7 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
 
     @Override
     public void onReceivedPushMessage(PushMessage pushMessage) {
-        Timber.d("Notification message: [mtuid: %s]", pushMessage.mtuid);
+        Timber.d("Notification message : [mtuid: %s]", pushMessage.mtuid);
         if (pushMessage instanceof AuthenticationData) {
             AuthenticationData authenticationData = (AuthenticationData) pushMessage;
             if (authenticationData.result != NetworkError.SUCCESSFUL) {
@@ -218,7 +218,7 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
             return;
         }
 
-        Timber.d("Recovery notification: %s", isFirst);
+        Timber.d("Recovery notification : isFirstConnect [%s]", isFirst);
 
         Subscription subscription = mNotificationHelper.getOldestTimeRecoveryNotification(isFirst)
                 .subscribeOn(Schedulers.io())
@@ -238,23 +238,14 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
                 .subscribe(new DefaultSubscriber<Long>() {
                     @Override
                     public void onCompleted() {
-                        Timber.d("onCompleted: start recovery transaction");
                         recoveryData();
                     }
                 });
     }
 
     private void recoveryData() {
-        this.recoveryTransaction();
-        this.recoveryRedPacketStatus();
-    }
-
-    private void recoveryTransaction() {
-        Timber.d("Begin recovery transaction");
+        Timber.d("Begin recovery data");
         mNotificationHelper.recoveryTransaction();
-    }
-
-    private void recoveryRedPacketStatus() {
         mNotificationHelper.recoveryRedPacketStatus();
     }
 
@@ -272,7 +263,6 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
     }
 
     private void subscribeTopics(String token) throws IOException {
-        Timber.d("subscribe Topics mIsSubscribeGcm [%s] token [%s]", mIsSubscribeGcm, token);
         if (mIsSubscribeGcm) {
             return;
         }
@@ -282,7 +272,7 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNetworkChange(NetworkChangeEvent event) {
-        Timber.d("onNetworkChange %s", event.isOnline);
+        Timber.d("onNetworkChange : online [%s]", event.isOnline);
         if (event.isOnline) {
             this.connectToServer();
         } else {
@@ -301,7 +291,7 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNotificationUpdated(NotificationChangeEvent event) {
-        Timber.d("on Notification updated %s", event.isRead());
+        Timber.d("notification updated : isRead %s", event.isRead());
         if (mNotificationHelper == null) {
             return;
         }
@@ -314,7 +304,6 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
     public void onTokenGcmRefresh(TokenGCMRefreshEvent event) {
-        Timber.d("on Token GCM Refresh event %s", event);
         TokenGCMRefreshEvent stickyEvent = mEventBus.getStickyEvent(TokenGCMRefreshEvent.class);
         // Better check that an event was actually posted before
         if (stickyEvent != null) {
@@ -327,7 +316,7 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
     }
 
     private void handlerAuthenticationError(AuthenticationData authentication) {
-        Timber.d("handlerAuthenticationError: %s", authentication.code);
+        Timber.d("Handler authentication error: authentication code [%s]", authentication.code);
         if (authentication.code == NetworkError.UM_TOKEN_NOT_FOUND ||
                 authentication.code == NetworkError.UM_TOKEN_EXPIRE ||
                 authentication.code == NetworkError.TOKEN_INVALID) {
@@ -346,30 +335,6 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
             mEventBus.postSticky(new ThrowToLoginScreenEvent(exception));
         }
     }
-
-/*    private class ComponentSubscriber extends DefaultSubscriber<Object> {
-        @Override
-        public void onNext(Object event) {
-            if (event instanceof NotificationChangeEvent) {
-                if (!((NotificationChangeEvent) event).isRead()) {
-                    if (mNotificationHelper != null) {
-                        mNotificationHelper.showNotificationSystem();
-                    }
-                }
-            }
-        }
-    }
-
-    /*public void getBalance() {
-        Pair<String, String> user = new Pair<>("userid", mUser.zaloPayId);
-        Pair<String, String> session = new Pair<>("accesstoken", mUser.accesstoken);
-        List<Pair<String, String>> params = new ArrayList<>();
-        params.add(user);
-        params.add(session);
-        Uri uri = Uri.parse(BuildConfig.HOST);
-        NotificationApiMessage message = NotificationApiHelper.createPaymentRequestApi(1, "sandbox.zalopay.com.vn", "GET", 0, Constants.TPE_API.GETBALANCE, params, null);
-        mWsConnection.send(message);
-    }*/
 
     @Override
     public void addReceiverListener(OnReceivedPushMessageListener listener) {
