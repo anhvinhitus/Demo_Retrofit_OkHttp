@@ -131,7 +131,6 @@
     <string name="zingpaysdk_conf_gwinfo_unzip_path">unzip_path</string>
     <string name="zingpaysdk_conf_gwinfo_res_ver">resource_version</string>
     <string name="zingpaysdk_conf_gwinfo_udid">unit_device_id</string>
-    <string name="zingpaysdk_pin_encrypted">pin_encrypted</string>
     <string name="zpw_resource_url">zpw_resource_url</string>
     <string name="zpw_conf_gwinfo_maintenance_withdraw">zpw_conf_gwinfo_maintenance_withdraw</string>
     <string name="zpw_conf_gwinfo_expired_time_duration">gwinfo_expired_time_duration</string>

@@ -1286,36 +1286,6 @@ public abstract class AdapterBase {
         GlobalData.getPaymentResult().channelDetail = getChannelName();
     }
 
-    protected boolean processSaveCardOnResultSuccess() {
-        if (isCardFlowWeb()) {
-            sendLogTransaction();
-        }
-
-        //link card channel, server auto save card , client only save card to local cache withou hit server
-        if (GlobalData.isLinkCardChannel()) {
-            try {
-                if (mMapCard == null) {
-                    tranferPaymentCardToMapCard();
-                }
-                saveMappedCardToLocal(mMapCard);
-
-            } catch (Exception e) {
-                Log.e(this, e);
-            }
-
-            showProgressBar(false, null);
-
-            return false;
-        }
-
-        if (isNeedToGetCardInfoListAfterPayment()) {
-            getMapCardInfoList(true);
-        } else {
-            showProgressBar(false, null);
-        }
-        return true;
-    }
-
     protected void finishTransaction(String pMessage) {
         mIsSuccess = true;
 
@@ -1471,7 +1441,7 @@ public abstract class AdapterBase {
         }
 
         if (isNeedToGetCardInfoListAfterPayment()) {
-            getMapCardInfoList(true);
+            reloadMapCardList(true);
         } else {
             showProgressBar(false, null);
         }
@@ -1486,7 +1456,7 @@ public abstract class AdapterBase {
     protected boolean processResultForRedPackage() {
         if (GlobalData.isRedPacketChannel()) {
             if (isNeedToGetCardInfoListAfterPayment()) {
-                getMapCardInfoList(true);
+                reloadMapCardList(true);
             } else {
                 onClickSubmission();
             }
@@ -1643,9 +1613,12 @@ public abstract class AdapterBase {
         }
         ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
 
-        if (ConnectionUtil.isOnline(GlobalData.getAppContext()) && isNeedToGetCardInfoListAfterPayment() && isNeedGetMapCardInfoListOnFailTrans(pMessage) && !shouldCheckTransactionStatusByClientId()) {
+        if (ConnectionUtil.isOnline(GlobalData.getAppContext())
+                && isNeedToGetCardInfoListAfterPayment()
+                && needToReloadMapCardListOnTransactionFail(pMessage)
+                && !shouldCheckTransactionStatusByClientId()) {
             preventRetryLoadMapCardList = true;
-            getMapCardInfoList(false);
+            reloadMapCardList(false);
         }
         showProgressBar(false, null);
         //send log
@@ -1864,9 +1837,9 @@ public abstract class AdapterBase {
     }
 
     /***
-     * get map card list
+     * reload map card list
      */
-    protected void getMapCardInfoList(boolean pIsShowProgress) {
+    protected void reloadMapCardList(boolean pIsShowProgress) {
         if (pIsShowProgress) {
             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_get_card_info_processing));
         }
@@ -1874,21 +1847,24 @@ public abstract class AdapterBase {
         getCardInfoList.makeRequest();
     }
 
-    protected boolean isNeedGetMapCardInfoListOnFailTrans(String pMessage) {
+    /***
+     * need to reload map card list if transaction has an error by networking
+     * or marked as transaction is processing
+     * @param pMessage
+     * @return
+     */
+    protected boolean needToReloadMapCardListOnTransactionFail(String pMessage) {
         return isTransactionProcessing(pMessage) || isTransactionErrorNetworking(pMessage);
     }
 
     protected boolean isNeedToGetCardInfoListAfterPayment() {
         //this is zalopay channel
-        if (!isCardFlow()) {
+        if (isZaloPayFlow()) {
             AdapterBase.existedMapCard = false;
-
             return AdapterBase.existedMapCard;
         }
-
         //this is card channel
         AdapterBase.existedMapCard = GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel();
-
         if (!AdapterBase.existedMapCard) {
             try {
                 AdapterBase.existedMapCard = isExistedCardNumberOnCache();
@@ -1896,7 +1872,6 @@ public abstract class AdapterBase {
                 Log.d(this, e);
             }
         }
-
         return !GlobalData.isWithDrawChannel() && !AdapterBase.existedMapCard;
     }
 

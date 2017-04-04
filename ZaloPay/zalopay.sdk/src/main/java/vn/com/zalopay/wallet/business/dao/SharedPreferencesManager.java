@@ -25,88 +25,65 @@ public class SharedPreferencesManager extends SingletonBase {
 
     public SharedPreferencesManager() throws Exception {
         super();
-
         if (GlobalData.getAppContext() == null)
             throw new Exception("Truy cập không còn hợp lệ");
-
         mContext = new WeakReference<Context>(GlobalData.getAppContext());
     }
 
     public static synchronized SharedPreferencesManager getInstance() throws Exception {
-        if (mSharePreferencesManager == null)
+        if (mSharePreferencesManager == null) {
             mSharePreferencesManager = new SharedPreferencesManager();
-
+        }
         return mSharePreferencesManager;
     }
 
     public synchronized SharedPreferences getSharedPreferences() {
         if (mContext == null || mContext.get() == null) {
-
             Log.d(this, "mContext is null");
-
             return null;
         }
-
-        if (mCommonSharedPreferences != null)
+        if (mCommonSharedPreferences != null) {
             return mCommonSharedPreferences;
-
+        }
         mCommonSharedPreferences = mContext.get().getSharedPreferences(SHARE_PREFERENCES_NAME, 0);
-
         return mCommonSharedPreferences;
     }
 
     private String getString(String pKey) {
         SharedPreferences sharedPreferences = getSharedPreferences();
-
         if (sharedPreferences != null)
             return sharedPreferences.getString(pKey, null);
-
         return null;
     }
 
     public boolean setString(String pKey, String pValue) {
         SharedPreferences sharedPreferences = getSharedPreferences();
-
         if (sharedPreferences != null) {
             return sharedPreferences.edit().putString(pKey, pValue).commit();
         }
-
         return false;
     }
 
     private long getLong(String pKey) {
         SharedPreferences sharedPreferences = getSharedPreferences();
-
         if (sharedPreferences != null)
             return sharedPreferences.getLong(pKey, 0);
-
         return 0;
     }
 
     public boolean setLong(String pKey, long pValue) {
         SharedPreferences sharedPreferences = getSharedPreferences();
-
         if (sharedPreferences != null) {
             return sharedPreferences.edit().putLong(pKey, pValue).commit();
         }
-
         return false;
     }
 
-    /**
-     * Retrieve a int value from the preferences.
-     *
-     * @param pKey The name of the preference to retrieve.
-     * @return Returns the preference value if it exists, or defValue. Throws
-     * ClassCastException if there is a preference with this name that
-     * is not a int.
-     */
     private int getInt(String pKey) {
         SharedPreferences sharedPreferences = getSharedPreferences();
-
-        if (sharedPreferences != null)
+        if (sharedPreferences != null) {
             return sharedPreferences.getInt(pKey, Integer.MIN_VALUE);
-
+        }
         return Integer.MIN_VALUE;
     }
 
@@ -116,16 +93,14 @@ public class SharedPreferencesManager extends SingletonBase {
         if (sharedPreferences != null) {
             return sharedPreferences.edit().putInt(pKey, pValue).commit();
         }
-
         return false;
     }
 
     private boolean getBoolean(String pKey, boolean defaultValue) {
         SharedPreferences sharedPreferences = getSharedPreferences();
-
-        if (sharedPreferences != null)
+        if (sharedPreferences != null) {
             return sharedPreferences.getBoolean(pKey, defaultValue);
-
+        }
         return defaultValue;
     }
 
@@ -139,27 +114,20 @@ public class SharedPreferencesManager extends SingletonBase {
         return false;
     }
 
-    /*******************************************************************
-     * ************* METHOD FOR GETTING CONFIG VALUE *******************
-     *******************************************************************/
-    public String pickCachedCardNumber()
-    {
+    public String pickCachedCardNumber() {
         String cardNumber = getString(mContext.get().getResources().getString(R.string.zpw_cache_card_for_show_inlinkcard));
-
-        if(!TextUtils.isEmpty(cardNumber))
-        {
+        if (!TextUtils.isEmpty(cardNumber)) {
             setCachedCardNumber(null);
         }
         return cardNumber;
     }
 
-    public boolean setCachedCardNumber(String pCardNumber)
-    {
-        return setString(mContext.get().getResources().getString(R.string.zpw_cache_card_for_show_inlinkcard),pCardNumber);
+    public boolean setCachedCardNumber(String pCardNumber) {
+        return setString(mContext.get().getResources().getString(R.string.zpw_cache_card_for_show_inlinkcard), pCardNumber);
     }
+
     /***
      * approve inside app
-     *
      * @return
      */
     public String getApproveInsideApps() {
@@ -173,7 +141,6 @@ public class SharedPreferencesManager extends SingletonBase {
 
     /***
      * banner list,used by merchant
-     *
      * @return
      */
     public String getBannerList() {
@@ -197,7 +164,6 @@ public class SharedPreferencesManager extends SingletonBase {
 
     /***
      * on/off deposite
-     *
      * @param pEnableDeposite
      * @return
      */
@@ -211,7 +177,6 @@ public class SharedPreferencesManager extends SingletonBase {
 
     /****
      * platform info api in previous request time.
-     *
      * @return
      */
     public long getPlatformInfoExpriedTime() {
@@ -224,7 +189,6 @@ public class SharedPreferencesManager extends SingletonBase {
 
     /****
      * platform info api in previous request time duration(ms from server)
-     *
      * @return
      */
     public long getPlatformInfoExpriedTimeDuration() {
@@ -235,9 +199,6 @@ public class SharedPreferencesManager extends SingletonBase {
         return setLong(mContext.get().getResources().getString(R.string.zpw_conf_gwinfo_expired_time_duration), pValue);
     }
 
-    /***
-     * EXPIRE TIME EACH CHECK MAPPED APP-CHANNEL
-     */
     public boolean setExpiredTimeAppChannel(String pAppID, long pExpiredTime) {
         return setLong(mContext.get().getResources().getString(R.string.zpw_app_info_map_channel_expired_time) + pAppID, pExpiredTime);
     }
@@ -262,9 +223,6 @@ public class SharedPreferencesManager extends SingletonBase {
         return getString(mContext.get().getResources().getString(R.string.zpw_banklist_checksum));
     }
 
-    /***
-     * BANK LIST.
-     */
     public boolean setBankConfig(String pKey, String pBankConfig) {
         return setString(mContext.get().getResources().getString(R.string.zpw_bankconfig) + pKey, pBankConfig);
     }
@@ -281,9 +239,6 @@ public class SharedPreferencesManager extends SingletonBase {
         return getString(mContext.get().getResources().getString(R.string.zpw_bankmap));
     }
 
-    /***
-     * CHECK SUM ON EACH MAPPED APP-CHANNEL
-     */
     public boolean setCheckSumAppChannel(String pAppID, String pCheckSum) {
         return setString(mContext.get().getResources().getString(R.string.zpw_app_info_map_channel_checksum) + pAppID, pCheckSum);
     }
@@ -309,7 +264,6 @@ public class SharedPreferencesManager extends SingletonBase {
     public boolean setCurrentUserID(String pValue) {
         return setString(mContext.get().getResources().getString(R.string.zpw_current_user_id), pValue);
     }
-    // ////////////////////////////////////////////////////////////////
 
     public String getChecksumSDKversion() {
         return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_sdk_ver));
@@ -319,8 +273,6 @@ public class SharedPreferencesManager extends SingletonBase {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_sdk_ver), pValue);
     }
 
-    // ////////////////////////////////////////////////////////////////
-
     public String getChecksumSDK() {
         return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_sdk_checksum));
     }
@@ -328,8 +280,6 @@ public class SharedPreferencesManager extends SingletonBase {
     public boolean setChecksumSDK(String pValue) {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_sdk_checksum), pValue);
     }
-
-    ///////////////////////////////////////////////////////////////////
 
     public String getBankAccountCheckSum() {
         return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_bankaccount_checksum));
@@ -339,8 +289,6 @@ public class SharedPreferencesManager extends SingletonBase {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_bankaccount_checksum), pValue);
     }
 
-    // ////////////////////////////////////////////////////////////////
-
     public String getCardInfoCheckSum() {
         return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_cardinfo_checksum));
     }
@@ -348,8 +296,6 @@ public class SharedPreferencesManager extends SingletonBase {
     public boolean setCardInfoCheckSum(String pValue) {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_cardinfo_checksum), pValue);
     }
-
-    // ////////////////////////////////////////////////////////////////
 
     public String getUnzipPath() throws Exception {
         return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_unzip_path));
@@ -359,8 +305,6 @@ public class SharedPreferencesManager extends SingletonBase {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_unzip_path), pValue);
     }
 
-    // ////////////////////////////////////////////////////////////////
-
     public String getResourceVersion() {
         return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_res_ver));
     }
@@ -368,8 +312,6 @@ public class SharedPreferencesManager extends SingletonBase {
     public boolean setResourceVersion(String pValue) {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_res_ver), pValue);
     }
-
-    // ////////////////////////////////////////////////////////////////
 
     public String getUDID() {
         return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_udid));
@@ -379,9 +321,6 @@ public class SharedPreferencesManager extends SingletonBase {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_udid), pValue);
     }
 
-    /***
-     * MIN,MAX VAULE FOR EACH CHANNEL.
-     */
     public boolean setMinValueChannel(String pKey, long pValue) {
         return setLong(pKey + "__MIN", pValue);
     }
@@ -446,7 +385,6 @@ public class SharedPreferencesManager extends SingletonBase {
     public String getMapCardKeyList(String pKey) {
         return getString(pKey + mContext.get().getResources().getString(R.string.zpw_conf_gwinfo_mapped_card_list));
     }
-    ////////////////////////////////////////////////
 
     public boolean removeMappedCard(String pKey) {
         return setString(pKey, "");
@@ -454,7 +392,6 @@ public class SharedPreferencesManager extends SingletonBase {
 
     /***
      * get map card list by user id
-     *
      * @param pUserID
      * @return
      */
@@ -503,7 +440,6 @@ public class SharedPreferencesManager extends SingletonBase {
 
     /***
      * clear map card list on cache
-     *
      * @param pUserId
      * @return
      */
@@ -540,9 +476,6 @@ public class SharedPreferencesManager extends SingletonBase {
         return true;
     }
 
-    /***
-     * SAVE INFO APP LIST
-     */
     public boolean setApp(String pId, String pConfig) {
         return setString(mContext.get().getResources().getString(R.string.zpw_config_platform_info_app) + pId, pConfig);
     }
@@ -610,28 +543,5 @@ public class SharedPreferencesManager extends SingletonBase {
 
     public String getZaloPayChannelConfig() {
         return getPmcConfigByPmcID(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_zalopay));
-    }
-
-    /****
-     * SAVE CARD INFO FOR MAPPING AFTER USER UPGRADE LEVEL TO 2.
-     */
-    public boolean setCardInfoTransaction(String pTransactionID, String pCardInfo) {
-        return setString(pTransactionID, pCardInfo);
-    }
-
-    public String getCardInfoTransaction(String pTransactionID) {
-        return getString(pTransactionID);
-    }
-
-    /***
-     * @param pinEncrypted
-     * @return
-     */
-    public boolean setPinEncrypted(String pinEncrypted) {
-        return setString(mContext.get().getResources().getString(R.string.zingpaysdk_pin_encrypted), pinEncrypted);
-    }
-
-    public String getPinEncrypted() {
-        return getString(mContext.get().getResources().getString(R.string.zingpaysdk_pin_encrypted));
     }
 }
