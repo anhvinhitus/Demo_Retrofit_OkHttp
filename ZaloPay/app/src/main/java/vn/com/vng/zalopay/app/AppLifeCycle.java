@@ -13,7 +13,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.ui.activity.MainActivity;
+import vn.com.vng.zalopay.ui.activity.HomeActivity;
 
 /**
  * Created by AnhHieu on 3/23/16.
@@ -101,7 +101,7 @@ public class AppLifeCycle implements Application.ActivityLifecycleCallbacks {
             return;
         }
 
-        if (activity.getClass().getSimpleName().equals(MainActivity.TAG)) {
+        if (activity.getClass().getSimpleName().equals(HomeActivity.TAG)) {
             return;
         }
 

@@ -46,6 +46,8 @@ import vn.com.zalopay.analytics.ZPEvents;
 
 public class HomeActivity extends AbstractReactActivity implements IHomeView, AppBarLayout.OnOffsetChangedListener {
 
+    public static final String TAG = "HomeActivity";
+
     @Inject
     HomePresenter mPresenter;
 
