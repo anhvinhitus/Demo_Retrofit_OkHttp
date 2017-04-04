@@ -55,7 +55,7 @@ android {
 
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
         resConfigs "en"
-        resConfigs "nodpi", "hdpi", "xhdpi", "xxhdpi"
+//        resConfigs "hdpi", "xhdpi", "xxhdpi"
     }
 
     sourceSets {
