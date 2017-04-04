@@ -20,7 +20,7 @@ import timber.log.Timber;
 /**
  * {@link ReactPickerManager} for {@link ReactPicker} with {@link Spinner#MODE_DROPDOWN}.
  */
-public class ReactDropdownPickerManager extends ReactPickerManager {
+public class ReactDropdownPickerManager extends com.facebook.react.views.picker.ReactPickerManager {
     private final ReactNativeHostable mNativeHost;
 
     private static final String REACT_CLASS = "ZPAndroidDropdownPicker";
@@ -35,10 +35,10 @@ public class ReactDropdownPickerManager extends ReactPickerManager {
     }
 
     @Override
-    protected ReactPicker createViewInstance(ThemedReactContext reactContext) {
+    protected com.facebook.react.views.picker.ReactPicker createViewInstance(ThemedReactContext reactContext) {
         try {
             Context context = mNativeHost.getActivityContext() != null ? mNativeHost.getActivityContext() : reactContext;
-            return new ReactPicker(context, Spinner.MODE_DROPDOWN);
+            return new com.facebook.react.views.picker.ReactPicker(context, Spinner.MODE_DROPDOWN);
         } catch (Exception e) {
             Timber.e(e, "create ReactDialog error");
             return null;
