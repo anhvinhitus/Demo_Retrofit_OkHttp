@@ -47,6 +47,10 @@
 -keep class com.facebook.react.bridge.ReadableArray
 -keep class com.facebook.react.bridge.queue.NativeRunnable { *; }
 
+# This library uses a non-public Android constructor within StaticLayout.
+# See libs/proxy/src/main/java/com/facebook/fbui/textlayoutbuilder/proxy for details.
+-dontwarn android.text.StaticLayout
+
 -dontwarn bolts.**
 
 # Do not strip any method/class that is annotated with @DoNotStrip
