@@ -345,10 +345,4 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
     public void send(NotificationApiMessage message) {
         mWsConnection.send(message);
     }
-
-    @Override
-    public boolean isConnected() {
-        return mWsConnection.isConnected()
-                && mWsConnection.isAuthentication();
-    }
 }

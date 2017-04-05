@@ -14,6 +14,4 @@ public interface NotificationService {
     void addReceiverListener(OnReceivedPushMessageListener listener);
 
     void send(NotificationApiMessage message);
-
-    boolean isConnected();
 }

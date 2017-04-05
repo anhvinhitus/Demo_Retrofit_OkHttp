@@ -68,9 +68,17 @@ public class NotificationApiHelper {
         );
     }
 
+    public static NotificationApiMessage createDeleteNotifyMessage(long mtuid, long uid) {
+        return createFeedbackMessage(0, mtuid, uid, MessageStatus.DELETED.getValue());
+    }
+
     public static NotificationApiMessage createFeedbackMessage(long mtaid, long mtuid, long uid) {
+        return createFeedbackMessage(mtaid, mtuid, uid, MessageStatus.RECEIVED.getValue());
+    }
+
+    private static NotificationApiMessage createFeedbackMessage(long mtaid, long mtuid, long uid, int status) {
         StatusMessageClient.Builder statusMsg = new StatusMessageClient.Builder()
-                .status(MessageStatus.RECEIVED.getValue());
+                .status(status);
 
         if (mtaid > 0) {
             statusMsg.mtaid(mtaid);
@@ -104,7 +112,6 @@ public class NotificationApiHelper {
                 .path(path)
                 .requestid(requestId)
                 .port(port);
-                ;
 
         List<NameValuePair> _header = transform(headers);
         if (_header != null) {

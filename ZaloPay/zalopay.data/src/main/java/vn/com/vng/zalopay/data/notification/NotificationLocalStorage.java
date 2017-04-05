@@ -113,7 +113,7 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             return -1;
         }
         try {
-          //  Timber.d("Put item message [%s]", val.message);
+            //  Timber.d("Put item message [%s]", val.message);
             return getDaoSession().getNotificationGDDao().insert(val);
         } catch (Exception e) {
             if (e instanceof SQLiteConstraintException) {
@@ -130,26 +130,12 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
         if (pageIndex < 0 || limit <= 0) {
             return Collections.emptyList();
         }
-        
+
         return queryList(pageIndex, limit);
     }
 
-    private List<NotificationGD> transform(Collection<NotificationData> notificationEntities) {
-        if (Lists.isEmptyOrNull(notificationEntities)) {
-            return emptyList();
-        }
-
-        List<NotificationGD> notificationGDs = new ArrayList<>(notificationEntities.size());
-        for (NotificationData notificationEntity : notificationEntities) {
-            NotificationGD notificationGD = transform(notificationEntity);
-            if (notificationGD == null) {
-                continue;
-            }
-
-            notificationGDs.add(notificationGD);
-        }
-
-        return notificationGDs;
+    private List<NotificationGD> transform(Collection<NotificationData> entities) {
+        return Lists.transform(entities, this::transform);
     }
 
     private NotificationGD transform(NotificationData entity) {
@@ -162,14 +148,13 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
             return null;
         }
 
-        NotificationGD _notification = new NotificationGD();
-        _notification.appid = (entity.appid);
-        _notification.destuserid = (entity.destuserid);
-        _notification.message = (entity.message);
-        _notification.timestamp = (entity.timestamp);
-        _notification.notificationtype = (entity.notificationtype);
+        NotificationGD notify = new NotificationGD();
+        notify.appid = (entity.appid);
+        notify.destuserid = (entity.destuserid);
+        notify.message = (entity.message);
+        notify.timestamp = (entity.timestamp);
+        notify.notificationtype = (entity.notificationtype);
         JsonObject embeddataJson = entity.getEmbeddata();
-
 
         String embeddata = "";
         if (embeddataJson != null) {
@@ -178,76 +163,64 @@ public class NotificationLocalStorage extends SqlBaseScopeImpl implements Notifi
 
         Timber.d("put embeddata [%s] notification state [%s]  ", embeddata, entity.notificationstate);
 
-        _notification.embeddata = (embeddata);
-        _notification.area = (entity.area);
-        _notification.userid = (entity.userid);
-        _notification.transid = (entity.transid);
-        _notification.notificationstate = (entity.notificationstate);
+        notify.embeddata = (embeddata);
+        notify.area = (entity.area);
+        notify.userid = (entity.userid);
+        notify.transid = (entity.transid);
+        notify.notificationstate = (entity.notificationstate);
 
         if (entity.notificationId > 0) {
-            _notification.id = (entity.notificationId);
+            notify.id = (entity.notificationId);
         } else {
-            _notification.id = (null);
+            notify.id = (null);
         }
 
-        _notification.mtaid = (entity.mtaid);
-        _notification.mtuid = (entity.mtuid);
+        notify.mtaid = (entity.mtaid);
+        notify.mtuid = (entity.mtuid);
 
-        return _notification;
+        return notify;
     }
 
-    private NotificationData transform(NotificationGD notificationGD) {
-        if (notificationGD == null) {
+    private NotificationData transform(NotificationGD notify) {
+        if (notify == null) {
             return null;
         }
 
-        NotificationData _notification = new NotificationData();
+        NotificationData entity = new NotificationData();
 
-        _notification.notificationId = (notificationGD.id);
+        entity.notificationId = (notify.id);
 
-        _notification.appid = (notificationGD.appid);
-        _notification.destuserid = (notificationGD.destuserid);
-        _notification.message = (notificationGD.message);
-        _notification.timestamp = (notificationGD.timestamp);
-        _notification.notificationtype = (notificationGD.notificationtype);
+        entity.appid = (notify.appid);
+        entity.destuserid = (notify.destuserid);
+        entity.message = (notify.message);
+        entity.timestamp = (notify.timestamp);
+        entity.notificationtype = (notify.notificationtype);
 
-        String embeddata = notificationGD.embeddata;
+        String embeddata = notify.embeddata;
 
         if (TextUtils.isEmpty(embeddata)) {
-            _notification.setEmbeddata(new JsonObject());
+            entity.setEmbeddata(new JsonObject());
         } else {
             try {
-                _notification.setEmbeddata(jsonParser.parse(embeddata).getAsJsonObject());
+                entity.setEmbeddata(jsonParser.parse(embeddata).getAsJsonObject());
             } catch (Exception ex) {
-                _notification.setEmbeddata(new JsonObject());
+                entity.setEmbeddata(new JsonObject());
                 Timber.w(ex, " parse exception Notification Entity");
             }
         }
 
-        _notification.userid = (notificationGD.userid);
-        _notification.transid = (notificationGD.transid);
-        _notification.area = notificationGD.area == null ? 0L : notificationGD.area;
-        _notification.notificationstate = (notificationGD.notificationstate);
+        entity.userid = (notify.userid);
+        entity.transid = (notify.transid);
+        entity.area = notify.area == null ? 0L : notify.area;
+        entity.notificationstate = (notify.notificationstate);
+        entity.mtuid = notify.mtuid;
+        entity.mtaid = notify.mtaid;
 
-        return _notification;
+        return entity;
     }
 
-    private List<NotificationData> transformEntity(Collection<NotificationGD> notificationGDs) {
-        if (Lists.isEmptyOrNull(notificationGDs)) {
-            return emptyList();
-        }
-
-        List<NotificationData> notificationEntities = new ArrayList<>();
-        for (NotificationGD notificationGD : notificationGDs) {
-            NotificationData entity = transform(notificationGD);
-            if (entity == null) {
-                continue;
-            }
-
-            notificationEntities.add(entity);
-        }
-
-        return notificationEntities;
+    private List<NotificationData> transformEntity(Collection<NotificationGD> notifications) {
+        return Lists.transform(notifications, this::transform);
     }
 
     private List<NotificationData> queryList(int pageIndex, int limit) {

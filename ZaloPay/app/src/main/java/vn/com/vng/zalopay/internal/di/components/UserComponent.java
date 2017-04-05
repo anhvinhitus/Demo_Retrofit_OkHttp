@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorService;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.feedback.FeedbackFragment;
@@ -124,6 +125,8 @@ public interface UserComponent {
     Retrofit retrofitConnector();
 
     PaymentConnectorService connectorService();
+
+    NotificationService notificationService();
 
     /* inject Fragment */
     void inject(ZaloPayFragment f);

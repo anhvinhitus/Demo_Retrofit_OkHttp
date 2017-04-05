@@ -22,12 +22,17 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import rx.Subscription;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
+import vn.com.vng.zalopay.data.ws.connection.NotificationApiHelper;
+import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.react.error.PaymentError;
 
 /**
@@ -36,17 +41,23 @@ import vn.com.vng.zalopay.react.error.PaymentError;
  */
 class ReactNotificationNativeModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
 
-    private NotificationStore.Repository mNotificationRepository;
+    private final NotificationStore.Repository mNotificationRepository;
+    private final NotificationService mNotificationService;
+    private final User mUser;
     private final EventBus mEventBus;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
-    ReactNotificationNativeModule(ReactApplicationContext reactContext,
+
+    ReactNotificationNativeModule(ReactApplicationContext reactContext, User user,
                                   NotificationStore.Repository notificationRepository,
                                   EventBus eventBus) {
         super(reactContext);
         this.mNotificationRepository = notificationRepository;
         this.mEventBus = eventBus;
+        mUser = user;
+        mNotificationService = AndroidApplication.instance().getUserComponent().notificationService();
+
         getReactApplicationContext().addLifecycleEventListener(this);
         getReactApplicationContext().addActivityEventListener(this);
     }
@@ -88,17 +99,31 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     @ReactMethod
     public void removeNotification(String notificationId, Promise promise) {
         long notifyId;
+
         try {
             notifyId = Long.parseLong(notificationId);
         } catch (NumberFormatException e) {
-            Timber.e(e, "exception");
+            Timber.w(e);
             Helpers.promiseResolveError(promise, -1, "Arguments invalid");
             return;
         }
 
-        Subscription subscription = mNotificationRepository.removeNotification(notifyId)
+        Subscription subscriptionRemove = mNotificationRepository.getNotify(notifyId)
+                .doOnNext(this::removeNotifyServer)
+                .flatMap(notificationData -> mNotificationRepository.removeNotification(notifyId))
+                .subscribeOn(Schedulers.io())
                 .subscribe(new RemoveNotifySubscriber(promise));
-        mCompositeSubscription.add(subscription);
+
+        mCompositeSubscription.add(subscriptionRemove);
+    }
+
+    private void removeNotifyServer(NotificationData notification) {
+        Timber.d("Remove notify : notifyId [%s] mtuid [%s]", notification.notificationId, notification.mtuid);
+        if (notification.mtuid <= 0) {
+            return;
+        }
+
+        mNotificationService.send(NotificationApiHelper.createDeleteNotifyMessage(notification.mtuid, Long.valueOf(mUser.zaloPayId)));
     }
 
     @ReactMethod
