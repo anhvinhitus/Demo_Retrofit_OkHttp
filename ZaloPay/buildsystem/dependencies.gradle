@@ -60,7 +60,7 @@ ext {
 
     wireRuntimeVersion = "2.2.0"
 
-    CircularRevealVersion = "1.0.5"
+    CircularRevealVersion = "2.0.1@aar"
 
     dialogPlusVersion = "1.11@aar"
 

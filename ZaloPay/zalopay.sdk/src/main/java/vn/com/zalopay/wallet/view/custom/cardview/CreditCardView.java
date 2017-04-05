@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
@@ -528,7 +527,7 @@ public class CreditCardView extends FrameLayout {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 
 
-            SupportAnimator animator =
+            Animator animator =
                     ViewAnimationUtils.createCircularReveal(mRevealView, cx, cy, 0, radius);
             animator.setInterpolator(new AccelerateDecelerateInterpolator());
             animator.setDuration(duration);

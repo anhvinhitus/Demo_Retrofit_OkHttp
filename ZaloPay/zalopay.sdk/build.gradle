@@ -65,7 +65,9 @@ dependencies {
 
     compile libs.timber
 
-    compile libs.circularreveal
+    compile(libs.circularreveal) {
+        transitive = true;
+    }
 
     compile libs.zalopay_analytics
 
