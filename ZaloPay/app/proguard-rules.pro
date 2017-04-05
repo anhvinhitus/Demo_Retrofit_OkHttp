@@ -28,7 +28,7 @@
 # -dontobfuscate
 
 -keep class vn.com.vng.zalopay.react.** { *; }
--keep class vn.com.vng.zalopay.domain.** { *; }
+# -keep class vn.com.vng.zalopay.domain.** { *; }
 # -keep class vn.com.vng.zalopay.data.** { *; }
 -keep class vn.com.vng.zalopay.event.** { *; }
 -keep class vn.com.vng.zalopay.data.api.response.** { *; }
@@ -451,4 +451,8 @@ native <methods>;
 #Disable BottomNavigationView shift mode
 -keepclassmembers class android.support.design.internal.BottomNavigationMenuView {
     boolean mShiftingMode;
+}
+
+-keep class com.zalopay.ui.widget.dialog.Rotate3dAnimation {
+  public <init>(...);
 }
