@@ -18,10 +18,6 @@ public final class User extends Person {
 
     public String profilePermissions;
 
-    public String getSession() {
-        return accesstoken;
-    }
-
     public User(String uid) {
         super(uid);
     }

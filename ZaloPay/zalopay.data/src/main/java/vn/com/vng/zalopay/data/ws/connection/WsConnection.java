@@ -391,7 +391,7 @@ public class WsConnection extends Connection {
          */
         @Override
         public void onError(Throwable e) {
-            Timber.d("onError %s", e.getMessage());
+            Timber.d(e, "Error socket connection");
             mState = Connection.State.Disconnected;
             mIsAuthenSuccess = false;
 

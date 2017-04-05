@@ -50,7 +50,7 @@ public class KeyTools {
         try {
             return KeyStore.getInstance(ANDROID_KEY_STORE);
         } catch (KeyStoreException e) {
-            Timber.e(e, "Failed to get an instance of KeyStore");
+            Timber.d(e, "Failed to get an instance of KeyStore");
             return null;
         }
     }
@@ -76,7 +76,7 @@ public class KeyTools {
             return createKey();
 
         } catch (Exception e) {
-            Timber.e(e, "get secret key fail ");
+            Timber.d(e, "get secret key fail ");
         }
         return null;
     }
@@ -85,7 +85,6 @@ public class KeyTools {
     @TargetApi(Build.VERSION_CODES.M)
     private SecretKey createKey() {
         Timber.d("create secret key");
-
         try {
 
             KeyGenParameterSpec aesSpec = new KeyGenParameterSpec.Builder(Constants.KEY_ALIAS_NAME, KeyProperties.PURPOSE_ENCRYPT
@@ -100,7 +99,7 @@ public class KeyTools {
             keyGenerator.generateKey();
 
         } catch (Exception e) {
-            Timber.e(e, "create secret key fail");
+            Timber.d(e, "create secret key fail");
         }
         return null;
     }
@@ -143,7 +142,6 @@ public class KeyTools {
 
 
     public boolean initEncryptCipher() {
-        Timber.d("initEncryptCipher %s", mEncryptCipher);
         if (!FingerprintProvider.checkAndroidMVersion()) {
             return false;
         }
@@ -153,13 +151,11 @@ public class KeyTools {
             createKey();
             mEncryptCipher = getCipher(Cipher.ENCRYPT_MODE);
         }
-        Timber.d("encrypt cipher: %s", mEncryptCipher);
         return (mEncryptCipher != null);
 
     }
 
     public boolean initDecryptCipher() {
-        Timber.d("initDecryptCipher");
         if (!FingerprintProvider.checkAndroidMVersion()) {
             return false;
         }
@@ -180,7 +176,7 @@ public class KeyTools {
             Timber.d("decrypt: %s", result);
             return result;
         } catch (Exception e) {
-            Timber.e(e, "Failed to decrypt the data with the generated key.");
+            Timber.d(e, "Failed to decrypt the data with the generated key.");
         }
         return null;
     }
@@ -218,11 +214,10 @@ public class KeyTools {
 
             mUserConfig.setEncryptedPassword(secretBase64, iv);
 
-            Timber.d("secret base64 : [%s]", secretBase64);
-            Timber.d("iv : [%s]", iv);
+            Timber.d("secret base64 : [%s] iv [%s]", secretBase64, iv);
             return true;
         } catch (Exception ex) {
-            Timber.e(ex, "Failed to encrypt the data with the generated key.");
+            Timber.d(ex, "Failed to encrypt the data with the generated key.");
         }
         return false;
     }

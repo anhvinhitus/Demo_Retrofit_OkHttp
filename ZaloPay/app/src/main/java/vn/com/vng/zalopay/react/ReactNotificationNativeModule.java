@@ -22,7 +22,6 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
@@ -61,13 +60,8 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     public void getNotification(int pageIndex, int count, Promise promise) {
         Timber.d("get notification : index [%s] count [%s]", pageIndex, count);
         Subscription subscription = mNotificationRepository.getNotification(pageIndex, count)
-                .map(new Func1<List<NotificationData>, WritableArray>() {
-
-                    @Override
-                    public WritableArray call(List<NotificationData> transHistory) {
-                        return transform(transHistory);
-                    }
-                }).subscribe(new NotificationSubscriber(promise));
+                .map(this::transform)
+                .subscribe(new NotificationSubscriber(promise));
 
         mCompositeSubscription.add(subscription);
     }
@@ -177,7 +171,7 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
     }
 
     @Override
-    public void onActivityResult(Activity activity,int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         Timber.d("requestCode %s resultCode %s ", requestCode, resultCode);
     }
 

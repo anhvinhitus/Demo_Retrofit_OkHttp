@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.data.notification;
 
-import android.text.TextUtils;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
@@ -129,13 +127,9 @@ public class NotificationRepository implements NotificationStore.Repository {
 
     @Override
     public Observable<Boolean> sendNotification(String receiverid, String embededdata) {
-        if (mCurrentUser == null || !mCurrentUser.hasZaloPayId() || TextUtils.isEmpty(mCurrentUser.getSession())) {
-            return Observable.error(new IllegalArgumentException("Current user is null"));
-        }
-
         return mRequestService.sendNotification(
                 mCurrentUser.zaloPayId,
-                mCurrentUser.getSession(),
+                mCurrentUser.accesstoken,
                 receiverid,
                 embededdata)
                 .map(BaseResponse::isSuccessfulResponse);
@@ -143,12 +137,12 @@ public class NotificationRepository implements NotificationStore.Repository {
 
     @Override
     public Observable<Long> getOldestTimeNotification() {
-        return Observable.just(mLocalStorage.getOldestTimeNotification());
+        return ObservableHelper.makeObservable(mLocalStorage::getOldestTimeNotification);
     }
 
     @Override
     public Observable<Long> getOldestTimeRecoveryNotification() {
-        return Observable.just(mLocalStorage.getDataManifest(Constants.MANIFEST_RECOVERY_TIME_NOTIFICATION, 0L));
+        return ObservableHelper.makeObservable(() -> mLocalStorage.getDataManifest(Constants.MANIFEST_RECOVERY_TIME_NOTIFICATION, 0L));
     }
 
     @Override
@@ -216,7 +210,7 @@ public class NotificationRepository implements NotificationStore.Repository {
             if (item.timestamp == 0) {
                 continue;
             }
-          //  Timber.d("getMinTimeStamp: [%s] ", item.timestamp);
+            //  Timber.d("getMinTimeStamp: [%s] ", item.timestamp);
 
             if (minTime == 0 || minTime > item.timestamp) {
                 minTime = item.timestamp;
