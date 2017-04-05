@@ -76,7 +76,7 @@ import vn.com.vng.zalopay.ui.fragment.tabmain.ZaloPayFragment;
 import vn.com.vng.zalopay.ui.presenter.HandleInAppPayment;
 import vn.com.vng.zalopay.warningrooted.WarningRootedFragment;
 import vn.com.vng.zalopay.webapp.WebAppFragment;
-import vn.com.vng.zalopay.webbottomsheetdialog.WebBottomSheetDialogFragment;
+import vn.com.vng.zalopay.webapp.WebBottomSheetDialogFragment;
 import vn.com.vng.zalopay.webview.ui.WebViewFragment;
 import vn.com.vng.zalopay.webview.ui.service.ServiceWebViewFragment;
 import vn.com.vng.zalopay.withdraw.ui.fragment.AccountSupportWithdrawFragment;

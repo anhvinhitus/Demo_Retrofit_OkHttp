@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWebAppBottomSheet"
@@ -14,18 +15,145 @@
     <TextView
         android:id="@+id/tv_intro"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/webapp_intro_bottomsheet"
         android:textColor="@color/colorWebAppBottomSheetText"
         android:textSize="@dimen/textsize.tiny" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        style="@style/RecyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing.large.t"
-        android:fadingEdge="none"
-        android:overScrollMode="never" />
+        android:layout_marginTop="@dimen/spacing.large.t">
 
+        <LinearLayout
+            android:id="@+id/layoutShareOnZalo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing.medium.m"
+            android:background="@color/colorWebAppBottomSheet"
+            android:baselineAligned="false"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/avatar_size_small"
+                android:layout_height="@dimen/avatar_size_small"
+                android:adjustViewBounds="true"
+                android:background="@drawable/bg_webapp_item"
+                android:padding="@dimen/border"
+                android:scaleType="centerInside"
+                android:src="@drawable/ico_sharezalo" />
+
+            <TextView
+                style="@style/TextView.SubTitle"
+                android:layout_width="@dimen/spacing.large.l"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.medium.t"
+                android:gravity="top|center_horizontal"
+                android:lines="2"
+                android:maxLines="2"
+                android:text="@string/webapp_share_on_zalo"
+                android:textColor="@color/colorWebAppBottomSheetText"
+                android:textSize="@dimen/textsize.tiny.s" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutCopyURL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing.medium.m"
+            android:background="@color/colorWebAppBottomSheet"
+            android:baselineAligned="false"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.zalopay.ui.widget.IconFont
+                android:layout_width="@dimen/avatar_size_small"
+                android:layout_height="@dimen/avatar_size_small"
+                android:adjustViewBounds="true"
+                android:background="@drawable/bg_webapp_item"
+                android:gravity="center"
+                android:textColor="@color/black"
+                app:iconName="@string/webapp_ico_copyurl"
+                app:iconSize="@dimen/font_size_webapp_icon" />
+
+            <TextView
+                style="@style/TextView.SubTitle"
+                android:layout_width="@dimen/spacing.large.l"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.medium.t"
+                android:gravity="top|center_horizontal"
+                android:lines="2"
+                android:maxLines="2"
+                android:text="@string/webapp_copy_url"
+                android:textColor="@color/colorWebAppBottomSheetText"
+                android:textSize="@dimen/textsize.tiny.s" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing.medium.m"
+            android:background="@color/colorWebAppBottomSheet"
+            android:baselineAligned="false"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.zalopay.ui.widget.IconFont
+                android:layout_width="@dimen/avatar_size_small"
+                android:layout_height="@dimen/avatar_size_small"
+                android:adjustViewBounds="true"
+                android:background="@drawable/bg_webapp_item"
+                android:gravity="center"
+                android:textColor="@color/black"
+                app:iconName="@string/webapp_ico_refresh"
+                app:iconSize="@dimen/font_size_webapp_icon" />
+
+            <TextView
+                style="@style/TextView.SubTitle"
+                android:layout_width="@dimen/spacing.large.l"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.medium.t"
+                android:gravity="top|center_horizontal"
+                android:lines="2"
+                android:maxLines="2"
+                android:text="@string/webapp_refresh"
+                android:textColor="@color/colorWebAppBottomSheetText"
+                android:textSize="@dimen/textsize.tiny.s" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutOpenInBrowser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/spacing.medium.m"
+            android:background="@color/colorWebAppBottomSheet"
+            android:baselineAligned="false"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.zalopay.ui.widget.IconFont
+                android:layout_width="@dimen/avatar_size_small"
+                android:layout_height="@dimen/avatar_size_small"
+                android:adjustViewBounds="true"
+                android:background="@drawable/bg_webapp_item"
+                android:gravity="center"
+                android:textColor="@color/black"
+                app:iconName="@string/webapp_ico_browser"
+                app:iconSize="@dimen/font_size_webapp_icon" />
+
+            <TextView
+                style="@style/TextView.SubTitle"
+                android:layout_width="@dimen/spacing.large.l"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing.medium.t"
+                android:gravity="top|center_horizontal"
+                android:lines="2"
+                android:maxLines="2"
+                android:text="@string/webapp_open_in_browser"
+                android:textColor="@color/colorWebAppBottomSheetText"
+                android:textSize="@dimen/textsize.tiny.s" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

@@ -16,23 +16,16 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.network.NetworkHelper;
-import vn.com.vng.zalopay.event.RefreshWebEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.vng.zalopay.webbottomsheetdialog.WebBottomSheetDialogFragment;
+import vn.com.vng.zalopay.webapp.WebBottomSheetDialogFragment;
 import vn.com.vng.zalopay.webview.widget.ZPWebView;
 import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
 
@@ -41,7 +34,8 @@ import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
  * Created by chucvv on 8/28/16.
  * Fragment
  */
-public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.IWebViewListener {
+public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.IWebViewListener,
+        WebBottomSheetDialogFragment.OnClickListener {
 
     protected ZPWebView mWebView;
     protected ZPWebViewProcessor mWebViewProcessor;
@@ -49,12 +43,10 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     private View layoutRetry;
     private ImageView imgError;
     private TextView tvError;
+    private WebBottomSheetDialogFragment mBottomSheetDialog;
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
-
-    @Inject
-    EventBus mEventBus;
 
     public static WebViewFragment newInstance(Bundle bundle) {
         WebViewFragment fragment = new WebViewFragment();
@@ -255,11 +247,6 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onResume();
         }
-
-        if (!mEventBus.isRegistered(this)) {
-            mEventBus.register(this);
-        }
-
     }
 
     @Override
@@ -267,7 +254,6 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         if (mWebViewProcessor != null) {
             mWebViewProcessor.onPause();
         }
-        mEventBus.unregister(this);
         super.onPause();
     }
 
@@ -342,16 +328,18 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRefreshWeb(RefreshWebEvent event) {
-        refreshWeb();
-    }
-
     private void showBottomSheetDialog() {
-        final WebBottomSheetDialogFragment dialog = WebBottomSheetDialogFragment.newInstance();
+        mBottomSheetDialog = WebBottomSheetDialogFragment.newInstance();
         Bundle bundle = new Bundle();
         bundle.putString("currenturl", mWebViewProcessor.getCurrentUrl());
-        dialog.setArguments(bundle);
-        dialog.show(getChildFragmentManager(), "bottomsheet");
+        mBottomSheetDialog.setArguments(bundle);
+        mBottomSheetDialog.setOnClickListener(this);
+        mBottomSheetDialog.show(getChildFragmentManager(), "bottomsheet");
+    }
+
+    @Override
+    public void handleClickRefreshWeb() {
+        refreshWeb();
+        mBottomSheetDialog.dismiss();
     }
 }

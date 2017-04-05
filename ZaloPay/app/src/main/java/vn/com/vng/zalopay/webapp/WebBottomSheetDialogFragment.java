@@ -1,41 +1,42 @@
-package vn.com.vng.zalopay.webbottomsheetdialog;
+package vn.com.vng.zalopay.webapp;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
-
-import java.util.List;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.navigation.Navigator;
 
 /**
  * Created by khattn on 2/21/17.
  *
  */
 
-public class WebBottomSheetDialogFragment extends BottomSheetDialogFragment implements
-        WebBottomSheetAdapter.OnClickItemListener, IWebBottomSheetView {
-    private final static int COLUMN_COUNT = 5;
+public class WebBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
-    private RecyclerView mRecyclerView;
-    private WebBottomSheetAdapter mAdapter;
+    public interface OnClickListener {
+        void handleClickRefreshWeb();
+    }
+
     private String mCurrentUrl;
 
     @Inject
-    WebBottomSheetPresenter mPresenter;
+    Navigator mNavigator;
 
     public static WebBottomSheetDialogFragment newInstance() {
         Bundle args = new Bundle();
@@ -68,10 +69,9 @@ public class WebBottomSheetDialogFragment extends BottomSheetDialogFragment impl
         super.setupDialog(dialog, style);
         View contentView = View.inflate(getContext(), R.layout.bottom_sheet_webapp, null);
         dialog.setContentView(contentView);
+        ButterKnife.bind(this, contentView);
 
         mCurrentUrl = getArguments().getString("currenturl");
-
-        initRecyclerView(contentView);
         setIntroText(contentView);
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();
@@ -82,7 +82,6 @@ public class WebBottomSheetDialogFragment extends BottomSheetDialogFragment impl
         }
 
         setupFragmentComponent();
-        mPresenter.attachView(this);
     }
 
     private void setupFragmentComponent() {
@@ -95,7 +94,6 @@ public class WebBottomSheetDialogFragment extends BottomSheetDialogFragment impl
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPresenter.detachView();
     }
 
     private void setIntroText(View view) {
@@ -105,45 +103,39 @@ public class WebBottomSheetDialogFragment extends BottomSheetDialogFragment impl
         introText.setText(description);
     }
 
-    private void initRecyclerView(View view) {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        mAdapter = new WebBottomSheetAdapter(getContext(), this);
+    private OnClickListener listener;
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMN_COUNT));
-        mRecyclerView.setNestedScrollingEnabled(false);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setFocusable(false);
-
-        setData();
+    public void setOnClickListener(OnClickListener listener) {
+        this.listener = listener;
     }
 
-    private void setData() {
-        List<WebBottomSheetItem> list = WebBottomSheetItemUtil.getMenuItems();
-        mAdapter.insertItems(list);
+    @OnClick(R.id.layoutShareOnZalo)
+    public void handleClickShareOnZalo() {
+        mNavigator.shareWebOnZalo(getContext(), mCurrentUrl);
     }
 
-    @Override
-    public void closeDialog() {
-        dismiss();
+    @OnClick(R.id.layoutCopyURL)
+    public void handleClickCopyURL() {
+        setClipboard(getContext(), mCurrentUrl);
+        Toast.makeText(getContext(), getContext().getResources().getText(R.string.copy_clipboard), Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onClickItem(int position) {
-        int id = mAdapter.getItem(position).id;
-        switch (id) {
-            case WebBottomSheetItemUtil.COPY_URL:
-                mPresenter.handleClickCopyURL(getContext(), mCurrentUrl);
-                break;
-            case WebBottomSheetItemUtil.REFRESH:
-                mPresenter.handleClickRefreshWeb();
-                break;
-            case WebBottomSheetItemUtil.OPEN_IN_BROWSER:
-                mPresenter.handleClickOpenInBrowser(getContext(), mCurrentUrl);
-                break;
-            case WebBottomSheetItemUtil.SHARE_ON_ZALO:
-                mPresenter.handleClickShareOnZalo(getContext(), mCurrentUrl);
-                break;
+    @OnClick(R.id.layoutRefresh)
+    public void handleClickRefreshWeb() {
+        if(listener == null) {
+            return;
         }
+        listener.handleClickRefreshWeb();
+    }
+
+    @OnClick(R.id.layoutOpenInBrowser)
+    public void handleClickOpenInBrowser() {
+        mNavigator.openWebInBrowser(getContext(), mCurrentUrl);
+    }
+
+    private void setClipboard(Context context, String text) {
+        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        android.content.ClipData clip = android.content.ClipData.newPlainText("Copied URL", text);
+        clipboard.setPrimaryClip(clip);
     }
 }
