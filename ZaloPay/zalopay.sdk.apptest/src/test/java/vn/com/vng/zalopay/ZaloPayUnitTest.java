@@ -2,12 +2,12 @@ package vn.com.vng.zalopay;
 
 import org.junit.Test;
 
+import vn.com.zalopay.wallet.business.data.VcbUtils;
 import vn.com.zalopay.wallet.business.entity.enumeration.EVCBType;
 import vn.com.zalopay.wallet.business.validation.CardValidation;
 import vn.com.zalopay.wallet.utils.OtpUtils;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
-import vn.com.zalopay.wallet.utils.VcbUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
