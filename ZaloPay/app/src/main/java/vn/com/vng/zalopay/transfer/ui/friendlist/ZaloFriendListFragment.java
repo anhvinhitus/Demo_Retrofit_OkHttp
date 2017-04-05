@@ -99,7 +99,10 @@ public class ZaloFriendListFragment extends RuntimePermissionFragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mPresenter.getFriendList();
-        isPermissionGrantedAndRequest(Manifest.permission.READ_CONTACTS, PERMISSION_CODE.READ_CONTACTS);
+
+        if (mPresenter.isEnableSyncContact()) {
+            isPermissionGrantedAndRequest(Manifest.permission.READ_CONTACTS, PERMISSION_CODE.READ_CONTACTS);
+        }
     }
 
     @Override
