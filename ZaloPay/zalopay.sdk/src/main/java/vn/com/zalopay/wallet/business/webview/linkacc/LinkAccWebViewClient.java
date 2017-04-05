@@ -359,7 +359,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 StatusResponse response = genResponse(eventType, scriptOutput);
-
+                Log.d("Js", "==== onJsPaymentResult: "+mEventID+ "==" + pResult);
                 if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
                     // Auto hit at first step
                     mIsFirst = false;

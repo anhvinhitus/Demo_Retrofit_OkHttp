@@ -77,7 +77,7 @@ public class GetBankList extends BaseRequest<BankConfigResponse> {
 
         for (BankConfig bankConfig : getResponse().banklist) {
             if (bankConfig.code.equals("123PBIDV")) {
-                //bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
+                bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
 
 				/*
 				bankConfig.status = 2;
@@ -90,7 +90,7 @@ public class GetBankList extends BaseRequest<BankConfigResponse> {
                 //bankConfig.interfacetype = 1;
             }
             if (bankConfig.code.equals("ZPVCB")) {
-                //bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
+                bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
 
 				/*
 				bankConfig.status = 2;
