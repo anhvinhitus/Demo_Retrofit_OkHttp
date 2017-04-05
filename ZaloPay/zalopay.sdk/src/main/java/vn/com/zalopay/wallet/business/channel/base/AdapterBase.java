@@ -957,7 +957,7 @@ public abstract class AdapterBase {
     }
 
     public boolean isLinkAccSuccess() {
-        return true;
+        return false;
     }
 
     /***
