@@ -313,14 +313,6 @@ public class SharedPreferencesManager extends SingletonBase {
         return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_res_ver), pValue);
     }
 
-    public String getUDID() {
-        return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_udid));
-    }
-
-    public boolean setUDID(String pValue) {
-        return setString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_udid), pValue);
-    }
-
     public boolean setMinValueChannel(String pKey, long pValue) {
         return setLong(pKey + "__MIN", pValue);
     }

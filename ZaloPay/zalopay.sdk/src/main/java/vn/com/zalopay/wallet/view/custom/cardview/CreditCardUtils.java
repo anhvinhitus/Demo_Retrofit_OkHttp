@@ -5,54 +5,13 @@ import android.text.TextUtils;
 
 import java.util.Calendar;
 
-/**
- * Created by Harish on 03/01/16.
- */
 public class CreditCardUtils {
-
-    public static final int MAX_LENGTH_CARD_NUMBER_WITH_SPACES = 19;
-    public static final int MAX_LENGTH_CARD_NUMBER = 16;
-
-    public static final int MAX_LENGTH_CARD_HOLDER_NAME = 16;
-
-    public static final String EXTRA_CARD_NUMBER = "card_number";
-    public static final String EXTRA_CARD_CVV = "card_cvv";
-    public static final String EXTRA_CARD_EXPIRY = "card_expiry";
-    public static final String EXTRA_CARD_ISSUE = "card_issue";
-    public static final String EXTRA_CARD_HOLDER_NAME = "card_holder_name";
-    public static final String EXTRA_CARD_SHOW_CARD_SIDE = "card_side";
-    public static final String EXTRA_VALIDATE_EXPIRY_DATE = "expiry_date";
-    public static final String EXTRA_VALIDATE_ISSUE_DATE = "issue_date";
-
-
     public static final int CARD_SIDE_FRONT = 1, CARD_SIDE_BACK = 0;
 
     public static final String SPACE_SEPERATOR = " ";
-    public static final String DOUBLE_SPACE_SEPERATOR = "  ";
 
     public static final String SLASH_SEPERATOR = "/";
     public static final char CHAR_X = 'X';
-
-    public static final String PASSWORD = "●";
-
-    public static String handleCardNumber(String inputCardNumber) {
-
-        return handleCardNumber(inputCardNumber, SPACE_SEPERATOR);
-    }
-
-    public static String handleCardCVV(String pCardCVV) {
-        if (TextUtils.isEmpty(pCardCVV))
-            return "";
-
-        StringBuilder cardCVV = new StringBuilder();
-
-        for (int i = 0; i < pCardCVV.length(); i++) {
-            cardCVV.append(PASSWORD);
-        }
-
-        return cardCVV.toString();
-    }
-
 
     public static String handleCardNumber(String inputCardNumber, String seperator) {
 
@@ -96,15 +55,7 @@ public class CreditCardUtils {
     }
 
 
-    public static String handleExpiration(String month, String year) {
-
-        return handleExpiration(month + year);
-    }
-
-
     public static String handleExpiration(@NonNull String dateYear) {
-        // String expiryString = dateYear.replace(SLASH_SEPERATOR, "");
-
         String text;
         if (dateYear.length() > 3 && dateYear.contains(String.valueOf(SPACE_SEPERATOR))) {
             String mm = dateYear.substring(0, 2);

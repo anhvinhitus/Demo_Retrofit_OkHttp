@@ -101,9 +101,7 @@ public class CreditCardView extends FrameLayout {
         if (cvv == null) {
             cvv = "";
         }
-
         this.mCVV = cvv;
-        //CreditCardUtils.handleCardCVV(getCVV())
         ((TextView) findViewById(TEXTVIEW_CARD_CVV_ID)).setText(Html.fromHtml(createHighLightText(cvv, mCardColorText)));
     }
 
@@ -424,7 +422,6 @@ public class CreditCardView extends FrameLayout {
     }
 
     public void clearHighLightCVV() {
-        //CreditCardUtils.handleCardCVV(getCVV())
         ((TextView) findViewById(TEXTVIEW_CARD_CVV_ID)).setText(getCVV());
     }
 

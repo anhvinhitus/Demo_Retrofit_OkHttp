@@ -13,9 +13,6 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 
-/**
- * Card cc fragment
- */
 public class CardCVVFragment extends CreditCardFragment {
 
     protected EditText mCardCVVView;

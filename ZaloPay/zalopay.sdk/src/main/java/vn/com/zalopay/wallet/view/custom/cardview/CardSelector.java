@@ -74,7 +74,7 @@ public class CardSelector {
         return CardSelector._object;
     }
 
-    public CardSelector detectCardType(String pCardNumber) {
+    public CardSelector detectCardType() {
         String bankCode = BankCardCheck.getInstance().getCodeBankForVerify();
 
         if (GlobalData.isLinkCardChannel()) {
@@ -97,7 +97,7 @@ public class CardSelector {
 
     public CardSelector selectCard(String pCardNumber) {
         if (!TextUtils.isEmpty(pCardNumber) && pCardNumber.length() >= 1) {
-            CardSelector selector = detectCardType(pCardNumber);
+            CardSelector selector = detectCardType();
             return selector;
         }
         Log.d("selectCard=====", "Return DEFAULT ");
@@ -190,27 +190,15 @@ public class CardSelector {
         return mResCardId;
     }
 
-    public void setResCardId(int mResCardId) {
-        this.mResCardId = mResCardId;
-    }
-
     public int getResCenterImageId() {
         return mResCenterImageId;
     }
 
-    public void setResCenterImageId(int mResCenterImageId) {
-        this.mResCenterImageId = mResCenterImageId;
-    }
 
     public int getResLogoId() {
         return mResLogoId;
     }
 
-    ;
-
-    public void setResLogoId(int mResLogoId) {
-        this.mResLogoId = mResLogoId;
-    }
 
     public CardColorText getCardColorText() {
         return mCardColorText;

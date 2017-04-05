@@ -10,6 +10,7 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.creditcard.DMappedCreditCard;
@@ -20,7 +21,6 @@ import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.DeviceUtil;
 import vn.com.zalopay.wallet.utils.DimensionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public class DataParameter {
@@ -73,6 +73,7 @@ public class DataParameter {
 
     /**
      * Add param RemoveMapCardTask
+     *
      * @param params
      * @param pCard
      */
@@ -115,7 +116,7 @@ public class DataParameter {
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
         params.put(ConstantParams.ZP_TRANSID, pTransID);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
-        params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID());
+        params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID(GlobalData.getAppContext()));
     }
 
     /***
@@ -131,37 +132,12 @@ public class DataParameter {
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
     }
 
-    /**
-     * Add params Save Carrd
-     *
-     * @param params
-     * @param pTransID
-     */
-    public static void prepareSaveCardParams(HashMap<String, String> params, String pTransID) throws Exception {
-        putBase(params);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
-        params.put(ConstantParams.ZP_TRANSID, pTransID);
-        params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
-    }
-
-    /**
-     * Add params get banlance
-     *
-     * @param params
-     */
-    public static void prepareGetBalanceParams(HashMap<String, String> params) throws Exception {
-        putBase(params);
-        params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
-        params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
-        params.put(ConstantParams.APP_ID, String.valueOf(GlobalData.getPaymentInfo().appID));
-    }
-
     /***
      * get card info params
      * @param params
      * @throws Exception
      */
-    public static void prepareGetCardInfoListParams(HashMap<String, String> params,UserInfo pUserInfo) throws Exception {
+    public static void prepareGetCardInfoListParams(HashMap<String, String> params, UserInfo pUserInfo) throws Exception {
         putBase(params);
         params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accessToken);
         params.put(ConstantParams.USER_ID, pUserInfo.zaloPayUserId);
@@ -249,7 +225,7 @@ public class DataParameter {
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         params.put(ConstantParams.ZALO_ID, GlobalData.getPaymentInfo().userInfo.zaloUserId);
         params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
-        params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID());
+        params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID(GlobalData.getAppContext()));
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
         params.put(ConstantParams.APP_VERSION, SdkUtils.getAppVersion(GlobalData.getAppContext()));
         params.put(ConstantParams.SDK_VERSION, BuildConfig.SDK_BUILD_VERSION);
@@ -319,7 +295,7 @@ public class DataParameter {
         params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.PLATFORM_CODE, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.AMOUNT, String.valueOf(GlobalData.getPaymentInfo().amount));
-        params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID());
+        params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID(GlobalData.getAppContext()));
         params.put(ConstantParams.DEVICE_MODEL, DeviceUtil.getDeviceName());
         params.put(ConstantParams.APP_VERSION, SdkUtils.getAppVersion(GlobalData.getAppContext()));
         params.put(ConstantParams.SDK_VERSION, BuildConfig.SDK_BUILD_VERSION);
@@ -344,7 +320,7 @@ public class DataParameter {
         params.put(ConstantParams.ACCESS_TOKEN, String.valueOf(paymentInfo.userInfo.accessToken));
         params.put(ConstantParams.BANK_ACCOUNT_INFO, String.valueOf(pBankAccInfo));
         params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
-        params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID());
+        params.put(ConstantParams.DEVICE_ID, DeviceUtil.getUniqueDeviceID(GlobalData.getAppContext()));
         params.put(ConstantParams.APP_VERSION, SdkUtils.getAppVersion(GlobalData.getAppContext()));
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
         params.put(ConstantParams.SDK_VERSION, BuildConfig.SDK_BUILD_VERSION);

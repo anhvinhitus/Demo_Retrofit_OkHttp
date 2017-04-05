@@ -29,20 +29,6 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
         cardFragments = new ArrayList<>();
     }
 
-    public void switchToLocalCardFragmentAdapter() {
-        removeFragment(CardExpiryFragment.class.getName());
-        removeFragment(CardCVVFragment.class.getName());
-
-        addIssueDateFragment();
-    }
-
-    public void switchToCreditCardFragmentAdapter() {
-        removeFragment(CardIssueFragment.class.getName());
-
-        addExpireDateFragment();
-        addCardCVVFragment();
-    }
-
     /***
      * next fragment has an error,user can not swipe to next
      *
@@ -197,49 +183,9 @@ public class CardFragmentBaseAdapter extends FragmentStatePagerAdapter {
         }
     }
 
-    public void addCardCVVFragment() {
-        int pos = getIndexOfFragment(CardCVVFragment.class.getName());
-
-        if (pos == -1) {
-
-
-            CreditCardFragment mCardCVVFragment = new CardCVVFragment();
-            mCardCVVFragment.tag = CardCVVFragment.class.getName();
-
-            addFragment(mCardCVVFragment, 2);
-
-            Log.d(this, "===addCardCVVFragment===");
-        }
-    }
-
-    public void addCardNameFragment() {
-        int pos = getIndexOfFragment(CardNameFragment.class.getName());
-
-        if (pos == -1) {
-
-
-            CreditCardFragment mCardNameFragment = new CardNameFragment();
-            mCardNameFragment.tag = CardNameFragment.class.getName();
-
-            addFragment(mCardNameFragment, cardFragments.size());
-
-            Log.d(this, "===addCardNameFragment===");
-        }
-    }
 
     public void addFragment(CreditCardFragment pFragment, int position) {
         cardFragments.add(position, pFragment);
-    }
-
-    //set error
-    public void setErrorText(int pIndex, String pMessage) {
-        if (pIndex >= 0 && pIndex < cardFragments.size() && !TextUtils.isEmpty(pMessage)) {
-            CreditCardFragment fragment = cardFragments.get(pIndex);
-
-            if (fragment != null) {
-                fragment.setError(pMessage);
-            }
-        }
     }
 
     @Override

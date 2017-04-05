@@ -34,20 +34,6 @@ public class CardSupportAdapter extends BaseAdapter {
         return false;
     }
 
-    public int getBankListRow() {
-        if (mBankCode.size() > 0)
-            return mBankCode.size() / 3;
-
-        return 1;
-    }
-
-    public boolean isBankMaintenance(String pBankCode) {
-        if (BankLoader.getInstance().isBankMaintenance(pBankCode)) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public int getCount() {
         return mBankCode.size();

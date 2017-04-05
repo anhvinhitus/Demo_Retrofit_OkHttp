@@ -257,11 +257,6 @@ public class GridPasswordView extends LinearLayout implements PasswordView {
         return drawable;
     }
 
-    public void paymentSetTextColor(int color) {
-        mInputView.setTextColor(color);
-        mTextColor = ColorStateList.valueOf(color);
-    }
-
     public void forceInputViewGetFocus() {
         mInputView.setFocusable(true);
         mInputView.setFocusableInTouchMode(true);

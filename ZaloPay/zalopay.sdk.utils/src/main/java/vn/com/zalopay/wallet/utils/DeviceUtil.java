@@ -1,31 +1,29 @@
 package vn.com.zalopay.wallet.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
 
 import java.util.UUID;
 
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.Log;
-
 public class DeviceUtil {
-    public static String getUniqueDeviceID() {
+    protected static final String UDID_KEY = "device_id";
+    private static final String SHARE_PREFERENCES_NAME = "ZALO_PAY_CACHED";
+    public static String getUniqueDeviceID(Context pContext) {
         String uuid = null;
         try {
-            if (SharedPreferencesManager.getInstance().getSharedPreferences() != null)
-                uuid = SharedPreferencesManager.getInstance().getUDID();
-
+            SharedPreferences sharedPreferences = pContext.getSharedPreferences(SHARE_PREFERENCES_NAME, 0);
+            if (sharedPreferences != null) {
+                uuid = sharedPreferences.getString(UDID_KEY, null);
+            }
             if (TextUtils.isEmpty(uuid)) {
                 uuid = UUID.randomUUID().toString().replace("-", "");
-                SharedPreferencesManager.getInstance().setUDID(uuid);
+                sharedPreferences.edit().putString(UDID_KEY, uuid).commit();
             }
-
             return uuid;
-
         } catch (Exception ex) {
-            Log.d("getUniqueDeviceID", ex);
         }
-
         return null;
     }
 
