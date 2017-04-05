@@ -85,4 +85,5 @@ dependencies {
 
     compile project(":zalopay.network")
     compile project(':ui.widget')
+    compile project(':zalopay.sdk.utils')
 }

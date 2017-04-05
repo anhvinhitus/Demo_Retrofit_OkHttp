@@ -23,8 +23,6 @@
 
     <string name="percent_ontablet">0.5</string>
     <string name="percent_ondefault">0.8</string>
-
-    <string name="cardview_rate">1.6</string>
     <!-- font name on bundle -->
     <string name="zpw_font_regular">Roboto-Regular</string>
     <string name="zpw_font_medium">Roboto-Medium</string>
@@ -455,7 +453,6 @@
 
     <string name="sms_option">SMS</string>
     <string name="token_option">Token</string>
-    <string name="zpsdk_inputmethod_mane">com.google.android.inputmethod(.*)</string>
 
     <string name="zpw_fail_transanction_by_ssl">Website đang giao dịch bị lỗi vấn đề bảo mật (SSL) nên bạn không thể thực hiên giao dịch.\nVui lòng thử lại bằng thẻ khác!</string>
 

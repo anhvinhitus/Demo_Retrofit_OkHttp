@@ -5,14 +5,11 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -21,14 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-
-import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.dao.CFontManager;
-import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
-import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
-import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 
 public class ZPWUtils {
     private static final String TAG = ZPWUtils.class.getName();
@@ -53,19 +42,8 @@ public class ZPWUtils {
             return hexString.toString();
 
         } catch (NoSuchAlgorithmException e) {
-            Log.e(TAG, e);
         }
         return "";
-    }
-
-    public static boolean isNewVersion() {
-        String checksumSDKV = null;
-        try {
-            checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();
-        } catch (Exception e) {
-            Log.e("isNewVersion", e);
-        }
-        return !ZPWUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV);
     }
 
     /**
@@ -80,7 +58,6 @@ public class ZPWUtils {
 
     /***
      * get app version
-     *
      * @param pContext
      * @return
      */
@@ -89,11 +66,7 @@ public class ZPWUtils {
         try {
             versionName = pContext != null ? pContext.getPackageManager().getPackageInfo(pContext.getPackageName(), 0).versionName : null;
         } catch (Exception e) {
-            Log.d("getAppVersion", e);
         }
-
-        Log.d("===app version====", versionName);
-
         return versionName;
     }
 
@@ -128,7 +101,6 @@ public class ZPWUtils {
             Date date = new Date(timestamp);
             return dateFormat.format(date);
         } catch (Exception e) {
-            Log.e("convertDateTime", e);
         }
         return "";
     }
@@ -166,41 +138,6 @@ public class ZPWUtils {
         return dp;
     }
 
-    public static void applyFont(View pView, String pFontName) {
-        Typeface tf = CFontManager.getInstance().loadFont(pFontName);
-        if (tf != null) {
-            if (pView instanceof TextView)
-                ((TextView) pView).setTypeface(tf);
-            else if (pView instanceof VPaymentDrawableEditText)
-                ((VPaymentDrawableEditText) pView).setTypeface(tf);
-        }
-    }
-
-    public static void overrideFonts(final View pView, String pFontName) {
-        try {
-            if (pView instanceof ViewGroup) {
-                ViewGroup vg = (ViewGroup) pView;
-                for (int i = 0; i < vg.getChildCount(); i++) {
-                    View child = vg.getChildAt(i);
-                    overrideFonts(child, pFontName);
-                }
-            } else if (pView.getId() != R.id.front_card_number &&
-                    ((pView instanceof TextView) || pView instanceof VPaymentDrawableEditText || pView instanceof VPaymentValidDateEditText)) {
-                Typeface typeFace = CFontManager.getInstance().loadFont(pFontName);
-
-                if (typeFace != null) {
-                    if (pView instanceof TextView) {
-                        ((TextView) pView).setTypeface(typeFace);
-                    } else {
-                        ((VPaymentEditText) pView).setTypeface(typeFace);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.d("overrideFonts", e);
-        }
-    }
-
     public static int getMonth() {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         return calendar.get(Calendar.MONTH) + 1;
@@ -218,7 +155,6 @@ public class ZPWUtils {
             InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         } catch (Exception e) {
-            Log.d("hideSoftKeyboard", e);
         }
     }
 
@@ -235,7 +171,6 @@ public class ZPWUtils {
             imm.showSoftInput(pEdittext, InputMethodManager.SHOW_IMPLICIT);
 
         } catch (Exception e) {
-            Log.d("focusAndSoftKeyboard", e);
         }
     }
 

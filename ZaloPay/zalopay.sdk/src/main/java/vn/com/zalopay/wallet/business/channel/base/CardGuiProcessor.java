@@ -44,7 +44,7 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnDetectCardListener;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.utils.ViewUtils;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
@@ -1232,7 +1232,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
             try {
                 ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), mCardAdapter.getItemAtPosition(1).getEditText());
 
-                ZPWUtils.applyFont(getAdapter().getActivity().findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
+                getAdapter().getActivity().applyFont(getAdapter().getActivity().findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
 
                 getCardNumberView().setText(pCardNumber);
                 getCardNumberView().formatText(true);
@@ -1626,7 +1626,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
     public void showHintError(EditText pEdittext, String pError) {
         Log.d(this, "===showHintError===" + pEdittext + "===" + pError);
 
-        ViewUtils.setTextInputLayoutHintError(pEdittext, pError, GlobalData.getAppContext());
+        getAdapter().getActivity().setTextInputLayoutHintError(pEdittext, pError, GlobalData.getAppContext());
 
         disablePrevious();
         disableNext();
@@ -1648,7 +1648,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
 
     public void clearHintError(EditText pEdittext) {
         Log.d(this, "===clearHintError===" + pEdittext + "===");
-        ViewUtils.setTextInputLayoutHint(pEdittext, null, GlobalData.getAppContext());
+        getAdapter().getActivity().setTextInputLayoutHint(pEdittext, null, GlobalData.getAppContext());
 
         enableNext();
         enablePrevious();

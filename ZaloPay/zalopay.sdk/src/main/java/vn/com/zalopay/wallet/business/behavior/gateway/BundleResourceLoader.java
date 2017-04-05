@@ -6,7 +6,7 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.listener.ZPWInitResourceListener;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class BundleResourceLoader extends AsyncTask<Void, Void, Boolean> {
     private ZPWInitResourceListener mCallBack;

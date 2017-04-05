@@ -34,7 +34,7 @@ import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SmsEventMessage;
 import vn.com.zalopay.wallet.message.UnlockScreenEventMessage;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
@@ -212,8 +212,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             getAdapter().onFinish();
             mAdapter = null;
         }
-        if (DialogManager.isShowingProgressDialog())
-        {
+        if (DialogManager.isShowingProgressDialog()) {
             DialogManager.closeProcessDialog();
         }
         cancelTransactionExpiredTimer();
@@ -224,7 +223,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(this,"onCreate");
+        Log.d(this, "onCreate");
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         initTimer();
         mAdapter = AdapterFactory.produce(this);
@@ -256,7 +255,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(this,"onStart");
+        Log.d(this, "onStart");
         updateFontCardNumber();
         if (!mIsStart && ((getAdapter() != null && getAdapter().isZaloPayFlow()) || GlobalData.isMapCardChannel()) || GlobalData.isMapBankAccountChannel()) {
             try {
@@ -518,7 +517,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     protected void updateFontCardNumber() {
-        new Handler().postDelayed(() -> ZPWUtils.applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium)), 500);
+        new Handler().postDelayed(() -> applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium)), 500);
     }
 
     public void startTransactionExpiredTimer() {

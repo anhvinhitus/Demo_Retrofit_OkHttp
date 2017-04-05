@@ -20,7 +20,7 @@ import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.DeviceUtil;
 import vn.com.zalopay.wallet.utils.DimensionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 
 public class DataParameter {

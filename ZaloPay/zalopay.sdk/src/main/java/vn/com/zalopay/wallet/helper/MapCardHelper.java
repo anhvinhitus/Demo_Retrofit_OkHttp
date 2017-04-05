@@ -20,9 +20,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.MapCardListTask;
-import vn.com.zalopay.wallet.listener.IGetMapCardInfo;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class MapCardHelper {
     private static final String TAG = MapCardHelper.class.getCanonicalName();

@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.business.data;
 
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * allow some action

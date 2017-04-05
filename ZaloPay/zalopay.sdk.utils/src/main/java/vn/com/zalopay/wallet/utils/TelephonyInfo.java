@@ -6,9 +6,7 @@ import android.util.Log;
 
 import java.lang.reflect.Method;
 
-import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-
-public class TelephonyInfo extends SingletonBase {
+public class TelephonyInfo {
 
     private static TelephonyInfo telephonyInfo;
     private boolean isSIM1Ready;

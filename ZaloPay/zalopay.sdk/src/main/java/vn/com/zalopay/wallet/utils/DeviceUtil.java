@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class DeviceUtil {
     public static String getUniqueDeviceID() {

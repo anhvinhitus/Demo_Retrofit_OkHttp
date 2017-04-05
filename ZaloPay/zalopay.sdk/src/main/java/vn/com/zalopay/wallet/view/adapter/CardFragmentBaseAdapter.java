@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardCVVFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardExpiryFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardIssueFragment;

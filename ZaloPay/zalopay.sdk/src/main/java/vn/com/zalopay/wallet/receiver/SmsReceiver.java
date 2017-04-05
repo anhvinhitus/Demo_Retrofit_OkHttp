@@ -9,7 +9,7 @@ import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SmsEventMessage;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * sms otp is comming

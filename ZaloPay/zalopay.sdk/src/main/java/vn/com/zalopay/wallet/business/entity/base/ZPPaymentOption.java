@@ -7,7 +7,7 @@ import java.util.List;
 
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class ZPPaymentOption extends BaseEntity<ZPPaymentOption> {
 

@@ -7,7 +7,7 @@ import android.content.Intent;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.message.NetworkEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * receiver for networking is changing system event.

@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.business.behavior.view.paymentfee;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * withdraw fee

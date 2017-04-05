@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import vn.com.zalopay.wallet.R;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 
 /**
@@ -48,7 +49,7 @@ public class CardCVVFragment extends CreditCardFragment {
             }
 
         } catch (Exception e) {
-            vn.com.zalopay.wallet.utils.Log.e(this, e);
+            Log.e(this, e);
         }
 
         return v;

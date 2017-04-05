@@ -22,11 +22,12 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.CardColorText;
-import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ViewUtils;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.effects.FlipAnimator;
 
 public class CreditCardView extends FrameLayout {
@@ -83,6 +84,17 @@ public class CreditCardView extends FrameLayout {
 
     public String getCVV() {
         return mCVV;
+    }
+
+    public void setCVV(int cvvInt) {
+
+        if (cvvInt == 0) {
+            setCVV("");
+        } else {
+            String cvv = String.valueOf(cvvInt);
+            setCVV(cvv);
+        }
+
     }
 
     public void setCVV(String cvv) {
@@ -154,8 +166,9 @@ public class CreditCardView extends FrameLayout {
         }
 
         paintCard();
-
-        ZPWUtils.applyFont(findViewById(TEXTVIEW_CARD_NUMBER_ID), GlobalData.getStringResource(RS.string.zpw_font_unisec));
+        if (BasePaymentActivity.getCurrentActivity() != null) {
+            ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).applyFont(findViewById(TEXTVIEW_CARD_NUMBER_ID), GlobalData.getStringResource(RS.string.zpw_font_unisec));
+        }
 
         resizeFontCardNumber(mWidthCardView);
 
@@ -373,17 +386,6 @@ public class CreditCardView extends FrameLayout {
         String cardNumber = CreditCardUtils.handleCardNumber(newCardNumber, CreditCardUtils.SPACE_SEPERATOR);
 
         ((TextView) findViewById(TEXTVIEW_CARD_NUMBER_ID)).setText(cardNumber);
-
-    }
-
-    public void setCVV(int cvvInt) {
-
-        if (cvvInt == 0) {
-            setCVV("");
-        } else {
-            String cvv = String.valueOf(cvvInt);
-            setCVV(cvv);
-        }
 
     }
 

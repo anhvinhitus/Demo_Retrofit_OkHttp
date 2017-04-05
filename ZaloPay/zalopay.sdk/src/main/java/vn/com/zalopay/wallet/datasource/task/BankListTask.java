@@ -16,7 +16,7 @@ import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.LoadBankListImpl;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class BankListTask extends BaseTask<BankConfigResponse> {
     private static final String TAG = BankListTask.class.getCanonicalName();

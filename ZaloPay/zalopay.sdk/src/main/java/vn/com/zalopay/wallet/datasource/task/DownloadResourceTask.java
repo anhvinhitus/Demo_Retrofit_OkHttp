@@ -6,13 +6,14 @@ import java.io.IOException;
 import java.util.concurrent.locks.ReentrantLock;
 
 import okhttp3.ResponseBody;
+import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.message.DownloadResourceEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.StorageUtil;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 
@@ -46,15 +47,12 @@ public class DownloadResourceTask extends BaseTask<ResponseBody> {
                  * 4.save version to cache.
                  * @return
                  */
-                // Prepare unzip folder if still empty.
+                // Prepare unzip folder
                 mLock.lock();
-                String unzipFolder = StorageUtil.prepareUnzipFolder();
-                if (TextUtils.isEmpty(unzipFolder)) {
-                    unzipFolder = StorageUtil.prepareUnzipFolder();
-                }
                 if (TextUtils.isEmpty(mResrcVer)) {
                     mResrcVer = SharedPreferencesManager.getInstance().getResourceVersion();
                 }
+                String unzipFolder = StorageUtil.prepareUnzipFolder(GlobalData.getAppContext(), BuildConfig.FOLDER_RESOURCE);
                 //can not create folder storage for resource.
                 if (TextUtils.isEmpty(unzipFolder)) {
                     Log.e(this, "error create folder resource on device.Maybe your device memory run out of now.");

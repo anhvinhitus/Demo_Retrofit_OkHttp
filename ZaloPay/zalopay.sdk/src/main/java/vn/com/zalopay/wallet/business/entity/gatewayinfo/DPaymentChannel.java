@@ -8,7 +8,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * channel class

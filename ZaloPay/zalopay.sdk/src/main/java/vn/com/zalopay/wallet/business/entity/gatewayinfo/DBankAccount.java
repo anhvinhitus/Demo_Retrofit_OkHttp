@@ -2,7 +2,7 @@ package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
 
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class DBankAccount extends DBaseMap {
     public String firstaccountno = null;

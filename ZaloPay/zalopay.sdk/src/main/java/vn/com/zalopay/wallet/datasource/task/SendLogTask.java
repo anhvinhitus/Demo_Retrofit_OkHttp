@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.datasource.task;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.SendLogImpl;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class SendLogTask extends BaseTask<BaseResponse> {
     private String mTransID;

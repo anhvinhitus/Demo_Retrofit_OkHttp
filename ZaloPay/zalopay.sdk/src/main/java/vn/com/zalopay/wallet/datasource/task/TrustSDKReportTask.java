@@ -4,7 +4,7 @@ package vn.com.zalopay.wallet.datasource.task;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.datasource.implement.SDKReportImpl;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * always log to server

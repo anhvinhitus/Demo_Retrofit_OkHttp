@@ -18,7 +18,7 @@ import java.util.List;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class EllipsizingTextView extends TextView {
     private static final String ELLIPSIS = "...";

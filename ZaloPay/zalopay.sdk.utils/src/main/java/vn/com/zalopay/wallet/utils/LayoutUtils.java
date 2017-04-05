@@ -53,12 +53,7 @@ public class LayoutUtils {
                 int screenHeight = parentLayout.getRootView().getHeight();
                 int keyboardHeight = screenHeight - (r.bottom);
 
-                vn.com.zalopay.wallet.utils.Log.i("keyboardHeight", String.valueOf(keyboardHeight));
-
-                vn.com.zalopay.wallet.utils.Log.i("keyboardY", String.valueOf(r.bottom));
-
                 Point point = getPointOfView(childBelowView);
-                vn.com.zalopay.wallet.utils.Log.i("ButtonX,Y+h", String.valueOf(point.x) + "-" + String.valueOf(point.y + childBelowView.getHeight()));
 
                 if (keyboardHeight != keyboardHeightPrevious) {
                     // default. None keyboard.

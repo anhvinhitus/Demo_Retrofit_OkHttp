@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">vn.com.vng.zalopay.utils</string>
+    <string name="zpsdk_inputmethod_mane">com.google.android.inputmethod(.*)</string>
+</resources>

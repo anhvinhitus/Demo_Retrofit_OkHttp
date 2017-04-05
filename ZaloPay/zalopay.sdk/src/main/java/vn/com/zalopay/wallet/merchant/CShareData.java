@@ -52,7 +52,7 @@ import vn.com.zalopay.wallet.merchant.strategy.IMerchantTask;
 import vn.com.zalopay.wallet.merchant.strategy.TaskDetectCardType;
 import vn.com.zalopay.wallet.merchant.strategy.TaskGetCardSupportList;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 

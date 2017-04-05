@@ -3,12 +3,11 @@ package vn.com.zalopay.wallet.business.webview.base;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.webview.creditcard.CCWebViewClient;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class PaymentWebView extends WebView {
     protected String mRecentLoadingUrl;

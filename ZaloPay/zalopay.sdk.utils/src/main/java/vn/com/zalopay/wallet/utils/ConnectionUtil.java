@@ -18,11 +18,9 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import java.util.List;
-
-//import com.google.android.gms.common.ConnectionResult;
-//import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class ConnectionUtil {
 
@@ -151,7 +149,7 @@ public class ConnectionUtil {
                 return true;
             }
         } catch (Exception e) {
-            Log.e("isOnline", e);
+            Log.e("isOnline", e.getMessage());
         }
 
         return false;

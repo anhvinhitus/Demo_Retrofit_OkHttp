@@ -38,7 +38,7 @@ import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.utils.BitmapUtil;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.SpinnerUtils;
 import vn.com.zalopay.wallet.utils.ViewUtils;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
@@ -305,7 +305,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (start < 1) {
-                    ViewUtils.setTextInputLayoutHint(getLoginHolder().getEdtCaptcha(),
+                    getAdapter().getActivity().setTextInputLayoutHint(getLoginHolder().getEdtCaptcha(),
                             GlobalData.getStringResource(RS.string.zpw_string_linkacc_captcha_hint),
                             mAdapter.getActivity());
                 }
@@ -357,7 +357,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (start < 1) {
-                    ViewUtils.setTextInputLayoutHint(getRegisterHolder().getEdtCaptcha(),
+                    getAdapter().getActivity().setTextInputLayoutHint(getRegisterHolder().getEdtCaptcha(),
                             GlobalData.getStringResource(RS.string.zpw_string_linkacc_captcha_hint)
                             , mAdapter.getActivity());
                 }

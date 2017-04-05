@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.listener;
+package vn.com.zalopay.wallet.utils.listener;
 
 /**
  * Created by cpu11843-local on 12/9/16.

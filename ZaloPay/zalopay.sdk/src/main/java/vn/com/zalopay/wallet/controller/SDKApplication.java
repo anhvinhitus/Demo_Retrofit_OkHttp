@@ -8,7 +8,7 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
@@ -27,7 +27,6 @@ import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 
 public class SDKApplication extends Application {
@@ -81,13 +80,21 @@ public class SDKApplication extends Application {
         BaseTask removeMapCardTask = new RemoveMapCardTask(pParams, pListener);
         removeMapCardTask.makeRequest();
     }
+    private static boolean newVersion() {
+        String checksumSDKV = null;
+        try {
+            checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();
+        } catch (Exception e) {
+        }
+        return !ZPWUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV);
+    }
     /***
      * clear all cache if user use
      * newer version
      * @throws Exception
      */
     private static void checkClearCacheIfHasNewVersion() throws Exception {
-        if (ZPWUtils.isNewVersion()) {
+        if (newVersion()) {
             //clear banklist
             SharedPreferencesManager.getInstance().setCheckSumBankList(null);
             SharedPreferencesManager.getInstance().setBankConfigMap(null);

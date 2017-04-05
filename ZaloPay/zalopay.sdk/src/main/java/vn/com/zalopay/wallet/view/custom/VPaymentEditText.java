@@ -21,7 +21,7 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public class VPaymentEditText extends TextInputEditText {
     public static final int OFFSET = (int) GlobalData.getAppContext().getResources().getDimension(R.dimen.zpw_offset_drawable_right);

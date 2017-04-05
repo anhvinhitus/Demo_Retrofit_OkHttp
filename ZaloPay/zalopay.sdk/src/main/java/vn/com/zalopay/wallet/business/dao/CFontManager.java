@@ -5,8 +5,8 @@ import android.graphics.Typeface;
 import java.io.File;
 import java.util.HashMap;
 
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.utils.Log;
 
 /***
  * class for caching font.

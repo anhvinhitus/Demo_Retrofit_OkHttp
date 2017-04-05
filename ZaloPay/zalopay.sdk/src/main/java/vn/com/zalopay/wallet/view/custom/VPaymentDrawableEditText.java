@@ -13,7 +13,7 @@ import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDrawable
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.validation.CardValidation;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class VPaymentDrawableEditText extends VPaymentEditText implements IDoActionDrawableEdittext {

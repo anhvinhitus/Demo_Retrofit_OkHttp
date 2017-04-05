@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.business.data;
 
 import vn.com.zalopay.wallet.controller.SDKApplication;
-import vn.com.zalopay.wallet.utils.Log;
 
 public class RS {
     public static int getID(String pName) {
@@ -114,7 +113,6 @@ public class RS {
         public static final String zpw_string_pin_wrong = "zpw_string_pin_wrong";
         public static final String zpw_link_card_existed = "zpw_link_card_existed";
 
-        public static final String cardview_rate = "cardview_rate";
         public static final String percent_ontablet = "percent_ontablet";
         public static final String percent_ondefault = "percent_ondefault";
 

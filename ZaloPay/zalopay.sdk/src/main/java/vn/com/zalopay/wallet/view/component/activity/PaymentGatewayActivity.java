@@ -36,7 +36,7 @@ import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.view.adapter.GatewayChannelListViewAdapter;
 import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;

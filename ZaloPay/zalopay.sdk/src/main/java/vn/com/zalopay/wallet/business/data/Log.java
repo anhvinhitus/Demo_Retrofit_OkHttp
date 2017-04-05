@@ -1,4 +1,4 @@
-package vn.com.zalopay.wallet.utils;
+package vn.com.zalopay.wallet.business.data;
 
 import android.text.TextUtils;
 

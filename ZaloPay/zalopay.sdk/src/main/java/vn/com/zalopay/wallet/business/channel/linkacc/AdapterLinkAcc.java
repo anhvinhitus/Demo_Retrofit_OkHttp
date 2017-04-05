@@ -23,6 +23,7 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.data.VcbUtils;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
@@ -42,11 +43,10 @@ import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
 import vn.com.zalopay.wallet.utils.LayoutUtils;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.NetworkUtil;
 import vn.com.zalopay.wallet.utils.OtpUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
-import vn.com.zalopay.wallet.utils.VcbUtils;
 import vn.com.zalopay.wallet.utils.ViewUtils;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
@@ -488,7 +488,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             }
                             return null;
                         case WRONG_CAPTCHA:
-                            ViewUtils.setTextInputLayoutHintError(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
+                            getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().setText("");
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().requestFocus();
                             new Handler().postDelayed(new Runnable() {
@@ -612,7 +612,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                 showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_SHORT);
                                 break;
                             case WRONG_CAPTCHA:
-                                ViewUtils.setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
+                                getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
                                 linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText("");
                                 linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
                                 new Handler().postDelayed(new Runnable() {

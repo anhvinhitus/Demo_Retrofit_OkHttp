@@ -49,7 +49,7 @@ public class CardExpiryFragment extends CreditCardFragment {
             }
 
         } catch (Exception e) {
-            vn.com.zalopay.wallet.utils.Log.e(this, e);
+            vn.com.zalopay.wallet.business.data.Log.e(this, e);
         }
 
         return v;

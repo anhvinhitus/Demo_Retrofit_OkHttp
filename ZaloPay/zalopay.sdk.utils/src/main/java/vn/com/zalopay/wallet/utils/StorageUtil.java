@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -13,9 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import vn.com.zalopay.wallet.BuildConfig;
-import vn.com.zalopay.wallet.business.data.GlobalData;
 
 public class StorageUtil {
 
@@ -63,11 +61,11 @@ public class StorageUtil {
      * internal folder to extract resource file
      * @return
      */
-    public static String prepareUnzipFolder() {
+    public static String prepareUnzipFolder(Context pContext, String folderResource) {
         //try on internal storage first
         String unzipFolder = null;
         try {
-            unzipFolder = GlobalData.getAppContext().getFilesDir().getPath() + BuildConfig.FOLDER_RESOURCE;
+            unzipFolder = pContext.getFilesDir().getPath() + folderResource;
             File f = new File(unzipFolder);
             if (!f.isDirectory() || !f.exists()) {
                 f.mkdirs();
@@ -75,20 +73,20 @@ public class StorageUtil {
             Log.d("prepareUnzipFolder", "folder to extract resource file :" + unzipFolder + ", available size : " + getAvailableMemorySize(unzipFolder));
             return unzipFolder;
         } catch (Exception e) {
-            Log.e("prepareUnzipFolder", e);
+            Log.e("prepareUnzipFolder", e.getLocalizedMessage());
         }
 
         //try on external storage if can not access internal storage
         try {
             if (StorageUtil.isExternalStorageAvailable()) {
-                unzipFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + BuildConfig.FOLDER_RESOURCE;
+                unzipFolder = Environment.getExternalStorageDirectory().getAbsolutePath() + folderResource;
                 File f = new File(unzipFolder);
                 if (!f.isDirectory() || !f.exists()) {
                     f.mkdirs();
                 }
             } else {
                 // Use Internal Storage to unzip file
-                File downloadFolder = GlobalData.getAppContext().getDir("temp", Context.MODE_PRIVATE);
+                File downloadFolder = pContext.getDir("temp", Context.MODE_PRIVATE);
                 if (downloadFolder != null && downloadFolder.isDirectory()) {
                     unzipFolder = downloadFolder.getAbsolutePath();
                 }
@@ -96,7 +94,7 @@ public class StorageUtil {
             Log.d("prepareUnzipFolder", "folder to extract resource file :" + unzipFolder + ",available size : " + getAvailableMemorySize(unzipFolder));
             return unzipFolder;
         } catch (Exception e) {
-            Log.e("prepareUnzipFolder", e);
+            Log.e("prepareUnzipFolder", e.getMessage());
         }
         return null;
     }
@@ -210,7 +208,6 @@ public class StorageUtil {
             fileOrDirectory.delete();
 
         } catch (Exception e) {
-            Log.e("deleteRecursive", e);
         }
     }
 }

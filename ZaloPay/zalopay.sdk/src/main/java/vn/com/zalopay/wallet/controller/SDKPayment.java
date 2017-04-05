@@ -25,7 +25,7 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
@@ -199,7 +199,7 @@ public class SDKPayment {
             if (GlobalData.isLinkAccChannel() && BankLoader.getInstance().isBankMaintenance(GlobalData.getPaymentInfo().linkAccInfo.getBankCode(), EBankFunction.LINK_BANK_ACCOUNT)) {
                 DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
                         GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
-                        StringUtil.getFormattedBankMaintenaceMessage(), pIndex -> {
+                        BankLoader.getInstance().getFormattedBankMaintenaceMessage(), pIndex -> {
                             if (GlobalData.getPaymentListener() != null) {
                                 GlobalData.setResultUserClose();
                                 GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());

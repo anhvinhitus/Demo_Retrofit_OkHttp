@@ -4,10 +4,10 @@ import java.util.List;
 
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CWithDrawCalculateFee;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
-import vn.com.zalopay.wallet.utils.Log;
 
 public class BankConfig {
     public String code;

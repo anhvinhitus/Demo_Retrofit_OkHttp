@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -39,6 +41,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -53,8 +56,10 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
+import vn.com.zalopay.wallet.business.dao.CFontManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
@@ -77,13 +82,14 @@ import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
 import vn.com.zalopay.wallet.message.NetworkEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.PermissionUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.custom.EllipsizingTextView;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
+import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
+import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 public abstract class BasePaymentActivity extends FragmentActivity {
@@ -491,7 +497,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public void requestPermission(Context pContext) {
         if (PermissionUtils.isNeedToRequestPermissionAtRuntime() && !PermissionUtils.checkIfAlreadyhavePermission(pContext)) {
-            PermissionUtils.requestForSpecificPermission(this);
+            PermissionUtils.requestForSpecificPermission(this,Constants.REQUEST_CODE_SMS);
         }
     }
 
@@ -935,8 +941,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setText(R.id.zpw_payment_channel_fee, StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountFee)));
             setText(R.id.zpw_payment_channel_total_pay,
                     StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal)));
-            ZPWUtils.applyFont(findViewById(R.id.zpw_payment_channel_total_pay),
-                    GlobalData.getStringResource(RS.string.zpw_font_medium));
+            applyFont(findViewById(R.id.zpw_payment_channel_total_pay), GlobalData.getStringResource(RS.string.zpw_font_medium));
         }
 
     }
@@ -1021,8 +1026,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setVisible(R.id.zpw_payment_fail_textview, false);
             }
         }
-        ZPWUtils.applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
-        //re-align top
+        applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
+
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animateImageViewFail();
 
@@ -1069,7 +1074,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setTextHtml(R.id.zpw_textview_transaction_lixi_label, String.format(GlobalData.getStringResource(RS.string.zpw_string_lixi_notice_title), formattedString));
         }
 
-        ZPWUtils.applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
+        applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
         //show transaction amount when ! withdraw
         if (GlobalData.orderAmountTotal > 0 && GlobalData.getTransactionType() != ETransactionType.WITHDRAW) {
 
@@ -1430,15 +1435,49 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      */
     protected void applyFont() {
         ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
-        ZPWUtils.overrideFonts(viewGroup, GlobalData.getStringResource(RS.string.zpw_font_regular));
-        ZPWUtils.applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
-        ZPWUtils.applyFont(findViewById(R.id.payment_method_name), GlobalData.getStringResource(RS.string.zpw_font_medium));
+        overrideFonts(viewGroup, GlobalData.getStringResource(RS.string.zpw_font_regular));
+        applyFont(findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
+        applyFont(findViewById(R.id.payment_method_name), GlobalData.getStringResource(RS.string.zpw_font_medium));
     }
 
     protected void setListener() {
         View view = findViewById(R.id.item_name);
         if (view != null)
             ((EllipsizingTextView) view).setOnShowDetailOrderListener(mShowDetailOrderClick);
+    }
+
+    public void applyFont(View pView, String pFontName) {
+        Typeface tf = CFontManager.getInstance().loadFont(pFontName);
+        if (tf != null) {
+            if (pView instanceof TextView)
+                ((TextView) pView).setTypeface(tf);
+            else if (pView instanceof VPaymentDrawableEditText)
+                ((VPaymentDrawableEditText) pView).setTypeface(tf);
+        }
+    }
+
+    public void overrideFonts(final View pView, String pFontName) {
+        try {
+            if (pView instanceof ViewGroup) {
+                ViewGroup vg = (ViewGroup) pView;
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    View child = vg.getChildAt(i);
+                    overrideFonts(child, pFontName);
+                }
+            } else if (pView.getId() != R.id.front_card_number &&
+                    ((pView instanceof TextView) || pView instanceof VPaymentDrawableEditText || pView instanceof VPaymentValidDateEditText)) {
+                Typeface typeFace = CFontManager.getInstance().loadFont(pFontName);
+
+                if (typeFace != null) {
+                    if (pView instanceof TextView) {
+                        ((TextView) pView).setTypeface(typeFace);
+                    } else {
+                        ((VPaymentEditText) pView).setTypeface(typeFace);
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
     }
 
     /***
@@ -1487,7 +1526,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public boolean showBankMaintenance(ZPWOnEventDialogListener pListener, String pBankCode) {
         try {
             if (BankLoader.getInstance().isBankMaintenance(pBankCode)) {
-                showInfoDialog(pListener, StringUtil.getFormattedBankMaintenaceMessage());
+                showInfoDialog(pListener, BankLoader.getInstance().getFormattedBankMaintenaceMessage());
                 return true;
             }
         } catch (Exception e) {
@@ -1696,6 +1735,85 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         intent.putExtra(MapListSelectionActivity.BANKCODE_EXTRA, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
         intent.putExtra(MapListSelectionActivity.BUTTON_LEFT_TEXT_EXTRA, getCloseButtonText());
         startActivity(intent);
+    }
+
+    public void setTextInputLayoutHint(EditText pEditext, String pMessage, Context pContext) {
+        if (pEditext == null) {
+            return;
+        }
+
+        if (pEditext instanceof VPaymentEditText && ((VPaymentEditText) pEditext).getTextInputLayout() instanceof TextInputLayout) {
+
+            try {
+                TextInputLayout textInputLayout = ((VPaymentEditText) pEditext).getTextInputLayout();
+
+                int color = pContext.getResources().getColor(R.color.color_primary);
+
+                int textColor = pContext.getResources().getColor(R.color.text_color);
+
+                Field fDefaultTextColor = TextInputLayout.class.getDeclaredField("mDefaultTextColor");
+                fDefaultTextColor.setAccessible(true);
+                fDefaultTextColor.set(textInputLayout, new ColorStateList(new int[][]{{0}}, new int[]{textColor}));
+
+                Field fFocusedTextColor = TextInputLayout.class.getDeclaredField("mFocusedTextColor");
+                fFocusedTextColor.setAccessible(true);
+                fFocusedTextColor.set(textInputLayout, new ColorStateList(new int[][]{{0}}, new int[]{color}));
+
+                int paddingLeft = pEditext.getPaddingLeft();
+                int paddingTop = pEditext.getPaddingTop();
+                int paddingRight = pEditext.getPaddingRight();
+                int paddingBottom = pEditext.getPaddingBottom();
+
+                pEditext.setBackground(pContext.getResources().getDrawable(R.drawable.txt_bottom_default_style));
+
+                //restore padding
+                pEditext.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+
+                textInputLayout.refreshDrawableState();
+
+                textInputLayout.setHint(!TextUtils.isEmpty(pMessage) ? pMessage : (textInputLayout.getTag() != null ? textInputLayout.getTag().toString() : null));
+
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    public void setTextInputLayoutHintError(EditText pEditext, String pError, Context pContext) {
+        if (pEditext == null) {
+            return;
+        }
+
+        if (pEditext instanceof VPaymentEditText && ((VPaymentEditText) pEditext).getTextInputLayout() instanceof TextInputLayout) {
+            try {
+                TextInputLayout textInputLayout = ((VPaymentEditText) pEditext).getTextInputLayout();
+
+                int color = pContext.getResources().getColor(R.color.holo_red_light);
+
+                Field fDefaultTextColor = TextInputLayout.class.getDeclaredField("mDefaultTextColor");
+                fDefaultTextColor.setAccessible(true);
+                fDefaultTextColor.set(textInputLayout, new ColorStateList(new int[][]{{0}}, new int[]{color}));
+
+                Field fFocusedTextColor = TextInputLayout.class.getDeclaredField("mFocusedTextColor");
+                fFocusedTextColor.setAccessible(true);
+                fFocusedTextColor.set(textInputLayout, new ColorStateList(new int[][]{{0}}, new int[]{color}));
+
+                int paddingLeft = pEditext.getPaddingLeft();
+                int paddingTop = pEditext.getPaddingTop();
+                int paddingRight = pEditext.getPaddingRight();
+                int paddingBottom = pEditext.getPaddingBottom();
+
+                pEditext.setBackground(pContext.getResources().getDrawable(R.drawable.txt_bottom_error_style));
+
+                //restore padding
+                pEditext.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+
+                textInputLayout.refreshDrawableState();
+
+                textInputLayout.setHint(pError);
+
+            } catch (Exception e) {
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

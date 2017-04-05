@@ -7,7 +7,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.utils.FingerprintUtils;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 public abstract class BaseFingerPrint extends SingletonBase implements IPaymentFingerPrint {
     protected IPaymentFingerPrint mPaymentFingerPrint;

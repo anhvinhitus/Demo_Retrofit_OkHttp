@@ -3,12 +3,10 @@ package vn.com.vng.zalopay.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import rx.Observer;
 import vn.com.vng.zalopay.data.api.entity.ApptransidLogEntity;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.utils.TrackBuilders;
 import vn.com.zalopay.analytics.ZPTracker;
-import vn.com.zalopay.wallet.utils.Log;
 
 /**
  * Created by khattn on 1/23/17.

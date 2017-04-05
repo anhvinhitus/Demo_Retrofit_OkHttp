@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.UnlockScreenEventMessage;
-import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * receiver to capture unlock screen event

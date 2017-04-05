@@ -8,8 +8,6 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import vn.com.zalopay.wallet.business.data.Constants;
-
 /**
  * request permission at runtime class
  */
@@ -24,8 +22,8 @@ public class PermissionUtils {
         }
     }
 
-    public static void requestForSpecificPermission(Activity pActivity) {
-        ActivityCompat.requestPermissions(pActivity, new String[]{Manifest.permission.RECEIVE_SMS}, Constants.REQUEST_CODE_SMS);
+    public static void requestForSpecificPermission(Activity pActivity, int pRequestCode) {
+        ActivityCompat.requestPermissions(pActivity, new String[]{Manifest.permission.RECEIVE_SMS}, pRequestCode);
     }
 
     /***
