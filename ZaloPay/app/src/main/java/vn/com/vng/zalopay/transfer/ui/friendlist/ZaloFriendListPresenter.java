@@ -17,6 +17,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
+import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.ZaloFriend;
@@ -52,6 +53,10 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
         mSubscription.add(subscription);
     }
 
+    boolean isEnableSyncContact() {
+        return FriendConfig.sEnableSyncContact;
+    }
+
     void getFriendList() {
         Subscription subscription = mFriendRepository.getZaloFriendsCursor()
                 .concatWith(retrieveZaloFriendsAsNeeded())
@@ -64,12 +69,7 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
 
     private Observable<Cursor> retrieveZaloFriendsAsNeeded() {
         return mFriendRepository.shouldUpdateFriendList()
-                .filter(new Func1<Boolean, Boolean>() {
-                    @Override
-                    public Boolean call(Boolean aBoolean) {
-                        return aBoolean;
-                    }
-                })
+                .filter(Boolean::booleanValue)
                 .flatMap(new Func1<Boolean, Observable<Cursor>>() {
                     @Override
                     public Observable<Cursor> call(Boolean aBoolean) {
