@@ -11,6 +11,9 @@ import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import vn.com.zalopay.wallet.R;
 
 
@@ -153,6 +156,7 @@ public class AVLoadingIndicatorView extends View {
             value = {
                     BallPulse,
             })
+    @Retention(RetentionPolicy.SOURCE)
     public @interface Indicator {
     }
 }
