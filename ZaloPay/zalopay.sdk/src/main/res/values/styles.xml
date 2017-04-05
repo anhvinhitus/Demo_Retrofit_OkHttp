@@ -28,12 +28,6 @@
         <item name="colorControlActivated">@color/color_primary</item>
     </style>
 
-    <declare-styleable name="VPaymentCheckBox">
-        <attr name="stroke__border_width" format="dimension" />
-        <attr name="stroke_color" format="color" />
-        <attr name="circle_color" format="color" />
-    </declare-styleable>
-
     <style name="alert_dialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowIsTranslucent">false</item>

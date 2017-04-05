@@ -10,7 +10,6 @@ public class Constants {
     public static final String URL_SUBMIT_ORDER = "v001/tpe/submittrans";
     public static final String URL_GET_STATUS = "v001/tpe/gettransstatus";
     public static final String URL_CHECK_SUBMIT_ORDER_STATUS = "v001/tpe/getstatusbyapptransidforclient";
-    public static final String URL_SAVE_CARD = "v001/tpe/mapcard";
     public static final String URL_APP_INFO = "v001/tpe/getappinfo";
     public static final String URL_REMOVE_MAPCARD = "v001/tpe/removemapcard";
     public static final String URL_GET_BANKLIST = "v001/tpe/getbanklist";
@@ -23,7 +22,6 @@ public class Constants {
     public static final String URL_SUBMIT_MAP_ACCOUNT = "v001/tpe/submitmapaccount";
     public static final String URL_LISTCARDINFO = "/um/listcardinfoforclient";
     public static final String URL_LISTBANKACCCOUNT = "/um/listbankaccountforclient";
-    public static final int NOTIFICATION_NETWORKING_ID = 1001;
     public static final int REQUEST_CODE_SMS = 101;
     public static final String BITMAP_EXTENSION = ".png";
     public static final String SUPPORT_INTRO_ACTION_FEEDBACK = "vn.com.vng.zalopay.action.FEEDBACK";
@@ -37,7 +35,6 @@ public class Constants {
     public static final int SLEEPING_INTERVAL_OF_RETRY = 1000;//ms
     public static final int API_CONNECTING_REQUEST_TIMEOUT = 10000;//ms
     public static final int API_READ_REQUEST_TIMEOUT = 5000;//ms
-    public static final int PROGRESS_DIALOG_TIMEOUT = 35000;//ms
     public static final int API_PLATFORM_TIMEOUT = 30000;//ms
     public static final int API_MAX_RETRY = 3;
     public static final int API_DELAY_RETRY = 500;//ms

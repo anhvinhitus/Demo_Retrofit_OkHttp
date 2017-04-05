@@ -94,7 +94,6 @@ public class RS {
         public static final String zpw_sdkreport_error_message = "zpw_sdkreport_error_message";
 
         public static final String allow_use_send_log_on_transactionfail = "allow_use_send_log_on_transactionfail";
-        public static final String allow_use_tracking_timing = "allow_use_tracking_timing";
         public static final String allow_use_fingerprint_feature = "allow_use_fingerprint_feature";
         public static final String zpw_error_authen_pin = "zpw_error_authen_pin";
 

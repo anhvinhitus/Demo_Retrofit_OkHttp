@@ -39,19 +39,17 @@ public class ResourceManager extends SingletonBase {
     private static ResourceManager mCommonResourceManager = null;
     private static Map<String, ResourceManager> mResourceManagerMap = null;
     private static DConfigFromServer mConfigFromServer = null;
-    private String mPageName = null;
     private HashMap<String, String> mStringMap = null;
     private DPage mPageConfig = null;
 
-    public ResourceManager(String pPageName) {
+    public ResourceManager() {
         super();
-        this.mPageName = pPageName;
     }
 
     public static synchronized ResourceManager getInstance(String pPageName) {
         if (pPageName == null) {
             if (mCommonResourceManager == null)
-                mCommonResourceManager = new ResourceManager(null);
+                mCommonResourceManager = new ResourceManager();
             return mCommonResourceManager;
         } else {
             if (mResourceManagerMap == null) {
@@ -64,14 +62,12 @@ public class ResourceManager extends SingletonBase {
                 return resourceManager;
             }
 
-            resourceManager = new ResourceManager(pPageName);
+            resourceManager = new ResourceManager();
             mResourceManagerMap.put(pPageName, resourceManager);
 
             return resourceManager;
         }
     }
-
-    /************************************************************************/
 
     private static String getUnzipFolderPath() throws Exception {
         if (SharedPreferencesManager.getInstance() == null)
@@ -96,7 +92,7 @@ public class ResourceManager extends SingletonBase {
                     InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-                    String line = "";
+                    String line;
                     StringBuilder stringBuilder = new StringBuilder();
 
                     while ((line = bufferedReader.readLine()) != null) {
@@ -213,10 +209,8 @@ public class ResourceManager extends SingletonBase {
             return null;
         }
 
-        String imgLocalPath = null;
-
+        String imgLocalPath;
         Bitmap bitmap = null;
-
         try {
             imgLocalPath = String.format("%s%s%s%s%s", getUnzipFolderPath(), File.separator, PREFIX_IMG, File.separator, imageName);
 
@@ -275,10 +269,6 @@ public class ResourceManager extends SingletonBase {
         return mConfigFromServer.BankIdentifier;
     }
 
-    public String getResourcePath() {
-        return mUnzipPath;
-    }
-
     public List<DBankScript> getBankScripts() {
         if (mConfigFromServer == null)
             return null;
@@ -308,16 +298,13 @@ public class ResourceManager extends SingletonBase {
             Log.d(this, "===mConfigFromServer=NULL");
             return null;
         }
-
         DCardIdentifier cardIdentifier = null;
-
         for (DCardIdentifier item : mConfigFromServer.BankIdentifier) {
             if (item.code.equalsIgnoreCase(pCode)) {
                 cardIdentifier = item;
                 break;
             }
         }
-
         return cardIdentifier;
     }
 
@@ -340,7 +327,6 @@ public class ResourceManager extends SingletonBase {
     public ActivityRendering produceRendering(BasePaymentActivity pActivity) {
         if (this.mPageConfig == null)
             return null;
-
         return new ActivityRendering(this, pActivity);
     }
 }

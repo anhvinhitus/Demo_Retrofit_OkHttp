@@ -34,14 +34,6 @@ public class ActivityRendering {
         this.mOwnerActivity = pOwnerActivity;
     }
 
-    public Activity getOwnerActivity() {
-        return mOwnerActivity;
-    }
-
-    public void setOwnerActivity(BasePaymentActivity mOwnerActivity) {
-        this.mOwnerActivity = mOwnerActivity;
-    }
-
     public void render() {
         if (mResourceManager == null)
             return;
