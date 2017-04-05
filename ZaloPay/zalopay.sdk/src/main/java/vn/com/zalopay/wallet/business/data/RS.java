@@ -187,10 +187,6 @@ public class RS {
         public static final String zpw_confirm_quit_loadsite = "zpw_confirm_quit_loadsite";
 
         public static final String zpw_string_error_layout = "zpw_string_error_layout";
-        public static final String zpw_string_error_payment_info = "zpw_string_error_payment_info";
-
-        public static final String zpw_string_not_need_save_pin = "zpw_string_not_need_save_pin";
-        public static final String zpw_error_transaction_duplicate_message = "zpw_error_transaction_duplicate_message";
 
         public static final String zpw_error_paymentinfo = "zpw_error_paymentinfo";
 
@@ -322,8 +318,6 @@ public class RS {
 
         public static final String zpw_string_payment_currency_label = "zpw_string_payment_currency_label";
 
-        public static final String zpw_string_credit_card_save_label = "zpw_string_credit_card_save_label";
-
 
         public static final String zpw_string_hidden_character = "zpw_string_hidden_character";
         public static final String zpw_string_title_header_pay_result = "zpw_string_title_header_pay_result";
@@ -354,24 +348,15 @@ public class RS {
 
         public static final String zingpaysdk_alert_processing_otp = "zingpaysdk_alert_processing_otp";
 
-        public static final String zpw_string_confirm_upgrade_level_save_card = "zpw_string_confirm_upgrade_level_save_card";
-        /**
-         * USER PROFILE
-         */
         public static final String zpw_string_alert_profilelevel_update = "zpw_string_alert_profilelevel_update";
         public static final String zpw_string_fee_upgrade_level = "zpw_string_fee_upgrade_level";
         public static final String zpw_string_alert_profilelevel_update_and_before_payby_bankaccount = "zpw_string_alert_profilelevel_update_and_before_payby_bankaccount";
         public static final String zpw_string_alert_profilelevel_update_and_linkaccount_before_payment = "zpw_string_alert_profilelevel_update_and_linkaccount_before_payment";
-        /***
-         * LINK CARD.
-         */
+
         public static final String zpw_string_exit_without_pin = "zpw_string_exit_without_pin";
         public static final String zpw_string_title_require_pin_page = "zpw_string_title_require_pin_page";
         public static final String zpw_string_alert_userinfo_invalid = "zpw_string_alert_userinfo_invalid";
 
-        /***
-         * payment result.
-         */
         public static final String zpw_string_payment_success_label = "zpw_string_payment_success_label";
         public static final String zpw_string_tranfer_success_label = "zpw_string_tranfer_success_label";
         public static final String zpw_string_topup_success_label = "zpw_string_topup_success_label";
@@ -379,7 +364,6 @@ public class RS {
         public static final String zpw_string_lixi_success_label = "zpw_string_lixi_success_label";
         public static final String zpw_string_withdraw_success_label = "zpw_string_withdraw_success_label";
         public static final String zpw_string_alert_app_user_invalid_tranfer = "zpw_string_alert_app_user_invalid_tranfer";
-        public static final String zpw_string_alert_app_user_invalid_linkcard = "zpw_string_alert_app_user_invalid_linkcard";
 
         public static final String zpw_string_payment_fail_transaction = "zpw_string_payment_fail_transaction";
         public static final String zpw_string_payment_fail_linkcard = "zpw_string_payment_fail_linkcard";
@@ -388,8 +372,6 @@ public class RS {
         public static final String zpw_string_linkcard_processing = "zpw_string_linkcard_processing";
         public static final String zpw_string_transaction_networking_error = "zpw_string_transaction_networking_error";
 
-        public static final String zpw_string_alert_card_not_found = "zpw_string_alert_card_not_found";
-        public static final String zpw_string_alert_card_save_error = "zpw_string_alert_card_save_error";
         public static final String zpw_string_alert_maintenance = "zpw_string_alert_maintenance";
 
         public static final String dialog_turn_on = "dialog_turn_on";
@@ -493,13 +475,8 @@ public class RS {
         public static final String zpw_bg_button_final = "zpw_bg_button_final";
         public static final String ic_info = "ic_info.png";
         public static final String ic_delete = "ic_del.png";
-
         public static final String ic_checked = "ic_checked.png";
-
         public static final String ic_next = "ic_next.png";
-
-        public static final String ic_question = "ic_question.png";
-
         public static final String ic_bank_support_help = "ic_bank_support_help.png";
 
     }

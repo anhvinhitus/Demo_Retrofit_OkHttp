@@ -5,17 +5,7 @@
         <item name="colorPrimaryDark">@color/color_primary</item>
     </style>
 
-    <!--
-    <style name="ReadWalletTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/red_color_primary</item>
-        <item name="colorPrimaryDark">@color/red_color_primary</item>
-        <item name="android:textColorHint">@color/text_color</item>
-        <item name="colorControlActivated">@color/red_color_primary</item>
-    </style>
-    -->
-
     <style name="TextLabelHint" parent="ThemeOverlay.AppCompat.Light">
-        <!-- Hint color and label color in FALSE state -->
         <item name="colorControlActivated">@color/color_primary</item>
         <item name="colorAccent">@color/color_primary</item>
         <item name="android:textColorHint">@color/text_color</item>
@@ -90,7 +80,6 @@
         <item name="android:layout_marginBottom">1dp</item>
     </style>
 
-    <!--Style Card View-->
     <declare-styleable name="creditcard">
         <attr name="cvv" format="integer" />
         <attr name="card_holder_name" format="string" />
@@ -108,8 +97,6 @@
         <item name="android:editTextStyle">@style/editTextStyle</item>
     </style>
 
-
-    <!-- changes the default text colour for the EditTexts -->
     <style name="editTextStyle" parent="android:style/Widget.EditText">
         <item name="android:textColor">@color/blue_btn_bg_pressed_color</item>
         <item name="android:textSize">@dimen/text_size_normal</item>
