@@ -627,9 +627,17 @@ public class AdapterLinkAcc extends AdapterBase {
                                 }, 100);
                                 break;
                             default:
+                                // FAIL. Fail register
+                                if (!TextUtils.isEmpty(response.message)) {
+                                    DialogManager.closeProcessDialog(); // close process dialog
+                                    String msgErr = response.message;
+                                    linkAccFail(msgErr, mTransactionID);
+                                    return null;
+                                }
                                 break;
                         }
                     }
+
                 }
 
                 linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus(); // focus captcha confirm
