@@ -25,8 +25,8 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.CardColorText;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.utils.ViewUtils;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.effects.FlipAnimator;
 
@@ -148,7 +148,7 @@ public class CreditCardView extends FrameLayout {
         try {
             mPercentWitdh = Float.parseFloat(GlobalData.getStringResource(RS.string.percent_ondefault));
 
-            if (ZPWUtils.isTablet(GlobalData.getAppContext()))
+            if (SdkUtils.isTablet(GlobalData.getAppContext()))
                 mPercentWitdh = Float.parseFloat(GlobalData.getStringResource(RS.string.percent_ontablet));
 
         } catch (Exception e) {
@@ -315,7 +315,7 @@ public class CreditCardView extends FrameLayout {
     protected String createHighLightText(String pText, CardColorText pCardColorText) {
 
         if (!TextUtils.isEmpty(pText) && pCardColorText != null) {
-            String colorHighline = ZPWUtils.getStringColor(getResources().getColor(pCardColorText.highlineColor));
+            String colorHighline = SdkUtils.getStringColor(getResources().getColor(pCardColorText.highlineColor));
             if (pText.length() == 1) {
                 pText = "<font color='" + colorHighline + "'>" + pText + "</font>";
             } else {

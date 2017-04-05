@@ -60,7 +60,7 @@ import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -860,7 +860,7 @@ public abstract class AdapterBase {
             mIsShowDialog = false;
             mIsExitWithoutConfirm = true;
 
-            ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+            SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
 
             //fail transaction
             if (isTransactionFail()) {
@@ -972,7 +972,7 @@ public abstract class AdapterBase {
         }
 
         if (isNeedCloseSDK && !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-            ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+            SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
             showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction));
         }
     }
@@ -1517,7 +1517,7 @@ public abstract class AdapterBase {
             getActivity().showPaymentSpecialSuccessContent(mTransactionID);
         }
 
-        ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+        SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
         return processSaveCardOnResult();
     }
 
@@ -1592,7 +1592,7 @@ public abstract class AdapterBase {
         if (isCardFlowWeb()) {
             sendLogTransaction();
         }
-        ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
+        SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
 
         if (ConnectionUtil.isOnline(GlobalData.getAppContext())
                 && isNeedToGetCardInfoListAfterPayment()

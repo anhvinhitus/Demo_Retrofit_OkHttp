@@ -46,9 +46,8 @@ import vn.com.zalopay.wallet.utils.LayoutUtils;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.NetworkUtil;
 import vn.com.zalopay.wallet.utils.OtpUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
-import vn.com.zalopay.wallet.utils.ViewUtils;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
@@ -495,7 +494,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                 @Override
                                 public void run() {
                                     try {
-                                        ZPWUtils.focusAndSoftKeyboard(getActivity(), linkAccGuiProcessor.getLoginHolder().getEdtCaptcha());
+                                        SdkUtils.focusAndSoftKeyboard(getActivity(), linkAccGuiProcessor.getLoginHolder().getEdtCaptcha());
                                         Log.d(this, "mOnFocusChangeListener Link Acc");
                                     } catch (Exception e) {
                                         Log.e(this, e);
@@ -619,7 +618,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                     @Override
                                     public void run() {
                                         try {
-                                            ZPWUtils.focusAndSoftKeyboard(getActivity(), linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha());
+                                            SdkUtils.focusAndSoftKeyboard(getActivity(), linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha());
                                             Log.d(this, "mOnFocusChangeListener Link Acc");
                                         } catch (Exception e) {
                                             Log.e(this, e);

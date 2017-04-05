@@ -14,7 +14,7 @@ import vn.com.zalopay.wallet.business.behavior.view.interfaces.IDoActionDateEdit
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class VPaymentValidDateEditText extends VPaymentEditText implements IDoActionDateEdittext {
@@ -132,8 +132,8 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
 
         if (mIsCheckNow) {
             try {
-                if ((year < ZPWUtils.getYear())
-                        || ((year == ZPWUtils.getYear()) && (month < ZPWUtils.getMonth()))) {
+                if ((year < SdkUtils.getYear())
+                        || ((year == SdkUtils.getYear()) && (month < SdkUtils.getMonth()))) {
                     Log.d(VPaymentValidDateEditText.this, "**** " + mEditTextConfig.id + "NOW NOT MATCH ****");
 
                     return false;
@@ -151,8 +151,8 @@ public class VPaymentValidDateEditText extends VPaymentEditText implements IDoAc
 
         if (mIsCheckPass) {
             try {
-                if ((year > ZPWUtils.getYear())
-                        || ((year == ZPWUtils.getYear()) && (month > ZPWUtils.getMonth()))) {
+                if ((year > SdkUtils.getYear())
+                        || ((year == SdkUtils.getYear()) && (month > SdkUtils.getMonth()))) {
                     Log.d(VPaymentValidDateEditText.this, "**** " + mEditTextConfig.id + "PASS NOT MATCH ****");
                     return false;
                 } else {

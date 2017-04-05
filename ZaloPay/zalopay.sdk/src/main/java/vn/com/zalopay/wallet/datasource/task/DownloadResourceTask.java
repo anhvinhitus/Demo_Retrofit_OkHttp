@@ -15,7 +15,7 @@ import vn.com.zalopay.wallet.message.DownloadResourceEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.StorageUtil;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 
 /***
  * download file resource
@@ -65,7 +65,7 @@ public class DownloadResourceTask extends BaseTask<ResponseBody> {
                     Log.d(this, "decompressed file zip to " + unzipFolder);
                     //everything is ok, save version to cache
                     SharedPreferencesManager.getInstance().setUnzipPath(unzipFolder + mResrcVer);
-                    SharedPreferencesManager.getInstance().setChecksumSDKversion(ZPWUtils.getAppVersion(GlobalData.getAppContext()));
+                    SharedPreferencesManager.getInstance().setChecksumSDKversion(SdkUtils.getAppVersion(GlobalData.getAppContext()));
                     onPostResult(true, null);//post signal success
                 }
             } catch (IOException e) {

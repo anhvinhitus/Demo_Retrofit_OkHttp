@@ -9,10 +9,6 @@ import java.util.Locale;
 
 public class StringUtil {
 
-    public static String longToStringNoDecimal(long pLongNumber) {
-        return NumberFormat.getNumberInstance(Locale.US).format(pLongNumber);
-    }
-
     public static String formatVnCurrence(String price) {
 
         NumberFormat format = new DecimalFormat("#,##0.00");

@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.custom.ImeDelBugFixedEditText;
 
 public class GridPasswordView extends LinearLayout implements PasswordView {
@@ -162,7 +162,7 @@ public class GridPasswordView extends LinearLayout implements PasswordView {
 
         this.mTextSize = (int) (getResources().getDimension(R.dimen.zpw_text_size_pass) / getResources().getDisplayMetrics().density);
 
-        mLineWidth = (int) ta.getDimension(R.styleable.gridPasswordView_gpvLineWidth, ZPWUtils.dp2px(getContext(), 1));
+        mLineWidth = (int) ta.getDimension(R.styleable.gridPasswordView_gpvLineWidth, SdkUtils.dp2px(getContext(), 1));
         mLineColor = ta.getColor(R.styleable.gridPasswordView_gpvLineColor, DEFAULT_LINECOLOR);
         mGridColor = ta.getColor(R.styleable.gridPasswordView_gpvGridColor, DEFAULT_GRIDCOLOR);
         mLineDrawable = ta.getDrawable(R.styleable.gridPasswordView_gpvLineColor);

@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
 
 /**
@@ -30,7 +30,7 @@ public class CardNameFragment extends CreditCardFragment {
         mCardNameView = (EditText) v.findViewById(R.id.edittext_localcard_name);
 
         if (mCardNameView != null) {
-            if (ZPWUtils.useDefaultKeyBoard(getContext())) {
+            if (SdkUtils.useDefaultKeyBoard(getContext())) {
                 mCardNameView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
             }
             mCardNameView.setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);

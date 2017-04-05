@@ -8,7 +8,7 @@ import android.widget.TextView;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.custom.pinview.GridPasswordView;
 
@@ -35,7 +35,7 @@ public class PaymentPassword {
         @Override
         public void onInputFinish(String psw) {
             if (psw.length() == PIN_LENGTH) {
-                String hashPin = ZPWUtils.sha256(psw);
+                String hashPin = SdkUtils.sha256(psw);
                 GlobalData.setTransactionPin(hashPin);
 
                 if (mPinListener != null) {

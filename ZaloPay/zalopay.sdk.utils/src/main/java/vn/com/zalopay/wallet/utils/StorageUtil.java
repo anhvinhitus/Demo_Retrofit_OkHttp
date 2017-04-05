@@ -48,11 +48,9 @@ public class StorageUtil {
 
     public static String getAvailableMemorySize(String pPathFile) {
         File path = new File(pPathFile);
-
         StatFs stat = new StatFs(path.getPath());
         long blockSize = stat.getBlockSize();
         long availableBlocks = stat.getAvailableBlocks();
-
         return formatSize(availableBlocks * blockSize);
     }
 
@@ -75,7 +73,6 @@ public class StorageUtil {
         } catch (Exception e) {
             Log.e("prepareUnzipFolder", e.getLocalizedMessage());
         }
-
         //try on external storage if can not access internal storage
         try {
             if (StorageUtil.isExternalStorageAvailable()) {
@@ -142,7 +139,6 @@ public class StorageUtil {
             fout.close();
             zis.closeEntry();
         }
-
         zis.close();
 
     }
@@ -185,7 +181,6 @@ public class StorageUtil {
     /**
      * Create .nomedia file in order to prevent gallery application shows this
      * folder into album
-     *
      * @param path Local path
      * @throws IOException if it's not possible to create the file.
      */

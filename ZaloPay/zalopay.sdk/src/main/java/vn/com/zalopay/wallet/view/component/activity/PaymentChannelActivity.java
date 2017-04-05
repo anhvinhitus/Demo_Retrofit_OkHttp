@@ -35,7 +35,7 @@ import vn.com.zalopay.wallet.message.SmsEventMessage;
 import vn.com.zalopay.wallet.message.UnlockScreenEventMessage;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
 
@@ -389,7 +389,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
         setMarginSubmitButtonTop(false);
         //resize pin layout if this is phone
-        if (!ZPWUtils.isTablet(getApplicationContext())) {
+        if (!SdkUtils.isTablet(getApplicationContext())) {
             resizeGridPasswordView();
         }
 

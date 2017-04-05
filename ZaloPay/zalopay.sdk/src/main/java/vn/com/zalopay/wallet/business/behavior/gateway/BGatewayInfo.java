@@ -16,7 +16,7 @@ import vn.com.zalopay.wallet.datasource.task.PlatformInfoTask;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 
 /**
  * Gateway info
@@ -95,7 +95,7 @@ public class BGatewayInfo extends SingletonBase {
         String userID = SharedPreferencesManager.getInstance().getCurrentUserID();
         boolean isNewUser = GlobalData.isNewUser();
         Log.d("isNeedToGetPlatformInfo", "user id " + userID);
-        return currentTime > expiredTime || !ZPWUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV) || !isValidConfig() || isNewUser;
+        return currentTime > expiredTime || !SdkUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV) || !isValidConfig() || isNewUser;
     }
 
     /***

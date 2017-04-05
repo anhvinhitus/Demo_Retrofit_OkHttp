@@ -27,7 +27,7 @@ import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public class SDKApplication extends Application {
     protected static ApplicationComponent mApplicationComponent;
@@ -86,7 +86,7 @@ public class SDKApplication extends Application {
             checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();
         } catch (Exception e) {
         }
-        return !ZPWUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV);
+        return !SdkUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV);
     }
     /***
      * clear all cache if user use

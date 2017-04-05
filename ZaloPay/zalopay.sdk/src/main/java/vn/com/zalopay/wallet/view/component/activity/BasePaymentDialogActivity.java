@@ -6,7 +6,7 @@ import android.util.DisplayMetrics;
 import android.view.Window;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public abstract class BasePaymentDialogActivity extends Activity {
     protected abstract void initData();
@@ -48,7 +48,7 @@ public abstract class BasePaymentDialogActivity extends Activity {
 
         float percentWitdh = getResources().getInteger(R.integer.dialog_percent_ondefault);
 
-        if (ZPWUtils.isTablet(getApplicationContext())) {
+        if (SdkUtils.isTablet(getApplicationContext())) {
             percentWitdh = getResources().getInteger(R.integer.dialog_percent_ontablet);
         }
 

@@ -46,8 +46,7 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnDetectCardListener;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
-import vn.com.zalopay.wallet.utils.ViewUtils;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.CardSupportAdapter;
 import vn.com.zalopay.wallet.view.component.activity.BankListActivity;
@@ -779,7 +778,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
         mCurrentFocusView = getAdapter().getActivity().getCurrentFocus();
 
         if (mCurrentFocusView != null && mCurrentFocusView instanceof EditText) {
-            ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), (EditText) mCurrentFocusView);
+            SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), (EditText) mCurrentFocusView);
 
             Log.d(this, "===focusAndSoftKeyboard===" + mCurrentFocusView.toString());
         }
@@ -1043,7 +1042,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
             if (percentWitdh < 0) {
                 percentWitdh = Float.parseFloat(GlobalData.getStringResource(RS.string.percent_ondefault));
 
-                if (ZPWUtils.isTablet(GlobalData.getAppContext()))
+                if (SdkUtils.isTablet(GlobalData.getAppContext()))
                     percentWitdh = Float.parseFloat(GlobalData.getStringResource(RS.string.percent_ontablet));
 
             }
@@ -1215,7 +1214,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
                     @Override
                     public void run() {
                         try {
-                            ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), mCardAdapter.getItemAtPosition(0).getEditText());
+                            SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), mCardAdapter.getItemAtPosition(0).getEditText());
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
@@ -1230,7 +1229,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
     public void setCardInfo(String pCardNumber) {
         if (getViewPager() != null && !TextUtils.isEmpty(pCardNumber)) {
             try {
-                ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), mCardAdapter.getItemAtPosition(1).getEditText());
+                SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), mCardAdapter.getItemAtPosition(1).getEditText());
 
                 getAdapter().getActivity().applyFont(getAdapter().getActivity().findViewById(R.id.edittext_localcard_number), GlobalData.getStringResource(RS.string.zpw_font_medium));
 
@@ -1396,7 +1395,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
             getViewPager().setCurrentItem(currentIndex + 1);
         } else {
             // completed the card entry.
-            ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getAdapter().getActivity());
+            SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getAdapter().getActivity());
         }
 
         refreshNavigateButton();
@@ -1502,7 +1501,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
                         try {
                             getViewPager().setCurrentItem(0);
                             getCardNumberView().setText(null);
-                            ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
+                            SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
 
                         } catch (Exception e) {
                             Log.e(this, e);
@@ -1656,7 +1655,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
 
     public void showKeyBoardOnCardNumberView() {
         try {
-            ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
+            SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
         } catch (Exception e) {
             Log.e(this, e);
         }
@@ -1669,7 +1668,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
 
                 try {
 
-                    ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), pEditText);
+                    SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), pEditText);
                     moveScrollViewToCurrentFocusView();
 
                 } catch (Exception e) {
@@ -1685,7 +1684,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
             public void run() {
 
                 try {
-                    ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), pEditText);
+                    SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), pEditText);
                 } catch (Exception e) {
                     Log.e(this, e);
                 }

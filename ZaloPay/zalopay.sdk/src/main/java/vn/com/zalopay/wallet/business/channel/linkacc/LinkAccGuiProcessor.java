@@ -39,9 +39,8 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.utils.BitmapUtil;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.utils.SpinnerUtils;
-import vn.com.zalopay.wallet.utils.ViewUtils;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
@@ -64,7 +63,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
                     public void run() {
                         try {
 
-                            ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), (EditText) view);
+                            SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), (EditText) view);
                             Log.d(this, "mOnFocusChangeListener");
                         } catch (Exception e) {
                             Log.e(this, e);

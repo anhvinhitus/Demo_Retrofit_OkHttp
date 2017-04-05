@@ -19,7 +19,7 @@ import vn.com.zalopay.wallet.datasource.task.BankListTask;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public class BankLoader extends SingletonBase {
     public static Map<String, String> mapBank;
@@ -54,7 +54,7 @@ public class BankLoader extends SingletonBase {
             }
             if (maintenanceBank != null && maintenanceBank.isBankFunctionAllMaintenance()) {
                 if (maintenanceBank.maintenanceto > 0) {
-                    maintenanceTo = ZPWUtils.convertDateTime(maintenanceBank.maintenanceto);
+                    maintenanceTo = SdkUtils.convertDateTime(maintenanceBank.maintenanceto);
                 }
                 if (!TextUtils.isEmpty(message) && message.contains("%s")) {
                     message = String.format(message, maintenanceTo);
@@ -65,7 +65,7 @@ public class BankLoader extends SingletonBase {
             }
             if (maintenanceBank != null && maintenanceBankFunction != null && maintenanceBankFunction.isFunctionMaintenance()) {
                 if (maintenanceBankFunction.maintenanceto > 0) {
-                    maintenanceTo = ZPWUtils.convertDateTime(maintenanceBankFunction.maintenanceto);
+                    maintenanceTo = SdkUtils.convertDateTime(maintenanceBankFunction.maintenanceto);
                 }
                 if (!TextUtils.isEmpty(message) && message.contains("%s")) {
                     message = String.format(message, maintenanceTo);

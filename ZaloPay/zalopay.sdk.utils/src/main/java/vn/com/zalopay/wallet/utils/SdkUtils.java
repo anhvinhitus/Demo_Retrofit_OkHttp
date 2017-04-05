@@ -19,12 +19,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class ZPWUtils {
-    private static final String TAG = ZPWUtils.class.getName();
+public class SdkUtils {
+    private static final String TAG = SdkUtils.class.getName();
 
     /***
      * hash md5 string
-     *
      * @param s
      * @return
      */
@@ -34,13 +33,11 @@ public class ZPWUtils {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             digest.update(s.getBytes());
             byte messageDigest[] = digest.digest();
-
             // Create Hex String
             StringBuffer hexString = new StringBuffer();
             for (int i = 0; i < messageDigest.length; i++)
                 hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
             return hexString.toString();
-
         } catch (NoSuchAlgorithmException e) {
         }
         return "";
@@ -126,16 +123,13 @@ public class ZPWUtils {
     public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-
-        float px = dp * (metrics.densityDpi / 160f);
-        return px;
+        return dp * (metrics.densityDpi / 160f);
     }
 
-    public static float convertPixelsToDp(float px, Context context) {
+    public static float px2dp(float px, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = px / (metrics.densityDpi / 160f);
-        return dp;
+        return (px / (metrics.densityDpi / 160f));
     }
 
     public static int getMonth() {
@@ -146,7 +140,6 @@ public class ZPWUtils {
     public static int getYear() {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         String strYear = String.valueOf(calendar.get(Calendar.YEAR));
-
         return Integer.parseInt(strYear.substring(2));
     }
 
@@ -159,9 +152,9 @@ public class ZPWUtils {
     }
 
     public static void focusAndSoftKeyboard(Activity pActivity, EditText pEdittext) {
-        if (pEdittext == null)
+        if (pEdittext == null) {
             return;
-
+        }
         try {
             pEdittext.setFocusable(true);
             pEdittext.setFocusableInTouchMode(true);
@@ -177,7 +170,6 @@ public class ZPWUtils {
     public static String convertDate(long timestamp) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");//yyyy/MM/dd HH:mm:ss
-            //get current date time with Date()
             Date date = new Date(timestamp);
             return dateFormat.format(date);
         } catch (Exception e) {
@@ -213,7 +205,6 @@ public class ZPWUtils {
 
     /***
      * check user using the default keyboard
-     *
      * @param context
      * @return
      */
@@ -230,7 +221,6 @@ public class ZPWUtils {
     public static Bitmap CaptureScreenshot(Activity pActivity) {
 
         try {
-            // create bitmap screen capture
             View rootView = pActivity.getWindow().getDecorView().getRootView();
             rootView.setDrawingCacheEnabled(true);
             Bitmap bitmap = null;
@@ -242,7 +232,6 @@ public class ZPWUtils {
             rootView.setDrawingCacheEnabled(false);
             return bitmap;
         } catch (Throwable e) {
-            // Several error may come out with file handling or OOM
             e.printStackTrace();
         }
         return null;

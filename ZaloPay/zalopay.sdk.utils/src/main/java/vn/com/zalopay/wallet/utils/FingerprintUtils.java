@@ -7,10 +7,6 @@ import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.support.v4.app.ActivityCompat;
 
-/**
- * Created by cpu11843-local on 12/29/16.
- */
-
 public class FingerprintUtils {
     public static boolean isFingerPrintValid(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {

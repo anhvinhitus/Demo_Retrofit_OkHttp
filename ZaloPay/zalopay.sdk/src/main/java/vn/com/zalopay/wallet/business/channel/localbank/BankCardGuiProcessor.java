@@ -36,7 +36,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EAuthenType;
 import vn.com.zalopay.wallet.listener.ZPWOnDetectCardListener;
 import vn.com.zalopay.wallet.utils.BitmapUtil;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.LocalCardFragmentAdapter;
 import vn.com.zalopay.wallet.view.adapter.VietComBankAccountListViewAdapter;
@@ -465,7 +465,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
             getAdapter().setCanEditCardInfo(false);
 
             try {
-                ZPWUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
+                SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), getCardNumberView());
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -617,7 +617,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     private void moveToAuthenOptionView() {
         getAdapter().getActivity().setVisible(R.id.zpsdk_app_info, false);
 
-        ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getAdapter().getActivity());
+        SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getAdapter().getActivity());
         getAdapter().getActivity().setVisible(R.id.linearlayout_input_local_card, false);
         getAdapter().getActivity().visibleCardViewNavigateButton(false);
 

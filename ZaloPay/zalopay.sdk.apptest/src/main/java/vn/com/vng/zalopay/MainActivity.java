@@ -454,7 +454,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
 			/*
 
 			try {
-				Log.e("sha256", ZPWUtils.sha256("1234"));
+				Log.e("sha256", SdkUtils.sha256("1234"));
 			} catch (Exception e)
 			{
 				e.printStackTrace();

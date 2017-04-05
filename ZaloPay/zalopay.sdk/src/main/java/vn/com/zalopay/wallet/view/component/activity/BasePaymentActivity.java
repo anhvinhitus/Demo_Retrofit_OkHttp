@@ -83,8 +83,8 @@ import vn.com.zalopay.wallet.message.NetworkEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.PermissionUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.custom.EllipsizingTextView;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.VPaymentDrawableEditText;
@@ -608,7 +608,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
         if (pKeyBoardType == EKeyBoardType.NUMBER && view instanceof EditText) {
             //user using the laban key for exmple
-            if (!ZPWUtils.useDefaultKeyBoard(this)) {
+            if (!SdkUtils.useDefaultKeyBoard(this)) {
                 ((EditText) view).setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             } else {
                 ((EditText) view).setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -1139,7 +1139,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         //set time transaction
         try {
             if (GlobalData.getPaymentInfo().appTime > 0) {
-                setText(R.id.zpw_textview_transaction_time, ZPWUtils.convertDateTime(GlobalData.getPaymentInfo().appTime));
+                setText(R.id.zpw_textview_transaction_time, SdkUtils.convertDateTime(GlobalData.getPaymentInfo().appTime));
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -1347,9 +1347,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 public void onGlobalLayout() {
                     ViewTreeObserver obs = passwordView.getViewTreeObserver();
                     obs.removeGlobalOnLayoutListener(this);
-                    int width = ZPWUtils.widthScreen(getCurrentActivity());
+                    int width = SdkUtils.widthScreen(getCurrentActivity());
                     int pinLength = getResources().getInteger(R.integer.wallet_pin_length);
-                    int margin = (int) ZPWUtils.convertDpToPixel(getResources().getDimension(R.dimen.zpw_pin_margin), getApplicationContext());
+                    int margin = (int) SdkUtils.convertDpToPixel(getResources().getDimension(R.dimen.zpw_pin_margin), getApplicationContext());
                     width = width - margin * 2;
                     int height = width / pinLength;
 
@@ -1376,7 +1376,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         int paddingButtom = (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone);
-        if (!ZPWUtils.isTablet(this)) {
+        if (!SdkUtils.isTablet(this)) {
             params.setMargins(0, (int) getResources().getDimension(R.dimen.zpw_margin_top_submit_button_phone), 0, 0);
             if (submitButton != null) {
                 submitButton.setLayoutParams(params);
@@ -1675,7 +1675,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      */
     public void showSupportView(String pTransactionID) {
         try {
-            Bitmap mBitmap = ZPWUtils.CaptureScreenshot(getCurrentActivity());
+            Bitmap mBitmap = SdkUtils.CaptureScreenshot(getCurrentActivity());
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             mBitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
             byte[] byteArray = stream.toByteArray();

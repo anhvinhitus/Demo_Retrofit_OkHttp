@@ -20,7 +20,7 @@ import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 
 /***
  * platform api and update platform's data on cache
@@ -175,7 +175,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
             return;
         }
         //notify user  have a new version on store but not force user update
-        String appVersion = ZPWUtils.getAppVersion(GlobalData.getAppContext());
+        String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
         if (!TextUtils.isEmpty(appVersion) && !TextUtils.isEmpty(pResponse.newestappversion) && !pResponse.newestappversion.equalsIgnoreCase(appVersion)) {
             this.mGetGatewayInfoListener.onUpVersion(false, pResponse.newestappversion, pResponse.forceupdatemessage);
             return;
@@ -267,7 +267,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
             String resrcVer = SharedPreferencesManager.getInstance().getResourceVersion();
             //is this new user ?
             boolean isNewUser = GlobalData.isNewUser();
-            String appVersion = ZPWUtils.getAppVersion(GlobalData.getAppContext());
+            String appVersion = SdkUtils.getAppVersion(GlobalData.getAppContext());
             //mForceReload :: refresh gateway info from app
             if ((!TextUtils.isEmpty(appVersion) && !appVersion.equals(checksumSDKV)) || !BGatewayInfo.isValidConfig() || isNewUser || mForceReload) {
                 checksum = null;   //server will see this is new install, so return new resource to download

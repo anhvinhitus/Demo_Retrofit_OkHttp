@@ -26,7 +26,7 @@ import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.StringUtil;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.adapter.holder.ZPWItemChannelHolder;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -132,7 +132,7 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
                     bitmapSize += iconChannel.getWidth();
                 }
 
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) ZPWUtils.convertDpToPixel(0.5f, getContext()));
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) SdkUtils.convertDpToPixel(0.5f, getContext()));
                 params.setMargins(bitmapSize, 0, 0, 0);
                 lineView.setLayoutParams(params);
 

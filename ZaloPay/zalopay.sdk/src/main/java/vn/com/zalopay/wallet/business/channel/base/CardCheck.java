@@ -14,7 +14,7 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.listener.ZPWOnDetectCardListener;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.ZPWUtils;
+import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public class CardCheck extends SingletonBase {
     public String mCardNumber;
@@ -85,7 +85,7 @@ public class CardCheck extends SingletonBase {
 
     protected boolean matchCardLuhn(String pCardNumber) {
         if (!TextUtils.isEmpty(pCardNumber)) {
-            this.mValidLuhn = ZPWUtils.validateCardNumberByLuhn(pCardNumber.trim());
+            this.mValidLuhn = SdkUtils.validateCardNumberByLuhn(pCardNumber.trim());
         }
 
         Log.d(this, "===matchCardLuhn===" + pCardNumber + "===mValidLuhn=" + mValidLuhn);
