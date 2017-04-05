@@ -77,14 +77,14 @@ public class CShareData extends SingletonBase {
                 if (mMerchantTask != null)
                     mMerchantTask.onTaskError(null);
             }
-            Log.d(this, "===onCheckResourceStaticComplete===" + "===isSuccess=" + isSuccess + "===pError=" + pError);
+            Log.d(this, "===onCheckResourceStaticComplete===" + "===success=" + isSuccess + "===pError=" + pError);
         }
 
-        @Override
+        /*@Override
         public void onCheckResourceStaticInProgress() {
             if (mMerchantTask != null)
                 mMerchantTask.onTaskInProcess();
-        }
+        }*/
 
         @Override
         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
@@ -257,7 +257,7 @@ public class CShareData extends SingletonBase {
     protected void checkStaticResource() {
         //check static resource whether ready or not
         try {
-            PlatformInfoLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+            PlatformInfoLoader.getInstance().checkStaticResource();
         } catch (Exception e) {
             if (checkResourceStaticListener != null) {
                 checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);

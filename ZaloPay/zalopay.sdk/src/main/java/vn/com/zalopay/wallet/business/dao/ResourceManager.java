@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import rx.Observable;
+import rx.Subscriber;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
@@ -30,8 +32,8 @@ import vn.com.zalopay.wallet.view.component.activity.ActivityRendering;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class ResourceManager extends SingletonBase {
+    protected static final String TAG = ResourceManager.class.getCanonicalName();
     public static final String CONFIG_FILE = "config.json";
-    private static final String TAG = ResourceManager.class.getName();
     private static final String PREFIX_JS = "/js/";
     private static final String PREFIX_IMG = "/img/";
     private static final String PREFIX_FONT = "/fonts/";
@@ -73,6 +75,18 @@ public class ResourceManager extends SingletonBase {
 
             return resourceManager;
         }
+    }
+
+    public static Observable<Boolean> createResourceObservable() {
+        return Observable.create(subscriber -> {
+            try {
+                ResourceManager.initResource();
+                subscriber.onNext(ResourceManager.isInit());
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        });
     }
 
     private static String getUnzipFolderPath() throws Exception {
@@ -170,37 +184,27 @@ public class ResourceManager extends SingletonBase {
 
     public static synchronized void initResource() throws Exception {
         try {
-            Log.d("ResourceManager", "===initResource===");
-
+            Log.d(TAG, "initialize resource");
             String json = loadResourceFile(null, CONFIG_FILE);
-
             if (TextUtils.isEmpty(json)) {
                 mIsCreated = false;
                 return;
             }
             mConfigFromServer = (new DConfigFromServer()).fromJsonString(json);
-
             ResourceManager commonResourceManager = getInstance(null);
-
             if (mConfigFromServer.stringMap != null) {
                 commonResourceManager.setString(mConfigFromServer.stringMap);
             }
-
             if (mConfigFromServer.pageList != null) {
                 for (DPage page : mConfigFromServer.pageList) {
                     getInstance(page.pageName).mPageConfig = page;
                 }
             }
-
             mIsCreated = true;
-
-
         } catch (Exception e) {
-            Log.e("initResource", e);
-
+            Log.e(TAG, e);
             mIsCreated = false;
         }
-
     }
 
     public static String getJavascriptContent(String pJsName) {

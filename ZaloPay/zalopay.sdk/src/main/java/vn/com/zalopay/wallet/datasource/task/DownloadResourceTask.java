@@ -82,7 +82,7 @@ public class DownloadResourceTask extends BaseTask<ResponseBody> {
 
     protected void onPostResult(boolean pIsSuccess, String pMessage) {
         DownloadResourceEventMessage eventMessage = new DownloadResourceEventMessage();
-        eventMessage.isSuccess = pIsSuccess;
+        eventMessage.success = pIsSuccess;
         eventMessage.message = pMessage;
         PaymentEventBus.shared().post(eventMessage);
         Log.d(this, "posting to result download resource task");

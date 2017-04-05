@@ -40,23 +40,29 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Stack;
 
+import rx.Observer;
 import rx.Single;
 import rx.SingleSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.AppInfoLoader;
+import vn.com.zalopay.wallet.business.behavior.gateway.BGatewayInfo;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.CFontManager;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
@@ -79,11 +85,17 @@ import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
+import vn.com.zalopay.wallet.message.DownloadResourceEventMessage;
+import vn.com.zalopay.wallet.message.LoadingTaskEventMessage;
 import vn.com.zalopay.wallet.message.NetworkEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
+import vn.com.zalopay.wallet.message.ResourceInitialEventMessage;
+import vn.com.zalopay.wallet.message.UpVersionMessage;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
+import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.PermissionUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
+import vn.com.zalopay.wallet.utils.StorageUtil;
 import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.view.custom.EllipsizingTextView;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
@@ -222,6 +234,110 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     };
     private boolean isVisibilitySupport = false;
     private Feedback mFeedback = null;
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnTaskInProcessEvent(LoadingTaskEventMessage pMessage)
+    {
+        Log.d(this,"OnTaskInProcessEvent" + GsonUtils.toJsonString(pMessage));
+        showProgress(true, pMessage.message);
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnInitialResourceCompleteEvent(ResourceInitialEventMessage pMessage)
+    {
+        Log.d(this,"OnFinishInitialResourceEvent" + GsonUtils.toJsonString(pMessage));
+        if (pMessage.success) {
+            Subscription subscription = Single.zip(MapCardHelper.loadMapCardList(false,GlobalData.getPaymentInfo().userInfo),
+                    BankAccountHelper.loadBankAccountList(false), (t1, t2) -> true)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new SingleSubscriber<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean aBoolean) {
+                            readyForPayment();
+                        }
+
+                        @Override
+                        public void onError(Throwable error) {
+                            showDialogAndExit(GlobalData.getStringResource(RS.string.zpw_generic_error), true);
+                            Log.d("onError", error);
+                        }
+                    });
+            mCompositeSubscription.add(subscription);
+        } else {
+            Log.d(this, "init resource error " + pMessage);
+            /***
+             * delete folder resource to download again.
+             * this prevent case file resource downloaded but was damaged on the wire so
+             * can not parse json file.
+             */
+            try {
+                String resPath = SharedPreferencesManager.getInstance().getUnzipPath();
+                if (!TextUtils.isEmpty(resPath))
+                    StorageUtil.deleteRecursive(new File(resPath));
+            } catch (Exception e) {
+                Log.d(this, e);
+            }
+            String message = pMessage.message;
+            if (TextUtils.isEmpty(message)) {
+                message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+            }
+            showDialogAndExit(message, ErrorManager.shouldShowDialog());   //notify error and close sdk
+        }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnUpVersionEvent(UpVersionMessage pMessage)
+    {
+        Log.d(this,"OnUpVersionEvent" + GsonUtils.toJsonString(pMessage));
+        notifyUpVersionToApp(pMessage.forceupdate, pMessage.version, pMessage.message);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnDownloadResourceMessageEvent(DownloadResourceEventMessage result) {
+        Log.d(this, "OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
+        if (result.success) {
+           initializeResource();
+        } else {
+            ResourceInitialEventMessage message = new ResourceInitialEventMessage();
+            message.success = result.success;
+            message.message = result.message;
+            PaymentEventBus.shared().post(message);
+        }
+    }
+
+    public void initializeResource()
+    {
+        if(!BGatewayInfo.isValidConfig())
+        {
+            Log.d(this,"call init resource but not ready for now, waiting for downloading resource");
+            return;
+        }
+
+        Subscription subscription = ResourceManager.createResourceObservable()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d("init resource complete","onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResourceInitialEventMessage message = new ResourceInitialEventMessage();
+                        message.success = false;
+                        message.message = GlobalData.getStringResource(RS.string.zpw_alert_error_resource_not_download);
+                        PaymentEventBus.shared().post(message);
+                        Log.d("init resource fail",e);
+                    }
+
+                    @Override
+                    public void onNext(Boolean success) {
+                        ResourceInitialEventMessage message = new ResourceInitialEventMessage();
+                        message.success = success;
+                        PaymentEventBus.shared().post(message);
+                    }
+                });
+        mCompositeSubscription.add(subscription);
+    }
     /***
      * check static resource listener.
      */
@@ -254,10 +370,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
 
-        @Override
+        /*@Override
         public void onCheckResourceStaticInProgress() {
             showProgress(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_loading_resource));
-        }
+        }*/
 
         @Override
         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
@@ -402,11 +518,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     protected void loadStaticReload() {
         try {
             Log.d(this, "check static resource start");
-            PlatformInfoLoader.getInstance().setOnCheckResourceStaticListener(checkResourceStaticListener).checkStaticResource();
+            PlatformInfoLoader.getInstance().checkStaticResource();
         } catch (Exception e) {
-            if (checkResourceStaticListener != null) {
-                checkResourceStaticListener.onCheckResourceStaticComplete(false, e != null ? e.getMessage() : null);
-            }
+            showDialogAndExit( GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), true);   //notify error and close sdk
+            Log.e(this,e);
         }
     }
 

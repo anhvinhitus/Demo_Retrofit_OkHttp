@@ -7,6 +7,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 
+import rx.Observable;
+import rx.Subscriber;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
@@ -19,43 +21,15 @@ import vn.com.zalopay.wallet.message.DownloadResourceEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWInitResourceListener;
+import vn.com.zalopay.wallet.message.ResourceInitialEventMessage;
+import vn.com.zalopay.wallet.message.UpVersionMessage;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.StorageUtil;
+import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class PlatformInfoLoader extends SingletonBase {
     private static PlatformInfoLoader _object;
-    private onCheckResourceStaticListener mCheckResourceStatisListener;
-    private ZPWInitResourceListener mLoadResourceListener = new ZPWInitResourceListener() {
-
-        @Override
-        public void onSuccess() {
-            Log.d(this, "init resource ssucess");
-            if (mCheckResourceStatisListener != null) {
-                mCheckResourceStatisListener.onCheckResourceStaticComplete(true, null);
-            }
-        }
-
-        @Override
-        public void onError(String pMessage) {
-            Log.d(this, "init resource error " + pMessage);
-            /***
-             * delete folder resource to download again.
-             * this prevent case file resource downloaded but was damaged on the wire so
-             * can not parse json file.
-             */
-            try {
-                String resPath = SharedPreferencesManager.getInstance().getUnzipPath();
-                if (!TextUtils.isEmpty(resPath))
-                    StorageUtil.deleteRecursive(new File(resPath));
-            } catch (Exception e) {
-                Log.d(this, e);
-            }
-            if (mCheckResourceStatisListener != null) {
-                mCheckResourceStatisListener.onCheckResourceStaticComplete(false, pMessage);
-            }
-        }
-    };
     private ZPWGetGatewayInfoListener mLoadGatewayInfoListener = new ZPWGetGatewayInfoListener() {
         @Override
         public void onProcessing() {
@@ -64,8 +38,11 @@ public class PlatformInfoLoader extends SingletonBase {
 
         @Override
         public void onSuccess() {
-            Log.d(this, "get platforminfo success");
-            initResource(mLoadResourceListener);
+            Log.d(this, "get platforminfo success, continue initialize resource to memory");
+            if(BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity)
+            {
+                ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
+            }
         }
 
         @Override
@@ -74,26 +51,31 @@ public class PlatformInfoLoader extends SingletonBase {
             if (pMessage != null) {
                 ErrorManager.updateTransactionResult(pMessage.returncode);
             }
-            if (mCheckResourceStatisListener != null) {
-                mCheckResourceStatisListener.onCheckResourceStaticComplete(false, pMessage != null ? pMessage.returnmessage : null);
-            }
+            ResourceInitialEventMessage message = new ResourceInitialEventMessage();
+            message.success = false;
+            message.message = pMessage != null ? pMessage.returnmessage : null;
+            PaymentEventBus.shared().post(message);
         }
 
         @Override
         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
             Log.d(this, "need to up version from getplatforminfo");
             if (!pForceUpdate) {
-                initResource(mLoadResourceListener);
+                if(BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity)
+                {
+                    ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
+                }
             }
-            if (mCheckResourceStatisListener != null) {
-                mCheckResourceStatisListener.onUpVersion(pForceUpdate, pVersion, pMessage);
-            }
+            UpVersionMessage message = new UpVersionMessage();
+            message.forceupdate = pForceUpdate;
+            message.version = pVersion;
+            message.message = pMessage;
+            PaymentEventBus.shared().post(message);
         }
     };
 
     public PlatformInfoLoader() {
         super();
-        PaymentEventBus.shared().register(this);
     }
 
     public synchronized static PlatformInfoLoader getInstance() {
@@ -101,27 +83,6 @@ public class PlatformInfoLoader extends SingletonBase {
             PlatformInfoLoader._object = new PlatformInfoLoader();
         }
         return PlatformInfoLoader._object;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnDownloadResourceMessageEvent(DownloadResourceEventMessage result) {
-        Log.d(this, "OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
-        if (result.isSuccess) {
-            initResource(mLoadResourceListener);
-        } else if (mCheckResourceStatisListener != null) {
-            mCheckResourceStatisListener.onCheckResourceStaticComplete(false, result.message);
-        }
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        PaymentEventBus.shared().unregister(this);
-    }
-
-    public PlatformInfoLoader setOnCheckResourceStaticListener(onCheckResourceStaticListener pListener) {
-        mCheckResourceStatisListener = pListener;
-        return this;
     }
 
     public void checkStaticResource() throws Exception {
@@ -134,9 +95,6 @@ public class PlatformInfoLoader extends SingletonBase {
             needToReloadPlatforminfo = true;
         }
         if (needToReloadPlatforminfo) {
-            if (mCheckResourceStatisListener != null) {
-                mCheckResourceStatisListener.onCheckResourceStaticInProgress();
-            }
             try {
                 Log.d(this, "===need to load resource again===");
                 retryLoadGateway(false);
@@ -145,10 +103,7 @@ public class PlatformInfoLoader extends SingletonBase {
                 throw e;
             }
         } else if (!BGatewayInfo.isValidConfig()) {
-            Log.d(this, "===resource wasnt download===reload again===");
-            if (mCheckResourceStatisListener != null) {
-                mCheckResourceStatisListener.onCheckResourceStaticInProgress();
-            }
+            Log.d(this, "===resource didnt download===reload again===");
             try {
                 retryLoadInfo();
             } catch (Exception e) {
@@ -159,14 +114,16 @@ public class PlatformInfoLoader extends SingletonBase {
         //resource existed  and need to load into memory
         else if (!ResourceManager.isInit()) {
             Log.d(this, "===resource was downloaded but not init===init resource now");
-            if (mCheckResourceStatisListener != null) {
-                mCheckResourceStatisListener.onCheckResourceStaticInProgress();
+            if(BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity)
+            {
+                ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
             }
-            initResource(mLoadResourceListener);
         }
         //everything is ok now.
-        else if (mCheckResourceStatisListener != null) {
-            mCheckResourceStatisListener.onCheckResourceStaticComplete(true, null);
+        else {
+            ResourceInitialEventMessage message = new ResourceInitialEventMessage();
+            message.success = true;
+            PaymentEventBus.shared().post(message);
         }
     }
 
@@ -185,22 +142,6 @@ public class PlatformInfoLoader extends SingletonBase {
         }
     }
 
-    /***
-     * after download resource successfully.
-     * need to load to memory.
-     * @param pCallback
-     */
-    private void initResource(ZPWInitResourceListener pCallback) {
-        if(!BGatewayInfo.isValidConfig())
-        {
-            Log.d(this,"call init resource but not ready for now");
-            return;
-        }
-        BundleResourceLoader initResourceTask = new BundleResourceLoader(pCallback);
-        initResourceTask.execute();
-        Log.d(this,"init resource");
-    }
-
     // retry downloading resource
     private void retryLoadResource(String pUrl, String pResourceVersion) {
         DownloadResourceTask downloadResourceTask = new DownloadResourceTask(pUrl, pResourceVersion);
@@ -217,7 +158,6 @@ public class PlatformInfoLoader extends SingletonBase {
 
     public interface onCheckResourceStaticListener {
         void onCheckResourceStaticComplete(boolean isSuccess, String pError);
-        void onCheckResourceStaticInProgress();
         void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage);
     }
 }
