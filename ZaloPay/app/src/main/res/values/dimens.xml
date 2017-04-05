@@ -140,11 +140,11 @@
     <dimen name="personal.avatar">50dp</dimen>
     <dimen name="personal.margin">12dp</dimen>
     <dimen name="personal.iconfont">20dp</dimen>
-    <dimen name="personal.iconfont.text">13dp</dimen>
-    <dimen name="personal.name">14dp</dimen>
-    <dimen name="personal.zalopayid">12dp</dimen>
-    <dimen name="personal.link.text">12dp</dimen>
-    <dimen name="personal.balance">18dp</dimen>
+    <dimen name="personal.iconfont.text">13sp</dimen>
+    <dimen name="personal.name">14sp</dimen>
+    <dimen name="personal.zalopayid">12sp</dimen>
+    <dimen name="personal.link.text">12sp</dimen>
+    <dimen name="personal.balance">18sp</dimen>
     <dimen name="personal.menu_item_height">48dp</dimen>
     <dimen name="personal.info.height">62dp</dimen>
 
