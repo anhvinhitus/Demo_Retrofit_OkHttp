@@ -1467,7 +1467,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             } else if (pView.getId() != R.id.front_card_number &&
                     ((pView instanceof TextView) || pView instanceof VPaymentDrawableEditText || pView instanceof VPaymentValidDateEditText)) {
                 Typeface typeFace = CFontManager.getInstance().loadFont(pFontName);
-
                 if (typeFace != null) {
                     if (pView instanceof TextView) {
                         ((TextView) pView).setTypeface(typeFace);

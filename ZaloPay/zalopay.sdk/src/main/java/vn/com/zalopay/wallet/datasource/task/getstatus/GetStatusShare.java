@@ -1,7 +1,7 @@
 package vn.com.zalopay.wallet.datasource.task.getstatus;
 
 
-import java.util.HashMap;
+import java.util.Map;
 
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
@@ -30,14 +30,14 @@ public class GetStatusShare extends SingletonBase implements IGetPaymentStatus {
     }
 
     @Override
-    public void onGetStatus(BaseTask pTask, HashMap<String, String> pParamsRequest) {
+    public void onGetStatus(BaseTask pTask, Map<String, String> pParamsRequest) {
         if (mIGetPaymentStatus != null) {
             mIGetPaymentStatus.onGetStatus(pTask, pParamsRequest);
         }
     }
 
     @Override
-    public void onPrepareParamsGetStatus(HashMap<String, String> pParamsRequest, String pTransactionId) throws Exception {
+    public void onPrepareParamsGetStatus(Map<String, String> pParamsRequest, String pTransactionId) throws Exception {
         if (mIGetPaymentStatus != null) {
             mIGetPaymentStatus.onPrepareParamsGetStatus(pParamsRequest, pTransactionId);
         }

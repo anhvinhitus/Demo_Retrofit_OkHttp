@@ -1,6 +1,8 @@
 package vn.com.zalopay.wallet.view.custom.cardview;
 
+import android.os.Build;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,9 +22,7 @@ import vn.com.zalopay.wallet.business.data.Log;
 public class CardSelector {
     private static CardColorText CardColorTextDefault = new CardColorText(R.color.default_color_text_normal, R.color.default_color_text_highline, R.color.default_color_text_selected);
     public static final CardSelector DEFAULT = new CardSelector(R.drawable.card_color_round_rect_default, android.R.color.transparent, R.drawable.bg_logo_card_default, CardColorTextDefault);
-
-    private static HashMap<String, CardSelector> cardSelectorHashMap;
-
+    private static Map<String, CardSelector> cardSelectorHashMap;
     private static CardSelector _object;
     private int mResCardId;
     private int mResCenterImageId;
@@ -48,8 +48,11 @@ public class CardSelector {
     };
 
     public CardSelector() {
-        cardSelectorHashMap = new HashMap<>();
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            cardSelectorHashMap = new ArrayMap<>();
+        } else {
+            cardSelectorHashMap = new HashMap<>();
+        }
         //fill bankcode and selector
         if (BankLoader.existedBankListOnMemory()) {
             populateCardSelector();
@@ -147,10 +150,7 @@ public class CardSelector {
     }
 
     protected void addCardSelectorToHashMap(String pBankCode) {
-        Log.d(this, "===addCardSelectorToHashMap pBankCode===" + pBankCode);
-
         CardSelector cardSelector = createCardSelector(pBankCode);
-
         if (cardSelector != null) {
             cardSelectorHashMap.put(pBankCode, cardSelector);
         }

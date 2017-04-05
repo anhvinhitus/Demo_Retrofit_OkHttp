@@ -2,7 +2,9 @@ package vn.com.zalopay.wallet.business.dao;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
@@ -23,7 +26,6 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.component.activity.ActivityRendering;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
@@ -53,7 +55,11 @@ public class ResourceManager extends SingletonBase {
             return mCommonResourceManager;
         } else {
             if (mResourceManagerMap == null) {
-                mResourceManagerMap = new HashMap<String, ResourceManager>();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    mResourceManagerMap = new ArrayMap<>();
+                } else {
+                    mResourceManagerMap = new HashMap<>();
+                }
             }
 
             ResourceManager resourceManager = mResourceManagerMap.get(pPageName);
@@ -70,11 +76,13 @@ public class ResourceManager extends SingletonBase {
     }
 
     private static String getUnzipFolderPath() throws Exception {
-        if (SharedPreferencesManager.getInstance() == null)
+        if (SharedPreferencesManager.getInstance() == null) {
             throw new Exception("Missing shared preferences!!!");
+        }
 
-        if (mUnzipPath == null)
+        if (mUnzipPath == null) {
             mUnzipPath = SharedPreferencesManager.getInstance().getUnzipPath();
+        }
 
         return mUnzipPath;
     }

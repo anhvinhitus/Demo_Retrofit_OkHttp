@@ -1,7 +1,7 @@
 package vn.com.zalopay.wallet.datasource;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -15,6 +15,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
@@ -23,7 +24,6 @@ import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.message.NetworkEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private static DataRepository _object;
@@ -142,7 +142,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
 
     }
 
-    public synchronized void loadData(IRequest pRequest, HashMap<String, String> pParams) {
+    public synchronized void loadData(IRequest pRequest, Map<String, String> pParams) {
         if (haveRequestRunning()) {
             Log.d(this, mTask.toString() + " there're a task is running...");
             return;
@@ -155,7 +155,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
                 .subscribe(nextAction, errorAction);
     }
 
-    public synchronized void postData(final IRequest pRequest, HashMap<String, String> pParams) {
+    public synchronized void postData(final IRequest pRequest, Map<String, String> pParams) {
         if (haveRequestRunning()) {
             Log.d(this, mTask.toString() + "there're a task is running...");
             return;

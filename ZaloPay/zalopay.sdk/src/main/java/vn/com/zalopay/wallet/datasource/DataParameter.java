@@ -3,7 +3,7 @@ package vn.com.zalopay.wallet.datasource;
 import android.os.Build;
 import android.text.TextUtils;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -35,7 +35,7 @@ public class DataParameter {
      * @param pOtpBeginTime
      * @param pOtpEndTime
      */
-    public static void prepareSendLog(HashMap<String, String> params, int pmcID, String pTransID, long pCaptchaBeginTime, long pCaptchaEndTime, long pOtpBeginTime, long pOtpEndTime) throws Exception {
+    public static void prepareSendLog(Map<String, String> params, int pmcID, String pTransID, long pCaptchaBeginTime, long pCaptchaEndTime, long pOtpBeginTime, long pOtpEndTime) throws Exception {
         putBase(params);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
@@ -48,7 +48,7 @@ public class DataParameter {
 
     }
 
-    public static void prepareGetBankList(HashMap<String, String> params, String pCheckSumBankList) throws Exception {
+    public static void prepareGetBankList(Map<String, String> params, String pCheckSumBankList) throws Exception {
         putBase(params);
         params.put(ConstantParams.PLATFORM, BuildConfig.PAYMENT_PLATFORM);
         params.put(ConstantParams.CHECKSUM, pCheckSumBankList != null ? pCheckSumBankList : "");
@@ -62,7 +62,7 @@ public class DataParameter {
      * @param pAuthenType
      * @param pAuthenValue
      */
-    public static void prepareAtmAuthenPayer(HashMap<String, String> params, String pTransID, String pAuthenType, String pAuthenValue) throws Exception {
+    public static void prepareAtmAuthenPayer(Map<String, String> params, String pTransID, String pAuthenType, String pAuthenValue) throws Exception {
         putBase(params);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
@@ -77,7 +77,7 @@ public class DataParameter {
      * @param params
      * @param pCard
      */
-    public static void prepareRemoveCard(HashMap<String, String> params, ZPWRemoveMapCardParams pCard) {
+    public static void prepareRemoveCard(Map<String, String> params, ZPWRemoveMapCardParams pCard) {
         putBase(params);
         params.put(ConstantParams.USER_ID, pCard.userID);
         params.put(ConstantParams.ACCESS_TOKEN, pCard.accessToken);
@@ -88,7 +88,7 @@ public class DataParameter {
     }
 
 
-    public static boolean prepareSDKReport(HashMap<String, String> params, String pTranID, String pBankCode, int pExInfo, String pException) {
+    public static boolean prepareSDKReport(Map<String, String> params, String pTranID, String pBankCode, int pExInfo, String pException) {
         try {
             putBase(params);
             params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
@@ -110,7 +110,7 @@ public class DataParameter {
      * @param params
      * @param pTransID
      */
-    public static void prepareGetStatusParams(HashMap<String, String> params, String pTransID) throws Exception {
+    public static void prepareGetStatusParams(Map<String, String> params, String pTransID) throws Exception {
         putBase(params);
         params.put(ConstantParams.APP_ID, String.valueOf(GlobalData.getPaymentInfo().appID));
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
@@ -125,7 +125,7 @@ public class DataParameter {
      * @param params
      * @param pAppTransID
      */
-    public static void prepareCheckSubmitOrderStatusParams(HashMap<String, String> params, String pAppTransID) throws Exception {
+    public static void prepareCheckSubmitOrderStatusParams(Map<String, String> params, String pAppTransID) throws Exception {
         putBase(params);
         params.put(ConstantParams.APP_ID, String.valueOf(GlobalData.getPaymentInfo().appID));
         params.put(ConstantParams.APP_TRANS_ID, pAppTransID);
@@ -137,7 +137,7 @@ public class DataParameter {
      * @param params
      * @throws Exception
      */
-    public static void prepareGetCardInfoListParams(HashMap<String, String> params, UserInfo pUserInfo) throws Exception {
+    public static void prepareGetCardInfoListParams(Map<String, String> params, UserInfo pUserInfo) throws Exception {
         putBase(params);
         params.put(ConstantParams.ACCESS_TOKEN, pUserInfo.accessToken);
         params.put(ConstantParams.USER_ID, pUserInfo.zaloPayUserId);
@@ -149,7 +149,7 @@ public class DataParameter {
         params.put(ConstantParams.CARDINFO_CHECKSUM, checkSum);
     }
 
-    public static void prepareGetBankAccountListParams(HashMap<String, String> params) throws Exception {
+    public static void prepareGetBankAccountListParams(Map<String, String> params) throws Exception {
         putBase(params);
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
@@ -170,7 +170,7 @@ public class DataParameter {
      * @param pCheckSum
      * @param params
      */
-    public static void prepareGetAppInfoParams(String pZaloUserId, String pAppId, String pAccessToken, String pCheckSum, HashMap<String, String> params) {
+    public static void prepareGetAppInfoParams(String pZaloUserId, String pAppId, String pAccessToken, String pCheckSum, Map<String, String> params) {
         putBase(params);
         params.put(ConstantParams.USER_ID, pZaloUserId);
         params.put(ConstantParams.APP_ID, pAppId);
@@ -190,7 +190,7 @@ public class DataParameter {
      * @param resrcVer
      * @param params
      */
-    public static void prepareGetPlatformInfoParams(String checksum, String resrcVer, String cardInfoCheckSum, String bankAccountChecksum, HashMap<String, String> params) throws Exception {
+    public static void prepareGetPlatformInfoParams(String checksum, String resrcVer, String cardInfoCheckSum, String bankAccountChecksum, Map<String, String> params) throws Exception {
 
         ZPWPaymentInfo paymentInfo = GlobalData.getPaymentInfo();
 
@@ -213,14 +213,14 @@ public class DataParameter {
 
     }
 
-    public static void prepareGetStatusMapCardParams(HashMap<String, String> params, String pTransID) throws Exception {
+    public static void prepareGetStatusMapCardParams(Map<String, String> params, String pTransID) throws Exception {
         putBase(params);
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
         params.put(ConstantParams.ZP_TRANSID, pTransID);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
     }
 
-    public static void prepareVerifyMapCardParams(AdapterBase pAdapter, HashMap<String, String> params) throws Exception {
+    public static void prepareVerifyMapCardParams(AdapterBase pAdapter, Map<String, String> params) throws Exception {
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         params.put(ConstantParams.ZALO_ID, GlobalData.getPaymentInfo().userInfo.zaloUserId);
@@ -242,7 +242,7 @@ public class DataParameter {
      * @param pmcID
      * @param params
      */
-    public static boolean prepareSubmitTransactionParams(AdapterBase pAdapter, String pmcID, HashMap<String, String> params) throws Exception {
+    public static boolean prepareSubmitTransactionParams(AdapterBase pAdapter, String pmcID, Map<String, String> params) throws Exception {
         putBaseParameter(params);
         if (pAdapter != null) {
             params.put(ConstantParams.PMC_ID, pAdapter.getChannelID());
@@ -282,7 +282,7 @@ public class DataParameter {
      *
      * @param params
      */
-    public static void putBaseParameter(HashMap<String, String> params) throws Exception {
+    public static void putBaseParameter(Map<String, String> params) throws Exception {
         ZPWPaymentInfo paymentInfo = GlobalData.getPaymentInfo();
         params.put(ConstantParams.APP_ID, String.valueOf(paymentInfo.appID));
         params.put(ConstantParams.APP_TRANS_ID, paymentInfo.appTransID);
@@ -304,7 +304,7 @@ public class DataParameter {
         params.put(ConstantParams.MNO, ConnectionUtil.getSimOperator(GlobalData.getAppContext()));
     }
 
-    public static void putBase(HashMap<String, String> params) {
+    public static void putBase(Map<String, String> params) {
         params.put(ConstantParams.APP_VERSION, SdkUtils.getAppVersion(GlobalData.getAppContext()));
     }
 
@@ -313,7 +313,7 @@ public class DataParameter {
      *
      * @param params
      */
-    public static void prepareMapAccountParams(HashMap<String, String> params, String pBankAccInfo) throws Exception {
+    public static void prepareMapAccountParams(Map<String, String> params, String pBankAccInfo) throws Exception {
         ZPWPaymentInfo paymentInfo = GlobalData.getPaymentInfo();
         params.put(ConstantParams.USER_ID, String.valueOf(paymentInfo.userInfo.zaloPayUserId));
         params.put(ConstantParams.ZALO_ID, String.valueOf(paymentInfo.userInfo.zaloUserId));

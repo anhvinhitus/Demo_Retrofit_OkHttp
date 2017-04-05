@@ -1,10 +1,8 @@
 package vn.com.zalopay.wallet.datasource.implement;
 
-import java.util.HashMap;
+import java.util.Map;
 
-import retrofit2.Response;
 import rx.Observable;
-import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.data.ConstantParams;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.datasource.IData;
@@ -12,7 +10,7 @@ import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 
 public class SubmitOrderImpl implements IRequest<StatusResponse> {
     @Override
-    public Observable<StatusResponse> getRequest(IData pIData, HashMap<String, String> pParams) {
+    public Observable<StatusResponse> getRequest(IData pIData, Map<String, String> pParams) {
         return pIData.submitOrder(
                 pParams.get(ConstantParams.APP_ID), pParams.get(ConstantParams.ZALO_ID), pParams.get(ConstantParams.APP_TRANS_ID), pParams.get(ConstantParams.APP_USER),
                 pParams.get(ConstantParams.APP_TIME), pParams.get(ConstantParams.ITEM), pParams.get(ConstantParams.DESCRIPTION), pParams.get(ConstantParams.EMBED_DATA),

@@ -1,7 +1,9 @@
 package vn.com.zalopay.wallet.view.adapter;
 
 import android.app.Activity;
+import android.os.Build;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +18,8 @@ import java.util.Map;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.view.adapter.holder.ZPWItemBankAccountHolder;
 
 /***
@@ -27,9 +29,7 @@ public class VietComBankAccountListViewAdapter extends ArrayAdapter<String> {
     private Activity mActivity;
     private ArrayList<String> mAccountList = null;
     private int mLayoutId;
-
-    private HashMap<String, ImageView> iconList;
-
+    private Map<String, ImageView> iconList;
     private int mSelectedIndex;
 
     //getter and setter
@@ -39,8 +39,11 @@ public class VietComBankAccountListViewAdapter extends ArrayAdapter<String> {
         this.mActivity = pActivity;
         this.mLayoutId = pLayoutId;
         this.mAccountList = pAccountList;
-        this.iconList = new HashMap<>();
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            this.iconList = new ArrayMap<>();
+        } else {
+            this.iconList = new HashMap<>();
+        }
         mSelectedIndex = 0;
     }
 
