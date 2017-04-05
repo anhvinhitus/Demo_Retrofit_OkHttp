@@ -1,8 +1,5 @@
 package vn.com.zalopay.wallet.listener;
 
-/***
- * CLIENT USE THIS CALLBACK TO GET RESULT FROM GETWAY INFO DataRepository.
- */
 public interface ZPWGatewayInfoCallback {
     void onProcessing();
 

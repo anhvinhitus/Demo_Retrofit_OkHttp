@@ -4,9 +4,9 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 
 
 public interface ILoadAppInfoListener {
-    public void onProcessing();
+    void onProcessing();
 
-    public void onSuccess();
+    void onSuccess();
 
-    public void onError(DAppInfoResponse message);
+    void onError(DAppInfoResponse message);
 }

@@ -33,7 +33,6 @@ import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
-import vn.com.zalopay.wallet.listener.ZPWSaveMapCardListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
@@ -52,8 +51,6 @@ public class GlobalData {
     public static double orderAmountTotal = 0;
     public static double orderAmountFee = 0;
     public static ECardChannelType cardChannelType = ECardChannelType.ATM;
-    //save card listener for merchant
-    public static ZPWSaveMapCardListener saveMapCardListener;
     //callback to merchant after sdk retry load gateway info
     protected static WeakReference<ZPWGatewayInfoCallback> mMerchantCallBack;
     //app's activity is calling sdk.
@@ -492,11 +489,6 @@ public class GlobalData {
         }
     }
 
-    public static void initApplication(ZPWPaymentInfo pPaymentInfo, ZPWSaveMapCardListener pListener) {
-        Log.d("GlobalData", "initApplication(ZPWPaymentInfo pPaymentInfo, ZPWSaveMapCardListener pListener)");
-        GlobalData.mPaymentInfo = pPaymentInfo;
-        GlobalData.saveMapCardListener = pListener;
-    }
     //endregion
 
     public static void initResultReturn() {

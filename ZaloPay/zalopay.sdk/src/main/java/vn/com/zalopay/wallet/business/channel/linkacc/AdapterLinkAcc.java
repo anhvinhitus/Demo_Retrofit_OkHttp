@@ -245,12 +245,6 @@ public class AdapterLinkAcc extends AdapterBase {
 
 
     @Override
-    public void closeSDKAfterNetworkOffline() {
-        super.closeSDKAfterNetworkOffline();
-    }
-
-
-    @Override
     public String getChannelID() {
         if (mConfig != null) {
             return String.valueOf(mConfig.pmcid);
