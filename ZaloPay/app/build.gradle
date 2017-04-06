@@ -454,7 +454,6 @@ dependencies {
     }
     compile('vn.com.vng:webapp:0.5')
 
-    debugCompile project(':zalopay.debug')
     compile project(':zalopay.data')
     compile project(':ui.widget')
     compile(project(':zalopay.app-loader')) {
