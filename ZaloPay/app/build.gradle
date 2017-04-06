@@ -406,6 +406,10 @@ task installApp(type: Exec, dependsOn: 'installSandboxDebug') {
     }
 }
 
+configurations {
+    compile.exclude module: 'firebase-core'
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
