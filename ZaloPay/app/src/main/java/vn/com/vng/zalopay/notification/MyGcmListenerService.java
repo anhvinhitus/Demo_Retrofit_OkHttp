@@ -54,25 +54,27 @@ public class MyGcmListenerService extends GcmListenerService {
     }
 
     private void sendNotification(String message, EmbedDataGcm embedDataGcm) {
-        if (!TextUtils.isEmpty(message)) {
-            UserComponent userComponent = getUserComponent();
-            Timber.d("Create notification with userComponent %s", userComponent);
-            if (userComponent != null) {
-                NotificationHelper notificationHelper = userComponent.notificationHelper();
-                notificationHelper.handleNotificationFromGcm(message, embedDataGcm);
-            }
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+
+        UserComponent userComponent = getUserComponent();
+        if (userComponent != null) {
+            NotificationHelper notificationHelper = userComponent.notificationHelper();
+            notificationHelper.handleNotificationFromGcm(message, embedDataGcm);
         }
     }
 
     private void createUserComponent() {
 
-        Timber.d(" user component %s", getUserComponent());
+        Timber.d("UserComponent : [%s]", getUserComponent());
 
-        if (getUserComponent() != null)
+        if (getUserComponent() != null) {
             return;
+        }
 
         UserConfig userConfig = AndroidApplication.instance().getAppComponent().userConfig();
-        Timber.d(" mUserConfig %s", userConfig.isSignIn());
+        Timber.d("Client is sign In %s", userConfig.isSignIn());
         if (userConfig.isSignIn()) {
             userConfig.loadConfig();
             AndroidApplication.instance().createUserComponent(userConfig.getCurrentUser());

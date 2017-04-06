@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
@@ -401,10 +402,7 @@ public class NotificationHelper {
     /**
      * Show notification from Gcm
      */
-    void handleNotificationFromGcm(final String message, final EmbedDataGcm embedDataGcm) {
-        if (TextUtils.isEmpty(message)) {
-            return;
-        }
+    void handleNotificationFromGcm(@NonNull final String message, @Nullable final EmbedDataGcm embedDataGcm) {
         if (embedDataGcm == null) {
             throwNotification(mContext,
                     NOTIFICATION_ID,
