@@ -193,6 +193,7 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
             }
             mView.setBalance(mBalanceRepository.currentBalance());
             getBalance();
+            getTotalNotification(0);
         }
 
     }
