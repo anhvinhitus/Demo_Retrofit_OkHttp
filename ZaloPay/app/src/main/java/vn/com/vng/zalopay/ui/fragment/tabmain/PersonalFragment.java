@@ -23,6 +23,8 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
+import vn.com.zalopay.analytics.ZPAnalytics;
+import vn.com.zalopay.analytics.ZPEvents;
 
 /**
  * Created by Duke on 3/27/17.
@@ -142,22 +144,26 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
 
     @OnClick(R.id.tab_personal_rl_info)
     public void onProfileInfoClick() {
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_PROFILE);
         navigator.startProfileInfoActivity(getContext());
     }
 
     @OnClick(R.id.tab_personal_rl_balance)
     public void onBalanceClick() {
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BALANCE);
         navigator.startBalanceManagementActivity(getContext());
     }
 
     @OnClick(R.id.tab_personal_rl_bank)
     public void onLinkCardClick() {
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
         navigator.startLinkCardActivity(getContext());
     }
 
     @OnClick(R.id.tab_personal_tv_bank_link_now)
     public void onBankLinkNowClick() {
         showToast("Quick link bank clicked");
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
         if(presenter.getLinkCardType() == 0) {
             navigator.startLinkCardActivity(getContext(), true);
         }
@@ -165,37 +171,42 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
 
     @OnClick(R.id.tab_personal_rl_bill)
     public void onBillClick() {
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BILLING);
     }
 
     @OnClick(R.id.tab_personal_tv_bill_detail)
     public void onBillDetailClick() {
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BILLING_QUICKACTION);
         showToast("Bill detail clicked");
     }
 
 
     @OnClick(R.id.tab_personal_rl_transaction_history)
     public void onTransHistoryClick() {
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_TRANSACTIONS);
         navigator.startTransactionHistoryList(getContext());
     }
 
     @OnClick(R.id.tab_personal_tv_support_center)
     public void onSupportCenterClick() {
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_SUPPORTCENTER);
         navigator.startMiniAppActivity(getActivity(), ModuleName.SUPPORT_CENTER);
-//        ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENUHELP);
     }
 
     @OnClick(R.id.tab_personal_tv_quick_feedback)
     public void onQuickFeedbackClick() {
-
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_FEEDBACK);
     }
 
     @OnClick(R.id.tab_personal_tv_app_info)
     public void onAppInfoClick() {
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_ABOUTAPP);
         navigator.startMiniAppActivity(getActivity(), ModuleName.ABOUT);
     }
 
     @OnClick(R.id.tab_personal_tv_logout)
     public void onLogOutClick() {
+        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_LOGOUT);
         showConfirmSignOut();
     }
 

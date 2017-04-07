@@ -48,6 +48,11 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
 
     public static final String TAG = "HomeActivity";
 
+    public static boolean EVENT_FIRST_TOUCH_HOME = true;
+    public static boolean EVENT_FIRST_TOUCH_NEARBY = true;
+    public static boolean EVENT_FIRST_TOUCH_PROMOTION = true;
+    public static boolean EVENT_FIRST_TOUCH_ME = true;
+
     @Inject
     HomePresenter mPresenter;
 
@@ -181,6 +186,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
 
             @Override
             public void onPageSelected(int position) {
+                trackEvent(position);
                 if (position == HomePagerAdapter.TAB_MAIN_INDEX) {
                     setToolbarViewStatus(HomePagerAdapter.TAB_MAIN_INDEX);
 
@@ -230,6 +236,39 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
             }
             return true;
         });
+    }
+
+    private void trackEvent(int position) {
+        switch (position) {
+            case HomePagerAdapter.TAB_MAIN_INDEX:
+                if(EVENT_FIRST_TOUCH_HOME) {
+                    ZPAnalytics.trackEvent(ZPEvents.TOUCHTABHOMEFIRST);
+                    EVENT_FIRST_TOUCH_HOME = false;
+                }
+                ZPAnalytics.trackEvent(ZPEvents.TOUCHTABHOME);
+                break;
+            case HomePagerAdapter.TAB_SHOW_SHOW_INDEX:
+                if(EVENT_FIRST_TOUCH_NEARBY) {
+                    ZPAnalytics.trackEvent(ZPEvents.TOUCHTABNEARBYFIRST);
+                    EVENT_FIRST_TOUCH_NEARBY = false;
+                }
+                ZPAnalytics.trackEvent(ZPEvents.TOUCHTABNEARBY);
+                break;
+            case HomePagerAdapter.TAB_PROMOTION_INDEX:
+                if(EVENT_FIRST_TOUCH_PROMOTION) {
+                    ZPAnalytics.trackEvent(ZPEvents.TOUCHTABPROMOTIONFIRST);
+                    EVENT_FIRST_TOUCH_PROMOTION = false;
+                }
+                ZPAnalytics.trackEvent(ZPEvents.TOUCHTABPROMOTION);
+                break;
+            case HomePagerAdapter.TAB_PERSONAL_INDEX:
+                if(EVENT_FIRST_TOUCH_ME) {
+                    ZPAnalytics.trackEvent(ZPEvents.TOUCHTABMEFIRST);
+                    EVENT_FIRST_TOUCH_ME = false;
+                }
+                ZPAnalytics.trackEvent(ZPEvents.TOUCHTABME);
+                break;
+        }
     }
 
     @Override
