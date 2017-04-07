@@ -1,3 +1,6 @@
+Zalo Pay (Staging v2.10.0 - build 209) - Released on 2017-04-07
++ [SDK] Fix lỗi không nhận notify khi giao dịch thất bại
+
 Zalo Pay (Staging v2.10.0 - build 208) - Released on 2017-04-07
 + [SDK] Fix bug empty VCB phone number
 
