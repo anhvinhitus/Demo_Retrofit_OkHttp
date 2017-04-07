@@ -1,3 +1,9 @@
+Zalo Pay (Sandbox v2.10.0 - build 205) - Released on 2017-03-21
++ Hỗ trợ liên kết tài khoản ngân hàng Vietcombank
++ Hỗ trợ QR code nhận tiền dành cho Vendor
++ Refactor GCM Notification.
++
+
 Zalo Pay (Sandbox v2.9.0 - build 199) - Released on 2017-03-21
 - Fix retry get status trong khi thanh toán.
 - Fix không hiện dialog error khi chuyển tiền qua QR Code mà dữ liệu không hợp lệ.
