@@ -8,8 +8,6 @@ import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.model.User;
 
-import static vn.com.vng.zalopay.data.util.BusComponent.APP_SUBJECT;
-
 /**
  * Created by huuhoa on 6/15/16.
  * Implementation of @link{BalanceStore.Repository}
