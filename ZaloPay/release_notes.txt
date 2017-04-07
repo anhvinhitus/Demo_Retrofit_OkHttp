@@ -1,3 +1,12 @@
+Zalo Pay (Sandbox v2.11.0 - build 212) - Released on 2017-04-07
+- Thêm config on/off sync contact
+- Thêm remove một notification server
+- Thêm Payment Connector - dynamic config for Payment Connector
+- Thêm log tọa độ của user
+- Upgrade react-native v0.42.3
+- Cập nhật parse web vcb do website vcb thay đổi html tags
+- Refactor chức năng Chuyển Tiền
+
 Zalo Pay (Sandbox v2.11.0 - build 211) - Released on 2017-03-31
 - Cập nhật trang Home dạng Tab-based UI
 - Cập nhật trang Profile.
