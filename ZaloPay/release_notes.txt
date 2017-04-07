@@ -1,3 +1,6 @@
+Zalo Pay (Staging v2.10.0 - build 207) - Released on 2017-03-21
++ [SDK] Fix bug link account adapter
+
 Zalo Pay (Staging v2.10.0 - build 206) - Released on 2017-03-21
 + [SDK] Clear hard code interface type
 
