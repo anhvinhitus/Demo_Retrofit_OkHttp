@@ -165,10 +165,9 @@ public class HomeAdapter extends EpoxyAdapter {
 
         if (sizeBanner == 0) {
             if (exist) {
-                hideModel(bannerModel);
+                removeModel(bannerModel);
             }
         } else {
-            bannerModel.show();
             if (exist) {
                 notifyModelChanged(bannerModel);
                 return;
