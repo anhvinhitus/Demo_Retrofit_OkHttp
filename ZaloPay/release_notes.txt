@@ -1,10 +1,10 @@
-Zalo Pay (Staging v2.10.0 - build 207) - Released on 2017-03-21
+Zalo Pay (Staging v2.10.0 - build 207) - Released on 2017-04-07
 + [SDK] Fix bug link account adapter
 
-Zalo Pay (Staging v2.10.0 - build 206) - Released on 2017-03-21
+Zalo Pay (Staging v2.10.0 - build 206) - Released on 2017-04-07
 + [SDK] Clear hard code interface type
 
-Zalo Pay (Staging v2.10.0 - build 205) - Released on 2017-03-21
+Zalo Pay (Staging v2.10.0 - build 205) - Released on 2017-04-07
 + Hỗ trợ liên kết tài khoản ngân hàng Vietcombank
 + Hỗ trợ QR code nhận tiền dành cho Vendor
 + Support VCB
