@@ -628,7 +628,9 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistorySuccessLatest().subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("fetchTransactionHistorySuccessLatest with only data from cloud", 1, result.size());
+        for(int i = 0; i < result.size(); i++) {
+            Assert.assertEquals("fetchTransactionHistorySuccessLatest with only data from cloud", true, result.get(0));
+        }
     }
 
     @Test
@@ -678,7 +680,9 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryFailLatest().subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("fetchTransactionHistoryFailLatest with only data from cloud", 1, result.size());
+        for(int i = 0; i < result.size(); i++) {
+            Assert.assertEquals("fetchTransactionHistoryFailLatest with only data from cloud", true, result.get(0));
+        }
     }
 
     @Test
@@ -728,7 +732,9 @@ public class TransactionRepositoryTest extends ApplicationTestCase {
                 mRequestService, EventBus.getDefault());
 
         mRepository.fetchTransactionHistoryLatest().subscribe(new CustomObserver<>(result));
-        Assert.assertEquals("fetchTransactionHistoryLatest with only data from cloud", 1, result.size());
+        for(int i = 0; i < result.size(); i++) {
+            Assert.assertEquals("fetchTransactionHistoryLatest with only data from cloud", true, result.get(0));
+        }
     }
 
     @Test
