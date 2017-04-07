@@ -168,7 +168,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        subscibeBusComponent();
         mUserSession.beginSession();
         Timber.d("ApplicationState object [%s]", mApplicationState);
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_CREATED);
@@ -180,7 +179,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         unsubscribeIfNotNull(mRefPlatformSubscription);
         CShareDataWrapper.dispose();
         mApplicationState.moveToState(ApplicationState.State.MAIN_SCREEN_DESTROYED);
-        unregisterBusComponent();
         super.detachView();
     }
 
@@ -204,14 +202,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     @Override
     public void destroy() {
         super.destroy();
-    }
-
-    public void subscibeBusComponent() {
-        BusComponent.subscribe(APP_SUBJECT, this, new HomePresenter.ComponentSubscriber(), AndroidSchedulers.mainThread());
-    }
-
-    public void unregisterBusComponent() {
-        BusComponent.unregister(this);
     }
 
     public void initialize() {
@@ -401,6 +391,24 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         }
     }
 
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onNotificationChanged(NotificationChangeEvent event) {
+        mEventBus.removeStickyEvent(NotificationChangeEvent.class);
+        if (mView != null) {
+            if (!event.isRead()) {
+                getTotalNotification(0);
+            }
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onBalanceChanged(ChangeBalanceEvent event) {
+        mEventBus.removeStickyEvent(ChangeBalanceEvent.class);
+        if (mView != null) {
+            mView.setBalance(event.balance);
+        }
+    }
+
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
     public void onDownloadResourceSuccessEvent(DownloadZaloPayResourceEvent event) {
         mEventBus.removeStickyEvent(DownloadZaloPayResourceEvent.class);
@@ -569,21 +577,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     private void onGetBalanceSuccess(Long balance) {
         Timber.d("Get balance success : balance [%s]", balance);
         mView.setBalance(balance);
-    }
-
-    private class ComponentSubscriber extends DefaultSubscriber<Object> {
-        @Override
-        public void onNext(Object event) {
-            if (event instanceof ChangeBalanceEvent) {
-                if (mView != null) {
-                    mView.setBalance(((ChangeBalanceEvent) event).balance);
-                }
-            } else if (event instanceof NotificationChangeEvent) {
-                if (!((NotificationChangeEvent) event).isRead()) {
-                    getTotalNotification(0);
-                }
-            }
-        }
     }
 
     public void getTotalNotification(long delay) {
