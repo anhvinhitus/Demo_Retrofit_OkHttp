@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class ZaloPayUnitTest {
     @Test
     public void testCardNumberWithSpecialCharacter() {
-        assertTrue(CardValidation.validCardName("VO  **"));
+        assertTrue(CardValidation.validCardName("VO"));
     }
 
     @Test
