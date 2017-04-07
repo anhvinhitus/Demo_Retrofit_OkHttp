@@ -168,14 +168,12 @@ public class AdapterLinkAcc extends AdapterBase {
                 linkAccGuiProcessor.getLoginHolder().getSrvScrollView(),
                 linkAccGuiProcessor.getLlButton());
 
-        mLinkAccType = GlobalData.getPaymentInfo().linkAccInfo.getLinkAccType();
         // get number times allow login wrong.
         mNumAllowLoginWrong = Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_int_vcb_num_times_allow_login_wrong));
-
         // show title bar
-        if (mLinkAccType.equals(ELinkAccType.LINK)) {
+        if (GlobalData.isLinkAccFlow()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
-        } else if(mLinkAccType.equals(ELinkAccType.UNLINK)) {
+        } else if(GlobalData.isUnLinkAccFlow()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
         }
 
