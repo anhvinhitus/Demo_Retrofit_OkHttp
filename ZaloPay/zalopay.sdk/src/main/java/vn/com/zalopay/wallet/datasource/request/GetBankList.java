@@ -77,10 +77,10 @@ public class GetBankList extends BaseRequest<BankConfigResponse> {
 
         for (BankConfig bankConfig : getResponse().banklist) {
             if (bankConfig.code.equals("123PBIDV")) {
-                bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
+                //bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
 
 				/*
-				bankConfig.status = 2;
+                bankConfig.status = 2;
 				bankConfig.maintenanceto = Long.parseLong("1480063794000");
 				bankConfig.maintenancemsg = "NH ZPVCB bảo trì tới 21:00:00 07/02/2017, vui lòng chọn ngân hàng khác hoặc quay lại sau";
 				*/
@@ -90,7 +90,7 @@ public class GetBankList extends BaseRequest<BankConfigResponse> {
                 //bankConfig.interfacetype = 1;
             }
             if (bankConfig.code.equals("ZPVCB")) {
-                bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
+                //bankConfig.interfacetype = 1; // = 1 using parse, = 2 using web
 
 				/*
 				bankConfig.status = 2;
@@ -118,8 +118,6 @@ public class GetBankList extends BaseRequest<BankConfigResponse> {
                 //bankConfig.status = 1;
                 //bankConfig.maintenanceto = Long.parseLong("1480063794000");
             }
-
-
             SharedPreferencesManager.getInstance().setBankConfig(bankConfig.code, GsonUtils.toJsonString(bankConfig));
         }
 

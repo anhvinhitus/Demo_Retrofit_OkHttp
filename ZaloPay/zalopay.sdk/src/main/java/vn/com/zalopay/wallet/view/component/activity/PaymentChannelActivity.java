@@ -32,7 +32,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnSweetDialogListener;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.dialog.DialogManager;
@@ -105,19 +104,14 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         return mPaymentPassword;
     }
 
-    protected void fillCardNumberFromCache()
-    {
+    protected void fillCardNumberFromCache() {
         String pCardNumber = null;
-        try
-        {
+        try {
             pCardNumber = SharedPreferencesManager.getInstance().pickCachedCardNumber();
+        } catch (Exception e) {
+            Log.e(this, e);
         }
-        catch (Exception e)
-        {
-            Log.e(this,e);
-        }
-        if(! TextUtils.isEmpty(pCardNumber))
-        {
+        if (!TextUtils.isEmpty(pCardNumber)) {
             getAdapter().getGuiProcessor().setCardInfo(pCardNumber);
         }
     }
@@ -193,8 +187,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
          */
         fillCardNumberFromCache();
 
-        if(mAdapter instanceof AdapterLinkAcc)
-        {
+        if (mAdapter instanceof AdapterLinkAcc) {
             ((AdapterLinkAcc) mAdapter).startFlow();
         }
     }
@@ -319,8 +312,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         showKeyBoardOnFocusingViewAgain();
 
         //this is link account and the first call
-        if(GlobalData.isLinkAccChannel() && !mIsRestart)
-        {
+        if (GlobalData.isLinkAccChannel() && !mIsRestart) {
             try {
                 //check static resource whether ready or not
                 loadStaticReload();
@@ -492,31 +484,24 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     public void renderByResource(DStaticViewGroup pAdditionStaticViewGroup, DDynamicViewGroup pAdditionDynamicViewGroup) {
         try {
             long time = System.currentTimeMillis();
-
             String pageName = getAdapter().getPageName();
-
             ResourceManager resourceManager = ResourceManager.getInstance(pageName);
-
             if (resourceManager != null) {
                 mActivityRender = resourceManager.produceRendering(this);
-
                 if (getActivityRender() != null) {
                     getActivityRender().render();
                     getActivityRender().render(pAdditionStaticViewGroup, pAdditionDynamicViewGroup);
                 } else {
-                    Log.e(this, "PaymentChannelActivity.render acctivityRendering=null");
+                    Log.d(this, "PaymentChannelActivity.render acctivityRendering=null");
                 }
             } else {
-                Log.e(this, "PaymentChannelActivity.render resourceManager=null");
+                Log.d(this, "PaymentChannelActivity.render resourceManager=null");
             }
-
-            //enableSubmitBtn(false);
             Log.d(this, "++++ PaymentChannelActivity.renderByResource: Total time: " + (System.currentTimeMillis() - time));
 
 
         } catch (Exception e) {
             Log.e(this, e);
-
             onExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), true);
         }
     }
@@ -531,7 +516,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     public void enableSubmitBtn(boolean pIsEnabled) {
         Log.d(this, "===enableSubmitBtn===" + pIsEnabled);
-
         setEnableButton(findViewById(R.id.zpsdk_btn_submit), pIsEnabled);
     }
 
