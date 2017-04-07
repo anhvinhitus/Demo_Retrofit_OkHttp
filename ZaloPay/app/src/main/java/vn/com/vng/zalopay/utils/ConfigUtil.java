@@ -75,7 +75,7 @@ public class ConfigUtil {
         if (config != null) {
             mConfig = config;
             loadConfigPhoneFormat(config);
-            FriendConfig.sEnableContact = isSyncContact();
+            FriendConfig.sEnableSyncContact = isSyncContact();
             return true;
         }
         
