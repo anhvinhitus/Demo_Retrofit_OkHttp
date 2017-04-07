@@ -468,7 +468,7 @@
     <string name="zpw_string_link_acc">Liên kết tài khoản</string>
     <string name="zpw_string_unlink_acc">Hủy liên kết</string>
 
-    <string name="zpw_vcb_wallet_type">MOMO</string>
+    <string name="zpw_vcb_wallet_type">VNG</string>
     <string name="zpw_vcb_value_otp_sms">3</string>
 
     <string name="zpw_string_linkacc_otp_hint">Mã OTP</string>

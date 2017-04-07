@@ -192,7 +192,7 @@ public abstract class AdapterBase {
             startSubmitTransaction();
         }
     };
-  
+
     private View.OnClickListener okClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -211,6 +211,7 @@ public abstract class AdapterBase {
             }
         }
     };
+
     public AdapterBase(PaymentChannelActivity pOwnerActivity) {
         if (pOwnerActivity != null) {
             mOwnerActivity = new WeakReference<PaymentChannelActivity>(pOwnerActivity);
@@ -807,6 +808,10 @@ public abstract class AdapterBase {
                     Log.d(this, "transaction is finish, skipping process notification");
                     return pAdditionParams;
                 }
+                if (!isTransactionInProgress()) {
+                    Log.d(this, "transaction is ending, skipping process notification");
+                    return pAdditionParams;
+                }
                 if (pAdditionParams == null || pAdditionParams.length <= 0) {
                     Log.e(this, "stopping processing result payment from notification because of empty pAdditionParams");
                     return pAdditionParams;
@@ -817,8 +822,7 @@ public abstract class AdapterBase {
                         DataRepository.shareInstance().cancelRequest();//cancel current request
                         GetStatus.cancelRetryRequest();//cancel timer retry get status
                         DialogManager.closeAllDialog();//close dialog
-                        if(mResponseStatus != null)
-                        {
+                        if (mResponseStatus != null) {
                             mResponseStatus.returncode = 1;
                             mResponseStatus.returnmessage = GlobalData.getStringResource(RS.string.payment_success_label);
                         }
@@ -827,14 +831,12 @@ public abstract class AdapterBase {
                          *  show time in success screen
                          *  need to update time again from success notification
                          */
-                        if(GlobalData.isTranferMoneyChannel() && pAdditionParams.length == 2)
-                        {
+                        if (GlobalData.isTranferMoneyChannel() && pAdditionParams.length == 2) {
                             try {
                                 Long paymentTime = Long.parseLong(pAdditionParams[1].toString());
                                 GlobalData.getPaymentInfo().appTime = paymentTime;
-                            }catch (Exception ex)
-                            {
-                                Log.e(this,ex);
+                            } catch (Exception ex) {
+                                Log.e(this, ex);
                             }
                         }
                         showTransactionSuccessView();
@@ -1626,6 +1628,10 @@ public abstract class AdapterBase {
     public boolean isTransactionProcessing(String pMessage) {
         return pMessage.equalsIgnoreCase(GlobalData.getStringResource(GlobalData.getTransProcessingMessage()))
                 || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_transaction_expired));
+    }
+
+    public boolean isTransactionInProgress() {
+        return mResponseStatus != null && mResponseStatus.isprocessing;
     }
 
     public synchronized void showTransactionFailView(String pMessage) {

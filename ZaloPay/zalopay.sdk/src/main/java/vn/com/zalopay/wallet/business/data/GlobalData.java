@@ -593,7 +593,7 @@ public class GlobalData {
     }
 
     public static ZPWPaymentInfo getPaymentInfo() {
-        if (GlobalData.mPaymentInfo == null || GlobalData.mPaymentInfo.userInfo == null) {
+        if (GlobalData.mPaymentInfo == null) {
             if (GlobalData.getPaymentResult() != null) {
                 GlobalData.setResultInvalidInput();
             }
