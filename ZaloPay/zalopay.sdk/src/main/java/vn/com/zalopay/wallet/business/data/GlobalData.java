@@ -597,17 +597,12 @@ public class GlobalData {
             if (GlobalData.getPaymentResult() != null) {
                 GlobalData.setResultInvalidInput();
             }
-
             if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
                 ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).recycleActivity();
             }
-
-            Log.e("getPaymentInfo", "===mPaymentInfo.userInfo=NULL");
-
+            Log.e("getPaymentInfo", "payment info is null");
             return null;
-
         }
-
         return GlobalData.mPaymentInfo;
     }
 
@@ -619,9 +614,9 @@ public class GlobalData {
     }
 
     public static long getOrderAmount() {
-        if (getPaymentInfo() != null)
+        if (getPaymentInfo() != null) {
             return getPaymentInfo().amount;
-
+        }
         return 0;
     }
 
@@ -629,7 +624,6 @@ public class GlobalData {
         if (GlobalData.paymentResult == null) {
             GlobalData.paymentResult = new ZPPaymentResult(mPaymentInfo, EPaymentStatus.ZPC_TRANXSTATUS_FAIL);
         }
-
         return GlobalData.paymentResult;
     }
 
@@ -638,13 +632,10 @@ public class GlobalData {
     }
 
     public static String getStringResource(String pResourceID) {
-
         try {
             // Try to get string from resource sent from before get from local
             String result = ResourceManager.getInstance(null).getString(pResourceID);
-
             return (result != null) ? result : getAppContext().getString(RS.getString(pResourceID));
-
         } catch (Exception e) {
             Log.e(GlobalData.class.getName(), e);
         }
@@ -659,28 +650,6 @@ public class GlobalData {
         if (getPaymentInfo().userInfo != null && !TextUtils.isEmpty(getPaymentInfo().userInfo.userProfile) && getUserProfileList() == null) {
             try {
                 GlobalData.mUserProfile = GsonUtils.fromJsonString(getPaymentInfo().userInfo.userProfile, ListUserProfile.class);
-
-                //for testing
-                /*
-                UserProfile vcb = new UserProfile();
-                vcb.allow = true;
-                vcb.pmcid = 37;
-                vcb.transtype = 1;
-                vcb.requireotp = false;
-                GlobalData.mUserProfile.profilelevelpermisssion.add(vcb);
-                */
-                /*
-                for (int i=0;i<GlobalData.mUserProfile.profilelevelpermisssion.size();i++)
-				{
-					if(GlobalData.mUserProfile.profilelevelpermisssion.get(i).transtype == 1 && (GlobalData.mUserProfile.profilelevelpermisssion.get(i).pmcid == 37
-                    ||GlobalData.mUserProfile.profilelevelpermisssion.get(i).pmcid == 38))
-					{
-						GlobalData.mUserProfile.profilelevelpermisssion.get(i).allow = false;
-					}
-				}
-				*/
-
-
             } catch (Exception e) {
                 Log.e("loadPermissionLevelMap", e);
             }
@@ -694,9 +663,9 @@ public class GlobalData {
         loadPermissionLevelMap();
         UserProfile userProfile = GlobalData.getUserProfileAtChannel(pChannelID);
 
-        if (userProfile == null)
+        if (userProfile == null) {
             return Constants.LEVELMAP_INVALID;
-
+        }
         return userProfile.allow == true ? Constants.LEVELMAP_ALLOW : Constants.LEVELMAP_BAN;
     }
 
@@ -707,16 +676,11 @@ public class GlobalData {
         BankConfig bankConfig = null;
         try {
             bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(Constants.CCCode), BankConfig.class);
-
-
             if (bankConfig == null)
                 return Constants.INPUT_INVALID;
-
             if (bankConfig != null && bankConfig.isRequireOtp())
                 return Constants.REQUIRE_OTP;
-
             return Constants.REQUIRE_PIN;
-
         } catch (Exception e) {
             Log.e("isRequireOtpCreditCard", e);
         }
@@ -754,7 +718,7 @@ public class GlobalData {
     public static boolean shouldNativeWebFlow() {
         try {
             BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(GlobalData.getPaymentInfo().linkAccInfo.getBankCode()), BankConfig.class);
-            if(bankConfig != null && !bankConfig.isCoverBank()){
+            if (bankConfig != null && !bankConfig.isCoverBank()) {
                 return true;
             }
         } catch (Exception e) {

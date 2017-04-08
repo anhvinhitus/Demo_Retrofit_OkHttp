@@ -92,19 +92,18 @@ public class AdapterLinkAcc extends AdapterBase {
                 if (pExisted) {
                     linkAccSuccess();
                 } else {
-                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server),mTransactionID);
+                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_notfound_in_server), mTransactionID);
                 }
             }
 
             @Override
             public void onCheckExistBankAccountFail(String pMessage) {
                 showProgressBar(false, null);
-                linkAccFail(pMessage,mTransactionID);
+                linkAccFail(pMessage, mTransactionID);
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
     private LinkAccGuiProcessor linkAccGuiProcessor;
-    private ELinkAccType mLinkAccType;
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
     private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
     private LinkAccWebViewClient mWebViewProcessor = null;
@@ -125,10 +124,11 @@ public class AdapterLinkAcc extends AdapterBase {
                     return;
                 } else {
                     String loginBankUrl = bankConfig.loginbankurl;
-                    if(TextUtils.isEmpty(loginBankUrl))
-                    {
+                    if (TextUtils.isEmpty(loginBankUrl)) {
                         loginBankUrl = GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login);
+                        Log.d(this, "vcb login url from config is emtpy, using url from string");
                     }
+                    //loginBankUrl = "https://docs.goog.com/spreadsheets/d/17lfPOzku7ckrH6fk17J0z0aqk_mBUPZEfwO5GFGYtNA/edit#gid=477604210";
                     initWebView(loginBankUrl);
                 }
             } catch (Exception e) {
@@ -173,7 +173,7 @@ public class AdapterLinkAcc extends AdapterBase {
         // show title bar
         if (GlobalData.isLinkAccFlow()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
-        } else if(GlobalData.isUnLinkAccFlow()) {
+        } else if (GlobalData.isUnLinkAccFlow()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
         }
 
@@ -266,7 +266,7 @@ public class AdapterLinkAcc extends AdapterBase {
         try {
             dBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         } catch (Exception e) {
-            Log.e(this,e);
+            Log.e(this, e);
         }
 
         // get & set mapBank
@@ -326,7 +326,7 @@ public class AdapterLinkAcc extends AdapterBase {
      *
      * @param pMessage
      */
-    private void unlinkAccFail(String pMessage , String pTransID ) {
+    private void unlinkAccFail(String pMessage, String pTransID) {
         mPageCode = PAGE_UNLINKACC_FAIL;
         // rendering by resource
         getActivity().renderByResource();
@@ -386,11 +386,10 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Login page
             if (page.equals(VCB_LOGIN_PAGE)) {
-                showProgressBar(false,null); // close process dialog
+                showProgressBar(false, null); // close process dialog
 
                 //for testing
-                if(!SDKApplication.isReleaseBuild())
-                {
+                if (!SDKApplication.isReleaseBuild()) {
                     linkAccGuiProcessor.setAccountTest();
                 }
 
@@ -424,7 +423,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                         String.format(GlobalData.getStringResource(RS.string.zpw_string_vcb_wrong_times_allow),
                                                 mNumAllowLoginWrong), TSnackbar.LENGTH_LONG);
                             } else {
-                                if (mLinkAccType.equals(ELinkAccType.LINK)) {
+                                if (GlobalData.isLinkAccFlow()) {
                                     linkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
                                 } else {
                                     unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
@@ -433,7 +432,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             }
                             break;
                         case ACCOUNT_LOCKED:
-                            if (mLinkAccType.equals(ELinkAccType.LINK)) {
+                            if (GlobalData.isLinkAccFlow()) {
                                 linkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
                             } else {
                                 unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
@@ -468,7 +467,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     public void run() {
                         forceVirtualKeyboard();//auto show keyboard
                     }
-                },300);
+                }, 300);
 
                 return null;
             }
@@ -768,7 +767,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
         }
-        showProgressBar(true,GlobalData.getStringResource(RS.string.zpw_loading_website_message));
+        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
         mWebViewProcessor.start(pUrl);
     }
 
@@ -846,9 +845,7 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public ELinkAccType getLinkerType() {
-        if (mLinkAccType != null)
-            return mLinkAccType;
-        return null;
+        return GlobalData.getPaymentInfo().linkAccInfo.getLinkAccType();
     }
 
     public ZPWNotification getNotification() {
