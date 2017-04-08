@@ -14,8 +14,7 @@ public class NotificationType {
     public static final int RECEIVE_RED_PACKET = 6;
     public static final int REFUND_RED_PACKET = 7;
     public static final int DONATE_MONEY = 9;
-    public static final int UNLINK_ACCOUNT = 15;
-    public static final int LINK_ACCOUNT = 16;
+
     public static final int UPDATE_PROFILE_LEVEL_OK = 100;
     public static final int PAYMENT_APP_PROMOTION = 101;
     public static final int UPDATE_PROFILE_LEVEL_FAILED = 102;
@@ -32,6 +31,9 @@ public class NotificationType {
     public static final int DEPOSIT_FROM_WEB_VCB_SUCCESS = 12;
     public static final int LINK_CARD_EXPIRED = 112;
     public static final int MERCHANT_BILL = 113; //Thanh toán đơn hàng
+
+    public static final int UNLINK_ACCOUNT = 115;
+    public static final int LINK_ACCOUNT = 116;
 
     static boolean isTransactionNotification(long notificationType) {
         return notificationType == ORDER_PAYMENT ||
