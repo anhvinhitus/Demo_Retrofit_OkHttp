@@ -1,4 +1,7 @@
-Zalo Pay (Staging v2.10.0 - build 2010) - Released on 2017-04-08
+Zalo Pay (Staging v2.10.0 - build 211) - Released on 2017-04-08
++ [SDK] Fix check reload bank account between notification and callback from parse web
+
+Zalo Pay (Staging v2.10.0 - build 210) - Released on 2017-04-08
 + Sửa lại link/unlink bankaccount
 + [SDK] Check reload bank account between notify and callback from parse web.
 
