@@ -233,6 +233,7 @@ public class AdapterLinkAcc extends AdapterBase {
     private void checkUnlinkAccountList() {
         if (isFinalScreen()) {
             Log.d(this, "stopping reload bank account because user in result screen");
+            return;
         }
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         mHandler.postDelayed(runnableWaitingNotifyUnLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
@@ -242,6 +243,7 @@ public class AdapterLinkAcc extends AdapterBase {
     protected void checkLinkAccountList() {
         if (isFinalScreen()) {
             Log.d(this, "stopping reload bank account because user in result screen");
+            return;
         }
         // loop to get notification here.
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
