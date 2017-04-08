@@ -231,12 +231,18 @@ public class AdapterLinkAcc extends AdapterBase {
 
     // call API,get bankAccount
     private void checkUnlinkAccountList() {
+        if (isFinalScreen()) {
+            Log.d(this, "stopping reload bank account because user in result screen");
+        }
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         mHandler.postDelayed(runnableWaitingNotifyUnLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
 
     // call API, get bankAccount
     protected void checkLinkAccountList() {
+        if (isFinalScreen()) {
+            Log.d(this, "stopping reload bank account because user in result screen");
+        }
         // loop to get notification here.
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         mHandler.postDelayed(runnableWaitingNotifyLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
@@ -620,9 +626,9 @@ public class AdapterLinkAcc extends AdapterBase {
                     ArrayList<String> phoneNumList = HashMapUtils.getKeys(mHashMapPhoneNumUnReg);
                     linkAccGuiProcessor.setPhoneNumUnRegList(phoneNumList);
                     linkAccGuiProcessor.setPhoneNumUnReg(phoneNumList);
-                } else  if(! GlobalData.shouldNativeWebFlow()){
+                } else if (!GlobalData.shouldNativeWebFlow()) {
                     // don't have account link
-                      unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_unregister), mTransactionID);
+                    unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_unregister), mTransactionID);
                     return null;
                 }
 
