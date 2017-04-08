@@ -126,7 +126,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     String loginBankUrl = bankConfig.loginbankurl;
                     if (TextUtils.isEmpty(loginBankUrl)) {
                         loginBankUrl = GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login);
-                        Log.d(this, "vcb login url from config is emtpy, using url from string");
+                        Log.d(this, "vcb login url from config is empty, using url from string");
                     }
                     //loginBankUrl = "https://docs.goog.com/spreadsheets/d/17lfPOzku7ckrH6fk17J0z0aqk_mBUPZEfwO5GFGYtNA/edit#gid=477604210";
                     initWebView(loginBankUrl);

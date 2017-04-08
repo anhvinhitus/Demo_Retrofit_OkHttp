@@ -209,7 +209,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             try {
                 getAdapter().sdkReportError(SDKReport.ERROR_WEBSITE, errStringBuilder.toString());
             } catch (Exception e) {
-                vn.com.zalopay.wallet.utils.Log.e(this, e);
+                Log.e(this, e);
             }
         }
 

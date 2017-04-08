@@ -216,7 +216,6 @@ public abstract class AdapterBase {
         if (pOwnerActivity != null) {
             mOwnerActivity = new WeakReference<PaymentChannelActivity>(pOwnerActivity);
         }
-
         try {
             mConfig = getChannelConfig();
         } catch (Exception e) {
@@ -224,7 +223,6 @@ public abstract class AdapterBase {
             terminate(GlobalData.getStringResource(RS.string.zpw_alert_error_data), true);
             Log.e(this, e);
         }
-
         mCard = new DPaymentCard();
     }
 
@@ -813,11 +811,22 @@ public abstract class AdapterBase {
                     return pAdditionParams;
                 }
                 if (pAdditionParams == null || pAdditionParams.length <= 0) {
-                    Log.e(this, "stopping processing result payment from notification because of empty pAdditionParams");
+                    Log.d(this, "stopping processing result payment from notification because of empty pAdditionParams");
+                    return pAdditionParams;
+                }
+
+                int notificationType = -1;
+                try {
+                    notificationType = Integer.parseInt(String.valueOf(pAdditionParams[0]));
+                } catch (Exception ex) {
+                    Log.e(this, ex);
+                }
+                if (!Constants.TRANSACTION_SUCCESS_NOTIFICATION_TYPES.contains(notificationType)) {
+                    Log.d(this, "notification type is not accepted for this kind of transaction");
                     return pAdditionParams;
                 }
                 try {
-                    String transId = String.valueOf(pAdditionParams[0]);
+                    String transId = String.valueOf(pAdditionParams[1]);
                     if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
                         DataRepository.shareInstance().cancelRequest();//cancel current request
                         GetStatus.cancelRetryRequest();//cancel timer retry get status
@@ -827,14 +836,14 @@ public abstract class AdapterBase {
                             mResponseStatus.returnmessage = GlobalData.getStringResource(RS.string.payment_success_label);
                         }
                         /***
-                         * tranfer money exception case
-                         *  show time in success screen
-                         *  need to update time again from success notification
+                         *  get time from notification
+                         *  in tranferring money case
                          */
-                        if (GlobalData.isTranferMoneyChannel() && pAdditionParams.length == 2) {
+                        if (GlobalData.isTranferMoneyChannel() && pAdditionParams.length >= 3) {
                             try {
-                                Long paymentTime = Long.parseLong(pAdditionParams[1].toString());
+                                Long paymentTime = Long.parseLong(pAdditionParams[2].toString());
                                 GlobalData.getPaymentInfo().appTime = paymentTime;
+                                Log.d(this, "update transaction time from notification");
                             } catch (Exception ex) {
                                 Log.e(this, ex);
                             }

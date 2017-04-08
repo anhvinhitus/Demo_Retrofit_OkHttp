@@ -3,6 +3,8 @@ package vn.com.zalopay.wallet.business.data;
 import java.util.Arrays;
 import java.util.List;
 
+import vn.com.zalopay.wallet.utils.Log;
+
 public class Constants {
     public static final String COMMA = ",";
     public static final String UNDERLINE = "_";
@@ -70,6 +72,7 @@ public class Constants {
     public static final int TRANSACTION_PROCESSING = 5;
     public static final int AUTHEN_PAYER_OTP_WRONG_CODE = 17;
     public static final List<Integer> GET_STATUS_AUTHEN_PAYER_CODE = Arrays.asList(14, 18);
+    public static final List<Integer> TRANSACTION_SUCCESS_NOTIFICATION_TYPES = Arrays.asList(1, 2, 3, 4, 5);//filter list notification app push notification into sdk
     //user submited order to server fail
     public static final int TRANSACTION_NOT_SUBMIT = -49;
     public static final int FORCE_UP_VERSION_CODE = -1001;
