@@ -34,7 +34,6 @@ public class WebViewActivity extends BaseToolBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Timber.d("onCreate start");
         super.onCreate(savedInstanceState);
 
         if (getSupportActionBar() != null) {
@@ -54,7 +53,7 @@ public class WebViewActivity extends BaseToolBarActivity {
     }
 
     public void setTitleAndLogo(String title, String url) {
-        Timber.d("setTitleAndLogo url %s", url);
+        Timber.d("setTitleAndLogo : title %s url %s", title, url);
         if (!TextUtils.isEmpty(title)) {
             setTitle(title);
         }

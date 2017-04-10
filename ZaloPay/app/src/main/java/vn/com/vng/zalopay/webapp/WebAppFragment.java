@@ -84,7 +84,6 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Timber.d("onViewCreated start");
         initPresenter(view);
         initRetryView(view);
         initWebView(view);

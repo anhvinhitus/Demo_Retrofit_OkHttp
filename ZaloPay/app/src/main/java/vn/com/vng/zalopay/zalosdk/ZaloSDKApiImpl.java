@@ -35,8 +35,6 @@ public class ZaloSDKApiImpl implements ZaloSdkApi {
         this.mUserConfig = userConfig;
         this.mTaskList = new LinkedList<>();
         this.mThreadExecutor = threadExecutor;
-
-        Timber.d("ZaloSDKApiImpl: create %s", this);
     }
 
     private void dequeue() {
@@ -59,7 +57,7 @@ public class ZaloSDKApiImpl implements ZaloSdkApi {
 
     private void executeNext() {
         if (AndroidUtils.isMainThread()) {
-            Timber.d("executeNext: %s mRunning %s", mTaskList.size(), mRunning);
+            Timber.d("executeNext: queue size [%s] mRunning [%s]", mTaskList.size(), mRunning);
             if (mTaskList.size() == 0) {
                 return;
             }
@@ -73,12 +71,7 @@ public class ZaloSDKApiImpl implements ZaloSdkApi {
             ZaloSdkTask task = peek();
             task.execute();
         } else {
-            AndroidUtils.runOnUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    executeNext();
-                }
-            });
+            AndroidUtils.runOnUIThread(this::executeNext);
         }
     }
 
@@ -98,7 +91,7 @@ public class ZaloSDKApiImpl implements ZaloSdkApi {
     }
 
     private void saveUserProfile(JSONObject result) {
-        Timber.d("saveUserProfile: %s", result);
+        Timber.d("Save user profile: result [%s]", result);
         if (result != null) {
             mUserConfig.saveZaloUserInfo(result);
         }

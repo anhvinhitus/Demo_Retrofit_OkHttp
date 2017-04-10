@@ -85,7 +85,7 @@ public class CardSupportWithdrawFragment extends BaseFragment {
     }
 
     public void refreshCardSupportList(List<BankConfig> cardSupportList) {
-        Timber.d("refreshListCardSupport cardSupportList[%s]", cardSupportList);
+        Timber.d("refreshListCardSupport : cardSupportList [%s]", cardSupportList);
         if (mAdapter == null) {
             return;
         }

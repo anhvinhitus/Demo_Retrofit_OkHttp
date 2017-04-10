@@ -104,16 +104,9 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         Subscription subscription =
                 mRedPacketRepository.createBundleOrder(quantity, (long) totalLuck, (long) amountEach, type, sendMessage)
                         .subscribe(new RedPacketSubscriber<BundleOrder>(promise) {
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Timber.w(e, "error on getting CreateBundleOrderSubscriber");
-                                super.onError(e);
-                            }
-
                             @Override
                             public void onNext(BundleOrder bundleOrder) {
-                                Timber.d("createBundleOrder onNext bundleOrder [%s]", bundleOrder);
+                                Timber.d("Create bundle order : bundleOrder [%s]", bundleOrder);
                                 if (bundleOrder == null) {
                                     Helpers.promiseResolveError(promise, PaymentError.ERR_CODE_INPUT.value(), "Có lỗi xảy ra trong quá trình xử lý. Vui lòng thử lại sau.");
                                 } else {
@@ -158,11 +151,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
                 WritableMap data = Arguments.createMap();
                 data.putString("bundleid", String.valueOf(bundleOrder.bundleId));
 
-
-                if (AndroidUtils.isMainThread()) {
-                    Timber.d("Kiểm tra lại phần này thôi. main thread rùi.");
-                }
-
                 Subscription subscription = updateBalance()
                         .subscribe(new DefaultSubscriber<Boolean>());
                 compositeSubscription.add(subscription);
@@ -205,10 +193,9 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     private void onGetBundleStatusFinish(Promise promise, long bundleId, boolean result, int status) {
-        Timber.d("onGetBundleStatusFinish bundleId [%s] result [%s] status [%s]", bundleId, result, status);
+        Timber.d("Get bundle status finish : bundleId [%s] result [%s] status [%s]", bundleId, result, status);
         promiseResolveGetBundleStatus(promise, result);
         stopTaskGetStatus();
-        Timber.d("onGetBundleStatusFinish, set status: [%s] for bundle: [%s] result [%s]", status, bundleId, result);
         mRedPacketRepository.setBundleStatus(bundleId, status).subscribe(new DefaultSubscriber<Void>());
     }
 
@@ -316,7 +303,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     }
 
     private void getpackagestatus(final long packageId, final long zpTransId, final Promise promise) {
-        Timber.d("getpackagestatus isRunningGetStatus [%s]", isRunningGetStatus);
+        Timber.d("Get package status : isRunningGetStatus [%s]", isRunningGetStatus);
         if (isRunningGetStatus) {
             return;
         }
@@ -332,7 +319,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
                     @Override
                     public void onNext(PackageStatus packageStatus) {
-                        Timber.d("getpackagestatus onNext, mTimerGetStatus [%s]", mTimerGetStatus);
+                        Timber.d("Get package status success : mTimerGetStatus [%s]", mTimerGetStatus);
                         stopTaskGetStatus();
                         Helpers.promiseResolveSuccess(promise, DataMapper.transform(packageStatus));
                         Timber.d("set open status 1 for packet: %s with amount: [%s]", packageId, packageStatus.amount);
@@ -440,7 +427,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void getPacketsFromBundle(String strBundleID, final Promise promise) {
-        Timber.d("getPackageInBundle strBundleID [%s]", strBundleID);
+        Timber.d("getPackageInBundle : bundleId [%s]", strBundleID);
         if (TextUtils.isEmpty(strBundleID)) {
             promise.reject("EMPTY BUNDLEID", "Invalid argument");
             return;
@@ -473,7 +460,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void getPacketStatus(final String packetId, final Promise promise) {
-        Timber.d("query open status for packet: %s", packetId);
+        Timber.d("query open status for packet : packetId %s", packetId);
         Subscription subscription = mRedPacketRepository.getPacketStatus(packetId)
                 .subscribe(new RedPacketSubscriber<ReceivePackageGD>(promise) {
                     @Override
@@ -498,12 +485,12 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void getSendBundleHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
-        Timber.d("getSendBundleHistoryWithTimeStamp createTime [%s] count [%s]", createTime, count);
+        Timber.d("getSendBundleHistoryWithTimeStamp : createTime [%s] count [%s]", createTime, count);
         Subscription subscription = mRedPacketRepository.getSentBundleList((long) createTime, (int) count)
                 .subscribe(new RedPacketSubscriber<GetSentBundle>(promise) {
                     @Override
                     public void onNext(GetSentBundle getSentBundle) {
-                        Timber.d("getSendBundleHistoryWithTimeStamp onNext getSentBundle [%s]", getSentBundle);
+                        Timber.d("getSendBundleHistoryWithTimeStamp : SendBundle [%s]", getSentBundle);
                         WritableMap writableMap = DataMapper.transform(getSentBundle);
                         Helpers.promiseResolveSuccess(promise, writableMap);
                     }
@@ -513,7 +500,7 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void getReceivePacketHistoryWithTimeStamp(final double createTime, final double count, final Promise promise) {
-        Timber.d("getReceivePacketHistoryWithTimeStamp createTime [%s] count [%s]", createTime, count);
+        Timber.d("getReceivePacketHistoryWithTimeStamp : createTime [%s] count [%s]", createTime, count);
         Subscription subscription = mRedPacketRepository.getReceivePacketList((long) createTime, (int) count)
                 .subscribe(new RedPacketSubscriber<GetReceivePacket>(promise) {
                     @Override

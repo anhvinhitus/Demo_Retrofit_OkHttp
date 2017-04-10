@@ -58,8 +58,6 @@ public class SplashScreenFragment extends BaseFragment implements ISplashScreenV
 
         boolean isTaskRoot = getActivity().isTaskRoot();
 
-        Timber.d("onActivityCreated task [%s] taskRoot [%s]", getActivity().getTaskId(), isTaskRoot);
-
         if (!isTaskRoot) {
             getActivity().finish();
             return;

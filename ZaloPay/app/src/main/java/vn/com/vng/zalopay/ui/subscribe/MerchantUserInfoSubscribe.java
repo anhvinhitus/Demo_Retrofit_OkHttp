@@ -35,7 +35,7 @@ public class MerchantUserInfoSubscribe extends DefaultSubscriber<MerchantUserInf
 
     @Override
     public void onNext(MerchantUserInfo merchantUserInfo) {
-        Timber.d("Get MerchantUserInfo success, merchantInfo [%s]", merchantUserInfo);
+        Timber.d("Get MerchantUserInfo success : merchantInfo [%s]", merchantUserInfo);
         if (mActivity == null || mActivity.get() == null) {
             return;
         }
