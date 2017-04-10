@@ -1,3 +1,9 @@
+Zalo Pay (Staging v2.10.0 - build 212) - Released on 2017-04-10
++ [SDK] Force update level khi user level 1 chọn than toán dùng tài khoản đã lưu.
++ [SDK] Reload bank account on notify 112
++ [SDK] Check lại danh sách map bank account với server nếu load website timeout
++ Fix bug UI (bug#4, bug#9, bug#10)
+
 Zalo Pay (Staging v2.10.0 - build 211) - Released on 2017-04-08
 + [SDK] Fix check reload bank account between notification and callback from parse web
 
