@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.airbnb.epoxy.EpoxyAdapter;
-import com.airbnb.epoxy.EpoxyHolder;
 import com.airbnb.epoxy.EpoxyModel;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 public class HomeAdapter extends EpoxyAdapter {
 
-    public interface OnClickAppItemListener {
+    public interface OnClickItemListener {
         void onClickBanner(DBanner banner, int index);
 
         void onClickAppItem(AppResource app, int position);
@@ -34,13 +33,14 @@ public class HomeAdapter extends EpoxyAdapter {
 
     private BannerModel bannerModel;
     private static final int POSITION_BANNER = 6;
-    private OnClickAppItemListener clickListener;
+    private OnClickItemListener clickListener;
 
-    public HomeAdapter(Context context, OnClickAppItemListener listener) {
+    public HomeAdapter(Context context, OnClickItemListener listener, int spanCount) {
         super();
         clickListener = listener;
         bannerModel = new BannerModel();
         bannerModel.setClickListener(clickListener);
+        setSpanCount(spanCount);
         enableDiffing();
     }
 

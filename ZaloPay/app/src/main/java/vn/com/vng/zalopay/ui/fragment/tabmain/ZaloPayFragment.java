@@ -50,7 +50,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
  * Display PaymentApps in Grid layout
  */
 public class ZaloPayFragment extends RuntimePermissionFragment implements ListAppRecyclerAdapter.OnClickAppListener,
-        IZaloPayView, SwipeRefreshLayout.OnRefreshListener, HomeAdapter.OnClickAppItemListener {
+        IZaloPayView, SwipeRefreshLayout.OnRefreshListener, HomeAdapter.OnClickItemListener {
 
     public static ZaloPayFragment newInstance() {
         Bundle args = new Bundle();
@@ -100,8 +100,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAdapter = new HomeAdapter(getContext(), this);
-        mAdapter.setSpanCount(SPAN_COUNT_APPLICATION);
+        mAdapter = new HomeAdapter(getContext(), this, SPAN_COUNT_APPLICATION);
     }
 
     @Override

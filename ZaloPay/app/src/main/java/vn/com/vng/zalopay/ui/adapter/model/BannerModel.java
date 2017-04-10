@@ -23,7 +23,7 @@ public class BannerModel extends SimpleEpoxyModel {
     private List<DBanner> banners;
     private SliderLayout mSliderLayout;
 
-    private HomeAdapter.OnClickAppItemListener clickListener;
+    private HomeAdapter.OnClickItemListener clickListener;
 
     public BannerModel() {
         super(R.layout.row_banner_layout);
@@ -61,7 +61,7 @@ public class BannerModel extends SimpleEpoxyModel {
         }
     };
 
-    public BannerModel setClickListener(HomeAdapter.OnClickAppItemListener clickListener) {
+    public BannerModel setClickListener(HomeAdapter.OnClickItemListener clickListener) {
         this.clickListener = clickListener;
         return this;
     }
