@@ -164,9 +164,9 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
     public void onBankLinkNowClick() {
         showToast("Quick link bank clicked");
         ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
-        if(presenter.getLinkCardType() == 0) {
-            navigator.startLinkCardActivity(getContext(), true);
-        }
+//        if(presenter.getLinkCardType() == 0) {
+//            navigator.startLinkCardActivity(getContext(), true);
+//        }
     }
 
     @OnClick(R.id.tab_personal_rl_bill)
@@ -179,7 +179,6 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
         ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BILLING_QUICKACTION);
         showToast("Bill detail clicked");
     }
-
 
     @OnClick(R.id.tab_personal_rl_transaction_history)
     public void onTransHistoryClick() {

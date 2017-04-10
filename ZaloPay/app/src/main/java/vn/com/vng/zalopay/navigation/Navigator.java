@@ -254,13 +254,6 @@ public class Navigator implements INavigator {
     }
 
     @Override
-    public void startLinkCardActivity(Context context, boolean isQuickLinkCard) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("QUICK_LINK_CARD_ACCESS", isQuickLinkCard);
-        startLinkCardActivity(context, bundle, false);
-    }
-
-    @Override
     public void startLinkCardActivity(Context context) {
         startLinkCardActivity(context, null, false);
     }
