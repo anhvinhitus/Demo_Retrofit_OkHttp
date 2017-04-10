@@ -199,7 +199,7 @@ public class NotificationHelper {
                 resetPaymentPassword();
                 break;
             case NotificationType.LINK_CARD_EXPIRED:
-                removeLinkCard(notify);
+                reloadMapCardList(notify);
                 break;
             case NotificationType.MERCHANT_BILL:
                 if (isNotificationRecovery) {
@@ -295,26 +295,8 @@ public class NotificationHelper {
         }
     }
 
-    private void removeLinkCard(NotificationData data) {
-        JsonObject embeddata = data.getEmbeddata();
-        if (embeddata == null) {
-            return;
-        }
-        int last4cardno = 0;
-        int first6cardno = 0;
-        if (embeddata.has("last4cardno")) {
-            last4cardno = embeddata.get("last4cardno").getAsInt();
-        }
-        if (embeddata.has("first6cardno")) {
-            first6cardno = embeddata.get("first6cardno").getAsInt();
-        }
-
-        Timber.d("Remove link card last4cardno [%s] first6cardno [%s]", last4cardno, first6cardno);
-        if (last4cardno <= 0 || first6cardno <= 0) {
-            return;
-        }
-
-        CShareDataWrapper.reloadMapCardList(String.valueOf(last4cardno), String.valueOf(first6cardno), mUser, null);
+    private void reloadMapCardList(NotificationData data) {
+        CShareDataWrapper.reloadMapCardList("", "", mUser, null);
     }
 
     private void payOrderFromNotify(NotificationData notify) {
