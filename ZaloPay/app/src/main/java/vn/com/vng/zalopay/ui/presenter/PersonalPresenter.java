@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -19,16 +20,22 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
+import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
+import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
+import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
+import vn.com.vng.zalopay.service.PaymentWrapper;
+import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
+import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
@@ -45,6 +52,9 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private Context context;
     private BalanceStore.Repository mBalanceRepository;
     private PassportRepository mPassportRepository;
+    private ZaloPayRepository mZaloPayRepository;
+    private TransactionStore.Repository mTransactionRepository;
+    private PaymentWrapper paymentWrapper;
 
     @Inject
     ZaloSdkApi mZaloSdkApi;
@@ -55,13 +65,17 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
             , UserConfig userConfig
             , BalanceStore.Repository balanceRepository
             , PassportRepository passportRepository
+            , ZaloPayRepository zaloPayRepository
+            , TransactionStore.Repository transactionRepository
             , Context context) {
         this.mUser = user;
         this.mEventBus = eventBus;
         this.mUserConfig = userConfig;
         this.context = context;
         this.mBalanceRepository = balanceRepository;
-        mPassportRepository = passportRepository;
+        this.mPassportRepository = passportRepository;
+        this.mZaloPayRepository = zaloPayRepository;
+        this.mTransactionRepository = transactionRepository;
         Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 
@@ -181,7 +195,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
 
     private int linkCardType;
 
-    public void checkLinkCardStatus() {
+    private void checkLinkCardStatus() {
         ObservableHelper.makeObservable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -220,6 +234,27 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
             Timber.w(e, "Change page in context throw exception.");
             super.onError(e);
         }
+    }
+
+    public void addLinkCard(Activity activity) {
+        if (paymentWrapper == null) {
+            paymentWrapper = getPaymentWrapper();
+        }
+
+        paymentWrapper.linkCard(activity);
+    }
+
+    private PaymentWrapper getPaymentWrapper() {
+        return new PaymentWrapperBuilder()
+                .setBalanceRepository(mBalanceRepository)
+                .setZaloPayRepository(mZaloPayRepository)
+                .setTransactionRepository(mTransactionRepository)
+                .setResponseListener(new DefaultPaymentResponseListener() {
+                    @Override
+                    protected ILoadDataView getView() {
+                        return null;
+                    }
+                }).build();
     }
 
 }

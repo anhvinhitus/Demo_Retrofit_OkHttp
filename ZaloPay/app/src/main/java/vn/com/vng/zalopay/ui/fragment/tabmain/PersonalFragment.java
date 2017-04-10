@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
@@ -17,14 +18,24 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.authentication.PaymentFingerPrint;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
+import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
+import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
+import vn.com.zalopay.wallet.business.entity.error.CError;
+import vn.com.zalopay.wallet.controller.SDKPayment;
 
 /**
  * Created by Duke on 3/27/17.
@@ -164,9 +175,9 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
     public void onBankLinkNowClick() {
         showToast("Quick link bank clicked");
         ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
-//        if(presenter.getLinkCardType() == 0) {
-//            navigator.startLinkCardActivity(getContext(), true);
-//        }
+        if(presenter.getLinkCardType() == 0) {
+            presenter.addLinkCard(getActivity());
+        }
     }
 
     @OnClick(R.id.tab_personal_rl_bill)
