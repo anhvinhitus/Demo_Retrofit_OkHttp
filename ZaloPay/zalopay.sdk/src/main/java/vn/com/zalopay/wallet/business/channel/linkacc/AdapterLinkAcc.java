@@ -48,7 +48,6 @@ import vn.com.zalopay.wallet.utils.ViewUtils;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
  * Created by SinhTT on 14/11/2016.
@@ -229,8 +228,16 @@ public class AdapterLinkAcc extends AdapterBase {
         submitMapAccount.makeRequest();
     }
 
+    public void verifyServerAfterParseWebTimeout(){
+        if(GlobalData.isLinkAccFlow()){
+            checkLinkAccountList();
+        }else if(GlobalData.isUnLinkAccFlow()){
+            checkUnlinkAccountList();
+        }
+    }
+
     // call API,get bankAccount
-    private void checkUnlinkAccountList() {
+    protected void checkUnlinkAccountList() {
         if (isFinalScreen()) {
             Log.d(this, "stopping reload bank account because user in result screen");
             return;
@@ -373,7 +380,7 @@ public class AdapterLinkAcc extends AdapterBase {
         // Event: HIT
         if (pEventType == EEventType.ON_HIT) {
             // show processDialog
-            DialogManager.showProcessDialog(getActivity(), null);
+            showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
             return null;
         }
 
@@ -470,19 +477,15 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
                 getActivity().renderByResource();
                 getActivity().enableSubmitBtn(false);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        forceVirtualKeyboard();//auto show keyboard
-                    }
-                }, 300);
+                //auto show keyboard
+                new Handler().postDelayed(this::forceVirtualKeyboard, 300);
 
                 return null;
             }
 
             // Register page
             if (page.equals(VCB_REGISTER_PAGE)) {
-                DialogManager.closeProcessDialog(); // close process dialog
+                showProgressBar(false, null);
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
@@ -589,7 +592,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             default:
                                 // FAIL. Fail register
                                 if (!TextUtils.isEmpty(response.message)) {
-                                    DialogManager.closeProcessDialog(); // close process dialog
+                                    showProgressBar(false, null); // close process dialog
                                     String msgErr = response.message;
                                     linkAccFail(msgErr, mTransactionID);
                                     return null;
@@ -611,7 +614,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Unregister page
             if (page.equals(VCB_UNREGISTER_PAGE)) {
-                DialogManager.closeProcessDialog(); // close process dialog
+                showProgressBar(false, null);
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
@@ -658,7 +661,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 } else {
                     // FAIL. Fail register
                     if (!TextUtils.isEmpty(response.message)) {
-                        DialogManager.closeProcessDialog(); // close process dialog
+                        showProgressBar(false, null); // close process dialog
                         String msgErr = response.message;
                         linkAccFail(msgErr, mTransactionID);
                     } else {
@@ -693,7 +696,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 } else {
                     // FAIL. Fail register
                     if (!TextUtils.isEmpty(response.message)) {
-                        DialogManager.closeProcessDialog(); // close process dialog
+                        showProgressBar(false, null);
                         String msgErr = response.message;
                         unlinkAccFail(msgErr, mTransactionID);
                     } else {
@@ -712,7 +715,7 @@ public class AdapterLinkAcc extends AdapterBase {
         // Event: FAIL
         if (pEventType == EEventType.ON_FAIL) {
             // fail.
-            DialogManager.closeProcessDialog();
+            showProgressBar(false, null);
             if (pAdditionParams == null || pAdditionParams.length == 0) {
                 // Error
                 return null;

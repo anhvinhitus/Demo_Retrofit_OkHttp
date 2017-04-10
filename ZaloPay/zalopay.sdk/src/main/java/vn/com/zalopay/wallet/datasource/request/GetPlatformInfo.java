@@ -406,8 +406,7 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
     protected boolean doParams() {
         try {
             mIsProcessing = true;
-
-            Log.d(this, "===starting to get platform info=====");
+            Log.d(this, "starting to get platform info");
 
             String checksum = SharedPreferencesManager.getInstance().getChecksumSDK();
             String checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();

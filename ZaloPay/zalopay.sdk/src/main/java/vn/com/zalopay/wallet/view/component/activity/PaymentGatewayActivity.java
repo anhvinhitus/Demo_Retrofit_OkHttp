@@ -31,7 +31,6 @@ import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
@@ -151,7 +150,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         GlobalData.setChannelActivityCallBack(this);
 
         //this is link acc , go to channel directly
-        if (GlobalData.isLinkAccChannel()) {
+        if (GlobalData.isBankAccountLink()) {
             startChannelDirect(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc));
             isUniqueChannel = true;
             return;

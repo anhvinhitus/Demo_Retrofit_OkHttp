@@ -305,7 +305,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
         showKeyBoardOnFocusingViewAgain();
         //this is link account and the first call
-        if (GlobalData.isLinkAccChannel() && !mIsRestart) {
+        if (GlobalData.isBankAccountLink() && !mIsRestart) {
             try {
                 //check static resource whether ready or not
                 loadStaticReload();

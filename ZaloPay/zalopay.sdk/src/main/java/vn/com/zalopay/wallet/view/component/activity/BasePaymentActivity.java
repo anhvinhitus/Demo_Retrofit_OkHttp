@@ -38,7 +38,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
@@ -53,7 +52,6 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
@@ -70,7 +68,6 @@ import vn.com.zalopay.wallet.datasource.request.DownloadBundle;
 import vn.com.zalopay.wallet.datasource.request.SDKReport;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
-import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWOnCloseDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
@@ -209,9 +206,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                             }
                         }
                         Log.d(this, "getOneShotTransactionStatus");
+                    } else if (GlobalData.isBankAccountLink() && getAdapter() instanceof AdapterLinkAcc) {
+                        ((AdapterLinkAcc) getAdapter()).verifyServerAfterParseWebTimeout();
+                        Log.d(this, "load website timeout, continue to verify server again to ask for new data list");
                     } else {
-                        //show dialog and move to fail screen
-                        ((PaymentChannelActivity) activity.get()).showWarningDialog(() -> ((PaymentChannelActivity) activity.get()).getAdapter().showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)), GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+                        ((PaymentChannelActivity) activity.get()).showWarningDialog(() -> ((PaymentChannelActivity) activity.get()).getAdapter()
+                                        .showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)),
+                                GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));//show dialog and move to fail screen
                     }
                     return;
                 }
@@ -1171,7 +1172,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
 
         // set color for text in linkacc
-        if (GlobalData.isLinkAccChannel()) {
+        if (GlobalData.isBankAccountLink()) {
             if (getAdapter().getPageName().equals(AdapterBase.PAGE_LINKACC_FAIL)) { // linkacc fail
                 setView(R.id.zpw_payment_fail_textview, true);
             } else { // unlinkacc fail
@@ -1210,7 +1211,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setText(R.id.payment_description_label, GlobalData.getPaymentInfo().description);
             } else
                 setView(R.id.payment_description_label, false);
-        } else if (GlobalData.isLinkAccChannel()) { // show label for linkAcc
+        } else if (GlobalData.isBankAccountLink()) { // show label for linkAcc
             if (getAdapter().getPageName().equals(AdapterBase.PAGE_LINKACC_SUCCESS)) {
                 setViewColor(R.id.zpw_payment_success_textview, getResources().getColor(R.color.text_color_primary));
                 setView(R.id.payment_description_label, true);
@@ -1261,8 +1262,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
 
             Long paymentTime = GlobalData.getPaymentInfo().appTime;
-            if(paymentTime == null || paymentTime == 0)
-            {
+            if (paymentTime == null || paymentTime == 0) {
                 paymentTime = new Date().getTime();
             }
             setTransferDate(ZPWUtils.convertDateTime(paymentTime));
@@ -1961,6 +1961,22 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         startActivity(intent);
     }
 
+    private SimpleDraweeView findViewAndLoadUri(@IdRes int viewId, String uri) {
+        SimpleDraweeView view = this.findAndPrepare(viewId);
+        view.setImageURI(Uri.parse(uri));
+        return view;
+    }
+    // fresco load Uri
+
+    private SimpleDraweeView findAndPrepare(@IdRes int viewId) {
+        SimpleDraweeView view = (SimpleDraweeView) findViewById(viewId);
+        return view;
+    }
+
+    public void setTransferDate(String pDate) {
+        setText(R.id.text_transfer_date, pDate);
+    }
+
     /***
      * internal class for receiving networking event
      */
@@ -1993,23 +2009,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 }
             }
         }
-    }
-    // fresco load Uri
-
-
-    private SimpleDraweeView findViewAndLoadUri(@IdRes int viewId, String uri) {
-        SimpleDraweeView view = this.findAndPrepare(viewId);
-        view.setImageURI(Uri.parse(uri));
-        return view;
-    }
-
-    private SimpleDraweeView findAndPrepare(@IdRes int viewId) {
-        SimpleDraweeView view = (SimpleDraweeView) findViewById(viewId);
-        return view;
-    }
-
-    public void setTransferDate(String pDate) {
-        setText(R.id.text_transfer_date, pDate);
     }
     //endregion
 

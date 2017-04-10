@@ -7,7 +7,7 @@ public class CValidation implements IPaymentValidate {
     protected IPaymentValidate mPaymentValidattion;
 
     public CValidation() {
-        if (GlobalData.isLinkAccChannel()) {
+        if (GlobalData.isBankAccountLink()) {
             setValidator(new CLinkAccValidation());
         } else if (GlobalData.isLinkCardChannel()) {
             setValidator(new CLinkCardValidation());
