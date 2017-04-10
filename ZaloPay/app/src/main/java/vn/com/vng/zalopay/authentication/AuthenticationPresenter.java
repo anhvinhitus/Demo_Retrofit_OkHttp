@@ -76,12 +76,15 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
     private void enterPassword(Stage stage) {
         setStage(stage);
+
+        if (mAuthenticationProvider != null) {
+            mAuthenticationProvider.stopVerify();
+        }
+
         updateStage();
         if (mView != null) {
             mView.showKeyboard();
         }
-
-        mAuthenticationProvider.stopVerify();
     }
 
     private void enterPassword() {
@@ -111,11 +114,15 @@ public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationVi
 
 
     public void resume() {
-        mAuthenticationProvider.startVerify();
+        if (mAuthenticationProvider != null) {
+            mAuthenticationProvider.startVerify();
+        }
     }
 
     public void pause() {
-        mAuthenticationProvider.stopVerify();
+        if (mAuthenticationProvider != null) {
+            mAuthenticationProvider.stopVerify();
+        }
     }
 
 
