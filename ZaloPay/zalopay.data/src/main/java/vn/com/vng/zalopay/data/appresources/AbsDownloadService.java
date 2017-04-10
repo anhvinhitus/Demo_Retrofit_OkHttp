@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.data.appresources;
 
 import android.app.IntentService;
+import android.app.usage.UsageEvents;
 import android.content.Intent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,6 +24,9 @@ public abstract class AbsDownloadService extends IntentService {
 
     @Inject
     public DownloadAppResourceTaskQueue mTaskQueue;
+
+    @Inject
+    EventBus mEventBus;
 
     private final static String TAG = "DownloadService";
 
@@ -74,9 +78,9 @@ public abstract class AbsDownloadService extends IntentService {
             boolean result = task.execute();
 
             if (task.getDownloadInfo().appid == mZaloPayAppId) {
-                EventBus.getDefault().postSticky(new DownloadZaloPayResourceEvent(result));
+                mEventBus.post(new DownloadZaloPayResourceEvent(result, task.getDownloadInfo()));
             } else {
-                EventBus.getDefault().postSticky(new DownloadAppEvent(result, task.getDownloadInfo()));
+                mEventBus.postSticky(new DownloadAppEvent(result, task.getDownloadInfo()));
             }
 
             mTaskQueue.dequeue();

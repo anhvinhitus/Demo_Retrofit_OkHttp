@@ -95,7 +95,6 @@ class ReactNotificationNativeModule extends ReactContextBaseJavaModule implement
         Helpers.promiseResolveSuccess(promise, null);
     }
 
-
     @ReactMethod
     public void removeNotification(String notificationId, Promise promise) {
         long notifyId;

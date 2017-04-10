@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.monitors.IMonitorTiming;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.requestsupport.ChooseCategoryFragment;
 import vn.com.vng.zalopay.service.DownloadService;
+import vn.com.vng.zalopay.service.GlobalAppService;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.share.IntentHandlerActivity;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
@@ -59,6 +60,8 @@ public interface ApplicationComponent {
     Context context();
 
     ThreadExecutor threadExecutor();
+
+    GlobalAppService globalAppService();
 
     UserComponent plus(UserModule userModule);
 

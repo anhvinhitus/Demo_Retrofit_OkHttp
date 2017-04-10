@@ -30,7 +30,6 @@ import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
-import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -61,7 +60,6 @@ import vn.com.vng.zalopay.ui.view.IHomeView;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.vng.zalopay.utils.ConfigUtil;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.utils.PermissionUtil;
 import vn.com.vng.zalopay.utils.RootUtils;
@@ -404,26 +402,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         if (mView != null) {
             mView.setBalance(event.balance);
         }
-    }
-
-    @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
-    public void onDownloadResourceSuccessEvent(DownloadZaloPayResourceEvent event) {
-        mEventBus.removeStickyEvent(DownloadZaloPayResourceEvent.class);
-        if (event.isDownloadSuccess) {
-            reloadConfig();
-            reloadIconFont();
-        }
-    }
-
-    private void reloadConfig() {
-        boolean result = ConfigUtil.loadConfigFromResource();
-        if (result) {
-            Timber.d("Load config from resource app 1 successfully.");
-        }
-    }
-
-    private void reloadIconFont() {
-        AndroidApplication.instance().initIconFont();
     }
 
     public void pay(final long appId, String zptranstoken, final boolean isAppToApp) {
