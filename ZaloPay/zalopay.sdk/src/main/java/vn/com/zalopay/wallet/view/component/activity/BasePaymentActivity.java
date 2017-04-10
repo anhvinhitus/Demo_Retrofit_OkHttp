@@ -1645,7 +1645,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 userLevelValid = false;
             } else if (GlobalData.isWithDrawChannel() && GlobalData.getLevel() < Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_level_allow_withdraw))) {
                 userLevelValid = false;
-            } else if (GlobalData.isMapCardChannel() && GlobalData.getLevel() < Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_level_allow_mapcard))) {
+            } else if ((GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) && GlobalData.getLevel() < Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_level_allow_mapcard))) {
                 userLevelValid = false;
             }
         } catch (Exception e) {
