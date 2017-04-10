@@ -93,63 +93,57 @@ public class HomeAdapter extends EpoxyAdapter {
         return modelsTmp;
     }
 
+
     private void updateAppModels(List<EpoxyModel<?>> rootModels, List<AppItemModel> modelsApp, @NonNull List<AppResource> list) throws IndexOutOfBoundsException {
         int sizeApp = list.size();
         int sizeModelsApp = modelsApp.size();
-        //  int indexBanner = models.indexOf(bannerModel);
 
-        if (sizeModelsApp == sizeApp) {
-            for (int i = 0; i < sizeApp; i++) {
-                AppItemModel model = modelsApp.get(i);
-                if (model == null) {
-                    continue;
-                }
-                model.show();
-                model.setApp(list.get(i));
-            }
-        } else if (sizeModelsApp > sizeApp) {
-            for (int i = 0; i < sizeApp; i++) {
-                AppItemModel model = modelsApp.get(i);
-                if (model == null) {
-                    continue;
-                }
-                model.show();
-                model.setApp(list.get(i));
-            }
+        updateAppItemModel(modelsApp, list, Math.min(sizeApp, sizeModelsApp));
 
-            int hideModelsApp = sizeModelsApp - sizeApp;
-
-            for (int i = 0; i < hideModelsApp; i++) {
-                AppItemModel appItemModel = modelsApp.get(sizeApp + i);
-                if (appItemModel == null) {
-                    continue;
-                }
-                appItemModel.hide();
-            }
-
-        } else {
-            for (int i = 0; i < sizeModelsApp; i++) {
-                AppItemModel model = modelsApp.get(i);
-                if (model == null) {
-                    continue;
-                }
-                model.show();
-                model.setApp(list.get(i));
-            }
-
-            int newModelsApp = sizeApp - sizeModelsApp;
-
-            for (int i = 0; i < newModelsApp; i++) {
-                AppResource appResource = list.get(sizeModelsApp + i);
-                if (appResource == null) {
-                    continue;
-                }
-                rootModels.add(transform(appResource));
-            }
+        if (sizeModelsApp > sizeApp) {
+            removeAppItemModel(modelsApp, list);
+        } else if (sizeModelsApp < sizeApp) {
+            addNewAppItemModel(rootModels, modelsApp, list);
         }
 
     }
 
+    private void updateAppItemModel(List<AppItemModel> modelsApp, @NonNull List<AppResource> list, int count) throws IndexOutOfBoundsException {
+        for (int i = 0; i < count; i++) {
+            AppItemModel model = modelsApp.get(i);
+            if (model == null) {
+                continue;
+            }
+            model.show();
+            model.setApp(list.get(i));
+        }
+    }
+
+    private void removeAppItemModel(List<AppItemModel> modelsApp, @NonNull List<AppResource> list) throws IndexOutOfBoundsException {
+        int sizeApp = list.size();
+        int sizeModelsApp = modelsApp.size();
+        int hideModelsApp = sizeModelsApp - sizeApp;
+        for (int i = 0; i < hideModelsApp; i++) {
+            AppItemModel appItemModel = modelsApp.get(sizeApp + i);
+            if (appItemModel == null) {
+                continue;
+            }
+            appItemModel.hide();
+        }
+    }
+
+    private void addNewAppItemModel(List<EpoxyModel<?>> rootModels, List<AppItemModel> modelsApp, @NonNull List<AppResource> list) throws IndexOutOfBoundsException {
+        int sizeApp = list.size();
+        int sizeModelsApp = modelsApp.size();
+        int newModelsApp = sizeApp - sizeModelsApp;
+        for (int i = 0; i < newModelsApp; i++) {
+            AppResource appResource = list.get(sizeModelsApp + i);
+            if (appResource == null) {
+                continue;
+            }
+            rootModels.add(transform(appResource));
+        }
+    }
 
     public void setBanners(@NonNull List<DBanner> banners) {
         Timber.d("set banners size [%s]", banners.size());
