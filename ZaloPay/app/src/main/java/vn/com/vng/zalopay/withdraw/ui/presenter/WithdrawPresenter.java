@@ -147,11 +147,10 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
         if (e instanceof NetworkConnectionException) {
             mView.showNetworkErrorDialog();
         } else if (e instanceof UserInputException) {
-            mView.showAmountError(e.getMessage());
+            mView.showAmountError(ErrorMessageFactory.create(mContext, e));
         } else {
             Timber.e(e, "Server responses with error when client create withdraw order.");
-            String message = ErrorMessageFactory.create(mContext, e);
-            mView.showError(message);
+            mView.showError(ErrorMessageFactory.create(mContext, e));
         }
     }
 
