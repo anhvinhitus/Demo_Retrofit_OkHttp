@@ -13,6 +13,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.react.base.AbstractReactActivity;
@@ -90,7 +92,8 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
     BottomNavigationView mBottomNavigationView;
 
     // TODO: 4/4/17 - longlv: hardcode for test.
-    private boolean mNewPromotion = true;
+    private boolean mShowIconNewPromotion = true;
+    private View mIconNewPromotion;
 
     private static boolean isToolbarExpanded = true;
 
@@ -236,6 +239,20 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
             }
             return true;
         });
+
+        changeBottomNavigationLayout();
+    }
+
+    private void changeBottomNavigationLayout() {
+        int paddingBottom = (int) getResources().getDimension(R.dimen.spacing_tiny_s);
+        View tabHome = mBottomNavigationView.findViewById(R.id.menu_home);
+        tabHome.findViewById(android.support.design.R.id.icon).setPadding(0, 0, 0, paddingBottom);
+        View tabNearby = mBottomNavigationView.findViewById(R.id.menu_nearby);
+        tabNearby.findViewById(android.support.design.R.id.icon).setPadding(0, 0, 0, paddingBottom);
+        View tabPromotion = mBottomNavigationView.findViewById(R.id.menu_promotion);
+        tabPromotion.findViewById(android.support.design.R.id.icon).setPadding(0, 0, 0, paddingBottom);
+        View tabProfile = mBottomNavigationView.findViewById(R.id.menu_profile);
+        tabProfile.findViewById(android.support.design.R.id.icon).setPadding(0, 0, 0, paddingBottom);
     }
 
     private void trackEvent(int position) {
@@ -356,37 +373,45 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView, Ap
 
     private void setIconTabPromotion(Menu menu, boolean isActive) {
         BottomNavigationDrawable iconFontDrawable;
+        FrameLayout tabPromotion = (FrameLayout) mBottomNavigationView.findViewById(R.id.menu_promotion);
         if (isActive) {
-            mNewPromotion = false;
             iconFontDrawable = new BottomNavigationDrawable(this)
                     .setIcon(R.string.tab_promotion_active)
                     .setResourcesColor(R.color.colorPrimary)
                     .setResourcesSize(R.dimen.font_size_tab_icon);
+            if (mShowIconNewPromotion) {
+                mShowIconNewPromotion = false;
+                removeIconNew(tabPromotion);
+            }
         } else {
             iconFontDrawable = new BottomNavigationDrawable(this)
                     .setIcon(R.string.tab_promotion)
                     .setResourcesColor(R.color.txt_item_sub)
                     .setResourcesSize(R.dimen.font_size_tab_icon);
-            if (mNewPromotion) {
-                increaseIconWidth();
-                iconFontDrawable.setSubIcon(getString(R.string.tab_notifynew))
-                        .setPxSizeSubIcon(R.dimen.font_size_tab_sub_icon);
+            if (mShowIconNewPromotion) {
+                addIconNew(tabPromotion);
             }
         }
         menu.getItem(HomePagerAdapter.TAB_PROMOTION_INDEX).setIcon(iconFontDrawable);
     }
 
-    /**
-     * Increase icon width to append sub icon at top right corner.
-     * Default icon in BottomNavigationItemView is 24dp, increase 36dp.
-     */
-    private void increaseIconWidth() {
-        View view = mBottomNavigationView.findViewById(R.id.menu_promotion);
-        View imageView = view.findViewById(android.support.design.R.id.icon);
-        if (imageView != null) {
-            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) imageView.getLayoutParams();
-            layoutParams.width = (int) getResources().getDimension(R.dimen.bottom_navigation_item_image_width);
+    private void addIconNew(FrameLayout frameLayout) {
+        if (mIconNewPromotion != null) {
+            return;
         }
+        mIconNewPromotion = getLayoutInflater().inflate(R.layout.icon_new, null);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+        frameLayout.addView(mIconNewPromotion, -1, layoutParams);
+    }
+
+    private void removeIconNew(FrameLayout frameLayout) {
+        if (frameLayout == null || mIconNewPromotion == null) {
+            return;
+        }
+        frameLayout.removeView(mIconNewPromotion);
+        mIconNewPromotion = null;
     }
 
     private void setIconTabProfile(Menu menu, boolean isActive) {

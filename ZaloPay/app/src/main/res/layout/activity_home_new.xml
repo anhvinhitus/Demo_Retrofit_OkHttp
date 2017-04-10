@@ -35,6 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="@android:color/transparent"
+                    app:contentInsetStart="0dp"
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
@@ -83,9 +84,11 @@
                 android:id="@+id/navigation"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
+                android:paddingTop="0dp"
                 android:layout_gravity="bottom"
                 app:itemBackground="@color/white"
                 app:itemIconTint="@color/bottom_nav_icon_color_selector"
+                app:itemTextColor="@color/bottom_nav_icon_color_selector"
                 app:menu="@menu/bottom_navigation_items" />
         </FrameLayout>
 

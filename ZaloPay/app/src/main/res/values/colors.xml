@@ -55,6 +55,8 @@
     <color name="c_text_black">#24272b</color>
 
     <color name="bg_translucence_white">#88ffffff</color>
+    <color name="bg_search_toolbar">#10a5ff</color>
+    <color name="hint_text_search_toolbar">#b3e0fb</color>
     <color name="text_green">#008fe5</color>
 
     <color name="icon_enabled">#FFFFFFFF</color>

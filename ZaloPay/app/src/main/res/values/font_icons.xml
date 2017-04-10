@@ -81,4 +81,5 @@
     <!--Tab in Personal END-->
 
     <string name="tab_notifynew">tab_notifynew</string>
+    <string name="nav_notify">nav_notify</string>
 </resources>

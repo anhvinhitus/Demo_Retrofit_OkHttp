@@ -94,8 +94,8 @@ public class BottomNavigationDrawable extends IconFontDrawable {
         Rect textBounds = new Rect();
         mPaintSubIcon.getTextBounds(mTextSubIcon, 0, 1, textBounds);
         canvas.drawText(mTextSubIcon,
-                getBounds().width() + textBounds.width(),
-                textBounds.height(),
+                getBounds().width() + textBounds.width() / 2,
+                textBounds.height() / 2,
                 mPaintSubIcon);
     }
 

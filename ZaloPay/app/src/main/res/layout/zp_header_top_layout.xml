@@ -22,22 +22,26 @@
 
                 <com.zalopay.ui.widget.IconFontTextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_marginLeft="@dimen/spacing.medium"
+                    android:background="@drawable/bg_search_toolbar_border"
                     android:gravity="center_vertical"
                     android:paddingLeft="@dimen/zpw_padding_8"
                     android:paddingRight="@dimen/zpw_padding_8"
                     android:text="@string/search"
                     android:textColor="@color/white_transparent_3"
+                    android:textColorHint="@color/hint_text_search_toolbar"
+                    android:textSize="13sp"
                     app:iconRightColor="@color/white_transparent_3"
                     app:iconRightName="@string/general_search"
-                    app:iconRightSize="12dp" />
+                    app:iconRightSize="13dp" />
             </RelativeLayout>
-
 
             <LinearLayout
                 android:id="@+id/header_top_rl_collapsed"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/spacing.tiny"
                 android:layout_toLeftOf="@+id/header_top_rl_notification"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -51,7 +55,7 @@
                     android:padding="@dimen/spacing.medium.s"
                     android:textColor="@color/white"
                     app:iconName="@string/header_payqrcode"
-                    app:iconSize="30dp" />
+                    app:iconSize="@dimen/font_size_toolbar_icon" />
 
                 <com.zalopay.ui.widget.IconFont
                     android:id="@+id/header_view_top_linkbank"
@@ -61,7 +65,7 @@
                     android:padding="@dimen/spacing.medium.s"
                     android:textColor="@color/white"
                     app:iconName="@string/header_linkbank"
-                    app:iconSize="30dp" />
+                    app:iconSize="@dimen/font_size_toolbar_icon" />
 
                 <com.zalopay.ui.widget.IconFont
                     android:id="@+id/header_view_top_search"
@@ -71,7 +75,7 @@
                     android:padding="@dimen/spacing.medium.s"
                     android:textColor="@color/white"
                     app:iconName="@string/header_search"
-                    app:iconSize="30dp" />
+                    app:iconSize="@dimen/font_size_toolbar_icon" />
             </LinearLayout>
 
             <RelativeLayout
@@ -99,7 +103,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/spacing.medium"
                 android:layout_marginRight="@dimen/spacing.small"
                 android:text="Cá nhân" />
         </RelativeLayout>
