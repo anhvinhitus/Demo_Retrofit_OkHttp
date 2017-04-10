@@ -484,9 +484,8 @@ public class CShareData extends SingletonBase {
     }
 
     /***
-     * call api get card info again
-     * app use this function in get notify remove map card
-     *
+     * reload map card and bankacocunt list
+     * app use this function in get notify remove map card(notify type 112)
      * @param pParams
      * @param pReloadMapCardInfoListener
      */
@@ -502,6 +501,8 @@ public class CShareData extends SingletonBase {
             userInfo.accessToken = pParams.accessToken;
             setUserInfo(userInfo);
             MapCardHelper.loadMapCardList(true, pReloadMapCardInfoListener);
+            BankAccountHelper.loadBankAccountList(true, null);
+            Log.d(this, "reload map card and map bankaccount list from notification");
         } catch (Exception e) {
             Log.e(this, e);
         }

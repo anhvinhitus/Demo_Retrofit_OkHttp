@@ -190,7 +190,6 @@ public class AdapterLinkAcc extends AdapterBase {
                 || mPageCode.equals(PAGE_VCB_CONFIRM_UNLINK)
                 || mPageCode.equals(PAGE_VCB_OTP)) {
             mWebViewProcessor.hit();
-
             // force virtual keyboard
             forceVirtualKeyboard();
         }

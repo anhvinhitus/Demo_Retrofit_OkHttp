@@ -94,18 +94,6 @@ public class BankAccountHelper {
                     if (pResponse instanceof BankAccountListResponse
                             && BankAccountHelper.isNeedUpdateBankAccountInfoOnCache(((BankAccountListResponse) pResponse).bankaccountchecksum)) {
                         try {
-                            //for testing
-                            /*
-                            DBankAccount bankAccount = new DBankAccount();
-                            bankAccount.bankcode = "ZPVCB";
-                            bankAccount.firstaccountno = "042100";
-                            bankAccount.lastaccountno = "6723";
-                            if(((BankAccountListResponse) pResponse).bankaccounts == null)
-                            {
-                                ((BankAccountListResponse) pResponse).bankaccounts = new ArrayList<>();
-                            }
-                            ((BankAccountListResponse) pResponse).bankaccounts.add(bankAccount);
-                            */
                             BankAccountHelper.updateBankAccountListOnCache(((BankAccountListResponse) pResponse).bankaccountchecksum, ((BankAccountListResponse) pResponse).bankaccounts);
                         } catch (Exception e) {
                             Log.e(this, e);

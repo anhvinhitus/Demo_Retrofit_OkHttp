@@ -15,6 +15,7 @@ import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
+import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
@@ -98,7 +99,10 @@ public class ChannelStartProcessor extends SingletonBase {
             }
 
             //validate in maptable
+            Log.d(this,"table map payment "+ GsonUtils.toJsonString(GlobalData.getUserProfileList()));
+            Log.d(this,"user selected channel for payment "+ GsonUtils.toJsonString(mChannel));
             int iCheck = GlobalData.checkPermissionByChannelMap(mChannel.pmcid);
+            Log.d(this,"check result from map "+ iCheck);
             if (iCheck == Constants.LEVELMAP_INVALID) {
                 getActivity().showWarningDialog(new ZPWOnEventDialogListener() {
                     @Override
