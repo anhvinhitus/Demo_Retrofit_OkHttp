@@ -277,40 +277,33 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             Log.d(this, "can not back,order still request api");
             return;
         }
-
         mOnClickExitListener.onClick(null);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         applyFont();
-
         updateFontCardNumber();
-
-        if (!mIsStart && ((getAdapter() != null && getAdapter().isZaloPayFlow()) || GlobalData.isMapCardChannel()) || GlobalData.isMapBankAccountChannel()) {
+        if (!mIsStart && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel())) {
             try {
                 getAdapter().moveToConfirmScreen();
+                mIsStart = true;
+                Log.d(this,"moved to confirm screen");
             } catch (Exception e) {
                 Log.e(this, e);
             }
-            mIsStart = true;
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         Log.d(this, "==== onResume ====");
-
         if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
             showKeyBoardForPin();
         }
-
         showKeyBoardOnFocusingViewAgain();
-
         //this is link account and the first call
         if (GlobalData.isLinkAccChannel() && !mIsRestart) {
             try {
@@ -336,10 +329,8 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                     getAdapter().confirmUpgradeLevel();
                     return;
                 }
-
                 isAllowLinkCardATM = (allowATM == Constants.LEVELMAP_ALLOW);
                 isAllowLinkCardCC = (allowCC == Constants.LEVELMAP_ALLOW);
-
                 //switch to cc adapter if link card just allow cc without atm
                 if (!isAllowLinkCardATM && isAllowLinkCardCC && createChannelAdapter(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card))) {
                     initChannel();
@@ -352,15 +343,12 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 return;
             }
         }
-
         mIsRestart = true;
-
         //Register the local broadcast receiver,for otp comming.
         IntentFilter messageFilter = new IntentFilter();
         messageFilter.addAction(Constants.FILTER_ACTION_BANK_SMS_RECEIVER);
         mSmsReceiver = new WeakReference<BankSmsReceiver>(new BankSmsReceiver());
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(getSmsReceiver(), messageFilter);
-
         // UnLock broadcast receiver change event
         IntentFilter unlockFilter = new IntentFilter();
         unlockFilter.addAction(Constants.ACTION_UNLOCK_SCREEN);
@@ -376,9 +364,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
                         try {
-
                             getAdapter().getGuiProcessor().onFocusView();
                             getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
                         } catch (Exception e) {
@@ -387,7 +373,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                     }
                 }, 300);
             }
-
             getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
         }
     }
@@ -395,9 +380,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-
         Log.d(this, "==== onRestart ====");
-
         showKeyBoardOnFocusingViewAgain();
     }
 
@@ -432,11 +415,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
         try {
             showAmount();
-
             showDisplayInfo();
         } catch (Exception e) {
             Log.e(this, e);
-
             onExit(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
 
