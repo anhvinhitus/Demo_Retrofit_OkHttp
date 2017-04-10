@@ -132,7 +132,7 @@ public class MessageParser implements Parser {
 
             return recoveryMessageEvent;
         } catch (Exception e) {
-            Timber.e(e, "error parse recovery response");
+            Timber.w(e, "error parse recovery response");
         }
 
         return null;
@@ -150,20 +150,27 @@ public class MessageParser implements Parser {
             Timber.d("Response payment request <-- reqId: [%s], resultCode: [%s], resultData: [%s]", event.requestid, event.resultcode, event.resultdata);
             return event;
         } catch (Exception e) {
-            Timber.e(e, "Error ");
+            Timber.w(e, " Parse payment request error");
         }
 
         return null;
     }
 
     private NotificationData processRecoveryMessage(RecoveryMessage message) {
-        if (message.servermessagetype != ServerMessageType.PUSH_NOTIFICATION.getValue()) {
+
+        if (message.servermessagetype != null && message.servermessagetype != ServerMessageType.PUSH_NOTIFICATION.getValue()) {
             return null;
         }
 
+
         PushMessage pushMessage = processPushMessage(message.data);
-        Timber.d("event %s", pushMessage);
+
         if (pushMessage instanceof NotificationData) {
+
+            if (message.status == MessageStatus.DELETED.getValue()) {
+                return null;
+            }
+
             NotificationData notificationData = (NotificationData) pushMessage;
 
             if (message.mtaid != null) {
