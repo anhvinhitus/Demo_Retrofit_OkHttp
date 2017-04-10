@@ -390,9 +390,8 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNotificationChanged(NotificationChangeEvent event) {
-        mEventBus.removeStickyEvent(NotificationChangeEvent.class);
         if (mView != null) {
             if (!event.isRead()) {
                 getTotalNotification(0);
@@ -400,9 +399,8 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBalanceChanged(ChangeBalanceEvent event) {
-        mEventBus.removeStickyEvent(ChangeBalanceEvent.class);
         if (mView != null) {
             mView.setBalance(event.balance);
         }
