@@ -63,6 +63,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected final Navigator navigator = AndroidApplication.instance().getAppComponent().navigator();
 
+    boolean mResumed;
+
     public Activity getActivity() {
         return this;
     }
@@ -129,12 +131,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+        mResumed = false;
         eventBus.unregister(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        mResumed = true;
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this);
         }
@@ -158,9 +162,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         Timber.d("onDestroy [%s]", TAG);
     }
 
-
     @Override
     public void onBackPressed() {
+        if (!mResumed) {
+            return;
+        }
+
         Fragment activeFragment = getActiveFragment();
         if (activeFragment instanceof BaseFragment) {
             if (((BaseFragment) activeFragment).onBackPressed()) {
