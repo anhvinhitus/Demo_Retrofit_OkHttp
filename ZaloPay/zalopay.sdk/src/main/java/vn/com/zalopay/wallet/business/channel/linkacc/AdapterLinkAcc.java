@@ -661,7 +661,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
 
                 // set phone number unregister
-                if (response.phoneNumUnRegList.size() > 0) {
+                if (response.phoneNumUnRegList != null && response.phoneNumUnRegList.size() > 0) {
                     mHashMapPhoneNumUnReg = HashMapUtils.JsonArrayToHashMap(response.phoneNumUnRegList);
                     ArrayList<String> phoneNumList = HashMapUtils.getKeys(mHashMapPhoneNumUnReg);
                     linkAccGuiProcessor.setPhoneNumUnRegList(phoneNumList);
