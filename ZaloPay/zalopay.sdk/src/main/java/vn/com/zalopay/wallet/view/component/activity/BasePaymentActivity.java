@@ -210,7 +210,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                             }
                         }
                         Log.d(this, "getOneShotTransactionStatus");
-                    } else if (GlobalData.isBankAccountLink() && getAdapter() instanceof AdapterLinkAcc) {
+                    } else if (GlobalData.isBankAccountLink() && getAdapter() instanceof AdapterLinkAcc && getAdapter().isFinalStep()) {
                         ((AdapterLinkAcc) getAdapter()).verifyServerAfterParseWebTimeout();
                         Log.d(this, "load website timeout, continue to verify server again to ask for new data list");
                     } else {

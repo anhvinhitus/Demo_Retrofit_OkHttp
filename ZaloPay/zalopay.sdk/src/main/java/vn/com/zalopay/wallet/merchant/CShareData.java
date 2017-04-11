@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import rx.Observer;
 import rx.SingleSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -23,6 +24,7 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
@@ -52,7 +54,6 @@ import vn.com.zalopay.wallet.merchant.strategy.IMerchantTask;
 import vn.com.zalopay.wallet.merchant.strategy.TaskDetectCardType;
 import vn.com.zalopay.wallet.merchant.strategy.TaskGetCardSupportList;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
@@ -275,6 +276,7 @@ public class CShareData extends SingletonBase {
         mMerchantTask.setTaskListener(pListener);
         mMerchantTask.onPrepareTaskComplete();
     }
+
     /***
      * get map card list of user
      *
@@ -456,18 +458,15 @@ public class CShareData extends SingletonBase {
             UserInfo userInfo = new UserInfo();
             userInfo.zaloPayUserId = pParams.userID;
             userInfo.accessToken = pParams.accessToken;
-            MapCardHelper.loadMapCardList(true,userInfo)
+            MapCardHelper.loadMapCardList(true, userInfo)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new SingleSubscriber<BaseResponse>() {
                         @Override
                         public void onSuccess(BaseResponse response) {
-                            if(response instanceof CardInfoListResponse && response.returncode == 1)
-                            {
+                            if (response instanceof CardInfoListResponse && response.returncode == 1) {
                                 pReloadMapCardInfoListener.onComplete(((CardInfoListResponse) response).cardinfos);
-                            }
-                            else
-                            {
+                            } else {
                                 pReloadMapCardInfoListener.onError(response.getMessage());
                             }
                         }
@@ -477,6 +476,25 @@ public class CShareData extends SingletonBase {
                             pReloadMapCardInfoListener.onError(null);
                         }
                     });
+            BankAccountHelper.loadBankAccountList(true)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Observer<BaseResponse>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(BaseResponse baseResponse) {
+
+                        }
+                    });
+            Log.d(this, "reload map card and map bankaccount list from notification");
         } catch (Exception e) {
             Log.e(this, e);
         }

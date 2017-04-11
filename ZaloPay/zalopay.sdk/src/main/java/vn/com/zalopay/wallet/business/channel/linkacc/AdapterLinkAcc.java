@@ -163,7 +163,7 @@ public class AdapterLinkAcc extends AdapterBase {
         return finalStep && !getPageName().equals(SCREEN_LINK_ACC) && !getPageName().equals(PAGE_VCB_LOGIN) && !getPageName().equals(PAGE_VCB_CONFIRM_LINK)
                 && !getPageName().equals(PAGE_LINKACC_SUCCESS) && !getPageName().equals(PAGE_LINKACC_FAIL)
                 && !getPageName().equals(PAGE_UNLINKACC_SUCCESS) && !getPageName().equals(PAGE_UNLINKACC_FAIL)
-                && !getPageName().equals(PAGE_VCB_OTP) && !getPageName().equals(PAGE_VCB_CONFIRM_UNLINK);
+                && !getPageName().equals(PAGE_VCB_CONFIRM_UNLINK);
     }
 
     @Override
