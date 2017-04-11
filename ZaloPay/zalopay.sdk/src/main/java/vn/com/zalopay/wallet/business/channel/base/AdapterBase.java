@@ -791,6 +791,10 @@ public abstract class AdapterBase {
                     Log.d(this, "transaction is finish, skipping process notification");
                     return pAdditionParams;
                 }
+                if (!isTransactionInProgress()) {
+                    Log.d(this, "transaction is ending, skipping process notification");
+                    return pAdditionParams;
+                }
                 if (pAdditionParams == null || pAdditionParams.length <= 0) {
                     Log.e(this, "stopping processing result payment from notification because of empty pAdditionParams");
                     return pAdditionParams;
@@ -1531,6 +1535,10 @@ public abstract class AdapterBase {
     public boolean isTransactionProcessing(String pMessage) {
         return pMessage.equalsIgnoreCase(GlobalData.getStringResource(GlobalData.getTransProcessingMessage()))
                 || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_transaction_expired));
+    }
+
+    public boolean isTransactionInProgress() {
+        return mResponseStatus != null && mResponseStatus.isprocessing;
     }
 
     public synchronized void showTransactionFailView(String pMessage) {

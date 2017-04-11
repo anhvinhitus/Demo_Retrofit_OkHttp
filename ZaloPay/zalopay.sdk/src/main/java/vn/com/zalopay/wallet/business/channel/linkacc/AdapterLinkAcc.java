@@ -28,7 +28,6 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
@@ -302,7 +301,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
-            getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
+            getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
         // get bankaccount from cache callback to app
@@ -339,7 +338,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
-            getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
+            getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
     }
@@ -359,7 +358,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
-            getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
+            getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
     }
@@ -379,7 +378,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // enable web parse. disable webview
         if (GlobalData.shouldNativeWebFlow()) {
-            getActivity().findViewById(R.id.webView).setVisibility(View.GONE); // disable webview
+            getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
     }
@@ -803,12 +802,12 @@ public class AdapterLinkAcc extends AdapterBase {
             // Check show WebView in BankList
             if (GlobalData.shouldNativeWebFlow()) {
                 // show webview && hide web parse
-                getActivity().findViewById(R.id.webView).setVisibility(View.VISIBLE);
+                getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.VISIBLE);
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.GONE);
-                mWebViewProcessor = new LinkAccWebViewClient(this, (LinkAccWebView) getActivity().findViewById(R.id.webView));
+                mWebViewProcessor = new LinkAccWebViewClient(this, (LinkAccWebView) getActivity().findViewById(R.id.zpw_threesecurity_webview));
             } else {
                 // hide webview && show web parse
-                getActivity().findViewById(R.id.webView).setVisibility(View.GONE);
+                getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE);
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
