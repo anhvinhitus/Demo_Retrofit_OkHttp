@@ -82,7 +82,6 @@ public class HomeAdapter extends EpoxyAdapter {
         notifyModelsChanged();
     }
 
-
     private List<AppItemModel> getAppModels() {
         List<AppItemModel> modelsTmp = new ArrayList<>();
         for (EpoxyModel<?> model : models) {
@@ -101,7 +100,7 @@ public class HomeAdapter extends EpoxyAdapter {
         updateAppItemModel(modelsApp, list, Math.min(sizeApp, sizeModelsApp));
 
         if (sizeModelsApp > sizeApp) {
-            removeAppItemModel(modelsApp, list);
+            removeAppItemModel(rootModels, modelsApp, list);
         } else if (sizeModelsApp < sizeApp) {
             addNewAppItemModel(rootModels, modelsApp, list);
         }
@@ -114,12 +113,11 @@ public class HomeAdapter extends EpoxyAdapter {
             if (model == null) {
                 continue;
             }
-            model.show();
             model.setApp(list.get(i));
         }
     }
 
-    private void removeAppItemModel(List<AppItemModel> modelsApp, @NonNull List<AppResource> list) throws IndexOutOfBoundsException {
+    private void removeAppItemModel(List<EpoxyModel<?>> rootModels, List<AppItemModel> modelsApp, @NonNull List<AppResource> list) throws IndexOutOfBoundsException {
         int sizeApp = list.size();
         int sizeModelsApp = modelsApp.size();
         int hideModelsApp = sizeModelsApp - sizeApp;
@@ -128,7 +126,7 @@ public class HomeAdapter extends EpoxyAdapter {
             if (appItemModel == null) {
                 continue;
             }
-            appItemModel.hide();
+            rootModels.remove(appItemModel);
         }
     }
 
@@ -136,12 +134,21 @@ public class HomeAdapter extends EpoxyAdapter {
         int sizeApp = list.size();
         int sizeModelsApp = modelsApp.size();
         int newModelsApp = sizeApp - sizeModelsApp;
+
+        int indexOfBanner = rootModels.indexOf(bannerModel);
+        boolean trueBanner = indexOfBanner < 0 || indexOfBanner == POSITION_BANNER; //Banner không tồn tại trong list or banner ở đúng vị trí.
+
         for (int i = 0; i < newModelsApp; i++) {
             AppResource appResource = list.get(sizeModelsApp + i);
             if (appResource == null) {
                 continue;
             }
-            rootModels.add(transform(appResource));
+
+            if (trueBanner || rootModels.size() > POSITION_BANNER) {
+                rootModels.add(transform(appResource));
+            } else {
+                rootModels.add(sizeModelsApp + i, transform(appResource));
+            }
         }
     }
 
@@ -153,22 +160,27 @@ public class HomeAdapter extends EpoxyAdapter {
         }
 
         bannerModel.setData(banners);
-
         boolean isExist = models.contains(bannerModel);
         int sizeBanner = banners.size();
 
+        // Banner đã tồn tại trong danh sách.
         if (isExist) {
             if (sizeBanner == 0) {
                 removeModel(bannerModel);
+                pauseBanner();
             } else {
                 notifyModelChanged(bannerModel);
+                resumeBanner();
             }
 
             return;
         }
 
-        // Nếu chưa tồn tại trong list
+        if (sizeBanner == 0) {
+            return;
+        }
 
+        // Nếu chưa tồn tại trong list
         if (sizeModels <= POSITION_BANNER) {
             addModel(bannerModel);
         } else {
@@ -178,6 +190,8 @@ public class HomeAdapter extends EpoxyAdapter {
             }
         }
 
+        //start banner
+        resumeBanner();
     }
 
     @Override
@@ -201,13 +215,15 @@ public class HomeAdapter extends EpoxyAdapter {
         return Lists.transform(resources, this::transform);
     }
 
-    public void pause() {
+    public void pauseBanner() {
+        Timber.d("Pause banner");
         if (bannerModel.isShown()) {
             bannerModel.pause();
         }
     }
 
-    public void resume() {
+    public void resumeBanner() {
+        Timber.d("Resume banner");
         if (bannerModel.isShown()) {
             bannerModel.resume();
         }
