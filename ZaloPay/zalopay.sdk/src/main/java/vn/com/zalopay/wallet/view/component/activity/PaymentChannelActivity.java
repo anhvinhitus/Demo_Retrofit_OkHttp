@@ -257,9 +257,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         super.onStart();
         Log.d(this, "onStart");
         updateFontCardNumber();
-        if (!mIsStart && ((getAdapter() != null && getAdapter().isZaloPayFlow()) || GlobalData.isMapCardChannel()) || GlobalData.isMapBankAccountChannel()) {
+        if (!mIsStart && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel())) {
             try {
                 getAdapter().moveToConfirmScreen();
+                Log.d(this,"moved to confirm screen");
             } catch (Exception e) {
                 Log.e(this, e);
             }
