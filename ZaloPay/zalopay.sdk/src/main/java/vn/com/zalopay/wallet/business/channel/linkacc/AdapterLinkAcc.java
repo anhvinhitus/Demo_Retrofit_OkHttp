@@ -60,7 +60,7 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_UNREGISTER_PAGE = "zpsdk_atm_vcb_unregister_page";
     public static String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
-
+    private int  COUNT_ERROR_PASS = 0;
     protected ZPWNotification mNotification;
     protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
@@ -72,12 +72,14 @@ public class AdapterLinkAcc extends AdapterBase {
                     unlinkAccSuccess();
                 } else {
                     unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
+                    Log.d(this, "runnableWaitingNotifyUnLinkAcc==unlinkAccFail");
                 }
             }
 
             @Override
             public void onCheckExistBankAccountFail(String pMessage) {
                 showProgressBar(false, null);
+                Log.d(this, "runnableWaitingNotifyUnLinkAcc=="+pMessage);
                 unlinkAccFail(pMessage, mTransactionID);
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
@@ -623,14 +625,14 @@ public class AdapterLinkAcc extends AdapterBase {
                     ArrayList<String> walletList = HashMapUtils.getKeys(mHashMapWalletUnReg);
                     linkAccGuiProcessor.setWalletUnRegList(walletList);
                 }
-
+                Log.d(this,"unRegister==" +response.phoneNumUnRegList.size()+"=="+response.message);
                 // set phone number unregister
                 if (response.phoneNumUnRegList != null && response.phoneNumUnRegList.size() > 0) {
                     mHashMapPhoneNumUnReg = HashMapUtils.JsonArrayToHashMap(response.phoneNumUnRegList);
                     ArrayList<String> phoneNumList = HashMapUtils.getKeys(mHashMapPhoneNumUnReg);
                     linkAccGuiProcessor.setPhoneNumUnRegList(phoneNumList);
                     linkAccGuiProcessor.setPhoneNumUnReg(phoneNumList);
-                } else if (!GlobalData.shouldNativeWebFlow()) {
+                } else if (!GlobalData.shouldNativeWebFlow() && response.phoneNumUnRegList.size() <= 0) {
                     // don't have account link
                     unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_unregister), mTransactionID);
                     return null;
@@ -694,7 +696,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     checkUnlinkAccountList();
                 } else {
                     // FAIL. Fail register
-                    if (!TextUtils.isEmpty(response.message)) {
+                    if (!TextUtils.isEmpty(response.message) &&  COUNT_ERROR_PASS > 2) {
                         showProgressBar(false, null);
                         String msgErr = response.message;
                         unlinkAccFail(msgErr, mTransactionID);
@@ -705,7 +707,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         }
                     }
                 }
-
+                COUNT_ERROR_PASS ++ ;
                 return null;
             }
             return null;
