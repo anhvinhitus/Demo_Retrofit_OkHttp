@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 
@@ -36,11 +37,16 @@ public class BundleServiceImpl implements BundleService {
     private Application mApplication;
     //    private String mCurrentInternalBundleFolder;
     private final LocalResourceRepository mLocalResourceRepository;
+    private final AppResourceStore.LocalStorage mAppResourceLocalStorage;
     private Gson mGson;
 
-    public BundleServiceImpl(Application application, LocalResourceRepository localResourceRepository, Gson gson, String rootbundle) {
+    public BundleServiceImpl(Application application,
+                             LocalResourceRepository localResourceRepository,
+                             AppResourceStore.LocalStorage appResourceLocalStorage,
+                             Gson gson) {
         this.mApplication = application;
         this.mLocalResourceRepository = localResourceRepository;
+        this.mAppResourceLocalStorage = appResourceLocalStorage;
         this.mGson = gson;
     }
 
@@ -97,6 +103,7 @@ public class BundleServiceImpl implements BundleService {
             }
 
             mLocalResourceRepository.setExternalResourceVersion(eBundle.appid, keyVersion);
+            mAppResourceLocalStorage.resetStateResource(eBundle.appid);
         }
 
         Timber.i("Update PaymentApp done");

@@ -119,6 +119,17 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
+    public void resetStateResource(long appId) {
+        AppResourceEntity appResourceEntity = get(appId);
+        if (appResourceEntity == null) {
+            return;
+        }
+        appResourceEntity.checksum = "";
+        appResourceEntity.stateDownload = 0;
+        put(appResourceEntity);
+    }
+
+    @Override
     public void increaseRetryDownload(long appId) {
         List<AppResourceGD> appResourceGD = getAppInfoDao()
                 .queryBuilder()

@@ -38,6 +38,8 @@ public interface AppResourceStore {
 
         void resetStateDownload(long appId);
 
+        void resetStateResource(long appId);
+
         void sortApplication(List<Long> list);
     }
 
