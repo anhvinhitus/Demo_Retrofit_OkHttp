@@ -19,6 +19,7 @@ import vn.com.zalopay.wallet.datasource.implement.RemoveMapCardImpl;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ZPWRemoveMapCardListener;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
+import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
@@ -88,14 +89,17 @@ public class RemoveMapCard extends BaseRequest<BaseResponse> {
 
     @Override
     protected void onRequestFail(String pMessage) {
+        if (ConnectionUtil.isOnline(GlobalData.getAppContext())) // has error network but device is online::need to reload map list
+        {
+            reloadMapCardList();
+            return;
+        }
         if (getResponse() == null) {
             createReponse(-1, GlobalData.getStringResource(RS.string.zpw_string_alert_remove_mapcard_error_networking));
         }
-
         if (!TextUtils.isEmpty(pMessage)) {
             mResponse.returnmessage = pMessage;
         }
-
         onPostResult();
     }
 
