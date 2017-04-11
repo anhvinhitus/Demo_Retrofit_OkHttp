@@ -1,16 +1,3 @@
-/**
- * Copyright © 2015 by VNG Corporation
- * All rights reserved. No part of this publication may be reproduced, distributed,
- * or transmitted in any form or by any means, including photocopying, recording,
- * or other electronic or mechanical methods, without the prior written permission
- * of the publisher, except in the case of brief quotations embodied in critical reviews
- * and certain other noncommercial uses permitted by copyright law.
- * <p>
- * Project: ZingPaySDK
- * File: vn.zing.pay.zmpsdk.business.atm.AbstractWebViewProcessor.java
- * Created date: Jan 15, 2016
- * Owner: SEGFRY
- */
 package vn.com.zalopay.wallet.business.webview.linkacc;
 
 import android.annotation.TargetApi;
@@ -19,7 +6,6 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
@@ -35,19 +21,22 @@ import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
+import vn.com.zalopay.wallet.business.entity.base.WebViewError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EJavaScriptType;
-import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptInput;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
+import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
+import vn.com.zalopay.wallet.helper.WebViewHelper;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
 /**
- * @author YenNLH
+ * @author SinhTT
  */
 public class LinkAccWebViewClient extends PaymentWebViewClient {
     public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
@@ -158,8 +147,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     }
 
-    protected boolean shouldOnCheckMatchOnLoadResouce(String pUrl)
-    {
+    protected boolean shouldOnCheckMatchOnLoadResouce(String pUrl) {
         return pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_generate_captcha))
                 || pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_register_complete))
                 || pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_unregister_complete));
@@ -168,8 +156,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     @Override
     public void onLoadResource(WebView view, String url) {
         Log.d("TAG", "///// onLoadResource: " + url);
-        if(shouldOnCheckMatchOnLoadResouce(url))
-        {
+        if (shouldOnCheckMatchOnLoadResouce(url)) {
             onPageFinishedAuto(url);
         }
     }
@@ -202,11 +189,12 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 mAdapter.onEvent(EEventType.ON_FAIL);
                 mAdapter.getActivity().onBackPressed();
             }
+
             @Override
             public void onOKevent() {
                 handler.proceed(); // Ignore SSL certificate errors
             }
-        },mAdapter.getActivity().getString(R.string.zpw_alert_ssl_error_parse_website),mAdapter.getActivity().getString(R.string.dialog_continue_button),mAdapter.getActivity().getString(R.string.dialog_close_button));
+        }, mAdapter.getActivity().getString(R.string.zpw_alert_ssl_error_parse_website), mAdapter.getActivity().getString(R.string.dialog_continue_button), mAdapter.getActivity().getString(R.string.dialog_close_button));
 
 
     }
@@ -214,7 +202,22 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         Log.e("///// onReceivedError: ", description);
-        mAdapter.onEvent(EEventType.ON_FAIL);
+        if (WebViewHelper.isLoadSiteError(description) && getAdapter() != null) {
+            getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewError(errorCode, description));
+        }
+        if (getAdapter() != null) {
+            StringBuffer errStringBuilder = new StringBuffer();
+            errStringBuilder.append(description);
+            errStringBuilder.append(failingUrl);
+            try {
+                getAdapter().sdkReportError(SDKReportTask.ERROR_WEBSITE, errStringBuilder.toString());
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+
+        Log.d(getClass().getCanonicalName(), "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
+
     }
 
     /***
@@ -359,7 +362,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
                 EEventType eventType = convertPageIdToEvent(mEventID);
                 StatusResponse response = genResponse(eventType, scriptOutput);
-                Log.d("Js", "==== onJsPaymentResult: "+mEventID+ "==" + pResult);
+                Log.d("Js", "==== onJsPaymentResult: " + mEventID + "==" + pResult);
                 if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
                     // Auto hit at first step
                     mIsFirst = false;

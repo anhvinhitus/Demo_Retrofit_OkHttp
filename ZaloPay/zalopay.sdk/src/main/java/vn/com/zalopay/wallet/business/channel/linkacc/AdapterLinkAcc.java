@@ -22,6 +22,7 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.data.VcbUtils;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -42,7 +43,6 @@ import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
 import vn.com.zalopay.wallet.utils.LayoutUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.NetworkUtil;
 import vn.com.zalopay.wallet.utils.OtpUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
@@ -274,12 +274,20 @@ public class AdapterLinkAcc extends AdapterBase {
 
     // call API,get bankAccount
     private void checkUnlinkAccountList() {
+        if (isFinalScreen()) {
+            Log.d(this, "stopping reload bank account because user in result screen");
+            return;
+        }
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         mHandler.postDelayed(runnableWaitingNotifyUnLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
 
     // call API, get bankAccount
     protected void checkLinkAccountList() {
+        if (isFinalScreen()) {
+            Log.d(this, "stopping reload bank account because user in result screen");
+            return;
+        }
         // loop to get notification here.
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         mHandler.postDelayed(runnableWaitingNotifyLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
@@ -665,7 +673,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     ArrayList<String> phoneNumList = HashMapUtils.getKeys(mHashMapPhoneNumUnReg);
                     linkAccGuiProcessor.setPhoneNumUnRegList(phoneNumList);
                     linkAccGuiProcessor.setPhoneNumUnReg(phoneNumList);
-                } else {
+                } else if (!GlobalData.shouldNativeWebFlow()) {
                     // don't have account link
                     unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_unregister), mTransactionID);
                     return null;
