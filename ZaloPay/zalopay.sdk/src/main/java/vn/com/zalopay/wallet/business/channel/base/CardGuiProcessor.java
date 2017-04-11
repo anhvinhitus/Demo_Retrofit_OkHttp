@@ -407,7 +407,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected abstract CardFragmentBaseAdapter onCreateCardFragmentAdapter();
 
-    protected void init() throws Exception {
+    protected void init() {
         if (GlobalData.isChannelHasInputCard()) {
             initForInputCard();
         } else {
@@ -427,9 +427,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         setMinHeightSwitchCardButton();
     }
 
-    protected void initForInputCard() throws Exception {
+    protected void initForInputCard() {
         mCardView = (CreditCardView) getAdapter().getActivity().findViewById(R.id.credit_card_view);
-
         if (getCardView() != null) {
             getCardView().initCardSelector();
 
@@ -542,29 +541,16 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         return mCurrentFocusView;
     }
 
-    public void initPager() throws Exception {
+    public void initPager() {
         Log.d(this, "===init pager===");
         if (getViewPager() == null) {
             mViewPager = (ViewPager) getAdapter().getActivity().findViewById(R.id.card_field_container_pager);
         }
-
-        if (getViewPager() == null) {
-            throw new Exception("mViewPager is null");
-        }
-
         getViewPager().addOnPageChangeListener(this);
-
         mCardAdapter = onCreateCardFragmentAdapter();
-
-        if (mCardAdapter == null) {
-            throw new Exception("mCardAdapter is null");
-        }
-
         getViewPager().setOffscreenPageLimit(mCardAdapter.getCount());
         getViewPager().setAdapter(mCardAdapter);
-
         updateDots();
-
         //auto show keyboard when the first time start
         showKeyBoardAndResizeButtonsIfNotSwitchChannel();
 

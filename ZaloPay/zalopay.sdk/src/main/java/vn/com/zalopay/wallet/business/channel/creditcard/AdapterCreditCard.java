@@ -4,11 +4,11 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardChannelType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 
 public class AdapterCreditCard extends AdapterBase {
@@ -36,34 +36,24 @@ public class AdapterCreditCard extends AdapterBase {
     }
 
     @Override
-    public void autoFillOtp(String pSender, String pOtp) {
-
-    }
-
-    @Override
     public DPaymentChannel getChannelConfig() throws Exception {
         return GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(), DPaymentChannel.class);
     }
 
     @Override
     public void init() {
-        try {
-            this.mGuiProcessor = new CreditCardGuiProcessor(this);
-            if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard()) {
-                getGuiProcessor().initPager();
-            }
+        super.init();
 
-        } catch (Exception e) {
-            Log.e(this, e);
-            terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
-
-            return;
+        this.mGuiProcessor = new CreditCardGuiProcessor(this);
+        if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard()) {
+            getGuiProcessor().initPager();
         }
 
-        if (GlobalData.isLinkCardChannel())
+        if (GlobalData.isLinkCardChannel()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_link));
-        else
+        } else {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_method_name));
+        }
 
     }
 

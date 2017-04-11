@@ -743,23 +743,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void OnPaymentSmsEvent(SmsEventMessage pSmsEventMessage) {
-        if (getAdapter() != null) {
-            if ((getAdapter().isATMFlow() && ((BankCardGuiProcessor) (getAdapter()).getGuiProcessor()).isBankOtpPhase())
-                    || (getAdapter().isLinkAccFlow()) && ((LinkAccGuiProcessor) (getAdapter()).getGuiProcessor()).isLinkAccOtpPhase()) {
-                String sender = pSmsEventMessage.sender;
-                String body = pSmsEventMessage.message;
-
-                if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
-                    (getAdapter()).autoFillOtp(sender, body);
-                }
-            }
-        }
-        PaymentEventBus.shared().removeStickyEvent(SmsEventMessage.class);
-        Log.d(this, "OnPaymentSmsMessageEvent " + GsonUtils.toJsonString(pSmsEventMessage));
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnUnLockScreenEvent(UnlockScreenEventMessage pUnlockScreenEventMessage) {
         if (getAdapter() != null && mAdapter.isCardFlow()) {

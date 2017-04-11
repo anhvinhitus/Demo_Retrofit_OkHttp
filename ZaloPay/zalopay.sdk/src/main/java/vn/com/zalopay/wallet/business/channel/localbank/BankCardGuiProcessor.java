@@ -74,24 +74,20 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     private ListView mAccountListView;
     private VietComBankAccountListViewAdapter mAccountAdapter;
 
-    public BankCardGuiProcessor(AdapterBankCard pAdapterLocalCard) throws Exception {
+    public BankCardGuiProcessor(AdapterBankCard pAdapterLocalCard) {
         super();
-
         mAdapter = new WeakReference<AdapterBase>(pAdapterLocalCard);
-
         init();
     }
 
     @Override
-    protected void init() throws Exception {
+    protected void init() {
         super.init();
-
         if (GlobalData.isLinkCardChannel()) {
             getAdapter().getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_credit_card_link));
         } else {
             getAdapter().getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_atm_method_name));
         }
-
 
         mOtpTokenLayoutRootView = getAdapter().getActivity().findViewById(R.id.zpw_content_input_view_root);
         mOtpTokenLayoutRootView.setVisibility(View.GONE);

@@ -3,8 +3,9 @@ package vn.com.zalopay.wallet.message;
 import org.greenrobot.eventbus.EventBus;
 
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
-import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class PaymentEventBus<T> extends SingletonBase {
@@ -36,6 +37,11 @@ public class PaymentEventBus<T> extends SingletonBase {
         Log.d(this, "registered plaforminfo loader to bus");
     }
 
+    public void register(AdapterBase adapterBase) {
+        getBus().register(adapterBase);
+        Log.d(this, "registered adapter to bus " + adapterBase.toString());
+    }
+
     public void unregister(BasePaymentActivity activity) {
         getBus().unregister(activity);
         Log.d(this, "unregistered activity out of bus");
@@ -44,6 +50,11 @@ public class PaymentEventBus<T> extends SingletonBase {
     public void unregister(PlatformInfoLoader gatewayLoader) {
         getBus().unregister(gatewayLoader);
         Log.d(this, "unregistered plaforminfo loader out of bus");
+    }
+
+    public void unregister(AdapterBase adapterBase) {
+        getBus().unregister(adapterBase);
+        Log.d(this, "unregistered adapter from bus " + adapterBase.toString());
     }
 
     public void post(T eventMessage) {

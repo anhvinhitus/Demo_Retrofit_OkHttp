@@ -7,6 +7,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,6 +40,8 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
+import vn.com.zalopay.wallet.message.SmsEventMessage;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
 import vn.com.zalopay.wallet.utils.LayoutUtils;
@@ -191,7 +195,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
     @Override
     public void init() {
-        // init Gui for ATM channel
+        super.init();
         linkAccGuiProcessor = new LinkAccGuiProcessor(this);
         this.mGuiProcessor = linkAccGuiProcessor;
         // set button always above keyboard.
@@ -270,10 +274,10 @@ public class AdapterLinkAcc extends AdapterBase {
         submitMapAccount.makeRequest();
     }
 
-    public void verifyServerAfterParseWebTimeout(){
-        if(GlobalData.isLinkAccFlow()){
+    public void verifyServerAfterParseWebTimeout() {
+        if (GlobalData.isLinkAccFlow()) {
             checkLinkAccountList();
-        }else if(GlobalData.isUnLinkAccFlow()){
+        } else if (GlobalData.isUnLinkAccFlow()) {
             checkUnlinkAccountList();
         }
     }
@@ -397,8 +401,20 @@ public class AdapterLinkAcc extends AdapterBase {
         }
     }
 
-    @Override
-    public void autoFillOtp(String pSender, String pOtp) {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void OnPaymentSmsEvent(SmsEventMessage pSmsEventMessage) {
+        if (((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase()) {
+            String sender = pSmsEventMessage.sender;
+            String body = pSmsEventMessage.message;
+            if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
+                autoFillOtp(sender, body);
+            }
+        }
+        PaymentEventBus.shared().removeStickyEvent(SmsEventMessage.class);
+        Log.d(this, "OnPaymentSmsMessageEvent " + GsonUtils.toJsonString(pSmsEventMessage));
+    }
+
+    protected void autoFillOtp(String pSender, String pOtp) {
         Log.d(pSender, pOtp);
         if (pSender.equals(GlobalData.getStringResource(RS.string.zpw_string_vcb_otp_sender))) {
             String otp = OtpUtils.getOtp(pOtp,
@@ -533,7 +549,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Register page
             if (page.equals(VCB_REGISTER_PAGE)) {
-                showProgressBar(false,null);
+                showProgressBar(false, null);
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
@@ -640,7 +656,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             default:
                                 // FAIL. Fail register
                                 if (!TextUtils.isEmpty(response.message)) {
-                                    showProgressBar(false,null);
+                                    showProgressBar(false, null);
                                     String msgErr = response.message;
                                     linkAccFail(msgErr, mTransactionID);
                                     return null;
@@ -662,7 +678,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Unregister page
             if (page.equals(VCB_UNREGISTER_PAGE)) {
-                showProgressBar(false,null);
+                showProgressBar(false, null);
 
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
@@ -710,7 +726,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 } else {
                     // FAIL. Fail register
                     if (!TextUtils.isEmpty(response.message)) {
-                        showProgressBar(false,null);
+                        showProgressBar(false, null);
                         String msgErr = response.message;
                         linkAccFail(msgErr, mTransactionID);
                     } else {
@@ -745,7 +761,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 } else {
                     // FAIL. Fail register
                     if (!TextUtils.isEmpty(response.message)) {
-                        showProgressBar(false,null);
+                        showProgressBar(false, null);
                         String msgErr = response.message;
                         unlinkAccFail(msgErr, mTransactionID);
                     } else {
@@ -764,7 +780,7 @@ public class AdapterLinkAcc extends AdapterBase {
         // Event: FAIL
         if (pEventType == EEventType.ON_FAIL) {
             // fail.
-            showProgressBar(false,null);
+            showProgressBar(false, null);
             if (pAdditionParams == null || pAdditionParams.length == 0) {
                 // Error
                 return null;

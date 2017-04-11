@@ -25,18 +25,14 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNameFragment;
 import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 
 public class CreditCardGuiProcessor extends CardGuiProcessor {
-    public CreditCardGuiProcessor(AdapterCreditCard pAdapterCreditCard) throws Exception {
+    public CreditCardGuiProcessor(AdapterCreditCard pAdapterCreditCard) {
         super();
-
         mAdapter = new WeakReference<AdapterBase>(pAdapterCreditCard);
-
         init();
     }
 
-    protected void init() throws Exception {
-
+    protected void init() {
         super.init();
-
         checkAutoMoveCardNumberFromBundle = false;
     }
 

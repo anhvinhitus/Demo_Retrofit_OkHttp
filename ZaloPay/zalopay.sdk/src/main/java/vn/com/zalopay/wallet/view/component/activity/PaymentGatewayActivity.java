@@ -283,12 +283,12 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     private void showChannelListView() {
         //force to some channel from client
 
-        Log.d(this,"===show Channel===showChannelListView()");
+        Log.d(this,"start show channel to listview");
         if (GlobalData.isForceChannel()) {
             baseChannelInjector.filterForceChannel(GlobalData.getPaymentInfo().forceChannelIds);
         }
 
-        //we don't have any channel now
+        // don't have any channel now
         if (baseChannelInjector.isChannelEmpty()) {
             isUniqueChannel = true;
             String alertMessage = getAmountAlert();
@@ -307,10 +307,10 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             return;
         }
 
-        //we just have 1 channel only
+        // just have 1 channel only
         if (baseChannelInjector.isChannelUnique()) {
 
-            Log.d(this,"===show Channel===showChannelListView() 1 channel");
+            Log.d(this,"has only 1 channel");
             showProgress(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_transition_screen));
 
             DPaymentChannelView uniqueChannel = baseChannelInjector.getFirstChannel();

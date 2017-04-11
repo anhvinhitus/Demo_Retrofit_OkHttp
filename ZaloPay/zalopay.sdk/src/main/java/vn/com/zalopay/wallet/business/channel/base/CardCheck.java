@@ -10,9 +10,7 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func0;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
@@ -127,7 +125,7 @@ public class CardCheck extends SingletonBase {
      */
     public void detectOnAsync(String pCardNumber, OnDetectCardListener pListener) {
         this.mDetectCardListener = pListener;
-        Log.d(this,"detect card "+ pCardNumber + " should run on new thread");
+        Log.d(this, "detect card " + pCardNumber + " should run on new thread");
         mSubscription = detectObservable(pCardNumber)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -162,7 +160,10 @@ public class CardCheck extends SingletonBase {
     }
 
     protected Observable<Boolean> detectObservable(String pCardNumber) {
-        return Observable.defer(() -> Observable.just(detect(pCardNumber)));
+        return Observable.create(subscriber -> {
+            subscriber.onNext(detect(pCardNumber));
+            subscriber.onCompleted();
+        });
     }
     //endregion
 }

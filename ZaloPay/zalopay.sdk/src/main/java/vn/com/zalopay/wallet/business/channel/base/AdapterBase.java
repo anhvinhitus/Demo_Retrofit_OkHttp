@@ -59,6 +59,7 @@ import vn.com.zalopay.wallet.datasource.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
@@ -231,8 +232,6 @@ public abstract class AdapterBase {
         return mResponseStatus;
     }
 
-    public abstract void init();
-
     public abstract DPaymentChannel getChannelConfig() throws Exception;
 
     public abstract void onProcessPhrase() throws Exception;
@@ -298,15 +297,19 @@ public abstract class AdapterBase {
         return getPageName().equals(PAGE_FAIL_NETWORKING);
     }
 
-    public void onFinish() {
-        Log.d(this, "===onFinish===");
-        if (getGuiProcessor() != null) {
-            Log.d(this, "===onFinish===getGuiProcessor().dispose()");
+    public void init(){
+        PaymentEventBus.shared().register(this);
+    }
 
+    public void onFinish() {
+        Log.d(this, "onFinish");
+        if (getGuiProcessor() != null) {
+            Log.d(this, "start release GuiProcessor");
             getGuiProcessor().dispose();
             mGuiProcessor = null;
         }
         dismissDialogFingerPrint();
+        PaymentEventBus.shared().unregister(this);
     }
 
     public void detectCard(String pCardNumber) {
@@ -476,14 +479,6 @@ public abstract class AdapterBase {
 
         return true;
     }
-
-    /***
-     * auto fill otp
-     *
-     * @param pSender
-     * @param pOtp
-     */
-    public abstract void autoFillOtp(String pSender, String pOtp);
 
     protected boolean shouldCheckStatusAgain() {
         return mResponseStatus == null && ConnectionUtil.isOnline(GlobalData.getAppContext()) && hasTransId();

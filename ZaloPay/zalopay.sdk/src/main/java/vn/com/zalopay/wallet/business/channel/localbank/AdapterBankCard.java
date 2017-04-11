@@ -6,6 +6,9 @@ import android.text.TextUtils;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +17,7 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
@@ -26,8 +30,9 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPatter
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
+import vn.com.zalopay.wallet.message.SmsEventMessage;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.view.component.activity.MapListSelectionActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
@@ -63,19 +68,10 @@ public class AdapterBankCard extends AdapterBase {
 
     @Override
     public void init() {
-        try {
-            this.mGuiProcessor = new BankCardGuiProcessor(this);
-            if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard())
-                getGuiProcessor().initPager();
-
-        } catch (Exception e) {
-            Log.e(this, e);
-
-            terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
-
-            return;
-        }
-
+        super.init();
+        this.mGuiProcessor = new BankCardGuiProcessor(this);
+        if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard())
+            getGuiProcessor().initPager();
         showFee();
     }
 
@@ -103,8 +99,21 @@ public class AdapterBankCard extends AdapterBase {
         return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_atm);
     }
 
-    @Override
-    public void autoFillOtp(String pSender, String pOtp) {
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void OnPaymentSmsEvent(SmsEventMessage pSmsEventMessage) {
+        if (((BankCardGuiProcessor) getGuiProcessor()).isBankOtpPhase()) {
+            String sender = pSmsEventMessage.sender;
+            String body = pSmsEventMessage.message;
+
+            if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
+                autoFillOtp(sender, body);
+            }
+        }
+        PaymentEventBus.shared().removeStickyEvent(SmsEventMessage.class);
+        Log.d(this, "OnPaymentSmsMessageEvent " + GsonUtils.toJsonString(pSmsEventMessage));
+    }
+
+    protected void autoFillOtp(String pSender, String pOtp) {
         try {
             List<DOtpReceiverPattern> otpReceiverPatternList = getGuiProcessor().getCardFinder().getOtpReceiverPatternList();
             if (otpReceiverPatternList != null && otpReceiverPatternList.size() > 0) {
@@ -234,9 +243,8 @@ public class AdapterBankCard extends AdapterBase {
             //render webview flow
             else if (pEventType == EEventType.ON_REQUIRE_RENDER) {
 
-                if(isFinalScreen())
-                {
-                    Log.d(this,"EEventType.ON_REQUIRE_RENDER but in final screen now");
+                if (isFinalScreen()) {
+                    Log.d(this, "EEventType.ON_REQUIRE_RENDER but in final screen now");
                     return null;
                 }
                 DAtmScriptOutput response = (DAtmScriptOutput) pAdditionParams[0];

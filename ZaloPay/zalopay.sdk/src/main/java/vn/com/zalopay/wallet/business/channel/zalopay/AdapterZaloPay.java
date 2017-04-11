@@ -35,8 +35,8 @@ public class AdapterZaloPay extends AdapterBase {
 
     @Override
     public void init() {
+        super.init();
         getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zingpaysdk_pmc_name_zalopay));
-
         showFee();
     }
 
@@ -50,11 +50,6 @@ public class AdapterZaloPay extends AdapterBase {
     @Override
     public boolean isFinalStep() {
         return mPageCode.equals(PAGE_CONFIRM);
-    }
-
-    @Override
-    public void autoFillOtp(String pSender, String pOtp) {
-
     }
 
     @Override
