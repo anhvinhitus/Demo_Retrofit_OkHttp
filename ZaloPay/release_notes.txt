@@ -1,3 +1,7 @@
+Zalo Pay (Sandbox v2.11.0 - build 231) - Released on 2017-04-11
+- [SDK] Fix bug liên quan đến VCB
+- [SDK] Force user up level if user account map to pay
+
 Zalo Pay (Sandbox v2.11.0 - build 230) - Released on 2017-04-10
 - Update Home page UI
 
