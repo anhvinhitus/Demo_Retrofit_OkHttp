@@ -36,7 +36,7 @@ import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
 /**
- * @author YenNLH
+ * @author SinhTT
  */
 public class LinkAccWebViewClient extends PaymentWebViewClient {
     public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
@@ -182,13 +182,18 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        Log.e("Error", "++++ Current error SSL on page: " + mStartedtUrl);
+        Log.e("Error", "++++ Current error SSL on page: " + error.toString());
+        getAdapter().getActivity().showProgress(false,null);
         getAdapter().getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
-               mAdapter.onEvent(EEventType.ON_FAIL);
+                mAdapter.onEvent(EEventType.ON_FAIL);
                 mAdapter.getActivity().onBackPressed();
-                //onReceivedError(null,error.getPrimaryError(),mAdapter.getActivity().getString(R.string.zpw_alert_ssl_error_parse_website),error.getUrl());
+                try {
+                    getAdapter().sdkReportError(SDKReport.ERROR_WEBSITE, error.toString());
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
             }
 
             @Override
@@ -205,6 +210,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         if (getAdapter() != null) {
             StringBuffer errStringBuilder = new StringBuffer();
             errStringBuilder.append(description);
+            errStringBuilder.append("\n");
             errStringBuilder.append(failingUrl);
             try {
                 getAdapter().sdkReportError(SDKReport.ERROR_WEBSITE, errStringBuilder.toString());
@@ -212,7 +218,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 Log.e(this, e);
             }
         }
-
+        getAdapter().getActivity().showProgress(false,null);
         Log.d(getClass().getCanonicalName(), "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
     }
 
