@@ -182,12 +182,18 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        Log.e("Error", "++++ Current error SSL on page: " + mStartedtUrl);
+        Log.e("Error", "++++ Current error SSL on page: " + error.toString());
+        getAdapter().getActivity().showProgress(false,null);
         getAdapter().getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
                 mAdapter.onEvent(EEventType.ON_FAIL);
                 mAdapter.getActivity().onBackPressed();
+                try {
+                    getAdapter().sdkReportError(SDKReportTask.ERROR_WEBSITE, error.toString());
+                } catch (Exception e) {
+                    Log.e(this, e);
+                }
             }
 
             @Override
@@ -208,6 +214,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         if (getAdapter() != null) {
             StringBuffer errStringBuilder = new StringBuffer();
             errStringBuilder.append(description);
+            errStringBuilder.append("\n");
             errStringBuilder.append(failingUrl);
             try {
                 getAdapter().sdkReportError(SDKReportTask.ERROR_WEBSITE, errStringBuilder.toString());
@@ -215,7 +222,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 Log.e(this, e);
             }
         }
-
+        getAdapter().getActivity().showProgress(false,null);
         Log.d(getClass().getCanonicalName(), "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
 
     }

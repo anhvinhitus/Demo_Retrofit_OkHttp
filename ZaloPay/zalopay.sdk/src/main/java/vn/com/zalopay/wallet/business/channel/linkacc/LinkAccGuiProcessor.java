@@ -862,6 +862,11 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         return null;
     }
 
+    @Override
+    public String getDetectedBankCode() {
+        return GlobalData.getPaymentInfo().linkAccInfo.getBankCode();
+    }
+
     /***
      * @return
      */
