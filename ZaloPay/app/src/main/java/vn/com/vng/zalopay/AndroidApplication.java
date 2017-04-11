@@ -111,7 +111,6 @@ public class AndroidApplication extends Application {
         initIconFont();
         initLocation();
 
-        getAppComponent().globalAppService();
     }
 
     private void initConfig() {

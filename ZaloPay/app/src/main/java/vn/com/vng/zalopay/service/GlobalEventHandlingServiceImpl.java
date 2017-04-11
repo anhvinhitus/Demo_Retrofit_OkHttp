@@ -11,14 +11,18 @@ import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
+import vn.com.vng.zalopay.utils.ConfigUtil;
 
 /**
  * Created by huuhoa on 6/11/16.
@@ -110,5 +114,19 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
             }
         }
         Timber.e(ex, "UncaughtException!!!");
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onDownloadResourceSuccessEvent(DownloadZaloPayResourceEvent event) {
+
+        Timber.d("on Download app 1 resource success : url [%s]", event.mDownloadInfo.url);
+
+        if (!event.isDownloadSuccess) {
+            return;
+        }
+
+        ConfigUtil.loadConfigFromResource();
+        AndroidApplication.instance().initIconFont();
     }
 }
