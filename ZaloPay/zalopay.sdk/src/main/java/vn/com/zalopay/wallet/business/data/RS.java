@@ -421,7 +421,8 @@ public class RS {
         public static final String zpw_int_vcb_otp_size = "zpw_int_vcb_otp_size";
         public static final String zpw_string_vcb_otp_identify = "zpw_string_vcb_otp_identify";
         public static final String zpw_string_vcb_otp_prefixOtp = "zpw_string_vcb_otp_prefixOtp";
-
+        public static final String zpw_string_number_retry_password = "zpw_string_number_retry_password";
+        public static final String  zpw_string_number_retry_capchart = "zpw_string_number_retry_capchart";
         public static final String zpw_string_linkacc_captcha_hint = "zpw_string_linkacc_captcha_hint";
 
         public static final String zpw_string_special_bankscript_vcb_generate_captcha = "zpw_string_special_bankscript_vcb_generate_captcha";
