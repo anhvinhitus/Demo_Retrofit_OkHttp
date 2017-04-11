@@ -154,28 +154,30 @@ public class HomeAdapter extends EpoxyAdapter {
 
         bannerModel.setData(banners);
 
-        boolean exist = models.contains(bannerModel);
+        boolean isExist = models.contains(bannerModel);
         int sizeBanner = banners.size();
 
-        if (sizeBanner == 0) {
-            if (exist) {
+        if (isExist) {
+            if (sizeBanner == 0) {
                 removeModel(bannerModel);
-            }
-        } else {
-            if (exist) {
+            } else {
                 notifyModelChanged(bannerModel);
-                return;
             }
 
-            if (sizeModels <= POSITION_BANNER) {
-                addModel(bannerModel);
-            } else {
-                EpoxyModel epoxyModel = getModelForPosition(POSITION_BANNER - 1);
-                if (epoxyModel != null) {
-                    insertModelAfter(bannerModel, epoxyModel);
-                }
+            return;
+        }
+
+        // Nếu chưa tồn tại trong list
+
+        if (sizeModels <= POSITION_BANNER) {
+            addModel(bannerModel);
+        } else {
+            EpoxyModel epoxyModel = getModelForPosition(POSITION_BANNER - 1);
+            if (epoxyModel != null) {
+                insertModelAfter(bannerModel, epoxyModel);
             }
         }
+
     }
 
     @Override
