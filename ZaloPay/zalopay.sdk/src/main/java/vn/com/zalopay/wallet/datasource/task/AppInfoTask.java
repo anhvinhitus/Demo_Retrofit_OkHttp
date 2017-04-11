@@ -148,7 +148,7 @@ public class AppInfoTask extends BaseTask<DAppInfoResponse> {
     @Override
     protected void doRequest() {
         try {
-            Log.d(this, "===Begin getting info of app ID:===" + mAppId);
+            Log.d(this, "start get app info " + mAppId);
             newDataRepository().setTask(this).loadData(new LoadAppInfoImpl(), getDataParams());
         } catch (Exception e) {
             Log.e(this, e);
