@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +17,6 @@ import com.zalopay.ui.widget.recyclerview.OnItemClickListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
@@ -115,7 +113,7 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         }
 
         public void bindView(final BankAccount bankAccount, boolean isLastItem) {
-            mTvAccountName.setText(bankAccount.getAccountNo());
+            mTvAccountName.setText(bankAccount.getPhoneNumber());
             bindBankAccount(mLineVertical, mImgLogo, bankAccount);
             setMargin(isLastItem);
         }
