@@ -799,8 +799,19 @@ public abstract class AdapterBase {
                     Log.e(this, "stopping processing result payment from notification because of empty pAdditionParams");
                     return pAdditionParams;
                 }
+                int notificationType = -1;
                 try {
-                    String transId = String.valueOf(pAdditionParams[0]);
+                    notificationType = Integer.parseInt(String.valueOf(pAdditionParams[0]));
+                } catch (Exception ex) {
+                    Log.e(this, ex);
+                }
+                if (!Constants.TRANSACTION_SUCCESS_NOTIFICATION_TYPES.contains(notificationType)) {
+                    Log.d(this, "notification type is not accepted for this kind of transaction");
+                    return pAdditionParams;
+                }
+
+                try {
+                    String transId = String.valueOf(pAdditionParams[1]);
                     if (!TextUtils.isEmpty(transId) && transId.equals(mTransactionID)) {
                         DataRepository.shareInstance().cancelRequest();//cancel current request
                         GetStatus.cancelRetryTimer();//cancel timer retry get status
