@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.exception.FingerprintException;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 
-import static vn.com.vng.zalopay.data.NetworkError.INCORRECT_PIN;
+import static vn.com.vng.zalopay.data.ServerErrorMessage.INCORRECT_PIN;
 
 /**
  * Created by hieuvm on 12/27/16.

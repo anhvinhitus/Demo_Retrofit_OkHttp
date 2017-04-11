@@ -17,7 +17,7 @@ import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IUpdateProfile3View;
-import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -120,7 +120,7 @@ public class UpdateProfile3Presenter extends AbstractPresenter<IUpdateProfile3Vi
         mView.showError(message);
 
         if (e instanceof BodyException) {
-            if (((BodyException) e).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
+            if (((BodyException) e).errorCode == ServerErrorMessage.WAITING_APPROVE_PROFILE_LEVEL_3) {
                 mView.finish();
             }
         }

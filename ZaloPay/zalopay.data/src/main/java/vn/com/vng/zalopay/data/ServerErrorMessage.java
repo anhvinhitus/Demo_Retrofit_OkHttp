@@ -2,7 +2,7 @@ package vn.com.vng.zalopay.data;
 
 import android.content.Context;
 
-public class NetworkError {
+public class ServerErrorMessage {
 
     public static final int SUCCESSFUL = 1;
     public static final int EXCEPTION = 0;

@@ -15,10 +15,11 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 
 import retrofit2.adapter.rxjava.HttpException;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.exception.AccountSuspendedException;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.data.exception.GenericException;
+import vn.com.vng.zalopay.data.exception.StringResGenericException;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.data.exception.TokenException;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
@@ -43,7 +44,7 @@ public class ErrorMessageFactory {
         } else if (exception instanceof BodyException) {
             message = exception.getMessage();
             if (TextUtils.isEmpty(message)) {
-                message = NetworkError.getMessage(context, ((BodyException) exception).errorCode);
+                message = ServerErrorMessage.getMessage(context, ((BodyException) exception).errorCode);
             }
         } else if (exception instanceof SocketTimeoutException
                 || exception instanceof TimeoutException) {
@@ -57,11 +58,9 @@ public class ErrorMessageFactory {
         } else if (exception instanceof SSLPeerUnverifiedException) {
             message = context.getString(R.string.exception_no_connection);
         } else if (exception instanceof GenericException) {
-            if (((GenericException) exception).mMessageRes > 0) {
-                message = context.getString(((GenericException) exception).mMessageRes);
-            } else {
-                message = exception.getMessage();
-            }
+            message = exception.getMessage();
+        } else if (exception instanceof StringResGenericException) {
+            message = context.getString(((StringResGenericException) exception).mMessageRes);
         }
 
         return message;

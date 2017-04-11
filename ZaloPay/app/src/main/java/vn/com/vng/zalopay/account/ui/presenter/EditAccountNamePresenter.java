@@ -9,7 +9,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.account.ui.view.IEditAccountNameView;
-import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -72,7 +72,7 @@ public class EditAccountNamePresenter extends AbstractPresenter<IEditAccountName
             }
 
             if (e instanceof BodyException &&
-                    ((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
+                    ((BodyException) e).errorCode == ServerErrorMessage.USER_EXISTED) {
                 ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_INUSED);
                 mView.accountNameValid(false);
             } else {
@@ -114,7 +114,7 @@ public class EditAccountNamePresenter extends AbstractPresenter<IEditAccountName
             }
 
             if (e instanceof BodyException &&
-                    ((BodyException) e).errorCode == NetworkError.USER_EXISTED) {
+                    ((BodyException) e).errorCode == ServerErrorMessage.USER_EXISTED) {
                 ZPAnalytics.trackEvent(ZPEvents.UPDATEZPN_INUSED2);
                 mView.accountNameValid(false);
             } else {

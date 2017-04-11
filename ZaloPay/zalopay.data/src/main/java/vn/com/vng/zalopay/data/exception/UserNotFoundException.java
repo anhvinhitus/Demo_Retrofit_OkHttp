@@ -6,7 +6,7 @@ import vn.com.vng.zalopay.data.R;
  * Created by hieuvm on 2/7/17.
  */
 
-public class UserNotFoundException extends GenericException {
+public class UserNotFoundException extends StringResGenericException {
 
     public UserNotFoundException() {
         super(R.string.exception_receiver_not_existed);

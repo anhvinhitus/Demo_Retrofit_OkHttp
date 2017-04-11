@@ -7,7 +7,7 @@ import android.support.annotation.StringRes;
  * Exception has been thrown when user input invalid.
  */
 
-public class UserInputException extends GenericException {
+public class UserInputException extends StringResGenericException {
 
     public UserInputException(@StringRes int message) {
         super(message);

@@ -17,7 +17,7 @@ import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
@@ -160,7 +160,7 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
         Timber.d("Notification message : [mtuid: %s]", pushMessage.mtuid);
         if (pushMessage instanceof AuthenticationData) {
             AuthenticationData authenticationData = (AuthenticationData) pushMessage;
-            if (authenticationData.result != NetworkError.SUCCESSFUL) {
+            if (authenticationData.result != ServerErrorMessage.SUCCESSFUL) {
                 handlerAuthenticationError(authenticationData);
             } else {
                 Timber.d("Socket authentication succeeded");
@@ -317,19 +317,19 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
 
     private void handlerAuthenticationError(AuthenticationData authentication) {
         Timber.d("Handler authentication error: authentication code [%s]", authentication.code);
-        if (authentication.code == NetworkError.UM_TOKEN_NOT_FOUND ||
-                authentication.code == NetworkError.UM_TOKEN_EXPIRE ||
-                authentication.code == NetworkError.TOKEN_INVALID) {
+        if (authentication.code == ServerErrorMessage.UM_TOKEN_NOT_FOUND ||
+                authentication.code == ServerErrorMessage.UM_TOKEN_EXPIRE ||
+                authentication.code == ServerErrorMessage.TOKEN_INVALID) {
             // session expired
             Timber.d("Session is expired");
             TokenException exception = new TokenException(authentication.code);
             mEventBus.postSticky(new ThrowToLoginScreenEvent(exception));
-        } else if (authentication.code == NetworkError.SERVER_MAINTAIN) {
+        } else if (authentication.code == ServerErrorMessage.SERVER_MAINTAIN) {
             Timber.d("Server maintain");
             ServerMaintainException exception = new ServerMaintainException(authentication.code, "");
             mEventBus.postSticky(new ThrowToLoginScreenEvent(exception));
-        } else if (authentication.code == NetworkError.ZPW_ACCOUNT_SUSPENDED
-                || authentication.code == NetworkError.USER_IS_LOCKED) {
+        } else if (authentication.code == ServerErrorMessage.ZPW_ACCOUNT_SUSPENDED
+                || authentication.code == ServerErrorMessage.USER_IS_LOCKED) {
             Timber.d("Account is locked");
             AccountSuspendedException exception = new AccountSuspendedException(authentication.code, "");
             mEventBus.postSticky(new ThrowToLoginScreenEvent(exception));

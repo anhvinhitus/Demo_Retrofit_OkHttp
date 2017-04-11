@@ -21,7 +21,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -171,7 +171,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                 } else {
                     showNetworkErrorDialog();
                 }
-            } else if (pMessage.returncode == NetworkError.TOKEN_INVALID) {
+            } else if (pMessage.returncode == ServerErrorMessage.TOKEN_INVALID) {
                 mEventBus.postSticky(new TokenPaymentExpiredEvent());
             } else if (!TextUtils.isEmpty(pMessage.returnmessage)) {
                 Timber.d("err removed map card %s", pMessage.returnmessage);

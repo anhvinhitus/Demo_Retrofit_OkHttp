@@ -19,7 +19,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
@@ -219,7 +219,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
                 showDialogThenClose(message, R.string.txt_close, SweetAlertDialog.NO_INTERNET);
                 return;
             } else if (e instanceof BodyException
-                    && ((BodyException) e).errorCode == NetworkError.ZALOPAYNAME_NOT_EXIST
+                    && ((BodyException) e).errorCode == ServerErrorMessage.ZALOPAYNAME_NOT_EXIST
                     && isTransferFixedMoney()
                     && !TextUtils.isEmpty(toZalopayName)) {
                 showDialogThenClose(

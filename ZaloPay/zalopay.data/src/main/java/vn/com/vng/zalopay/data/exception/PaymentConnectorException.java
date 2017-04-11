@@ -8,7 +8,7 @@ import android.support.annotation.StringRes;
  * 
  */
 
-public class PaymentConnectorException extends GenericException {
+public class PaymentConnectorException extends StringResGenericException {
 
     public PaymentConnectorException(@StringRes int message) {
         super(message);

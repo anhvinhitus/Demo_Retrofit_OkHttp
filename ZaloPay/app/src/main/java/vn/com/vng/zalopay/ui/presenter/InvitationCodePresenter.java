@@ -13,7 +13,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.exception.BodyException;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -106,7 +106,7 @@ public class InvitationCodePresenter extends AbstractPresenter<IInvitationCodeVi
         hideLoadingView();
         if (e instanceof BodyException) {
             ZPAnalytics.trackEvent(ZPEvents.INVITATIONCODEWRONG);
-            if (((BodyException) e).errorCode == NetworkError.INVITATION_CODE_INVALID) {
+            if (((BodyException) e).errorCode == ServerErrorMessage.INVITATION_CODE_INVALID) {
                 mView.showLabelError();
                 return;
             }

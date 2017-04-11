@@ -10,7 +10,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -180,7 +180,7 @@ public class AccountRepositoryImpl implements AccountStore.Repository {
                 .doOnError(throwable -> {
                     Timber.d("throwable update profile 3");
                     if (throwable instanceof BodyException) {
-                        if (((BodyException) throwable).errorCode == NetworkError.WAITING_APPROVE_PROFILE_LEVEL_3) {
+                        if (((BodyException) throwable).errorCode == ServerErrorMessage.WAITING_APPROVE_PROFILE_LEVEL_3) {
                             mLocalStore.saveProfileInfo3(email, identityNumber, null, null, null);
                             mUserConfig.setWaitingApproveProfileLevel3(true);
                         }

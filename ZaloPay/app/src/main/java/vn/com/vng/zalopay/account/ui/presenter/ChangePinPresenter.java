@@ -15,7 +15,7 @@ import vn.com.vng.zalopay.account.ui.view.IChangePinContainer;
 import vn.com.vng.zalopay.account.ui.view.IChangePinVerifyView;
 import vn.com.vng.zalopay.account.ui.view.IChangePinView;
 import vn.com.vng.zalopay.authentication.KeyTools;
-import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.exception.BodyException;
@@ -26,7 +26,7 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
-import static vn.com.vng.zalopay.data.NetworkError.OTP_CHANGE_PASSWORF_WRONG;
+import static vn.com.vng.zalopay.data.ServerErrorMessage.OTP_CHANGE_PASSWORF_WRONG;
 
 /**
  * Created by AnhHieu on 8/25/16.
@@ -162,7 +162,7 @@ public class ChangePinPresenter extends AbstractPresenter<IChangePinContainer>
                 }
 
                 private void onDialogDismiss() {
-                    if (code == NetworkError.OLD_PIN_NOT_MATCH) {
+                    if (code == ServerErrorMessage.OLD_PIN_NOT_MATCH) {
                         if (numberError == LIMIT_CHANGE_PASSWORD_ERROR) {
                             mView.onChangePinOverLimit();
                         } else {

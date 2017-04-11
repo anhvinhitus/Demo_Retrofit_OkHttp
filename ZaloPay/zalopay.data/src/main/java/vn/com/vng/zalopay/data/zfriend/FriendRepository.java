@@ -13,12 +13,12 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.Constants;
-import vn.com.vng.zalopay.data.NetworkError;
+import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.R;
 import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
-import vn.com.vng.zalopay.data.exception.GenericException;
+import vn.com.vng.zalopay.data.exception.StringResGenericException;
 import vn.com.vng.zalopay.data.exception.UserNotFoundException;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.Strings;
@@ -325,12 +325,12 @@ public class FriendRepository implements FriendStore.Repository {
                     }
 
                     ZaloPayUserEntity entity = entities.get(0);
-                    if (entity.status == NetworkError.USER_NOT_EXIST) {
+                    if (entity.status == ServerErrorMessage.USER_NOT_EXIST) {
                         return Observable.error(new UserNotFoundException());
-                    } else if (entity.status == NetworkError.ZPW_ACCOUNT_SUSPENDED ||
-                            entity.status == NetworkError.RECEIVER_IS_LOCKED ||
-                            entity.status == NetworkError.USER_IS_LOCKED) {
-                        return Observable.error(new GenericException(R.string.exception_zpw_account_suspended));
+                    } else if (entity.status == ServerErrorMessage.ZPW_ACCOUNT_SUSPENDED ||
+                            entity.status == ServerErrorMessage.RECEIVER_IS_LOCKED ||
+                            entity.status == ServerErrorMessage.USER_IS_LOCKED) {
+                        return Observable.error(new StringResGenericException(R.string.exception_zpw_account_suspended));
                     } else if (TextUtils.isEmpty(entity.userid)) {
                         return Observable.error(new UserNotFoundException());
                     }
