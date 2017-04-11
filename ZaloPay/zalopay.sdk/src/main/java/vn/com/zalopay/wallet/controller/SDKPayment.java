@@ -26,7 +26,6 @@ import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -163,7 +162,7 @@ public class SDKPayment {
 
             //1 zalopay user has only 1 vcb account
 
-            if (GlobalData.isLinkAccChannel()
+            if (GlobalData.isBankAccountLink()
                     && GlobalData.isLinkAccFlow()
                     && BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getPaymentInfo().linkAccInfo.getBankCode())) {
                 DialogManager.closeProcessDialog();
@@ -178,7 +177,7 @@ public class SDKPayment {
                 return;
             }
             //user have no link bank account so no need to unlink
-            if (GlobalData.isLinkAccChannel()
+            if (GlobalData.isBankAccountLink()
                     && GlobalData.isUnLinkAccFlow()
                     && !BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getPaymentInfo().linkAccInfo.getBankCode())) {
                 DialogManager.closeProcessDialog();
@@ -196,7 +195,7 @@ public class SDKPayment {
             }
 
             //check maintenance link bank account
-            if (GlobalData.isLinkAccChannel() && BankLoader.getInstance().isBankMaintenance(GlobalData.getPaymentInfo().linkAccInfo.getBankCode(), EBankFunction.LINK_BANK_ACCOUNT)) {
+            if (GlobalData.isBankAccountLink() && BankLoader.getInstance().isBankMaintenance(GlobalData.getPaymentInfo().linkAccInfo.getBankCode(), EBankFunction.LINK_BANK_ACCOUNT)) {
                 DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
                         GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
                         BankLoader.getInstance().getFormattedBankMaintenaceMessage(), pIndex -> {

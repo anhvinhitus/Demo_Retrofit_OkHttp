@@ -210,9 +210,14 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                             }
                         }
                         Log.d(this, "getOneShotTransactionStatus");
+                    } else if (GlobalData.isBankAccountLink() && getAdapter() instanceof AdapterLinkAcc) {
+                        ((AdapterLinkAcc) getAdapter()).verifyServerAfterParseWebTimeout();
+                        Log.d(this, "load website timeout, continue to verify server again to ask for new data list");
                     } else {
                         //show dialog and move to fail screen
-                        ((PaymentChannelActivity) activity.get()).showWarningDialog(() -> ((PaymentChannelActivity) activity.get()).getAdapter().showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)), GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+                        ((PaymentChannelActivity) activity.get()).showWarningDialog(() -> ((PaymentChannelActivity) activity.get())
+                                .getAdapter().showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)),
+                                GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
                     }
                     return;
                 }
@@ -1134,7 +1139,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
 
         // set color for text in linkacc
-        if (GlobalData.isLinkAccChannel()) {
+        if (GlobalData.isBankAccountLink()) {
             if (getAdapter().getPageName().equals(AdapterLinkAcc.PAGE_LINKACC_FAIL)) {
                 setVisible(R.id.zpw_payment_fail_textview, true);
             } else { // unlinkacc fail
@@ -1199,7 +1204,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setText(R.id.payment_description_label, GlobalData.getPaymentInfo().description);
             } else
                 setVisible(R.id.payment_description_label, false);
-        } else if (GlobalData.isLinkAccChannel()) { // show label for linkAcc
+        } else if (GlobalData.isBankAccountLink()) { // show label for linkAcc
             if (getAdapter().getPageName().equals(AdapterLinkAcc.PAGE_LINKACC_SUCCESS)) {
                 setViewColor(R.id.zpw_payment_success_textview, getResources().getColor(R.color.text_color_primary));
                 setVisible(R.id.payment_description_label, true);

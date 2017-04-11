@@ -266,7 +266,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             }
         }
         //this is link account and the first call
-        if (GlobalData.isLinkAccChannel() && !mIsStart) {
+        if (GlobalData.isBankAccountLink() && !mIsStart) {
             try {
                 //check static resource whether ready or not
                 loadStaticReload();

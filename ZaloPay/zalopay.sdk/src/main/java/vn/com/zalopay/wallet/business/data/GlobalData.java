@@ -189,7 +189,7 @@ public class GlobalData {
         return false;
     }
 
-    public static boolean isLinkAccChannel() {
+    public static boolean isBankAccountLink() {
         return transactionType == ETransactionType.LINK_ACC;
     }
 
