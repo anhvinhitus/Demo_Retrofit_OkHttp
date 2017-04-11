@@ -115,7 +115,6 @@ public class AdapterLinkAcc extends AdapterBase {
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
     private LinkAccGuiProcessor linkAccGuiProcessor;
-    private ELinkAccType mLinkAccType;
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
     private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
     private LinkAccWebViewClient mWebViewProcessor = null;
@@ -204,14 +203,13 @@ public class AdapterLinkAcc extends AdapterBase {
                 linkAccGuiProcessor.getLoginHolder().getSrvScrollView(),
                 linkAccGuiProcessor.getLlButton());
 
-        mLinkAccType = GlobalData.getPaymentInfo().linkAccInfo.getLinkAccType();
         // get number times allow login wrong.
         mNumAllowLoginWrong = Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_int_vcb_num_times_allow_login_wrong));
 
         // show title bar
-        if (mLinkAccType.equals(ELinkAccType.LINK)) {
+        if (GlobalData.isLinkAccFlow()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
-        } else if (mLinkAccType.equals(ELinkAccType.UNLINK)) {
+        } else if (GlobalData.isUnLinkAccFlow()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
         }
 
@@ -471,7 +469,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                         String.format(GlobalData.getStringResource(RS.string.zpw_string_vcb_wrong_times_allow),
                                                 mNumAllowLoginWrong), TSnackbar.LENGTH_LONG);
                             } else {
-                                if (mLinkAccType.equals(ELinkAccType.LINK)) {
+                                if (GlobalData.isLinkAccFlow()) {
                                     linkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
                                 } else {
                                     unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
@@ -480,7 +478,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             }
                             break;
                         case ACCOUNT_LOCKED:
-                            if (mLinkAccType.equals(ELinkAccType.LINK)) {
+                            if (GlobalData.isLinkAccFlow()) {
                                 linkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
                             } else {
                                 unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
@@ -890,12 +888,6 @@ public class AdapterLinkAcc extends AdapterBase {
     public String getPasswordUnRegValue() {
         Object result = linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().getText();
         return (result != null && !result.toString().isEmpty()) ? result.toString() : "null";
-    }
-
-    public ELinkAccType getLinkerType() {
-        if (mLinkAccType != null)
-            return mLinkAccType;
-        return null;
     }
 
     public ZPWNotification getNotification() {
