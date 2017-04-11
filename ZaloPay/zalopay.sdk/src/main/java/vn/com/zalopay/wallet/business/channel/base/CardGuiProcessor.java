@@ -43,7 +43,7 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
-import vn.com.zalopay.wallet.listener.ZPWOnDetectCardListener;
+import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
@@ -325,7 +325,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
     /***
      * detect card type listener
      */
-    protected ZPWOnDetectCardListener mOnDetectCardListener = new ZPWOnDetectCardListener() {
+    protected OnDetectCardListener mOnDetectCardListener = new OnDetectCardListener() {
         @Override
         public void onDetectCardComplete(boolean isDetected) {
 
@@ -1543,7 +1543,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
         return mOnOtpCaptchFocusChangeListener;
     }
 
-    public ZPWOnDetectCardListener getOnDetectCardListener() {
+    public OnDetectCardListener getOnDetectCardListener() {
         return mOnDetectCardListener;
     }
 

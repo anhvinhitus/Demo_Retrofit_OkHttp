@@ -27,7 +27,7 @@ public class TaskDetectCardType extends TaskBase {
 
         if (CShareData.loadConfigBundle() != null) {
             CreditCardCheck cardCheck = new CreditCardCheck(CShareData.getConfigResource().CCIdentifier);
-            cardCheck.detectCard(mCardNumber);
+            cardCheck.detectOnSync(mCardNumber);
 
             ECardType eCardType = ECardType.fromString(cardCheck.getCodeBankForVerify());
 

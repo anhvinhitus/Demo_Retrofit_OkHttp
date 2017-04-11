@@ -58,6 +58,7 @@ import vn.com.zalopay.wallet.datasource.task.TrustSDKReportTask;
 import vn.com.zalopay.wallet.datasource.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
+import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
@@ -1016,10 +1017,11 @@ public abstract class AdapterBase {
 
             getActivity().setToolBarTitle();
             if (GlobalData.isMapCardChannel()) {
-                boolean isDetected = getGuiProcessor().getCardFinder().detectCard(GlobalData.getPaymentInfo().mapBank.getFirstNumber());
-                if (isDetected) {
-                    getActivity().setText(R.id.zpw_channel_label_textview, getGuiProcessor().getCardFinder().getDetectedBankName());
-                }
+                getGuiProcessor().getCardFinder().detectOnAsync(GlobalData.getPaymentInfo().mapBank.getFirstNumber(), isDetected -> {
+                    if (isDetected) {
+                        getActivity().setText(R.id.zpw_channel_label_textview, getGuiProcessor().getCardFinder().getDetectedBankName());
+                    }
+                });
             } else if (GlobalData.isMapBankAccountChannel()) {
                 BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(GlobalData.getPaymentInfo().mapBank.bankcode);
                 if (bankConfig != null) {

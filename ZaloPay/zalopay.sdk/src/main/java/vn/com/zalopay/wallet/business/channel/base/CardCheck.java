@@ -1,39 +1,43 @@
 package vn.com.zalopay.wallet.business.channel.base;
 
-import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
-import vn.com.zalopay.wallet.listener.ZPWOnDetectCardListener;
-import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.listener.OnDetectCardListener;
+import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public class CardCheck extends SingletonBase {
     public String mCardNumber;
     public String mTempCardNumber;
-    protected ZPWOnDetectCardListener mDetectCardListener;
-    protected List<DCardIdentifier> mCardIndentifier;
-    protected DCardIdentifier mFoundIdentifier;
-    protected BankConfig mSelectedBank;
-    protected ArrayList<DOtpReceiverPattern> mOtpReceiverPatternList;
-    //check cardnumber by Luhn formula
-    protected boolean mValidLuhn;
+    protected OnDetectCardListener mDetectCardListener;
+    protected List<DCardIdentifier> mCardIdentifier;
+    protected DCardIdentifier mIdentifier;
+    protected BankConfig mSelectBank;
+    protected List<DOtpReceiverPattern> mOtpReceiverPatternList;
+    protected boolean mValidLuhn; //check card number by Luhn formula
+    protected Subscription mSubscription;
 
     public CardCheck() {
         super();
-
         mCardNumber = "";
-        mFoundIdentifier = null;
+        mIdentifier = null;
         mValidLuhn = true;
-
         mOtpReceiverPatternList = new ArrayList<>();
     }
 
@@ -42,33 +46,31 @@ public class CardCheck extends SingletonBase {
     }
 
     public boolean isBankAccount() {
-        if (mSelectedBank != null)
-        {
-            return mSelectedBank.isBankAccount();
+        if (mSelectBank != null) {
+            return mSelectBank.isBankAccount();
         }
         return false;
     }
 
     public void dispose() {
-        if (this.mCardIndentifier != null) {
-            this.mCardIndentifier.clear();
-            this.mCardIndentifier = null;
+        if (this.mCardIdentifier != null) {
+            this.mCardIdentifier.clear();
+            this.mCardIdentifier = null;
         }
         this.mCardNumber = "";
         this.mValidLuhn = true;
-
     }
 
     public BankConfig getDetectBankConfig() {
-        return mSelectedBank;
+        return mSelectBank;
     }
 
-    public ArrayList<DOtpReceiverPattern> getOtpReceiverPatternList() {
+    public List<DOtpReceiverPattern> getOtpReceiverPatternList() {
         return mOtpReceiverPatternList;
     }
 
     public DCardIdentifier getCardIdentifier() {
-        return mFoundIdentifier;
+        return mIdentifier;
     }
 
     public String getDetectedBankName() {
@@ -87,16 +89,13 @@ public class CardCheck extends SingletonBase {
         if (!TextUtils.isEmpty(pCardNumber)) {
             this.mValidLuhn = SdkUtils.validateCardNumberByLuhn(pCardNumber.trim());
         }
-
-        Log.d(this, "===matchCardLuhn===" + pCardNumber + "===mValidLuhn=" + mValidLuhn);
-
+        Log.d(this, "card number " + pCardNumber + " match luhn " + mValidLuhn);
         return this.mValidLuhn;
     }
 
     /***
      * This is code to detect bank type
      * For example: 123PSCB 123PVTB 123PCC
-     *
      * @return
      */
     public String getDetectBankCode() {
@@ -107,20 +106,10 @@ public class CardCheck extends SingletonBase {
      * we must use this to detect which credit card type
      * because #getDetectBankCode always return 123PCC for credit card
      * check this in CreditCardCheck override
-     *
      * @return
      */
     public String getCodeBankForVerify() {
         return getDetectBankCode();
-    }
-
-    public String getTinyCardNumber() {
-        if (TextUtils.isEmpty(mCardNumber))
-            return "";
-
-        String hidden_character = GlobalData.getStringResource(RS.string.zpw_string_hidden_character);
-
-        return hidden_character + mCardNumber.substring(mCardNumber.length() - 4);
     }
 
     public boolean isDetected() {
@@ -133,48 +122,47 @@ public class CardCheck extends SingletonBase {
 
     /***
      * detect card type on other thread
-     *
      * @param pCardNumber
      * @param pListener
      */
-    public void detectOnOtherThread(String pCardNumber, ZPWOnDetectCardListener pListener) {
+    public void detectOnAsync(String pCardNumber, OnDetectCardListener pListener) {
         this.mDetectCardListener = pListener;
+        Log.d(this,"detect card "+ pCardNumber + " should run on new thread");
+        mSubscription = detectObservable(pCardNumber)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(this, "detect card number on complete");
+                        mSubscription.unsubscribe();
+                    }
 
-        DetectCardThread detectCardThread = new DetectCardThread();
-        detectCardThread.execute(pCardNumber);
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(this, "detect card number on thread error " + GsonUtils.toJsonString(e));
+                    }
+
+                    @Override
+                    public void onNext(Boolean detected) {
+                        if (mDetectCardListener != null) {
+                            mDetectCardListener.onDetectCardComplete(detected);
+                        }
+                    }
+                });
     }
 
     /***
      * detect card type on main thread
-     *
      * @param pCardNumber
      * @return
      */
-    public boolean detectCard(String pCardNumber) {
+    public boolean detectOnSync(String pCardNumber) {
         return detect(pCardNumber);
     }
 
-    public class DetectCardThread extends AsyncTask<String, Object, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            if (params == null && TextUtils.isEmpty(params[0])) {
-                Log.d(this, "===params = NULL or empty");
-                return false;
-            }
-
-            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-
-            detect(params[0]);
-
-            return isDetected();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean detected) {
-            if (mDetectCardListener != null)
-                mDetectCardListener.onDetectCardComplete(detected);
-        }
+    protected Observable<Boolean> detectObservable(String pCardNumber) {
+        return Observable.defer(() -> Observable.just(detect(pCardNumber)));
     }
     //endregion
 }

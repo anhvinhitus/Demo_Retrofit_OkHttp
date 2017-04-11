@@ -115,7 +115,7 @@ public class MapCardHelper {
         //cc
         else {
             CreditCardCheck cardCheck = CreditCardCheck.getInstance();
-            cardCheck.detectCard(saveCardInfo.first6cardno);
+            cardCheck.detectOnSync(saveCardInfo.first6cardno);
             if (cardCheck.isDetected()) {
                 ECardType cardType = ECardType.fromString(cardCheck.getCodeBankForVerify());
                 mapCardResult.setCardLogo(CChannelHelper.makeCardIconNameFromBankCode(cardType.toString()));

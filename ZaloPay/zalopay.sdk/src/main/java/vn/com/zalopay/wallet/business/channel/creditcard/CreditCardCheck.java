@@ -7,57 +7,54 @@ import java.util.List;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
-import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
+import vn.com.zalopay.wallet.utils.GsonUtils;
 
 /**
- * CLASS DETECT TYPE OF CREDIT CARD(VISA-MASTER-JCB)
+ * class for detect working with
+ * visa master jcb
  */
 public class CreditCardCheck extends CardCheck {
-    private static final String TAG = CreditCardCheck.class.getName();
-
+    private static final String TAG = CreditCardCheck.class.getCanonicalName();
     private static CreditCardCheck _object;
-
-    private String mSelectedCCCode;
-    private String mSelectedCCName;
+    private String mCardCode;
+    private String mCardName;
     private boolean mIsValid;
 
 
     public CreditCardCheck() {
         super();
-
-        this.mCardIndentifier = ResourceManager.getInstance(null).getCreditCardIdentifier();
-
-
-        this.mSelectedCCCode = "";
-        this.mSelectedCCName = "";
+        this.mCardIdentifier = ResourceManager.getInstance(null).getCreditCardIdentifier();
+        this.mCardCode = "";
+        this.mCardName = "";
     }
 
-    public CreditCardCheck(List<DCardIdentifier> pCreditCardIndentifier) {
-        this.mCardIndentifier = pCreditCardIndentifier;
-        this.mSelectedCCCode = "";
-        this.mSelectedCCName = "";
+    public CreditCardCheck(List<DCardIdentifier> pCreditCardIdentifier) {
+        this.mCardIdentifier = pCreditCardIdentifier;
+        this.mCardCode = "";
+        this.mCardName = "";
     }
 
     public static CreditCardCheck getInstance() {
-        if (CreditCardCheck._object == null)
+        if (CreditCardCheck._object == null) {
             CreditCardCheck._object = new CreditCardCheck();
+        }
         return CreditCardCheck._object;
     }
 
     @Override
     public void reset() {
         super.reset();
-        this.mSelectedCCCode = "";
-        this.mSelectedCCName = "";
+        this.mCardCode = "";
+        this.mCardName = "";
         this.mIsValid = false;
     }
 
     public void dispose() {
         super.dispose();
-
-        this.mSelectedCCCode = "";
-        this.mSelectedCCName = "";
+        this.mCardCode = "";
+        this.mCardName = "";
         this.mIsValid = false;
     }
 
@@ -73,83 +70,70 @@ public class CreditCardCheck extends CardCheck {
 
     @Override
     public String getCodeBankForVerify() {
-        return mSelectedCCCode;
+        return mCardCode;
     }
 
     @Override
     public String getDetectedBankName() {
-        return mSelectedCCName;
+        return mCardName;
     }
 
     @Override
     protected boolean detect(String pCardNumber) {
         mCardNumber = pCardNumber;
-        mFoundIdentifier = null;
-        mSelectedCCCode = "";
-        mSelectedCCName = "";
+        mIdentifier = null;
+        mCardCode = "";
+        mCardName = "";
         mIsValid = false;
         this.mValidLuhn = true;
-
-        if (mCardIndentifier == null) {
-            this.mCardIndentifier = ResourceManager.getInstance(null).getCreditCardIdentifier();
+        if (mCardIdentifier == null) {
+            this.mCardIdentifier = ResourceManager.getInstance(null).getCreditCardIdentifier();
         }
-
         try {
-            for (DCardIdentifier identifier : mCardIndentifier) {
+            for (DCardIdentifier identifier : mCardIdentifier) {
                 String[] startPin;
                 String strStartPin = identifier.startPin;
+                //master card start with 51,52,53,54,55
                 if (strStartPin.contains(",")) {
-                    //MASTER CARD START WITH 51,52,53,54,55
                     startPin = strStartPin.split(",");
 
                     for (int i = 0; i < startPin.length; i++) {
                         if (pCardNumber.equals(startPin[i]) || pCardNumber.startsWith(startPin[i])) {
-                            mFoundIdentifier = identifier;
+                            mIdentifier = identifier;
                             break;
                         }
                     }
-                } else if (strStartPin.contains("-")) {
-                    //JCB START IN RANGE FROM 3528-3589
+                } else if (strStartPin.contains("-")) {  //JCB in range of 3528-3589
                     startPin = strStartPin.split("-");
-
                     try {
                         long minStart = Integer.parseInt(startPin[0]);
                         long maxStart = Integer.parseInt(startPin[1]);
-
                         for (int i = 3; i < pCardNumber.length() + 1; i++) {
                             String sub = pCardNumber.substring(0, i);
                             Long value = Long.parseLong(sub);
-
                             if (value <= maxStart && value >= minStart) {
-                                mFoundIdentifier = identifier;
+                                mIdentifier = identifier;
                                 break;
                             }
                         }
-
                     } catch (Exception e) {
                         Log.e(TAG, e);
                     }
-                } else if (pCardNumber.equals(strStartPin) || pCardNumber.startsWith(strStartPin)) {
-                    mFoundIdentifier = identifier;
+                } else if (pCardNumber.equals(strStartPin) || pCardNumber.startsWith(strStartPin)) { // visa start with 4
+                    mIdentifier = identifier;
                     break;
                 }
             }
         } catch (Exception e) {
             Log.e(this, e);
         }
-
-
-        if (mFoundIdentifier != null) {
-            mSelectedCCCode = mFoundIdentifier.code;
-            mSelectedCCName = mFoundIdentifier.name;
-
-            matchCardLength(pCardNumber, mFoundIdentifier);
+        if (mIdentifier != null) {
+            mCardCode = mIdentifier.code;
+            mCardName = mIdentifier.name;
+            Log.d(this,"found card "+ GsonUtils.toJsonString(mIdentifier));
+            matchCardLength(pCardNumber, mIdentifier);
         }
-
-        if (!TextUtils.isEmpty(mSelectedCCName))
-            return true;
-        else
-            return false;
+        return !TextUtils.isEmpty(mCardName);
     }
 
     private void matchCardLength(String pCardNumber, DCardIdentifier pIdentifier) {

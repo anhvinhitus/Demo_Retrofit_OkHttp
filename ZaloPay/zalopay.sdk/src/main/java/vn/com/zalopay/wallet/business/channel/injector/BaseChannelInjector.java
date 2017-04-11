@@ -287,7 +287,7 @@ public abstract class BaseChannelInjector {
                     if (isBankCard) {
                         CChannelHelper.inflatChannelIcon(channel, mappCard.bankcode);
 
-                        BankCardCheck.getInstance().detectCard(channel.f6no);
+                        BankCardCheck.getInstance().detectOnSync(channel.f6no);
 
                         if (BankCardCheck.getInstance().isDetected()) {
                             //populate channel name
@@ -308,7 +308,7 @@ public abstract class BaseChannelInjector {
                     }
                     //this is cc
                     else {
-                        CreditCardCheck.getInstance().detectCard(channel.f6no);
+                        CreditCardCheck.getInstance().detectOnSync(channel.f6no);
 
                         if (CreditCardCheck.getInstance().isDetected()) {
 
@@ -400,7 +400,7 @@ public abstract class BaseChannelInjector {
 
                     CChannelHelper.inflatChannelIcon(channel, mappCard.bankcode);
 
-                    BankCardCheck.getInstance().detectCard(channel.f6no);
+                    BankCardCheck.getInstance().detectOnSync(channel.f6no);
 
                     if (BankCardCheck.getInstance().isDetected()) {
                         //populate channel name
@@ -423,7 +423,7 @@ public abstract class BaseChannelInjector {
                 else {
                     channel.pmcid = Integer.parseInt(GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_credit_card));
 
-                    CreditCardCheck.getInstance().detectCard(channel.f6no);
+                    CreditCardCheck.getInstance().detectOnSync(channel.f6no);
 
                     if (CreditCardCheck.getInstance().isDetected()) {
 

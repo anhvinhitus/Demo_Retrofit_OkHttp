@@ -201,8 +201,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 handler.proceed(); // Ignore SSL certificate errors
             }
         }, mAdapter.getActivity().getString(R.string.zpw_alert_ssl_error_parse_website), mAdapter.getActivity().getString(R.string.dialog_continue_button), mAdapter.getActivity().getString(R.string.dialog_close_button));
-
-
     }
 
     @Override

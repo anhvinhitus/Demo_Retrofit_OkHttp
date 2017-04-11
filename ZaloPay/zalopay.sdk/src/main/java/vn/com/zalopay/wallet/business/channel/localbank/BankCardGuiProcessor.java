@@ -33,7 +33,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.enumeration.EAuthenType;
-import vn.com.zalopay.wallet.listener.ZPWOnDetectCardListener;
+import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 import vn.com.zalopay.wallet.utils.BitmapUtil;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.SdkUtils;
@@ -218,7 +218,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     public void continueDetectCardForLinkCard() {
         Log.d(this, "card number=" + getCardNumber() + "===preparing to detect cc");
 
-        getCreditCardFinder().detectOnOtherThread(getCardNumber(), new ZPWOnDetectCardListener() {
+        getCreditCardFinder().detectOnAsync(getCardNumber(), new OnDetectCardListener() {
             @Override
             public void onDetectCardComplete(final boolean isDetected) {
                 getAdapter().setNeedToSwitchChannel(isDetected);

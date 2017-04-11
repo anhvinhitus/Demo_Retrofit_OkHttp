@@ -1,5 +1,5 @@
 package vn.com.zalopay.wallet.listener;
 
-public interface ZPWOnDetectCardListener {
+public interface OnDetectCardListener {
     void onDetectCardComplete(boolean isDetected);
 }

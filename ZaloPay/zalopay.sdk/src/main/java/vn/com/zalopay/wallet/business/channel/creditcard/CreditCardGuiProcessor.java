@@ -12,7 +12,7 @@ import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.listener.ZPWOnDetectCardListener;
+import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.CreditCardFragmentAdapter;
@@ -69,7 +69,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
     public void continueDetectCardForLinkCard() {
         Log.d(this, "card number=" + getCardNumber() + "===preparing to detect bank");
 
-        getBankCardFinder().detectOnOtherThread(getCardNumber(), new ZPWOnDetectCardListener() {
+        getBankCardFinder().detectOnAsync(getCardNumber(), new OnDetectCardListener() {
             @Override
             public void onDetectCardComplete(boolean isDetected) {
 

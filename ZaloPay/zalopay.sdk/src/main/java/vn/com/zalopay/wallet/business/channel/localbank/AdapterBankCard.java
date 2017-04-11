@@ -88,7 +88,7 @@ public class AdapterBankCard extends AdapterBase {
     @Override
     public void detectCard(String pCardNumber) {
         getGuiProcessor().getCreditCardFinder().reset();
-        getGuiProcessor().getCardFinder().detectOnOtherThread(pCardNumber, getGuiProcessor().getOnDetectCardListener());
+        getGuiProcessor().getCardFinder().detectOnAsync(pCardNumber, getGuiProcessor().getOnDetectCardListener());
     }
 
     public PaymentWebViewClient getWebViewProcessor() {
@@ -106,8 +106,7 @@ public class AdapterBankCard extends AdapterBase {
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
         try {
-            ArrayList<DOtpReceiverPattern> otpReceiverPatternList = getGuiProcessor().getCardFinder().getOtpReceiverPatternList();
-
+            List<DOtpReceiverPattern> otpReceiverPatternList = getGuiProcessor().getCardFinder().getOtpReceiverPatternList();
             if (otpReceiverPatternList != null && otpReceiverPatternList.size() > 0) {
                 for (DOtpReceiverPattern otpReceiverPattern : otpReceiverPatternList) {
                     if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
@@ -180,7 +179,6 @@ public class AdapterBankCard extends AdapterBase {
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
         try {
             Object base = super.onEvent(pEventType, pAdditionParams);
-
             if (pEventType == EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE) {
                 //check result authen, otp code is 17: wrong otp, other code terminate
                 if (PaymentStatusHelper.isNeedToGetStatusAfterAuthenPayer(mResponseStatus) && !PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {

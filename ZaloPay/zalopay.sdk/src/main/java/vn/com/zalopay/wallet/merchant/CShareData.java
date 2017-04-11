@@ -510,7 +510,7 @@ public class CShareData extends SingletonBase {
 
         if (mConfigFromServer != null) {
             CreditCardCheck cardCheck = new CreditCardCheck(mConfigFromServer.CCIdentifier);
-            cardCheck.detectCard(pCardNumber);
+            cardCheck.detectOnSync(pCardNumber);
 
             return ECardType.fromString(cardCheck.getCodeBankForVerify());
         } else {
@@ -529,7 +529,7 @@ public class CShareData extends SingletonBase {
 
         if (mConfigFromServer != null) {
             CreditCardCheck cardCheck = new CreditCardCheck(mConfigFromServer.CCIdentifier);
-            cardCheck.detectCard(pCardNumber);
+            cardCheck.detectOnSync(pCardNumber);
 
             ECardType eCardType = ECardType.fromString(cardCheck.getCodeBankForVerify());
 

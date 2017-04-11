@@ -32,7 +32,7 @@ public class AdapterCreditCard extends AdapterBase {
     @Override
     public void detectCard(String pCardNumber) {
         getGuiProcessor().getBankCardFinder().reset();
-        getGuiProcessor().getCardFinder().detectOnOtherThread(pCardNumber, getGuiProcessor().getOnDetectCardListener());
+        getGuiProcessor().getCardFinder().detectOnAsync(pCardNumber, getGuiProcessor().getOnDetectCardListener());
     }
 
     @Override
