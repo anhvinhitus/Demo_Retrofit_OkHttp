@@ -72,9 +72,6 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String PAGE_LINKACC_FAIL = RS.layout.screen__linkacc__fail;
     public static String PAGE_UNLINKACC_SUCCESS = RS.layout.screen__unlinkacc__success;
     public static String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
-
-    protected int  COUNT_ERROR_PASS = 0;
-
     protected ZPWNotification mNotification;
     protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
@@ -93,7 +90,7 @@ public class AdapterLinkAcc extends AdapterBase {
             @Override
             public void onCheckExistBankAccountFail(String pMessage) {
                 showProgressBar(false, null);
-                Log.d(this, "runnableWaitingNotifyUnLinkAcc=="+pMessage);
+                Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
                 unlinkAccFail(pMessage, mTransactionID);
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
@@ -118,6 +115,8 @@ public class AdapterLinkAcc extends AdapterBase {
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
+    private int COUNT_ERROR_PASS = 0;
+    private int COUNT_ERROR_CAPCHART = 0;
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
     private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
@@ -588,10 +587,6 @@ public class AdapterLinkAcc extends AdapterBase {
                 // set list account number
                 if (response.accNumList != null) {
                     mHashMapAccNum = HashMapUtils.JsonArrayToHashMap(response.accNumList);
-                    // add 2 account to test. HARD CODE
-//                    if (mHashMapAccNum != null) {
-//                        mHashMapAccNum.put("0421000416723", "0421000416723");
-//                    }
                     ArrayList<String> accNum = HashMapUtils.getKeys(mHashMapAccNum);
                     // set accNum into Spinner || Text
                     if (accNum != null && accNum.size() > 1) {
@@ -656,20 +651,30 @@ public class AdapterLinkAcc extends AdapterBase {
                                 showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_SHORT);
                                 break;
                             case WRONG_CAPTCHA:
-                                getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
-                                linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText("");
-                                linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            SdkUtils.focusAndSoftKeyboard(getActivity(), linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha());
-                                            Log.d(this, "mOnFocusChangeListener Link Acc");
-                                        } catch (Exception e) {
-                                            Log.e(this, e);
-                                        }
+                                if (COUNT_ERROR_CAPCHART >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_capchart))) {
+                                    if (!TextUtils.isEmpty(response.message)) {
+                                        showProgressBar(false, null); // close process dialog
+                                        String msgErr = response.message;
+                                        linkAccFail(msgErr, mTransactionID);
+                                        return null;
                                     }
-                                }, 100);
+                                } else {
+                                    getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
+                                    linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText(null);
+                                    linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                SdkUtils.focusAndSoftKeyboard(getActivity(), linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha());
+                                                Log.d(this, "mOnFocusChangeListener Link Acc");
+                                            } catch (Exception e) {
+                                                Log.e(this, e);
+                                            }
+                                        }
+                                    }, 100);
+                                }
+                                COUNT_ERROR_CAPCHART++;
                                 break;
                             default:
                                 // FAIL. Fail register
@@ -707,7 +712,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     ArrayList<String> walletList = HashMapUtils.getKeys(mHashMapWalletUnReg);
                     linkAccGuiProcessor.setWalletUnRegList(walletList);
                 }
-                Log.d(this,"unRegister==" +response.phoneNumUnRegList.size()+"=="+response.message);
+                Log.d(this, "unRegister==" + response.phoneNumUnRegList.size() + "==" + response.message);
                 // set phone number unregister
                 if (response.phoneNumUnRegList != null && response.phoneNumUnRegList.size() > 0) {
                     mHashMapPhoneNumUnReg = HashMapUtils.JsonArrayToHashMap(response.phoneNumUnRegList);
@@ -778,7 +783,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     checkUnlinkAccountList();
                 } else {
                     // FAIL. Fail register
-                    if (!TextUtils.isEmpty(response.message) &&  COUNT_ERROR_PASS > 2) {
+                    if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
                         showProgressBar(false, null);
                         String msgErr = response.message;
                         unlinkAccFail(msgErr, mTransactionID);
@@ -789,7 +794,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         }
                     }
                 }
-                COUNT_ERROR_PASS ++ ;
+                COUNT_ERROR_PASS++;
                 return null;
             }
             return null;
