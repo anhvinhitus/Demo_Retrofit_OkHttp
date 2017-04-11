@@ -167,13 +167,17 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         mPayAfterLinkAcc = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_ACC);
     }
 
-    void getListBankSupport() {
-        Timber.d("Show list bank that support link account.");
+    public void getListBankSupport(IGetCardSupportListListener listListener) {
         showLoadingView();
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;
-        CShareDataWrapper.getCardSupportList(userInfo, mGetCardSupportListListener);
+        CShareDataWrapper.getCardSupportList(userInfo, listListener);
+    }
+
+    void getListBankSupport() {
+        Timber.d("Show list bank that support link account.");
+        getListBankSupport(mGetCardSupportListListener);
     }
 
     void addBankAccount() {

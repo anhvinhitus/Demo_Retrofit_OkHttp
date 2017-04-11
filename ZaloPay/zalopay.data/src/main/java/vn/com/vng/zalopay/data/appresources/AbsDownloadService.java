@@ -1,7 +1,6 @@
 package vn.com.vng.zalopay.data.appresources;
 
 import android.app.IntentService;
-import android.app.usage.UsageEvents;
 import android.content.Intent;
 
 import org.greenrobot.eventbus.EventBus;

@@ -65,6 +65,9 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     @BindView(R.id.listView)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.txt_note_support_only_vcb)
+    TextView mTxtNoteSupportOnlyVcb;
+
     @OnClick(R.id.btn_add_account)
     public void onClickAddBankAccount() {
         mPresenter.addBankAccount();
@@ -256,6 +259,18 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
                         getActivity().finish();
                     }
                 });
+    }
+
+    @Override
+    public void showSupportVcbOnly() {
+        mTxtNoteSupportOnlyVcb.setVisibility(View.VISIBLE);
+        mBtnAddMore.setEnabled(false);
+    }
+
+    @Override
+    public void hideSupportVcbOnly() {
+        mTxtNoteSupportOnlyVcb.setVisibility(View.GONE);
+        mBtnAddMore.setEnabled(true);
     }
 
     @Override

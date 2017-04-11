@@ -33,9 +33,11 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
+import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 /**
  * Created by longlv on 1/17/17.
@@ -115,9 +117,77 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
     }
 
+    private boolean linkedVcbAccount(List<BankAccount> listLinkedAccount) {
+        for (BankAccount bankAccount : listLinkedAccount) {
+            if (bankAccount == null || TextUtils.isEmpty(bankAccount.mBankCode)) {
+                continue;
+            }
+            Timber.d("Check linked vcb, bankCode [%s]", bankAccount.mBankCode);
+            if (ECardType.PVCB.toString().equals(bankAccount.mBankCode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<ZPCard> getBanksSupportLinkAccount(List<ZPCard> bankList) {
+        if (Lists.isEmptyOrNull(bankList)) {
+            return Collections.emptyList();
+        }
+        List<ZPCard> bankSupportLinkAccount = new ArrayList<>();
+        for (ZPCard card : bankList) {
+            if (card == null || !card.isBankAccount()) {
+                continue;
+            }
+            bankSupportLinkAccount.add(card);
+        }
+        return bankSupportLinkAccount;
+    }
+
+    private void checkSupportVcbOnly(List<BankAccount> listLinkedAccount) {
+        if (Lists.isEmptyOrNull(listLinkedAccount) || !linkedVcbAccount(listLinkedAccount)) {
+            return;
+        }
+        getListBankSupport(new IGetCardSupportListListener() {
+            @Override
+            public void onProcess() {
+                Timber.d("Get card support list to check support vcb only on process");
+            }
+
+            @Override
+            public void onComplete(ArrayList<ZPCard> cardSupportList) {
+                hideLoadingView();
+                if (mView == null) {
+                    return;
+                }
+                List<ZPCard> banksSupportLinkAcc = getBanksSupportLinkAccount(cardSupportList);
+                if (!Lists.isEmptyOrNull(banksSupportLinkAcc)
+                        && banksSupportLinkAcc.size() == 1
+                        && ECardType.PVCB.toString().equals(banksSupportLinkAcc.get(0).getCardCode())) {
+                    mView.showSupportVcbOnly();
+                } else {
+                    mView.hideSupportVcbOnly();
+                }
+            }
+
+            @Override
+            public void onError(String pErrorMess) {
+                Timber.d("Get card support to check support vcb only error : message [%s]", pErrorMess);
+                hideLoadingView();
+            }
+
+            @Override
+            public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
+                hideLoadingView();
+            }
+        });
+    }
+
     private void onGetLinkedAccountSuccess(List<BankAccount> list) {
         hideLoadingView();
         mView.refreshLinkedAccount(list);
+
+        checkSupportVcbOnly(list);
     }
 
     void removeLinkAccount(BankAccount bankAccount) {

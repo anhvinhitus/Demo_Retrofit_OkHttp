@@ -37,4 +37,8 @@ interface ILinkAccountView extends ILoadDataView {
     boolean getUserVisibleHint();
 
     void showConfirmPayAfterLinkAcc();
+
+    void showSupportVcbOnly();
+
+    void hideSupportVcbOnly();
 }
