@@ -1,3 +1,10 @@
+Zalo Pay (Staging v2.10.0 - build 213) - Released on 2017-04-11
++ [SDK] Reload danh such thẻ đã lưu nếu xóa thẻ bị lỗi network
++ [SDK] Vcb send log khi load website vcb lỗi
++ [SDK] Fix bug VCB ban web không che
++ [App] Fix crash `Can not perform this action after onSaveInstanceState` on super.onBackPressed()
++ [SDK] Check retry capchart
+
 Zalo Pay (Staging v2.10.0 - build 212) - Released on 2017-04-10
 + [SDK] Force update level khi user level 1 chọn than toán dùng tài khoản đã lưu.
 + [SDK] Reload bank account on notify 112
