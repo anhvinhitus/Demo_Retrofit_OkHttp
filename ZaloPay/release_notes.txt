@@ -1,3 +1,8 @@
+Zalo Pay (Staging v2.10.0 - build 214) - Released on 2017-04-11
++ Fix không hiện icon vietcombank trên tài khoản đã liên kết sau khi upgrade app.
++ Update màn hình liên kết tài khoản ngân hàng, nếu đã có tài khoản liên kết Vietcombank thì disable nút Thêm liên kết tài khoản và hiển thị text phía dưới nút Thêm liên kết tài khoản.
++ Sửa cách hiển thị số điện thoại liên kết tài khoản VCB từ 0902167233 -> 090****233
+
 Zalo Pay (Staging v2.10.0 - build 213) - Released on 2017-04-11
 + [SDK] Reload danh such thẻ đã lưu nếu xóa thẻ bị lỗi network
 + [SDK] Vcb send log khi load website vcb lỗi
