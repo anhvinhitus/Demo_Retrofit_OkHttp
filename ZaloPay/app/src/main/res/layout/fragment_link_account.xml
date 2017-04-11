@@ -45,5 +45,17 @@
                 app:iconLeftPadding="@dimen/spacing.small"
                 app:iconLeftSize="@dimen/font_size_link_card_add" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_note_support_only_vcb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/button.margin.bottom"
+            android:layout_marginLeft="@dimen/spacing.medium"
+            android:layout_marginRight="@dimen/spacing.medium"
+            android:layout_marginTop="@dimen/spacing.small.t"
+            android:text="@string/link.account.support.only.vietcombank"
+            android:textColor="@color/txt_item_sub"
+            android:visibility="gone" />
     </LinearLayout>
 </FrameLayout>

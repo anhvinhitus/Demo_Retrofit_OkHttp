@@ -373,5 +373,6 @@
     <string name="qrcode.data.invalid">Mã QR không hợp lệ</string>
     <string name="receiver.invalid">Không tìm thấy tài khoản người nhận: %s</string>
     <string name="can.not.transfer.money.for.your.self">Không thể chuyển tiền tới tài khoản của chính bạn</string>
+    <string name="link.account.support.only.vietcombank">Hiện tại Zalo Pay chỉ hỗ trợ liên kết tài khoản Vietcombank. Liên kết tài khoản các ngân hàng khác sẽ được hỗ trợ trong thời gian tới.</string>
 </resources>
 
