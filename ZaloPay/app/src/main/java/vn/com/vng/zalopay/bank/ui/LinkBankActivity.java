@@ -2,14 +2,20 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import java.util.concurrent.Delayed;
+
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
@@ -32,6 +38,7 @@ public class LinkBankActivity extends BaseToolBarActivity
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private Bundle bundle;
 
     @Inject
     LinkBankPresenter mPresenter;
@@ -54,11 +61,12 @@ public class LinkBankActivity extends BaseToolBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = null;
+        bundle = null;
         if (getIntent() != null) {
             bundle = getIntent().getExtras();
         }
-        mPresenter.attachView(this);
+
+        mPresenter.attachView(LinkBankActivity.this);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new LinkBankPagerAdapter(getSupportFragmentManager(), bundle);
@@ -87,6 +95,15 @@ public class LinkBankActivity extends BaseToolBarActivity
     public void onPause() {
         mPresenter.pause();
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences.Editor editor = getSharedPreferences(Constants.PREF_LINK_BANK, MODE_PRIVATE).edit();
+        int curPosition = mViewPager.getCurrentItem();
+        editor.putInt(Constants.PREF_LINK_BANK_LAST_INDEX, curPosition);
+        editor.commit();
     }
 
     @Override
