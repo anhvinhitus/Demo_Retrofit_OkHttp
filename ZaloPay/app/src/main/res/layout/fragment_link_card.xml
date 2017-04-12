@@ -6,7 +6,7 @@
 
     <include
         layout="@layout/layout_link_card_empty"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/layoutContent"

@@ -97,7 +97,6 @@ class LinkBankPresenter implements IPresenter<ILinkBankView> {
             mView.initViewPager(lastPageIndex);
         }
 
-
 //        ObservableHelper.makeObservable(new Callable<LinkBankPagerIndex>() {
 //            @Override
 //            public LinkBankPagerIndex call() throws Exception {
