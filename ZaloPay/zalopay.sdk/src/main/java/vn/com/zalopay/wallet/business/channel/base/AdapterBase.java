@@ -58,8 +58,6 @@ import vn.com.zalopay.wallet.datasource.task.TrustSDKReportTask;
 import vn.com.zalopay.wallet.datasource.task.getstatus.GetStatus;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
-import vn.com.zalopay.wallet.listener.OnDetectCardListener;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
@@ -297,8 +295,10 @@ public abstract class AdapterBase {
         return getPageName().equals(PAGE_FAIL_NETWORKING);
     }
 
-    public void init(){
-        PaymentEventBus.shared().register(this);
+    public void autoFillOtp(String pSender, String pOtp) {
+    }
+
+    public void init() {
     }
 
     public void onFinish() {
@@ -309,7 +309,6 @@ public abstract class AdapterBase {
             mGuiProcessor = null;
         }
         dismissDialogFingerPrint();
-        PaymentEventBus.shared().unregister(this);
     }
 
     public void detectCard(String pCardNumber) {

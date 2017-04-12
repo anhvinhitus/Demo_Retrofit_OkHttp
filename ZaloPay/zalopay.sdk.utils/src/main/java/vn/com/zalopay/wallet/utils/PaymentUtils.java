@@ -5,7 +5,6 @@ import android.text.TextUtils;
 public class PaymentUtils {
     /***
      * clear duplicate whitespace
-     *
      * @param pCardName
      * @return
      */

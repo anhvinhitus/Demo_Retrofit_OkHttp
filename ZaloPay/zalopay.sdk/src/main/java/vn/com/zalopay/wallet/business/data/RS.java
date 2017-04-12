@@ -405,12 +405,6 @@ public class RS {
         public static final String zpw_string_vcb_wrong_times_allow = "zpw_string_vcb_wrong_times_allow";
         public static final String zpw_int_vcb_num_times_allow_login_wrong = "zpw_int_vcb_num_times_allow_login_wrong";
 
-        // auto-fill otp
-        public static final String zpw_string_vcb_otp_sender = "zpw_string_vcb_otp_sender";
-        public static final String zpw_int_vcb_otp_size = "zpw_int_vcb_otp_size";
-        public static final String zpw_string_vcb_otp_identify = "zpw_string_vcb_otp_identify";
-        public static final String zpw_string_vcb_otp_prefixOtp = "zpw_string_vcb_otp_prefixOtp";
-
         public static final String zpw_string_linkacc_captcha_hint = "zpw_string_linkacc_captcha_hint";
 
         public static final String zpw_string_special_bankscript_vcb_generate_captcha = "zpw_string_special_bankscript_vcb_generate_captcha";

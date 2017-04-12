@@ -7,8 +7,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,6 +17,7 @@ import java.util.TreeMap;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -32,6 +31,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
+import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -40,13 +40,11 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.message.SmsEventMessage;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
 import vn.com.zalopay.wallet.utils.LayoutUtils;
 import vn.com.zalopay.wallet.utils.NetworkUtil;
-import vn.com.zalopay.wallet.utils.OtpUtils;
+import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
@@ -401,27 +399,42 @@ public class AdapterLinkAcc extends AdapterBase {
         }
     }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void OnPaymentSmsEvent(SmsEventMessage pSmsEventMessage) {
-        if (((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase()) {
-            String sender = pSmsEventMessage.sender;
-            String body = pSmsEventMessage.message;
-            if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
-                autoFillOtp(sender, body);
-            }
+    @Override
+    public void autoFillOtp(String pSender, String pOtp) {
+        if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase()) {
+            Log.d(this, "user is not in otp phase, skip auto fill otp");
+            return;
         }
-        PaymentEventBus.shared().removeStickyEvent(SmsEventMessage.class);
-        Log.d(this, "OnPaymentSmsMessageEvent " + GsonUtils.toJsonString(pSmsEventMessage));
-    }
+        try {
+            List<DOtpReceiverPattern> patternList = ResourceManager.getInstance(null).getOtpReceiverPattern(GlobalData.getPaymentInfo().linkAccInfo.getBankCode());
+            if (patternList != null && patternList.size() > 0) {
+                for (DOtpReceiverPattern otpReceiverPattern : patternList) {
+                    Log.d(this, "checking pattern " + GsonUtils.toJsonString(otpReceiverPattern));
+                    if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
+                        int start = 0;
+                        pOtp = pOtp.trim();
+                        //read the begining of sms content
+                        if (otpReceiverPattern.begin) {
+                            start = otpReceiverPattern.start;
+                        }
+                        //read otp from the ending of content
+                        else {
+                            start = pOtp.length() - otpReceiverPattern.length - otpReceiverPattern.start;
+                        }
 
-    protected void autoFillOtp(String pSender, String pOtp) {
-        Log.d(pSender, pOtp);
-        if (pSender.equals(GlobalData.getStringResource(RS.string.zpw_string_vcb_otp_sender))) {
-            String otp = OtpUtils.getOtp(pOtp,
-                    GlobalData.getStringResource(RS.string.zpw_string_vcb_otp_identify),
-                    GlobalData.getStringResource(RS.string.zpw_string_vcb_otp_prefixOtp),
-                    Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_int_vcb_otp_size)));
-            linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
+                        String otp = pOtp.substring(start, start + otpReceiverPattern.length);
+                        //clear whitespace and - character
+                        otp = PaymentUtils.clearOTP(otp);
+                        if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
+                            continue;
+                        }
+                        linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
         }
     }
 

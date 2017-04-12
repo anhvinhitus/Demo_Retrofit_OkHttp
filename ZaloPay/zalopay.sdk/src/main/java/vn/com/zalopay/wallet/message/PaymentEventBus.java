@@ -37,11 +37,6 @@ public class PaymentEventBus<T> extends SingletonBase {
         Log.d(this, "registered plaforminfo loader to bus");
     }
 
-    public void register(AdapterBase adapterBase) {
-        getBus().register(adapterBase);
-        Log.d(this, "registered adapter to bus " + adapterBase.toString());
-    }
-
     public void unregister(BasePaymentActivity activity) {
         getBus().unregister(activity);
         Log.d(this, "unregistered activity out of bus");
@@ -50,11 +45,6 @@ public class PaymentEventBus<T> extends SingletonBase {
     public void unregister(PlatformInfoLoader gatewayLoader) {
         getBus().unregister(gatewayLoader);
         Log.d(this, "unregistered plaforminfo loader out of bus");
-    }
-
-    public void unregister(AdapterBase adapterBase) {
-        getBus().unregister(adapterBase);
-        Log.d(this, "unregistered adapter from bus " + adapterBase.toString());
     }
 
     public void post(T eventMessage) {

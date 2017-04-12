@@ -19,12 +19,12 @@ import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
 import vn.com.zalopay.wallet.business.behavior.view.PaymentPassword;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
-import vn.com.zalopay.wallet.business.channel.linkacc.LinkAccGuiProcessor;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
@@ -34,7 +34,6 @@ import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SmsEventMessage;
 import vn.com.zalopay.wallet.message.UnlockScreenEventMessage;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 
 public class PaymentChannelActivity extends BasePaymentActivity {
@@ -260,7 +259,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (!mIsStart && (getAdapter().isZaloPayFlow() || GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel())) {
             try {
                 getAdapter().moveToConfirmScreen();
-                Log.d(this,"moved to confirm screen");
+                Log.d(this, "moved to confirm screen");
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -749,5 +748,16 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
         }
         PaymentEventBus.shared().removeStickyEvent(UnlockScreenEventMessage.class);
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void OnPaymentSmsEvent(SmsEventMessage pSmsEventMessage) {
+        String sender = pSmsEventMessage.sender;
+        String body = pSmsEventMessage.message;
+        if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body) && getAdapter() != null) {
+            getAdapter().autoFillOtp(sender, body);
+        }
+        PaymentEventBus.shared().removeStickyEvent(SmsEventMessage.class);
+        Log.d(this, "on payment otp event " + GsonUtils.toJsonString(pSmsEventMessage));
     }
 }
