@@ -610,12 +610,12 @@ public class AdapterLinkAcc extends AdapterBase {
                                         linkAccFail(msgErr, mTransactionID);
                                         return null;
                                     }
+
                                 } else {
 
                                     ViewUtils.setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText("");
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
-
 
                                     new Handler().postDelayed(new Runnable() {
                                         @Override
@@ -730,7 +730,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Unregister Complete page
             if (page.equals(VCB_UNREGISTER_COMPLETE_PAGE)) {
-
+                Log.e(this, "Unregister Complete page.");
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
@@ -747,6 +747,9 @@ public class AdapterLinkAcc extends AdapterBase {
                         if (!TextUtils.isEmpty(response.messageTimeout)) {
                             // code here if js time out.
                             checkUnlinkAccountList();
+                        }else {
+                            showProgressBar(false, null);
+                            showMessage(null, response.message, TSnackbar.LENGTH_SHORT);
                         }
                     }
                 }
