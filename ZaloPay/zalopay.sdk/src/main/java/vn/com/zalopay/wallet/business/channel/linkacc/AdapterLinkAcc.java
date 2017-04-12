@@ -26,7 +26,6 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
@@ -737,7 +736,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Unregister Complete page
             if (page.equals(VCB_UNREGISTER_COMPLETE_PAGE)) {
-                Log.e(this, "Unregister Complete page.");
+                Log.d(this, "Unregister Complete page");
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
@@ -754,7 +753,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         if (!TextUtils.isEmpty(response.messageTimeout)) {
                             // code here if js time out.
                             checkUnlinkAccountList();
-                        }else {
+                        } else {
                             showProgressBar(false, null);
                             showMessage(null, response.message, TSnackbar.LENGTH_SHORT);
                         }
@@ -783,22 +782,26 @@ public class AdapterLinkAcc extends AdapterBase {
         }
         //event notification from app.
         if (pEventType == EEventType.ON_NOTIFY_BANKACCOUNT) {
+            if (isFinalScreen()) {
+                Log.d(this, "stopping reload bank account from notification because user in result screen");
+                return pAdditionParams;
+            }
             mNotification = (ZPWNotification) pAdditionParams[0];
 
             if (mNotification != null && mNotification.getType() == Constants.NOTIFY_TYPE.LINKACC) {
                 if (mHandler != null) {
                     mHandler.removeCallbacks(runnableWaitingNotifyLinkAcc);
-                    Log.e(this, "cancelling current notify after getting notify from app...");
+                    Log.d(this, "cancelling current notify after getting notify from app...");
                 }
                 runnableWaitingNotifyLinkAcc.run();
             } else if (mNotification != null && mNotification.getType() == Constants.NOTIFY_TYPE.UNLINKACC) {
                 if (mHandler != null) {
                     mHandler.removeCallbacks(runnableWaitingNotifyUnLinkAcc);
-                    Log.e(this, "cancelling current notify after getting notify from app...");
+                    Log.d(this, "cancelling current notify after getting notify from app...");
                 }
                 runnableWaitingNotifyUnLinkAcc.run();
             } else {
-                Log.e(this, "notification=" + mNotification != null ? GsonUtils.toJsonString(mNotification) : "null");
+                Log.d(this, "notification=" + mNotification != null ? GsonUtils.toJsonString(mNotification) : "null");
                 showProgressBar(false, null);
             }
         }
