@@ -1,3 +1,8 @@
+Zalo Pay (Staging v2.10.0 - build 215) - Released on 2017-04-12
++ [App] Điều chỉnh hiển thị tab Liên kết Thẻ/Tài khoản
++ [SDK] Show thông báo khi nhập sai capchart
++ [SDK] Fix lỗi show mã giao dịch màn hình kết quả
+
 Zalo Pay (Staging v2.10.0 - build 214) - Released on 2017-04-11
 + Fix không hiện icon vietcombank trên tài khoản đã liên kết sau khi upgrade app.
 + Update màn hình liên kết tài khoản ngân hàng, nếu đã có tài khoản liên kết Vietcombank thì disable nút Thêm liên kết tài khoản và hiển thị text phía dưới nút Thêm liên kết tài khoản.
