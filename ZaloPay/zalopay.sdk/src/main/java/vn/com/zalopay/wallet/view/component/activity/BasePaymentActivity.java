@@ -1192,6 +1192,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public void showPaymentSuccessContent(String pTransID) throws Exception {
         setText(R.id.zpw_textview_transaction, pTransID);
+        if (!TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0) {
+            setView(R.id.zpw_transaction_wrapper, true);
+            setText(R.id.zpw_textview_transaction, pTransID);
+        } else {
+            setView(R.id.zpw_transaction_wrapper, false);
+        }
+
         setView(R.id.zpw_pay_info_buttom_view, true);
         //show a different view for lixi.
         if (GlobalData.isRedPacketChannel()) {
@@ -1209,8 +1216,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().description)) {
                 setView(R.id.payment_description_label, true);
                 setText(R.id.payment_description_label, GlobalData.getPaymentInfo().description);
-            } else
+            } else {
                 setView(R.id.payment_description_label, false);
+            }
         } else if (GlobalData.isBankAccountLink()) { // show label for linkAcc
             if (getAdapter().getPageName().equals(AdapterBase.PAGE_LINKACC_SUCCESS)) {
                 setViewColor(R.id.zpw_payment_success_textview, getResources().getColor(R.color.text_color_primary));

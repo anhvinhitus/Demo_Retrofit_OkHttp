@@ -601,7 +601,6 @@ public class GlobalData {
                 ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).recycleActivity();
             }
             Log.e("getPaymentInfo", "payment info is null");
-            return null;
         }
         return GlobalData.mPaymentInfo;
     }

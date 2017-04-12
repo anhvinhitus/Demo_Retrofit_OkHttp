@@ -899,10 +899,6 @@ public class AdapterLinkAcc extends AdapterBase {
         return (result != null && !result.toString().isEmpty()) ? result.toString() : "null";
     }
 
-    public ELinkAccType getLinkerType() {
-        return GlobalData.getPaymentInfo().linkAccInfo.getLinkAccType();
-    }
-
     public ZPWNotification getNotification() {
         return mNotification;
     }
