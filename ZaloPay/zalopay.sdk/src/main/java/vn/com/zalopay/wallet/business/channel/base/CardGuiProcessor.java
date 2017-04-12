@@ -26,7 +26,6 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
-import vn.com.zalopay.wallet.business.channel.pager.interfaces.IPageChangeListener;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -63,7 +62,7 @@ import vn.com.zalopay.wallet.view.dialog.DialogManager;
 /***
  * card processor class
  */
-public abstract class CardGuiProcessor extends SingletonBase implements IPageChangeListener {
+public abstract class CardGuiProcessor extends SingletonBase implements ViewPager.OnPageChangeListener {
     public final String VERTICAL_SEPERATOR = " ";
     protected WeakReference<AdapterBase> mAdapter;
     protected CardSupportAdapter cardSupportGridViewAdapter;
@@ -871,10 +870,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements IPageCha
             String bankCode = getDetectedBankCode();
 
             //bidv card must paid by mapcard
-            if(!GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)
+            if (!GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)
                     && ((AdapterBankCard) getAdapter()).isBidvBankPayment()
-                    && ((AdapterBankCard) getAdapter()).preventPaymentBidvCard(getCardNumber()))
-            {
+                    && ((AdapterBankCard) getAdapter()).preventPaymentBidvCard(getCardNumber())) {
                 return;
             }
 
