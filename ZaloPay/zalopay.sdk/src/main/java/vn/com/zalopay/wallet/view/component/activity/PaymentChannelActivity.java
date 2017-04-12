@@ -413,8 +413,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
         //event exit button
         View exitView = findViewById(R.id.zpsdk_exit_ctl);
-        if (exitView != null)
+        if (exitView != null) {
             exitView.setOnClickListener(mOnClickExitListener);
+        }
     }
 
     public void renderByResource() {

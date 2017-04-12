@@ -1139,7 +1139,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setVisible(R.id.zpw_notransid_textview, false);
         } else {
             setVisible(R.id.zpw_transaction_wrapper, false);
-            setVisible(R.id.zpw_notransid_textview, true);
+            setVisible(R.id.zpw_notransid_textview, GlobalData.isUnLinkAccFlow() ? false: true);//hide all if unlink account
         }
 
         // set color for text in linkacc
@@ -1188,16 +1188,15 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     public void showPaymentSuccessContent(String pTransID) throws Exception {
-        setText(R.id.zpw_textview_transaction, pTransID);
         if (!TextUtils.isEmpty(pTransID) && Long.parseLong(pTransID) > 0) {
             setVisible(R.id.zpw_transaction_wrapper, true);
             setText(R.id.zpw_textview_transaction, pTransID);
+            setVisible(R.id.zpw_notransid_textview, false);
         } else {
             setVisible(R.id.zpw_transaction_wrapper, false);
+            setVisible(R.id.zpw_notransid_textview, GlobalData.isUnLinkAccFlow() ? false: true);//hide all if unlink account
         }
         setVisible(R.id.zpw_pay_info_buttom_view, true);
-
-        //show a different view for lixi.
         if (GlobalData.isRedPacketChannel()) {
             setVisible(R.id.zpw_transaction_wrapper, false);
             setVisible(R.id.zpw_textview_transaction_lixi_label, true);
