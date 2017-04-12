@@ -61,18 +61,12 @@ public class TaskGetCardSupportList extends TaskBase {
 
         String bankCodeVisa = GlobalData.getStringResource(RS.string.zpw_string_bankcode_visa);
         String bankCodeMaster = GlobalData.getStringResource(RS.string.zpw_string_bankcode_master);
-        String bankCodeJcb = GlobalData.getStringResource(RS.string.zpw_string_bankcode_jcb);
-
         if (!TextUtils.isEmpty(bankCodeVisa)) {
             ZPCard zpCard = new ZPCard(bankCodeVisa, getCardBitmapName(bankCodeVisa));
             cardArrayList.add(zpCard);
         }
         if (!TextUtils.isEmpty(bankCodeMaster)) {
             ZPCard zpCard = new ZPCard(bankCodeMaster, getCardBitmapName(bankCodeMaster));
-            cardArrayList.add(zpCard);
-        }
-        if (!TextUtils.isEmpty(bankCodeJcb)) {
-            ZPCard zpCard = new ZPCard(bankCodeJcb, getCardBitmapName(bankCodeJcb));
             cardArrayList.add(zpCard);
         }
 

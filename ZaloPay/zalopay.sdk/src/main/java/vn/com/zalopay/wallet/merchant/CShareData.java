@@ -278,6 +278,22 @@ public class CShareData extends SingletonBase {
     }
 
     /***
+     * 1 zalopay id map to 1 vietcombank's account only
+     * check this user has 1 vietcombank account is linked
+     *
+     * @param pUserId
+     * @return
+     */
+    public boolean hasVietcomBank(String pUserId) {
+        try {
+            return BankAccountHelper.hasBankAccountOnCache(pUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+        } catch (Exception ex) {
+            Log.e(this, ex);
+        }
+        return false;
+    }
+
+    /***
      * get map card list of user
      *
      * @param pUserID

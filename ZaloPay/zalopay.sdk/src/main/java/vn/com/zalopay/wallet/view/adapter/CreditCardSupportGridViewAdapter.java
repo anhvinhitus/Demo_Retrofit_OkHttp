@@ -12,13 +12,10 @@ public class CreditCardSupportGridViewAdapter extends CardSupportAdapter {
     public CreditCardSupportGridViewAdapter() {
         String bankCodeVisa = GlobalData.getStringResource(RS.string.zpw_string_bankcode_visa);
         String bankCodeMaster = GlobalData.getStringResource(RS.string.zpw_string_bankcode_master);
-        String bankCodeJcb = GlobalData.getStringResource(RS.string.zpw_string_bankcode_jcb);
 
         if (!TextUtils.isEmpty(bankCodeVisa))
             mBankCode.add(bankCodeVisa);
         if (!TextUtils.isEmpty(bankCodeMaster))
             mBankCode.add(bankCodeMaster);
-        if (!TextUtils.isEmpty(bankCodeJcb))
-            mBankCode.add(bankCodeJcb);
     }
 }
