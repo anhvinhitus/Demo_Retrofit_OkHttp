@@ -72,6 +72,7 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String PAGE_LINKACC_FAIL = RS.layout.screen__linkacc__fail;
     public static String PAGE_UNLINKACC_SUCCESS = RS.layout.screen__unlinkacc__success;
     public static String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
+    public String mUrl_Reload = null;
     protected ZPWNotification mNotification;
     protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
@@ -532,6 +533,9 @@ public class AdapterLinkAcc extends AdapterBase {
                             return null;
                         case WRONG_CAPTCHA:
                             getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
+                            if(!GlobalData.shouldNativeWebFlow()) {
+                                showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_SHORT);
+                            }
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().setText("");
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().requestFocus();
                             new Handler().postDelayed(new Runnable() {
@@ -661,7 +665,10 @@ public class AdapterLinkAcc extends AdapterBase {
 
                                 } else {
                                     getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
-                                    linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText(null);
+                                    if(!GlobalData.shouldNativeWebFlow()) {
+                                        showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_SHORT);
+                                    }
+                                    linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText("");
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
                                     new Handler().postDelayed(new Runnable() {
                                         @Override
