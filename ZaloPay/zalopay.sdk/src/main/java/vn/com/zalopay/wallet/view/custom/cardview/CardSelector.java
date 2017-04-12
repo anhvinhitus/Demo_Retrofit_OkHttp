@@ -137,10 +137,6 @@ public class CardSelector {
             //card = new CardSelector(R.drawable.card_color_round_rect_master, android.R.color.transparent, bitmap);
             cardColorText = new CardColorText(R.color.master_color_text_normal, R.color.master_color_text_highline, R.color.master_color_text_selected);
             card = new CardSelector(R.drawable.card_color_round_rect_master, android.R.color.transparent, R.drawable.ic_mastercard, cardColorText);
-        } else if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_jcb))) {
-            //card = new CardSelector(R.drawable.card_color_round_rect_green,  R.drawable.img_amex_center_face, bitmap);
-            cardColorText = new CardColorText(R.color.jcb_color_text_normal, R.color.jcb_color_text_highline, R.color.jcb_color_text_selected);
-            card = new CardSelector(R.drawable.card_color_round_rect_jcb, android.R.color.transparent, R.drawable.ic_jcb, cardColorText);
         }
 
         return card;
@@ -174,16 +170,11 @@ public class CardSelector {
         //credit card
         String bankCodeVisa = GlobalData.getStringResource(RS.string.zpw_string_bankcode_visa);
         String bankCodeMaster = GlobalData.getStringResource(RS.string.zpw_string_bankcode_master);
-        String bankCodeJcb = GlobalData.getStringResource(RS.string.zpw_string_bankcode_jcb);
-
         if (!TextUtils.isEmpty(bankCodeVisa)) {
             addCardSelectorToHashMap(bankCodeVisa);
         }
         if (!TextUtils.isEmpty(bankCodeMaster)) {
             addCardSelectorToHashMap(bankCodeMaster);
-        }
-        if (!TextUtils.isEmpty(bankCodeJcb)) {
-            addCardSelectorToHashMap(bankCodeJcb);
         }
     }
 

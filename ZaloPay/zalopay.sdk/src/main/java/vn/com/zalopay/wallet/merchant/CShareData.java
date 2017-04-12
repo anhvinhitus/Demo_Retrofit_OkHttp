@@ -279,8 +279,6 @@ public class CShareData extends SingletonBase {
         mMerchantTask.setTaskListener(pListener);
 
         mMerchantTask.onPrepareTaskComplete();
-        //check resource statis first
-        //checkStaticResource();
     }
 
     /***
