@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.bank.ui;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import java.util.List;
@@ -20,6 +22,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by longlv on 2/6/17.
@@ -69,23 +73,48 @@ class LinkBankPresenter implements IPresenter<ILinkBankView> {
      * Reference: https://gitlab.com/zalopay/bugs/issues/273
      */
     void changePageInContext() {
-        ObservableHelper.makeObservable(new Callable<LinkBankPagerIndex>() {
-            @Override
-            public LinkBankPagerIndex call() throws Exception {
-                List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-                List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
-                if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
-                    return LinkBankPagerIndex.LINK_CARD;
-                } else if (!Lists.isEmptyOrNull(mapCardList)) {
-                    return LinkBankPagerIndex.LINK_CARD;
-                } else if (!Lists.isEmptyOrNull(mapAccList)) {
-                    return LinkBankPagerIndex.LINK_ACCOUNT;
-                } else {
-                    return LinkBankPagerIndex.LINK_CARD;
-                }
+        SharedPreferences editor = mView.getContext().getSharedPreferences(Constants.PREF_LINK_BANK, MODE_PRIVATE);
+        int lastPageIndex = editor.getInt(Constants.PREF_LINK_BANK_LAST_INDEX, -1);
+        if (lastPageIndex < 0) {
+            List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+            List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+            LinkBankPagerIndex linkBankPagerIndex = null;
+
+            if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
+                linkBankPagerIndex = LinkBankPagerIndex.LINK_CARD;
+            } else if (!Lists.isEmptyOrNull(mapCardList)) {
+                linkBankPagerIndex = LinkBankPagerIndex.LINK_CARD;
+            } else if (!Lists.isEmptyOrNull(mapAccList)) {
+                linkBankPagerIndex = LinkBankPagerIndex.LINK_ACCOUNT;
+            } else {
+                linkBankPagerIndex = LinkBankPagerIndex.LINK_CARD;
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ChangePageInContextSubscriber());
+
+            if (mView != null && linkBankPagerIndex != null) {
+                mView.initViewPager(linkBankPagerIndex.getValue());
+            }
+        } else {
+            mView.initViewPager(lastPageIndex);
+        }
+
+
+//        ObservableHelper.makeObservable(new Callable<LinkBankPagerIndex>() {
+//            @Override
+//            public LinkBankPagerIndex call() throws Exception {
+//                List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+//                List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+//                if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
+//                    return LinkBankPagerIndex.LINK_CARD;
+//                } else if (!Lists.isEmptyOrNull(mapCardList)) {
+//                    return LinkBankPagerIndex.LINK_CARD;
+//                } else if (!Lists.isEmptyOrNull(mapAccList)) {
+//                    return LinkBankPagerIndex.LINK_ACCOUNT;
+//                } else {
+//                    return LinkBankPagerIndex.LINK_CARD;
+//                }
+//            }
+//        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new ChangePageInContextSubscriber());
 
     }
 
