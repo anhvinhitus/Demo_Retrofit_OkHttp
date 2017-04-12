@@ -55,11 +55,6 @@ public class AdapterZaloPay extends AdapterBase {
     }
 
     @Override
-    public void autoFillOtp(String pSender, String pOtp) {
-
-    }
-
-    @Override
     public void moveToConfirmScreen() {
 
         try {

@@ -104,16 +104,20 @@ public class AdapterBankCard extends AdapterBase {
 
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
-        try {
-            ArrayList<DOtpReceiverPattern> otpReceiverPatternList = getGuiProcessor().getCardFinder().getOtpReceiverPatternList();
+        Log.d(this, "sender " + pSender + " otp " + pOtp);
+        if (!((BankCardGuiProcessor) getGuiProcessor()).isBankOtpPhase()) {
+            Log.d(this, "user is not in otp phase, skip auto fill otp");
+            return;
+        }
 
-            if (otpReceiverPatternList != null && otpReceiverPatternList.size() > 0) {
-                for (DOtpReceiverPattern otpReceiverPattern : otpReceiverPatternList) {
+        try {
+            List<DOtpReceiverPattern> patternList = getGuiProcessor().getCardFinder().getOtpReceiverPatternList();
+            if (patternList != null && patternList.size() > 0) {
+                for (DOtpReceiverPattern otpReceiverPattern : patternList) {
                     if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
                         int start = 0;
                         pOtp = pOtp.trim();
-                        String sequenceValid = null;
-                        //read the begining of content
+                        //read the begining of sms content
                         if (otpReceiverPattern.begin) {
                             start = otpReceiverPattern.start;
                         }
@@ -124,8 +128,15 @@ public class AdapterBankCard extends AdapterBase {
 
                         String otp = pOtp.substring(start, start + otpReceiverPattern.length);
 
-                        //get string from start to space
+                        /***
+                         * vietinbank has 2 type of sms
+                         * 1. 6 number otp in the fist of content
+                         * 2. 6 number otp in the last of content
+                         * need extract splited otp by search space ' ' again
+                         * then compare #validOtp and length otp in config
+                         */
                         int index = -1;
+                        String validOtp = null;
                         if (otpReceiverPattern.begin) {
                             for (int i = otpReceiverPattern.start; i < pOtp.length(); i++) {
                                 if (pOtp.charAt(i) == ' ') {
@@ -134,7 +145,7 @@ public class AdapterBankCard extends AdapterBase {
                                 }
                             }
                             if (index != -1) {
-                                sequenceValid = pOtp.substring(otpReceiverPattern.start, index);
+                                validOtp = pOtp.substring(otpReceiverPattern.start, index);
                             }
                         } else {
                             for (int i = (pOtp.length() - otpReceiverPattern.start) - 1; i >= 0; i--) {
@@ -144,15 +155,15 @@ public class AdapterBankCard extends AdapterBase {
                                 }
                             }
                             if (index != -1) {
-                                sequenceValid = pOtp.substring(index, (pOtp.length() - otpReceiverPattern.start));
+                                validOtp = pOtp.substring(index, (pOtp.length() - otpReceiverPattern.start));
                             }
                         }
-                        if (!TextUtils.isEmpty(sequenceValid)) {
-                            sequenceValid = sequenceValid.trim();
+                        if (!TextUtils.isEmpty(validOtp)) {
+                            validOtp = validOtp.trim();
                         }
-                        Log.d(this, "===sequenceValid=" + sequenceValid);
+                        Log.d(this, "otp after split by space " + validOtp);
                         //check it whether length match length of otp in config
-                        if (!TextUtils.isEmpty(sequenceValid) && sequenceValid.length() != otpReceiverPattern.length) {
+                        if (!TextUtils.isEmpty(validOtp) && validOtp.length() != otpReceiverPattern.length) {
                             continue;
                         }
                         //clear whitespace and - character
@@ -235,9 +246,8 @@ public class AdapterBankCard extends AdapterBase {
             //render webview flow
             else if (pEventType == EEventType.ON_REQUIRE_RENDER) {
 
-                if(isFinalScreen())
-                {
-                    Log.d(this,"EEventType.ON_REQUIRE_RENDER but in final screen now");
+                if (isFinalScreen()) {
+                    Log.d(this, "EEventType.ON_REQUIRE_RENDER but in final screen now");
                     return null;
                 }
                 DAtmScriptOutput response = (DAtmScriptOutput) pAdditionParams[0];

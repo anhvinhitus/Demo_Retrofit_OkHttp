@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -29,6 +30,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
+import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -41,7 +43,7 @@ import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
 import vn.com.zalopay.wallet.utils.LayoutUtils;
 import vn.com.zalopay.wallet.utils.Log;
-import vn.com.zalopay.wallet.utils.OtpUtils;
+import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.utils.VcbUtils;
 import vn.com.zalopay.wallet.utils.ViewUtils;
@@ -60,8 +62,6 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_UNREGISTER_PAGE = "zpsdk_atm_vcb_unregister_page";
     public static String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
-    private int  COUNT_ERROR_PASS = 0;
-    private int  COUNT_ERROR_CAPCHART = 0;
     protected ZPWNotification mNotification;
     protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
@@ -80,7 +80,7 @@ public class AdapterLinkAcc extends AdapterBase {
             @Override
             public void onCheckExistBankAccountFail(String pMessage) {
                 showProgressBar(false, null);
-                Log.d(this, "runnableWaitingNotifyUnLinkAcc=="+pMessage);
+                Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
                 unlinkAccFail(pMessage, mTransactionID);
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
@@ -105,6 +105,8 @@ public class AdapterLinkAcc extends AdapterBase {
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
+    private int COUNT_ERROR_PASS = 0;
+    private int COUNT_ERROR_CAPCHART = 0;
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
     private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
@@ -230,10 +232,10 @@ public class AdapterLinkAcc extends AdapterBase {
         submitMapAccount.makeRequest();
     }
 
-    public void verifyServerAfterParseWebTimeout(){
-        if(GlobalData.isLinkAccFlow()){
+    public void verifyServerAfterParseWebTimeout() {
+        if (GlobalData.isLinkAccFlow()) {
             checkLinkAccountList();
-        }else if(GlobalData.isUnLinkAccFlow()){
+        } else if (GlobalData.isUnLinkAccFlow()) {
             checkUnlinkAccountList();
         }
     }
@@ -359,14 +361,43 @@ public class AdapterLinkAcc extends AdapterBase {
 
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
-        Log.d(pSender, pOtp);
-        if (pSender.equals(GlobalData.getStringResource(RS.string.zpw_string_vcb_otp_sender))) {
-            String otp = OtpUtils.getOtp(pOtp,
-                    GlobalData.getStringResource(RS.string.zpw_string_vcb_otp_identify),
-                    GlobalData.getStringResource(RS.string.zpw_string_vcb_otp_prefixOtp),
-                    Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_int_vcb_otp_size)));
-            linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
+        Log.d(this, "sender " + pSender + " otp " + pOtp);
+        if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase()) {
+            Log.d(this, "user is not in otp phase, skip auto fill otp");
+            return;
         }
+        try {
+            List<DOtpReceiverPattern> patternList = ResourceManager.getInstance(null).getOtpReceiverPattern(GlobalData.getPaymentInfo().linkAccInfo.getBankCode());
+            if (patternList != null && patternList.size() > 0) {
+                for (DOtpReceiverPattern otpReceiverPattern : patternList) {
+                    Log.d(this, "checking pattern " + GsonUtils.toJsonString(otpReceiverPattern));
+                    if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
+                        int start = 0;
+                        pOtp = pOtp.trim();
+                        //read the begining of sms content
+                        if (otpReceiverPattern.begin) {
+                            start = otpReceiverPattern.start;
+                        }
+                        //read otp from the ending of content
+                        else {
+                            start = pOtp.length() - otpReceiverPattern.length - otpReceiverPattern.start;
+                        }
+
+                        String otp = pOtp.substring(start, start + otpReceiverPattern.length);
+                        //clear whitespace and - character
+                        otp = PaymentUtils.clearOTP(otp);
+                        if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
+                            continue;
+                        }
+                        linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(this, e);
+        }
+
     }
 
     @Override
@@ -572,21 +603,18 @@ public class AdapterLinkAcc extends AdapterBase {
                                 showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_SHORT);
                                 break;
                             case WRONG_CAPTCHA:
-                                if(COUNT_ERROR_CAPCHART >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_capchart)))
-                                {
+                                if (COUNT_ERROR_CAPCHART >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_capchart))) {
                                     if (!TextUtils.isEmpty(response.message)) {
                                         showProgressBar(false, null); // close process dialog
                                         String msgErr = response.message;
                                         linkAccFail(msgErr, mTransactionID);
                                         return null;
                                     }
-                                }else
-                                {
+                                } else {
 
                                     ViewUtils.setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText("");
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
-
 
 
                                     new Handler().postDelayed(new Runnable() {
@@ -603,8 +631,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                 }
 
 
-
-                                COUNT_ERROR_CAPCHART ++ ;
+                                COUNT_ERROR_CAPCHART++;
                                 break;
                             default:
                                 // FAIL. Fail register
@@ -641,7 +668,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     ArrayList<String> walletList = HashMapUtils.getKeys(mHashMapWalletUnReg);
                     linkAccGuiProcessor.setWalletUnRegList(walletList);
                 }
-                Log.d(this,"unRegister==" +response.phoneNumUnRegList.size()+"=="+response.message);
+                Log.d(this, "unRegister==" + response.phoneNumUnRegList.size() + "==" + response.message);
                 // set phone number unregister
                 if (response.phoneNumUnRegList != null && response.phoneNumUnRegList.size() > 0) {
                     mHashMapPhoneNumUnReg = HashMapUtils.JsonArrayToHashMap(response.phoneNumUnRegList);
@@ -712,7 +739,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     checkUnlinkAccountList();
                 } else {
                     // FAIL. Fail register
-                    if (!TextUtils.isEmpty(response.message) &&  COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
                         showProgressBar(false, null);
                         String msgErr = response.message;
                         unlinkAccFail(msgErr, mTransactionID);
@@ -723,7 +750,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         }
                     }
                 }
-                COUNT_ERROR_PASS ++ ;
+                COUNT_ERROR_PASS++;
                 return null;
             }
             return null;

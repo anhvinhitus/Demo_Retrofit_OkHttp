@@ -20,7 +20,6 @@ import vn.com.zalopay.wallet.business.behavior.factory.AdapterFactory;
 import vn.com.zalopay.wallet.business.behavior.view.PaymentPassword;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
-import vn.com.zalopay.wallet.business.channel.linkacc.LinkAccGuiProcessor;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
@@ -289,7 +288,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             try {
                 getAdapter().moveToConfirmScreen();
                 mIsStart = true;
-                Log.d(this,"moved to confirm screen");
+                Log.d(this, "moved to confirm screen");
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -778,16 +777,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equalsIgnoreCase(Constants.FILTER_ACTION_BANK_SMS_RECEIVER)) {
-                if (getAdapter() != null) {
-                    if ((getAdapter().isATMFlow() && ((BankCardGuiProcessor) (getAdapter()).getGuiProcessor()).isBankOtpPhase())
-                            || (getAdapter().isLinkAccFlow()) && ((LinkAccGuiProcessor) (getAdapter()).getGuiProcessor()).isLinkAccOtpPhase()) {
-                        String sender = intent.getExtras().getString(Constants.BANK_SMS_RECEIVER_SENDER);
-                        String body = intent.getExtras().getString(Constants.BANK_SMS_RECEIVER_BODY);
-
-                        if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body)) {
-                            (getAdapter()).autoFillOtp(sender, body);
-                        }
-                    }
+                String sender = intent.getExtras().getString(Constants.BANK_SMS_RECEIVER_SENDER);
+                String body = intent.getExtras().getString(Constants.BANK_SMS_RECEIVER_BODY);
+                if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body) && getAdapter() != null) {
+                    getAdapter().autoFillOtp(sender, body);
                 }
             }
         }

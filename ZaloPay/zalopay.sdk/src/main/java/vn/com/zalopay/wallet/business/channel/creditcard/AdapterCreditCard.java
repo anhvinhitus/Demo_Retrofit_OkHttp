@@ -36,11 +36,6 @@ public class AdapterCreditCard extends AdapterBase {
     }
 
     @Override
-    public void autoFillOtp(String pSender, String pOtp) {
-
-    }
-
-    @Override
     public DPaymentChannel getChannelConfig() throws Exception {
         return GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getCreditCardChannelConfig(), DPaymentChannel.class);
     }

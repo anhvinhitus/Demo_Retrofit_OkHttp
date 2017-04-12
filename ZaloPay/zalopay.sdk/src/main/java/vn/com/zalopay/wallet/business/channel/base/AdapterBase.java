@@ -487,13 +487,8 @@ public abstract class AdapterBase {
         return true;
     }
 
-    /***
-     * auto fill otp
-     *
-     * @param pSender
-     * @param pOtp
-     */
-    public abstract void autoFillOtp(String pSender, String pOtp);
+    public void autoFillOtp(String pSender, String pOtp){
+    }
 
     protected boolean shouldCheckStatusAgain() {
         return mResponseStatus == null && ConnectionUtil.isOnline(GlobalData.getAppContext()) && hasTransId();

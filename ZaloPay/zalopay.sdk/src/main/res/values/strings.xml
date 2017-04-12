@@ -502,11 +502,6 @@
     <string name="zpw_string_vcb_account_in_server">Tài khoản vẫn còn trên hệ thống</string>
     <string name="zpw_string_vcb_account_notfound_in_server">Tài khoản chưa có trên hệ thống</string>
 
-    <string name="zpw_string_vcb_otp_sender">Vietcombank</string>
-    <string name="zpw_int_vcb_otp_size">10</string>
-    <string name="zpw_string_vcb_otp_identify">Dang ky su dung dich vu vi dien tu</string>
-    <string name="zpw_string_vcb_otp_prefixOtp">Ma giao dich cua Quy khach la\u0020</string>
-
     <string name="zpw_sdkreport_error_message">%1$s | %2$s | %3$s </string>
 
     <string name="zpw_warning_vietcombank_select_linkcard_payment">Bạn đã liên kết tài khoản của Vietcombank. Hãy chọn tài khoản liên kết để giao dịch.</string>
