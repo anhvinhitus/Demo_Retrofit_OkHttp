@@ -107,7 +107,23 @@ public class CShareDataWrapper {
     }
 
     public static void pushNotificationToSdk(int notificationType, String message) {
+        // TODO: 4/14/17 - longlv: waiting PaymentSDK update
         CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message));
+        /*CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message),
+                new IReloadMapInfoListener<DBankAccount>() {
+                    @Override
+                    public void onComplete(List<DBankAccount> pMapList) {
+                        Timber.d("PushNotificationToSdk onComplete, type [%s]", notificationType);
+                        EventBus.getDefault().post(new RefreshBankAccountEvent(pMapList));
+                    }
+
+                    @Override
+                    public void onError(String pErrorMess) {
+                        Timber.d("PushNotificationToSdk error, type [%s] message [%s]",
+                                notificationType, pErrorMess);
+                        EventBus.getDefault().post(new RefreshBankAccountEvent(pErrorMess));
+                    }
+                });*/
     }
 
     public static void notifyTransactionFinish(Object... pObject) {
