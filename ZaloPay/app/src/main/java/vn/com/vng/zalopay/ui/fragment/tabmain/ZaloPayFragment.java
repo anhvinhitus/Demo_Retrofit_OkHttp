@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -49,7 +50,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
  * Created by AnhHieu on 4/11/16.
  * Display PaymentApps in Grid layout
  */
-public class ZaloPayFragment extends RuntimePermissionFragment implements ListAppRecyclerAdapter.OnClickAppListener,
+public class ZaloPayFragment extends RuntimePermissionFragment implements
         IZaloPayView, SwipeRefreshLayout.OnRefreshListener, HomeAdapter.OnClickItemListener {
 
     public static ZaloPayFragment newInstance() {
@@ -64,16 +65,10 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @Inject
     ZaloPayPresenter presenter;
 
-    @BindView(R.id.home_top_layout)
-    View mTopLayout;
-
     private HomeAdapter mAdapter;
 
     @BindView(R.id.listView)
     RecyclerView listView;
-
-//    @BindView(R.id.tv_balance)
-//    TextView mBalanceView;
 
     @BindView(R.id.tvInternetConnection)
     TextView mTvInternetConnection;
@@ -138,63 +133,23 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
                 });
     }
 
-    // datnt 10.03.2017 deleted >>
-//    private MenuItem mShowShowMenuItem;
-    // datnt 10.03.2017 deleted <<
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // datnt 10.03.2017 deleted >>
-//        inflater.inflate(R.menu.menu_main_2, menu);
-//        MenuItem menuItem = menu.findItem(R.id.action_notifications);
-//        View view = menuItem.getActionView();
-//        view.setOnClickListener(new DebouncingOnClickListener() {
-//            @Override
-//            public void doClick(View v) {
-//                onOptionsItemSelected(menuItem);
-//            }
-//        });
-//
-//        mNotifyView = (RoundTextView) view.findViewById(R.id.tvNotificationCount);
-        // datnt 10.03.2017 deleted <<
-
-//        mShowShowMenuItem = menu.findItem(R.id.action_showshow);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // datnt 10.03.2017 deleted >>
-//        int id = item.getItemId();
-//        if (id == R.id.action_showshow) {
-//            presenter.startPaymentApp(getAppResource(Constants.SHOW_SHOW));
-//            return true;
-//        } else if (id == R.id.action_notifications) {
-//            navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
-//            ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
-//        }
-        // datnt 10.03.2017 deleted <<
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Timber.d("activity created");
         presenter.initialize();
     }
 
     @Override
     public void onResume() {
         presenter.resume();
-        mAdapter.resume();
+        mAdapter.pauseBanner();
         super.onResume();
     }
 
     @Override
     public void onPause() {
         presenter.pause();
-        mAdapter.pause();
+        mAdapter.resumeBanner();
         super.onPause();
     }
 
@@ -209,40 +164,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     public void onDestroy() {
         presenter.destroy();
         super.onDestroy();
-    }
-
-    @Override
-    public void onClickAppListener(AppResource app, int position) {
-
-    }
-
-//    @OnClick(R.id.btn_link_card)
-//    public void onBtnLinkCardClick() {
-//        navigator.startLinkCardActivity(getActivity());
-//        ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
-//    }
-//
-//    @OnClick(R.id.btn_scan_to_pay)
-//    public void onScanToPayClick() {
-//        getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
-//        getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
-//        getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
-//        navigator.startScanToPayActivity(getActivity());
-//    }
-//
-//    @OnClick(R.id.btn_balance)
-//    public void onClickBalance() {
-//        navigator.startBalanceManagementActivity(getContext());
-//    }
-
-    public void refreshIconFont() {
-        if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
-        }
-
-        if (mTopLayout != null) {
-            mTopLayout.invalidate();
-        }
     }
 
     @Override
@@ -266,37 +187,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     }
 
     @Override
-    public void enableShowShow(boolean isEnableShowShow) {
-        // datnt 10.03.2017 deleted >>
-//        if (mShowShowMenuItem != null) {
-//            mShowShowMenuItem.setVisible(isEnableShowShow);
-//        }
-        // datnt 10.03.2017 deleted <<
-    }
-
-    @Override
-    public void setBalance(long balance) {
-//        String _temp = CurrencyUtil.formatCurrency(balance, true);
-//
-//        SpannableString span = new SpannableString(_temp);
-//        span.setSpan(new RelativeSizeSpan(0.8f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
-//                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//
-//
-//        mBalanceView.setText(span);
-    }
-
-    @Override
     public void showError(String error) {
         showToast(error);
-    }
-
-    @Override
-    public void showErrorDialog(String error) {
-        if (TextUtils.isEmpty(error)) {
-            return;
-        }
-        super.showErrorDialog(error);
     }
 
     @Override
@@ -316,7 +208,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
 
     @Override
     protected void permissionGranted(int permissionRequestCode, boolean isGranted) {
-
     }
 
     @Override
@@ -359,7 +250,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
         mSwipeRefreshLayout.setRefreshing(val);
     }
 
-
     @Override
     public void onClickBanner(DBanner banner, int index) {
         presenter.launchBanner(banner, index);
@@ -368,6 +258,10 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements ListAp
     @Override
     public void onClickAppItem(AppResource app, int position) {
         presenter.launchApp(app, position);
+    }
 
+    @Override
+    public void setBalance(long balance) {
+        
     }
 }

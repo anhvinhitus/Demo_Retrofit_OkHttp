@@ -1,9 +1,7 @@
 package vn.com.vng.zalopay.ui.presenter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.SparseIntArray;
-import android.view.View;
 
 import com.zalopay.apploader.internal.ModuleName;
 
@@ -32,7 +30,7 @@ import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.network.NetworkHelper;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
@@ -40,6 +38,7 @@ import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.RefreshPlatformInfoEvent;
 import vn.com.vng.zalopay.event.SignOutEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
@@ -97,12 +96,10 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         if (!mEventBus.isRegistered(this)) {
             mEventBus.register(this);
         }
-        //  BusComponent.subscribe(APP_SUBJECT, this, new ComponentSubscriber(), AndroidSchedulers.mainThread());
     }
 
     private void unregisterEvent() {
         mEventBus.unregister(this);
-        // BusComponent.unregister(this);
     }
 
     @Override
@@ -122,11 +119,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     @Override
     public void pause() {
-    }
-
-    @Override
-    public void destroy() {
-        super.destroy();
     }
 
     @Override
@@ -281,7 +273,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             resources.remove(showhow);
         }
 
-        mView.enableShowShow(isEnableShowShow);
         mView.setAppItems(resources);
         mView.setRefreshing(false);
     }
@@ -409,15 +400,9 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onLoadIconFontSuccess(LoadIconFontEvent event) {
         mEventBus.removeStickyEvent(LoadIconFontEvent.class);
-        if (mView != null) {
+       /* if (mView != null) {
             mView.refreshIconFont();
-        }
-    }
-    private void ensureAppResourceAvailable() {
-        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
-        mSubscription.add(subscription);
+        }*/
     }
 
     private void getBanners() {
