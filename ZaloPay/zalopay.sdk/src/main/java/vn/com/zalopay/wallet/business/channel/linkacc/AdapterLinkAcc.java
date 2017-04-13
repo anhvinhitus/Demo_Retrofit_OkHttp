@@ -38,6 +38,7 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
+import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
 import vn.com.zalopay.wallet.utils.LayoutUtils;
@@ -195,6 +196,11 @@ public class AdapterLinkAcc extends AdapterBase {
     @Override
     public void onProcessPhrase() {
         Log.d(this, "on process phase " + mPageCode);
+        if(!ConnectionUtil.isOnline(GlobalData.getAppContext())){
+            getActivity().askToOpenSettingNetwoking();
+            Log.d(this,"networking is offline, stop processing click event");
+            return;
+        }
         if (isLoginStep() || isConfirmStep() || isOtpStep()) {
             mWebViewProcessor.hit();
             Log.d(this, "hit " + mPageCode);
