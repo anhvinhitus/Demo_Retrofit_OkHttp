@@ -175,13 +175,11 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     public void resume() {
         mUserSession.ensureNotifyConnect();
         GlobalEventHandlingService.Message message = globalEventHandlingService.popMessage();
-        if (mView != null) {
-            if (message != null) {
-                SweetAlertDialog alertDialog = new SweetAlertDialog(mView.getContext(), message.messageType, R.style.alert_dialog);
-                alertDialog.setConfirmText(message.title);
-                alertDialog.setContentText(message.content);
-                alertDialog.show();
-            }
+        if (message != null && mView != null) {
+            SweetAlertDialog alertDialog = new SweetAlertDialog(mView.getContext(), message.messageType, R.style.alert_dialog);
+            alertDialog.setConfirmText(message.title);
+            alertDialog.setContentText(message.content);
+            alertDialog.show();
         }
 
     }

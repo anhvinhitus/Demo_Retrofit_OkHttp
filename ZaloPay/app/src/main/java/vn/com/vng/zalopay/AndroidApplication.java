@@ -91,6 +91,7 @@ public class AndroidApplication extends Application {
         Fabric.with(this, new Crashlytics());
         initializeFresco();
 
+        initResource();
 
         initAppComponent();
 
@@ -108,16 +109,21 @@ public class AndroidApplication extends Application {
         Thread.setDefaultUncaughtExceptionHandler(appComponent.globalEventService());
 
         initConfig();
-        initIconFont();
+        initIconFont(false);
         initLocation();
 
+    }
+
+    private void initResource() {
+        Timber.d("initResource ");
+        ResourceHelper.initialize(this, BuildConfig.DEBUG);
     }
 
     private void initConfig() {
         ConfigUtil.initConfig(getAssets());
     }
 
-    public void initIconFont() {
+    public void initIconFont(boolean postEvent) {
         IconFontHelper.getInstance().initialize(getAssets(),
                 "fonts/" + getString(R.string.font_name),
                 "fonts/" + getString(R.string.json_font_info),
@@ -128,7 +134,9 @@ public class AndroidApplication extends Application {
                     Typeface.NORMAL,
                     IconFontHelper.getInstance().getCurrentTypeface());
         }
-        EventBus.getDefault().postSticky(new LoadIconFontEvent(IconFontHelper.getInstance().getCurrentIconFontType()));
+        if (postEvent) {
+            EventBus.getDefault().postSticky(new LoadIconFontEvent(IconFontHelper.getInstance().getCurrentIconFontType()));
+        }
     }
 
     private void initPaymentSdk() {

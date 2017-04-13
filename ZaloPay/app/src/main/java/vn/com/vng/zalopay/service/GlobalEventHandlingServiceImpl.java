@@ -127,6 +127,6 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
         }
 
         ConfigUtil.loadConfigFromResource();
-        AndroidApplication.instance().initIconFont();
+        AndroidApplication.instance().initIconFont(true);
     }
 }

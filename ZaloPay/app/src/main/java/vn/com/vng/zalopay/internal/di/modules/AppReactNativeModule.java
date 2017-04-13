@@ -39,28 +39,6 @@ import vn.com.vng.zalopay.react.iap.NetworkServiceImpl;
 @Module
 public class AppReactNativeModule {
 
-    @Provides
-    @Singleton
-    @Named("rootbundle")
-    String providesRootBundle(Context context) {
-
-        StringBuilder builder = new StringBuilder();
-        if (BuildConfig.DEBUG) {
-            builder.append(context.getCacheDir().getAbsolutePath());
-        } else {
-            builder.append(context.getFilesDir().getAbsolutePath());
-            builder.append(File.separator)
-                    .append(context.getPackageName());
-        }
-        builder.append(File.separator)
-                .append("bundles");
-
-        ResourceHelper.setBundleRootFolder(builder.toString());
-        Timber.d("rootbundle %s", ResourceHelper.getBundleRootFolder());
-
-        return ResourceHelper.getBundleRootFolder();
-    }
-
     @Singleton
     @Provides
     LocalResourceRepository providesLocalResourceRepository(@Named("daosession") DaoSession daoSession) {

@@ -73,7 +73,6 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
                 new DownloadAppResourceTaskQueue(RuntimeEnvironment.application, AbsDownloadService.class),
                 new OkHttpClient(),
                 true,
-                "rootBundle",
                 "2.4.0",
                 Arrays.asList(6L), appResourceList, excludeAppResourceList);
     }
