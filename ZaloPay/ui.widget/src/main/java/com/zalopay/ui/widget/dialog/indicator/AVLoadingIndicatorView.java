@@ -13,6 +13,9 @@ import android.view.View;
 
 import com.zalopay.ui.widget.R;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 
 public class AVLoadingIndicatorView extends View {
 
@@ -149,10 +152,8 @@ public class AVLoadingIndicatorView extends View {
         return (int) getContext().getResources().getDisplayMetrics().density * dpValue;
     }
 
-    @IntDef(flag = true,
-            value = {
-                    BallPulse,
-            })
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef(flag = true, value = {BallPulse})
     public @interface Indicator {
     }
 }
