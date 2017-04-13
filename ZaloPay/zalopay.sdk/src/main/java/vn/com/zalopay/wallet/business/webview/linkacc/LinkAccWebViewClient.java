@@ -240,6 +240,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         mWebPaymentBridge.loadUrl(pUrl);
         mIsFirst = true;
     }
+    public void reloadWebView(String pUrl) {
+        // new url load.
+        mWebPaymentBridge.loadUrl(pUrl);
+    }
 
     public void hit() {
         mAdapter.onEvent(EEventType.ON_HIT);
@@ -276,8 +280,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url)) {
                 Log.d("WebView", "$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
                 isMatched = true;
-
-
+                if(bankScript.pageCode.equals(mAdapter.VCB_REGISTER_PAGE))
+                {
+                    mAdapter.mUrlReload = url;
+                }
                 mCurrentUrl = url;
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;

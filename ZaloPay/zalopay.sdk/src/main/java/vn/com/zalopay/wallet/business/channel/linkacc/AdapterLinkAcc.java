@@ -62,6 +62,7 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_UNREGISTER_PAGE = "zpsdk_atm_vcb_unregister_page";
     public static String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
+    public String mUrlReload;
     protected ZPWNotification mNotification;
     protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
@@ -730,13 +731,13 @@ public class AdapterLinkAcc extends AdapterBase {
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 // set message
-                if (!TextUtils.isEmpty(response.messageResult)) {
+                if (!TextUtils.isEmpty(response.messageResult) ) {
                     // SUCCESS. Success register
                     // get & check bankaccount list
                     checkLinkAccountList();
                 } else {
                     // FAIL. Fail register
-                    if (!TextUtils.isEmpty(response.message)) {
+                    if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
                         showProgressBar(false, null); // close process dialog
                         String msgErr = response.message;
                         linkAccFail(msgErr, mTransactionID);
@@ -746,9 +747,19 @@ public class AdapterLinkAcc extends AdapterBase {
                             // get & check bankaccount list
                             checkLinkAccountList();
                         }
+                        else {
+                            showProgressBar(false, null);
+                            showMessage(null, response.message, TSnackbar.LENGTH_SHORT);
+                            if(!TextUtils.isEmpty(mUrlReload))
+                            {
+                                linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText("");
+                               mWebViewProcessor.reloadWebView(mUrlReload);
+                            }
+                        }
                     }
-                }
 
+                }
+                COUNT_ERROR_PASS ++;
                 return null;
             }
 
@@ -779,10 +790,10 @@ public class AdapterLinkAcc extends AdapterBase {
                         if (!TextUtils.isEmpty(response.messageTimeout)) {
                             // code here if js time out.
                             checkUnlinkAccountList();
-                        } else {
-                            showProgressBar(false, null);
-                            showMessage(null, response.message, TSnackbar.LENGTH_SHORT);
+                        } else if(!GlobalData.shouldNativeWebFlow()){
+                            showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                         }
+                        showProgressBar(false, null);
                     }
                 }
                 COUNT_ERROR_PASS++;
