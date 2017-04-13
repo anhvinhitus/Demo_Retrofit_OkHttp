@@ -149,4 +149,5 @@
     <dimen name="personal.menu_item_height">48dp</dimen>
     <dimen name="personal.info.height">62dp</dimen>
 
+    <dimen name="link.bank.between.layout">14dp</dimen>
 </resources>
