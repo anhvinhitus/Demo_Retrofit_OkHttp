@@ -5,20 +5,14 @@
     android:baselineAligned="false"
     android:orientation="vertical">
 
-    <FrameLayout
+    <TextView
+        android:id="@+id/tvInternetConnection"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/tvInternetConnection"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="top"
-            android:background="@color/background_snackbar"
-            android:gravity="center"
-            android:text="@string/exception.no.connection.tutorial"
-            android:textColor="@color/txt_title_check_internet" />
-    </FrameLayout>
+        android:layout_height="40dp"
+        android:layout_gravity="top"
+        android:background="@color/background_snackbar"
+        android:gravity="center"
+        android:text="@string/exception.no.connection.tutorial" />
 
     <com.zalopay.ui.widget.MultiSwipeRefreshLayout
         android:id="@+id/swipeRefresh"
