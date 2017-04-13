@@ -73,6 +73,9 @@
     <string name="zingpaysdk_alert_network_error">Vui lòng kiểm tra kết nối mạng và thử lại!</string>
     <string name="zpw_alert_networking_off_in_transaction">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại giao dịch</string>
 
+    <string name="sdk_alert_networking_off_in_link_account">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại liên kết tài khoản</string>
+    <string name="sdk_alert_networking_off_in_unlink_account">Mạng đã tắt. Vui lòng bật mạng và thực hiện lại hủy liên kết tài khoản</string>
+
     <string name="zpw_alert_network_error_getappinfo">Mạng không ổn định, không kiểm tra được thông tin.\nVui lòng kiểm tra lại kết nối mạng</string>
 
     <string name="zpw_alert_networking_error_check_status">Vui lòng xem lịch sử để kiểm tra trạng thái giao dịch</string>
@@ -496,7 +499,7 @@
     <string name="zpw_string_vcb_wrong_captcha">Mã kiểm tra không chính xác!</string>
     <string name="zpw_string_vcb_wrong_times_allow">Bạn còn %d lần để thử lại.</string>
     <string name="zpw_int_vcb_num_times_allow_login_wrong">3</string>
-    <string name="zpw_string_vcb_error_unidentified">Lỗi không xác định. </string>
+    <string name="zpw_string_vcb_error_unidentified">Có lỗi xảy ra trong quá trình xử lý với ngân hàng</string>
     <string name="zpw_string_vcb_phonenumber_notfound_register">Tài khoản đã được liên kết bởi người khác.</string>
     <string name="zpw_string_vcb_phonenumber_notfound_unregister">Không có số điện thoại để hủy liên kết.</string>
     <string name="zpw_string_vcb_error_captcha">Mã kiểm tra không đúng</string>

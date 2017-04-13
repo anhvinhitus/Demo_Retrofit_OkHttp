@@ -229,6 +229,8 @@ public class RS {
 
         public static final String zingpaysdk_alert_network_error = "zingpaysdk_alert_network_error";
         public static final String zpw_alert_networking_off_in_transaction = "zpw_alert_networking_off_in_transaction";
+        public static final String sdk_alert_networking_off_in_link_account = "sdk_alert_networking_off_in_link_account";
+        public static final String sdk_alert_networking_off_in_unlink_account = "sdk_alert_networking_off_in_unlink_account";
 
         public static final String zpw_alert_network_error_getappinfo = "zpw_alert_network_error_getappinfo";
         public static final String zingpaysdk_missing_app_user = "zingpaysdk_missing_app_user";

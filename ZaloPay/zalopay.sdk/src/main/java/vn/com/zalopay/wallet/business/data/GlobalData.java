@@ -243,6 +243,16 @@ public class GlobalData {
     }
     //endregion
 
+    public static String getOfflineMessage() {
+        if (GlobalData.isLinkAccFlow()) {
+            return GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account);
+        } else if (GlobalData.isUnLinkAccFlow()) {
+            return GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account);
+        } else {
+            return GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction);
+        }
+    }
+
     public static boolean updateResultNetworkingError(String pMessage) {
         boolean isOffNetworking;
 
@@ -254,8 +264,11 @@ public class GlobalData {
             isOffNetworking = false;
         }
 
-        if (isOffNetworking && (pMessage.equals(GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection))) ||
-                pMessage.equals(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction))) {
+        if (isOffNetworking &&
+                (pMessage.equals(GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)) ||
+                        pMessage.equals(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction)) ||
+                        pMessage.equals(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account)) ||
+                        pMessage.equals(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account)))) {
             setResultNoInternet();
         }
 
