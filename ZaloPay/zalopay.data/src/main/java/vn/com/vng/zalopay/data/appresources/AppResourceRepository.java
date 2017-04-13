@@ -53,7 +53,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                                  DownloadAppResourceTaskQueue taskQueue,
                                  OkHttpClient okHttpClient,
                                  boolean download,
-                                 String rootBundle,
                                  String appVersion,
                                  List<Long> excludeDownloadApps,
                                  List<AppResource> listDefaultApp,
@@ -62,7 +61,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         this.mDataMapper = mapper;
         this.mRequestService = requestService;
         this.mLocalStorage = localStorage;
-        this.mRootBundle = rootBundle;
+        this.mRootBundle = ResourceHelper.getBundleRootFolder();
         this.mRequestParameters = requestParameters;
         this.mTaskQueue = taskQueue;
         this.mOkHttpClient = okHttpClient;

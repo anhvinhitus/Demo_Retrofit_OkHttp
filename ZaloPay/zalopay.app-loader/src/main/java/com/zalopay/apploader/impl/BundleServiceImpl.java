@@ -97,7 +97,7 @@ public class BundleServiceImpl implements BundleService {
                 continue;
             }
 
-            Timber.i("Application %s need to be updated", eBundle.appname);
+            Timber.i("Application %s need to be updated", eBundle.appid);
             if (!updatePaymentAppLocalResource(eBundle)) {
                 continue;
             }

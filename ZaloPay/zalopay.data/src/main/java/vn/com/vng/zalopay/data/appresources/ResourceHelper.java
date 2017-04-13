@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.data.appresources;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -23,8 +22,20 @@ public class ResourceHelper {
         return mBundleRootFolder;
     }
 
-    public static void setBundleRootFolder(String bundleRootFolder) {
-        ResourceHelper.mBundleRootFolder = bundleRootFolder;
+    public static void initialize(Context context, boolean isDebug) {
+        StringBuilder builder = new StringBuilder();
+        if (isDebug) {
+            builder.append(context.getCacheDir().getAbsolutePath());
+        } else {
+            builder.append(context.getFilesDir().getAbsolutePath());
+            builder.append(File.separator)
+                    .append(context.getPackageName());
+        }
+        builder.append(File.separator)
+                .append("bundles");
+
+        mBundleRootFolder = builder.toString();
+        Timber.d("initialize rootbundle %s", mBundleRootFolder);
     }
 
     /**

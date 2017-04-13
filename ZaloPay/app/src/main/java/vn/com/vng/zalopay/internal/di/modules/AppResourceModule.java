@@ -57,13 +57,11 @@ public class AppResourceModule {
                                                              AppResourceStore.LocalStorage localStorage,
                                                              @Named("params_request_default") HashMap<String, String> paramsReq,
                                                              DownloadAppResourceTaskQueue taskQueue,
-                                                             OkHttpClient mOkHttpClient,
-                                                             @Named("rootbundle") String rootBundle) {
+                                                             OkHttpClient mOkHttpClient) {
 
         return new AppResourceRepository(mapper, requestService, localStorage,
                 paramsReq, taskQueue, mOkHttpClient,
                 BuildConfig.DOWNLOAD_APP_RESOURCE,
-                rootBundle,
                 BuildConfig.VERSION_NAME,
                 Collections.singletonList(PaymentAppConfig.Constants.RED_PACKET),
                 PaymentAppConfig.APP_RESOURCE_LIST,

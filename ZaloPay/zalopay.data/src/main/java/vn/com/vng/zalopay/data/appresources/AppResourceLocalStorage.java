@@ -122,8 +122,10 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     public void resetStateResource(long appId) {
         AppResourceEntity appResourceEntity = get(appId);
         if (appResourceEntity == null) {
+            Timber.d("ResetStateResource but find not found appId [%s]", appId);
             return;
         }
+        Timber.d("ResetStateResource appId [%s]", appId);
         appResourceEntity.checksum = "";
         appResourceEntity.stateDownload = 0;
         put(appResourceEntity);

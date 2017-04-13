@@ -417,7 +417,7 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
     }
 
     private void reloadIconFont() {
-        AndroidApplication.instance().initIconFont();
+        AndroidApplication.instance().initIconFont(true);
     }
 
     public void logout() {
