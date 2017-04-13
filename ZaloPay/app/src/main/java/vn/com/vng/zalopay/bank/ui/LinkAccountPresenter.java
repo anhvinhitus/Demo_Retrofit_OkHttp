@@ -31,6 +31,7 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
+import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
@@ -442,6 +443,13 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         Timber.d("Load icon font success.");
         if (event != null && mView != null) {
             mView.refreshLinkedAccount();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshBankAccount(RefreshBankAccountEvent event) {
+        if (!event.mIsError) {
+            getMapBankAccount();
         }
     }
 }

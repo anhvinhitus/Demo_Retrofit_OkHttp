@@ -1,8 +1,12 @@
 package vn.com.vng.zalopay.utils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
@@ -101,7 +105,21 @@ public class CShareDataWrapper {
     }
 
     public static void pushNotificationToSdk(int notificationType, String message) {
-        CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message));
+        CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message),
+                new IReloadMapInfoListener<DBankAccount>() {
+                    @Override
+                    public void onComplete(List<DBankAccount> pMapList) {
+                        Timber.d("PushNotificationToSdk onComplete, type [%s]", notificationType);
+                        EventBus.getDefault().post(new RefreshBankAccountEvent(pMapList));
+                    }
+
+                    @Override
+                    public void onError(String pErrorMess) {
+                        Timber.d("PushNotificationToSdk error, type [%s] message [%s]",
+                                notificationType, pErrorMess);
+                        EventBus.getDefault().post(new RefreshBankAccountEvent(pErrorMess));
+                    }
+                });
     }
 
     public static void notifyTransactionFinish(Object... pObject) {
