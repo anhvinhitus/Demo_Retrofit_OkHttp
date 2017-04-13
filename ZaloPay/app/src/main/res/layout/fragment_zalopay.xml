@@ -12,7 +12,8 @@
         android:layout_gravity="top"
         android:background="@color/background_snackbar"
         android:gravity="center"
-        android:text="@string/exception.no.connection.tutorial" />
+        android:text="@string/exception.no.connection.tutorial"
+        android:textColor="@color/txt_title_check_internet" />
 
     <com.zalopay.ui.widget.MultiSwipeRefreshLayout
         android:id="@+id/swipeRefresh"
