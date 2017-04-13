@@ -1,3 +1,12 @@
+Zalo Pay (Staging v2.10.0 - build 216) - Released on 2017-04-13
+- [App] Fix lỗi không load được icon font & config khi mới chạy app.
+- [App] Update màn hình Liên Kết Ngân Hàng.
+- [App] Reload danh sách ngân hàng đã liên kết tài khoản khi user liên kết bằng máy tính.
+- [SDK] Reload Webview khi nhập sai otp VCB
+- [SDK] Thêm message thông báo networking offline
+- [SDK] Xử lý nút Back khi liên kết tài khoản Vcb
+- [SDK] Xử lý usecase network in link/unlink flow
+
 Zalo Pay (Staging v2.10.0 - build 215) - Released on 2017-04-12
 + [App] Điều chỉnh hiển thị tab Liên kết Thẻ/Tài khoản
 + [SDK] Show thông báo khi nhập sai capchart
