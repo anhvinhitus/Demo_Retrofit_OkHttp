@@ -184,6 +184,8 @@ public class RS {
 
         public static final String zingpaysdk_confirm_quit = "zingpaysdk_confirm_quit";
         public static final String zingpaysdk_confirm_quit_rescan_qrcode = "zingpaysdk_confirm_quit_rescan_qrcode";
+        public static final String sdk_confirm_quit_link_account = "sdk_confirm_quit_link_account";
+        public static final String sdk_confirm_quit_unlink_account = "sdk_confirm_quit_unlink_account";
 
         public static final String zpw_confirm_quit_loadsite = "zpw_confirm_quit_loadsite";
 
@@ -412,7 +414,7 @@ public class RS {
         public static final String zpw_string_vcb_otp_identify = "zpw_string_vcb_otp_identify";
         public static final String zpw_string_vcb_otp_prefixOtp = "zpw_string_vcb_otp_prefixOtp";
         public static final String zpw_string_number_retry_password = "zpw_string_number_retry_password";
-        public static final String  zpw_string_number_retry_capchart = "zpw_string_number_retry_capchart";
+        public static final String zpw_string_number_retry_capchart = "zpw_string_number_retry_capchart";
         public static final String zpw_string_linkacc_captcha_hint = "zpw_string_linkacc_captcha_hint";
 
         public static final String zpw_string_special_bankscript_vcb_generate_captcha = "zpw_string_special_bankscript_vcb_generate_captcha";

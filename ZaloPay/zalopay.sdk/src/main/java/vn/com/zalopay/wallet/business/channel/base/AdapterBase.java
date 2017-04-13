@@ -244,6 +244,10 @@ public abstract class AdapterBase {
         return false;
     }
 
+    public boolean shouldFocusAfterCloseQuitDialog() {
+        return isCaptchaStep() || isOtpStep();
+    }
+
     public boolean isOtpStep() {
         return false;
     }
@@ -293,9 +297,6 @@ public abstract class AdapterBase {
 
     public boolean isFailNetworkingPharse() {
         return getPageName().equals(PAGE_FAIL_NETWORKING);
-    }
-
-    public void autoFillOtp(String pSender, String pOtp) {
     }
 
     public void init() {
@@ -477,6 +478,9 @@ public abstract class AdapterBase {
         });
 
         return true;
+    }
+
+    public void autoFillOtp(String pSender, String pOtp) {
     }
 
     protected boolean shouldCheckStatusAgain() {
@@ -820,14 +824,12 @@ public abstract class AdapterBase {
                          *  show time in success screen
                          *  need to update time again from success notification
                          */
-                        if(GlobalData.isTranferMoneyChannel() && pAdditionParams.length == 2)
-                        {
+                        if (GlobalData.isTranferMoneyChannel() && pAdditionParams.length == 2) {
                             try {
                                 Long paymentTime = Long.parseLong(pAdditionParams[1].toString());
                                 GlobalData.getPaymentInfo().appTime = paymentTime;
-                            }catch (Exception ex)
-                            {
-                                Log.e(this,ex);
+                            } catch (Exception ex) {
+                                Log.e(this, ex);
                             }
                         }
                         showTransactionSuccessView();
@@ -883,7 +885,8 @@ public abstract class AdapterBase {
     public void onClickSubmission() {
         try {
             mIsShowDialog = false;
-            mIsExitWithoutConfirm = true;
+            Log.d(this, "page name " + getPageName());
+            Log.d(this, "payment result " + GsonUtils.toJsonString(GlobalData.getPaymentResult()));
 
             SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
 

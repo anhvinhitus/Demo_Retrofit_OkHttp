@@ -761,7 +761,6 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
      */
     public void onFocusView() {
         mCurrentFocusView = getAdapter().getActivity().getCurrentFocus();
-
         if (mCurrentFocusView != null && mCurrentFocusView instanceof EditText) {
             SdkUtils.focusAndSoftKeyboard(getAdapter().getActivity(), (EditText) mCurrentFocusView);
 

@@ -410,11 +410,9 @@ public class AdapterBankCard extends AdapterBase {
 
     @Override
     public boolean isOtpStep() {
-
         if (getGuiProcessor() instanceof BankCardGuiProcessor) {
             return ((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing() || ((BankCardGuiProcessor) getGuiProcessor()).isOtpAuthenPayerProcessing();
         }
-
         return super.isOtpStep();
     }
 

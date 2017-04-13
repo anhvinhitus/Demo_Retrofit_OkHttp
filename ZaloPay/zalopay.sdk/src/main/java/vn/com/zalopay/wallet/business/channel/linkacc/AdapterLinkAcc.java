@@ -43,7 +43,6 @@ import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
 import vn.com.zalopay.wallet.utils.LayoutUtils;
-import vn.com.zalopay.wallet.utils.NetworkUtil;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
@@ -164,13 +163,23 @@ public class AdapterLinkAcc extends AdapterBase {
         mPageCode = SCREEN_LINK_ACC;
     }
 
+    public boolean exitWithoutConfirm() {
+        if (getPageName().equals(PAGE_SUCCESS) || getPageName().equals(PAGE_SUCCESS_SPECIAL)
+                || getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_FAIL_NETWORKING) || getPageName().equals(PAGE_FAIL_PROCESSING)
+                || getPageName().equals(PAGE_LINKACC_SUCCESS) || getPageName().equals(PAGE_LINKACC_SUCCESS)
+                || getPageName().equals(PAGE_UNLINKACC_SUCCESS) || getPageName().equals(PAGE_UNLINKACC_FAIL)) {
+            mIsExitWithoutConfirm = true;
+        }
+
+        return mIsExitWithoutConfirm;
+    }
+
     @Override
     public boolean isFinalStep() {
         boolean finalStep = super.isFinalStep();
         return finalStep && !getPageName().equals(SCREEN_LINK_ACC) && !getPageName().equals(PAGE_VCB_LOGIN) && !getPageName().equals(PAGE_VCB_CONFIRM_LINK)
                 && !getPageName().equals(PAGE_LINKACC_SUCCESS) && !getPageName().equals(PAGE_LINKACC_FAIL)
-                && !getPageName().equals(PAGE_UNLINKACC_SUCCESS) && !getPageName().equals(PAGE_UNLINKACC_FAIL)
-                && !getPageName().equals(PAGE_VCB_CONFIRM_UNLINK);
+                && !getPageName().equals(PAGE_UNLINKACC_SUCCESS) && !getPageName().equals(PAGE_UNLINKACC_FAIL);
     }
 
     @Override
@@ -225,20 +234,22 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     @Override
-    public void onProcessPhrase() {
+    public boolean shouldFocusAfterCloseQuitDialog() {
+        return isOtpStep() || isConfirmStep();
+    }
 
-        if (NetworkUtil.getConnectivityStatus(getActivity()) != NetworkUtil.TYPE_NOT_CONNECTED) {
-            if (mPageCode.equals(PAGE_VCB_LOGIN)
-                    || mPageCode.equals(PAGE_VCB_CONFIRM_LINK)
-                    || mPageCode.equals(PAGE_VCB_CONFIRM_UNLINK)
-                    || mPageCode.equals(PAGE_VCB_OTP)) {
-                mWebViewProcessor.hit();
-                // force virtual keyboard
-                forceVirtualKeyboard();
+    @Override
+    public void onProcessPhrase() {
+        Log.d(this, "on process phase " + mPageCode);
+        if (isLoginStep() || isConfirmStep() || isOtpStep()) {
+            mWebViewProcessor.hit();
+            Log.d(this, "hit " + mPageCode);
+            forceVirtualKeyboard(); // force virtual keyboard
+            Log.d(this, "mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
+            if (mIsExitWithoutConfirm) {
+                mIsExitWithoutConfirm = !(isLoginStep());//need to show dialog ask for exit if user go to confirm page-> otp page
             }
-        } else {
-            getActivity().askToOpenSettingNetwoking();
-            Log.d(this, "===network fail==");
+            Log.d(this, "mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
         }
 
 
@@ -251,6 +262,19 @@ public class AdapterLinkAcc extends AdapterBase {
             return String.valueOf(mConfig.pmcid);
         }
         return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount);
+    }
+
+    public boolean isLoginStep() {
+        return mPageCode.equals(PAGE_VCB_LOGIN);
+    }
+
+    public boolean isConfirmStep() {
+        return mPageCode.equals(PAGE_VCB_CONFIRM_LINK) || mPageCode.equals(PAGE_VCB_CONFIRM_UNLINK);
+    }
+
+    @Override
+    public boolean isOtpStep() {
+        return mPageCode.equals(PAGE_VCB_OTP);
     }
 
     public void forceVirtualKeyboard() {
@@ -533,7 +557,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             return null;
                         case WRONG_CAPTCHA:
                             getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
-                            if(!GlobalData.shouldNativeWebFlow()) {
+                            if (!GlobalData.shouldNativeWebFlow()) {
                                 showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_SHORT);
                             }
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().setText("");
@@ -558,13 +582,8 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
                 getActivity().renderByResource();
                 getActivity().enableSubmitBtn(false);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        forceVirtualKeyboard();//auto show keyboard
-                    }
-                }, 300);
-
+                //auto show keyboard
+                forceVirtualKeyboard();
                 return null;
             }
 
@@ -665,7 +684,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                                 } else {
                                     getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
-                                    if(!GlobalData.shouldNativeWebFlow()) {
+                                    if (!GlobalData.shouldNativeWebFlow()) {
                                         showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_SHORT);
                                     }
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText("");

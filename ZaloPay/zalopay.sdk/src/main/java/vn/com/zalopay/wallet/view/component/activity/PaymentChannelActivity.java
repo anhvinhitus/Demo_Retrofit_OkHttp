@@ -46,8 +46,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     private boolean mIsSwitching = false;
     private ActivityRendering mActivityRender;
     private View.OnClickListener mOnClickExitListener = v -> {
-        //shared status again if user back when payment in bank's site
-        if (getAdapter() != null && getAdapter().isCardFlowWeb() && (getAdapter().isCCFlow() || (getAdapter().isATMFlow() && ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).isOtpWebProcessing()))) {
+        //get status again if user back when payment in bank's site
+        if (getAdapter() != null && getAdapter().isCardFlowWeb() &&
+                (getAdapter().isCCFlow() || (getAdapter().isATMFlow() && ((BankCardGuiProcessor) getAdapter().getGuiProcessor()).isOtpWebProcessing()))) {
             confirmQuitOrGetStatus();
             return;
         }
@@ -59,28 +60,22 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             getAdapter().confirmExitTransWithoutPin();
             return;
         }
-
         if (getAdapter() != null && getAdapter().isZaloPayFlow() && getAdapter().isBalanceErrorPharse()) {
             GlobalData.setResultFail();
-
             if (GlobalData.getChannelActivityCallBack() != null) {
                 GlobalData.getChannelActivityCallBack().onBackAction();
             }
             finish();
             return;
         }
-
         if (getAdapter() != null && getAdapter().exitWithoutConfirm() && !isInProgress()) {
             if (getAdapter().isTransactionSuccess()) {
-
                 GlobalData.setResultSuccess();
-
                 if (GlobalData.getChannelActivityCallBack() != null) {
                     GlobalData.getChannelActivityCallBack().onExitAction();
                 }
             } else if (getAdapter().isTransactionFail()) {
                 GlobalData.setResultFail();
-
                 if (GlobalData.getChannelActivityCallBack() != null) {
                     GlobalData.getChannelActivityCallBack().onExitAction();
                 }
@@ -89,7 +84,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                     GlobalData.getChannelActivityCallBack().onBackAction();
                 }
             }
-
             finish();
             return;
         }
@@ -676,32 +670,35 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
         if (GlobalData.isPayChannel()) {
             message = GlobalData.getStringResource(RS.string.zingpaysdk_confirm_quit_rescan_qrcode);
+        } else if (GlobalData.isLinkAccFlow()) {
+            message = GlobalData.getStringResource(RS.string.sdk_confirm_quit_link_account);
+        } else if (GlobalData.isUnLinkAccFlow()) {
+            message = GlobalData.getStringResource(RS.string.sdk_confirm_quit_unlink_account);
         }
 
         showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
-                //focus on editting view again after user not quit
-                if (getAdapter() != null && getAdapter().isCardFlow()) {
-                    //auto show keyboard
-                    if (getAdapter().isCaptchaStep() || getAdapter().isOtpStep()) {
+                if (getAdapter() != null && (getAdapter().isCardFlow() || getAdapter().isLinkAccFlow())) {
+                    //focus on editting view again after user not quit
+                    Log.d(this, "should focus again after close dialog " + getAdapter().shouldFocusAfterCloseQuitDialog());
+                    if (getAdapter().shouldFocusAfterCloseQuitDialog()) {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-
                                 try {
-
                                     getAdapter().getGuiProcessor().onFocusView();
-                                    getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
-
+                                    if (!getAdapter().isLinkAccFlow()) {
+                                        getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();//scroll to last view
+                                    }
                                 } catch (Exception e) {
                                     Log.e(this, e);
                                 }
                             }
                         }, 300);
+                    } else {
+                        getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
                     }
-
-                    getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
                 }
             }
 

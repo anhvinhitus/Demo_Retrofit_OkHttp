@@ -51,6 +51,9 @@
     <string name="zingpaysdk_confirm_quit">Giao dịch sẽ bị hủy.\nBạn thật sự muốn thoát ?</string>
     <string name="zingpaysdk_confirm_quit_rescan_qrcode">Giao dịch sẽ bị hủy,cần tạo lại giao dịch từ đầu.\n Bạn thật sự muốn thoát ?</string>
 
+    <string name="sdk_confirm_quit_link_account">Bạn thật sự muốn thoát liên kết tài khoản ?</string>
+    <string name="sdk_confirm_quit_unlink_account">Bạn thật sự muốn thoát hủy liên kết tài khoản ?</string>
+
     <string name="zpw_confirm_quit_loadsite">Bạn đã chọn BACK nhưng giao dịch vẫn đang xử lý.\nBạn thật sự muốn thoát?</string>
 
     <string name="zpw_string_load_website_timeout_message">Dữ liệu chưa tải xong, vui lòng kiểm tra lại kết nối mạng!</string>
