@@ -1001,7 +1001,7 @@ public abstract class AdapterBase {
 
         if (isNeedCloseSDK && !ConnectionUtil.isOnline(GlobalData.getAppContext())) {
             SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
-            showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction));
+            showTransactionFailView(GlobalData.getOfflineMessage());
         }
     }
 
@@ -1554,7 +1554,9 @@ public abstract class AdapterBase {
         return pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_networking_error_check_status))
                 || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_order_not_submit))
                 || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error))
-                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction));
+                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_alert_networking_off_in_transaction))
+                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_link_account))
+                || pMessage.equalsIgnoreCase(GlobalData.getStringResource(RS.string.sdk_alert_networking_off_in_unlink_account));
     }
 
     public boolean isTransactionProcessing(String pMessage) {

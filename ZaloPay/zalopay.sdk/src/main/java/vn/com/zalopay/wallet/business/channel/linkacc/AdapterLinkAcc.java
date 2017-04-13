@@ -851,16 +851,19 @@ public class AdapterLinkAcc extends AdapterBase {
         if (pEventType == EEventType.ON_FAIL) {
             // fail.
             showProgressBar(false, null);
-            if (pAdditionParams == null || pAdditionParams.length == 0) {
-                // Error
-                return null;
+            //networking is offline
+            if(!ConnectionUtil.isOnline(GlobalData.getAppContext())){
+                showTransactionFailView(GlobalData.getOfflineMessage());
+                return pAdditionParams;
             }
 
+            if (pAdditionParams == null || pAdditionParams.length == 0) {
+                // Error
+                return pAdditionParams;
+            }
             StatusResponse response = (StatusResponse) pAdditionParams[0];
-
             // show message
             showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified), TSnackbar.LENGTH_SHORT);
-            return null;
         }
         //event notification from app.
         if (pEventType == EEventType.ON_NOTIFY_BANKACCOUNT) {
@@ -887,10 +890,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 showProgressBar(false, null);
             }
         }
-        return null;
+        return pAdditionParams;
     }
 
-    private void showMessage(String pTitle, String pMessage, int pDuration) {
+    protected void showMessage(String pTitle, String pMessage, int pDuration) {
         getActivity().showMessageSnackBar(getActivity().findViewById(R.id.zpsdk_header),
                 pTitle,
                 pMessage, null, pDuration, new onCloseSnackBar() {
