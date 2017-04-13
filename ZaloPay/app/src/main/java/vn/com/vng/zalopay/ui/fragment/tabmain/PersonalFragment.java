@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.ui.fragment.tabmain;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
@@ -18,24 +17,14 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
-import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.authentication.PaymentFingerPrint;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
-import vn.com.zalopay.wallet.business.entity.error.CError;
-import vn.com.zalopay.wallet.controller.SDKPayment;
 
 /**
  * Created by Duke on 3/27/17.
@@ -140,14 +129,20 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
     }
 
     @Override
-    public void setBankLinkText(int textCode) {
+    public void setBankLinkText(int linkBankStatus, int cardAmount, int accAmount) {
         if (tvBankLink != null) {
-            switch (textCode) {
+            switch (linkBankStatus) {
                 case 0:
                     tvBankLink.setText(getString(R.string.personal_link_now_text));
                     break;
-                default:
-                    tvBankLink.setText("1 thẻ");
+                case 1:
+                    tvBankLink.setText(cardAmount + " thẻ");
+                    break;
+                case 2:
+                    tvBankLink.setText(accAmount + " tài khoản");
+                    break;
+                case 3:
+                    tvBankLink.setText("Đã liên kết thẻ và tài khoản");
                     break;
             }
         }
@@ -174,9 +169,17 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
     @OnClick(R.id.tab_personal_tv_bank_link_now)
     public void onBankLinkNowClick() {
         showToast("Quick link bank clicked");
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
-        if(presenter.getLinkCardType() == 0) {
-            presenter.addLinkCard(getActivity());
+        switch (presenter.getLinkBankStatus()) {
+            case 0:
+                ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
+                presenter.addLinkCard(getActivity());
+                break;
+            case 1:
+            case 2:
+            case 3:
+                ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
+                navigator.startLinkCardActivity(getContext());
+                break;
         }
     }
 
@@ -226,13 +229,10 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
                 .setCancelText(getString(R.string.cancel))
                 .setTitleText(getString(R.string.confirm))
                 .setConfirmText(getString(R.string.txt_leftmenu_sigout))
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                        presenter.logout();
-//                        ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
-                    }
+                .setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> {
+                    sweetAlertDialog.dismiss();
+                    presenter.logout();
+//                    ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
                 })
                 .show();
     }

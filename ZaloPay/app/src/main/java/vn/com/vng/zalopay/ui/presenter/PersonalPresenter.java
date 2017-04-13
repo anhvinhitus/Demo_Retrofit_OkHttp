@@ -185,55 +185,45 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
 
     }
 
-    public int getLinkCardType() {
-        return linkCardType;
+    public int getLinkBankStatus() {
+        return linkBankStatus;
     }
 
-    public void setLinkCardType(int linkCardType) {
-        this.linkCardType = linkCardType;
+    public void setLinkBankStatus(int linkBankStatus) {
+        this.linkBankStatus = linkBankStatus;
     }
 
-    private int linkCardType;
+    private int linkBankStatus;
 
     private void checkLinkCardStatus() {
-        ObservableHelper.makeObservable(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-                List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
-                if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
-                    // Chưa có liên kết thẻ, liên kết tài khoản
-                    setLinkCardType(0);
-                    return 0;
-                } else if (!Lists.isEmptyOrNull(mapCardList)) {
-                    // Đã liên kết thẻ, chưa liên kết tài khoản
-                    return 1;
-                } else if (!Lists.isEmptyOrNull(mapAccList)) {
-                    // Chưa liên kết thẻ, đã liên kết tài khoản
-                    return 2;
-                } else {
-                    // Đã liên kết thẻ, liên kết tài khoản
-                    return 3;
-                }
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new PersonalPresenter.ChangeLinkBankTextSubscriber());
+        List<DMappedCard> mapCardList = getMapCardList();
+        List<DBankAccount> mapAccList = getMapAccList();
+
+        if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
+            // Chưa có liên kết thẻ, liên kết tài khoản
+            setLinkBankStatus(0);
+        } else if (!Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
+            // Đã liên kết thẻ, chưa liên kết tài khoản
+            setLinkBankStatus(1);
+        } else if (Lists.isEmptyOrNull(mapCardList) && !Lists.isEmptyOrNull(mapAccList)) {
+            // Chưa liên kết thẻ, đã liên kết tài khoản
+            setLinkBankStatus(2);
+        } else {
+            // Đã liên kết thẻ, liên kết tài khoản
+            setLinkBankStatus(3);
+        }
+
+        if (mView != null) {
+            mView.setBankLinkText(getLinkBankStatus(), mapCardList.size(), mapAccList.size());
+        }
     }
 
-    private class ChangeLinkBankTextSubscriber extends DefaultSubscriber<Integer> {
+    public List<DMappedCard> getMapCardList () {
+        return CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+    }
 
-        @Override
-        public void onNext(Integer textCode) {
-            if (mView != null && textCode != null) {
-                mView.setBankLinkText(textCode);
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.w(e, "Change page in context throw exception.");
-            super.onError(e);
-        }
+    public List<DBankAccount> getMapAccList() {
+        return CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
     }
 
     public void addLinkCard(Activity activity) {
