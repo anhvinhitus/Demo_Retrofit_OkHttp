@@ -180,9 +180,9 @@ public class CShareData extends SingletonBase {
     /***
      * push notify to SDK to finish flow vcb account link
      *
-     * @param pNotification
+     * @param pObjects (ZPWNotication, IReloadMapInfoListener)
      */
-    public void notifyLinkBankAccountFinish(ZPWNotification pNotification) {
+    public void notifyLinkBankAccountFinish(Object... pObjects) {
         //user in sdk now.
         boolean isUiThread = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                 Looper.getMainLooper().isCurrentThread() : Thread.currentThread() == Looper.getMainLooper().getThread();
@@ -190,10 +190,10 @@ public class CShareData extends SingletonBase {
             Log.d(this, "notification coming from background, switching thread to main thread...");
             new Handler(Looper.getMainLooper()).post(() -> {
                 //this runs on the UI thread
-                sendNotifyBankAccountFinishToAdapter(pNotification);
+                sendNotifyBankAccountFinishToAdapter(pObjects);
             });
         } else {
-            sendNotifyBankAccountFinishToAdapter(pNotification);
+            sendNotifyBankAccountFinishToAdapter(pObjects);
         }
     }
 
@@ -226,17 +226,12 @@ public class CShareData extends SingletonBase {
             ((PaymentChannelActivity) BasePaymentActivity.getPaymentChannelActivity()).getAdapter().onEvent(EEventType.ON_NOTIFY_BANKACCOUNT, pObject);
         } else {
             //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
-            BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
-                @Override
-                public void onCheckExistBankAccountComplete(boolean pExisted) {
-                    Log.d(this, "pExisted = " + pExisted);
-                }
-
-                @Override
-                public void onCheckExistBankAccountFail(String pMessage) {
-                    Log.e(this, pMessage);
-                }
-            }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
+            try {
+                IReloadMapInfoListener reloadMapInfoListener = (IReloadMapInfoListener) pObject[1];
+                BankAccountHelper.loadBankAccountList(true, reloadMapInfoListener);
+            }catch (Exception ex){
+                Log.e(this,ex);
+            }
         }
     }
 
