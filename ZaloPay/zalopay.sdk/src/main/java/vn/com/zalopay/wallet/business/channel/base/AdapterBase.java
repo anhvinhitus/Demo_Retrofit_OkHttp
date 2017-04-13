@@ -253,6 +253,10 @@ public abstract class AdapterBase {
         return false;
     }
 
+    public boolean shouldFocusAfterCloseQuitDialog(){
+        return isCaptchaStep() || isOtpStep();
+    }
+
     public boolean isOtpStep() {
         return false;
     }
@@ -462,8 +466,7 @@ public abstract class AdapterBase {
                 && !getPageName().equals(PAGE_FAIL) && !getPageName().equals(PAGE_FAIL_NETWORKING) && !getPageName().equals(PAGE_FAIL_PROCESSING)
                 && !getPageName().equals(SCREEN_LINK_ACC) && !getPageName().equals(PAGE_VCB_LOGIN) && !getPageName().equals(PAGE_VCB_CONFIRM_LINK)
                 && !getPageName().equals(PAGE_LINKACC_SUCCESS) && !getPageName().equals(PAGE_LINKACC_FAIL)
-                && !getPageName().equals(PAGE_UNLINKACC_SUCCESS) && !getPageName().equals(PAGE_UNLINKACC_FAIL)
-                &&!getPageName().equals(PAGE_VCB_CONFIRM_UNLINK))
+                && !getPageName().equals(PAGE_UNLINKACC_SUCCESS) && !getPageName().equals(PAGE_UNLINKACC_FAIL))
             return true;
         return false;
     }
@@ -487,7 +490,7 @@ public abstract class AdapterBase {
         return true;
     }
 
-    public void autoFillOtp(String pSender, String pOtp){
+    public void autoFillOtp(String pSender, String pOtp) {
     }
 
     protected boolean shouldCheckStatusAgain() {
@@ -901,7 +904,8 @@ public abstract class AdapterBase {
     public void onClickSubmission() {
         try {
             mIsShowDialog = false;
-            mIsExitWithoutConfirm = true;
+            Log.d(this,"page name "+ getPageName());
+            Log.d(this,"payment result " + GsonUtils.toJsonString(GlobalData.getPaymentResult()));
 
             ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
 
@@ -1081,7 +1085,9 @@ public abstract class AdapterBase {
 
     public boolean exitWithoutConfirm() {
         if (getPageName().equals(PAGE_SUCCESS) || getPageName().equals(PAGE_SUCCESS_SPECIAL)
-                || getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_FAIL_NETWORKING) || getPageName().equals(PAGE_FAIL_PROCESSING)) {
+                || getPageName().equals(PAGE_FAIL) || getPageName().equals(PAGE_FAIL_NETWORKING) || getPageName().equals(PAGE_FAIL_PROCESSING)
+                || getPageName().equals(PAGE_LINKACC_SUCCESS) || getPageName().equals(PAGE_LINKACC_SUCCESS)
+                || getPageName().equals(PAGE_UNLINKACC_SUCCESS) || getPageName().equals(PAGE_UNLINKACC_FAIL)) {
             mIsExitWithoutConfirm = true;
         }
 

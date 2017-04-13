@@ -61,7 +61,6 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_UNREGISTER_PAGE = "zpsdk_atm_vcb_unregister_page";
     public static String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
-    public String mUrl_Reload = null;
     protected ZPWNotification mNotification;
     protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
@@ -189,14 +188,22 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     @Override
+    public boolean shouldFocusAfterCloseQuitDialog() {
+        return isOtpStep() || isConfirmStep();
+    }
+
+    @Override
     public void onProcessPhrase() {
-        if (mPageCode.equals(PAGE_VCB_LOGIN)
-                || mPageCode.equals(PAGE_VCB_CONFIRM_LINK)
-                || mPageCode.equals(PAGE_VCB_CONFIRM_UNLINK)
-                || mPageCode.equals(PAGE_VCB_OTP)) {
+        Log.d(this, "on process phase " + mPageCode);
+        if (isLoginStep() || isConfirmStep() || isOtpStep()) {
             mWebViewProcessor.hit();
-            // force virtual keyboard
-            forceVirtualKeyboard();
+            Log.d(this, "hit " + mPageCode);
+            forceVirtualKeyboard(); // force virtual keyboard
+            Log.d(this,"mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
+            if (mIsExitWithoutConfirm) {
+                mIsExitWithoutConfirm = !(isLoginStep());//need to show dialog ask for exit if user go to confirm page-> otp page
+            }
+            Log.d(this,"mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
         }
     }
 
@@ -206,6 +213,19 @@ public class AdapterLinkAcc extends AdapterBase {
             return String.valueOf(mConfig.pmcid);
         }
         return GlobalData.getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_bankaccount);
+    }
+
+    public boolean isLoginStep() {
+        return mPageCode.equals(PAGE_VCB_LOGIN);
+    }
+
+    public boolean isConfirmStep() {
+        return mPageCode.equals(PAGE_VCB_CONFIRM_LINK) || mPageCode.equals(PAGE_VCB_CONFIRM_UNLINK);
+    }
+
+    @Override
+    public boolean isOtpStep() {
+        return mPageCode.equals(PAGE_VCB_OTP);
     }
 
     public void forceVirtualKeyboard() {
@@ -488,7 +508,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             return null;
                         case WRONG_CAPTCHA:
                             ViewUtils.setTextInputLayoutHintError(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
-                            if(!GlobalData.shouldNativeWebFlow()) {
+                            if (!GlobalData.shouldNativeWebFlow()) {
                                 showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_SHORT);
                             }
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().setText("");
@@ -514,7 +534,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 getActivity().renderByResource();
                 getActivity().enableSubmitBtn(false);
                 //auto show keyboard
-                new Handler().postDelayed(this::forceVirtualKeyboard, 300);
+                forceVirtualKeyboard();
 
                 return null;
             }
@@ -617,7 +637,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                 } else {
 
                                     ViewUtils.setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
-                                    if(!GlobalData.shouldNativeWebFlow()) {
+                                    if (!GlobalData.shouldNativeWebFlow()) {
                                         showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_SHORT);
                                     }
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText("");

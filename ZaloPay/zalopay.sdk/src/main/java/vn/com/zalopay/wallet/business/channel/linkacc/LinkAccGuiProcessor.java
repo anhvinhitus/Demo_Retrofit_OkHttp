@@ -191,11 +191,11 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         return mAdapter;
     }
 
-    public void setAccountTest()
-    {
+    public void setAccountTest() {
         loginHolder.edtUsername.setText("9044060a00");
         loginHolder.edtPassword.setText("minhly2910");
     }
+
     /***
      * Show showDialogSpinner view
      */
@@ -323,7 +323,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         });
         loginHolder.edtCaptchaTextInputLayout = (TextInputLayout) mAdapter.getActivity().findViewById(R.id.edt_login_captcha_textInputLayout);
         loginHolder.edtCaptcha.setGroupText(false);
-        loginHolder.srvScrollView = (ScrollView) mAdapter.getActivity().findViewById(R.id.srv_test_scrollview);
+        loginHolder.srvScrollView = (ScrollView) mAdapter.getActivity().findViewById(R.id.zpw_scrollview_container);
         loginHolder.edtCaptcha.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -789,6 +789,11 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     @Override
     protected void switchChannel() {
 
+    }
+
+    @Override
+    public void moveScrollViewToCurrentFocusView() {
+        new Handler().postDelayed(() -> loginHolder.srvScrollView.fullScroll(View.FOCUS_DOWN), 300);
     }
 
     @Override
