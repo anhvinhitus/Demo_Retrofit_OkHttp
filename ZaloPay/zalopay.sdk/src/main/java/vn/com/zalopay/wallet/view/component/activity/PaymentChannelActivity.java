@@ -314,9 +314,9 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
     protected void showKeyBoardOnFocusingViewAgain() {
         //focus on editting view again after user resume
-        if (getAdapter() != null && (getAdapter().isCardFlow())) {
+        if (getAdapter() != null && (getAdapter().isCardFlow() || getAdapter().isLinkAccFlow())) {
             //auto show keyboard
-            if (getAdapter().isInputStep() || getAdapter().isCaptchaStep() || getAdapter().isOtpStep()) {
+            if (getAdapter().isInputStep() || getAdapter().shouldFocusAfterCloseQuitDialog()) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -324,15 +324,17 @@ public class PaymentChannelActivity extends BasePaymentActivity {
                         try {
 
                             getAdapter().getGuiProcessor().onFocusView();
-                            getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
+                            if (!getAdapter().isLinkAccFlow()) {
+                                getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();//scroll to last view
+                            }
                         } catch (Exception e) {
                             Log.e(this, e);
                         }
                     }
                 }, 300);
+            } else {
+                getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
             }
-
-            getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
         }
     }
 
