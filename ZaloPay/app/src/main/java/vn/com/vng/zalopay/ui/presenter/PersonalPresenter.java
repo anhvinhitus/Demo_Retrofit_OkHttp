@@ -9,7 +9,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -17,12 +16,12 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
@@ -42,7 +41,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
 /**
- * Created by Duke on 3/27/17.
+ * Created by datnt10 on 3/27/17.
+ * Handle actions, events, ui for tab Cá Nhân
  */
 
 public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
@@ -189,41 +189,33 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         return linkBankStatus;
     }
 
-    public void setLinkBankStatus(int linkBankStatus) {
+    private void setLinkBankStatus(int linkBankStatus) {
         this.linkBankStatus = linkBankStatus;
     }
 
     private int linkBankStatus;
 
     private void checkLinkCardStatus() {
-        List<DMappedCard> mapCardList = getMapCardList();
-        List<DBankAccount> mapAccList = getMapAccList();
+        List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+        List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
 
         if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
             // Chưa có liên kết thẻ, liên kết tài khoản
-            setLinkBankStatus(0);
+            setLinkBankStatus(Constants.LINK_BANK_NONE);
         } else if (!Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
             // Đã liên kết thẻ, chưa liên kết tài khoản
-            setLinkBankStatus(1);
+            setLinkBankStatus(Constants.LINK_BANK_CARD_LINKED);
         } else if (Lists.isEmptyOrNull(mapCardList) && !Lists.isEmptyOrNull(mapAccList)) {
             // Chưa liên kết thẻ, đã liên kết tài khoản
-            setLinkBankStatus(2);
+            setLinkBankStatus(Constants.LINK_BANK_ACCOUNT_LINKED);
         } else {
             // Đã liên kết thẻ, liên kết tài khoản
-            setLinkBankStatus(3);
+            setLinkBankStatus(Constants.LINK_BANK_CARD_ACCOUNT_LINKED);
         }
 
         if (mView != null) {
             mView.setBankLinkText(getLinkBankStatus(), mapCardList.size(), mapAccList.size());
         }
-    }
-
-    public List<DMappedCard> getMapCardList () {
-        return CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-    }
-
-    public List<DBankAccount> getMapAccList() {
-        return CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
     }
 
     public void addLinkCard(Activity activity) {

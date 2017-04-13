@@ -85,6 +85,12 @@ public interface Constants {
     String PREF_LINK_BANK = "pref_link_bank";
     String PREF_LINK_BANK_LAST_INDEX = "pref_link_bank_last_index";
 
+    // Link bank status
+    int LINK_BANK_NONE = 0;
+    int LINK_BANK_CARD_LINKED = 1;
+    int LINK_BANK_ACCOUNT_LINKED = 2;
+    int LINK_BANK_CARD_ACCOUNT_LINKED = 3;
+
     interface MoneyTransfer {
         int STAGE_PRETRANSFER = 1;
         int STAGE_TRANSFER_SUCCEEDED = 2;

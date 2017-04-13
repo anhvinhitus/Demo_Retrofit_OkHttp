@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
@@ -132,16 +133,16 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
     public void setBankLinkText(int linkBankStatus, int cardAmount, int accAmount) {
         if (tvBankLink != null) {
             switch (linkBankStatus) {
-                case 0:
+                case Constants.LINK_BANK_NONE:
                     tvBankLink.setText(getString(R.string.personal_link_now_text));
                     break;
-                case 1:
+                case Constants.LINK_BANK_CARD_LINKED:
                     tvBankLink.setText(cardAmount + " thẻ");
                     break;
-                case 2:
+                case Constants.LINK_BANK_ACCOUNT_LINKED:
                     tvBankLink.setText(accAmount + " tài khoản");
                     break;
-                case 3:
+                case Constants.LINK_BANK_CARD_ACCOUNT_LINKED:
                     tvBankLink.setText("Đã liên kết thẻ và tài khoản");
                     break;
             }
@@ -170,13 +171,13 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
     public void onBankLinkNowClick() {
         showToast("Quick link bank clicked");
         switch (presenter.getLinkBankStatus()) {
-            case 0:
+            case Constants.LINK_BANK_NONE:
                 ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
                 presenter.addLinkCard(getActivity());
                 break;
-            case 1:
-            case 2:
-            case 3:
+            case Constants.LINK_BANK_CARD_LINKED:
+            case Constants.LINK_BANK_ACCOUNT_LINKED:
+            case Constants.LINK_BANK_CARD_ACCOUNT_LINKED:
                 ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK);
                 navigator.startLinkCardActivity(getContext());
                 break;
