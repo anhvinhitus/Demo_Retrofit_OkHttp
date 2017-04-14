@@ -2,24 +2,22 @@ package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.SparseIntArray;
-import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.zalopay.apploader.internal.ModuleName;
 import com.zalopay.ui.widget.MultiSwipeRefreshLayout;
 import com.zalopay.ui.widget.textview.RoundTextView;
 
@@ -29,19 +27,20 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.ui.adapter.HomeAdapter;
-import vn.com.vng.zalopay.ui.adapter.ListAppRecyclerAdapter;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
+import vn.com.vng.zalopay.ui.toolbar.HeaderView;
+import vn.com.vng.zalopay.ui.toolbar.HeaderViewTop;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
 import vn.com.vng.zalopay.ui.widget.ClickableSpanNoUnderline;
 import vn.com.vng.zalopay.ui.widget.HomeSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.AndroidUtils;
+import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
@@ -51,7 +50,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
  * Display PaymentApps in Grid layout
  */
 public class ZaloPayFragment extends RuntimePermissionFragment implements
-        IZaloPayView, SwipeRefreshLayout.OnRefreshListener, HomeAdapter.OnClickItemListener {
+        IZaloPayView, SwipeRefreshLayout.OnRefreshListener, HomeAdapter.OnClickItemListener, AppBarLayout.OnOffsetChangedListener {
 
     public static ZaloPayFragment newInstance() {
         Bundle args = new Bundle();
@@ -74,9 +73,33 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
     TextView mTvInternetConnection;
 
     /*
+    * Collapse toolbar view
+    * */
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
+    @BindView(R.id.appbar)
+    AppBarLayout appBarLayout;
+
+    @BindView(R.id.toolbar_header_view)
+    HeaderViewTop toolbarHeaderView;
+
+    @BindView(R.id.float_header_view)
+    HeaderView headerView;
+
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
+    @BindView(R.id.tv_balance)
+    TextView mBalanceView;
+
+    @BindView(R.id.tvNotificationCount)
+    RoundTextView mNotifyView;
+
+    /*
     * View của menu
     * */
-    RoundTextView mNotifyView;
+//    RoundTextView mNotifyView;
 
     @BindView(R.id.swipeRefresh)
     MultiSwipeRefreshLayout mSwipeRefreshLayout;
@@ -143,6 +166,8 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
     public void onResume() {
         presenter.resume();
         mAdapter.pauseBanner();
+        // Set collapsing behavior
+        appBarLayout.addOnOffsetChangedListener(this);
         super.onResume();
     }
 
@@ -150,6 +175,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
     public void onPause() {
         presenter.pause();
         mAdapter.resumeBanner();
+        appBarLayout.removeOnOffsetChangedListener(this);
         super.onPause();
     }
 
@@ -169,21 +195,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
     @Override
     public void setAppItems(List<AppResource> list) {
         mAdapter.setAppItems(list);
-    }
-
-    @Override
-    public void setTotalNotify(int total) {
-        if (mNotifyView != null) {
-            if (mNotifyView.isShown()) {
-                mNotifyView.show(total);
-            } else {
-                mNotifyView.show(total);
-                if (total > 0) {
-                    Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.simple_grow);
-                    mNotifyView.startAnimation(animation);
-                }
-            }
-        }
     }
 
     @Override
@@ -262,6 +273,97 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
 
     @Override
     public void setBalance(long balance) {
-        
+        String _temp = CurrencyUtil.formatCurrency(balance, true);
+
+        SpannableString span = new SpannableString(_temp);
+        span.setSpan(new RelativeSizeSpan(0.8f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        mBalanceView.setText(span);
+    }
+
+    @Override
+    public void setTotalNotify(int total) {
+        if (mNotifyView != null) {
+            if (mNotifyView.isShown()) {
+                mNotifyView.show(total);
+            } else {
+                mNotifyView.show(total);
+                if (total > 0) {
+                    Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.simple_grow);
+                    mNotifyView.startAnimation(animation);
+                }
+            }
+        }
+    }
+
+    /*
+    * Click event for main buttons on collapse toolbar
+    */
+    @OnClick(R.id.btn_link_card)
+    public void onBtnLinkCardClick() {
+        navigator.startLinkCardActivity(getActivity());
+        ZPAnalytics.trackEvent(ZPEvents.TAPMANAGECARDS);
+    }
+
+    @OnClick(R.id.btn_scan_to_pay)
+    public void onScanToPayClick() {
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.NFC_SCANNING);
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.SOUND_SCANNING);
+        getAppComponent().monitorTiming().startEvent(MonitorEvents.BLE_SCANNING);
+        navigator.startScanToPayActivity(getActivity());
+    }
+
+    @OnClick(R.id.btn_balance)
+    public void onClickBalance() {
+        navigator.startBalanceManagementActivity(getContext());
+    }
+
+    @OnClick(R.id.header_top_rl_notification)
+    public void onBtnNotificationClick() {
+        navigator.startMiniAppActivity(getActivity(), ModuleName.NOTIFICATIONS);
+        ZPAnalytics.trackEvent(ZPEvents.TAPNOTIFICATIONBUTTON);
+    }
+
+    @OnClick(R.id.header_view_top_qrcode)
+    public void onClickQRCodeOnToolbar() {
+        navigator.startScanToPayActivity(getActivity());
+    }
+
+    @OnClick(R.id.header_view_top_linkbank)
+    public void onClickLinkBankOnToolbar() {
+        navigator.startLinkCardActivity(getActivity());
+    }
+
+    @OnClick(R.id.header_view_top_search)
+    public void onClickSearchOnToolbar() {
+        showToast("Event search clicked!");
+    }
+
+    @OnClick(R.id.header_top_rl_search_view)
+    public void onClickSearchViewOnToolbar() {
+        showToast("Event search clicked");
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
+        boolean isCollaped;
+
+        headerView.setAlpha(1 - percentage);
+
+        if (percentage == 0f) {
+            isCollaped = true;
+            headerView.setVisibility(View.VISIBLE);
+        } else {
+            isCollaped = false;
+            if (percentage > 0.5f) {
+                headerView.setVisibility(View.GONE);
+            } else {
+                headerView.setVisibility(View.VISIBLE);
+            }
+        }
+        toolbarHeaderView.setHeaderTopStatus(isCollaped, percentage);
     }
 }

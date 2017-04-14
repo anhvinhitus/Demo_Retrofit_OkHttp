@@ -29,8 +29,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
-import vn.com.vng.zalopay.data.eventbus.NotificationChangeEvent;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
@@ -38,7 +36,6 @@ import vn.com.vng.zalopay.data.ws.model.NotificationData;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
@@ -85,7 +82,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
     private AppResourceStore.Repository mAppResourceRepository;
     private Context mApplicationContext;
     private Navigator mNavigator;
-    private PassportRepository passportRepository;
     private BalanceStore.Repository mBalanceRepository;
     private ZaloPayRepository mZaloPayRepository;
     private TransactionStore.Repository mTransactionRepository;
@@ -112,17 +108,14 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                   AppResourceStore.Repository appResourceRepository,
                   Context applicationContext,
                   Navigator navigator,
-                  PassportRepository passportRepository,
                   BalanceStore.Repository balanceRepository,
                   ZaloPayRepository zaloPayRepository,
                   TransactionStore.Repository transactionRepository,
-                  FriendStore.Repository friendRepository,
-                  NotificationStore.Repository notificationRepository) {
+                  FriendStore.Repository friendRepository) {
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
         this.mApplicationContext = applicationContext;
         this.mNavigator = navigator;
-        this.passportRepository = passportRepository;
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
@@ -189,9 +182,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                 alertDialog.setContentText(message.content);
                 alertDialog.show();
             }
-            mView.setBalance(mBalanceRepository.currentBalance());
-            getBalance();
-            getTotalNotification(0);
         }
 
     }
@@ -320,7 +310,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         if (!isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
-        getBalance();
         ensureAppResourceAvailable();
     }
 
@@ -385,22 +374,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         mEventBus.removeStickyEvent(LoadIconFontEvent.class);
         if (mView != null) {
             mView.refreshIconFont();
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNotificationChanged(NotificationChangeEvent event) {
-        if (mView != null) {
-            if (!event.isRead()) {
-                getTotalNotification(0);
-            }
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBalanceChanged(ChangeBalanceEvent event) {
-        if (mView != null) {
-            mView.setBalance(event.balance);
         }
     }
 
@@ -530,46 +503,5 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                     }
                 });
         mSubscription.add(subscriptionSuccess);
-    }
-
-    public void getBalance() {
-        Subscription subscription = mBalanceRepository.balance()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new HomePresenter.BalanceSubscriber());
-
-        mSubscription.add(subscription);
-    }
-
-    // Temporary class for getting balance value on collapse menu
-    private class BalanceSubscriber extends DefaultSubscriber<Long> {
-        @Override
-        public void onNext(Long aLong) {
-            HomePresenter.this.onGetBalanceSuccess(aLong);
-        }
-    }
-
-    private void onGetBalanceSuccess(Long balance) {
-        Timber.d("Get balance success : balance [%s]", balance);
-        mView.setBalance(balance);
-    }
-
-    public void getTotalNotification(long delay) {
-        Subscription subscription = mNotifyRepository.totalNotificationUnRead()
-                .delaySubscription(delay, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new HomePresenter.NotificationSubscriber());
-        mSubscription.add(subscription);
-    }
-
-    private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
-        @Override
-        public void onNext(Integer integer) {
-            Timber.d("Got total %s unread notification messages", integer);
-            if (mView != null) {
-                mView.setTotalNotify(integer);
-            }
-        }
     }
 }

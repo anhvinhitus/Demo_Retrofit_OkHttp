@@ -383,6 +383,7 @@
     <string name="can.not.transfer.money.for.your.self">Không thể chuyển tiền tới tài khoản của chính bạn</string>
 
     <!-- tab personal -->
+    <string name="personal_title">Cá nhân</string>
     <string name="personal_item_balance_title">Số Dư</string>
     <string name="personal_item_bank_title">Ngân Hàng</string>
     <string name="personal_item_bill_title">Hoá Đơn</string>
