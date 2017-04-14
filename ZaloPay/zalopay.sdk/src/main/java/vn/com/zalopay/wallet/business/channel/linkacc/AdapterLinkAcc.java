@@ -197,20 +197,21 @@ public class AdapterLinkAcc extends AdapterBase {
     @Override
     public void onProcessPhrase() {
         Log.d(this, "on process phase " + mPageCode);
-        if(!ConnectionUtil.isOnline(GlobalData.getAppContext())){
+        if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
             getActivity().askToOpenSettingNetwoking();
-            Log.d(this,"networking is offline, stop processing click event");
+            Log.d(this, "networking is offline, stop processing click event");
             return;
         }
         if (isLoginStep() || isConfirmStep() || isOtpStep()) {
             mWebViewProcessor.hit();
+            linkAccGuiProcessor.visibleProgress();
             Log.d(this, "hit " + mPageCode);
             forceVirtualKeyboard(); // force virtual keyboard
-            Log.d(this,"mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
+            Log.d(this, "mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
             if (mIsExitWithoutConfirm) {
                 mIsExitWithoutConfirm = !(isLoginStep());//need to show dialog ask for exit if user go to confirm page-> otp page
             }
-            Log.d(this,"mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
+            Log.d(this, "mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
         }
     }
 
@@ -441,6 +442,7 @@ public class AdapterLinkAcc extends AdapterBase {
         if (pEventType == EEventType.ON_HIT) {
             // show processDialog
             showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+            linkAccGuiProcessor.visibleProgress();
             return null;
         }
 
@@ -462,7 +464,7 @@ public class AdapterLinkAcc extends AdapterBase {
             // Login page
             if (page.equals(VCB_LOGIN_PAGE)) {
                 showProgressBar(false, null); // close process dialog
-
+                linkAccGuiProcessor.hideProgress();
                 //for testing
                 if (!SDKApplication.isReleaseBuild()) {
                     linkAccGuiProcessor.setAccountTest();
@@ -549,6 +551,7 @@ public class AdapterLinkAcc extends AdapterBase {
             // Register page
             if (page.equals(VCB_REGISTER_PAGE)) {
                 showProgressBar(false, null);
+                linkAccGuiProcessor.hideProgress();
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
@@ -692,6 +695,7 @@ public class AdapterLinkAcc extends AdapterBase {
             // Unregister page
             if (page.equals(VCB_UNREGISTER_PAGE)) {
                 showProgressBar(false, null);
+                linkAccGuiProcessor.hideProgress();
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
@@ -731,7 +735,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 // set message
-                if (!TextUtils.isEmpty(response.messageResult) ) {
+                if (!TextUtils.isEmpty(response.messageResult)) {
                     // SUCCESS. Success register
                     // get & check bankaccount list
                     checkLinkAccountList();
@@ -746,20 +750,18 @@ public class AdapterLinkAcc extends AdapterBase {
                             // code here if js time out.
                             // get & check bankaccount list
                             checkLinkAccountList();
-                        }
-                        else {
+                        } else {
                             showProgressBar(false, null);
                             showMessage(null, response.message, TSnackbar.LENGTH_SHORT);
-                            if(!TextUtils.isEmpty(mUrlReload))
-                            {
+                            if (!TextUtils.isEmpty(mUrlReload)) {
                                 linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText("");
-                               mWebViewProcessor.reloadWebView(mUrlReload);
+                                mWebViewProcessor.reloadWebView(mUrlReload);
                             }
                         }
                     }
 
                 }
-                COUNT_ERROR_PASS ++;
+                COUNT_ERROR_PASS++;
                 return null;
             }
 
@@ -790,7 +792,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         if (!TextUtils.isEmpty(response.messageTimeout)) {
                             // code here if js time out.
                             checkUnlinkAccountList();
-                        } else if(!GlobalData.shouldNativeWebFlow()){
+                        } else if (!GlobalData.shouldNativeWebFlow()) {
                             showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                         }
                         showProgressBar(false, null);
@@ -806,8 +808,9 @@ public class AdapterLinkAcc extends AdapterBase {
         if (pEventType == EEventType.ON_FAIL) {
             // fail.
             showProgressBar(false, null);
+            linkAccGuiProcessor.hideProgress();
             //networking is offline
-            if(!ConnectionUtil.isOnline(GlobalData.getAppContext())){
+            if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
                 showTransactionFailView(GlobalData.getOfflineMessage());
                 return pAdditionParams;
             }
