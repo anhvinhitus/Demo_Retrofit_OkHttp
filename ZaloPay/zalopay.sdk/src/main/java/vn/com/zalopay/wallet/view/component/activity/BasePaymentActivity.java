@@ -1264,7 +1264,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             {
                 paymentTime = new Date().getTime();
             }
-            setTransferDate(ZPWUtils.convertDateTime(paymentTime));
+            setTransferDate(SdkUtils.convertDateTime(paymentTime));
         } else {
             setVisible(R.id.payment_description_label, false);
             setVisible(R.id.price_linearlayout, false);
