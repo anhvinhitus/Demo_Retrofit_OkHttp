@@ -14,9 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.repository.LocalResourceRepository;
 
 /**
@@ -37,16 +39,16 @@ public class BundleServiceImpl implements BundleService {
     private Application mApplication;
     //    private String mCurrentInternalBundleFolder;
     private final LocalResourceRepository mLocalResourceRepository;
-    private final AppResourceStore.LocalStorage mAppResourceLocalStorage;
+    private final AppResourceStore.Repository mAppResourceRepository;
     private Gson mGson;
 
     public BundleServiceImpl(Application application,
                              LocalResourceRepository localResourceRepository,
-                             AppResourceStore.LocalStorage appResourceLocalStorage,
+                             AppResourceStore.Repository appResourceRepository,
                              Gson gson) {
         this.mApplication = application;
         this.mLocalResourceRepository = localResourceRepository;
-        this.mAppResourceLocalStorage = appResourceLocalStorage;
+        this.mAppResourceRepository = appResourceRepository;
         this.mGson = gson;
     }
 
@@ -103,7 +105,9 @@ public class BundleServiceImpl implements BundleService {
             }
 
             mLocalResourceRepository.setExternalResourceVersion(eBundle.appid, keyVersion);
-            mAppResourceLocalStorage.resetStateResource(eBundle.appid);
+            mAppResourceRepository.resetStateResource(eBundle.appid)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new DefaultSubscriber<>());
         }
 
         Timber.i("Update PaymentApp done");

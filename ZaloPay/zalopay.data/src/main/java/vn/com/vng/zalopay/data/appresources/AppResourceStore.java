@@ -72,6 +72,8 @@ public interface AppResourceStore {
         Observable<List<AppResource>> getListAppHomeLocal();
 
         Observable<List<AppResource>> fetchListAppHome();
+
+        Observable<Void> resetStateResource(long appId);
     }
 
 }
