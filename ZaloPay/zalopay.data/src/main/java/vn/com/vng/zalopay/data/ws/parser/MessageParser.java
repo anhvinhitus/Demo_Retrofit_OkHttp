@@ -103,12 +103,12 @@ public class MessageParser implements Parser {
                 return null;
             }
 
-            Timber.d("Result %s code %s", resp.result, resp.code);
+            Timber.d("Parse ResultAuth : usrid %s result %s code %s ", resp.usrid, resp.result, resp.code);
 
             AuthenticationData event = new AuthenticationData();
 
-            event.uid = resp.usrid;
-            event.result = resp.result;
+            event.uid = ConvertHelper.unboxValue(resp.usrid, 0);
+            event.result = ConvertHelper.unboxValue(resp.result, 0);
             event.code = ConvertHelper.unboxValue(resp.code, 0);
             event.msg = resp.msg;
 
