@@ -12,19 +12,15 @@ import com.zalopay.apploader.impl.BundleReactConfigRelease;
 import com.zalopay.apploader.impl.BundleServiceImpl;
 import com.zalopay.apploader.network.NetworkService;
 
-import java.io.File;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
-import timber.log.Timber;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.api.DynamicUrlService;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
-import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
 import vn.com.vng.zalopay.data.repository.LocalResourceRepositoryImpl;
 import vn.com.vng.zalopay.data.repository.datasource.LocalResourceFactory;
@@ -49,11 +45,12 @@ public class AppReactNativeModule {
     @Singleton
     BundleService providesBundleService(Context context,
                                         LocalResourceRepository localResourceRepository,
-                                        AppResourceStore.LocalStorage appResourceLocalStorage,
+                                        AppResourceStore.Repository appResourceRepository,
                                         Gson gson) {
         return new BundleServiceImpl((Application) context,
                 localResourceRepository,
-                appResourceLocalStorage, gson);
+                appResourceRepository,
+                gson);
     }
 
     @Provides

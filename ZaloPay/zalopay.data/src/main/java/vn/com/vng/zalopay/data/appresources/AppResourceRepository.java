@@ -354,6 +354,14 @@ public class AppResourceRepository implements AppResourceStore.Repository {
                 .map(this::listAppInHomePage);
     }
 
+    @Override
+    public Observable<Void> resetStateResource(long appId) {
+        return makeObservable(() -> {
+            mLocalStorage.resetStateResource(appId);
+            return null;
+        });
+    }
+
     private List<AppResource> listAppInHomePage(List<AppResource> resources) {
         ArrayList<AppResource> listApp = new ArrayList<>(mListDefaultApp);
         Timber.d("Get list app in home, app default size [%s]", listApp.size());
