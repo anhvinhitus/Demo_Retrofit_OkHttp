@@ -82,6 +82,7 @@ public class MessageParser implements Parser {
         if (pushMessage == null) {
             pushMessage = new PushMessage();
         }
+
         pushMessage.msgType = respMsg.msgtype;
 
         if (respMsg.mtaid != null) {
@@ -103,11 +104,20 @@ public class MessageParser implements Parser {
 
         try {
             AuthenticationData event = new AuthenticationData();
-            ResultAuth res = ResultAuth.ADAPTER.decode(data);
-            Timber.d("Result %s code %s", res.result, res.code);
-            event.code = res.code;
-            event.uid = res.usrid;
-            event.result = res.result;
+            ResultAuth resp = ResultAuth.ADAPTER.decode(data);
+            Timber.d("Result %s code %s", resp.result, resp.code);
+
+            event.uid = resp.usrid;
+            event.result = resp.result;
+
+            if (resp.code != null) {
+                event.code = resp.code;
+            }
+
+            if (resp.msg != null) {
+                event.msg = resp.msg;
+            }
+
             return event;
         } catch (Exception ex) {
             Timber.w(ex, "Error while handling authentication result");
@@ -119,18 +129,18 @@ public class MessageParser implements Parser {
     private PushMessage parseRecoveryResponse(ByteString data) {
         try {
             DataRecoveryResponse recoverMessage = DataRecoveryResponse.ADAPTER.decode(data);
-            Timber.d("parseRecoveryResponse: recoverMessage %s", recoverMessage.messages.size());
+            Timber.d("parse recovery : recover size [%s] starttime [%s]", recoverMessage.messages.size(), recoverMessage.starttime);
 
-            RecoveryPushMessage recoveryMessageEvent = new RecoveryPushMessage();
+            RecoveryPushMessage recoverMsg = new RecoveryPushMessage();
 
             for (RecoveryMessage message : recoverMessage.messages) {
                 NotificationData event = processRecoveryMessage(message);
                 if (event != null) {
-                    recoveryMessageEvent.addRecoveryMessage(event);
+                    recoverMsg.addRecoveryMessage(event);
                 }
             }
 
-            return recoveryMessageEvent;
+            return recoverMsg;
         } catch (Exception e) {
             Timber.w(e, "error parse recovery response");
         }
@@ -141,11 +151,15 @@ public class MessageParser implements Parser {
     private PushMessage parsePaymentRequestResponse(ByteString data) {
         try {
             PaymentResponseMessage message = PaymentResponseMessage.ADAPTER.decode(data);
-            Timber.d("parsePaymentRequestResponse: %s", message);
+
             PaymentRequestData event = new PaymentRequestData();
             event.requestid = message.requestid;
             event.resultcode = message.resultcode;
-            event.resultdata = message.resultdata;
+            Timber.d("Parse payment request response : requestid [%s] resultdata [%s]", message.requestid, message.resultdata);
+
+            if (message.resultdata != null) {
+                event.resultdata = message.resultdata;
+            }
 
             Timber.d("Response payment request <-- reqId: [%s], resultCode: [%s], resultData: [%s]", event.requestid, event.resultcode, event.resultdata);
             return event;
@@ -162,12 +176,11 @@ public class MessageParser implements Parser {
             return null;
         }
 
-
         PushMessage pushMessage = processPushMessage(message.data);
 
         if (pushMessage instanceof NotificationData) {
 
-            if (message.status == MessageStatus.DELETED.getValue()) {
+            if (MessageStatus.DELETED.getValue() == message.status) {
                 return null;
             }
 
@@ -181,11 +194,12 @@ public class MessageParser implements Parser {
                 pushMessage.mtuid = message.mtuid;
             }
 
-            notificationData.notificationstate = (Enums.NotificationState.UNREAD.getId());
-
-            if (message.status == MessageStatus.READ.getValue()) {
-                notificationData.notificationstate = (Enums.NotificationState.READ.getId());
+            if (MessageStatus.READ.getValue() == message.status) {
+                notificationData.notificationstate = Enums.NotificationState.READ.getId();
+            } else {
+                notificationData.notificationstate = Enums.NotificationState.UNREAD.getId();
             }
+
             return notificationData;
         }
 
@@ -193,14 +207,12 @@ public class MessageParser implements Parser {
     }
 
     private PushMessage parsePongMessage(ByteString data) {
-        if (data == null) {
-            return null;
-        }
-
         try {
             ServerPongData pongData = new ServerPongData();
-            MessageConnectionInfo res = MessageConnectionInfo.ADAPTER.decode(data);
-            pongData.clientData = res.embeddata;
+            MessageConnectionInfo resp = MessageConnectionInfo.ADAPTER.decode(data);
+            if (resp.embeddata != null) {
+                pongData.clientData = resp.embeddata;
+            }
             return pongData;
         } catch (IOException e) {
             Timber.w(e, "Invalid server pong data");
@@ -212,7 +224,6 @@ public class MessageParser implements Parser {
         Timber.d("Connection was kicked out by server");
         return null;
     }
-
 
     private PushMessage processPushMessage(ByteString data) {
 
@@ -236,6 +247,7 @@ public class MessageParser implements Parser {
         } catch (Exception ex) {
             Timber.w(ex, "Error in parsing notification message");
         }
+
         return null;
     }
 }

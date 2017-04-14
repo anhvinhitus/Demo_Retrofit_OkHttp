@@ -10,5 +10,6 @@ public class AuthenticationData extends PushMessage {
     public long uid;
     public int result;
     public int code;
+    public String msg;
 
 }

@@ -332,6 +332,11 @@ public class WsConnection extends Connection {
             }
 
             ServerMessageType messageType = ServerMessageType.fromValue(message.msgType);
+
+            if (messageType == null) {
+                return;
+            }
+
 //            Timber.v("message.msgType %s", messageType);
             boolean needFeedback = true;
 
