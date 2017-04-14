@@ -1275,9 +1275,8 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                         if (LayoutRoot.getViewTreeObserver().isAlive()) {
                             LayoutRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         }
-
-                        int test = LayoutScrollView.getHeight();
-                        LayoutScrollView.setMinimumHeight(test + mLocate);
+                        int mHeightScrollView = LayoutScrollView.getHeight();
+                        LayoutScrollView.setMinimumHeight(mHeightScrollView + mLocate);
                         Log.d(this,"addOnGlobalLayoutListener=="+LayoutScrollView.getHeight());
 
                     }
