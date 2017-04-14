@@ -109,7 +109,7 @@ public class AdapterLinkAcc extends AdapterBase {
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
     private int COUNT_ERROR_PASS = 0;
-    private int COUNT_ERROR_CAPCHART = 0;
+    private int COUNT_ERROR_CAPTCHA = 0;
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
     private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
@@ -638,7 +638,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                 showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_SHORT);
                                 break;
                             case WRONG_CAPTCHA:
-                                if (COUNT_ERROR_CAPCHART >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_capchart))) {
+                                if (COUNT_ERROR_CAPTCHA >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_captcha))) {
                                     if (!TextUtils.isEmpty(response.message)) {
                                         showProgressBar(false, null); // close process dialog
                                         String msgErr = response.message;
@@ -667,9 +667,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                         }
                                     }, 100);
                                 }
-
-
-                                COUNT_ERROR_CAPCHART++;
+                                COUNT_ERROR_CAPTCHA++;
                                 break;
                             default:
                                 // FAIL. Fail register
@@ -766,7 +764,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                                     @Override
                                     public void onOKevent() {
-                                        
+
                                     }
                                 });
                             }

@@ -422,7 +422,7 @@ public class RS {
 
         // auto-fill otp
         public static final String zpw_string_number_retry_password = "zpw_string_number_retry_password";
-        public static final String zpw_string_number_retry_capchart = "zpw_string_number_retry_capchart";
+        public static final String zpw_string_number_retry_captcha = "zpw_string_number_retry_captcha";
         public static final String zpw_string_linkacc_captcha_hint = "zpw_string_linkacc_captcha_hint";
         public static final String zpw_string_cancel_retry_otp  = "zpw_string_cancel_retry_otp";
 
