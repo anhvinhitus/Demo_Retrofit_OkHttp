@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import okio.ByteString;
 import timber.log.Timber;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.ws.model.AuthenticationData;
 import vn.com.vng.zalopay.data.ws.model.Event;
 import vn.com.vng.zalopay.data.ws.model.NotificationData;
@@ -55,12 +56,18 @@ public class MessageParser implements Parser {
     private Event processMessage(byte[] msg) throws Exception {
         DataResponseUser respMsg = DataResponseUser.ADAPTER.decode(msg);
 
-        Event event = null;
+        if (respMsg == null) {
+            Timber.w("Read an encoded message from bytes : DataResponseUser is NULL");
+            return null;
+        }
 
-        if (respMsg.data != null) {
+        Event event = null;
+        int msgtype = ConvertHelper.unboxValue(respMsg.msgtype, -1);
+
+        if (respMsg.data != null && msgtype >= 0) {
             ByteString data = respMsg.data;
 
-            ServerMessageType messageType = ServerMessageType.fromValue(respMsg.msgtype);
+            ServerMessageType messageType = ServerMessageType.fromValue(msgtype);
 
             if (messageType == ServerMessageType.KICK_OUT_USER) {
                 event = processKickOutUser(data);
@@ -79,19 +86,10 @@ public class MessageParser implements Parser {
             event = new Event();
         }
 
-        event.msgType = respMsg.msgtype;
-
-        if (respMsg.mtaid != null) {
-            event.mtaid = respMsg.mtaid;
-        }
-
-        if (respMsg.mtuid != null) {
-            event.mtuid = respMsg.mtuid;
-        }
-
-        if (respMsg.sourceid != null) {
-            event.sourceid = respMsg.sourceid;
-        }
+        event.msgType = msgtype;
+        event.mtaid = ConvertHelper.unboxValue(respMsg.mtaid, 0);
+        event.mtuid = ConvertHelper.unboxValue(respMsg.mtuid, 0);
+        event.sourceid = ConvertHelper.unboxValue(respMsg.sourceid, 0);
 
         return event;
     }
@@ -99,24 +97,20 @@ public class MessageParser implements Parser {
     private Event processAuthenticationLoginSuccess(ByteString data) {
 
         try {
-            AuthenticationData event = new AuthenticationData();
             ResultAuth resp = ResultAuth.ADAPTER.decode(data);
-
             if (resp == null) {
-                return event;
+                Timber.w("Read an encoded message from bytes : ResultAuth is NULL");
+                return null;
             }
 
             Timber.d("Result %s code %s", resp.result, resp.code);
-            event.result = resp.result;
+
+            AuthenticationData event = new AuthenticationData();
+
             event.uid = resp.usrid;
-
-            if (resp.code != null) {
-                event.code = resp.code;
-            }
-
-            if (resp.msg != null) {
-                event.msg = resp.msg;
-            }
+            event.result = resp.result;
+            event.code = ConvertHelper.unboxValue(resp.code, 0);
+            event.msg = resp.msg;
 
             return event;
         } catch (Exception ex) {
@@ -129,10 +123,13 @@ public class MessageParser implements Parser {
     private Event parseRecoveryResponse(ByteString data) {
         try {
             DataRecoveryResponse recoverMessage = DataRecoveryResponse.ADAPTER.decode(data);
+            if (recoverMessage == null) {
+                Timber.w("Read an encoded message from bytes : DataRecoveryResponse is NULL");
+                return null;
+            }
+            Timber.d("parse recovery : recover size [%s] starttime [%s]", recoverMessage.messages.size(), recoverMessage.starttime);
+
             RecoveryMessageEvent recoveryMsg = new RecoveryMessageEvent();
-
-            Timber.d("parseRecoveryResponse: recoverMessage %s", recoverMessage.messages.size());
-
             for (RecoveryMessage message : recoverMessage.messages) {
                 NotificationData event = processRecoveryMessage(message);
                 if (event != null) {
@@ -153,23 +150,23 @@ public class MessageParser implements Parser {
         Event event = processPushMessage(message.data);
 
         if (event instanceof NotificationData) {
-            NotificationData notificationData = (NotificationData) event;
 
-            if (message.mtaid != null) {
-                event.mtaid = message.mtaid;
+            if (message.status != null && message.status == MessageStatus.DELETED.getValue()) {
+                return null;
             }
 
-            if (message.mtuid != null) {
-                event.mtuid = message.mtuid;
-            }
+            NotificationData notify = (NotificationData) event;
 
-            if (MessageStatus.READ.getValue() == message.status) {
-                notificationData.notificationstate = Enums.NotificationState.READ.getId();
+            event.mtaid = ConvertHelper.unboxValue(message.mtaid, 0);
+            event.mtuid = ConvertHelper.unboxValue(message.mtuid, 0);
+
+            if (message.status != null && message.status == MessageStatus.READ.getValue()) {
+                notify.notificationstate = Enums.NotificationState.READ.getId();
             } else {
-                notificationData.notificationstate = Enums.NotificationState.UNREAD.getId();
+                notify.notificationstate = Enums.NotificationState.UNREAD.getId();
             }
 
-            return notificationData;
+            return notify;
         }
 
         return null;
@@ -177,13 +174,14 @@ public class MessageParser implements Parser {
 
     private Event parsePongMessage(ByteString data) {
         try {
-            ServerPongData pongData = new ServerPongData();
-            MessageConnectionInfo resp = MessageConnectionInfo.ADAPTER.decode(data);
-
-            if (resp.embeddata != null) {
-                pongData.clientData = resp.embeddata;
+            MessageConnectionInfo message = MessageConnectionInfo.ADAPTER.decode(data);
+            if (message == null) {
+                Timber.w("Read an encoded message from bytes : MessageConnectionInfo is NULL");
+                return null;
             }
 
+            ServerPongData pongData = new ServerPongData();
+            pongData.clientData = ConvertHelper.unboxValue(message.embeddata, 0);
             return pongData;
         } catch (IOException e) {
             Timber.w(e, "Invalid server pong data");
