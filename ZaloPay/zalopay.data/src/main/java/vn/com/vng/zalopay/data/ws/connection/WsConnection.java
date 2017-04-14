@@ -332,12 +332,18 @@ public class WsConnection extends Connection {
         public void onMessage(byte[] data) {
 //            Timber.v("onReceived: %s bytes", data.length);
             Event message = parser.parserMessage(data);
+
             if (message == null) {
                 return;
             }
 
             ServerMessageType messageType = ServerMessageType.fromValue(message.msgType);
-//            Timber.v("message.msgType %s", messageType);
+
+            if (messageType == null) {
+                return;
+            }
+
+            //            Timber.v("message.msgType %s", messageType);
             boolean needFeedback = true;
 
             if (messageType == ServerMessageType.AUTHEN_LOGIN_RESULT) {

@@ -61,6 +61,7 @@ public class MessageParser implements Parser {
             ByteString data = respMsg.data;
 
             ServerMessageType messageType = ServerMessageType.fromValue(respMsg.msgtype);
+
             if (messageType == ServerMessageType.KICK_OUT_USER) {
                 event = processKickOutUser(data);
             } else if (messageType == ServerMessageType.PUSH_NOTIFICATION) {
@@ -77,6 +78,7 @@ public class MessageParser implements Parser {
         if (event == null) {
             event = new Event();
         }
+
         event.msgType = respMsg.msgtype;
 
         if (respMsg.mtaid != null) {
@@ -98,11 +100,24 @@ public class MessageParser implements Parser {
 
         try {
             AuthenticationData event = new AuthenticationData();
-            ResultAuth res = ResultAuth.ADAPTER.decode(data);
-            Timber.d("Result %s code %s", res.result, res.code);
-            event.code = res.code;
-            event.uid = res.usrid;
-            event.result = res.result;
+            ResultAuth resp = ResultAuth.ADAPTER.decode(data);
+
+            if (resp == null) {
+                return event;
+            }
+
+            Timber.d("Result %s code %s", resp.result, resp.code);
+            event.result = resp.result;
+            event.uid = resp.usrid;
+
+            if (resp.code != null) {
+                event.code = resp.code;
+            }
+
+            if (resp.msg != null) {
+                event.msg = resp.msg;
+            }
+
             return event;
         } catch (Exception ex) {
             Timber.w(ex, "Error while handling authentication result");
@@ -114,18 +129,19 @@ public class MessageParser implements Parser {
     private Event parseRecoveryResponse(ByteString data) {
         try {
             DataRecoveryResponse recoverMessage = DataRecoveryResponse.ADAPTER.decode(data);
-            Timber.d("parseRecoveryResponse: recoverMessage %s", recoverMessage.messages.size());
+            RecoveryMessageEvent recoveryMsg = new RecoveryMessageEvent();
 
-            RecoveryMessageEvent recoveryMessageEvent = new RecoveryMessageEvent();
+            Timber.d("parseRecoveryResponse: recoverMessage %s", recoverMessage.messages.size());
 
             for (RecoveryMessage message : recoverMessage.messages) {
                 NotificationData event = processRecoveryMessage(message);
                 if (event != null) {
-                    recoveryMessageEvent.addRecoveryMessage(event);
+                    recoveryMsg.addRecoveryMessage(event);
                 }
             }
 
-            return recoveryMessageEvent;
+            return recoveryMsg;
+
         } catch (Exception e) {
             Timber.e(e, "error parse recovery response");
         }
@@ -135,7 +151,7 @@ public class MessageParser implements Parser {
 
     private NotificationData processRecoveryMessage(RecoveryMessage message) {
         Event event = processPushMessage(message.data);
-        Timber.d("event %s", event);
+
         if (event instanceof NotificationData) {
             NotificationData notificationData = (NotificationData) event;
 
@@ -147,11 +163,12 @@ public class MessageParser implements Parser {
                 event.mtuid = message.mtuid;
             }
 
-            notificationData.notificationstate = (Enums.NotificationState.UNREAD.getId());
-
-            if (message.status == MessageStatus.READ.getValue()) {
-                notificationData.notificationstate = (Enums.NotificationState.READ.getId());
+            if (MessageStatus.READ.getValue() == message.status) {
+                notificationData.notificationstate = Enums.NotificationState.READ.getId();
+            } else {
+                notificationData.notificationstate = Enums.NotificationState.UNREAD.getId();
             }
+
             return notificationData;
         }
 
@@ -159,14 +176,14 @@ public class MessageParser implements Parser {
     }
 
     private Event parsePongMessage(ByteString data) {
-        if (data == null) {
-            return null;
-        }
-
         try {
             ServerPongData pongData = new ServerPongData();
-            MessageConnectionInfo res = MessageConnectionInfo.ADAPTER.decode(data);
-            pongData.clientData = res.embeddata;
+            MessageConnectionInfo resp = MessageConnectionInfo.ADAPTER.decode(data);
+
+            if (resp.embeddata != null) {
+                pongData.clientData = resp.embeddata;
+            }
+
             return pongData;
         } catch (IOException e) {
             Timber.w(e, "Invalid server pong data");

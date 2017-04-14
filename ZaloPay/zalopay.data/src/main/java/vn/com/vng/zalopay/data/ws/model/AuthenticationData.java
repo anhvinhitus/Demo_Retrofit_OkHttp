@@ -8,5 +8,6 @@ public class AuthenticationData extends Event {
     public long uid;
     public int result;
     public int code;
+    public String msg;
 
 }
