@@ -36,7 +36,8 @@ public class ErrorMessageFactory {
         if (context == null) {
             return null;
         }
-        String message = context.getString(R.string.exception_generic);
+
+        String message = null;
 
         if (exception instanceof NetworkConnectionException) {
             message = context.getString(R.string.exception_no_connection);
@@ -64,6 +65,10 @@ public class ErrorMessageFactory {
             } else {
                 message = exception.getMessage();
             }
+        }
+
+        if (TextUtils.isEmpty(message)) {
+            message = context.getString(R.string.exception_generic);
         }
 
         return message;
