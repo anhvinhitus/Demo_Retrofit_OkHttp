@@ -69,9 +69,9 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
         }
 
         for (AppResourceGD appResource : list) {
-            appResource.stateDownload = 0L;
-            appResource.numRetry = 0L;
-            appResource.timeDownload = 0L;
+            appResource.downloadState = 0L;
+            appResource.retryNumber = 0L;
+            appResource.downloadTime = 0L;
         }
 
         getAppInfoDao().insertOrReplaceInTx(list);
@@ -86,7 +86,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
-    public void increaseStateDownload(long appId) {
+    public void increaseDownloadState(long appId) {
         Timber.d("Increase state download : appId [%s]", appId);
         List<AppResourceGD> appResourceGD = getAppInfoDao().queryBuilder()
                 .where(AppResourceGDDao.Properties.Appid.eq(appId))
@@ -97,11 +97,11 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
         for (AppResourceGD app : appResourceGD) {
 
-            long state = app.stateDownload == null ? 0 : app.stateDownload + 1;
-            app.stateDownload = state;
+            long state = app.downloadState == null ? 0 : app.downloadState + 1;
+            app.downloadState = state;
             if (state >= 2) {
-                app.numRetry = (0L);
-                app.timeDownload = (0L);
+                app.retryNumber = (0L);
+                app.downloadTime = (0L);
             }
         }
 
@@ -109,17 +109,17 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
     }
 
     @Override
-    public void resetStateDownload(long appId) {
+    public void resetDownloadState(long appId) {
         AppResourceEntity appResourceEntity = get(appId);
         if (appResourceEntity == null) {
             return;
         }
-        appResourceEntity.stateDownload = 0;
+        appResourceEntity.downloadState = 0;
         put(appResourceEntity);
     }
 
     @Override
-    public void resetStateResource(long appId) {
+    public void resetResourceState(long appId) {
         AppResourceEntity appResourceEntity = get(appId);
         if (appResourceEntity == null) {
             Timber.d("ResetStateResource but find not found appId [%s]", appId);
@@ -127,7 +127,7 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
         }
         Timber.d("ResetStateResource appId [%s]", appId);
         appResourceEntity.checksum = "";
-        appResourceEntity.stateDownload = 0;
+        appResourceEntity.downloadState = 0;
         put(appResourceEntity);
     }
 
@@ -142,8 +142,8 @@ public class AppResourceLocalStorage extends SqlBaseScopeImpl implements AppReso
 
         long currentTime = System.currentTimeMillis() / 1000;
         for (AppResourceGD app : appResourceGD) {
-            app.numRetry = (app.numRetry + 1);
-            app.timeDownload = (currentTime);
+            app.retryNumber = (app.retryNumber + 1);
+            app.downloadTime = (currentTime);
         }
 
         getAppInfoDao().insertOrReplaceInTx(appResourceGD);

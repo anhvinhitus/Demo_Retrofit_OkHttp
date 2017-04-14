@@ -34,7 +34,7 @@ final class DownloadAppResourceTask {
             isDownloadSuccess = download(downloadInfo);
 
             if (isDownloadSuccess) {
-                mLocalStorage.increaseStateDownload(downloadInfo.appid);
+                mLocalStorage.increaseDownloadState(downloadInfo.appid);
                 Timber.d("Download app %s success", downloadInfo.appid);
             } else {
                 mLocalStorage.increaseRetryDownload(downloadInfo.appid);

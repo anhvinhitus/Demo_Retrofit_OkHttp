@@ -44,13 +44,13 @@ public class AppResourceEntity {
     public long sortOrder;
 
     @Expose(deserialize = false, serialize = false)
-    public long stateDownload;
+    public long downloadState;
 
     @Expose(deserialize = false, serialize = false)
-    public long timeDownload;
+    public long downloadTime;
 
     @Expose(deserialize = false, serialize = false)
-    public long numRetry;
+    public long retryNumber;
 
     @Override
     public boolean equals(Object o) {

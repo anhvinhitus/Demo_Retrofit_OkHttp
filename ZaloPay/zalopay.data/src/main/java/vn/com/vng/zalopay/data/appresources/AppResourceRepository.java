@@ -138,25 +138,25 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         if (app == null) {
             return;
         }
-        app.numRetry = 0;
-        app.timeDownload = 0L;
-        app.stateDownload = 0;
+        app.retryNumber = 0;
+        app.downloadTime = 0L;
+        app.downloadState = 0;
 
         mLocalStorage.put(app);
     }
 
     private boolean shouldDownloadApp(AppResourceEntity app) {
-        Timber.d("Should download app : appId [%s] stateDownload [%s]", app.appid, app.stateDownload);
+        Timber.d("Should download app : appId [%s] downloadState [%s]", app.appid, app.downloadState);
         if (mListAppIdExcludeDownload != null && mListAppIdExcludeDownload.contains(app.appid)) {
             Timber.d("Exclude download : appId [%s]", app.appid);
             return false;
         }
-        if (app.stateDownload < DownloadState.STATE_SUCCESS) {
-            if (app.numRetry < RETRY_DOWNLOAD_NUMBER) {
+        if (app.downloadState < DownloadState.STATE_SUCCESS) {
+            if (app.retryNumber < RETRY_DOWNLOAD_NUMBER) {
                 return true;
             } else {
                 long currentTime = System.currentTimeMillis() / 1000;
-                if (currentTime - app.timeDownload >= 60) {
+                if (currentTime - app.downloadTime >= 60) {
                     resetStateDownloadApp(app);
                     return true;
                 }
@@ -233,7 +233,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         for (AppResourceEntity appResourceEntity : resource) {
             if (appResourceEntity.needdownloadrs == 1) {
                 createTask(appResourceEntity, needDownloadList);
-                mLocalStorage.resetStateDownload(appResourceEntity.appid);
+                mLocalStorage.resetDownloadState(appResourceEntity.appid);
             }
         }
 
@@ -267,8 +267,8 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     public Observable<Boolean> existResource(long appId, boolean downloadIfNeed) {
         return makeObservable(() -> {
             AppResourceEntity entity = mLocalStorage.get(appId);
-            Timber.d("Exist resource : appId [%s] state [%s]", appId, entity.stateDownload);
-            boolean downloadSuccess = (entity.stateDownload >= DownloadState.STATE_SUCCESS);
+            Timber.d("Exist resource : appId [%s] state [%s]", appId, entity.downloadState);
+            boolean downloadSuccess = (entity.downloadState >= DownloadState.STATE_SUCCESS);
             if (!downloadSuccess && downloadIfNeed) {
                 startDownloadService(Collections.singletonList(entity));
             }
@@ -280,7 +280,6 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     public Observable<Boolean> existResource(long appId) {
         return existResource(appId, true);
     }
-
 
     interface DownloadState {
         int STATE_FAIL = -1;
@@ -369,7 +368,7 @@ public class AppResourceRepository implements AppResourceStore.Repository {
     @Override
     public Observable<Void> resetStateResource(long appId) {
         return makeObservable(() -> {
-            mLocalStorage.resetStateResource(appId);
+            mLocalStorage.resetResourceState(appId);
             return null;
         });
     }

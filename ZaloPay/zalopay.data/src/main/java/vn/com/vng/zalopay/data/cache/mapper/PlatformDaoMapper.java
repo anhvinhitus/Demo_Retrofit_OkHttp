@@ -70,9 +70,9 @@ public class PlatformDaoMapper {
             appResourceGD.iconname = (appResourceEntity.iconName);
             appResourceGD.iconcolor = (appResourceEntity.iconColor);
             appResourceGD.sortOrder = (appResourceEntity.sortOrder);
-            appResourceGD.stateDownload = (appResourceEntity.stateDownload);
-            appResourceGD.numRetry = (appResourceEntity.numRetry);
-            appResourceGD.timeDownload = (appResourceEntity.timeDownload);
+            appResourceGD.downloadState = (appResourceEntity.downloadState);
+            appResourceGD.retryNumber = (appResourceEntity.retryNumber);
+            appResourceGD.downloadTime = (appResourceEntity.downloadTime);
         }
         return appResourceGD;
     }
@@ -99,12 +99,12 @@ public class PlatformDaoMapper {
                     ? "" : appResourceGD.iconcolor;
             appResourceEntity.sortOrder = appResourceGD.sortOrder == null
                     ? 0 : appResourceGD.sortOrder;
-            appResourceEntity.stateDownload = appResourceGD.stateDownload == null
-                    ? 0 : appResourceGD.stateDownload;
-            appResourceEntity.numRetry = appResourceGD.numRetry == null
-                    ? 0 : appResourceGD.numRetry;
-            appResourceEntity.timeDownload = appResourceGD.timeDownload == null
-                    ? 0 : appResourceGD.timeDownload;
+            appResourceEntity.downloadState = appResourceGD.downloadState == null
+                    ? 0 : appResourceGD.downloadState;
+            appResourceEntity.retryNumber = appResourceGD.retryNumber == null
+                    ? 0 : appResourceGD.retryNumber;
+            appResourceEntity.downloadTime = appResourceGD.downloadTime == null
+                    ? 0 : appResourceGD.downloadTime;
 
         }
         return appResourceEntity;

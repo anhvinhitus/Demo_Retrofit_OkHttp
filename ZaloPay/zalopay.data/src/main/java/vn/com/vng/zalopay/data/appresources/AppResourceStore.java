@@ -34,11 +34,11 @@ public interface AppResourceStore {
 
         void increaseRetryDownload(long appId);
 
-        void increaseStateDownload(long appId);
+        void increaseDownloadState(long appId);
 
-        void resetStateDownload(long appId);
+        void resetDownloadState(long appId);
 
-        void resetStateResource(long appId);
+        void resetResourceState(long appId);
 
         void sortApplication(List<Long> list);
     }

@@ -44,10 +44,10 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
         entity.imageurl = "imageurl";
         entity.jsurl = "jsurl";
         entity.needdownloadrs = 1;
-        entity.numRetry = 0;
+        entity.retryNumber = 0;
         entity.status = 1;
-        entity.timeDownload = 0;
-        entity.stateDownload = 0;
+        entity.downloadTime = 0;
+        entity.downloadState = 0;
         return entity;
     }
 
@@ -79,22 +79,22 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
         resourceEntityList.add(createAppResourceEntity(13));
         mLocalStorage.put(resourceEntityList);
 
-        mLocalStorage.increaseStateDownload(11);
-        mLocalStorage.increaseStateDownload(12);
-        mLocalStorage.increaseStateDownload(13);
-        mLocalStorage.increaseStateDownload(12);
+        mLocalStorage.increaseDownloadState(11);
+        mLocalStorage.increaseDownloadState(12);
+        mLocalStorage.increaseDownloadState(13);
+        mLocalStorage.increaseDownloadState(12);
 
         List<AppResourceEntity> result = mLocalStorage.getAllAppResource();
         for (AppResourceEntity app : result) {
             switch ((int)app.appid) {
                 case 11:
-                    assertEquals(app.stateDownload, 1);
+                    assertEquals(app.downloadState, 1);
                     break;
                 case 12:
-                    assertEquals(app.stateDownload, 2);
+                    assertEquals(app.downloadState, 2);
                     break;
                 case 13:
-                    assertEquals(app.stateDownload, 1);
+                    assertEquals(app.downloadState, 1);
             }
         }
     }
@@ -117,13 +117,13 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
         for (AppResourceEntity app : result) {
             switch ((int)app.appid) {
                 case 11:
-                    assertEquals(app.numRetry, 1);
+                    assertEquals(app.retryNumber, 1);
                     break;
                 case 12:
-                    assertEquals(app.numRetry, 2);
+                    assertEquals(app.retryNumber, 2);
                     break;
                 case 13:
-                    assertEquals(app.numRetry, 1);
+                    assertEquals(app.retryNumber, 1);
             }
         }
     }
@@ -157,9 +157,9 @@ public class AppResourceLocalStorageTest extends ApplicationTestCase {
         appResourceEntity.sortOrder = index;
         appResourceEntity.imageurl = "imageurl"+ index;
         appResourceEntity.jsurl = "jsurl" + index;
-        appResourceEntity.stateDownload = 0;
-        appResourceEntity.numRetry = 0;
-        appResourceEntity.timeDownload = 0;
+        appResourceEntity.downloadState = 0;
+        appResourceEntity.retryNumber = 0;
+        appResourceEntity.downloadTime = 0;
         return appResourceEntity;
     }
 

@@ -23,9 +23,9 @@ public class AppResourceGD {
     public String iconname;
     public String iconcolor;
     public Long sortOrder;
-    public Long stateDownload;
-    public Long timeDownload;
-    public Long numRetry;
+    public Long downloadState;
+    public Long downloadTime;
+    public Long retryNumber;
 
 
 }

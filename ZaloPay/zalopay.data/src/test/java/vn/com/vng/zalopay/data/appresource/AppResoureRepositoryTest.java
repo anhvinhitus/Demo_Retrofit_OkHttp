@@ -87,9 +87,9 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
         appResourceEntity.iconName = "iconName" + index;
         appResourceEntity.iconColor = "iconColor" + index;
         appResourceEntity.weburl = "webUrl" + index;
-        appResourceEntity.stateDownload = 0;
-        appResourceEntity.numRetry = 0;
-        appResourceEntity.timeDownload = 0;
+        appResourceEntity.downloadState = 0;
+        appResourceEntity.retryNumber = 0;
+        appResourceEntity.downloadTime = 0;
         return appResourceEntity;
     }
 
@@ -103,9 +103,9 @@ public class AppResoureRepositoryTest extends ApplicationTestCase {
         appResourceEntity.iconName = "Upgrade iconName" + index;
         appResourceEntity.iconColor = "Upgrade iconColor" + index;
         appResourceEntity.weburl = "Upgrade webUrl" + index;
-        appResourceEntity.stateDownload = 0;
-        appResourceEntity.numRetry = 0;
-        appResourceEntity.timeDownload = 0;
+        appResourceEntity.downloadState = 0;
+        appResourceEntity.retryNumber = 0;
+        appResourceEntity.downloadTime = 0;
         return appResourceEntity;
     }
 

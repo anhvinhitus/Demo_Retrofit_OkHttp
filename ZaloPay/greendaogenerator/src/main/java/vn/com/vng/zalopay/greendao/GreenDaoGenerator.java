@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.ToMany;
 
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 56;
+    private static final int APP_DB_VERSION = 57;
     private static final int GLOBAL_DB_VERSION = 1;
 
     public static void main(String[] args) throws Exception {
@@ -212,10 +212,9 @@ public class GreenDaoGenerator {
         entity.addStringProperty("iconcolor");
         entity.addLongProperty("sortOrder");
 
-        entity.addLongProperty("stateDownload");
-        entity.addLongProperty("timeDownload");
-        entity.addLongProperty("numRetry");
-
+        entity.addLongProperty("downloadState");
+        entity.addLongProperty("downloadTime");
+        entity.addLongProperty("retryNumber");
     }
 
     private static void addPaymentTransactionType(Schema schema) {
