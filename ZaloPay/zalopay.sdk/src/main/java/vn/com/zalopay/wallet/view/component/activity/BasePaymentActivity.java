@@ -1248,7 +1248,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
             }
-            if(!ZPWUtils.isTablet(this)) {
+            if(!SdkUtils.isTablet(this)) {
                // the view you'd like to locate
                 int[] locate = new int[2];
                 View view = findViewById(R.id.zpw_pay_info_buttom_view);
@@ -1288,7 +1288,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 setText(R.id.text_description, GlobalData.getPaymentInfo().description);
             }else
             {
-                setView(R.id.layout_success_description, false);
+                setVisible(R.id.layout_success_description, false);
             }
             if (GlobalData.getPaymentInfo().userTransfer != null) {
                 if (TextUtils.isEmpty(GlobalData.getPaymentInfo().userTransfer.zaloPayName)) {// check zalo pay ID
