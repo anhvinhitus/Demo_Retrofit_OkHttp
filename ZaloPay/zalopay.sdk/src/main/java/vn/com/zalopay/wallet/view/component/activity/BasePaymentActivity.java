@@ -12,12 +12,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.IdRes;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -1250,11 +1252,47 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
             }
+            if(!ZPWUtils.isTablet(this)) {
+               // the view you'd like to locate
+                int[] locate = new int[2];
+                View view = findViewById(R.id.zpw_pay_info_buttom_view);
+                view.getLocationInWindow(locate);
+                int mLocate = locate[1];
+
+                View submitButton = findViewById(R.id.zpw_submit_view);
+                LinearLayout.LayoutParams submitButtonParams = (LinearLayout.LayoutParams) submitButton.getLayoutParams();
+                submitButtonParams.setMargins(0, 0, 0, 0);
+                submitButton.setLayoutParams(submitButtonParams);
+
+                View LayoutRoot= findViewById(R.id.supperRootView);
+                View LayoutScrollView = findViewById(R.id.zpw_scrollview_layout);
+                ViewTreeObserver vto = LayoutRoot.getViewTreeObserver();
+
+                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+
+                        if (LayoutRoot.getViewTreeObserver().isAlive()) {
+                            LayoutRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        }
+
+                        int test = LayoutScrollView.getHeight();
+                        LayoutScrollView.setMinimumHeight(test + mLocate);
+                        Log.d(this,"addOnGlobalLayoutListener=="+LayoutScrollView.getHeight());
+
+                    }
+                });
+
+            }
+
             setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal)));
             setView(R.id.layout_detail, true);
             setView(R.id.payment_description_label, false);
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().description)) {
                 setText(R.id.text_description, GlobalData.getPaymentInfo().description);
+            }else
+            {
+                setView(R.id.layout_success_description, false);
             }
             if (GlobalData.getPaymentInfo().userTransfer != null) {
                 if (TextUtils.isEmpty(GlobalData.getPaymentInfo().userTransfer.zaloPayName)) {// check zalo pay ID
