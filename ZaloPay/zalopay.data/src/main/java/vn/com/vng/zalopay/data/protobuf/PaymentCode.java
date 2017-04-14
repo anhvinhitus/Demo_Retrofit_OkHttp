@@ -11,17 +11,19 @@ import java.lang.Override;
  * Zalo Pay: 2.10
  */
 public enum PaymentCode implements WireEnum {
-  PAY_SUCCESS(0),
+  PAY_UNKNOWN(0),
 
-  PAY_WRONG_FORMAT(1),
+  PAY_SUCCESS(1),
 
-  PAY_MISS_DATA(2),
+  PAY_WRONG_FORMAT(2),
 
-  PAY_SEND_REQ_FAILED(3),
+  PAY_MISS_DATA(3),
 
-  PAY_TIMEOUT(4),
+  PAY_SEND_REQ_FAILED(4),
 
-  PAY_EXCEPTION(5);
+  PAY_TIMEOUT(5),
+
+  PAY_EXCEPTION(6);
 
   public static final ProtoAdapter<PaymentCode> ADAPTER = ProtoAdapter.newEnumAdapter(PaymentCode.class);
 
@@ -36,12 +38,13 @@ public enum PaymentCode implements WireEnum {
    */
   public static PaymentCode fromValue(int value) {
     switch (value) {
-      case 0: return PAY_SUCCESS;
-      case 1: return PAY_WRONG_FORMAT;
-      case 2: return PAY_MISS_DATA;
-      case 3: return PAY_SEND_REQ_FAILED;
-      case 4: return PAY_TIMEOUT;
-      case 5: return PAY_EXCEPTION;
+      case 0: return PAY_UNKNOWN;
+      case 1: return PAY_SUCCESS;
+      case 2: return PAY_WRONG_FORMAT;
+      case 3: return PAY_MISS_DATA;
+      case 4: return PAY_SEND_REQ_FAILED;
+      case 5: return PAY_TIMEOUT;
+      case 6: return PAY_EXCEPTION;
       default: return null;
     }
   }

@@ -66,12 +66,13 @@ enum RecoveryOrder {
 // Define the response code from Payment Connector
 // Zalo Pay: 2.10
 enum PaymentCode {
-	PAY_SUCCESS = 0;
-	PAY_WRONG_FORMAT = 1;
-	PAY_MISS_DATA = 2;
-	PAY_SEND_REQ_FAILED = 3;
-	PAY_TIMEOUT = 4;
-	PAY_EXCEPTION = 5;
+	PAY_UNKNOWN = 0;
+	PAY_SUCCESS = 1;
+	PAY_WRONG_FORMAT = 2;
+	PAY_MISS_DATA = 3;
+	PAY_SEND_REQ_FAILED = 4;
+	PAY_TIMEOUT = 5;
+	PAY_EXCEPTION = 6;
 }
 
 // Notification message sent to user
@@ -97,7 +98,7 @@ message RecoveryMessage {
 	uint32	servermessagetype = 5; // enum ServerMessageType, Zalo Pay 2.10
 }
 
-// List of recovery message as result from client's request 
+// List of recovery message as result from client's request
 // Zalo Pay: 2.0
 message DataRecoveryResponse {
 	repeated RecoveryMessage messages = 1;
