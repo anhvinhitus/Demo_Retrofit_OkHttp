@@ -111,8 +111,8 @@ public class MessageParser implements Parser {
 
             AuthenticationData event = new AuthenticationData();
 
-            event.uid = resp.usrid;
-            event.result = resp.result;
+            event.uid = ConvertHelper.unboxValue(resp.usrid, 0);
+            event.result = ConvertHelper.unboxValue(resp.result, 0);
             event.code = ConvertHelper.unboxValue(resp.code, 0);
             event.msg = resp.msg;
 
@@ -160,8 +160,8 @@ public class MessageParser implements Parser {
             }
 
             PaymentRequestData event = new PaymentRequestData();
-            event.requestid = message.requestid;
-            event.resultcode = message.resultcode;
+            event.requestid = ConvertHelper.unboxValue(message.requestid, 0);
+            event.resultcode = ConvertHelper.unboxValue(message.resultcode, 0);
             Timber.d("Parse payment request response : requestid [%s] resultdata [%s]", message.requestid, message.resultdata);
 
             if (message.resultdata != null) {
