@@ -540,7 +540,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         case EMPTY_USERNAME:
                         case EMPTY_PASSWORD:
                         case EMPTY_CAPCHA:
-                            showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_SHORT);
+                            showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_LONG);
                             break;
                         case WRONG_USERNAME_PASSWORD:
                             mNumAllowLoginWrong--;
@@ -567,7 +567,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         case WRONG_CAPTCHA:
                             getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
                             if (!GlobalData.shouldNativeWebFlow()) {
-                                showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_SHORT);
+                                showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_LONG);
                             }
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().setText("");
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().requestFocus();
@@ -680,7 +680,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     if (!TextUtils.isEmpty(response.message)) {
                         switch (VcbUtils.getVcbType(response.message)) {
                             case EMPTY_CAPCHA:
-                                showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_SHORT);
+                                showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_LONG);
                                 break;
                             case WRONG_CAPTCHA:
                                 if (COUNT_ERROR_CAPTCHA >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_captcha))) {
@@ -694,7 +694,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                 } else {
                                     getActivity().setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
                                     if (!GlobalData.shouldNativeWebFlow()) {
-                                        showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_SHORT);
+                                        showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_LONG);
                                     }
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText("");
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
@@ -763,7 +763,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                 // set Message
                 if (!TextUtils.isEmpty(response.message)) {
-                    showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.message, TSnackbar.LENGTH_SHORT);
+                    showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.message, TSnackbar.LENGTH_LONG);
                 }
 
                 linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().requestFocus();
@@ -811,7 +811,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                     }
                                 }, response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button));
                             } else {
-                                showMessage(null, response.message, TSnackbar.LENGTH_SHORT);
+                                showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                             }
                             if (!TextUtils.isEmpty(mUrlReload)) {
                                 linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(null);
@@ -881,7 +881,7 @@ public class AdapterLinkAcc extends AdapterBase {
             }
             StatusResponse response = (StatusResponse) pAdditionParams[0];
             // show message
-            showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified), TSnackbar.LENGTH_SHORT);
+            showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified), TSnackbar.LENGTH_LONG);
         }
         //event notification from app.
         if (pEventType == EEventType.ON_NOTIFY_BANKACCOUNT) {
