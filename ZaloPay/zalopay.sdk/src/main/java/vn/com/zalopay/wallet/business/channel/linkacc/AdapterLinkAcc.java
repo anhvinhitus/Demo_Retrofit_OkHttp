@@ -37,6 +37,7 @@ import vn.com.zalopay.wallet.datasource.request.SubmitMapAccount;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
+import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
@@ -50,6 +51,7 @@ import vn.com.zalopay.wallet.utils.ViewUtils;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
+import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
  * Created by SinhTT on 14/11/2016.
@@ -752,11 +754,30 @@ public class AdapterLinkAcc extends AdapterBase {
                             checkLinkAccountList();
                         } else {
                             showProgressBar(false, null);
-                            showMessage(null, response.message, TSnackbar.LENGTH_SHORT);
+                            if(!GlobalData.shouldNativeWebFlow()) {
+                                DialogManager.showSweetDialogConfirm(getActivity(), response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button), new ZPWOnEventConfirmDialogListener() {
+                                    @Override
+                                    public void onCancelEvent() {
+                                        showProgressBar(false, null); // close process dialog
+                                        String msgErr =GlobalData.getStringResource(RS.string.zpw_string_cancel_retry_otp);
+                                        linkAccFail(msgErr, mTransactionID);
+                                        return ;
+                                    }
+
+                                    @Override
+                                    public void onOKevent() {
+                                        
+                                    }
+                                });
+                            }
+                            else {
+                                showMessage(null, response.message, TSnackbar.LENGTH_SHORT);
+                            }
                             if (!TextUtils.isEmpty(mUrlReload)) {
                                 linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText("");
                                 mWebViewProcessor.reloadWebView(mUrlReload);
                             }
+
                         }
                     }
 

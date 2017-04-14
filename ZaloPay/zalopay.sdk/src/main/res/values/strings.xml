@@ -291,6 +291,8 @@
     <string name="dialog_turn_off">Đóng</string>
 
     <string name="dialog_quit_button">Thoát</string>
+
+
     <string name="dialog_getstatus_button">Kiểm tra giao dịch</string>
 
     <string name="dialog_retry_input_card_button">NHẬP THẺ KHÁC</string>
@@ -539,4 +541,5 @@
     <string name="zpw_string_special_bankscript_vcb_unregister_complete">^.+(vietcombank\\.com\\.vn).+(\\/ViDienTu\\/NgungSuDungViDienTu).*$</string>
     <string name="zpw_string_number_retry_password">3</string>
     <string name="zpw_string_number_retry_capchart">3</string>
+    <string name="zpw_string_cancel_retry_otp">Liên kết tài khoản đã bị hủy!</string>
 </resources>
