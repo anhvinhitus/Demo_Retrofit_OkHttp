@@ -37,6 +37,4 @@ public interface IZaloPayView {
     void hideLoading();
 
     void setRefreshing(boolean val);
-
-    void setBanner(List<DBanner> lists);
 }

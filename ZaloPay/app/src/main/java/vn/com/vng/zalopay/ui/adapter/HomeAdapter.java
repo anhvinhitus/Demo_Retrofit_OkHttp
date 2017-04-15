@@ -15,8 +15,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.ui.adapter.model.AppItemModel;
-import vn.com.vng.zalopay.ui.adapter.model.BannerModel;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by hieuvm on 3/21/17.
@@ -26,20 +24,14 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 public class HomeAdapter extends EpoxyAdapter {
 
     public interface OnClickItemListener {
-        void onClickBanner(DBanner banner, int index);
-
         void onClickAppItem(AppResource app, int position);
     }
 
-    private BannerModel bannerModel;
-    private static final int POSITION_BANNER = 6;
     private OnClickItemListener clickListener;
 
     public HomeAdapter(Context context, OnClickItemListener listener, int spanCount) {
         super();
         clickListener = listener;
-        bannerModel = new BannerModel();
-        bannerModel.setClickListener(clickListener);
         setSpanCount(spanCount);
         enableDiffing();
     }
@@ -130,13 +122,12 @@ public class HomeAdapter extends EpoxyAdapter {
         }
     }
 
-    private void addNewAppItemModel(List<EpoxyModel<?>> rootModels, List<AppItemModel> modelsApp, @NonNull List<AppResource> list) throws IndexOutOfBoundsException {
+    private void addNewAppItemModel(List<EpoxyModel<?>> rootModels,
+                                    List<AppItemModel> modelsApp,
+                                    @NonNull List<AppResource> list) throws IndexOutOfBoundsException {
         int sizeApp = list.size();
         int sizeModelsApp = modelsApp.size();
         int newModelsApp = sizeApp - sizeModelsApp;
-
-        int indexOfBanner = rootModels.indexOf(bannerModel);
-        boolean trueBanner = indexOfBanner < 0 || indexOfBanner == POSITION_BANNER; //Banner không tồn tại trong list or banner ở đúng vị trí.
 
         for (int i = 0; i < newModelsApp; i++) {
             AppResource appResource = list.get(sizeModelsApp + i);
@@ -144,54 +135,8 @@ public class HomeAdapter extends EpoxyAdapter {
                 continue;
             }
 
-            if (trueBanner || rootModels.size() > POSITION_BANNER) {
-                rootModels.add(transform(appResource));
-            } else {
-                rootModels.add(sizeModelsApp + i, transform(appResource));
-            }
+            rootModels.add(transform(appResource));
         }
-    }
-
-    public void setBanners(@NonNull List<DBanner> banners) {
-        Timber.d("set banners size [%s]", banners.size());
-        int sizeModels = models.size();
-        if (sizeModels == 0) {
-            return;
-        }
-
-        bannerModel.setData(banners);
-        boolean isExist = models.contains(bannerModel);
-        int sizeBanner = banners.size();
-
-        // Banner đã tồn tại trong danh sách.
-        if (isExist) {
-            if (sizeBanner == 0) {
-                removeModel(bannerModel);
-                pauseBanner();
-            } else {
-                notifyModelChanged(bannerModel);
-                resumeBanner();
-            }
-
-            return;
-        }
-
-        if (sizeBanner == 0) {
-            return;
-        }
-
-        // Nếu chưa tồn tại trong list
-        if (sizeModels <= POSITION_BANNER) {
-            addModel(bannerModel);
-        } else {
-            EpoxyModel epoxyModel = getModelForPosition(POSITION_BANNER - 1);
-            if (epoxyModel != null) {
-                insertModelAfter(bannerModel, epoxyModel);
-            }
-        }
-
-        //start banner
-        resumeBanner();
     }
 
     @Override
@@ -213,19 +158,5 @@ public class HomeAdapter extends EpoxyAdapter {
 
     private List<AppItemModel> transform(List<AppResource> resources) {
         return Lists.transform(resources, this::transform);
-    }
-
-    public void pauseBanner() {
-        Timber.d("Pause banner");
-        if (bannerModel.isShown()) {
-            bannerModel.pause();
-        }
-    }
-
-    public void resumeBanner() {
-        Timber.d("Resume banner");
-        if (bannerModel.isShown()) {
-            bannerModel.resume();
-        }
     }
 }

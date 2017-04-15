@@ -6,16 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/bannerFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/separate"/>
-
     <TextView
         android:id="@+id/tvAdsSubContent"
         style="@style/TextView.Title"

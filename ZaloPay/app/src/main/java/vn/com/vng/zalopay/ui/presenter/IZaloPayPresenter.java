@@ -13,6 +13,4 @@ public interface IZaloPayPresenter<IZaloPayView> extends IPresenter<IZaloPayView
     void startServiceWebViewActivity(long appId, String webViewUrl);
 
     void launchApp(AppResource app, int position);
-
-    void launchBanner(DBanner banner, int index);
 }

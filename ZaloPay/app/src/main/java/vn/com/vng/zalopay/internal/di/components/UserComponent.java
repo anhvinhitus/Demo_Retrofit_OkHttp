@@ -28,7 +28,6 @@ import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.bank.ui.LinkCardFragment;
 import vn.com.vng.zalopay.bank.ui.ListBankDialog;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardFragment;
-import vn.com.vng.zalopay.banner.ui.fragment.BannerFragment;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.AccountStore;
 import vn.com.vng.zalopay.data.paymentconnector.PaymentConnectorService;
@@ -202,8 +201,6 @@ public interface UserComponent {
     void inject(HandleZaloIntegration obj);
 
     void inject(CardSupportWithdrawFragment f);
-
-    void inject(BannerFragment f);
 
     void inject(ProtectAccountFragment f);
 

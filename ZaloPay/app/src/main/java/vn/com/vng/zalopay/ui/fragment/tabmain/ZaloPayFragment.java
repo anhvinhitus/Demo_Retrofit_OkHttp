@@ -43,14 +43,15 @@ import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 /**
  * Created by AnhHieu on 4/11/16.
  * Display PaymentApps in Grid layout
  */
-public class ZaloPayFragment extends RuntimePermissionFragment implements
-        IZaloPayView, SwipeRefreshLayout.OnRefreshListener, HomeAdapter.OnClickItemListener, AppBarLayout.OnOffsetChangedListener {
+public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloPayView,
+        SwipeRefreshLayout.OnRefreshListener,
+        HomeAdapter.OnClickItemListener,
+        AppBarLayout.OnOffsetChangedListener {
 
     public static ZaloPayFragment newInstance() {
         Bundle args = new Bundle();
@@ -165,7 +166,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
     @Override
     public void onResume() {
         presenter.resume();
-        mAdapter.pauseBanner();
         // Set collapsing behavior
         appBarLayout.addOnOffsetChangedListener(this);
         super.onResume();
@@ -174,7 +174,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
     @Override
     public void onPause() {
         presenter.pause();
-        mAdapter.resumeBanner();
         appBarLayout.removeOnOffsetChangedListener(this);
         super.onPause();
     }
@@ -200,11 +199,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
     @Override
     public void showError(String error) {
         showToast(error);
-    }
-
-    @Override
-    public void setBanner(List<DBanner> lists) {
-        mAdapter.setBanners(lists);
     }
 
     @Override
@@ -259,11 +253,6 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements
     @Override
     public void setRefreshing(boolean val) {
         mSwipeRefreshLayout.setRefreshing(val);
-    }
-
-    @Override
-    public void onClickBanner(DBanner banner, int index) {
-        presenter.launchBanner(banner, index);
     }
 
     @Override

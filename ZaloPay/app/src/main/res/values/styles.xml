@@ -209,12 +209,6 @@
         <item name="failureImage">@color/silver</item>
     </style>
 
-    <style name="BannerDraweeView" parent="NormalDraweeView">
-        <item name="failureImage">@drawable/banner_default</item>
-        <item name="placeholderImage">@drawable/banner_default</item>
-        <item name="actualImageScaleType">fitXY</item>
-    </style>
-
     <style name="NormalDraweeView">
         <item name="actualImageScaleType">centerCrop</item>
         <item name="failureImageScaleType">centerCrop</item>

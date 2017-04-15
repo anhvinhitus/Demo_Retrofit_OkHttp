@@ -15,13 +15,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
-import vn.com.vng.zalopay.banner.model.BannerInternalFunction;
-import vn.com.vng.zalopay.banner.model.BannerType;
 import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -30,7 +27,6 @@ import vn.com.vng.zalopay.data.eventbus.ReadNotifyEvent;
 import vn.com.vng.zalopay.data.eventbus.WsConnectionEvent;
 import vn.com.vng.zalopay.data.merchant.MerchantStore;
 import vn.com.vng.zalopay.data.notification.NotificationStore;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
@@ -44,10 +40,8 @@ import vn.com.vng.zalopay.paymentapps.PaymentAppTypeEnum;
 import vn.com.vng.zalopay.ui.subscribe.MerchantUserInfoSubscribe;
 import vn.com.vng.zalopay.ui.subscribe.StartPaymentAppSubscriber;
 import vn.com.vng.zalopay.ui.view.IZaloPayView;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 
 import static vn.com.vng.zalopay.data.util.Lists.isEmptyOrNull;
 import static vn.com.vng.zalopay.paymentapps.PaymentAppConfig.Constants;
@@ -126,7 +120,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         getListAppResource();
         getTotalNotification(100);
         getBalanceLocal();
-        this.getBanners();
     }
 
     private void getBalanceLocal() {
@@ -391,8 +384,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     public void onRefreshPlatformInfoEvent(RefreshPlatformInfoEvent e) {
         Timber.d("onRefreshPlatformInfoEvent");
 
-        getBanners();
-
         if (System.currentTimeMillis() / 1000 - mLastTimeRefreshApp <= 120) {
             return;
         }
@@ -407,74 +398,4 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         }*/
     }
 
-    private void getBanners() {
-        Subscription subscription = getListBanner()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<List<DBanner>>() {
-                    @Override
-                    public void onNext(List<DBanner> banners) {
-                        if (mView != null) {
-                            mView.setBanner(banners);
-                        }
-                    }
-                });
-        mSubscription.add(subscription);
-    }
-
-    private Observable<List<DBanner>> getListBanner() {
-        return ObservableHelper.makeObservable(CShareDataWrapper::getBannerList);
-    }
-
-    public void launchBanner(DBanner banner, int position) {
-
-        if (banner == null) {
-            return;
-        }
-
-        if (banner.bannertype == BannerType.InternalFunction.getValue()) {
-            if (banner.function == BannerInternalFunction.Deposit.getValue()) {
-                mNavigator.startDepositActivity(mView.getActivity());
-            } else if (banner.function == BannerInternalFunction.WithDraw.getValue()) {
-                mNavigator.startBalanceManagementActivity(mView.getActivity());
-            } else if (banner.function == BannerInternalFunction.SaveCard.getValue()) {
-                mNavigator.startLinkCardActivity(mView.getActivity());
-            } else if (banner.function == BannerInternalFunction.Pay.getValue()) {
-                mNavigator.startScanToPayActivity(mView.getActivity());
-            } else if (banner.function == BannerInternalFunction.TransferMoney.getValue()) {
-                mNavigator.startTransferMoneyActivity(mView.getActivity());
-            } else if (banner.function == BannerInternalFunction.RedPacket.getValue()) {
-                mNavigator.startMiniAppActivity(mView.getActivity(), ModuleName.RED_PACKET);
-            }
-        } else if (banner.bannertype == BannerType.PaymentApp.getValue()) {
-            startExternalApp(new AppResource(banner.appid));
-        } else if (banner.bannertype == BannerType.ServiceWebView.getValue()) {
-            startServiceWebViewActivity(banner.appid, banner.webviewurl);
-        } else if (banner.bannertype == BannerType.WebPromotion.getValue()) {
-            mNavigator.startWebViewActivity(mView.getActivity(), banner.webviewurl);
-        }
-        trackBannerEvent(position);
-    }
-
-    private void trackBannerEvent(int position) {
-        switch (position) {
-            case 0:
-                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION1);
-                break;
-            case 1:
-                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION2);
-                break;
-            case 2:
-                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION3);
-                break;
-            case 3:
-                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
-                break;
-            case 4:
-                ZPAnalytics.trackEvent(ZPEvents.TAPBANNERPOSITION4);
-                break;
-            default:
-                break;
-        }
-    }
 }

@@ -64,13 +64,7 @@ public class ListAppRecyclerAdapter extends AbsRecyclerAdapter<AppResource, List
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolder pView;
-        if (viewType != TYPE_BANNER) {
-            pView = new ViewHolder(mInflater.inflate(R.layout.row_list_app_layout, parent, false), mOnItemClickListener);
-        } else {
-            pView = new ViewHolder(mInflater.inflate(R.layout.row_list_app_layout_banner, parent, false), mOnItemClickListener);
-        }
-        return pView;
+        return new ViewHolder(mInflater.inflate(R.layout.row_list_app_layout, parent, false), mOnItemClickListener);
     }
 
     @Override
