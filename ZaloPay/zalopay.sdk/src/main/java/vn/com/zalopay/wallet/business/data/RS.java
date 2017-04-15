@@ -48,6 +48,8 @@ public class RS {
     }
 
     public static final class string {
+        public static final String sdk_vcb_note = "sdk_vcb_note";
+
         public static final String payment_success_label = "payment_success_label";
         public static final String zpw_update_level_inform_content = "zpw_update_level_inform_content";
         public static final String zpw_loading_website_message = "zpw_loading_website_message";
@@ -423,7 +425,7 @@ public class RS {
         public static final String zpw_string_number_retry_password = "zpw_string_number_retry_password";
         public static final String zpw_string_number_retry_captcha = "zpw_string_number_retry_captcha";
         public static final String zpw_string_linkacc_captcha_hint = "zpw_string_linkacc_captcha_hint";
-        public static final String zpw_string_cancel_retry_otp  = "zpw_string_cancel_retry_otp";
+        public static final String zpw_string_cancel_retry_otp = "zpw_string_cancel_retry_otp";
 
         public static final String zpw_string_special_bankscript_vcb_generate_captcha = "zpw_string_special_bankscript_vcb_generate_captcha";
         public static final String zpw_string_special_bankscript_vcb_register_complete = "zpw_string_special_bankscript_vcb_register_complete";

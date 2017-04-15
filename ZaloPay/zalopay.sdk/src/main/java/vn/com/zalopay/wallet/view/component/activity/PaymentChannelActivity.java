@@ -703,7 +703,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
 
         if (GlobalData.isPayChannel()) {
             message = GlobalData.getStringResource(RS.string.zingpaysdk_confirm_quit_rescan_qrcode);
-        } else if (GlobalData.isLinkCardChannel()) {
+        } else if (GlobalData.isBankAccountLink()) {
             message = GlobalData.getStringResource(RS.string.sdk_confirm_quit_link_account);
         }
 

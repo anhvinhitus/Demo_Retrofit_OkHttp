@@ -541,4 +541,5 @@
     <string name="zpw_string_number_retry_password">3</string>
     <string name="zpw_string_number_retry_captcha">3</string>
     <string name="zpw_string_cancel_retry_otp">Liên kết tài khoản đã bị hủy!</string>
+    <string name="sdk_vcb_note">Lưu ý: Tài khoản Vietcombank và tài khoản Zalo Pay phải đăng ký cùng 1 số điện thoại</string>
 </resources>
