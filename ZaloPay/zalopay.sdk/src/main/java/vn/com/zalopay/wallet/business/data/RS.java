@@ -174,7 +174,6 @@ public class RS {
         public static final String zingpaysdk_confirm_quit = "zingpaysdk_confirm_quit";
         public static final String zingpaysdk_confirm_quit_rescan_qrcode = "zingpaysdk_confirm_quit_rescan_qrcode";
         public static final String sdk_confirm_quit_link_account = "sdk_confirm_quit_link_account";
-        public static final String sdk_confirm_quit_unlink_account = "sdk_confirm_quit_unlink_account";
 
         public static final String zpw_confirm_quit_loadsite = "zpw_confirm_quit_loadsite";
 
