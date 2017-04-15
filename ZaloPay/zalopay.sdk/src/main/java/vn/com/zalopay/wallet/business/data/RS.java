@@ -47,6 +47,8 @@ public class RS {
     }
 
     public static final class string {
+        public static final String sdk_vcb_note = "sdk_vcb_note";
+
         public static final String zpw_alert_network_error_loadappinfo = "zpw_alert_network_error_loadappinfo";
         public static final String zpw_alert_network_error_loadbanklist = "zpw_alert_network_error_loadbanklist";
         public static final String zpw_alert_network_error_loadplatforminfo = "zpw_alert_network_error_loadplatforminfo";
@@ -59,6 +61,7 @@ public class RS {
         public static final String zpw_alert_network_error_authenpayer = "zpw_alert_network_error_authenpayer";
 
         public static final String zpw_generic_error = "zpw_generic_error";
+
         public static final String payment_success_label = "payment_success_label";
         public static final String zpw_update_level_inform_content = "zpw_update_level_inform_content";
         public static final String zpw_payment_fail_rl_update_info = "zpw_payment_fail_rl_update_info";
@@ -417,7 +420,7 @@ public class RS {
         public static final String zpw_string_number_retry_password = "zpw_string_number_retry_password";
         public static final String zpw_string_number_retry_captcha = "zpw_string_number_retry_captcha";
         public static final String zpw_string_linkacc_captcha_hint = "zpw_string_linkacc_captcha_hint";
-        public static final String zpw_string_cancel_retry_otp  = "zpw_string_cancel_retry_otp";
+        public static final String zpw_string_cancel_retry_otp = "zpw_string_cancel_retry_otp";
 
         public static final String zpw_string_special_bankscript_vcb_generate_captcha = "zpw_string_special_bankscript_vcb_generate_captcha";
         public static final String zpw_string_special_bankscript_vcb_register_complete = "zpw_string_special_bankscript_vcb_register_complete";

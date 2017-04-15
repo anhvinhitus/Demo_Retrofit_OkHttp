@@ -337,6 +337,9 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         loginHolder.imgCaptcha = (ImageView) mAdapter.getActivity().findViewById(R.id.img_login_captcha);
         loginHolder.webCaptcha = (WebView) mAdapter.getActivity().findViewById(R.id.web_login_captcha);
 
+        loginHolder.vcb_note_textview = (TextView) mAdapter.getActivity().findViewById(R.id.vcb_note_textview);
+        loginHolder.vcb_note_textview.setText(GlobalData.getStringResource(RS.string.sdk_vcb_note));
+
         // new gui init confirm info
         registerHolder = new RegisterHolder();
         registerHolder.llRegister = (LinearLayout) mAdapter.getActivity().findViewById(R.id.zpw_vcb_confirm_link);
@@ -604,6 +607,10 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     public void resetCaptchaConfirm() {
         // clear captcha form
         getRegisterHolder().getEdtCaptcha().setText("");
+    }
+
+    public void resetOtp() {
+        getConfirmOTPHolder().getEdtConfirmOTP().setText(null);
     }
 
     /***
@@ -1054,6 +1061,11 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         WebView webCaptcha;
         ScrollView srvScrollView;
         ImageView imgLogoLinkAcc;
+        TextView vcb_note_textview;
+
+        public TextView getVcb_note_textview() {
+            return vcb_note_textview;
+        }
 
         public LinearLayout getLlLogin() {
             return llLogin;

@@ -530,8 +530,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 // set captcha
                 if (!TextUtils.isEmpty(response.otpimg) && response.otpimg.length() > 10) {
                     linkAccGuiProcessor.setCaptchaImgB64Login(response.otpimg);
+                    linkAccGuiProcessor.resetCaptchaInput();
                 } else if (!TextUtils.isEmpty(response.otpimgsrc)) {
                     linkAccGuiProcessor.setCaptchaImgLogin(response.otpimgsrc);
+                    linkAccGuiProcessor.resetCaptchaInput();
                 }
 
                 // set Message
@@ -548,15 +550,12 @@ public class AdapterLinkAcc extends AdapterBase {
                                 showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb),
                                         String.format(GlobalData.getStringResource(RS.string.zpw_string_vcb_wrong_times_allow),
                                                 mNumAllowLoginWrong), TSnackbar.LENGTH_LONG);
-                            } else {
-                                if (GlobalData.isLinkAccFlow()) {
-                                    linkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
-                                } else {
-                                    unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
-                                }
-                                return null;
+                            } else if (GlobalData.isLinkAccFlow()) {
+                                linkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
+                            } else if(GlobalData.isUnLinkAccFlow()){
+                                unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
                             }
-                            break;
+                            return null;
                         case ACCOUNT_LOCKED:
                             if (GlobalData.isLinkAccFlow()) {
                                 linkAccFail(getActivity().getString(R.string.zpw_string_vcb_bank_locked_account), mTransactionID);
@@ -748,7 +747,6 @@ public class AdapterLinkAcc extends AdapterBase {
                     ArrayList<String> walletList = HashMapUtils.getKeys(mHashMapWalletUnReg);
                     linkAccGuiProcessor.setWalletUnRegList(walletList);
                 }
-                Log.d(this, "unRegister==" + response.phoneNumUnRegList.size() + "==" + response.message);
                 // set phone number unregister
                 if (response.phoneNumUnRegList != null && response.phoneNumUnRegList.size() > 0) {
                     mHashMapPhoneNumUnReg = HashMapUtils.JsonArrayToHashMap(response.phoneNumUnRegList);
@@ -802,22 +800,22 @@ public class AdapterLinkAcc extends AdapterBase {
                                         showProgressBar(false, null); // close process dialog
                                         String msgErr = GlobalData.getStringResource(RS.string.zpw_string_cancel_retry_otp);
                                         linkAccFail(msgErr, mTransactionID);
-                                        return;
                                     }
 
                                     @Override
                                     public void onOKevent() {
-
+                                        //retry reload the previous page
+                                        if (!TextUtils.isEmpty(mUrlReload)) {
+                                            showProgressBar(true,GlobalData.getStringResource(RS.string.zpw_loading_website_message));
+                                            linkAccGuiProcessor.resetCaptchaConfirm();
+                                            linkAccGuiProcessor.resetOtp();
+                                            mWebViewProcessor.reloadWebView(mUrlReload);
+                                        }
                                     }
                                 }, response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button));
                             } else {
                                 showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                             }
-                            if (!TextUtils.isEmpty(mUrlReload)) {
-                                linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(null);
-                                mWebViewProcessor.reloadWebView(mUrlReload);
-                            }
-
                         }
                     }
 
@@ -880,8 +878,9 @@ public class AdapterLinkAcc extends AdapterBase {
                 return pAdditionParams;
             }
             StatusResponse response = (StatusResponse) pAdditionParams[0];
+            showTransactionFailView(response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified));
             // show message
-            showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified), TSnackbar.LENGTH_LONG);
+            //showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified), TSnackbar.LENGTH_LONG);
         }
         //event notification from app.
         if (pEventType == EEventType.ON_NOTIFY_BANKACCOUNT) {
