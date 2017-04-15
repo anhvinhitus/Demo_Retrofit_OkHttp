@@ -322,11 +322,6 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
     }
 
     public void fetchAppResource() {
-        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
-        mSubscription.add(subscription);
-
         Subscription fetchSubscription = mAppResourceRepository.fetchAppResource()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());

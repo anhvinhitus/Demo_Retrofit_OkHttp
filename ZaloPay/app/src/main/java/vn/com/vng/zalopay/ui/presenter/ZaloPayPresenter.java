@@ -123,7 +123,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     @Override
     public void initialize() {
-        getListAppHomeLocal();
+        getListAppResource();
         getTotalNotification(100);
         getBalanceLocal();
         this.getBanners();
@@ -140,6 +140,16 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     public void getListAppResource() {
         Subscription subscription = mAppResourceRepository.getListAppHome()
+                .doOnNext(this::getListMerchantUser)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AppResourceSubscriber());
+        mSubscription.add(subscription);
+    }
+
+    private void fetchListAppResource() {
+        Timber.d("Fetch list application");
+        Subscription subscription = mAppResourceRepository.fetchAppResource()
                 .doOnNext(this::getListMerchantUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -209,15 +219,6 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         sActionMap.put(14, ZPEvents.TAPAPPICON_5_3);
     }
 
-    private void getListAppHomeLocal() {
-        Timber.d("getListAppHomeLocal ");
-        Subscription subscription = mAppResourceRepository.getListAppHomeLocal()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new AppResourceSubscriber());
-        mSubscription.add(subscription);
-    }
-
     // because of delay, subscriber at startup is sometime got triggered after the immediate subscriber
     // when received notification
     private void getTotalNotification(long delay) {
@@ -281,7 +282,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
         @Override
         public void onNext(List<AppResource> appResources) {
-            ZaloPayPresenter.this.onGetAppResourceSuccess(appResources);
+            onGetAppResourceSuccess(appResources);
         }
 
         @Override
@@ -339,6 +340,8 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             return;
         }
         mView.hideNetworkError();
+
+        ensureAppResourceAvailable();
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -367,6 +370,13 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         mEventBus.unregister(this);
     }
 
+    private void ensureAppResourceAvailable() {
+        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mSubscription.add(subscription);
+    }
+
     private final class NotificationSubscriber extends DefaultSubscriber<Integer> {
         @Override
         public void onNext(Integer integer) {
@@ -386,15 +396,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
         if (System.currentTimeMillis() / 1000 - mLastTimeRefreshApp <= 120) {
             return;
         }
-
-        Timber.d("Fetch list application");
-        Subscription subscription = mAppResourceRepository.fetchListAppHome()
-                .doOnNext(this::getListMerchantUser)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new AppResourceSubscriber());
-        mSubscription.add(subscription);
-
+        fetchListAppResource();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)

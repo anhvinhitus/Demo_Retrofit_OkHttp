@@ -198,7 +198,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         loadGatewayInfoPaymentSDK();
         ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOME);
         LocationProvider.findLocation();
-        ensureAppResourceAvailable();
         getZaloFriend();
         warningRoot();
         getTransaction(10);
@@ -215,13 +214,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                     }
                 });
 
-        mSubscription.add(subscription);
-    }
-
-    private void ensureAppResourceAvailable() {
-        Subscription subscription = mAppResourceRepository.ensureAppResourceAvailable()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
         mSubscription.add(subscription);
     }
 
@@ -308,7 +300,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         if (!isLoadedGateWayInfo) {
             loadGatewayInfoPaymentSDK();
         }
-        ensureAppResourceAvailable();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
