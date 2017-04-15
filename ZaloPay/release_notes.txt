@@ -1,3 +1,8 @@
+Zalo Pay (Staging v2.10.0 - build 217) - Released on 2017-04-15
+- [SDK] Sửa lỗi check network
+- [SDK] Fix bug màn hình kết quả chuyển tiền trên các thiết bị có màn hình nhỏ
+- [Notify] Update protobuf v3
+
 Zalo Pay (Staging v2.10.0 - build 216) - Released on 2017-04-13
 - [App] Fix lỗi không load được icon font & config khi mới chạy app.
 - [App] Update màn hình Liên Kết Ngân Hàng.
