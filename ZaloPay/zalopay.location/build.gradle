@@ -1,8 +1,8 @@
 buildscript {
     repositories {
-        mavenCentral()
         jcenter()
     }
+
     dependencies {
         classpath "me.tatarka:gradle-retrolambda:${lambdaVersion}"
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'

@@ -7,7 +7,6 @@ apply plugin: 'me.tatarka.retrolambda'
 
 buildscript {
     repositories {
-        mavenCentral()
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
     }

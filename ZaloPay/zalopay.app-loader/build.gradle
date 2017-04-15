@@ -30,7 +30,6 @@ android {
 
 buildscript {
     repositories {
-        mavenCentral()
         jcenter()
         flatDir {
             dirs "../libs"
