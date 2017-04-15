@@ -119,13 +119,7 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
     @Override
     public void setBalance(long balance) {
         if (tvBalance != null) {
-            String _temp = CurrencyUtil.formatCurrency(balance, true);
-
-            SpannableString span = new SpannableString(_temp);
-            span.setSpan(new RelativeSizeSpan(0.66f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            tvBalance.setText(span);
+            tvBalance.setText(CurrencyUtil.spanFormatCurrency(balance, false));
         }
     }
 

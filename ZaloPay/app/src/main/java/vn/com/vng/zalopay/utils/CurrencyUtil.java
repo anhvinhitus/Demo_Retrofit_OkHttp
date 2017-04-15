@@ -45,16 +45,20 @@ public class CurrencyUtil {
     }
 
     public static SpannableString spanFormatCurrency(double money, boolean isBold) {
-        String _temp = CurrencyUtil.formatCurrency(money, true);
-        SpannableString span = new SpannableString(_temp);
+        String moneyString = CurrencyUtil.formatCurrency(money, true);
+        SpannableString span = new SpannableString(moneyString);
 
-        int indexSuffix = _temp.indexOf(CurrencyUtil.CURRENCY_UNIT);
+        int indexSuffix = moneyString.indexOf(CurrencyUtil.CURRENCY_UNIT);
 
-        span.setSpan(new RelativeSizeSpan(0.8f), indexSuffix, _temp.length(),
+        span.setSpan(new RelativeSizeSpan(0.8f),
+                indexSuffix,
+                moneyString.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (isBold) {
-            span.setSpan(new StyleSpan(Typeface.BOLD), 0, indexSuffix,
+            span.setSpan(new StyleSpan(Typeface.BOLD),
+                    0,
+                    indexSuffix,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 

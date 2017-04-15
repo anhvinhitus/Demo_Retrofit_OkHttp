@@ -262,13 +262,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
 
     @Override
     public void setBalance(long balance) {
-        String _temp = CurrencyUtil.formatCurrency(balance, true);
-
-        SpannableString span = new SpannableString(_temp);
-        span.setSpan(new RelativeSizeSpan(0.8f), _temp.indexOf(CurrencyUtil.CURRENCY_UNIT), _temp.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        mBalanceView.setText(span);
+        mBalanceView.setText(CurrencyUtil.spanFormatCurrency(balance, false));
     }
 
     @Override
