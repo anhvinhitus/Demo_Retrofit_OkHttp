@@ -6,7 +6,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.text.TextPaint;
 import android.text.TextUtils;
 
@@ -15,6 +17,7 @@ import com.zalopay.ui.widget.iconfont.IconFontHelper;
 import com.zalopay.ui.widget.iconfont.IconFontInfo;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.R;
 
 /**
  * Created by longlv on 4/3/17.
@@ -27,7 +30,9 @@ public class BottomNavigationDrawable extends IconFontDrawable {
     private TextPaint mPaintSubIcon;
     private int mSizeSubIcon;
 
-    public BottomNavigationDrawable(Context context) {
+    public BottomNavigationDrawable(Context context,
+                                    @StringRes int icon,
+                                    @ColorRes int color) {
         super(context);
         mPaintSubIcon = new TextPaint();
         mPaintSubIcon.setStyle(Paint.Style.STROKE);
@@ -36,6 +41,10 @@ public class BottomNavigationDrawable extends IconFontDrawable {
         mPaintSubIcon.setColor(Color.RED);
         mPaintSubIcon.setAntiAlias(true);
         mTextSubIcon = null;
+
+        setIcon(icon);
+        setResourcesColor(color);
+        setResourcesSize(R.dimen.font_size_tab_icon);
     }
 
     public BottomNavigationDrawable setSubIcon(String iconName) {
