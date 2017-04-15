@@ -63,12 +63,12 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
     private final static int SPAN_COUNT_APPLICATION = 3;
 
     @Inject
-    ZaloPayPresenter presenter;
+    ZaloPayPresenter mPresenter;
 
-    private HomeAdapter mAdapter;
+    private HomeAdapter mHomeAdapter;
 
     @BindView(R.id.listView)
-    RecyclerView listView;
+    RecyclerView mAppListView;
 
     @BindView(R.id.tvInternetConnection)
     TextView mTvInternetConnection;
@@ -80,13 +80,13 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
     Toolbar mToolbar;
 
     @BindView(R.id.appbar)
-    AppBarLayout appBarLayout;
+    AppBarLayout mAppBarLayout;
 
     @BindView(R.id.toolbar_header_view)
-    HeaderViewTop toolbarHeaderView;
+    HeaderViewTop mToolbarHeaderView;
 
     @BindView(R.id.float_header_view)
-    HeaderView headerView;
+    HeaderView mHeaderView;
 
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -119,23 +119,23 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mAdapter = new HomeAdapter(getContext(), this, SPAN_COUNT_APPLICATION);
+        mHomeAdapter = new HomeAdapter(getContext(), this, SPAN_COUNT_APPLICATION);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Timber.d("onViewCreated");
-        presenter.attachView(this);
+        mPresenter.attachView(this);
 
-        listView.setHasFixedSize(true);
+        mAppListView.setHasFixedSize(true);
         HomeSpacingItemDecoration itemDecoration = new HomeSpacingItemDecoration(SPAN_COUNT_APPLICATION, 2, false);
-        listView.addItemDecoration(itemDecoration);
+        mAppListView.addItemDecoration(itemDecoration);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), SPAN_COUNT_APPLICATION);
-        gridLayoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());
-        listView.setLayoutManager(gridLayoutManager);
-        listView.setAdapter(mAdapter);
+        gridLayoutManager.setSpanSizeLookup(mHomeAdapter.getSpanSizeLookup());
+        mAppListView.setLayoutManager(gridLayoutManager);
+        mAppListView.setAdapter(mHomeAdapter);
 
         setInternetConnectionError(getString(R.string.exception_no_connection_tutorial),
                 getString(R.string.check_internet));
@@ -160,40 +160,40 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.initialize();
+        mPresenter.initialize();
     }
 
     @Override
     public void onResume() {
-        presenter.resume();
+        mPresenter.resume();
         // Set collapsing behavior
-        appBarLayout.addOnOffsetChangedListener(this);
+        mAppBarLayout.addOnOffsetChangedListener(this);
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        presenter.pause();
-        appBarLayout.removeOnOffsetChangedListener(this);
+        mPresenter.pause();
+        mAppBarLayout.removeOnOffsetChangedListener(this);
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
-        listView.setAdapter(null);
-        presenter.detachView();
+        mAppListView.setAdapter(null);
+        mPresenter.detachView();
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
-        presenter.destroy();
+        mPresenter.destroy();
         super.onDestroy();
     }
 
     @Override
     public void setAppItems(List<AppResource> list) {
-        mAdapter.setAppItems(list);
+        mHomeAdapter.setAppItems(list);
     }
 
     @Override
@@ -247,7 +247,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
 
     @Override
     public void onRefresh() {
-        presenter.getListAppResource();
+        mPresenter.getListAppResource();
     }
 
     @Override
@@ -257,7 +257,7 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
 
     @Override
     public void onClickAppItem(AppResource app, int position) {
-        presenter.launchApp(app, position);
+        mPresenter.launchApp(app, position);
     }
 
     @Override
@@ -273,15 +273,17 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
 
     @Override
     public void setTotalNotify(int total) {
-        if (mNotifyView != null) {
-            if (mNotifyView.isShown()) {
-                mNotifyView.show(total);
-            } else {
-                mNotifyView.show(total);
-                if (total > 0) {
-                    Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.simple_grow);
-                    mNotifyView.startAnimation(animation);
-                }
+        if (mNotifyView == null) {
+            return;
+        }
+
+        if (mNotifyView.isShown()) {
+            mNotifyView.show(total);
+        } else {
+            mNotifyView.show(total);
+            if (total > 0) {
+                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.simple_grow);
+                mNotifyView.startAnimation(animation);
             }
         }
     }
@@ -340,19 +342,19 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
         float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
         boolean isCollaped;
 
-        headerView.setAlpha(1 - percentage);
+        mHeaderView.setAlpha(1 - percentage);
 
         if (percentage == 0f) {
             isCollaped = true;
-            headerView.setVisibility(View.VISIBLE);
+            mHeaderView.setVisibility(View.VISIBLE);
         } else {
             isCollaped = false;
             if (percentage > 0.5f) {
-                headerView.setVisibility(View.GONE);
+                mHeaderView.setVisibility(View.GONE);
             } else {
-                headerView.setVisibility(View.VISIBLE);
+                mHeaderView.setVisibility(View.VISIBLE);
             }
         }
-        toolbarHeaderView.setHeaderTopStatus(isCollaped, percentage);
+        mToolbarHeaderView.setHeaderTopStatus(isCollaped, percentage);
     }
 }
