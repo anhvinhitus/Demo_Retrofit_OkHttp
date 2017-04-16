@@ -88,7 +88,6 @@ public class AndroidApplication extends Application {
             Timber.plant(new CrashlyticsTree());
         }
 
-        Fabric.with(this, new Crashlytics());
         initializeFresco();
 
         initResource();
@@ -98,6 +97,7 @@ public class AndroidApplication extends Application {
         initializeZaloPayAnalytics();
 
         Timber.d("onCreate %s", appComponent);
+
         ZaloSDKApplication.wrap(this);
         if (!BuildConfig.DEBUG) {
             // Disable Zalo log on RELEASE
@@ -112,6 +112,12 @@ public class AndroidApplication extends Application {
         initIconFont(false);
         initLocation();
 
+    }
+
+    private void backgroundInitialization() {
+        Fabric.with(this, new Crashlytics());
+
+        appComponent.bundleService().ensureLocalResources();
     }
 
     private void initResource() {
@@ -182,7 +188,7 @@ public class AndroidApplication extends Application {
         appComponent.threadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                appComponent.bundleService().ensureLocalResources();
+                backgroundInitialization();
             }
         });
     }
