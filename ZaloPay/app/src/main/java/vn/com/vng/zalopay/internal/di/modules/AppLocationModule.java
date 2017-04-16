@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.cache.AppStorage;
 import vn.com.vng.zalopay.data.cache.AppStorageImpl;
 import vn.com.vng.zalopay.data.cache.global.DaoSession;
@@ -35,5 +36,16 @@ public class AppLocationModule {
     @Provides
     LocationStore.Repository provideLocationRepository(LocationStore.LocalStorage localStorage) {
         return new LocationRepository(localStorage);
+    }
+
+    @Singleton
+    @Provides
+    LocationStore.RepositoryFactory provideLocationRepositoryFactory() {
+        return new LocationStore.RepositoryFactory() {
+            @Override
+            public LocationStore.Repository get() {
+                return AndroidApplication.instance().getAppComponent().locationRepository();
+            }
+        };
     }
 }

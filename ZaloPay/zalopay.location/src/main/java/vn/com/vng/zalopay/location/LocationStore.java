@@ -20,4 +20,8 @@ public interface LocationStore {
 
         AppLocation getLocation();
     }
+
+    interface RepositoryFactory {
+        Repository get();
+    }
 }

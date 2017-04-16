@@ -170,7 +170,7 @@ public class AndroidApplication extends Application {
     }
 
     private void initLocation() {
-        LocationProvider.init(appComponent.locationRepository(), this);
+        LocationProvider.init(appComponent.locationRepositoryFactory(), this);
     }
 
     private void initAppComponent() {

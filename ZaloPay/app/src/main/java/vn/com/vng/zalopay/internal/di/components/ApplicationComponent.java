@@ -87,6 +87,8 @@ public interface ApplicationComponent {
 
     ApptransidLogStore.Repository appTransIdLogRepository();
 
+    LocationStore.RepositoryFactory locationRepositoryFactory();
+
     LocationStore.Repository locationRepository();
 
     /*INJECT*/

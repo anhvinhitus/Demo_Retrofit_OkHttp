@@ -18,17 +18,16 @@ import vn.com.vng.zalopay.data.util.ObservableHelper;
 
 public class LocationProvider extends Service {
     private final static int TIME_REFRESH = 300000;
-    private static LocationStore.Repository mRepository;
+    private static LocationStore.RepositoryFactory mRepositoryFactory;
     private static Context mApplicationContext;
 
     private static Location location;
 
     private static double latitude;
     private static double longitude;
-//    private static Address address;
 
-    public static void init(LocationStore.Repository repository, Context applicationContext) {
-        mRepository = repository;
+    public static void init(LocationStore.RepositoryFactory repositoryFactory, Context applicationContext) {
+        mRepositoryFactory = repositoryFactory;
         mApplicationContext = applicationContext;
     }
 
@@ -79,25 +78,8 @@ public class LocationProvider extends Service {
         if (location != null) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-
-//            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-//            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-//            if (addresses != null) {
-//                address = addresses.get(0);
-//            }
         }
     }
-
-//    private static String getAddress() {
-//        if (address != null) {
-//            return String.format("%s, %s, %s, %s",
-//                    address.getAddressLine(0),
-//                    address.getAddressLine(1),
-//                    address.getAddressLine(2),
-//                    address.getAddressLine(3));
-//        }
-//        return null;
-//    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -105,10 +87,10 @@ public class LocationProvider extends Service {
     }
 
     private static void saveLocation() {
-        if(mRepository == null) {
+        if (mRepositoryFactory == null || mRepositoryFactory.get() == null) {
             return;
         }
-        mRepository.saveLocation(latitude, longitude, System.currentTimeMillis()).subscribe();
+        mRepositoryFactory.get().saveLocation(latitude, longitude, System.currentTimeMillis()).subscribe();
     }
 
     public static void updateLocation() {
@@ -136,13 +118,13 @@ public class LocationProvider extends Service {
     }
 
     public static AppLocation getLocation() {
-        if(mRepository == null) {
+        if (mRepositoryFactory == null || mRepositoryFactory.get() == null) {
             return null;
         }
 
-        AppLocation location = mRepository.getLocation();
+        AppLocation location = mRepositoryFactory.get().getLocation();
 
-        if((location.latitude == 0 && location.longitude == 0) ||
+        if ((location.latitude == 0 && location.longitude == 0) ||
                 ((System.currentTimeMillis() - location.timestamp) > TIME_REFRESH)) {
             return null;
         }
