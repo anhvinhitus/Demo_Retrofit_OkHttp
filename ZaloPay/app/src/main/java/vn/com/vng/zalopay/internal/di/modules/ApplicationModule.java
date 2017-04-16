@@ -77,9 +77,15 @@ public class ApplicationModule {
         return PreferenceManager.getDefaultSharedPreferences(application);
     }
 
+//    @Provides
+//    @Singleton
+//    UserConfig providesUserConfig(@Named("daosession") DaoSession daoSession, SharedPreferences sharedPreferences, EventBus eventBus) {
+//        return new UserConfigImpl(sharedPreferences, eventBus);
+//    }
+
     @Provides
     @Singleton
-    UserConfig providesUserConfig(@Named("daosession") DaoSession daoSession, SharedPreferences sharedPreferences, EventBus eventBus) {
+    UserConfig providesUserConfig(SharedPreferences sharedPreferences, EventBus eventBus) {
         return new UserConfigImpl(sharedPreferences, eventBus);
     }
 
