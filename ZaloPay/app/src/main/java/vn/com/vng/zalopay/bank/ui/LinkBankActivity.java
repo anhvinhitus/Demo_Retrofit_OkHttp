@@ -34,7 +34,6 @@ public class LinkBankActivity extends BaseToolBarActivity
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private Bundle bundle;
 
     @Inject
     LinkBankPresenter mPresenter;
@@ -57,7 +56,7 @@ public class LinkBankActivity extends BaseToolBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bundle = null;
+        Bundle bundle = null;
         if (getIntent() != null) {
             bundle = getIntent().getExtras();
         }
@@ -81,7 +80,7 @@ public class LinkBankActivity extends BaseToolBarActivity
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(pageIndex);
-        mViewPager.setOffscreenPageLimit(mSectionsPagerAdapter.getCount() -1 );
+        mViewPager.setOffscreenPageLimit(mSectionsPagerAdapter.getCount() - 1);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -100,7 +99,7 @@ public class LinkBankActivity extends BaseToolBarActivity
         SharedPreferences.Editor editor = getSharedPreferences(Constants.PREF_LINK_BANK, MODE_PRIVATE).edit();
         int curPosition = mViewPager.getCurrentItem();
         editor.putInt(Constants.PREF_LINK_BANK_LAST_INDEX, curPosition);
-        editor.commit();
+        editor.apply();
     }
 
     @Override

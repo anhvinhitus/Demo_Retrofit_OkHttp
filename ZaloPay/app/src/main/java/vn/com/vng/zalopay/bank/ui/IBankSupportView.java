@@ -15,7 +15,12 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 interface IBankSupportView extends ILoadDataView {
 
     Activity getActivity();
+
     void onEventUpdateVersion(boolean forceUpdate, String latestVersion, String message);
-    void refreshBankSupports(List<ZPCard> cardSupportList);
+
+    void refreshListBank(List<ZPCard> cardSupportList);
+
     void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener);
+
+    void setTitleListBank(int strResource);
 }

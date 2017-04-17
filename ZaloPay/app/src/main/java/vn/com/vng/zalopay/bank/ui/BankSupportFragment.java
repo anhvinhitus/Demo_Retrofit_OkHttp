@@ -6,8 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,11 +17,11 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
-import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
@@ -34,22 +35,15 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 public class BankSupportFragment extends BaseFragment implements IBankSupportView {
     private final static int COLUMN_COUNT = 3;
 
-    @BindView(R.id.tvLinkCard)
-    View mTvLinkCard;
+    @BindView(R.id.tv_title_list_bank)
+    TextView mTvTitleListBank;
 
-    @BindView(R.id.linkCardRecyclerView)
-    RecyclerView mLinkCardRecyclerView;
-
-    @BindView(R.id.tvLinkAccount)
-    View mTvLinkAccount;
-
-    @BindView(R.id.linkAccRecyclerView)
-    RecyclerView mLinkAccRecyclerView;
+    @BindView(R.id.list_bank)
+    RecyclerView mBankRecyclerView;
 
     @Inject
     BankSupportPresenter mPresenter;
 
-    private boolean mAutoLoadData;
     private BankSupportAdapter mLinkCardAdapter;
     private BankSupportAdapter mLinkAccAdapter;
 
@@ -64,9 +58,10 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
      * @return A new instance of fragment CardSupportFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BankSupportFragment newInstance(boolean autoLoadData) {
+    public static BankSupportFragment newInstance(boolean autoLoadData, LinkBankType bankType) {
         Bundle args = new Bundle();
         args.putBoolean(Constants.ARG_AUTO_LOAD_DATA, autoLoadData);
+        args.putSerializable(Constants.ARG_LINK_BANK_TYPE, bankType);
         BankSupportFragment fragment = new BankSupportFragment();
         fragment.setArguments(args);
         return fragment;
@@ -85,42 +80,24 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initData();
-    }
-
-    private void initData() {
-        Bundle bundle = getArguments();
-        if (bundle == null) {
-            return;
-        }
-        mAutoLoadData = bundle.getBoolean(Constants.ARG_AUTO_LOAD_DATA, false);
-        Timber.d("Auto load data : mAutoLoadData [%s]", mAutoLoadData);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
+        mPresenter.iniData(getArguments());
         mLinkCardAdapter = new BankSupportAdapter(getContext());
         mLinkAccAdapter = new BankSupportAdapter(getContext());
 
-        mLinkCardRecyclerView.setHasFixedSize(true);
-        mLinkCardRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMN_COUNT));
-        mLinkCardRecyclerView.setNestedScrollingEnabled(false);
-        //mLinkCardRecyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUMN_COUNT, 2, false));
-        mLinkCardRecyclerView.setAdapter(mLinkCardAdapter);
-        mLinkCardRecyclerView.setFocusable(false);
+        mBankRecyclerView.setHasFixedSize(true);
+        mBankRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMN_COUNT));
+        mBankRecyclerView.setNestedScrollingEnabled(false);
+        //mBankRecyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUMN_COUNT, 2, false));
+        mBankRecyclerView.setAdapter(mLinkCardAdapter);
+        mBankRecyclerView.setFocusable(false);
 
-        mLinkAccRecyclerView.setHasFixedSize(true);
-        mLinkAccRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMN_COUNT));
-        mLinkAccRecyclerView.setNestedScrollingEnabled(false);
-        //mLinkAccRecyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUMN_COUNT, 2, false));
-        mLinkAccRecyclerView.setAdapter(mLinkAccAdapter);
-        mLinkAccRecyclerView.setFocusable(false);
-
-        if (mAutoLoadData) {
-            getCardSupport();
-        }
+        mPresenter.getCardSupportIfNeed();
     }
 
     public void getCardSupport() {
@@ -183,58 +160,21 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
     }
 
     @Override
-    public void refreshBankSupports(List<ZPCard> cardSupportList) {
+    public void refreshListBank(List<ZPCard> cardSupportList) {
         if (!isAdded()) {
             Timber.d("Refresh Bank Supports error because fragment didn't add.");
             return;
         }
         hideProgressDialog();
-        if (Lists.isEmptyOrNull(cardSupportList)) {
-            Timber.d("Refresh Bank Supports error because list card null/empty.");
-            return;
-        }
-        List<ZPCard> listSupportLinkCard = new ArrayList<>();
-        List<ZPCard> listSupportLinkAccount = new ArrayList<>();
-        for (ZPCard card: cardSupportList) {
-            if (card == null) {
-                continue;
-            }
-            if (card.isBankAccount()) {
-                listSupportLinkAccount.add(card);
-            } else {
-                listSupportLinkCard.add(card);
-            }
-        }
-        refreshLinkCardList(listSupportLinkCard);
-        refreshLinkAccountList(listSupportLinkAccount);
-    }
-
-    private void refreshLinkCardList(List<ZPCard> cardSupportList) {
         if (mLinkCardAdapter == null) {
+            Timber.d("Refresh Bank Supports error because adapter is null.");
             return;
         }
-        if (!Lists.isEmptyOrNull(cardSupportList)) {
-            mTvLinkCard.setVisibility(View.VISIBLE);
-            mLinkCardRecyclerView.setVisibility(View.VISIBLE);
+        if (Lists.isEmptyOrNull(cardSupportList)) {
+            mLinkCardAdapter.setData(Collections.emptyList());
         } else {
-            mTvLinkCard.setVisibility(View.GONE);
-            mLinkCardRecyclerView.setVisibility(View.GONE);
+            mLinkCardAdapter.setData(cardSupportList);
         }
-        mLinkCardAdapter.setData(cardSupportList);
-    }
-
-    private void refreshLinkAccountList(List<ZPCard> cardSupportList) {
-        if (mLinkAccAdapter == null) {
-            return;
-        }
-        if (!Lists.isEmptyOrNull(cardSupportList)) {
-            mTvLinkAccount.setVisibility(View.VISIBLE);
-            mLinkAccRecyclerView.setVisibility(View.VISIBLE);
-        } else {
-            mTvLinkAccount.setVisibility(View.GONE);
-            mLinkAccRecyclerView.setVisibility(View.GONE);
-        }
-        mLinkAccAdapter.setData(cardSupportList);
     }
 
     @Override
@@ -243,6 +183,11 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
             return;
         }
         super.showRetryDialog(message, listener);
+    }
+
+    @Override
+    public void setTitleListBank(int strResource) {
+        mTvTitleListBank.setText(strResource);
     }
 
     @Override

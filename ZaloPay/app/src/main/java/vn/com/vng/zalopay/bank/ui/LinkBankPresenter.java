@@ -1,25 +1,19 @@
 package vn.com.vng.zalopay.bank.ui;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
@@ -27,12 +21,10 @@ import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by longlv on 2/6/17.
- * *
+ * Presenter of LinkBankActivity
  */
 
-class LinkBankPresenter implements IPresenter<ILinkBankView> {
-
-    ILinkBankView mView;
+class LinkBankPresenter extends AbstractPresenter<ILinkBankView> {
 
     @Inject
     User mUser;
@@ -40,11 +32,6 @@ class LinkBankPresenter implements IPresenter<ILinkBankView> {
     @Inject
     LinkBankPresenter() {
 
-    }
-
-    @Override
-    public void attachView(ILinkBankView linkBankView) {
-        mView = linkBankView;
     }
 
     void initPageStart(Bundle bundle) {
@@ -72,13 +59,13 @@ class LinkBankPresenter implements IPresenter<ILinkBankView> {
      * 4) Nếu User đã có cả 2 liên kết thẻ và tài khoản: Hiển thị tab "Thẻ"
      * Reference: https://gitlab.com/zalopay/bugs/issues/273
      */
-    void changePageInContext() {
+    private void changePageInContext() {
         SharedPreferences editor = mView.getContext().getSharedPreferences(Constants.PREF_LINK_BANK, MODE_PRIVATE);
         int lastPageIndex = editor.getInt(Constants.PREF_LINK_BANK_LAST_INDEX, -1);
         if (lastPageIndex < 0) {
             List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
             List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
-            LinkBankPagerIndex linkBankPagerIndex = null;
+            LinkBankPagerIndex linkBankPagerIndex;
 
             if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
                 linkBankPagerIndex = LinkBankPagerIndex.LINK_CARD;
@@ -90,66 +77,11 @@ class LinkBankPresenter implements IPresenter<ILinkBankView> {
                 linkBankPagerIndex = LinkBankPagerIndex.LINK_CARD;
             }
 
-            if (mView != null && linkBankPagerIndex != null) {
+            if (mView != null) {
                 mView.initViewPager(linkBankPagerIndex.getValue());
             }
         } else {
             mView.initViewPager(lastPageIndex);
-        }
-
-//        ObservableHelper.makeObservable(new Callable<LinkBankPagerIndex>() {
-//            @Override
-//            public LinkBankPagerIndex call() throws Exception {
-//                List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-//                List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
-//                if (Lists.isEmptyOrNull(mapCardList) && Lists.isEmptyOrNull(mapAccList)) {
-//                    return LinkBankPagerIndex.LINK_CARD;
-//                } else if (!Lists.isEmptyOrNull(mapCardList)) {
-//                    return LinkBankPagerIndex.LINK_CARD;
-//                } else if (!Lists.isEmptyOrNull(mapAccList)) {
-//                    return LinkBankPagerIndex.LINK_ACCOUNT;
-//                } else {
-//                    return LinkBankPagerIndex.LINK_CARD;
-//                }
-//            }
-//        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new ChangePageInContextSubscriber());
-
-    }
-
-    @Override
-    public void detachView() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
-
-    private class ChangePageInContextSubscriber extends DefaultSubscriber<LinkBankPagerIndex> {
-
-        @Override
-        public void onNext(LinkBankPagerIndex pageInContext) {
-            if (mView != null && pageInContext != null) {
-                mView.initViewPager(pageInContext.getValue());
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Timber.w(e, "Change page in context throw exception.");
-            super.onError(e);
         }
     }
 }

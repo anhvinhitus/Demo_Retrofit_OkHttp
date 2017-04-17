@@ -28,6 +28,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
+import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -161,7 +162,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     private void initBankSupportFragment() {
         if (getFragmentManager().findFragmentById(R.id.fragmentInLinkCard) == null) {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            mBankSupportFragment = BankSupportFragment.newInstance(false);
+            mBankSupportFragment = BankSupportFragment.newInstance(false, LinkBankType.LINK_BANK_CARD);
             ft.replace(R.id.fragmentInLinkCard, mBankSupportFragment);
             ft.commit();
         } else {
