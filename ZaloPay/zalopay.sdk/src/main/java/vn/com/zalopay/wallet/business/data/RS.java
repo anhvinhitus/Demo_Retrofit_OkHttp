@@ -48,7 +48,9 @@ public class RS {
     }
 
     public static final class string {
-        public static final String sdk_vcb_note = "sdk_vcb_note";
+        public static final String sdk_error_numberphone_sdk_vcb = "sdk_error_numberphone_sdk_vcb";
+        public static final String prefix_numberphone_vcb = "prefix_numberphone_vcb";
+        public static final String suffix_numberphone_vcb = "suffix_numberphone_vcb";
 
         public static final String payment_success_label = "payment_success_label";
         public static final String zpw_update_level_inform_content = "zpw_update_level_inform_content";
