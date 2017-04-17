@@ -33,7 +33,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
@@ -115,25 +114,6 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
         mAdapter = new LinkAccountAdapter(getContext(), this);
     }
 
-    Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mPresenter != null) {
-                mPresenter.getMapBankAccount();
-            }
-        }
-    };
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            AndroidUtils.runOnUIThread(mRunnable, 200);
-        } else {
-            AndroidUtils.cancelRunOnUIThread(mRunnable);
-        }
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -147,7 +127,10 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
             }
         }
         mRecyclerView.setAdapter(mAdapter);
+
         initBankSupportFragment();
+
+        mPresenter.getMapBankAccount();
     }
 
     private void initBankSupportFragment() {
@@ -308,10 +291,6 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @Override
     public void onDestroy() {
-        if (mRunnable != null) {
-            AndroidUtils.cancelRunOnUIThread(mRunnable);
-            mRunnable = null;
-        }
         mPresenter.destroy();
         super.onDestroy();
     }

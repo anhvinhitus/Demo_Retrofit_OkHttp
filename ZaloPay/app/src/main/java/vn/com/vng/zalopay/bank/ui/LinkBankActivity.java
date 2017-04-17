@@ -4,13 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-
-import java.util.concurrent.Delayed;
 
 import javax.inject.Inject;
 
@@ -85,6 +81,7 @@ public class LinkBankActivity extends BaseToolBarActivity
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(pageIndex);
+        mViewPager.setOffscreenPageLimit(mSectionsPagerAdapter.getCount() -1 );
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);

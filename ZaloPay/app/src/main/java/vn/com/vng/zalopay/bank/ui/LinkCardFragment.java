@@ -31,7 +31,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -156,6 +155,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
         initBankSupportFragment();
         initBottomSheet();
+
+        mPresenter.getListCard();
     }
 
     private void initBankSupportFragment() {
@@ -167,25 +168,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         } else {
             mBankSupportFragment = (BankSupportFragment)
                     getFragmentManager().findFragmentById(R.id.fragmentInLinkCard);
-        }
-    }
-
-    Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mPresenter != null) {
-                mPresenter.getListCard();
-            }
-        }
-    };
-
-    @Override
-    public void setUserVisibleHint(final boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            AndroidUtils.runOnUIThread(mRunnable, 200);
-        } else {
-            AndroidUtils.cancelRunOnUIThread(mRunnable);
         }
     }
 
@@ -286,10 +268,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @Override
     public void onDestroy() {
-        if (mRunnable != null) {
-            AndroidUtils.cancelRunOnUIThread(mRunnable);
-            mRunnable = null;
-        }
         mPresenter.destroy();
         if (mBottomSheetDialog != null && mBottomSheetDialog.isShowing()) {
             mBottomSheetDialog.dismiss();
