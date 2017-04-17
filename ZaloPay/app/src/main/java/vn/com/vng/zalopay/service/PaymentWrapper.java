@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.Order;
 import vn.com.vng.zalopay.domain.model.User;
@@ -315,8 +316,22 @@ public class PaymentWrapper {
             userInfo.accessToken = user.accesstoken;
             userInfo.level = getUserProfileLevel();
             userInfo.userProfile = getUserPermission();
+            userInfo.phoneNumber = getPhoneNumber();
         }
         return userInfo;
+    }
+
+    private String getPhoneNumber() {
+        if (getUserComponent() == null) {
+            return "";
+        }
+
+        User user = getUserComponent().currentUser();
+        if (user == null) {
+            return "";
+        }
+
+        return PhoneUtil.formatPhoneNumber(user.phonenumber);
     }
 
     private void callPayAPI(Activity owner, ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {
