@@ -2,10 +2,7 @@ package vn.com.vng.zalopay.ui.fragment.tabmain;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,7 +17,7 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
+import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;

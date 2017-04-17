@@ -21,7 +21,7 @@ import butterknife.OnPageChange;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
-import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
+import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.HomePresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;

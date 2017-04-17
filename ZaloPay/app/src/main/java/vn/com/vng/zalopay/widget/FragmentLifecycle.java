@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.scanners.ui;
+package vn.com.vng.zalopay.widget;
 
 /**
  * Created by AnhHieu on 9/19/16.
