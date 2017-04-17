@@ -495,7 +495,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         case EMPTY_USERNAME:
                         case EMPTY_PASSWORD:
                         case EMPTY_CAPCHA:
-                            showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_LONG);
+                            showMessage(null, VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_LONG);
                             break;
                         case WRONG_USERNAME_PASSWORD:
                             mNumAllowLoginWrong--;
@@ -519,7 +519,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         case WRONG_CAPTCHA:
                             ViewUtils.setTextInputLayoutHintError(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
                             if (!GlobalData.shouldNativeWebFlow()) {
-                                showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_LONG);
+                                showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                             }
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().setText("");
                             linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().requestFocus();
@@ -634,7 +634,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     if (!TextUtils.isEmpty(response.message)) {
                         switch (VcbUtils.getVcbType(response.message)) {
                             case EMPTY_CAPCHA:
-                                showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_LONG);
+                                showMessage(null, VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_LONG);
                                 break;
                             case WRONG_CAPTCHA:
                                 if (COUNT_ERROR_CAPTCHA >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_captcha))) {
@@ -649,7 +649,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                                     ViewUtils.setTextInputLayoutHintError(linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
                                     if (!GlobalData.shouldNativeWebFlow()) {
-                                        showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_LONG);
+                                        showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                                     }
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText("");
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
@@ -751,7 +751,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         } else {
                             showProgressBar(false, null);
                             if (!GlobalData.shouldNativeWebFlow()) {
-                                DialogManager.showSweetDialogConfirm(getActivity(), response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button), new ZPWOnEventConfirmDialogListener() {
+                                getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
                                     @Override
                                     public void onCancelEvent() {
                                         showProgressBar(false, null); // close process dialog
@@ -761,6 +761,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                                     @Override
                                     public void onOKevent() {
+
                                         //retry reload the previous page
                                         if (!TextUtils.isEmpty(mUrlReload)) {
                                             showProgressBar(true,GlobalData.getStringResource(RS.string.zpw_loading_website_message));
@@ -769,9 +770,11 @@ public class AdapterLinkAcc extends AdapterBase {
                                             mWebViewProcessor.reloadWebView(mUrlReload);
                                         }
                                     }
-                                });
+                                },response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button));
+
                             } else {
                                 showMessage(null, response.message, TSnackbar.LENGTH_LONG);
+                                mWebViewProcessor.reloadWebView(mUrlReload);
                             }
                         }
                     }
