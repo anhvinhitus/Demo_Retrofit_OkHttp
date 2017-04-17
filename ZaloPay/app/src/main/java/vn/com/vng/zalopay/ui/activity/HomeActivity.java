@@ -223,6 +223,8 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         menu.getItem(HomePagerAdapter.TAB_PERSONAL_INDEX).setIcon(
                 createStateListDrawable(R.string.tab_personal_active, R.color.colorPrimary,
                         R.string.tab_personal, R.color.txt_item_sub));
+
+        setPromotionNewState(mViewPager.getCurrentItem() == HomePagerAdapter.TAB_PROMOTION_INDEX);
     }
 
     private void setPromotionNewState(boolean isActive) {
@@ -289,8 +291,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
     @Override
     public void refreshIconFont() {
-        if (mViewPager != null) {
-            initTabIconFont();
-        }
+        initTabIconFont();
     }
 }
