@@ -30,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
@@ -349,9 +350,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
         loginHolder.imgCaptcha = (ImageView) mAdapter.getActivity().findViewById(R.id.img_login_captcha);
         loginHolder.webCaptcha = (WebView) mAdapter.getActivity().findViewById(R.id.web_login_captcha);
-
-        loginHolder.vcb_note_textview = (TextView) mAdapter.getActivity().findViewById(R.id.vcb_note_textview);
-        loginHolder.vcb_note_textview.setText(GlobalData.getStringResource(RS.string.sdk_vcb_note));
 
         // new gui init confirm info
         registerHolder = new RegisterHolder();
@@ -691,7 +689,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     /***
      * @param pList
      */
-    public void setPhoneNumList(ArrayList<String> pList) {
+    public void setPhoneNumList(List<String> pList) {
         if (pList != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(mAdapter.getActivity(),
                     android.R.layout.simple_spinner_item, pList);
@@ -704,7 +702,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     /***
      * @param pList
      */
-    public void setPhoneNum(ArrayList<String> pList) {
+    public void setPhoneNum(List<String> pList) {
         if (pList != null) {
             getRegisterHolder().getEdtPhoneNum().setText(pList.get(0));
             return;
@@ -747,7 +745,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     /***
      * @param pList
      */
-    public void setWalletUnRegList(ArrayList<String> pList) {
+    public void setWalletUnRegList(List<String> pList) {
         if (pList != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(mAdapter.getActivity(),
                     android.R.layout.simple_spinner_item, pList);
@@ -760,7 +758,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     /***
      * @param pList
      */
-    public void setPhoneNumUnRegList(ArrayList<String> pList) {
+    public void setPhoneNumUnRegList(List<String> pList) {
         if (pList != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(mAdapter.getActivity(),
                     android.R.layout.simple_spinner_item, pList);
@@ -773,7 +771,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     /***
      * @param pList
      */
-    public void setPhoneNumUnReg(ArrayList<String> pList) {
+    public void setPhoneNumUnReg(List<String> pList) {
         if (pList != null) {
             getUnregisterHolder().getEdtPhoneNumber().setText(pList.get(0));
             return;
@@ -1074,11 +1072,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         WebView webCaptcha;
         ScrollView srvScrollView;
         ImageView imgLogoLinkAcc;
-        TextView vcb_note_textview;
-
-        public TextView getVcb_note_textview() {
-            return vcb_note_textview;
-        }
 
         public LinearLayout getLlLogin() {
             return llLogin;

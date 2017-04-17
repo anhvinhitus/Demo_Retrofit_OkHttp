@@ -921,7 +921,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 editText.setHint(pText);
             }
         } else if (view instanceof TextView) {
-            ((TextView) view).setText(pText);
+            ((TextView) view).setText(Html.fromHtml(pText));
         }
     }
 
