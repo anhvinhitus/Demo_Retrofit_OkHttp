@@ -171,16 +171,4 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/vcb_note_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/zpw_padding_5"
-        android:layout_marginLeft="@dimen/zpw_padding_10"
-        android:layout_marginRight="@dimen/zpw_padding_10"
-        android:gravity="center_horizontal"
-        android:text="@string/sdk_vcb_note"
-        android:textStyle="italic"
-        android:textColor="@color/text_color_grey" />
-
 </LinearLayout>
