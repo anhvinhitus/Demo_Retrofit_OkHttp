@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
@@ -348,8 +349,18 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     }
 
     private void showConfirmRemoveSaveCard(final BankAccount bankAccount) {
-        super.showConfirmDialog(getString(R.string.txt_confirm_remove_account),
-                getString(R.string.btn_confirm),
+        if (bankAccount == null) {
+            return;
+        }
+        String message;
+        if (ECardType.PVCB.toString().equalsIgnoreCase(bankAccount.mBankCode)) {
+            message = getString(R.string.txt_confirm_remove_vcb_account);
+        } else {
+            message = getString(R.string.txt_confirm_remove_account);
+        }
+
+        super.showConfirmDialog(message,
+                getString(R.string.accept),
                 getString(R.string.btn_cancel),
                 new ZPWOnEventConfirmDialogListener() {
                     @Override

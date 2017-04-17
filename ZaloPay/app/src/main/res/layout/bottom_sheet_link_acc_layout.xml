@@ -44,7 +44,7 @@
                 android:id="@+id/iv_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tool:src="@drawable/ic_sacombank_large"/>
+                tool:src="@drawable/ic_viettinbank"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
