@@ -183,7 +183,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
         Log.e("Error", "++++ Current error SSL on page: " + error.toString());
-        getAdapter().getActivity().showProgress(false,null);
+        getAdapter().getActivity().showProgress(false, null);
         getAdapter().getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
             @Override
             public void onCancelEvent() {
@@ -220,7 +220,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 Log.e(this, e);
             }
         }
-        getAdapter().getActivity().showProgress(false,null);
+        getAdapter().getActivity().showProgress(false, null);
         Log.d(getClass().getCanonicalName(), "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
 
     }
@@ -243,9 +243,14 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         mWebPaymentBridge.loadUrl(pUrl);
         mIsFirst = true;
     }
+
     public void reloadWebView(String pUrl) {
         // new url load.
         mWebPaymentBridge.loadUrl(pUrl);
+    }
+
+    public void stop() {
+        mWebPaymentBridge.stopLoading();
     }
 
     public void hit() {
@@ -283,8 +288,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url)) {
                 Log.d("WebView", "$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
                 isMatched = true;
-                if(bankScript.pageCode.equals(mAdapter.VCB_REGISTER_PAGE))
-                {
+                if (bankScript.pageCode.equals(mAdapter.VCB_REGISTER_PAGE)) {
                     mAdapter.mUrlReload = url;
                 }
                 mCurrentUrl = url;
