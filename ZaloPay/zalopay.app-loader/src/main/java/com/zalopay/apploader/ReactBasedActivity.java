@@ -176,7 +176,7 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
         mLifecycleState = LifecycleState.BEFORE_RESUME;
 
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onHostPause();
+            mReactInstanceManager.onHostPause(this);
         }
     }
 

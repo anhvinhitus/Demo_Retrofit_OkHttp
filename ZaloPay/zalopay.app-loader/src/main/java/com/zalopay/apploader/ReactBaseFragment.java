@@ -31,7 +31,7 @@ import timber.log.Timber;
  * *
  */
 
-public abstract class ReactBaseFragment extends Fragment implements DefaultHardwareBackBtnHandler, PermissionAwareActivity,
+public abstract class ReactBaseFragment extends Fragment implements DefaultHardwareBackBtnHandler,
         ReactInstanceDelegate, ReactInstanceManager.ReactInstanceEventListener {
 
     protected abstract void setupFragmentComponent();
@@ -64,6 +64,8 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     private PermissionListener mPermissionListener;
 
     LifecycleState mLifecycleState = LifecycleState.BEFORE_RESUME;
+
+    private boolean mReactInstanceError;
 
     @Override
     public void onAttach(Context context) {
@@ -125,13 +127,6 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    private boolean mReactInstanceError;
-
-    @Override
     public void onDestroyView() {
 
         if (mReactRootView != null) {
@@ -176,16 +171,6 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     }
 
     @Override
-    public void requestPermissions(String[] permissions, int requestCode, PermissionListener listener) {
-        if (!isAdded()) {
-            return;
-        }
-
-        mPermissionListener = listener;
-        requestPermissions(permissions, requestCode);
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Timber.d("onRequestPermissionsResult: requestCode [%s] grantResults [%s]", requestCode, grantResults);
         if (mPermissionListener != null &&
@@ -194,23 +179,6 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
         }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public int checkPermission(String permission, int pid, int uid) {
-        if (!isAdded()) {
-            return PackageManager.PERMISSION_DENIED;
-        }
-        return getActivity().checkPermission(permission, pid, uid);
-    }
-
-    @Override
-    public int checkSelfPermission(String permission) {
-        if (!isAdded()) {
-            return PackageManager.PERMISSION_DENIED;
-        }
-
-        return ActivityCompat.checkSelfPermission(getActivity(), permission);
     }
 
     @Nullable
