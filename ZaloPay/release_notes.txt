@@ -1,3 +1,11 @@
+Zalo Pay (Staging v2.10.0 - build 218) - Released on 2017-04-17
+- Update logic load dữ liệu trang Ngân hàng.
+- Update danh sách ngân hàng hỗ trợ liên kết thẻ/tài khoản.
+- Thêm pop up thông báo thành công khi hủy liên kết thẻ.
+- Sửa Pop-up chung khi nhấn back lúc vào webview.
+- Fix nhập sai thông tin user ko clear captcha cũ user đã nhập.
+- Kiểm tra số phone vcb và số phone zalopay
+
 Zalo Pay (Staging v2.10.0 - build 217) - Released on 2017-04-15
 - [SDK] Sửa lỗi check network
 - [SDK] Fix bug màn hình kết quả chuyển tiền trên các thiết bị có màn hình nhỏ
