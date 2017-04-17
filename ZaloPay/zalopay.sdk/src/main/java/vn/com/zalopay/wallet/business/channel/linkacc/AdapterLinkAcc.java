@@ -855,6 +855,8 @@ public class AdapterLinkAcc extends AdapterBase {
                             showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                         }
                         showProgressBar(false, null);
+                        linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().setText(null);
+                        linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().requestFocus();
                     }
                 }
                 COUNT_ERROR_PASS++;
