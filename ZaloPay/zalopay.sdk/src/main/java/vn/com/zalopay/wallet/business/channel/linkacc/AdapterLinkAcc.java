@@ -51,7 +51,6 @@ import vn.com.zalopay.wallet.utils.ViewUtils;
 import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
-import vn.com.zalopay.wallet.view.dialog.DialogManager;
 
 /**
  * Created by SinhTT on 14/11/2016.
@@ -66,6 +65,12 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
     public String mUrlReload;
     protected ZPWNotification mNotification;
+    private int COUNT_ERROR_PASS = 0;
+    private int COUNT_ERROR_CAPTCHA = 0;
+    private LinkAccGuiProcessor linkAccGuiProcessor;
+    private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
+    private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
+    private LinkAccWebViewClient mWebViewProcessor = null;
     protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
         BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
@@ -108,12 +113,6 @@ public class AdapterLinkAcc extends AdapterBase {
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
-    private int COUNT_ERROR_PASS = 0;
-    private int COUNT_ERROR_CAPTCHA = 0;
-    private LinkAccGuiProcessor linkAccGuiProcessor;
-    private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
-    private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
-    private LinkAccWebViewClient mWebViewProcessor = null;
     private int mNumAllowLoginWrong;
     private Handler mHandler = new Handler();
     private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
@@ -338,6 +337,7 @@ public class AdapterLinkAcc extends AdapterBase {
      */
     private void linkAccFail(String pMessage, String pTransID) {
         mPageCode = PAGE_LINKACC_FAIL;
+        mWebViewProcessor.stop();//stop loading website
         getActivity().renderByResource();
         getActivity().showFailView(pMessage, pTransID);
         getActivity().enableSubmitBtn(true);
@@ -354,6 +354,7 @@ public class AdapterLinkAcc extends AdapterBase {
      */
     private void unlinkAccSuccess() {
         mPageCode = PAGE_UNLINKACC_SUCCESS;
+        mWebViewProcessor.stop();//stop loading website
         getActivity().renderByResource();
         try {
             getActivity().showPaymentSuccessContent(mTransactionID);
@@ -430,6 +431,14 @@ public class AdapterLinkAcc extends AdapterBase {
 
     }
 
+    protected void showFailScreenOnType(String pMessage) {
+        if (GlobalData.isLinkAccFlow()) {
+            linkAccFail(pMessage, mTransactionID);
+        } else if (GlobalData.isUnLinkAccFlow()) {
+            unlinkAccFail(pMessage, mTransactionID);
+        }
+    }
+
     @Override
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
         // show value progressing
@@ -465,6 +474,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Login page
             if (page.equals(VCB_LOGIN_PAGE)) {
+                Log.d(this, "event login page");
                 showProgressBar(false, null); // close process dialog
                 linkAccGuiProcessor.hideProgress();
                 //for testing
@@ -505,7 +515,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                                 mNumAllowLoginWrong), TSnackbar.LENGTH_LONG);
                             } else if (GlobalData.isLinkAccFlow()) {
                                 linkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
-                            } else if(GlobalData.isUnLinkAccFlow()){
+                            } else if (GlobalData.isUnLinkAccFlow()) {
                                 unlinkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
                             }
                             return null;
@@ -551,6 +561,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Register page
             if (page.equals(VCB_REGISTER_PAGE)) {
+                Log.d(this, "event register page");
                 showProgressBar(false, null);
                 linkAccGuiProcessor.hideProgress();
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
@@ -693,6 +704,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Unregister page
             if (page.equals(VCB_UNREGISTER_PAGE)) {
+                Log.d(this, "event on unregister page complete");
                 showProgressBar(false, null);
                 linkAccGuiProcessor.hideProgress();
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
@@ -729,7 +741,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Register complete page
             if (page.equals(VCB_REGISTER_COMPLETE_PAGE)) {
-
+                Log.d(this, "event on register page complete");
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 // set message
@@ -764,13 +776,13 @@ public class AdapterLinkAcc extends AdapterBase {
 
                                         //retry reload the previous page
                                         if (!TextUtils.isEmpty(mUrlReload)) {
-                                            showProgressBar(true,GlobalData.getStringResource(RS.string.zpw_loading_website_message));
+                                            showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
                                             linkAccGuiProcessor.resetCaptchaConfirm();
                                             linkAccGuiProcessor.resetOtp();
                                             mWebViewProcessor.reloadWebView(mUrlReload);
                                         }
                                     }
-                                },response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button));
+                                }, response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button));
 
                             } else {
                                 showMessage(null, response.message, TSnackbar.LENGTH_LONG);
@@ -795,6 +807,7 @@ public class AdapterLinkAcc extends AdapterBase {
             // Unregister Complete page
             if (page.equals(VCB_UNREGISTER_COMPLETE_PAGE)) {
                 Log.d(this, "Unregister Complete page");
+                linkAccGuiProcessor.hideProgress();
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
@@ -816,7 +829,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         }
                         showProgressBar(false, null);
                         linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().setText(null);
-                        linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().requestFocus();
+                        forceVirtualKeyboard();
                     }
                 }
                 COUNT_ERROR_PASS++;
@@ -828,22 +841,21 @@ public class AdapterLinkAcc extends AdapterBase {
         // Event: FAIL
         if (pEventType == EEventType.ON_FAIL) {
             // fail.
+            Log.d(this, "event on fail");
             showProgressBar(false, null);
             linkAccGuiProcessor.hideProgress();
             //networking is offline
             if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
-                showTransactionFailView(GlobalData.getOfflineMessage());
+                showFailScreenOnType(GlobalData.getOfflineMessage());
                 return pAdditionParams;
             }
 
             if (pAdditionParams == null || pAdditionParams.length == 0) {
-                // Error
                 return pAdditionParams;
             }
             StatusResponse response = (StatusResponse) pAdditionParams[0];
-            showTransactionFailView(response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified));
-            // show message
-            //showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb), response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified), TSnackbar.LENGTH_LONG);
+            showFailScreenOnType(response.returnmessage != null ? response.returnmessage : getActivity().getString(R.string.zpw_string_vcb_error_unidentified));
+            return pAdditionParams;
         }
         //event notification from app.
         if (pEventType == EEventType.ON_NOTIFY_BANKACCOUNT) {

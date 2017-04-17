@@ -28,8 +28,9 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
+                android:lineSpacingExtra="@dimen/sdk_line_space_extra"
                 android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
-                android:textColor="@color/text_color_grey"
+                android:textColor="@color/text_color_bold"
                 android:textSize="@dimen/zpw_text_size_medium" />
 
             <TextView
@@ -37,7 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Design.Snackbar.Message"
-                android:textColor="@color/text_color_grey"
+                android:textColor="@color/text_color_bold"
+                android:lineSpacingExtra="@dimen/sdk_line_space_extra"
                 android:textSize="@dimen/zpw_text_size_medium_m" />
         </LinearLayout>
 

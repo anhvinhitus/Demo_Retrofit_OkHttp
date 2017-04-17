@@ -211,7 +211,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     } else if (GlobalData.isBankAccountLink() && getAdapter() instanceof AdapterLinkAcc && getAdapter().isFinalStep()) {
                         ((AdapterLinkAcc) getAdapter()).verifyServerAfterParseWebTimeout();
                         Log.d(this, "load website timeout, continue to verify server again to ask for new data list");
-                    } else {
+                    } else if(!getAdapter().isFinalScreen()){
                         ((PaymentChannelActivity) activity.get()).showWarningDialog(() -> ((PaymentChannelActivity) activity.get()).getAdapter()
                                         .showTransactionFailView(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)),
                                 GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));//show dialog and move to fail screen
