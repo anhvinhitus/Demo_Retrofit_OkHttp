@@ -486,6 +486,59 @@ public class AdapterLinkAcc extends AdapterBase {
         }
     }
 
+    protected boolean isValidPhoneList(List<String> pPhoneVcb) {
+        //validate zalopay phone and vcb phone must same
+        if (!validate_Phone_Zalopay_Vcb(pPhoneVcb)) {
+            String formatMess = GlobalData.getStringResource(RS.string.sdk_error_numberphone_sdk_vcb);
+            String message = String.format(formatMess, pPhoneVcb.get(0), GlobalData.getPaymentInfo().userInfo.phoneNumber);
+            showFailScreenOnType(message);
+            return false;
+        }
+        return true;
+    }
+
+    /***
+     * number phone register with zalopay
+     * must same with numberphone registered on vcb
+     * compare prefix and suffix (3 numbers) together
+     * @return
+     */
+    protected boolean validate_Phone_Zalopay_Vcb(List<String> pPhoneListVcb) {
+        if (GlobalData.getPaymentInfo().userInfo == null || TextUtils.isEmpty(GlobalData.getPaymentInfo().userInfo.phoneNumber)) {
+            return true;
+        }
+        if (pPhoneListVcb == null || pPhoneListVcb.size() <= 0) {
+            return true;
+        }
+        String phoneZalopay = GlobalData.getPaymentInfo().userInfo.phoneNumber;
+        StringBuffer stringBuffer = new StringBuffer();
+        if (phoneZalopay.startsWith("+84")) {
+            stringBuffer.append("0");
+            stringBuffer.append(phoneZalopay.substring(3));
+            phoneZalopay = stringBuffer.toString();
+        }
+        Log.d(this, "phone in zalopay " + phoneZalopay);
+        for (String numberphone : pPhoneListVcb) {
+            try {
+                int numberOfPrefix = Integer.parseInt(GlobalData.getStringResource(RS.string.prefix_numberphone_vcb));
+                int numberOfSuffix = Integer.parseInt(GlobalData.getStringResource(RS.string.suffix_numberphone_vcb));
+                String prefixPhoneVcb = numberphone.substring(0, numberOfPrefix);
+                String prefixPhoneZalopay = phoneZalopay.substring(0, numberOfPrefix);
+                if (!TextUtils.isEmpty(prefixPhoneVcb) && prefixPhoneVcb.equals(prefixPhoneZalopay)) {
+                    //continue compare suffix
+                    String suffixPhoneVcb = numberphone.substring(numberphone.length() - numberOfSuffix, numberphone.length());
+                    String suffixPhoneZalopay = phoneZalopay.substring(phoneZalopay.length() - numberOfSuffix, phoneZalopay.length());
+                    if (!TextUtils.isEmpty(suffixPhoneVcb) && suffixPhoneVcb.equals(suffixPhoneZalopay)) {
+                        return true;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+        }
+        return false;
+    }
+
     @Override
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
         // show value progressing
@@ -647,7 +700,12 @@ public class AdapterLinkAcc extends AdapterBase {
                 if (response.phoneNumList != null) {
                     if (response.phoneNumList.size() > 0) {
                         mHashMapPhoneNum = HashMapUtils.JsonArrayToHashMap(response.phoneNumList);
-                        ArrayList<String> phoneNum = HashMapUtils.getKeys(mHashMapPhoneNum);
+
+                        List<String> phoneNum = HashMapUtils.getKeys(mHashMapPhoneNum);
+                        //validate zalopay phone and vcb phone must same
+                        if (!isValidPhoneList(phoneNum)) {
+                            return pAdditionParams;
+                        }
                         linkAccGuiProcessor.setPhoneNumList(phoneNum);
                         linkAccGuiProcessor.setPhoneNum(phoneNum);
 
@@ -757,13 +815,16 @@ public class AdapterLinkAcc extends AdapterBase {
                 // set wallet unregister
                 if (response.walletUnRegList != null) {
                     mHashMapWalletUnReg = HashMapUtils.JsonArrayToHashMap(response.walletUnRegList);
-                    ArrayList<String> walletList = HashMapUtils.getKeys(mHashMapWalletUnReg);
+                    List<String> walletList = HashMapUtils.getKeys(mHashMapWalletUnReg);
                     linkAccGuiProcessor.setWalletUnRegList(walletList);
                 }
                 // set phone number unregister
                 if (response.phoneNumUnRegList != null && response.phoneNumUnRegList.size() > 0) {
                     mHashMapPhoneNumUnReg = HashMapUtils.JsonArrayToHashMap(response.phoneNumUnRegList);
-                    ArrayList<String> phoneNumList = HashMapUtils.getKeys(mHashMapPhoneNumUnReg);
+                    List<String> phoneNumList = HashMapUtils.getKeys(mHashMapPhoneNumUnReg);
+                    if (!isValidPhoneList(phoneNumList)) {
+                        return pAdditionParams;
+                    }
                     linkAccGuiProcessor.setPhoneNumUnRegList(phoneNumList);
                     linkAccGuiProcessor.setPhoneNumUnReg(phoneNumList);
                 } else if (!GlobalData.shouldNativeWebFlow() && response.phoneNumUnRegList.size() <= 0) {
