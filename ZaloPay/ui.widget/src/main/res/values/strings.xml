@@ -11,9 +11,6 @@
     <string name="more_string">more_string</string>
     <string name="copy_number">copy_number</string>
 
-    <string name="error_view_oops">Oops</string>
-    <string name="error_view_retry">RETRY</string>
-
     <string name="exception.generic">There was an application error</string>
     <string name="exception.no.connection">There is no internet connection</string>
     <string name="exception.no.connection.try.again">No network connection. Please try again.</string>
