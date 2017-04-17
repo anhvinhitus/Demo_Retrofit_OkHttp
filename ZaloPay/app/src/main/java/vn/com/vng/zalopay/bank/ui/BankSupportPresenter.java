@@ -22,14 +22,13 @@ import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
 
+    private final User mUser;
+
     private IGetCardSupportListListener mGetCardSupportListListener;
 
     @Inject
-    User mUser;
-
-    @Inject
-    BankSupportPresenter() {
-
+    BankSupportPresenter(User user) {
+        this.mUser = user;
     }
 
     @Override

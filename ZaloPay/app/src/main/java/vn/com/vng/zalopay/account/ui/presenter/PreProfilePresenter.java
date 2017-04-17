@@ -20,14 +20,14 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
  * *
  */
 public class PreProfilePresenter extends AbstractPresenter<IPreProfileView> {
-    private AccountStore.Repository mAccountRepository;
+
+    private final AccountStore.Repository mAccountRepository;
+    private final UserConfig mUserConfig;
 
     @Inject
-    UserConfig mUserConfig;
-
-    @Inject
-    public PreProfilePresenter(AccountStore.Repository accountRepository) {
+    PreProfilePresenter(AccountStore.Repository accountRepository, UserConfig userConfig) {
         this.mAccountRepository = accountRepository;
+        this.mUserConfig = userConfig;
     }
 
     @Override

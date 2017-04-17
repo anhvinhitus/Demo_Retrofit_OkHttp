@@ -74,34 +74,26 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
  */
 
 public class HomePresenter extends AbstractPresenter<IHomeView> {
-    private boolean isLoadedGateWayInfo;
 
-    private PaymentWrapper paymentWrapper;
+    private final EventBus mEventBus;
+    private final AppResourceStore.Repository mAppResourceRepository;
+    private final Context mApplicationContext;
+    private final Navigator mNavigator;
+    private final BalanceStore.Repository mBalanceRepository;
+    private final ZaloPayRepository mZaloPayRepository;
+    private final TransactionStore.Repository mTransactionRepository;
+    private final User mUser;
+    private final FriendStore.Repository mFriendRepository;
 
-    private EventBus mEventBus;
-    private AppResourceStore.Repository mAppResourceRepository;
-    private Context mApplicationContext;
-    private Navigator mNavigator;
-    private BalanceStore.Repository mBalanceRepository;
-    private ZaloPayRepository mZaloPayRepository;
-    private TransactionStore.Repository mTransactionRepository;
-    private User mUser;
-    private FriendStore.Repository mFriendRepository;
-    private Subscription mRefPlatformSubscription;
-
-    @Inject
-    NotificationStore.Repository mNotifyRepository;
-
-    @Inject
-    UserSession mUserSession;
-
-    @Inject
-    ApplicationState mApplicationState;
-
-    @Inject
-    GlobalEventHandlingService globalEventHandlingService;
+    private final NotificationStore.Repository mNotifyRepository;
+    private final UserSession mUserSession;
+    private final ApplicationState mApplicationState;
+    private final GlobalEventHandlingService globalEventHandlingService;
 
     private boolean isInitTransaction;
+    private Subscription mRefPlatformSubscription;
+    private boolean isLoadedGateWayInfo;
+    private PaymentWrapper paymentWrapper;
 
     @Inject
     HomePresenter(User user, EventBus eventBus,
@@ -111,7 +103,14 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                   BalanceStore.Repository balanceRepository,
                   ZaloPayRepository zaloPayRepository,
                   TransactionStore.Repository transactionRepository,
-                  FriendStore.Repository friendRepository) {
+                  FriendStore.Repository friendRepository,
+                  NotificationStore.Repository notifyRepository,
+                  UserSession userSession,
+                  ApplicationState applicationState,
+                  GlobalEventHandlingService globalEventHandlingService
+    ) {
+
+
         this.mEventBus = eventBus;
         this.mAppResourceRepository = appResourceRepository;
         this.mApplicationContext = applicationContext;
@@ -121,6 +120,12 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
         this.mTransactionRepository = transactionRepository;
         this.mFriendRepository = friendRepository;
         this.mUser = user;
+
+        this.mNotifyRepository = notifyRepository;
+        this.mUserSession = userSession;
+        this.mApplicationState = applicationState;
+        this.globalEventHandlingService = globalEventHandlingService;
+
     }
 
     private void getZaloFriend() {

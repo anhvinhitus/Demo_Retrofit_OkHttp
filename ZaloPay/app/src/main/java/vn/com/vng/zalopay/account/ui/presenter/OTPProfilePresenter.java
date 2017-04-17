@@ -25,7 +25,7 @@ public class OTPProfilePresenter extends AbstractPresenter<IOTPProfileView> {
     private Context applicationContext;
 
     @Inject
-    public OTPProfilePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
+    OTPProfilePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
         this.mAccountRepository = accountRepository;
         this.applicationContext = applicationContext;
     }

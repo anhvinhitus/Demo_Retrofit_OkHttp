@@ -25,18 +25,17 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 
 class ExternalReactPresenter extends AbstractPresenter<IExternalReactView> {
 
-    @Inject
-    User mUser;
+    private final User mUser;
+    private final Navigator mNavigator;
+    private final AppResourceStore.Repository mAppResourceRepository;
 
-    @Inject
-    Navigator mNavigator;
-
-    private AppResourceStore.Repository mAppResourceRepository;
     private boolean mShowDialogWaitingDownloadApp = false;
 
     @Inject
-    public ExternalReactPresenter(AppResourceStore.Repository appResourceRepository) {
-        mAppResourceRepository = appResourceRepository;
+    ExternalReactPresenter(AppResourceStore.Repository appResourceRepository, User user, Navigator mNavigator) {
+        this.mAppResourceRepository = appResourceRepository;
+        this.mNavigator = mNavigator;
+        this.mUser = user;
     }
 
     void checkResourceReady(long appId) {

@@ -25,24 +25,22 @@ import static vn.com.vng.zalopay.data.ServerErrorMessage.INCORRECT_PIN;
 
 public class AuthenticationPresenter extends AbstractPresenter<IAuthenticationView> implements AuthenticationProvider.Callback {
 
-    private AccountStore.Repository mAccountRepository;
-    private Context mApplicationContext;
-
-    @Inject
-    SharedPreferences mPreferences;
+    private final AccountStore.Repository mAccountRepository;
+    private final Context mApplicationContext;
+    private final SharedPreferences mPreferences;
+    private final  KeyTools mKeyTools;
 
     private Stage mStage = Stage.FINGERPRINT_DECRYPT;
-
-    @Inject
-    KeyTools mKeyTools;
 
     private AuthenticationProvider mAuthenticationProvider;
 
     @Inject
     AuthenticationPresenter(AccountStore.Repository accountRepository,
-                            Context applicationContext) {
+                            Context applicationContext, KeyTools mKeyTools, SharedPreferences mPreferences) {
         this.mAccountRepository = accountRepository;
         this.mApplicationContext = applicationContext;
+        this.mKeyTools = mKeyTools;
+        this.mPreferences = mPreferences;
     }
 
 

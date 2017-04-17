@@ -27,7 +27,7 @@ public class EditAccountNamePresenter extends AbstractPresenter<IEditAccountName
     private Context applicationContext;
 
     @Inject
-    public EditAccountNamePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
+    EditAccountNamePresenter(AccountStore.Repository accountRepository, Context applicationContext) {
         this.accountRepository = accountRepository;
         this.applicationContext = applicationContext;
     }

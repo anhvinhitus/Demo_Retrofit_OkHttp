@@ -46,15 +46,15 @@ import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
 final class FeedbackPresenter extends AbstractPresenter<IFeedbackView> {
 
-    private Context mContext;
-    private UserConfig mUserConfig;
+    private final Context mContext;
+    private final UserConfig mUserConfig;
+
+    private final Navigator mNavigator;
 
     @Inject
-    Navigator mNavigator;
-
-    @Inject
-    FeedbackPresenter(Context context, UserConfig userConfig) {
+    FeedbackPresenter(Context context, UserConfig userConfig, Navigator navigator) {
         this.mContext = context;
+        this.mNavigator = navigator;
         this.mUserConfig = userConfig;
     }
 

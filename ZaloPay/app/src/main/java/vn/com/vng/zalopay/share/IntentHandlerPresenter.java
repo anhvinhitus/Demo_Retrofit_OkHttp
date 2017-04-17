@@ -49,8 +49,8 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
     private ApplicationSession mApplicationSession;
 
     @Inject
-    public IntentHandlerPresenter(Context context, UserConfig userConfig, ApplicationState applicationState,
-                                  EventBus eventBus, Navigator navigator, ApplicationSession applicationSession) {
+    IntentHandlerPresenter(Context context, UserConfig userConfig, ApplicationState applicationState,
+                           EventBus eventBus, Navigator navigator, ApplicationSession applicationSession) {
         this.mUserConfig = userConfig;
         this.mApplicationState = applicationState;
         this.mEventBus = eventBus;

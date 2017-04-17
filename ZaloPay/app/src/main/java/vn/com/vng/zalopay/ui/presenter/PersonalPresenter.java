@@ -55,9 +55,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private ZaloPayRepository mZaloPayRepository;
     private TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper paymentWrapper;
-
-    @Inject
-    ZaloSdkApi mZaloSdkApi;
+    private ZaloSdkApi mZaloSdkApi;
 
     @Inject
     PersonalPresenter(User user
@@ -67,7 +65,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
             , PassportRepository passportRepository
             , ZaloPayRepository zaloPayRepository
             , TransactionStore.Repository transactionRepository
-            , Context context) {
+            , Context context, ZaloSdkApi zaloSdkApi) {
         this.mUser = user;
         this.mEventBus = eventBus;
         this.mUserConfig = userConfig;
@@ -76,6 +74,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         this.mPassportRepository = passportRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
+        this.mZaloSdkApi = zaloSdkApi;
         Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 

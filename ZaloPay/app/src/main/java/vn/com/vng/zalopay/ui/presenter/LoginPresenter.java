@@ -49,19 +49,18 @@ import vn.com.zalopay.analytics.ZPEvents;
  */
 
 public final class LoginPresenter extends AbstractPresenter<ILoginView> implements LoginListener.ILoginZaloListener {
-    private LoginListener mLoginListener = new LoginListener(this);
-    private Context mApplicationContext;
-    private UserConfig mUserConfig;
-    private PassportRepository mPassportRepository;
-    private ApplicationSession mApplicationSession;
-    private GlobalEventHandlingService mGlobalEventService;
+
+
+    private final Context mApplicationContext;
+    private final UserConfig mUserConfig;
+    private final PassportRepository mPassportRepository;
+    private final ApplicationSession mApplicationSession;
+    private final GlobalEventHandlingService mGlobalEventService;
+    private final AppResourceStore.Repository mAppResourceRepository;
+    private final ZaloSdkApi mZaloSdkApi;
 
     private boolean mIsCallingExternal;
-
-    private final AppResourceStore.Repository mAppResourceRepository;
-
-    @Inject
-    ZaloSdkApi mZaloSdkApi;
+    private LoginListener mLoginListener = new LoginListener(this);
 
     @Inject
     LoginPresenter(Context applicationContext,
@@ -69,7 +68,7 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
                    PassportRepository passportRepository,
                    ApplicationSession applicationSession,
                    GlobalEventHandlingService globalEventHandlingService,
-                   AppResourceStore.Repository appResourceRepository) {
+                   AppResourceStore.Repository appResourceRepository, ZaloSdkApi mZaloSdkApi) {
 
         this.mApplicationContext = applicationContext;
         this.mUserConfig = userConfig;
@@ -77,6 +76,7 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         this.mApplicationSession = applicationSession;
         this.mGlobalEventService = globalEventHandlingService;
         this.mAppResourceRepository = appResourceRepository;
+        this.mZaloSdkApi = mZaloSdkApi;
 
     }
 

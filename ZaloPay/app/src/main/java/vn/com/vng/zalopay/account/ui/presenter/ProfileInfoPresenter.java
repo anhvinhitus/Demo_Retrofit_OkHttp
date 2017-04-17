@@ -22,9 +22,8 @@ public class ProfileInfoPresenter extends AbstractPresenter<IProfileInfoView> {
     private EventBus mEventBus;
     private User mUser;
 
-
     @Inject
-    public ProfileInfoPresenter(EventBus eventBus, User user) {
+    ProfileInfoPresenter(EventBus eventBus, User user) {
         this.mEventBus = eventBus;
         this.mUser = user;
     }

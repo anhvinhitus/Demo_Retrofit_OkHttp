@@ -1,25 +1,20 @@
 package vn.com.vng.zalopay.bank.ui;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
-import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
+import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
@@ -32,14 +27,13 @@ import static android.content.Context.MODE_PRIVATE;
 
 class LinkBankPresenter implements IPresenter<ILinkBankView> {
 
-    ILinkBankView mView;
+    private ILinkBankView mView;
+
+    private final User mUser;
 
     @Inject
-    User mUser;
-
-    @Inject
-    LinkBankPresenter() {
-
+    LinkBankPresenter(User user) {
+        this.mUser = user;
     }
 
     @Override

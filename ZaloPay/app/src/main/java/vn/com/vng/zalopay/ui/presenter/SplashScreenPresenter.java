@@ -20,13 +20,13 @@ public class SplashScreenPresenter extends AbstractPresenter<ISplashScreenView> 
     private final UserConfig mUserConfig;
     private final ApplicationState mApplicationState;
 
-    @Inject
-    ZaloSdkApi mZaloSdkApi;
+    private final ZaloSdkApi mZaloSdkApi;
 
     @Inject
-    SplashScreenPresenter(UserConfig userConfig, ApplicationState applicationState) {
-        mUserConfig = userConfig;
-        mApplicationState = applicationState;
+    SplashScreenPresenter(UserConfig userConfig, ApplicationState applicationState, ZaloSdkApi zaloSdkApi) {
+        this.mUserConfig = userConfig;
+        this.mApplicationState = applicationState;
+        this.mZaloSdkApi = zaloSdkApi;
     }
 
     public void verifyUser() {

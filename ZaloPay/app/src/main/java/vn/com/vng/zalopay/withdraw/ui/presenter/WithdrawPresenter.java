@@ -44,24 +44,22 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
     private final BalanceStore.Repository mBalanceRepository;
     private final ZaloPayRepository mZaloPayRepository;
     private final Navigator mNavigator;
+    private final User mUser;
+    private final Context mContext;
 
     private PaymentWrapper paymentWrapper;
 
     @Inject
-    User mUser;
-
-    private Context mContext;
-
-    @Inject
-    public WithdrawPresenter(Context context, BalanceStore.Repository balanceRepository,
-                             ZaloPayRepository zaloPayRepository,
-                             TransactionStore.Repository transactionRepository,
-                             Navigator navigator
+    WithdrawPresenter(Context context, BalanceStore.Repository balanceRepository,
+                      ZaloPayRepository zaloPayRepository,
+                      TransactionStore.Repository transactionRepository,
+                      Navigator navigator, User user
     ) {
         this.mBalanceRepository = balanceRepository;
         this.mZaloPayRepository = zaloPayRepository;
         this.mNavigator = navigator;
         this.mContext = context;
+        this.mUser = user;
 
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
