@@ -20,6 +20,7 @@ import butterknife.OnClick;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.PersonalPresenter;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
@@ -31,7 +32,7 @@ import vn.com.zalopay.analytics.ZPEvents;
  * Created by Duke on 3/27/17.
  */
 
-public class PersonalFragment extends BaseFragment implements IPersonalView {
+public class PersonalFragment extends BaseFragment implements IPersonalView, FragmentLifecycle {
     @BindView(R.id.tab_personal_iv_avatar)
     SimpleDraweeView ivAvatar;
 
@@ -230,5 +231,15 @@ public class PersonalFragment extends BaseFragment implements IPersonalView {
 //                    ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
                 })
                 .show();
+    }
+
+    @Override
+    public void onStartFragment() {
+
+    }
+
+    @Override
+    public void onStopFragment() {
+
     }
 }

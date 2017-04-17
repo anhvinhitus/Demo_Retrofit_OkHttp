@@ -31,6 +31,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.adapter.HomeAdapter;
 import vn.com.vng.zalopay.ui.fragment.RuntimePermissionFragment;
 import vn.com.vng.zalopay.ui.presenter.ZaloPayPresenter;
@@ -51,7 +52,7 @@ import vn.com.zalopay.analytics.ZPEvents;
 public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloPayView,
         SwipeRefreshLayout.OnRefreshListener,
         HomeAdapter.OnClickItemListener,
-        AppBarLayout.OnOffsetChangedListener {
+        AppBarLayout.OnOffsetChangedListener, FragmentLifecycle {
 
     public static ZaloPayFragment newInstance() {
         Bundle args = new Bundle();
@@ -350,5 +351,15 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
             }
         }
         mToolbarHeaderView.setHeaderTopStatus(isCollaped, percentage);
+    }
+
+    @Override
+    public void onStartFragment() {
+
+    }
+
+    @Override
+    public void onStopFragment() {
+
     }
 }

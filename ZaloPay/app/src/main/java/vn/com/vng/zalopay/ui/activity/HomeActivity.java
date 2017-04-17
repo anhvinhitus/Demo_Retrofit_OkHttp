@@ -17,9 +17,11 @@ import android.widget.FrameLayout;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnPageChange;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.HomePresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
@@ -45,12 +47,16 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     @BindView(R.id.pager)
     ViewPager mViewPager;
 
+    private int currentPosition = 0;
+
     @BindView(R.id.navigation)
     BottomNavigationView mBottomNavigationView;
 
     // TODO: 4/4/17 - longlv: hardcode for test.
     private boolean mShowIconNewPromotion = true;
     private View mIconNewPromotion;
+
+    HomePagerAdapter mHomePagerAdapter;
 
     @Override
     protected int getResLayoutId() {
@@ -78,7 +84,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
         mPresenter.attachView(this);
         mPresenter.initialize();
 
-        HomePagerAdapter mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
+        mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mViewPager.getLayoutParams();
         params.setMargins(0, getStatusBarHeight(), 0, (int) AndroidUtils.dpToPixels(this, 56));
 
@@ -109,25 +115,26 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
             return true;
         });
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                trackEvent(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
         changeBottomNavigationLayout();
     }
+
+
+    @OnPageChange(value = R.id.pager, callback = OnPageChange.Callback.PAGE_SELECTED)
+    public void onPageSelected(int newPosition) {
+
+        Fragment fragmentToShow = mHomePagerAdapter.getPage(newPosition);
+        if (fragmentToShow instanceof FragmentLifecycle) {
+            ((FragmentLifecycle) fragmentToShow).onStartFragment();
+        }
+
+        Fragment fragmentToHide = mHomePagerAdapter.getPage(currentPosition);
+        if (fragmentToHide instanceof FragmentLifecycle) {
+            ((FragmentLifecycle) fragmentToHide).onStopFragment();
+        }
+
+        currentPosition = newPosition;
+    }
+
 
     private void changeBottomNavigationLayout() {
         int paddingBottom = (int) getResources().getDimension(R.dimen.spacing_tiny_s);

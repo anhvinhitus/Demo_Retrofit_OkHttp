@@ -47,13 +47,14 @@ import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
+import vn.com.vng.zalopay.scanners.ui.FragmentLifecycle;
 import vn.com.vng.zalopay.utils.DialogHelper;
 /**
  * Created by hieuvm on 2/23/17.
  * *
  */
 
-public class ExternalReactFragment extends ReactBaseFragment implements IExternalReactView {
+public class ExternalReactFragment extends ReactBaseFragment implements IExternalReactView, FragmentLifecycle {
     public static final String TAG = "ExternalReactFragment";
 
     public static ExternalReactFragment newInstance(AppResource app) {
@@ -308,5 +309,15 @@ public class ExternalReactFragment extends ReactBaseFragment implements IExterna
         if (event.mDownloadInfo.appid == mAppResource.appid) {
             mPresenter.checkResourceReadyWithoutDownload(mAppResource.appid);
         }
+    }
+
+    @Override
+    public void onStartFragment() {
+
+    }
+
+    @Override
+    public void onStopFragment() {
+
     }
 }
