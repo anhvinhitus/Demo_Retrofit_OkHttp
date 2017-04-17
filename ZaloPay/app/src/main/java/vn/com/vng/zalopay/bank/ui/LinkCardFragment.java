@@ -337,8 +337,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     @Override
-    public void showWarningView(String error) {
-        showWarningDialog(error, getString(R.string.txt_close), null);
+    public void showNotificationDialog(String message) {
+        super.showNotificationDialog(message);
     }
 
     @Override

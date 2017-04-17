@@ -8,7 +8,6 @@ import java.util.List;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
@@ -30,7 +29,7 @@ interface ILinkCardView extends ILoadDataView {
 
     void onAddCardSuccess(DBaseMap card);
 
-    void showWarningView(String error);
+    void showNotificationDialog(String message);
 
     boolean getUserVisibleHint();
 
