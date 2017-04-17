@@ -32,6 +32,7 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
+import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -136,7 +137,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     private void initBankSupportFragment() {
         if (getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount) == null) {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            mBankSupportFragment = BankSupportFragment.newInstance(false);
+            mBankSupportFragment = BankSupportFragment.newInstance(false, LinkBankType.LINK_BANK_ACCOUNT);
             ft.replace(R.id.fragmentInLinkAccount, mBankSupportFragment);
             ft.commit();
         } else {

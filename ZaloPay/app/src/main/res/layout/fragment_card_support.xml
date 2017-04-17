@@ -1,11 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tvLinkCard"
+        android:id="@+id/tv_title_list_bank"
         style="@style/TextView.Group.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,10 +14,10 @@
         android:text="@string/link_card_title"
         android:textAllCaps="true"
         android:textColor="@color/txt_item_main"
-        android:visibility="gone"/>
+        android:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/linkCardRecyclerView"
+        android:id="@+id/list_bank"
         style="@style/RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,35 +26,11 @@
         android:paddingLeft="@dimen/spacing.medium"
         android:paddingRight="@dimen/spacing.medium"
         android:paddingTop="@dimen/spacing.medium.s"
-        android:visibility="gone"/>
-
-    <TextView
-        android:id="@+id/tvLinkAccount"
-        style="@style/TextView.Group.Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingTop="@dimen/spacing.medium"
-        android:text="@string/link_account_title"
-        android:textAllCaps="true"
-        android:textColor="@color/txt_item_main"
-        android:visibility="gone"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/linkAccRecyclerView"
-        style="@style/RecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fadingEdge="none"
-        android:overScrollMode="never"
-        android:paddingLeft="@dimen/spacing.medium"
-        android:paddingRight="@dimen/spacing.medium"
-        android:paddingTop="@dimen/spacing.medium.s"
-        android:visibility="gone"/>
+        android:visibility="visible" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="@dimen/spacing.medium"
-        android:background="@color/separate"/>
+        android:background="@color/separate" />
 </LinearLayout>
