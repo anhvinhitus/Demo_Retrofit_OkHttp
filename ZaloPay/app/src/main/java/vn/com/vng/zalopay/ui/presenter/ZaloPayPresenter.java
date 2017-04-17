@@ -145,7 +145,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
 
     private void fetchListAppResource() {
         Timber.d("Fetch list application");
-        Subscription subscription = mAppResourceRepository.fetchAppResource()
+        Subscription subscription = mAppResourceRepository.fetchListAppHome()
                 .doOnNext(this::getListMerchantUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
