@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
@@ -231,5 +232,13 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
 
     protected void reactInstanceCaughtError() {
         mReactInstanceError = true;
+    }
+
+    @Nullable
+    public ReactContext getReactContect() {
+        if (mReactInstanceManager != null) {
+            return mReactInstanceManager.getCurrentReactContext();
+        }
+        return null;
     }
 }

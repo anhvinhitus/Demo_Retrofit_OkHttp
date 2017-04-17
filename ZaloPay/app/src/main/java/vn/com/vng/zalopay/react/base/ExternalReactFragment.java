@@ -7,6 +7,9 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.burnweb.rnsendintent.RNSendIntentPackage;
 import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.shell.MainReactPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.joshblour.reactnativepermissions.ReactNativePermissionsPackage;
@@ -49,6 +52,7 @@ import vn.com.vng.zalopay.react.iap.IPaymentService;
 import vn.com.vng.zalopay.react.iap.ReactIAPPackage;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.vng.zalopay.utils.DialogHelper;
+
 /**
  * Created by hieuvm on 2/23/17.
  * *
@@ -313,11 +317,15 @@ public class ExternalReactFragment extends ReactBaseFragment implements IExterna
 
     @Override
     public void onStartFragment() {
-
+        if (mAppResource != null && mAppResource.appid == PaymentAppConfig.Constants.SHOW_SHOW) {
+            mPresenter.sendActiveEvent(getReactContect());
+        }
     }
 
     @Override
     public void onStopFragment() {
-
+        
     }
+
+
 }

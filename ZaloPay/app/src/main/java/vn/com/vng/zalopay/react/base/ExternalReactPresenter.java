@@ -1,5 +1,11 @@
 package vn.com.vng.zalopay.react.base;
 
+import android.support.annotation.Nullable;
+
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -70,8 +76,15 @@ class ExternalReactPresenter extends AbstractPresenter<IExternalReactView> {
 
     }
 
-    @Override
-    public void resume() {
-        super.resume();
+    public void sendActiveEvent(@Nullable ReactContext reactContext) {
+        if (reactContext instanceof ReactApplicationContext) {
+            sendEventToJs((ReactApplicationContext) reactContext, "zalopayShowShowActive", null);
+        }
+    }
+
+    private void sendEventToJs(@Nullable ReactApplicationContext reactContext, String eventName, @Nullable Object data) {
+        if (reactContext != null) {
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, data);
+        }
     }
 }
