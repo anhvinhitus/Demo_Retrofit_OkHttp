@@ -32,7 +32,7 @@ class ExternalReactPresenter extends AbstractPresenter<IExternalReactView> {
     Navigator mNavigator;
 
     private AppResourceStore.Repository mAppResourceRepository;
-    private boolean mShowDialogWatingDownloadApp = false;
+    private boolean mShowDialogWaitingDownloadApp = false;
 
     @Inject
     public ExternalReactPresenter(AppResourceStore.Repository appResourceRepository) {
@@ -40,36 +40,40 @@ class ExternalReactPresenter extends AbstractPresenter<IExternalReactView> {
     }
 
     void checkResourceReady(long appId) {
-        Timber.d("checkResourceReady appid[%s]", appId);
         Subscription subscription = mAppResourceRepository.existResource(appId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ResourceReadySubscriber());
+                .subscribe(new ResourceReadySubscriber(appId));
         mSubscription.add(subscription);
     }
 
     void checkResourceReadyWithoutDownload(long appId) {
-        Timber.d("checkResourceReady appid[%s]", appId);
         Subscription subscription = mAppResourceRepository.existResource(appId, false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ResourceReadySubscriber());
+                .subscribe(new ResourceReadySubscriber(appId));
         mSubscription.add(subscription);
     }
 
     private class ResourceReadySubscriber extends DefaultSubscriber<Boolean> {
 
+        private long appId;
+
+        ResourceReadySubscriber(long appId) {
+            this.appId = appId;
+        }
+
         @Override
         public void onNext(Boolean isAppAvailable) {
-            Timber.d("onNext isAppAvailable[%s]", isAppAvailable);
+            Timber.d("Check resource available : appid [%s] available [%s]", appId, isAppAvailable);
             if (mView == null || mView.getActivity() == null) {
                 return;
             }
 
             if (isAppAvailable) {
                 mView.startReactApplication();
-            } else if (!mShowDialogWatingDownloadApp) {
-                mShowDialogWatingDownloadApp = true;
+            } else if (!mShowDialogWaitingDownloadApp) {
+                mShowDialogWaitingDownloadApp = true;
                 mView.showWaitingDownloadApp();
             }
         }
@@ -84,6 +88,7 @@ class ExternalReactPresenter extends AbstractPresenter<IExternalReactView> {
 
     private void sendEventToJs(@Nullable ReactApplicationContext reactContext, String eventName, @Nullable Object data) {
         if (reactContext != null) {
+            Timber.d("sendEventToJs : eventName [%s]", eventName);
             reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, data);
         }
     }

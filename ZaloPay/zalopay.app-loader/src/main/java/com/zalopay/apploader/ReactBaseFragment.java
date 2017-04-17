@@ -32,7 +32,7 @@ import timber.log.Timber;
  */
 
 public abstract class ReactBaseFragment extends Fragment implements DefaultHardwareBackBtnHandler, PermissionAwareActivity,
-        ReactInstanceDelegate {
+        ReactInstanceDelegate, ReactInstanceManager.ReactInstanceEventListener {
 
     protected abstract void setupFragmentComponent();
 
@@ -93,6 +93,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
         super.onActivityCreated(savedInstanceState);
         nativeInstanceManager().setActivityContext(getActivity());
         mReactInstanceManager = nativeInstanceManager().acquireReactInstanceManager(this, mLifecycleState);
+        mReactInstanceManager.addReactInstanceEventListener(this);
     }
 
     protected void startReactApplication() {
@@ -118,7 +119,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     @Override
     public void onPause() {
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onHostPause();
+            mReactInstanceManager.onHostPause(getActivity());
         }
         super.onPause();
     }
@@ -138,6 +139,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
         }
 
         if (mReactInstanceManager != null) {
+            mReactInstanceManager.removeReactInstanceEventListener(this);
             nativeInstanceManager().releaseReactInstanceManager(this, mReactInstanceManager, mReactInstanceError);
             mReactInstanceManager = null;
         }
@@ -149,7 +151,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     @Override
     public void onDestroy() {
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onHostDestroy();
+            mReactInstanceManager.onHostDestroy(getActivity());
         }
         super.onDestroy();
     }
@@ -235,10 +237,15 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     }
 
     @Nullable
-    public ReactContext getReactContect() {
+    public ReactContext getReactContext() {
         if (mReactInstanceManager != null) {
             return mReactInstanceManager.getCurrentReactContext();
         }
         return null;
+    }
+
+    @Override
+    public void onReactContextInitialized(ReactContext context) {
+
     }
 }
