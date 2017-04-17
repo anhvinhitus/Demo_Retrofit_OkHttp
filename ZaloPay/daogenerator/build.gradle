@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.freemarker:freemarker:2.3.23'
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.26-incubating'
     testCompile 'junit:junit:4.12'
 }
 
