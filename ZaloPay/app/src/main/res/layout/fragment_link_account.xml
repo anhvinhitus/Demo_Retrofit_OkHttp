@@ -51,11 +51,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/button.margin.bottom"
-            android:layout_marginLeft="@dimen/spacing.medium"
-            android:layout_marginRight="@dimen/spacing.medium"
+            android:layout_marginLeft="@dimen/button.margin.left"
+            android:layout_marginRight="@dimen/button.margin.right"
             android:layout_marginTop="@dimen/spacing.small.t"
             android:text="@string/link.account.support.only.vietcombank"
             android:textColor="@color/txt_item_sub"
-            android:visibility="gone" />
+            android:textSize="13sp"
+            android:visibility="visible" />
     </LinearLayout>
 </FrameLayout>
