@@ -1112,19 +1112,18 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         if (this instanceof PaymentChannelActivity) {
             StatusResponse statusResponse = getAdapter().getResponseStatus();
-            /*res.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.shared(0);
-            getAdapter().setmResponseStatus(res);*/
+//            statusResponse.returncode = Constants.PAYMENT_LIMIT_PER_DAY_CODE.get(0);
             // The inform text would be set from server
             if (statusResponse != null) {
                 setText(R.id.zpw_textview_update_level_inform, statusResponse.getSuggestMessage());
                 setVisible(R.id.zpw_textview_update_level_inform, !TextUtils.isEmpty(statusResponse.getSuggestMessage()));
 
-//            int[] status = new int[]{2};
+//                int[] status = new int[]{2, 1};
                 if (statusResponse.getSuggestactions() != null && statusResponse.getSuggestactions().length > 0) {
                     setLayoutBasedOnSuggestActions(statusResponse.getSuggestactions());
                 } else {
                     setVisible(R.id.zpw_payment_fail_rl_update_info, false);
-                    setVisible(R.id.zpw_payment_fail_rl_support, false);
+                    setVisible(R.id.zpw_payment_fail_rl_support, true);
                 }
             } else {
                 setVisible(R.id.zpw_textview_update_level_inform, false);
