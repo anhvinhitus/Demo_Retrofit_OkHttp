@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.cache.model.ApptransidLogGD;
-import vn.com.vng.zalopay.data.cache.model.ApptransidLogGDDao;
+import vn.com.vng.zalopay.data.cache.global.ApptransidLogGD;
+import vn.com.vng.zalopay.data.cache.global.ApptransidLogGDDao;
 import vn.com.vng.zalopay.data.cache.global.DaoSession;
 
 /**

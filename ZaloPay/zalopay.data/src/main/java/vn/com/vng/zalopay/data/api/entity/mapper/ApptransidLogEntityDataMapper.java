@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import vn.com.vng.zalopay.data.api.entity.ApptransidLogEntity;
-import vn.com.vng.zalopay.data.cache.model.ApptransidLogGD;
+import vn.com.vng.zalopay.data.cache.global.ApptransidLogGD;
 
 /**
  * Created by khattn on 1/25/17.

@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.data.cache.model;
+package vn.com.vng.zalopay.data.cache.global;
 
 import org.greenrobot.greendao.annotation.*;
 
