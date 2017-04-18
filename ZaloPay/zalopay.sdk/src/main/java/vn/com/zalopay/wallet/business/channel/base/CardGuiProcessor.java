@@ -895,11 +895,15 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     protected void populateTextOnCardView() {
-        getCardView().setCardNumber(getCardNumber());
+        if (getCardView() != null) {
+            getCardView().setCardNumber(getCardNumber());
+        }
     }
 
     protected void populateTextOnCardViewNoPaintCard() {
-        getCardView().setCardNumberNoPaintCard(getCardNumber());
+        if (getCardView() != null) {
+            getCardView().setCardNumberNoPaintCard(getCardNumber());
+        }
     }
 
     protected boolean validateUserLevelBankAccount() {
