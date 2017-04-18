@@ -65,8 +65,8 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
     public String mUrlReload;
     protected ZPWNotification mNotification;
-    private int COUNT_ERROR_PASS = 0;
-    private int COUNT_ERROR_CAPTCHA = 0;
+    private int COUNT_ERROR_PASS = 1;
+    private int COUNT_ERROR_CAPTCHA = 1;
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
     private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
@@ -531,6 +531,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // Event: RENDER
         if (pEventType == EEventType.ON_REQUIRE_RENDER) {
+            linkAccGuiProcessor.hideProgress();
             if (pAdditionParams == null || pAdditionParams.length == 0) {
                 return null; // Error
             }
@@ -542,7 +543,6 @@ public class AdapterLinkAcc extends AdapterBase {
             if (page.equals(VCB_LOGIN_PAGE)) {
                 Log.d(this, "event login page");
                 showProgressBar(false, null); // close process dialog
-                linkAccGuiProcessor.hideProgress();
                 //for testing
                 if (!SDKApplication.isReleaseBuild()) {
                     linkAccGuiProcessor.setAccountTest();
@@ -629,7 +629,6 @@ public class AdapterLinkAcc extends AdapterBase {
             if (page.equals(VCB_REGISTER_PAGE)) {
                 Log.d(this, "event register page");
                 showProgressBar(false, null);
-                linkAccGuiProcessor.hideProgress();
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
@@ -777,7 +776,6 @@ public class AdapterLinkAcc extends AdapterBase {
             if (page.equals(VCB_UNREGISTER_PAGE)) {
                 Log.d(this, "event on unregister page complete");
                 showProgressBar(false, null);
-                linkAccGuiProcessor.hideProgress();
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
@@ -817,7 +815,7 @@ public class AdapterLinkAcc extends AdapterBase {
             if (page.equals(VCB_REGISTER_COMPLETE_PAGE)) {
                 Log.d(this, "event on register page complete");
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
-
+                linkAccGuiProcessor.hideProgress();
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
                     // SUCCESS. Success register
@@ -881,7 +879,6 @@ public class AdapterLinkAcc extends AdapterBase {
             // Unregister Complete page
             if (page.equals(VCB_UNREGISTER_COMPLETE_PAGE)) {
                 Log.d(this, "Unregister Complete page");
-                linkAccGuiProcessor.hideProgress();
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
@@ -917,7 +914,6 @@ public class AdapterLinkAcc extends AdapterBase {
             // fail.
             Log.d(this, "event on fail");
             showProgressBar(false, null);
-            linkAccGuiProcessor.hideProgress();
             //networking is offline
             if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
                 showFailScreenOnType(GlobalData.getOfflineMessage());
