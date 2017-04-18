@@ -69,6 +69,8 @@ public class AdapterLinkAcc extends AdapterBase {
     protected ZPWNotification mNotification;
     private int COUNT_ERROR_PASS = 1;
     private int COUNT_ERROR_CAPTCHA = 1;
+    private int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
+    private int COUNT_REFRESH_CAPTCHA_REGISTER = 1;
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
     private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
@@ -564,7 +566,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 // set logo
-                linkAccGuiProcessor.setLogoImgLinkAcc(getActivity().getResources().getDrawable(R.drawable.ic_zp_vcb));
+               // linkAccGuiProcessor.setLogoImgLinkAcc(getActivity().getResources().getDrawable(R.drawable.ic_zp_vcb));
 
                 // set captcha
                 if (!TextUtils.isEmpty(response.otpimg) && response.otpimg.length() > 10) {
@@ -1070,17 +1072,29 @@ public class AdapterLinkAcc extends AdapterBase {
     private View.OnClickListener refreshCaptcha = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if(COUNT_REFRESH_CAPTCHA_REGISTER >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password)))
+            {
+                linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb),null);
+                return;
+            }
             Log.d(this,"refreshCaptcha()");
             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
             mWebViewProcessor.refreshCaptcha();
+            COUNT_REFRESH_CAPTCHA_REGISTER ++;
         }
     };
     private View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if(COUNT_REFRESH_CAPTCHA_LOGIN >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password)))
+            {
+                linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb),null);
+                return;
+            }
             Log.d(this,"refreshCaptcha()");
             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
             mWebViewProcessor.reload();
+            COUNT_REFRESH_CAPTCHA_LOGIN ++;
         }
     };
 }
