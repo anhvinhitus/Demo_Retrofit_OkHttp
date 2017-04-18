@@ -199,6 +199,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             mNavigator.startUpdateProfileLevel2Activity(getContext());
         } else {
             paymentWrapper.linkCard(getActivity());
+            getActivity().finish();
             hideLoadingView();
             ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_ADDCARD_LAUNCH);
         }
