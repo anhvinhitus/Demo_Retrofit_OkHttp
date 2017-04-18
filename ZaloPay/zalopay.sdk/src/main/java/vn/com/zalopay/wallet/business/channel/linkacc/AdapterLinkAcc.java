@@ -490,11 +490,24 @@ public class AdapterLinkAcc extends AdapterBase {
         //validate zalopay phone and vcb phone must same
         if (!validate_Phone_Zalopay_Vcb(pPhoneVcb)) {
             String formatMess = GlobalData.getStringResource(RS.string.sdk_error_numberphone_sdk_vcb);
-            String message = String.format(formatMess, pPhoneVcb.get(0), GlobalData.getPaymentInfo().userInfo.phoneNumber);
+            String message = String.format(formatMess, pPhoneVcb.get(0), maskNumberPhone(GlobalData.getPaymentInfo().userInfo.phoneNumber));
             showFailScreenOnType(message);
             return false;
         }
         return true;
+    }
+
+    protected String maskNumberPhone(String pNumberPhone) {
+        if (TextUtils.isEmpty(pNumberPhone)) {
+            return null;
+        }
+        int numberOfPrefix = Integer.parseInt(GlobalData.getStringResource(RS.string.prefix_numberphone_vcb));
+        int numberOfSuffix = Integer.parseInt(GlobalData.getStringResource(RS.string.suffix_numberphone_vcb));
+        String prefixPhone = pNumberPhone.substring(0, numberOfPrefix);
+        String suffixPhone = pNumberPhone.substring(pNumberPhone.length() - numberOfSuffix, pNumberPhone.length());
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append(prefixPhone).append("***").append(suffixPhone);
+        return stringBuffer.toString();
     }
 
     /***
