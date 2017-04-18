@@ -44,12 +44,12 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     public static final int TIME_REQUEST_RETRY_LOADING_AGAIN = 10000; // 10s
     public static final int TIME_WAITING_LOAD_AJAX_GET_RESULT = 5000; // 5s
     public static final int TIME_WAITING_LOAD_AJAX_GET_MESSAGE = 200; // 200ms
+    protected static final String HTTP_EXCEPTION = "http://sdk.jsexception";
     // value is used for
     // detect valid url
     // in the case
     // webview on
     // Android 2.3
-
     private boolean mIsLoading = false;
     private boolean isRedirected = false;
     // private boolean mIsRedirect = false;
@@ -205,7 +205,11 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-        Log.e("///// onReceivedError: ", description);
+        Log.d(getClass().getCanonicalName(), "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
+        if (failingUrl.contains(HTTP_EXCEPTION)) {
+            Log.d(this, "skip process fail on url " + failingUrl);
+            return;
+        }
         if (WebViewHelper.isLoadSiteError(description) && getAdapter() != null) {
             getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewError(errorCode, description));
         }
@@ -221,8 +225,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             }
         }
         getAdapter().getActivity().showProgress(false, null);
-        Log.d(getClass().getCanonicalName(), "errorCode=" + errorCode + ",description=" + description + ",failingUrl=" + failingUrl);
-
     }
 
     /***
