@@ -266,9 +266,9 @@ public class CShareData extends SingletonBase {
      * user go to the link card channel
      */
     public void getCardSupportList(IGetCardSupportListListener pListener) {
-        mMerchantTask = new TaskGetCardSupportList();
-        mMerchantTask.setTaskListener(pListener);
-        mMerchantTask.onPrepareTaskComplete();
+        IMerchantTask merchantTask = new TaskGetCardSupportList();
+        merchantTask.setTaskListener(pListener);
+        merchantTask.onPrepareTaskComplete();
     }
 
     /***
