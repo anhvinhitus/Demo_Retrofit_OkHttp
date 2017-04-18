@@ -508,7 +508,7 @@
     <string name="zpw_int_vcb_num_times_allow_login_wrong">3</string>
     <string name="zpw_string_vcb_error_unidentified">Có lỗi xảy ra trong quá trình xử lý với ngân hàng</string>
     <string name="zpw_string_vcb_phonenumber_notfound_register">Tài khoản đã được liên kết bởi người khác.</string>
-    <string name="zpw_string_vcb_phonenumber_notfound_unregister">Không có số điện thoại để hủy liên kết.</string>
+    <string name="zpw_string_vcb_phonenumber_notfound_unregister">Tài khoản Vietcombank chưa liên kết với Zalo Pay, vui lòng kiểm tra lại.</string>
     <string name="zpw_string_vcb_error_captcha">Mã kiểm tra không đúng</string>
     <string name="zpw_string_vcb_bank_locked_account">Tài khoản đang bị khoá.\nVui lòng liên hệ ngân hàng để được trợ giúp.</string>
     <string name="zpw_string_vcb_login_error">Đăng nhập sai quá số lần cho phép.</string>
