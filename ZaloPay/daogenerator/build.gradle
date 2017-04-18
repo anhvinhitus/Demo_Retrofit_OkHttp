@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.26-incubating'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 }
 

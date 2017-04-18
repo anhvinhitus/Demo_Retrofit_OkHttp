@@ -1,25 +1,11 @@
-project(':greendaogenerator') {
-    apply plugin: 'application'
-    apply plugin: 'java'
-    apply plugin: 'maven'
+apply plugin: 'java'
+apply plugin: 'application'
+mainClassName = "vn.com.vng.zalopay.greendao.GreenDaoGenerator"
 
-    mainClassName = "GreenDaoGenerator"
-
-    // edit output direction
-    def outputDir = "../app/src/dao/gen"
-
-    dependencies {
-        compile fileTree(dir: 'libs', include: ['*.jar'])
-
-        compile project(':daogenerator')
-    }
-
-    task createDocs {
-        def docs = file(outputDir)
-        docs.mkdirs()
-    }
-
-    run {
-        args outputDir
-    }
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':daogenerator')
 }
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

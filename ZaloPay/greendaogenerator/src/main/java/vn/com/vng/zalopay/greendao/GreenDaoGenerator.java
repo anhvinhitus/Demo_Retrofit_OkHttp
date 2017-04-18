@@ -12,6 +12,10 @@ public class GreenDaoGenerator {
     private static final int APP_DB_VERSION = 57;
     private static final int GLOBAL_DB_VERSION = 1;
 
+    /**
+     * ./gradlew :greendaogenerator:run
+     */
+
     public static void main(String[] args) throws Exception {
         Schema appSchema = new Schema(APP_DB_VERSION, "vn.com.vng.zalopay.data.cache.model");
         Schema globalSchema = new Schema(GLOBAL_DB_VERSION, "vn.com.vng.zalopay.data.cache.global");
@@ -33,8 +37,8 @@ public class GreenDaoGenerator {
         addApptransidLog(globalSchema);
 
         DaoGenerator daoGenerator = new DaoGenerator("./daogenerator/src-template/");
-        daoGenerator.generateAll(appSchema, "./zalopay.data/src/main/java");
-        daoGenerator.generateAll(globalSchema, "./zalopay.data/src/main/java");
+        daoGenerator.generateAll(appSchema, "../zalopay.data/src/main/java");
+        daoGenerator.generateAll(globalSchema, "../zalopay.data/src/main/java");
     }
 
     private static void addRedPacket(Schema appSchema) {
