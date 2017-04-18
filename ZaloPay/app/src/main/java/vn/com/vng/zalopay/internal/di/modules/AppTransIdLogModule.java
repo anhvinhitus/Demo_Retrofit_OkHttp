@@ -5,7 +5,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit2.Retrofit;
 import vn.com.vng.zalopay.data.api.entity.mapper.ApptransidLogEntityDataMapper;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogLocalStorage;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogRepository;
@@ -27,16 +26,9 @@ public class AppTransIdLogModule {
 
     @Singleton
     @Provides
-    ApptransidLogStore.Repository provideApptransidLogRepository(ApptransidLogStore.RequestService requestService,
-                                                                 ApptransidLogStore.LocalStorage localStorage,
+    ApptransidLogStore.Repository provideApptransidLogRepository(ApptransidLogStore.LocalStorage localStorage,
                                                                  ApptransidLogEntityDataMapper mapper) {
-        return new ApptransidLogRepository(requestService, localStorage, mapper);
-    }
-
-    @Singleton
-    @Provides
-    ApptransidLogStore.RequestService providesApptransidLogService(@Named("retrofitApi") Retrofit retrofit) {
-        return retrofit.create(ApptransidLogStore.RequestService.class);
+        return new ApptransidLogRepository(localStorage, mapper);
     }
 
 }

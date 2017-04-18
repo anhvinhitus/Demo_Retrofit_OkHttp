@@ -12,14 +12,11 @@ import vn.com.vng.zalopay.data.util.ObservableHelper;
  */
 
 public class ApptransidLogRepository implements ApptransidLogStore.Repository {
-    private final ApptransidLogStore.RequestService mRequestService;
     private final ApptransidLogStore.LocalStorage mLocalStorage;
     private final ApptransidLogEntityDataMapper mMapper;
 
-    public ApptransidLogRepository(ApptransidLogStore.RequestService mRequestService,
-                                   ApptransidLogStore.LocalStorage mLocalStorage,
+    public ApptransidLogRepository(ApptransidLogStore.LocalStorage mLocalStorage,
                                    ApptransidLogEntityDataMapper mMapper) {
-        this.mRequestService = mRequestService;
         this.mLocalStorage = mLocalStorage;
         this.mMapper = mMapper;
     }
@@ -45,15 +42,4 @@ public class ApptransidLogRepository implements ApptransidLogStore.Repository {
             return null;
         });
     }
-
-//    @Override
-//    public Observable<Boolean> submitLog(String apptransid) {
-//        ApptransidLogGD apptransidLogGD = mLocalStorage.get(apptransid);
-//        return mRequestService
-//                .submitLog(apptransidLogGD.apptransid, apptransidLogGD.appid,
-//                        apptransidLogGD.step, apptransidLogGD.step_result, apptransidLogGD.pcmid, apptransidLogGD.transtype,
-//                        apptransidLogGD.transid, apptransidLogGD.sdk_result, apptransidLogGD.server_result,
-//                        apptransidLogGD.source)
-//                .map(BaseResponse::isSuccessfulResponse);
-//    }
 }
