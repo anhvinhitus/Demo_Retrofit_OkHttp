@@ -70,7 +70,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     private String mPageCode = null;
 
     private boolean mIsFirst = true;
-
+    private boolean mIsRefreshCaptcha = false;
     private boolean mIsRetry = false;
 
     private int mProgress = 0;
@@ -245,10 +245,21 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         mWebPaymentBridge.loadUrl(pUrl);
     }
 
+
     public void stop() {
         mWebPaymentBridge.stopLoading();
     }
 
+
+    public void refreshCaptcha() {
+        // new url load.
+        mIsRefreshCaptcha = true;
+        matchAndRunJs(mCurrentUrl, EJavaScriptType.HIT, false);
+    }
+    public void reload()
+   {
+       mWebPaymentBridge.reload();
+   }
     public void hit() {
         mAdapter.onEvent(EEventType.ON_HIT);
         mCurrentUrlPattern = null;
@@ -279,21 +290,20 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     }
 
     public void matchAndRunJs(String url, EJavaScriptType pType, boolean pIsAjax) {
+
         boolean isMatched = false;
         for (DBankScript bankScript : mBankScripts) {
-            if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url)) {
+            if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url) && !mIsRefreshCaptcha) {
+                mCurrentUrl = url;
                 Log.d("WebView", "$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
                 isMatched = true;
                 if (bankScript.pageCode.equals(mAdapter.VCB_REGISTER_PAGE)) {
                     mAdapter.mUrlReload = url;
                 }
-                mCurrentUrl = url;
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;
-
                 DLinkAccScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;
-
                 String inputScript = GsonUtils.toJsonString(input);
 
                 if (pType == EJavaScriptType.AUTO)
@@ -303,6 +313,16 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                     executeJs(bankScript.hitJs, inputScript);
 
                 // break loop for
+                break;
+            }else if(mIsRefreshCaptcha && bankScript.pageCode.equals(mAdapter.VCB_REFRESH_CAPTCHA)) {
+                Log.d("WebView", "$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
+                DLinkAccScriptInput input = genJsInput();
+                input.isAjax = pIsAjax;
+                String inputScript = GsonUtils.toJsonString(input);
+                if (pType == EJavaScriptType.HIT)
+                    executeJs(bankScript.hitJs, inputScript);
+                // break loop for
+                mIsRefreshCaptcha = false;
                 break;
             }
         }

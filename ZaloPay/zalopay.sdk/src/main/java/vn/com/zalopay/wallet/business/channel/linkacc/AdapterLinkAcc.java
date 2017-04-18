@@ -3,6 +3,7 @@ package vn.com.zalopay.wallet.business.channel.linkacc;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -63,6 +64,7 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_UNREGISTER_PAGE = "zpsdk_atm_vcb_unregister_page";
     public static String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
+    public static String VCB_REFRESH_CAPTCHA = "zpsdk_atm_vcb_refresh_captcha";
     public String mUrlReload;
     protected ZPWNotification mNotification;
     private int COUNT_ERROR_PASS = 1;
@@ -182,7 +184,8 @@ public class AdapterLinkAcc extends AdapterBase {
         } else if (GlobalData.isUnLinkAccFlow()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
         }
-
+        linkAccGuiProcessor.getLoginHolder().btnRefreshCaptcha.setOnClickListener(refreshCaptchaLogin);
+        linkAccGuiProcessor.getRegisterHolder().getButtonRefreshCaptcha().setOnClickListener(refreshCaptcha);
     }
 
     @Override
@@ -985,6 +988,10 @@ public class AdapterLinkAcc extends AdapterBase {
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
         mWebViewProcessor.start(pUrl);
     }
+    public LinkAccWebViewClient getLinkWebViewProcessor()
+    {
+        return mWebViewProcessor;
+    }
 
     public String getUserNameValue() {
         Object result = linkAccGuiProcessor.getLoginHolder().getEdtUsername().getText();
@@ -1062,4 +1069,21 @@ public class AdapterLinkAcc extends AdapterBase {
     public ZPWNotification getNotification() {
         return mNotification;
     }
+
+    private View.OnClickListener refreshCaptcha = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(this,"refreshCaptcha()");
+            showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+            mWebViewProcessor.refreshCaptcha();
+        }
+    };
+    private View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(this,"refreshCaptcha()");
+            showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+            mWebViewProcessor.reload();
+        }
+    };
 }
