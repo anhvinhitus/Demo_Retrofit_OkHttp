@@ -47,7 +47,7 @@
                 android:layout_marginLeft="@dimen/spacing.medium"
                 android:layout_marginRight="@dimen/spacing.medium"
                 android:layout_marginTop="@dimen/spacing.small"
-                android:text="@string/txt_note_link_vcb_account"
+                android:text="@string/link_account_to_use_easily"
                 android:textColor="@color/txt_item_main"
                 android:textSize="13sp" />
 
