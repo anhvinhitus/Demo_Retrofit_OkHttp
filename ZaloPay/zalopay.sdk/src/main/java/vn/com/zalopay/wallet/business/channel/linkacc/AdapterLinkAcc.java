@@ -160,7 +160,7 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public void startFlow() {
-        Log.d(this, "start flow...");
+        Log.d(this, "start flow link card");
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         BankLoader.loadBankList(mLoadBankListListener);
     }
@@ -535,13 +535,21 @@ public class AdapterLinkAcc extends AdapterBase {
         // Event: RENDER
         if (pEventType == EEventType.ON_REQUIRE_RENDER) {
             linkAccGuiProcessor.hideProgress();
+            /***
+             * sometimes load website timeout
+             * user go to result screen, need
+             * to prevent switch view if have a callback from website parser
+             */
+            if (isFinalScreen()) {
+                Log.d(this, "call back from parsing website but user in final screen now");
+                return null;
+            }
             if (pAdditionParams == null || pAdditionParams.length == 0) {
                 return null; // Error
             }
 
             // get page.
             String page = (String) pAdditionParams[1];
-
             // Login page
             if (page.equals(VCB_LOGIN_PAGE)) {
                 Log.d(this, "event login page");
@@ -566,13 +574,14 @@ public class AdapterLinkAcc extends AdapterBase {
                     linkAccGuiProcessor.setCaptchaImgLogin(response.otpimgsrc);
                     linkAccGuiProcessor.resetCaptchaInput();
                 }
-
-
+                
                 // set Message
                 if (!TextUtils.isEmpty(response.message)) {
                     switch (VcbUtils.getVcbType(response.message)) {
                         case EMPTY_USERNAME:
+                            break;
                         case EMPTY_PASSWORD:
+                            break;
                         case EMPTY_CAPCHA:
                             showMessage(null, VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_LONG);
                             break;
@@ -582,6 +591,8 @@ public class AdapterLinkAcc extends AdapterBase {
                                 showMessage(GlobalData.getStringResource(RS.string.zpw_string_title_err_login_vcb),
                                         String.format(GlobalData.getStringResource(RS.string.zpw_string_vcb_wrong_times_allow),
                                                 mNumAllowLoginWrong), TSnackbar.LENGTH_LONG);
+                                linkAccGuiProcessor.getLoginHolder().getEdtUsername().selectAll();
+                                linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
                             } else if (GlobalData.isLinkAccFlow()) {
                                 linkAccFail(getActivity().getString(R.string.zpw_string_vcb_login_error), mTransactionID);
                             } else if (GlobalData.isUnLinkAccFlow()) {
@@ -596,25 +607,13 @@ public class AdapterLinkAcc extends AdapterBase {
                             }
                             return null;
                         case WRONG_CAPTCHA:
-                            ViewUtils.setTextInputLayoutHintError(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
+                            //ViewUtils.setTextInputLayoutHintError(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha(), getActivity().getString(R.string.zpw_string_vcb_error_captcha), getActivity());
                             if (!GlobalData.shouldNativeWebFlow()) {
                                 showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                             }
-                            linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().setText("");
-                            linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().requestFocus();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        ZPWUtils.focusAndSoftKeyboard(getActivity(), linkAccGuiProcessor.getLoginHolder().getEdtCaptcha());
-                                        Log.d(this, "mOnFocusChangeListener Link Acc");
-                                    } catch (Exception e) {
-                                        Log.e(this, e);
-                                    }
-                                }
-                            }, 100);
-
-                            break;
+                            linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().setText(null);
+                            linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtCaptcha());//auto show keyboard
+                            return null;
                         default:
                             break;
                     }
@@ -622,9 +621,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
                 getActivity().renderByResource();
                 getActivity().enableSubmitBtn(false);
-                //auto show keyboard
-                forceVirtualKeyboard();
-
+                linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
                 return null;
             }
 
