@@ -301,6 +301,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         loginHolder.edtPassword = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_login_password);
         loginHolder.edtPassword.setGroupText(false);
         loginHolder.edtCaptcha = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_login_captcha);
+        loginHolder.btnRefreshCaptcha = (ImageView) mAdapter.getActivity().findViewById(R.id.refresh_captcha);
         loginHolder.edtCaptcha.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
@@ -353,6 +354,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         registerHolder.spnOTPValidType = (Spinner) mAdapter.getActivity().findViewById(R.id.spn_register_OTPValidType);
         registerHolder.tvPhoneReceiveOTP = (TextView) mAdapter.getActivity().findViewById(R.id.tv_register_phone_receive_OTP);
         registerHolder.edtCaptcha = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_register_captcha);
+        registerHolder.btnRefreshCaptcha = (ImageView) mAdapter.getActivity().findViewById(R.id.refresh_captcha_register);
         registerHolder.edtCaptcha.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
@@ -455,6 +457,9 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         getUnregisterHolder().getEdtPassword().addTextChangedListener(mUnRegPassEditTextWatcher);
         getUnregisterHolder().getEdtPassword().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
     }
+
+
+
 
     /***
      * @param pDrawable
@@ -994,6 +999,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         private WebView webCaptcha;
         private LinearLayout llAccNumberDefault;
         private TextInputLayout ilAccNumberDefault;
+        private ImageView btnRefreshCaptcha;
 
         public LinearLayout getLlRegister() {
             return llRegister;
@@ -1046,6 +1052,10 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         public WebView getWebCaptcha() {
             return webCaptcha;
         }
+
+        public ImageView getButtonRefreshCaptcha() {
+            return btnRefreshCaptcha;
+        }
     }
 
     // Holder: login form
@@ -1059,6 +1069,14 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         WebView webCaptcha;
         ScrollView srvScrollView;
         ImageView imgLogoLinkAcc;
+
+        TextView vcb_note_textview;
+        ImageView btnRefreshCaptcha;
+
+        public TextView getVcb_note_textview() {
+            return vcb_note_textview;
+        }
+
 
         public LinearLayout getLlLogin() {
             return llLogin;
@@ -1094,6 +1112,9 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
 
         public ImageView getImgLogoLinkAcc() {
             return imgLogoLinkAcc;
+        }
+        public ImageView getButtonRefreshCaptcha() {
+            return btnRefreshCaptcha;
         }
     }
 }
