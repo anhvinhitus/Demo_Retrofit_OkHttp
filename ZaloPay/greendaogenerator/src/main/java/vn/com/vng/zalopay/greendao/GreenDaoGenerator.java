@@ -27,10 +27,10 @@ public class GreenDaoGenerator {
         addNotification(appSchema);
         addRedPacket(appSchema);
         addMerchantUser(appSchema);
-        addApptransidLog(appSchema);
 
         //ADD TABLE GLOBAL
         addGlobalKeyValue(globalSchema);
+        addApptransidLog(globalSchema);
 
         DaoGenerator daoGenerator = new DaoGenerator("./daogenerator/src-template/");
         daoGenerator.generateAll(appSchema, "./zalopay.data/src/main/java");

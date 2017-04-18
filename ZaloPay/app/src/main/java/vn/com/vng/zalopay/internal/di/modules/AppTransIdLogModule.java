@@ -10,8 +10,7 @@ import vn.com.vng.zalopay.data.api.entity.mapper.ApptransidLogEntityDataMapper;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogLocalStorage;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogRepository;
 import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
-import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.internal.di.scope.UserScope;
+import vn.com.vng.zalopay.data.cache.global.DaoSession;
 
 /**
  * Created by khattn on 1/24/17.
@@ -22,7 +21,7 @@ public class AppTransIdLogModule {
 
     @Singleton
     @Provides
-    ApptransidLogStore.LocalStorage provideApptransidLogLocalStorage(@Named("daosession") DaoSession session) {
+    ApptransidLogStore.LocalStorage provideApptransidLogLocalStorage(@Named("globaldaosession") DaoSession session) {
         return new ApptransidLogLocalStorage(session);
     }
 

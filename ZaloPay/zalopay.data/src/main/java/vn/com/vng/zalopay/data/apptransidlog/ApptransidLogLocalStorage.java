@@ -4,26 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.ApptransidLogGD;
 import vn.com.vng.zalopay.data.cache.model.ApptransidLogGDDao;
-import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.cache.global.DaoSession;
 
 /**
  * Created by khattn on 1/24/17.
+ * apptransid log local storage
  */
 
-public class ApptransidLogLocalStorage extends SqlBaseScopeImpl implements ApptransidLogStore.LocalStorage {
+public class ApptransidLogLocalStorage implements ApptransidLogStore.LocalStorage {
+    private final DaoSession daoSession;
 
     public ApptransidLogLocalStorage(DaoSession daoSession) {
-        super(daoSession);
+        this.daoSession = daoSession;
     }
 
     @Override
     public ApptransidLogGD get(String apptransid) {
         List<ApptransidLogGD> list = new ArrayList<>();
         if (apptransid != null) {
-            list = getDaoSession().getApptransidLogGDDao()
+            list = daoSession.getApptransidLogGDDao()
                     .queryBuilder()
                     .where(ApptransidLogGDDao.Properties.Apptransid.eq(apptransid))
                     .list();
@@ -53,7 +54,7 @@ public class ApptransidLogLocalStorage extends SqlBaseScopeImpl implements Apptr
         apptransidLogGD.source = (newLog.source == null) ? apptransidLogGD.source : newLog.source;
 
         try {
-            getDaoSession().getApptransidLogGDDao().insertOrReplaceInTx(apptransidLogGD);
+            daoSession.getApptransidLogGDDao().insertOrReplaceInTx(apptransidLogGD);
         } catch (Exception e) {
             Timber.d(e, "Update log error");
             return;
@@ -63,7 +64,7 @@ public class ApptransidLogLocalStorage extends SqlBaseScopeImpl implements Apptr
     @Override
     public void delete(String apptransid) {
         try {
-            getDaoSession().getApptransidLogGDDao().deleteByKeyInTx(apptransid);
+            daoSession.getApptransidLogGDDao().deleteByKeyInTx(apptransid);
         } catch (Exception e) {
             Timber.d(e, "Delete log error");
             return;
