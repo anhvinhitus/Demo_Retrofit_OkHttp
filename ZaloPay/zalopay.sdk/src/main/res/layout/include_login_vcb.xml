@@ -174,7 +174,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/zpw_padding_10"
                 android:layout_marginRight="@dimen/zpw_padding_10"
-                android:scaleType="fitXY"
                 android:src="@drawable/ic_refresh_captcha" />
             </LinearLayout>
         </LinearLayout>
