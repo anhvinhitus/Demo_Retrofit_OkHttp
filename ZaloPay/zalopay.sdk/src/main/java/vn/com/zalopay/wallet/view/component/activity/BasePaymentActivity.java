@@ -1141,17 +1141,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setVisible(R.id.zpw_transaction_wrapper, false);
             setVisible(R.id.zpw_notransid_textview, GlobalData.isUnLinkAccFlow() ? false: true);//hide all if unlink account
         }
-
-        // set color for text in linkacc
-        if (GlobalData.isBankAccountLink()) {
-            if (getAdapter().getPageName().equals(AdapterLinkAcc.PAGE_LINKACC_FAIL)) {
-                setVisible(R.id.zpw_payment_fail_textview, true);
-            } else { // unlinkacc fail
-                setVisible(R.id.zpw_payment_fail_textview, false);
-            }
-        }
         applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
-
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
         animateImageViewFail();
 
