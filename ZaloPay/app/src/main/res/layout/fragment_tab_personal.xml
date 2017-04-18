@@ -33,7 +33,7 @@
                 android:id="@+id/tab_personal_rl_info"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/personal.info.height"
-                android:background="@color/white">
+                android:background="@drawable/default_white_selector">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/tab_personal_iv_avatar"

@@ -119,7 +119,16 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
     public void initialize() {
         getListAppResource();
         getTotalNotification(100);
-        getBalanceLocal();
+        fetchBalance();
+    }
+
+    private void fetchBalance() {
+        Subscription subscription = mBalanceRepository.fetchBalance()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<>());
+
+        mSubscription.add(subscription);
     }
 
     private void getBalanceLocal() {
@@ -338,7 +347,7 @@ public class ZaloPayPresenter extends AbstractPresenter<IZaloPayView> implements
             return;
         }
         mView.hideNetworkError();
-
+        fetchBalance();
         ensureAppResourceAvailable();
     }
 
