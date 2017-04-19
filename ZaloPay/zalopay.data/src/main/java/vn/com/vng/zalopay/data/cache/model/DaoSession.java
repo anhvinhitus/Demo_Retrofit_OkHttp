@@ -12,7 +12,6 @@ import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 import vn.com.vng.zalopay.data.cache.model.TransactionLog;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogBackup;
 import vn.com.vng.zalopay.data.cache.model.DataManifest;
-import vn.com.vng.zalopay.data.cache.model.BankCardGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGD;
 import vn.com.vng.zalopay.data.cache.model.ContactGD;
@@ -31,7 +30,6 @@ import vn.com.vng.zalopay.data.cache.model.AppResourceGDDao;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogDao;
 import vn.com.vng.zalopay.data.cache.model.TransactionLogBackupDao;
 import vn.com.vng.zalopay.data.cache.model.DataManifestDao;
-import vn.com.vng.zalopay.data.cache.model.BankCardGDDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGDDao;
 import vn.com.vng.zalopay.data.cache.model.ContactGDDao;
@@ -59,7 +57,6 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig transactionLogDaoConfig;
     private final DaoConfig transactionLogBackupDaoConfig;
     private final DaoConfig dataManifestDaoConfig;
-    private final DaoConfig bankCardGDDaoConfig;
     private final DaoConfig zaloFriendGDDaoConfig;
     private final DaoConfig zaloPayProfileGDDaoConfig;
     private final DaoConfig contactGDDaoConfig;
@@ -78,7 +75,6 @@ public class DaoSession extends AbstractDaoSession {
     private final TransactionLogDao transactionLogDao;
     private final TransactionLogBackupDao transactionLogBackupDao;
     private final DataManifestDao dataManifestDao;
-    private final BankCardGDDao bankCardGDDao;
     private final ZaloFriendGDDao zaloFriendGDDao;
     private final ZaloPayProfileGDDao zaloPayProfileGDDao;
     private final ContactGDDao contactGDDao;
@@ -108,9 +104,6 @@ public class DaoSession extends AbstractDaoSession {
 
         dataManifestDaoConfig = daoConfigMap.get(DataManifestDao.class).clone();
         dataManifestDaoConfig.initIdentityScope(type);
-
-        bankCardGDDaoConfig = daoConfigMap.get(BankCardGDDao.class).clone();
-        bankCardGDDaoConfig.initIdentityScope(type);
 
         zaloFriendGDDaoConfig = daoConfigMap.get(ZaloFriendGDDao.class).clone();
         zaloFriendGDDaoConfig.initIdentityScope(type);
@@ -155,7 +148,6 @@ public class DaoSession extends AbstractDaoSession {
         transactionLogDao = new TransactionLogDao(transactionLogDaoConfig, this);
         transactionLogBackupDao = new TransactionLogBackupDao(transactionLogBackupDaoConfig, this);
         dataManifestDao = new DataManifestDao(dataManifestDaoConfig, this);
-        bankCardGDDao = new BankCardGDDao(bankCardGDDaoConfig, this);
         zaloFriendGDDao = new ZaloFriendGDDao(zaloFriendGDDaoConfig, this);
         zaloPayProfileGDDao = new ZaloPayProfileGDDao(zaloPayProfileGDDaoConfig, this);
         contactGDDao = new ContactGDDao(contactGDDaoConfig, this);
@@ -174,7 +166,6 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(TransactionLog.class, transactionLogDao);
         registerDao(TransactionLogBackup.class, transactionLogBackupDao);
         registerDao(DataManifest.class, dataManifestDao);
-        registerDao(BankCardGD.class, bankCardGDDao);
         registerDao(ZaloFriendGD.class, zaloFriendGDDao);
         registerDao(ZaloPayProfileGD.class, zaloPayProfileGDDao);
         registerDao(ContactGD.class, contactGDDao);
@@ -195,7 +186,6 @@ public class DaoSession extends AbstractDaoSession {
         transactionLogDaoConfig.clearIdentityScope();
         transactionLogBackupDaoConfig.clearIdentityScope();
         dataManifestDaoConfig.clearIdentityScope();
-        bankCardGDDaoConfig.clearIdentityScope();
         zaloFriendGDDaoConfig.clearIdentityScope();
         zaloPayProfileGDDaoConfig.clearIdentityScope();
         contactGDDaoConfig.clearIdentityScope();
@@ -225,10 +215,6 @@ public class DaoSession extends AbstractDaoSession {
 
     public DataManifestDao getDataManifestDao() {
         return dataManifestDao;
-    }
-
-    public BankCardGDDao getBankCardGDDao() {
-        return bankCardGDDao;
     }
 
     public ZaloFriendGDDao getZaloFriendGDDao() {

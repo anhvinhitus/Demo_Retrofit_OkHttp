@@ -24,7 +24,6 @@ public class GreenDaoGenerator {
         addApplicationInfo(appSchema);
         addTransactionLog(appSchema);
         addDataManifest(appSchema);
-        addCardList(appSchema);
         addZaloContact(appSchema);
         addTransferRecent(appSchema);
         addNotification(appSchema);
@@ -254,17 +253,6 @@ public class GreenDaoGenerator {
         entity.addStringProperty("key").notNull().unique().primaryKey();
         entity.addStringProperty("value");
     }
-
-    private static void addCardList(Schema schema) {
-        Entity bankCard = schema.addEntity("BankCardGD");
-        bankCard.setConstructors(false);
-        bankCard.addStringProperty("cardhash").primaryKey().notNull();
-        bankCard.addStringProperty("cardname").notNull();
-        bankCard.addStringProperty("first6cardno").notNull();
-        bankCard.addStringProperty("last4cardno").notNull();
-        bankCard.addStringProperty("bankcode").notNull();
-    }
-
 
     private static void addNotification(Schema schema) {
         Entity entity = schema.addEntity("NotificationGD");

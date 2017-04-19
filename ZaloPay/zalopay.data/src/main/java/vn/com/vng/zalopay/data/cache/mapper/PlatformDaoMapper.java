@@ -4,9 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
-import vn.com.vng.zalopay.data.api.entity.CardEntity;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
-import vn.com.vng.zalopay.data.cache.model.BankCardGD;
 
 /**
  * Created by AnhHieu on 5/18/16.
@@ -18,33 +16,6 @@ public class PlatformDaoMapper {
 
     @Inject
     public PlatformDaoMapper() {
-    }
-
-    public BankCardGD transform(CardEntity cardEntity) {
-        BankCardGD bankCardGD = null;
-        if (cardEntity != null) {
-            bankCardGD = new BankCardGD();
-            bankCardGD.cardhash = cardEntity.cardhash;
-            bankCardGD.bankcode = (cardEntity.bankcode);
-            bankCardGD.cardname = (cardEntity.cardname);
-            bankCardGD.first6cardno = (cardEntity.first6cardno);
-            bankCardGD.last4cardno = (cardEntity.last4cardno);
-        }
-        return bankCardGD;
-    }
-
-    public CardEntity transform(BankCardGD cardGD) {
-        CardEntity cardEntity = null;
-        if (cardGD != null) {
-            cardEntity = new CardEntity();
-            cardEntity.bankcode = cardGD.bankcode;
-            cardEntity.cardhash = cardGD.cardhash;
-            cardEntity.cardname = cardGD.cardname;
-            cardEntity.first6cardno = cardGD.first6cardno;
-            cardEntity.last4cardno = cardGD.last4cardno;
-
-        }
-        return cardEntity;
     }
 
     public AppResourceGD transform(AppResourceEntity appResourceEntity) {

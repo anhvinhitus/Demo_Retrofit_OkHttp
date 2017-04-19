@@ -25,7 +25,6 @@ public class DaoMaster extends AbstractDaoMaster {
         TransactionLogDao.createTable(db, ifNotExists);
         TransactionLogBackupDao.createTable(db, ifNotExists);
         DataManifestDao.createTable(db, ifNotExists);
-        BankCardGDDao.createTable(db, ifNotExists);
         ZaloFriendGDDao.createTable(db, ifNotExists);
         ZaloPayProfileGDDao.createTable(db, ifNotExists);
         ContactGDDao.createTable(db, ifNotExists);
@@ -47,7 +46,6 @@ public class DaoMaster extends AbstractDaoMaster {
         TransactionLogDao.dropTable(db, ifExists);
         TransactionLogBackupDao.dropTable(db, ifExists);
         DataManifestDao.dropTable(db, ifExists);
-        BankCardGDDao.dropTable(db, ifExists);
         ZaloFriendGDDao.dropTable(db, ifExists);
         ZaloPayProfileGDDao.dropTable(db, ifExists);
         ContactGDDao.dropTable(db, ifExists);
@@ -83,7 +81,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(TransactionLogDao.class);
         registerDaoClass(TransactionLogBackupDao.class);
         registerDaoClass(DataManifestDao.class);
-        registerDaoClass(BankCardGDDao.class);
         registerDaoClass(ZaloFriendGDDao.class);
         registerDaoClass(ZaloPayProfileGDDao.class);
         registerDaoClass(ContactGDDao.class);
