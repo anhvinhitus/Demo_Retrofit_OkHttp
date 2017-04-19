@@ -206,7 +206,7 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     public void startFlow() {
-        Log.d(this, "start flow link card");
+        Log.d(this, "start flow link account");
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         BankLoader.loadBankList(mLoadBankListListener);
     }
@@ -255,12 +255,9 @@ public class AdapterLinkAcc extends AdapterBase {
         if (isLoginStep() || isConfirmStep() || isOtpStep()) {
             mWebViewProcessor.hit();
             Log.d(this, "hit " + mPageCode);
-            forceVirtualKeyboard(); // force virtual keyboard
-            Log.d(this, "mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
             if (mIsExitWithoutConfirm) {
                 mIsExitWithoutConfirm = !(isLoginStep());//need to show dialog ask for exit if user go to confirm page-> otp page
             }
-            Log.d(this, "mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
         }
     }
 
@@ -440,12 +437,7 @@ public class AdapterLinkAcc extends AdapterBase {
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
         Log.d(this, "sender " + pSender + " otp " + pOtp);
-        if (GlobalData.shouldNativeWebFlow()) {
-            mWebViewProcessor.fillOtpOnWebFlow(pOtp);
-            Log.d(this, "filled otp into website vcb directly");
-            return;
-        }
-        if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase()) {
+        if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !GlobalData.shouldNativeWebFlow()) {
             Log.d(this, "user is not in otp phase, skip auto fill otp");
             return;
         }
@@ -472,7 +464,12 @@ public class AdapterLinkAcc extends AdapterBase {
                         if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                             continue;
                         }
-                        linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
+                        if (GlobalData.shouldNativeWebFlow()) {
+                            mWebViewProcessor.fillOtpOnWebFlow(otp);
+                            Log.d(this, "fill otp into website vcb directly");
+                        }else{
+                            linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
+                        }
                         break;
                     }
                 }
@@ -573,7 +570,6 @@ public class AdapterLinkAcc extends AdapterBase {
             // get value progress  &  show it
             int value = (int) pAdditionParams[0];
             linkAccGuiProcessor.setProgress(value);
-            visibleLoading();
             return null;
         }
 
