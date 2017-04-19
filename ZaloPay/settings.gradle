@@ -7,7 +7,6 @@ include ':zalopay.feedback'
 include ':zalopay.sdk.apptest'
 include ':zalopay.sdk'
 include ':zalopay.sdk.utils'
-include ':zalopay.location'
 include ':zalopay.network'
 
 include ':greendaogenerator'
