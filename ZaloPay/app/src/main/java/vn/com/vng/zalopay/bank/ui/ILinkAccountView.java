@@ -41,4 +41,6 @@ interface ILinkAccountView extends ILoadDataView {
     void showSupportVcbOnly();
 
     void hideSupportVcbOnly();
+
+    void refreshBanksSupport();
 }

@@ -172,8 +172,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     private void showLayoutEmpty() {
         Timber.d("Show layout link account empty.");
-        if (mBankSupportFragment.getCountLinkCardSupport() <= 0
-                || mBankSupportFragment.getCountLinkAccountSupport() <= 0) {
+        if (mBankSupportFragment.getCountCardSupport() <= 0) {
             mBankSupportFragment.getCardSupport();
         }
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
@@ -256,6 +255,13 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     public void hideSupportVcbOnly() {
         mTxtNoteSupportOnlyVcb.setVisibility(View.GONE);
         mBtnAddMore.setEnabled(true);
+    }
+
+    @Override
+    public void refreshBanksSupport() {
+        if (mBankSupportFragment != null) {
+            mBankSupportFragment.notifyDataChanged();
+        }
     }
 
     @Override

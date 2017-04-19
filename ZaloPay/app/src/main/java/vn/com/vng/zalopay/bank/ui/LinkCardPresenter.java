@@ -251,6 +251,13 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     }
 
     @Override
+    void onDownloadPaymentSDKComplete() {
+        if (mView != null) {
+            mView.refreshBanksSupport();
+        }
+    }
+
+    @Override
     protected void showLoadingView() {
         if (mView == null) {
             return;
