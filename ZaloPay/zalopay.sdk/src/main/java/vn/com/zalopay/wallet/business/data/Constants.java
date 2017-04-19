@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Constants {
+    public static final String AUTOFILL_OTP_WEBFLOW_JS = "vcb_autofill_otp.js";
     public static final String COMMA = ",";
     public static final String UNDERLINE = "_";
     public static final String URL_PLATFORM_INFO = "v001/tpe/v001getplatforminfo";
