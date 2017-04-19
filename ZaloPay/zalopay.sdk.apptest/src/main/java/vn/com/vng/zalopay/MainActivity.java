@@ -107,6 +107,11 @@ public class MainActivity extends ActionBarActivity implements Callback {
                         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
                             Log.e("loadGatewayInfo", "need to update new version : "+ pVersion + ".Message: "+ pMessage);
                         }
+
+                        @Override
+                        public void onDownloadResourceComplete() {
+                            Log.d(this,"download resource sdk complete");
+                        }
                     });
             for (int i=0;i<10;i++)
             {
@@ -133,6 +138,11 @@ public class MainActivity extends ActionBarActivity implements Callback {
                             @Override
                             public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
                                 Log.e("loadGatewayInfo", "need to update new version : "+ pVersion + ".Message: "+ pMessage);
+                            }
+
+                            @Override
+                            public void onDownloadResourceComplete() {
+                                Log.d(this,"download resource sdk complete");
                             }
                         });
                 /*try {
