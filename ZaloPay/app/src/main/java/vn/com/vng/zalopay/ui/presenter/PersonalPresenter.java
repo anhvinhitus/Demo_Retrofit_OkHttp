@@ -30,6 +30,8 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.ZaloPayNameEvent;
 import vn.com.vng.zalopay.event.ZaloProfileInfoEvent;
+import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
@@ -56,6 +58,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper paymentWrapper;
     private ZaloSdkApi mZaloSdkApi;
+    private Navigator mNavigator;
 
     @Inject
     PersonalPresenter(User user
@@ -65,7 +68,9 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
             , PassportRepository passportRepository
             , ZaloPayRepository zaloPayRepository
             , TransactionStore.Repository transactionRepository
-            , Context context, ZaloSdkApi zaloSdkApi) {
+            , Context context
+            , ZaloSdkApi zaloSdkApi
+            , Navigator navigator) {
         this.mUser = user;
         this.mEventBus = eventBus;
         this.mUserConfig = userConfig;
@@ -75,6 +80,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         this.mZaloPayRepository = zaloPayRepository;
         this.mTransactionRepository = transactionRepository;
         this.mZaloSdkApi = zaloSdkApi;
+        this.mNavigator = navigator;
         Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 
@@ -96,6 +102,20 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     public void resume() {
         super.resume();
         initialize();
+    }
+
+    public Context getContext() {
+        if (mView == null) {
+            return null;
+        }
+        return mView.getContext();
+    }
+
+    public Activity getActivity() {
+        if (mView == null) {
+            return null;
+        }
+        return mView.getActivity();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -143,6 +163,24 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         mView.setBalance(mBalanceRepository.currentBalance());
         getBalanceLocal();
         checkLinkCardStatus();
+        paymentWrapper = new PaymentWrapperBuilder()
+                .setBalanceRepository(mBalanceRepository)
+                .setZaloPayRepository(mZaloPayRepository)
+                .setTransactionRepository(mTransactionRepository)
+                .setResponseListener(new DefaultPaymentResponseListener() {
+                    @Override
+                    protected ILoadDataView getView() {
+                        return null;
+                    }
+
+                    @Override
+                    public void onResponseError(PaymentError paymentError) {
+                        if (paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT) {
+                            // Go to LinkBankActivity with page index = 1 (Tab "Liên kết tài khoản")
+                            mNavigator.startLinkAccountActivity(getActivity());
+                        }
+                    }
+                }).build();
     }
 
     private void getBalanceLocal() {
@@ -234,6 +272,11 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
                     @Override
                     protected ILoadDataView getView() {
                         return null;
+                    }
+
+                    @Override
+                    public void onResponseError(PaymentError status) {
+                        super.onResponseError(status);
                     }
                 }).build();
     }

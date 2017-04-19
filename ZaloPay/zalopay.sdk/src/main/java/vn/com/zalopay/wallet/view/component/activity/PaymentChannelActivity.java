@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.view.component.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;

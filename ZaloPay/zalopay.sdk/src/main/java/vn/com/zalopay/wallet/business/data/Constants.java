@@ -26,9 +26,6 @@ public class Constants {
     public static final String BITMAP_EXTENSION = ".png";
     public static final String SUPPORT_INTRO_ACTION_FEEDBACK = "vn.com.vng.zalopay.action.FEEDBACK";
     public static final String SUPPORT_INTRO_ACTION_SUPPORT_CENTER = "vn.com.vng.zalopay.action.SUPPORT_CENTER";
-    public static final String WARNING_BANK_ACCOUNT_ACTION_LINK_BANK = "vn.com.vng.zalopay.action.LINK_BANK";
-    public static final String WARNING_BANK_ACCOUNT_PAGE_INDEX = "page_index";
-    public static final int WARNING_BANK_ACCOUNT_LINK_ACCOUNT = 1;
     public static final String SCREENSHOT = "screenshot";
     public static final String TRANSACTIONID = "transactionid";
     public static final String CATEGORY = "category";

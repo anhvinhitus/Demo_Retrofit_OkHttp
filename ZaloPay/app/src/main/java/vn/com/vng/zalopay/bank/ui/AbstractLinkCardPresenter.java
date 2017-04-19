@@ -199,7 +199,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             mNavigator.startUpdateProfileLevel2Activity(getContext());
         } else {
             paymentWrapper.linkCard(getActivity());
-            getActivity().finish();
             hideLoadingView();
             ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_ADDCARD_LAUNCH);
         }
@@ -224,6 +223,9 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         public void onResponseError(PaymentError paymentError) {
             if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                 showNetworkErrorDialog();
+            } else if (paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT) {
+                // Go to LinkBankActivity with page index = 1 (Tab "Liên kết tài khoản")
+                mNavigator.startLinkAccountActivityAndFinish(getActivity());
             } else {
                 onPayResponseError(paymentError);
             }

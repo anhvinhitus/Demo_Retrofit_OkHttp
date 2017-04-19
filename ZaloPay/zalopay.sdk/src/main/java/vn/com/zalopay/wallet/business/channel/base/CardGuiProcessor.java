@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.business.channel.base;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
@@ -32,8 +31,8 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
@@ -45,7 +44,6 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebView;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
@@ -943,15 +941,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                                                                  dBankAccount.bankcode = BankCardCheck.getInstance().getDetectBankCode();
                                                                  GlobalData.getPaymentInfo().mapBank = dBankAccount;
 
-//                                                                 GlobalData.setResultNeedToLinkAccount();
-                                                                 // Go to LinkBankActivity with page index = 1 (Tab "Liên kết tài khoản")
-                                                                 Intent intent = new Intent();
-                                                                 Bundle bundle = new Bundle();
-                                                                 bundle.putInt(Constants.WARNING_BANK_ACCOUNT_PAGE_INDEX, Constants.WARNING_BANK_ACCOUNT_LINK_ACCOUNT);
-                                                                 intent.putExtras(bundle);
-                                                                 intent.setAction(Constants.WARNING_BANK_ACCOUNT_ACTION_LINK_BANK);
-                                                                 getAdapter().getActivity().startActivity(intent);
-
+                                                                 GlobalData.setResultNeedToLinkAccount();
                                                                  getAdapter().getActivity().recycleActivity();
                                                              }
                                                          }, GlobalData.getStringResource(RS.string.zpw_warning_vietcombank_linkbankaccount_not_linkcard),

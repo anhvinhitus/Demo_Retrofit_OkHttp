@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.ui.view;
 
+import android.app.Activity;
 import android.content.Context;
 
 import vn.com.vng.zalopay.domain.model.User;
@@ -22,4 +23,6 @@ public interface IPersonalView {
     void setBankLinkText(int linkBankStatus, int cardAmount, int accAmount);
 
     Context getContext();
+
+    Activity getActivity();
 }
