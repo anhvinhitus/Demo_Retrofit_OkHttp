@@ -1,19 +1,12 @@
 package vn.com.vng.zalopay.data.cache.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import vn.com.vng.zalopay.data.api.entity.AppResourceEntity;
 import vn.com.vng.zalopay.data.api.entity.CardEntity;
-import vn.com.vng.zalopay.data.api.entity.PCMEntity;
-import vn.com.vng.zalopay.data.api.entity.PaymentTransTypeEntity;
 import vn.com.vng.zalopay.data.cache.model.AppResourceGD;
 import vn.com.vng.zalopay.data.cache.model.BankCardGD;
-import vn.com.vng.zalopay.data.cache.model.PaymentTransTypeGD;
-import vn.com.vng.zalopay.data.util.Lists;
 
 /**
  * Created by AnhHieu on 5/18/16.
@@ -108,28 +101,5 @@ public class PlatformDaoMapper {
 
         }
         return appResourceEntity;
-    }
-
-    public List<PaymentTransTypeGD> transform(PaymentTransTypeEntity appResourceEntity) {
-        List<PaymentTransTypeGD> listPaymentTransDao = null;
-        if (appResourceEntity != null && !Lists.isEmptyOrNull(appResourceEntity.pmclist)) {
-            listPaymentTransDao = new ArrayList<>();
-
-            for (PCMEntity pcmEntity : appResourceEntity.pmclist) {
-                PaymentTransTypeGD paymentTransTypeGD = new PaymentTransTypeGD();
-                paymentTransTypeGD.transtype = appResourceEntity.transtype;
-                paymentTransTypeGD.pmcid = (pcmEntity.pmcid);
-                paymentTransTypeGD.status = (pcmEntity.status);
-                paymentTransTypeGD.feecaltype = (pcmEntity.feecaltype);
-                paymentTransTypeGD.feerate = (pcmEntity.feerate);
-                paymentTransTypeGD.minvalue = (pcmEntity.minvalue);
-                paymentTransTypeGD.maxvalue = (pcmEntity.maxvalue);
-                paymentTransTypeGD.pmcname = (pcmEntity.pmcname);
-                paymentTransTypeGD.minfee = (pcmEntity.minxfee);
-
-                listPaymentTransDao.add(paymentTransTypeGD);
-            }
-        }
-        return listPaymentTransDao;
     }
 }

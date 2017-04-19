@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.ToMany;
 
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 57;
+    private static final int APP_DB_VERSION = 58;
     private static final int GLOBAL_DB_VERSION = 1;
 
     /**
@@ -22,7 +22,6 @@ public class GreenDaoGenerator {
 
         //ADD TABLE
         addApplicationInfo(appSchema);
-        addPaymentTransactionType(appSchema);
         addTransactionLog(appSchema);
         addDataManifest(appSchema);
         addCardList(appSchema);
@@ -220,30 +219,6 @@ public class GreenDaoGenerator {
         entity.addLongProperty("downloadTime");
         entity.addLongProperty("retryNumber");
     }
-
-    private static void addPaymentTransactionType(Schema schema) {
-        Entity entity = schema.addEntity("PaymentTransTypeGD");
-        entity.setConstructors(false);
-
-        Property transtype = entity.addLongProperty("transtype").notNull().primaryKey().getProperty();
-        Property pmcid = entity.addLongProperty("pmcid").notNull().getProperty();
-
-        entity.addStringProperty("pmcname");
-        entity.addLongProperty("status");
-        entity.addLongProperty("minvalue");
-        entity.addLongProperty("maxvalue");
-        entity.addFloatProperty("feerate");
-
-        entity.addLongProperty("minfee");
-        entity.addStringProperty("feecaltype");
-
-        Index index = new Index();
-        index.addProperty(transtype);
-        index.addProperty(pmcid);
-        index.makeUnique();
-        entity.addIndex(index);
-    }
-
 
     private static void addTransactionLog(Schema schema) {
         addTransactionLog(schema, "TransactionLog");
