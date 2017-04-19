@@ -339,12 +339,12 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
         ImageView imgLogo = (ImageView) mBottomSheetDialog.findViewById(R.id.iv_logo);
         if (mAdapter != null) {
-            mAdapter.bindBankAccount(verticalLine, imgLogo, bankAccount);
+            mAdapter.bindBankImage(verticalLine, imgLogo, bankAccount);
         }
 
         TextView tvAccountName = (TextView) mBottomSheetDialog.findViewById(R.id.tvAccountName);
         if (bankAccount != null && tvAccountName != null) {
-            tvAccountName.setText(bankAccount.getPhoneNumber());
+            tvAccountName.setText(bankAccount.getAccountInfo());
         }
         mBottomSheetDialog.show();
     }
