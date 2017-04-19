@@ -283,6 +283,25 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         return pgbProgress;
     }
 
+    public void hideProgress() {
+        if (pgbProgress != null) {
+            pgbProgress.setVisibility(View.GONE);
+        }
+    }
+
+    public void visibleProgress() {
+        if (pgbProgress != null) {
+            pgbProgress.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public boolean isProgressVisible(){
+        if(pgbProgress != null){
+            return pgbProgress.getVisibility() == View.VISIBLE;
+        }
+        return false;
+    }
+
     public LinearLayout getLlRoot_linear_layout() {
         return (LinearLayout) mAdapter.getActivity().findViewById(R.id.ll_layout_rootview);
     }

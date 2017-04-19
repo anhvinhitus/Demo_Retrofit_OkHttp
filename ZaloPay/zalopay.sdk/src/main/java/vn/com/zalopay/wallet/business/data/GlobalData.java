@@ -756,7 +756,7 @@ public class GlobalData {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("shouldNativeWebFlow",e);
         }
         return false;
 

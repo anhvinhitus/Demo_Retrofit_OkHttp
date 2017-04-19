@@ -3,11 +3,11 @@ package vn.com.zalopay.wallet.business.channel.linkacc;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import org.json.JSONException;
@@ -163,6 +163,49 @@ public class AdapterLinkAcc extends AdapterBase {
                 pMessage = GlobalData.getStringResource(RS.string.zpw_alert_error_networking_when_load_banklist);
             }
             getActivity().onExit(pMessage, true);
+        }
+    };
+    private View.OnClickListener refreshCaptcha = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!isLoadingCaptcha()) {
+                if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
+                    return;
+                }
+                Log.d(this, "refreshCaptcha()");
+                mIsLoadingCaptcha = true;
+                mWebViewProcessor.refreshCaptcha();
+                COUNT_REFRESH_CAPTCHA_REGISTER++;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mIsLoadingCaptcha = false;
+                    }
+                }, 2000);
+            }
+        }
+    };
+    private View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            if (!isLoadingCaptcha()) {
+                Log.d(this, "refreshCaptcha()");
+                if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
+                    return;
+                }
+                mIsLoadingCaptcha = true;
+                mWebViewProcessor.reload();
+                COUNT_REFRESH_CAPTCHA_LOGIN++;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mIsLoadingCaptcha = false;
+                    }
+                }, 2000);
+            }
         }
     };
 
@@ -425,7 +468,6 @@ public class AdapterLinkAcc extends AdapterBase {
         }
     }
 
-
     /***
      * unlink account fail
      *
@@ -558,6 +600,15 @@ public class AdapterLinkAcc extends AdapterBase {
         return false;
     }
 
+    protected void visibleLoading(){
+        if (!linkAccGuiProcessor.isProgressVisible()) {
+            linkAccGuiProcessor.visibleProgress();
+        }
+        if (!DialogManager.isShowingProgressDialog()) {
+            showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+        }
+    }
+
     @Override
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
         // show value progressing
@@ -565,13 +616,13 @@ public class AdapterLinkAcc extends AdapterBase {
             // get value progress  &  show it
             int value = (int) pAdditionParams[0];
             linkAccGuiProcessor.setProgress(value);
+            visibleLoading();
             return null;
         }
 
         // Event: HIT
         if (pEventType == EEventType.ON_HIT) {
-            // show processDialog
-            showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+            visibleLoading();
             return null;
         }
 
@@ -616,7 +667,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 // set logo
-               // linkAccGuiProcessor.setLogoImgLinkAcc(getActivity().getResources().getDrawable(R.drawable.ic_zp_vcb));
+                // linkAccGuiProcessor.setLogoImgLinkAcc(getActivity().getResources().getDrawable(R.drawable.ic_zp_vcb));
 
                 // set captcha
                 if (!TextUtils.isEmpty(response.otpimg) && response.otpimg.length() > 10) {
@@ -719,9 +770,9 @@ public class AdapterLinkAcc extends AdapterBase {
 
                         List<String> phoneNum = HashMapUtils.getKeys(mHashMapPhoneNum);
                         //validate zalopay phone and vcb phone must same
-                        if (!isValidPhoneList(phoneNum)) {
+                        /*if (!isValidPhoneList(phoneNum)) {
                             return pAdditionParams;
-                        }
+                        }*/
                         linkAccGuiProcessor.setPhoneNumList(phoneNum);
                         linkAccGuiProcessor.setPhoneNum(phoneNum);
 
@@ -1030,8 +1081,8 @@ public class AdapterLinkAcc extends AdapterBase {
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
         mWebViewProcessor.start(pUrl);
     }
-    public LinkAccWebViewClient getLinkWebViewProcessor()
-    {
+
+    public LinkAccWebViewClient getLinkWebViewProcessor() {
         return mWebViewProcessor;
     }
 
@@ -1046,19 +1097,24 @@ public class AdapterLinkAcc extends AdapterBase {
 
     }
 
+//    public String getAccNumValue() {
+//        Object result = linkAccGuiProcessor.getRegisterHolder().getSpnAccNumberDefault().getSelectedItem();
+//        return (result != null && !result.toString().isEmpty()) ? mHashMapAccNum.get(result.toString()) : "null";
+//    }
+
     public String getCaptchaLogin() {
         Object result = linkAccGuiProcessor.getLoginHolder().getEdtCaptcha().getText();
         return (result != null && !result.toString().isEmpty()) ? result.toString() : "";
     }
 
+//    public String getPhoneNumValue() {
+//        Object result = linkAccGuiProcessor.getRegisterHolder().getSpnPhoneNumber().getSelectedItem();
+//        return (result != null && !result.toString().isEmpty()) ? mHashMapPhoneNum.get(result.toString()) : "null";
+//    }
+
     public String getWalletTypeValue() {
         return GlobalData.getStringResource(RS.string.zpw_vcb_wallet_type);
     }
-
-//    public String getAccNumValue() {
-//        Object result = linkAccGuiProcessor.getRegisterHolder().getSpnAccNumberDefault().getSelectedItem();
-//        return (result != null && !result.toString().isEmpty()) ? mHashMapAccNum.get(result.toString()) : "null";
-//    }
 
     public String getAccNumValue() {
         Object result;
@@ -1069,11 +1125,6 @@ public class AdapterLinkAcc extends AdapterBase {
         } else result = linkAccGuiProcessor.getRegisterHolder().getEdtAccNumDefault().getText();
         return (result != null && !result.toString().isEmpty()) ? mHashMapAccNum.get(result.toString()) : "null";
     }
-
-//    public String getPhoneNumValue() {
-//        Object result = linkAccGuiProcessor.getRegisterHolder().getSpnPhoneNumber().getSelectedItem();
-//        return (result != null && !result.toString().isEmpty()) ? mHashMapPhoneNum.get(result.toString()) : "null";
-//    }
 
     public String getPhoneNumValue() {
         Object result = linkAccGuiProcessor.getRegisterHolder().getEdtPhoneNum().getText();
@@ -1111,51 +1162,8 @@ public class AdapterLinkAcc extends AdapterBase {
     public ZPWNotification getNotification() {
         return mNotification;
     }
-    public boolean isLoadingCaptcha(){
+
+    public boolean isLoadingCaptcha() {
         return mIsLoadingCaptcha;
     }
-    private View.OnClickListener refreshCaptcha = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if(!isLoadingCaptcha()) {
-                if(COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password)))
-                {
-                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb),null);
-                    return;
-                }
-                Log.d(this,"refreshCaptcha()");
-                mIsLoadingCaptcha = true;
-                mWebViewProcessor.refreshCaptcha();
-                COUNT_REFRESH_CAPTCHA_REGISTER ++;
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mIsLoadingCaptcha = false;
-                        }
-                    }, 2000);
-                }
-            }
-       };
-    private View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            if(!isLoadingCaptcha()) {
-                Log.d(this, "refreshCaptcha()");
-                if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
-                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
-                    return;
-                }
-                mIsLoadingCaptcha = true;
-                mWebViewProcessor.reload();
-                COUNT_REFRESH_CAPTCHA_LOGIN++;
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mIsLoadingCaptcha = false;
-                    }
-                }, 2000);
-            }
-        }
-    };
 }
