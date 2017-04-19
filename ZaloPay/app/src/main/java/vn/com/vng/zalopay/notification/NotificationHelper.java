@@ -210,12 +210,12 @@ public class NotificationHelper {
                 break;
             case NotificationType.UNLINK_ACCOUNT:
                 if (!isNotificationRecovery) {
-                    CShareDataWrapper.pushNotificationToSdk(notificationType, notify.message);
+                    CShareDataWrapper.pushNotificationToSdk(mUser, notificationType, notify.message);
                 }
                 break;
             case NotificationType.LINK_ACCOUNT:
                 if (!isNotificationRecovery) {
-                    CShareDataWrapper.pushNotificationToSdk(notificationType, notify.message);
+                    CShareDataWrapper.pushNotificationToSdk(mUser, notificationType, notify.message);
                 }
                 break;
         }

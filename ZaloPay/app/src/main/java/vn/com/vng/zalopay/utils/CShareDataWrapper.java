@@ -1,5 +1,7 @@
 package vn.com.vng.zalopay.utils;
 
+import android.text.TextUtils;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
@@ -104,22 +106,33 @@ public class CShareDataWrapper {
         return CShareData.getInstance().getBannerList();
     }
 
-    public static void pushNotificationToSdk(int notificationType, String message) {
-        CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message),
-                new IReloadMapInfoListener<DBankAccount>() {
-                    @Override
-                    public void onComplete(List<DBankAccount> pMapList) {
-                        Timber.d("PushNotificationToSdk onComplete, type [%s]", notificationType);
-                        EventBus.getDefault().post(new RefreshBankAccountEvent(pMapList));
-                    }
+    public static void pushNotificationToSdk(User user, int notificationType, String message) {
+        if (user == null
+                || TextUtils.isEmpty(user.zaloPayId)
+                || TextUtils.isEmpty(user.accesstoken)) {
+            return;
+        }
 
-                    @Override
-                    public void onError(String pErrorMess) {
-                        Timber.d("PushNotificationToSdk error, type [%s] message [%s]",
-                                notificationType, pErrorMess);
-                        EventBus.getDefault().post(new RefreshBankAccountEvent(pErrorMess));
-                    }
-                });
+        UserInfo userInfo = new UserInfo();
+        userInfo.zaloPayUserId = user.zaloPayId;
+        userInfo.accessToken = user.accesstoken;
+
+        CShareData.getInstance().setUserInfo(userInfo)
+                .notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message),
+                        new IReloadMapInfoListener<DBankAccount>() {
+                            @Override
+                            public void onComplete(List<DBankAccount> pMapList) {
+                                Timber.d("PushNotificationToSdk onComplete, type [%s]", notificationType);
+                                EventBus.getDefault().post(new RefreshBankAccountEvent(pMapList));
+                            }
+
+                            @Override
+                            public void onError(String pErrorMess) {
+                                Timber.d("PushNotificationToSdk error, type [%s] message [%s]",
+                                        notificationType, pErrorMess);
+                                EventBus.getDefault().post(new RefreshBankAccountEvent(pErrorMess));
+                            }
+                        });
     }
 
     public static void notifyTransactionFinish(Object... pObject) {
