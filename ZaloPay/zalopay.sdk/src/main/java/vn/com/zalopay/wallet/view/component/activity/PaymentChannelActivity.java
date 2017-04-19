@@ -296,7 +296,7 @@ public class PaymentChannelActivity extends BasePaymentActivity {
         if (getAdapter() != null && getAdapter().isRequirePinPharse()) {
             showKeyBoardForPin();
         }
-        showKeyBoardOnFocusingViewAgain();
+        //showKeyBoardOnFocusingViewAgain();
         //this is link account and the first call
         if (GlobalData.isBankAccountLink() && !mIsRestart) {
             try {

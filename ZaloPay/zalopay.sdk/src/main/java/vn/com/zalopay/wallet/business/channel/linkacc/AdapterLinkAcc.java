@@ -467,7 +467,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         if (GlobalData.shouldNativeWebFlow()) {
                             mWebViewProcessor.fillOtpOnWebFlow(otp);
                             Log.d(this, "fill otp into website vcb directly");
-                        }else{
+                        } else {
                             linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
                         }
                         break;
@@ -608,7 +608,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event login page");
                 showProgressBar(false, null); // close process dialog
                 //for testing
-                if (!SDKApplication.isReleaseBuild()) {
+                if (!SDKApplication.isReleaseBuild() && !GlobalData.shouldNativeWebFlow()) {
                     linkAccGuiProcessor.setAccountTest();
                 }
 
@@ -674,7 +674,9 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
                 getActivity().renderByResource();
                 getActivity().enableSubmitBtn(false);
-                linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
+                if (!GlobalData.shouldNativeWebFlow()) {
+                    linkAccGuiProcessor.showKeyBoardOnEditText(linkAccGuiProcessor.getLoginHolder().getEdtUsername());//auto show keyboard
+                }
                 return null;
             }
 
@@ -1037,10 +1039,6 @@ public class AdapterLinkAcc extends AdapterBase {
         }
         showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
         mWebViewProcessor.start(pUrl);
-    }
-
-    public LinkAccWebViewClient getLinkWebViewProcessor() {
-        return mWebViewProcessor;
     }
 
     public String getUserNameValue() {
