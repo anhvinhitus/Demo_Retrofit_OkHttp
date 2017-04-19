@@ -32,11 +32,11 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.PhotoUtil;
-import vn.zalopay.feedback.FeedbackCollector;
-import vn.zalopay.feedback.collectors.AppCollector;
-import vn.zalopay.feedback.collectors.DeviceCollector;
-import vn.zalopay.feedback.collectors.DynamicCollector;
-import vn.zalopay.feedback.collectors.NetworkCollector;
+import vn.com.zalopay.feedback.FeedbackCollector;
+import vn.com.zalopay.feedback.collectors.AppCollector;
+import vn.com.zalopay.feedback.collectors.DeviceCollector;
+import vn.com.zalopay.feedback.collectors.DynamicCollector;
+import vn.com.zalopay.feedback.collectors.NetworkCollector;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 

@@ -4,8 +4,8 @@ import org.json.JSONObject;
 
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.zalopay.feedback.CollectorSetting;
-import vn.zalopay.feedback.IFeedbackCollector;
+import vn.com.zalopay.feedback.CollectorSetting;
+import vn.com.zalopay.feedback.IFeedbackCollector;
 
 /**
  * Created by khattn on 12/27/16.

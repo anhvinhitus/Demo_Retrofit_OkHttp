@@ -456,13 +456,14 @@ dependencies {
         exclude module: 'bolts-android'
     }
     compile('vn.com.vng:webapp:0.5')
+    compile libs.zalopay_feedback
 
     compile project(':zalopay.data')
     compile project(':ui.widget')
     compile(project(':zalopay.app-loader')) {
         exclude group: 'com.parse.bolts', module: 'bolts-android'
     }
-    compile project(':zalopay.feedback')
+//    compile project(':zalopay.feedback')
     compile project(':zalopay.sdk')
 }
 

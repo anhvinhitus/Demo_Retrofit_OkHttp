@@ -55,6 +55,7 @@ ext {
     crashlyticsVersion = "2.5.5@aar"
 
     zalopayanalyticsVersion = "1.16"
+    zalopayfeedbackVersion = "1.1"
 
     cborVersion = "0.7"
 
@@ -110,6 +111,7 @@ ext {
             crashlytics            : "com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}",
 
             zalopay_analytics      : "vn.com.zalopay:analytics:${zalopayanalyticsVersion}",
+            zalopay_feedback       : "vn.com.zalopay:feedback:${zalopayfeedbackVersion}",
 
             cbor                   : "co.nstant.in:cbor:${cborVersion}",
 
