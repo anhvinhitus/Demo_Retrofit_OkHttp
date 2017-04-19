@@ -10,7 +10,6 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.ReceivePackageResponse;
-import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
@@ -24,12 +23,10 @@ import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
 import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleStatusEnum;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
 /**
@@ -285,7 +282,7 @@ public class RedPacketDataMapper {
         return item;
     }
 
-    public List<ReceivePackage> transformToRevPackets(List<ReceivePackageResponse> revpackageList) {
+    private List<ReceivePackage> transformToRevPackets(List<ReceivePackageResponse> revpackageList) {
         if (revpackageList == null || revpackageList.size() <= 0) {
             Timber.w("Empty packet list");
             return null;
@@ -330,44 +327,12 @@ public class RedPacketDataMapper {
         return item;
     }
 
-    public RedPacketAppInfo transform(RedPacketAppInfoResponse response) {
-        if (response == null) {
-            return null;
-        }
-
-        RedPacketAppInfo item = new RedPacketAppInfo();
-        item.isUpdateAppInfo = response.isUpdateAppInfo;
-        item.checksum = response.checksum;
-        item.expiredTime = response.expiredTime;
-        item.appConfigEntity = transform(response.appConfigResponse);
-
-        return item;
-    }
-
-    private AppConfigEntity transform(RedPacketAppInfoResponse.AppConfigResponse response) {
-        if (response == null) {
-            return null;
-        }
-
-        AppConfigEntity item = new AppConfigEntity();
-        item.bundleExpiredTime = response.bundleExpiredTime;
-        item.maxCountHist = response.maxCountHist;
-        item.maxMessageLength = response.maxMessageLength;
-        item.maxAmountPerPackage = response.maxAmountPerPackage;
-        item.maxPackageQuantity = response.maxPackageQuantity;
-        item.maxTotalAmountPerBundle = response.maxTotalAmountPerBundle;
-        item.minAmountEach = response.minAmountEach;
-        item.minDivideAmount = response.minDivideAmount;
-
-        return item;
-    }
-
     public List<BundleGD> transformToBundleGD(GetSentBundle getSentBundle) {
         List<BundleGD> bundleGDs = new ArrayList<>();
         if (Lists.isEmptyOrNull(getSentBundle.sentbundlelist)) {
             return bundleGDs;
         }
-        for (int i = 0; i< getSentBundle.sentbundlelist.size(); i++) {
+        for (int i = 0; i < getSentBundle.sentbundlelist.size(); i++) {
             SentBundle sentBundle = getSentBundle.sentbundlelist.get(i);
             if (sentBundle == null) {
                 continue;
@@ -386,7 +351,7 @@ public class RedPacketDataMapper {
         if (Lists.isEmptyOrNull(getReceivePacket.revpackageList)) {
             return bundleGDs;
         }
-        for (int i = 0; i< getReceivePacket.revpackageList.size(); i++) {
+        for (int i = 0; i < getReceivePacket.revpackageList.size(); i++) {
             ReceivePackage receivePackage = getReceivePacket.revpackageList.get(i);
             if (receivePackage == null) {
                 continue;

@@ -17,7 +17,6 @@ import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
 /**
@@ -191,20 +190,4 @@ class DataMapper {
         return map;
     }
 
-    public static WritableMap transform(RedPacketAppInfo redPacketAppInfo) {
-        if (redPacketAppInfo == null || redPacketAppInfo.appConfigEntity == null) {
-            return null;
-        }
-
-        WritableMap map = Arguments.createMap();
-        map.putDouble("minamounteach", redPacketAppInfo.appConfigEntity.minAmountEach);
-        map.putDouble("maxtotalamountperbundle", redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle);
-        map.putDouble("maxpackagequantity", redPacketAppInfo.appConfigEntity.maxPackageQuantity);
-        map.putDouble("maxcounthist", redPacketAppInfo.appConfigEntity.maxCountHist);
-        map.putDouble("maxmessagelength", redPacketAppInfo.appConfigEntity.maxMessageLength);
-        map.putDouble("bundleexpiredtime", redPacketAppInfo.appConfigEntity.bundleExpiredTime);
-        map.putDouble("mindivideamount", redPacketAppInfo.appConfigEntity.minDivideAmount);
-        map.putDouble("maxamountperpackage", redPacketAppInfo.appConfigEntity.maxAmountPerPackage);
-        return map;
-    }
 }

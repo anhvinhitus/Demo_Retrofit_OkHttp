@@ -22,11 +22,9 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
-import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
 import static junit.framework.Assert.assertEquals;
@@ -71,7 +69,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         }
         mLocalStorage.putBundle(bundles);
 
-        for(int i = 0; i < TRANSACTION_SIZE; i++) {
+        for (int i = 0; i < TRANSACTION_SIZE; i++) {
             compare2Elements(bundles.get(i), mLocalStorage.getBundle(i + 1));
         }
     }
@@ -244,7 +242,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     public void getSentBundleSummary() {
         final List<GetSentBundle> result = new ArrayList<GetSentBundle>();
 
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             int j = i + 1;
 
             SentBundleSummaryDB sentBundle = new SentBundleSummaryDB();
@@ -357,7 +355,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
     public void getReceivePacketSummary() {
         final List<GetReceivePacket> result = new ArrayList<GetReceivePacket>();
 
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             int j = i + 1;
 
             ReceivePacketSummaryDB receivePacket = new ReceivePacketSummaryDB();
@@ -399,7 +397,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int limit = 5;
         int inputSize = 20;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             SentBundleGD sentBundleGD = new SentBundleGD();
             sentBundleGD.id = 1L + i;
             sentBundleGD.senderZaloPayID = "sender";
@@ -417,7 +415,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         mLocalStorage.putSentBundle(sendBundleGDs);
         mLocalStorage.getSentBundle(1482716485L, limit).subscribe(new DefaultObserver<>(result));
 
-        for(int i = 0; i < limit; i++) {
+        for (int i = 0; i < limit; i++) {
             compare2Elements(sendBundleGDs.get(5 - i), result.get(i));
         }
     }
@@ -430,7 +428,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int limit = 5;
         int inputSize = 20;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             int j = i + 1;
 
             SentBundleGD sentBundleGD = new SentBundleGD();
@@ -450,7 +448,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         mLocalStorage.putSentBundle(sendBundleGDs);
         mLocalStorage.getSentBundle(0, limit).subscribe(new DefaultObserver<>(result));
 
-        for(int i = 0; i < limit; i++) {
+        for (int i = 0; i < limit; i++) {
             compare2Elements(sendBundleGDs.get(inputSize - 1 - i), result.get(i));
         }
     }
@@ -463,7 +461,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int limit = 5;
         int inputSize = 25;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             int j = i + 1;
 
             SentBundleGD sentBundleGD = new SentBundleGD();
@@ -494,7 +492,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int limit = 5;
         int inputSize = 25;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             int j = i + 1;
 
             SentBundleGD sentBundleGD = new SentBundleGD();
@@ -524,7 +522,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         int inputSize = 25;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             int j = i + 1;
 
             SentBundleGD sentBundleGD = new SentBundleGD();
@@ -562,7 +560,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         int inputSize = 20;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             int j = i + 1;
 
             SentBundleGD sentBundleGD = new SentBundleGD();
@@ -601,7 +599,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         int inputSize = 20;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             int j = i + 1;
 
             SentBundleGD sentBundleGD = new SentBundleGD();
@@ -631,7 +629,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         int inputSize = 20;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             int j = i + 1;
 
             SentBundleGD sentBundleGD = new SentBundleGD();
@@ -672,7 +670,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int limit = 5;
         int inputSize = 20;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
             receivePackageGD.id = 1L + i;
             receivePackageGD.bundleID = 1L + i;
@@ -693,7 +691,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         mLocalStorage.putReceivePackages(receivePackageGDs);
         mLocalStorage.getReceiveBundle(1482716490L, limit).subscribe(new DefaultObserver<>(result));
 
-        for(int i = 0; i < limit; i++) {
+        for (int i = 0; i < limit; i++) {
             compare2Elements(receivePackageGDs.get(i), result.get(i));
         }
     }
@@ -706,7 +704,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int limit = 5;
         int inputSize = 25;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
             receivePackageGD.id = 1L + i;
             receivePackageGD.bundleID = 1L + i;
@@ -727,7 +725,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         mLocalStorage.putReceivePackages(receivePackageGDs);
         mLocalStorage.getReceiveBundle(0, limit).subscribe(new DefaultObserver<>(result));
 
-        for(int i = 0; i < limit; i++) {
+        for (int i = 0; i < limit; i++) {
             compare2Elements(receivePackageGDs.get(inputSize - 1 - i), result.get(i));
         }
     }
@@ -740,7 +738,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         int limit = 5;
         int inputSize = 25;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
             receivePackageGD.id = 1L + i;
             receivePackageGD.bundleID = 1L + i;
@@ -771,7 +769,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         int inputSize = 25;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
             receivePackageGD.id = 1L + i;
             receivePackageGD.bundleID = 1L + i;
@@ -802,7 +800,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         int inputSize = 25;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
             receivePackageGD.id = 1L + i;
             receivePackageGD.bundleID = 1L + i;
@@ -841,7 +839,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         int inputSize = 25;
 
-        for(int i = 0; i < inputSize; i++) {
+        for (int i = 0; i < inputSize; i++) {
             ReceivePackageGD receivePackageGD = new ReceivePackageGD();
             receivePackageGD.id = 1L + i;
             receivePackageGD.bundleID = 1L + i;
@@ -893,7 +891,7 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
 
         List<PackageInBundleGD> packageInBundleList = new ArrayList<PackageInBundleGD>();
 
-        for(int i = 0; i < 25; i++) {
+        for (int i = 0; i < 25; i++) {
             PackageInBundleGD packageInBundleGD = new PackageInBundleGD();
             packageInBundleGD.id = 1L + i;
             packageInBundleGD.bundleID = 2L;
@@ -912,47 +910,9 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         mLocalStorage.putPackageInBundle(packageInBundleList);
         mLocalStorage.getPackageInBundle(2).subscribe(new DefaultObserver<>(result));
 
-        for(int i = 0; i < result.size(); i++) {
+        for (int i = 0; i < result.size(); i++) {
             compare2Elements(packageInBundleList.get(i), result.get(i));
         }
-    }
-
-    @Test
-    public void putRedPacketAppInfoWithNullParam() {
-        mLocalStorage.putRedPacketAppInfo(null);
-        RedPacketAppInfo result = mLocalStorage.getRedPacketAppInfo();
-        assertEquals("putRedPacketAppInfo with null param", null, result);
-    }
-
-    @Test
-    public void putRedPacketAppInfoWithNullAppConfig() {
-        RedPacketAppInfo redPacketAppInfo = new RedPacketAppInfo();
-        redPacketAppInfo.checksum = "checksum";
-        redPacketAppInfo.expiredTime = 12334543L;
-        redPacketAppInfo.isUpdateAppInfo = true;
-        redPacketAppInfo.appConfigEntity = new AppConfigEntity();
-
-        mLocalStorage.putRedPacketAppInfo(redPacketAppInfo);
-        RedPacketAppInfo result = mLocalStorage.getRedPacketAppInfo();
-
-        compare2Elements(redPacketAppInfo, result);
-    }
-
-    @Test
-    public void getRedPacketAppInfoWhenNotPutAppInfo() {
-        RedPacketAppInfo result = mLocalStorage.getRedPacketAppInfo();
-        assertEquals("getRedPacketAppInfo when not putting app info", null, result);
-    }
-
-    @Test
-    public void getRedPacketAppInfoWithNullAppConfig() {
-        RedPacketAppInfo redPacketAppInfo = new RedPacketAppInfo();
-        redPacketAppInfo.checksum = "checksum";
-        redPacketAppInfo.expiredTime = 12334543L;
-        redPacketAppInfo.isUpdateAppInfo = true;
-
-        RedPacketAppInfo result = mLocalStorage.getRedPacketAppInfo();
-        assertEquals("getRedPacketAppInfo with null app config", null, result);
     }
 
     @Test
@@ -1135,10 +1095,9 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         assertEquals("sendMessage", b1.sendMessage, b2.sendMessage);
         assertEquals("revZaloPayID", b1.revZaloPayID, b2.revZaloPayID);
         assertEquals("revZaloID", (long) b1.revZaloID, b2.revZaloID);
-        if(b1.isLuckiest == 1) {
+        if (b1.isLuckiest == 1) {
             assertEquals("isLuckiest", true, b2.isLuckiest);
-        }
-        else if(b1.isLuckiest == 0) {
+        } else if (b1.isLuckiest == 0) {
             assertEquals("isLuckiest", false, b2.isLuckiest);
         }
         assertEquals("revFullName", b1.revFullName, b2.revFullName);
@@ -1148,27 +1107,4 @@ public class RedPackageLocalStorageTest extends ApplicationTestCase {
         assertEquals("id", (long) b1.id, b2.packageID);
     }
 
-    private void compare2Elements(RedPacketAppInfo b1, RedPacketAppInfo b2) {
-        if (b1 == null && b2 != null) {
-            fail("Compare null and non-null object");
-            return;
-        }
-
-        if (b1 != null && b2 == null) {
-            fail("Compare null and non-null object");
-            return;
-        }
-
-        assertEquals("isUpdateAppInfo", false, b2.isUpdateAppInfo);
-        assertEquals("expiredTime", b1.expiredTime, b2.expiredTime);
-        assertEquals("checksum", b1.checksum, b2.checksum);
-        assertEquals("appConfigEntity.bundleExpiredTime", b1.appConfigEntity.bundleExpiredTime, b2.appConfigEntity.bundleExpiredTime);
-        assertEquals("appConfigEntity.maxAmountPerPackage", b1.appConfigEntity.maxAmountPerPackage, b2.appConfigEntity.maxAmountPerPackage);
-        assertEquals("appConfigEntity.maxCountHist", b1.appConfigEntity.maxCountHist, b2.appConfigEntity.maxCountHist);
-        assertEquals("appConfigEntity.maxMessageLength", b1.appConfigEntity.maxMessageLength, b2.appConfigEntity.maxMessageLength);
-        assertEquals("appConfigEntity.maxPackageQuantity", b1.appConfigEntity.maxPackageQuantity, b2.appConfigEntity.maxPackageQuantity);
-        assertEquals("appConfigEntity.maxTotalAmountPerBundle", b1.appConfigEntity.maxTotalAmountPerBundle, b2.appConfigEntity.maxTotalAmountPerBundle);
-        assertEquals("appConfigEntity.minAmountEach", b1.appConfigEntity.minAmountEach, b2.appConfigEntity.minAmountEach);
-        assertEquals("appConfigEntity.minDivideAmount", b1.appConfigEntity.minDivideAmount, b2.appConfigEntity.minDivideAmount);
-    }
 }

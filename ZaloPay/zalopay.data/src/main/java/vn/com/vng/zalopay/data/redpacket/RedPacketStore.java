@@ -7,7 +7,6 @@ import java.util.List;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -19,7 +18,6 @@ import vn.com.vng.zalopay.data.api.response.ListRedPacketStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
-import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SubmitOpenPackageResponse;
@@ -30,15 +28,14 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
-import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
+import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.zalopay.analytics.ZPEvents;
 
 /**
@@ -80,10 +77,6 @@ public interface RedPacketStore {
         void putPackageInBundle(List<PackageInBundleGD> packageInBundleGDs);
 
         Observable<List<PackageInBundle>> getPackageInBundle(long bundleID);
-
-        void putRedPacketAppInfo(RedPacketAppInfo redPacketAppInfo);
-
-        RedPacketAppInfo getRedPacketAppInfo();
 
         ReceivePackageGD getPacketStatus(long packetId);
 
@@ -130,10 +123,6 @@ public interface RedPacketStore {
         @GET(Constants.REDPACKET_API.GETPACKAGESINBUNDLE)
         Observable<SentPackageInBundleResponse> getPackageInBundleList(@Query("bundleid") long bundleid, @Query("timestamp") long timestamp, @Query("count") int count, @Query("order") int order, @Query("zalopayid") String zalopayid, @Query("accesstoken") String accesstoken);
 
-        @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_GETAPPINFO)
-        @GET(Constants.REDPACKET_API.GETAPPINFO)
-        Observable<RedPacketAppInfoResponse> getAppInfo(@Query("checksum") String checksum, @Query("userid") String zalopayid, @Query("accesstoken") String accesstoken);
-
         @API_NAME(ZPEvents.CONNECTOR_REDPACKAGE_SUBMITTOSENDBUNDLEBYZALOPAYINFO)
         @FormUrlEncoded
         @POST(Constants.REDPACKET_API.SUBMITTOSENDBUNDLEBYZALOPAYINFO)
@@ -177,10 +166,6 @@ public interface RedPacketStore {
         Observable<Void> setPacketStatus(long packageId, long amount, int status, String messageStatus);
 
         Observable<Void> addReceivedRedPacket(long packetId, long bundleId, String senderName, String senderAvatar, String message);
-
-        Observable<RedPacketAppInfo> getAppInfoServer(String checksum);
-
-        Observable<RedPacketAppInfo> getRedPacketAppInfo();
 
         Observable<Boolean> getListPackageStatus(List<Long> listpackageid);
     }

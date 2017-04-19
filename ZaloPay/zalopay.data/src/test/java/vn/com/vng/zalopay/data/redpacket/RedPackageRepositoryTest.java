@@ -26,11 +26,10 @@ import vn.com.vng.zalopay.data.api.entity.mapper.RedPacketDataMapper;
 import vn.com.vng.zalopay.data.api.response.BaseResponse;
 import vn.com.vng.zalopay.data.api.response.ListRedPacketStatusResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.BundleOrderResponse;
+import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageInBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.PackageStatusResponse;
-import vn.com.vng.zalopay.data.api.response.redpacket.GetReceivePackageResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.ReceivePackageResponse;
-import vn.com.vng.zalopay.data.api.response.redpacket.RedPacketAppInfoResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleListResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentBundleResponse;
 import vn.com.vng.zalopay.data.api.response.redpacket.SentPackageInBundleResponse;
@@ -43,14 +42,12 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
-import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
-import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 
@@ -74,10 +71,8 @@ public class RedPackageRepositoryTest {
     SubmitOpenPackageResponse submitOpenPackageResponse;
     PackageStatusResponse packageStatusResponse;
     SentBundleListResponse sentBundleListResponse;
-    RedPacketAppInfo redPacketAppInfo;
     GetReceivePackageResponse getReceivePackageResponse;
     SentPackageInBundleResponse sentPackageInBundleResponse;
-    RedPacketAppInfoResponse redPacketAppInfoResponse;
 
     DaoSession mDaoSession;
 
@@ -129,20 +124,6 @@ public class RedPackageRepositoryTest {
             sentBundleListResponse.bundleResponseList.add(sentBundleResponse);
         }
 
-        redPacketAppInfo = new RedPacketAppInfo();
-        redPacketAppInfo.isUpdateAppInfo = false;
-        redPacketAppInfo.expiredTime = 12421352L;
-        redPacketAppInfo.checksum = "abc";
-        redPacketAppInfo.appConfigEntity = new AppConfigEntity();
-        redPacketAppInfo.appConfigEntity.bundleExpiredTime = 12348613L;
-        redPacketAppInfo.appConfigEntity.maxAmountPerPackage = 10000L;
-        redPacketAppInfo.appConfigEntity.maxCountHist = 3;
-        redPacketAppInfo.appConfigEntity.maxMessageLength = 51513576L;
-        redPacketAppInfo.appConfigEntity.maxPackageQuantity = 10L;
-        redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle = 2000000L;
-        redPacketAppInfo.appConfigEntity.minAmountEach = 10000L;
-        redPacketAppInfo.appConfigEntity.minDivideAmount = 10000L;
-
         getReceivePackageResponse = new GetReceivePackageResponse();
         getReceivePackageResponse.totalOfRevAmount = 300000L;
         getReceivePackageResponse.totalOfRevPackage = 3L;
@@ -181,19 +162,6 @@ public class RedPackageRepositoryTest {
             sentPackageInBundleResponse.packageResponses.add(packageInBundleResponse);
         }
 
-        redPacketAppInfoResponse = new RedPacketAppInfoResponse();
-        redPacketAppInfoResponse.isUpdateAppInfo = false;
-        redPacketAppInfoResponse.expiredTime = 23152432L;
-        redPacketAppInfoResponse.checksum = "checksum";
-        redPacketAppInfoResponse.appConfigResponse = redPacketAppInfoResponse.new AppConfigResponse();
-        redPacketAppInfoResponse.appConfigResponse.bundleExpiredTime = 12348613L;
-        redPacketAppInfoResponse.appConfigResponse.maxAmountPerPackage = 10000L;
-        redPacketAppInfoResponse.appConfigResponse.maxCountHist = 3;
-        redPacketAppInfoResponse.appConfigResponse.maxMessageLength = 51513576L;
-        redPacketAppInfoResponse.appConfigResponse.maxPackageQuantity = 10L;
-        redPacketAppInfoResponse.appConfigResponse.maxTotalAmountPerBundle = 2000000L;
-        redPacketAppInfoResponse.appConfigResponse.minAmountEach = 10000L;
-        redPacketAppInfoResponse.appConfigResponse.minDivideAmount = 10000L;
     }
 
     @Before
@@ -255,12 +223,6 @@ public class RedPackageRepositoryTest {
         @Override
         public Observable<SentPackageInBundleResponse> getPackageInBundleList(@Field("bundleID") long bundleID, @Field("timestamp") long timestamp, @Field("count") int count, @Field("order") int order, @Field("zaloPayID") String zaloPayID, @Field("accessToken") String accessToken) {
             return Observable.just(sentPackageInBundleResponse);
-        }
-
-        @Override
-        public Observable<RedPacketAppInfoResponse> getAppInfo(@Query("checksum") String checksum, @Query("userid") String zalopayid, @Query("accesstoken") String accesstoken) {
-            System.out.println("checksum " + checksum);
-            return Observable.just(redPacketAppInfoResponse);
         }
 
         @Override
@@ -694,66 +656,6 @@ public class RedPackageRepositoryTest {
     }
 
     @Test
-    public void getAppInfoServer() {
-        final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
-
-        mRepository.getAppInfoServer("checksum").subscribe(new CustomObserver<>(redPacketAppInfos));
-
-        assertEquals(redPacketAppInfoResponse, redPacketAppInfos.get(0));
-    }
-
-    @Test
-    public void getRedPacketAppInfoWithNonUpdate() {
-        final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
-
-        RedPacketAppInfo redPacketAppInfo = new RedPacketAppInfo();
-        redPacketAppInfo.checksum = "checksum";
-        redPacketAppInfo.expiredTime = System.currentTimeMillis() + 10000L;
-        redPacketAppInfo.isUpdateAppInfo = true;
-        redPacketAppInfo.appConfigEntity = new AppConfigEntity();
-        mLocalStorage.putRedPacketAppInfo(redPacketAppInfo);
-        mRepository = new RedPacketRepository(null, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1, new Gson());
-
-        mRepository.getRedPacketAppInfo().subscribe(new CustomObserver<>(redPacketAppInfos));
-
-        assertEquals(redPacketAppInfo, redPacketAppInfos.get(0));
-    }
-
-    @Test
-    public void getRedPacketAppInfoWithUpdateAndNotHavingChecksum() {
-        final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
-
-        RedPacketAppInfo redPacketAppInfo = new RedPacketAppInfo();
-        redPacketAppInfo.checksum = "abc";
-        redPacketAppInfo.expiredTime = 1232156L;
-        redPacketAppInfo.isUpdateAppInfo = true;
-        redPacketAppInfo.appConfigEntity = new AppConfigEntity();
-        mLocalStorage.putRedPacketAppInfo(redPacketAppInfo);
-        mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1, new Gson());
-
-        mRepository.getRedPacketAppInfo().subscribe(new CustomObserver<>(redPacketAppInfos));
-
-        Assert.assertEquals("getRedPacketAppInfo with update and not having checksum", 1, redPacketAppInfos.size());
-    }
-
-    @Test
-    public void getRedPacketAppInfoWithUpdate() {
-//        final List<RedPacketAppInfo> redPacketAppInfos = new ArrayList<>();
-//
-//        RedPacketAppInfo redPacketAppInfo = new RedPacketAppInfo();
-//        redPacketAppInfo.checksum = "checksum";
-//        redPacketAppInfo.expiredTime = 1232156L;
-//        redPacketAppInfo.isUpdateAppInfo = true;
-//        redPacketAppInfo.appConfigEntity = new AppConfigEntity();
-//        mLocalStorage.putRedPacketAppInfo(redPacketAppInfo);
-//        mRepository = new RedPacketRepository(mRequestService, mRequestTPEService, mLocalStorage, dataMapper, new User("1"), 1, new Gson());
-//
-//        mRepository.getRedPacketAppInfo().subscribe(new CustomObserver<>(redPacketAppInfos));
-//
-//        assertEquals(redPacketAppInfo, redPacketAppInfos.get(0));
-    }
-
-    @Test
     public void testRedPackage() throws Exception {
 //        CountDownLatch countDownLatch = new CountDownLatch(6);
 //        final List<RedPacket> redPackages = new ArrayList<>();
@@ -1011,30 +913,6 @@ public class RedPackageRepositoryTest {
         Assert.assertEquals("id", (long) b1.id, b2.packageID);
     }
 
-    private void assertEquals(RedPacketAppInfoResponse b1, RedPacketAppInfo b2) {
-        if (b1 == null && b2 != null) {
-            Assert.fail("Compare null and non-null object");
-            return;
-        }
-
-        if (b1 != null && b2 == null) {
-            Assert.fail("Compare null and non-null object");
-            return;
-        }
-
-        Assert.assertEquals("checksum", b1.checksum, b2.checksum);
-        Assert.assertEquals("expiredTime", b1.expiredTime, b2.expiredTime);
-        Assert.assertEquals("isUpdateAppInfo", b1.isUpdateAppInfo, b2.isUpdateAppInfo);
-        Assert.assertEquals("bundleExpiredTime", b1.appConfigResponse.bundleExpiredTime, b2.appConfigEntity.bundleExpiredTime);
-        Assert.assertEquals("maxAmountPerPackage", b1.appConfigResponse.maxAmountPerPackage, b2.appConfigEntity.maxAmountPerPackage);
-        Assert.assertEquals("maxCountHist", b1.appConfigResponse.maxCountHist, b2.appConfigEntity.maxCountHist);
-        Assert.assertEquals("maxMessageLength", b1.appConfigResponse.maxMessageLength, b2.appConfigEntity.maxMessageLength);
-        Assert.assertEquals("maxPackageQuantity", b1.appConfigResponse.maxPackageQuantity, b2.appConfigEntity.maxPackageQuantity);
-        Assert.assertEquals("maxTotalAmountPerBundle", b1.appConfigResponse.maxTotalAmountPerBundle, b2.appConfigEntity.maxTotalAmountPerBundle);
-        Assert.assertEquals("minAmountEach", b1.appConfigResponse.minAmountEach, b2.appConfigEntity.minAmountEach);
-        Assert.assertEquals("minDivideAmount", b1.appConfigResponse.minDivideAmount, b2.appConfigEntity.minDivideAmount);
-    }
-
     private void assertEquals(GetReceivePackageResponse b1, GetReceivePacket b2) {
         if (b1 == null && b2 != null) {
             Assert.fail("Compare null and non-null object");
@@ -1222,27 +1100,4 @@ public class RedPackageRepositoryTest {
         }
     }
 
-    private void assertEquals(RedPacketAppInfo b1, RedPacketAppInfo b2) {
-        if (b1 == null && b2 != null) {
-            Assert.fail("Compare null and non-null object");
-            return;
-        }
-
-        if (b1 != null && b2 == null) {
-            Assert.fail("Compare null and non-null object");
-            return;
-        }
-
-        Assert.assertEquals("checksum", b1.checksum, b2.checksum);
-        Assert.assertEquals("expiredTime", b1.expiredTime, b2.expiredTime);
-        Assert.assertEquals("isUpdateAppInfo", false, b2.isUpdateAppInfo);
-        Assert.assertEquals("bundleExpiredTime", b1.appConfigEntity.bundleExpiredTime, b2.appConfigEntity.bundleExpiredTime);
-        Assert.assertEquals("maxAmountPerPackage", b1.appConfigEntity.maxAmountPerPackage, b2.appConfigEntity.maxAmountPerPackage);
-        Assert.assertEquals("maxCountHist", b1.appConfigEntity.maxCountHist, b2.appConfigEntity.maxCountHist);
-        Assert.assertEquals("maxMessageLength", b1.appConfigEntity.maxMessageLength, b2.appConfigEntity.maxMessageLength);
-        Assert.assertEquals("maxPackageQuantity", b1.appConfigEntity.maxPackageQuantity, b2.appConfigEntity.maxPackageQuantity);
-        Assert.assertEquals("maxTotalAmountPerBundle", b1.appConfigEntity.maxTotalAmountPerBundle, b2.appConfigEntity.maxTotalAmountPerBundle);
-        Assert.assertEquals("minAmountEach", b1.appConfigEntity.minAmountEach, b2.appConfigEntity.minAmountEach);
-        Assert.assertEquals("minDivideAmount", b1.appConfigEntity.minDivideAmount, b2.appConfigEntity.minDivideAmount);
-    }
 }

@@ -20,21 +20,16 @@ import vn.com.vng.zalopay.data.cache.model.ReceivePackageGD;
 import vn.com.vng.zalopay.data.cache.model.ReceivePackageGDDao;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.ReceivePacketSummaryDBDao;
-import vn.com.vng.zalopay.data.cache.model.RedPacketAppInfoGD;
-import vn.com.vng.zalopay.data.cache.model.RedPacketAppInfoGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGD;
 import vn.com.vng.zalopay.data.cache.model.SentBundleGDDao;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDB;
 import vn.com.vng.zalopay.data.cache.model.SentBundleSummaryDBDao;
 import vn.com.vng.zalopay.data.notification.RedPacketStatus;
-import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.domain.model.redpacket.AppConfigEntity;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SentBundle;
 
 /**
@@ -213,63 +208,6 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
                 .doOnNext(sentPackage -> Timber.d("getPackageInBundle bundleID [%s] sentPackage [%s]", bundleID, sentPackage));
     }
 
-    private RedPacketAppInfoGD queryRedPacketAppInfo() {
-        List<RedPacketAppInfoGD> redPacketAppInfos = getDaoSession().getRedPacketAppInfoGDDao().queryBuilder()
-                .orderDesc(RedPacketAppInfoGDDao.Properties.Id).limit(1).list();
-        if (redPacketAppInfos == null || redPacketAppInfos.size() <= 0) {
-            return null;
-        }
-        return redPacketAppInfos.get(0);
-    }
-
-    @Override
-    public RedPacketAppInfo getRedPacketAppInfo() {
-        return transform(queryRedPacketAppInfo());
-    }
-
-    @Override
-    public void putRedPacketAppInfo(RedPacketAppInfo redPacketAppInfo) {
-        if (redPacketAppInfo == null || redPacketAppInfo.appConfigEntity == null) {
-            return;
-        }
-        RedPacketAppInfoGD data = new RedPacketAppInfoGD();
-        data.id = null;
-        data.checksum = redPacketAppInfo.checksum;
-        data.expiredTime = redPacketAppInfo.expiredTime;
-        data.minAmountEach = redPacketAppInfo.appConfigEntity.minAmountEach;
-        data.maxTotalAmountPerBundle = redPacketAppInfo.appConfigEntity.maxTotalAmountPerBundle;
-        data.maxPackageQuantity = redPacketAppInfo.appConfigEntity.maxPackageQuantity;
-        data.maxCountHist = redPacketAppInfo.appConfigEntity.maxCountHist;
-        data.maxMessageLength = redPacketAppInfo.appConfigEntity.maxMessageLength;
-        data.bundleExpiredTime = redPacketAppInfo.appConfigEntity.bundleExpiredTime;
-        data.minDivideAmount = redPacketAppInfo.appConfigEntity.minDivideAmount;
-        data.maxAmountPerPackage = redPacketAppInfo.appConfigEntity.maxAmountPerPackage;
-        getDaoSession().getRedPacketAppInfoGDDao().insertOrReplaceInTx(data);
-    }
-
-    private RedPacketAppInfo transform(RedPacketAppInfoGD redPacketAppInfoGD) {
-        if (redPacketAppInfoGD == null) {
-            return null;
-        }
-
-        AppConfigEntity entity = new AppConfigEntity();
-        entity.bundleExpiredTime = ConvertHelper.unboxValue(redPacketAppInfoGD.bundleExpiredTime, 0L);
-        entity.maxCountHist = ConvertHelper.unboxValue(redPacketAppInfoGD.maxCountHist, 0);
-        entity.maxMessageLength = ConvertHelper.unboxValue(redPacketAppInfoGD.maxMessageLength, 0);
-        entity.maxPackageQuantity = ConvertHelper.unboxValue(redPacketAppInfoGD.maxPackageQuantity, 0);
-        entity.maxTotalAmountPerBundle = ConvertHelper.unboxValue(redPacketAppInfoGD.maxTotalAmountPerBundle, 0L);
-        entity.maxAmountPerPackage = ConvertHelper.unboxValue(redPacketAppInfoGD.maxAmountPerPackage, 0L);
-        entity.minAmountEach = ConvertHelper.unboxValue(redPacketAppInfoGD.minAmountEach, 0L);
-        entity.minDivideAmount = ConvertHelper.unboxValue(redPacketAppInfoGD.minDivideAmount, 0L);
-
-        RedPacketAppInfo item = new RedPacketAppInfo();
-        item.isUpdateAppInfo = false;
-        item.checksum = redPacketAppInfoGD.checksum;
-        item.expiredTime = ConvertHelper.unboxValue(redPacketAppInfoGD.expiredTime, 0L);
-        item.appConfigEntity = entity;
-        return item;
-    }
-
     @Override
     public ReceivePackageGD getPacketStatus(long packetId) {
         Timber.d("query status for packet: %s", packetId);
@@ -345,7 +283,7 @@ public class RedPacketLocalStorage extends SqlBaseScopeImpl implements RedPacket
         if (openTime < 0 || limit <= 0) {
             return Observable.just(Collections.emptyList());
         }
-        
+
         return ObservableHelper.makeObservable(() -> queryReceivePackageList(openTime, limit))
                 .doOnNext(receivePackageList -> Timber.d("getReceiveBundle openTime [%s] limit [%s] size [%s]",
                         openTime, limit, receivePackageList.size()));

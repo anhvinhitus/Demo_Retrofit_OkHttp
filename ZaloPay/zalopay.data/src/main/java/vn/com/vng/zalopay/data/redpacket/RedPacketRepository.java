@@ -31,7 +31,6 @@ import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
@@ -337,45 +336,8 @@ public class RedPacketRepository implements RedPacketStore.Repository {
     }
 
     @Override
-    public Observable<RedPacketAppInfo> getAppInfoServer(String checksum) {
-        return mRequestService.getAppInfo(checksum, user.zaloPayId, user.accesstoken)
-                .map(mDataMapper::transform)
-                .doOnNext(mLocalStorage::putRedPacketAppInfo);
-    }
-
-    @Override
-    public Observable<RedPacketAppInfo> getRedPacketAppInfo() {
-        if (shouldUpdateRedPacketAppInfo()) {
-            Timber.d("Begin to fetch RedPacketAppInfo from server");
-            RedPacketAppInfo redPacketAppInfo = mLocalStorage.getRedPacketAppInfo();
-            String checksum = redPacketAppInfo == null ? "" : redPacketAppInfo.checksum;
-
-            return getAppInfoServer(checksum)
-                    .map(redPacketAppInfo1 -> mLocalStorage.getRedPacketAppInfo());
-        } else {
-            return ObservableHelper.makeObservable(mLocalStorage::getRedPacketAppInfo);
-        }
-    }
-
-    @Override
     public Observable<Void> setBundleStatus(long bundleId, int status) {
         return ObservableHelper.makeObservable(() -> mLocalStorage.setBundleStatus(bundleId, status));
-    }
-
-    private boolean shouldUpdateRedPacketAppInfo() {
-        RedPacketAppInfo redPacketAppInfo = mLocalStorage.getRedPacketAppInfo();
-        if (redPacketAppInfo == null) {
-            return true;
-        } else if (TextUtils.isEmpty(redPacketAppInfo.checksum)) {
-            return true;
-        } else {
-            long expiredTime = redPacketAppInfo.expiredTime;
-            long currentTime = System.currentTimeMillis();
-            if (currentTime > expiredTime) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void insertRevPacketSummary(GetReceivePacket getReceivePacket) {

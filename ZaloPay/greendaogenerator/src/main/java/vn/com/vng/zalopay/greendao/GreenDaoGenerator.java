@@ -109,20 +109,6 @@ public class GreenDaoGenerator {
         ToMany revBundleToPackage = receivePackageGD.addToMany(packageEntity, propertyBundleId);
         revBundleToPackage.setName("receivePackages");
         revBundleToPackage.orderDesc(openTime);
-
-        Entity appInfoGD = appSchema.addEntity("RedPacketAppInfoGD");
-        appInfoGD.setConstructors(false);
-        appInfoGD.addIdProperty().autoincrement();
-        appInfoGD.addStringProperty("checksum");
-        appInfoGD.addLongProperty("expiredTime");
-        appInfoGD.addLongProperty("minAmountEach");
-        appInfoGD.addLongProperty("maxTotalAmountPerBundle");
-        appInfoGD.addLongProperty("maxPackageQuantity");
-        appInfoGD.addLongProperty("maxCountHist");
-        appInfoGD.addLongProperty("maxMessageLength");
-        appInfoGD.addLongProperty("bundleExpiredTime");
-        appInfoGD.addLongProperty("minDivideAmount");
-        appInfoGD.addLongProperty("maxAmountPerPackage");
     }
 
 

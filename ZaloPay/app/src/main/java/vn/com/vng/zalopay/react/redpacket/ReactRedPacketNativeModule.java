@@ -46,11 +46,9 @@ import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
 import vn.com.vng.zalopay.domain.model.redpacket.ReceivePackage;
-import vn.com.vng.zalopay.domain.model.redpacket.RedPacketAppInfo;
 import vn.com.vng.zalopay.domain.model.redpacket.SubmitOpenPackage;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.vng.zalopay.utils.AndroidUtils;
 
 /**
  * Created by longlv on 17/07/2016.
@@ -517,19 +515,6 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
         writableMap.putString("displayname", mUser.displayName);
         writableMap.putString("avatar", mUser.avatar);
         Helpers.promiseResolveSuccess(promise, writableMap);
-    }
-
-    @ReactMethod
-    public void getAppInfo(final Promise promise) {
-        Subscription subscription = mRedPacketRepository.getRedPacketAppInfo()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new RedPacketSubscriber<RedPacketAppInfo>(promise) {
-                    @Override
-                    public void onNext(RedPacketAppInfo redPacketAppInfo) {
-                        Helpers.promiseResolveSuccess(promise, DataMapper.transform(redPacketAppInfo));
-                    }
-                });
-        compositeSubscription.add(subscription);
     }
 
     @Override
