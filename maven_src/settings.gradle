@@ -5,3 +5,5 @@ include ':qrcodecore'
 include ':reactnativemodules'
 include ':cbor'
 include ':webapp.framework'
+include ':zalopay.feedback'
+
