@@ -11,4 +11,6 @@ public interface ZPWGatewayInfoCallback {
     void onError(String pMessage);
 
     void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage);
+
+    void onDownloadResourceComplete();
 }

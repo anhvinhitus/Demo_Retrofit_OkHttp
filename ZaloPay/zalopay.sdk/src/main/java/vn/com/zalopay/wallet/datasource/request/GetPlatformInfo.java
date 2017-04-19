@@ -37,17 +37,14 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
     private boolean mForceReload;
     //app reoad platfrom info, this will be set to true to prevent download resource file again.
     private boolean mNoDownloadResource;
-    //return callback as soon as possible to app
-    private boolean mCallBackAsSoonAsPossible;
     private ZPWDownloadResourceListener mDownloadResourceListener = new ZPWDownloadResourceListener() {
         @Override
         public void onLoadResourceComplete(boolean isSuccess) {
-            if (!isSuccess) {
-                mResponse = null;
+            if (mCallBack != null && isSuccess) {
+                mCallBack.onDownloadResourceComplete();
+            } else {
+                Log.d(this, " on load sdk resource bundle on error");
             }
-
-            if (!mCallBackAsSoonAsPossible)
-                onPostResultCallBack();
         }
     };
 
@@ -62,7 +59,6 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         this.mCallBack = pListener;
         this.mForceReload = pForceReload;
         this.mNoDownloadResource = false;
-        this.mCallBackAsSoonAsPossible = false;
     }
 
     /***
@@ -75,20 +71,6 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
         this.mCallBack = pListener;
         this.mForceReload = pForceReload;
         this.mNoDownloadResource = pNoDownloadResource;
-        this.mCallBackAsSoonAsPossible = false;
-    }
-
-    /***
-     * constructor
-     *
-     * @param pListener
-     */
-    public GetPlatformInfo(ZPWGetGatewayInfoListener pListener, boolean pForceReload, boolean pNoDownloadResource, boolean pCallBackAsSoonAsPossible) {
-        super();
-        this.mCallBack = pListener;
-        this.mForceReload = pForceReload;
-        this.mNoDownloadResource = pNoDownloadResource;
-        this.mCallBackAsSoonAsPossible = pCallBackAsSoonAsPossible;
     }
     //endregion
 
@@ -248,12 +230,8 @@ public class GetPlatformInfo extends BaseRequest<DPlatformInfo> {
 
         if (!mNoDownloadResource && pResponse.resource != null && (pResponse.isupdateresource || (!TextUtils.isEmpty(resrcVer)
                 && !pResponse.resource.rsversion.equals(resrcVer)))) {
-            /***
-             * callback to app as soon as possible,no need to wait for downloading resource file.
-             */
-            if (mCallBackAsSoonAsPossible) {
-                onPostResultCallBack();
-            }
+
+            onPostResultCallBack();
 
             SharedPreferencesManager.getInstance().setResourceVersion(pResponse.resource.rsversion);
             SharedPreferencesManager.getInstance().setResourceDownloadUrl(pResponse.resource.rsurl);

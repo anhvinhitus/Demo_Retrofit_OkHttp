@@ -30,4 +30,9 @@ public class DefaultZPGatewayInfoCallBack implements ZPWGatewayInfoCallback {
 
     }
 
+    @Override
+    public void onDownloadResourceComplete() {
+
+    }
+
 }

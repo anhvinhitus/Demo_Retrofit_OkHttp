@@ -90,6 +90,11 @@ public class GatewayLoader extends SingletonBase {
                 mCheckResourceStatisListener.onUpVersion(pForceUpdate, pVersion, pMessage);
             }
         }
+
+        @Override
+        public void onDownloadResourceComplete() {
+            Log.d(this,"on download sdk resource bunlde on complete");
+        }
     };
     /***
      * download resource listener.

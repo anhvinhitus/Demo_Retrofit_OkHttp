@@ -68,6 +68,13 @@ public class BGatewayInfo extends SingletonBase {
                 mClientCallback.onUpVersion(pForceUpdate, pVersion, pMessage);
             }
         }
+
+        @Override
+        public void onDownloadResourceComplete() {
+            if(mClientCallback != null){
+                mClientCallback.onDownloadResourceComplete();
+            }
+        }
     };
 
     public BGatewayInfo() {
@@ -144,7 +151,7 @@ public class BGatewayInfo extends SingletonBase {
             this.mClientCallback.onProcessing();
             try {
                 Log.d(getClass().getName(), "Get gateway from server");
-                getPlatformInfo(new GetPlatformInfo(mListener, false, false, true));
+                getPlatformInfo(new GetPlatformInfo(mListener, false, false));
             } catch (Exception e) {
                 Log.d(this, e);
                 if (this.mClientCallback != null) {

@@ -10,4 +10,6 @@ public interface ZPWGetGatewayInfoListener {
     void onError(DPlatformInfo pMessage);
 
     void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage);
+
+    void onDownloadResourceComplete();
 }

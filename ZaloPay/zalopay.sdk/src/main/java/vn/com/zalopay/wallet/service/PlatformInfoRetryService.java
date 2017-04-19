@@ -57,6 +57,13 @@ public class PlatformInfoRetryService extends Service {
             }
             Log.d("PlatformInfoRetryService.onUpVersion", pVersion + "," + pMessage);
         }
+
+        @Override
+        public void onDownloadResourceComplete() {
+            if (GlobalData.getMerchantCallBack() != null) {
+                GlobalData.getMerchantCallBack().onDownloadResourceComplete();
+            }
+        }
     };
 
     public static synchronized void start(Context pContext) {
