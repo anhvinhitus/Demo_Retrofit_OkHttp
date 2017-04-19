@@ -25,7 +25,6 @@ public class GreenDaoGenerator {
         addNotification(appSchema);
         addRedPacket(appSchema);
         addMerchantUser(appSchema);
-        addApptransidLog(appSchema);
 
         new DaoGenerator("./daogenerator/src-template/").generateAll(appSchema, "./data/src/main/java");
     }
@@ -316,21 +315,6 @@ public class GreenDaoGenerator {
         entity.addStringProperty("avatar");
         entity.addStringProperty("birthday");
         entity.addLongProperty("gender");
-    }
-
-    private static void addApptransidLog(Schema schema) {
-        Entity entity = schema.addEntity("ApptransidLogGD");
-        entity.setConstructors(false);
-        entity.addStringProperty("apptransid").notNull().unique().primaryKey();
-        entity.addIntProperty("appid");
-        entity.addIntProperty("step");
-        entity.addIntProperty("step_result");
-        entity.addIntProperty("pcmid");
-        entity.addIntProperty("transtype");
-        entity.addLongProperty("transid");
-        entity.addIntProperty("sdk_result");
-        entity.addIntProperty("server_result");
-        entity.addStringProperty("source");
     }
 
 }

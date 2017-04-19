@@ -15,7 +15,6 @@ import dagger.Component;
 import okhttp3.OkHttpClient;
 import vn.com.vng.zalopay.account.ui.activities.LoginZaloActivity;
 import vn.com.vng.zalopay.app.ApplicationState;
-import vn.com.vng.zalopay.data.apptransidlog.ApptransidLogStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.rxbus.RxBus;
 import vn.com.vng.zalopay.domain.executor.PostExecutionThread;
@@ -28,7 +27,6 @@ import vn.com.vng.zalopay.internal.di.modules.AppControllerModule;
 import vn.com.vng.zalopay.internal.di.modules.AppMonitorModule;
 import vn.com.vng.zalopay.internal.di.modules.AppReactNativeModule;
 import vn.com.vng.zalopay.internal.di.modules.AppResourceModule;
-import vn.com.vng.zalopay.internal.di.modules.AppTransIdLogModule;
 import vn.com.vng.zalopay.internal.di.modules.ApplicationModule;
 import vn.com.vng.zalopay.internal.di.modules.NetworkModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
@@ -54,8 +52,7 @@ import vn.com.vng.zalopay.utils.ImageLoader;
                 AppControllerModule.class,
                 AppMonitorModule.class,
                 AppReactNativeModule.class,
-                AppResourceModule.class,
-                AppTransIdLogModule.class
+                AppResourceModule.class
         }
 )
 public interface ApplicationComponent {
@@ -102,8 +99,6 @@ public interface ApplicationComponent {
     ApplicationSession applicationSession();
 
     ApplicationState applicationState();
-
-    ApptransidLogStore.Repository appTransIdLogRepository();
 
     /*INJECT*/
 
