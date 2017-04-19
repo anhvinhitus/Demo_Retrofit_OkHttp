@@ -440,6 +440,11 @@ public class AdapterLinkAcc extends AdapterBase {
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
         Log.d(this, "sender " + pSender + " otp " + pOtp);
+        if (GlobalData.shouldNativeWebFlow()) {
+            mWebViewProcessor.fillOtpOnWebFlow(pOtp);
+            Log.d(this, "filled otp into website vcb directly");
+            return;
+        }
         if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase()) {
             Log.d(this, "user is not in otp phase, skip auto fill otp");
             return;
@@ -552,7 +557,7 @@ public class AdapterLinkAcc extends AdapterBase {
         return false;
     }
 
-    protected void visibleLoading(){
+    protected void visibleLoading() {
         if (!linkAccGuiProcessor.isProgressVisible()) {
             linkAccGuiProcessor.visibleProgress();
         }
@@ -721,9 +726,9 @@ public class AdapterLinkAcc extends AdapterBase {
 
                         List<String> phoneNum = HashMapUtils.getKeys(mHashMapPhoneNum);
                         //validate zalopay phone and vcb phone must same
-                        /*if (!isValidPhoneList(phoneNum)) {
+                        if (!isValidPhoneList(phoneNum)) {
                             return pAdditionParams;
-                        }*/
+                        }
                         linkAccGuiProcessor.setPhoneNumList(phoneNum);
                         linkAccGuiProcessor.setPhoneNum(phoneNum);
 

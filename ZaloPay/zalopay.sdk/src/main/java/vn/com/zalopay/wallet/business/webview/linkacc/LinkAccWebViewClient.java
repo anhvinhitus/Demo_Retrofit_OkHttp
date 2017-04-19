@@ -260,10 +260,11 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         mIsRefreshCaptcha = true;
         matchAndRunJs(mCurrentUrl, EJavaScriptType.HIT, false);
     }
-    public void reload()
-   {
-       mWebPaymentBridge.reload();
-   }
+
+    public void reload() {
+        mWebPaymentBridge.reload();
+    }
+
     public void hit() {
         mAdapter.onEvent(EEventType.ON_HIT);
         mCurrentUrlPattern = null;
@@ -318,7 +319,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
                 // break loop for
                 break;
-            }else if(mIsRefreshCaptcha && bankScript.pageCode.equals(mAdapter.VCB_REFRESH_CAPTCHA)) {
+            } else if (mIsRefreshCaptcha && bankScript.pageCode.equals(mAdapter.VCB_REFRESH_CAPTCHA)) {
                 Log.d("WebView", "$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
                 DLinkAccScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;
@@ -337,13 +338,15 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     }
 
+    public void fillOtpOnWebFlow(String pOtp) {
+        executeJs(Constants.AUTOFILL_OTP_WEBFLOW_JS, pOtp);
+    }
+
     public void executeJs(String pJsFileName, String pJsInput) {
         if (!TextUtils.isEmpty(pJsFileName)) {
-            String jsContent = null;
-
-            Log.d("WebView", pJsFileName);
-            Log.d("WebView", pJsInput);
-
+            String jsContent;
+            Log.d("executeJs", pJsFileName);
+            Log.d("executeJs", pJsInput);
             for (String jsFile : pJsFileName.split(Constants.COMMA)) {
                 jsContent = ResourceManager.getJavascriptContent(jsFile);
                 jsContent = String.format(jsContent, pJsInput);
