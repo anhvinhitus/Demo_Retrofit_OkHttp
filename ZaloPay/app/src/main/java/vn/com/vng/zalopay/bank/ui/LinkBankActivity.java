@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -15,7 +16,6 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
@@ -61,13 +61,13 @@ public class LinkBankActivity extends UserBaseToolBarActivity
         if (getIntent() != null) {
             bundle = getIntent().getExtras();
         }
-
-        mPresenter.attachView(LinkBankActivity.this);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         mSectionsPagerAdapter = new LinkBankPagerAdapter(getSupportFragmentManager(), bundle);
+        
+        if (isUserSessionStarted()) {
+            mPresenter.attachView(LinkBankActivity.this);
+            mPresenter.initPageStart(bundle);
+        }
 
-        mPresenter.initPageStart(bundle);
     }
 
     @Override
@@ -110,14 +110,9 @@ public class LinkBankActivity extends UserBaseToolBarActivity
     }
 
     @Override
-    public void onDetachedFromWindow() {
-        mPresenter.detachView();
-        super.onDetachedFromWindow();
-    }
-
-    @Override
     protected void onDestroy() {
         if (isUserSessionStarted()) {
+            mPresenter.detachView();
             mPresenter.destroy();
         }
         super.onDestroy();
