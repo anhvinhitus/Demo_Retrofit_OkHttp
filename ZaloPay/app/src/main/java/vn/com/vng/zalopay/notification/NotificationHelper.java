@@ -183,10 +183,10 @@ public class NotificationHelper {
                 payOrderFromNotify(notify);
                 break;
             case NotificationType.UNLINK_ACCOUNT:
-                CShareDataWrapper.pushNotificationToSdk(notificationType, notify.message);
+                CShareDataWrapper.pushNotificationToSdk(mUser, notificationType, notify.message);
                 break;
             case NotificationType.LINK_ACCOUNT:
-                CShareDataWrapper.pushNotificationToSdk(notificationType, notify.message);
+                CShareDataWrapper.pushNotificationToSdk(mUser, notificationType, notify.message);
                 break;
         }
 
