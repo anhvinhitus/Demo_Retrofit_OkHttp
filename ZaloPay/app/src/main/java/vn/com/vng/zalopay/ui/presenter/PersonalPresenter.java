@@ -81,6 +81,7 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         this.mTransactionRepository = transactionRepository;
         this.mZaloSdkApi = zaloSdkApi;
         this.mNavigator = navigator;
+        paymentWrapper = getPaymentWrapper();
         Timber.d("accessToken[%s]", userConfig.getCurrentUser().accesstoken);
     }
 
@@ -163,24 +164,6 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         mView.setBalance(mBalanceRepository.currentBalance());
         getBalanceLocal();
         checkLinkCardStatus();
-        paymentWrapper = new PaymentWrapperBuilder()
-                .setBalanceRepository(mBalanceRepository)
-                .setZaloPayRepository(mZaloPayRepository)
-                .setTransactionRepository(mTransactionRepository)
-                .setResponseListener(new DefaultPaymentResponseListener() {
-                    @Override
-                    protected ILoadDataView getView() {
-                        return null;
-                    }
-
-                    @Override
-                    public void onResponseError(PaymentError paymentError) {
-                        if (paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT) {
-                            // Go to LinkBankActivity with page index = 1 (Tab "Liên kết tài khoản")
-                            mNavigator.startLinkAccountActivity(getActivity());
-                        }
-                    }
-                }).build();
     }
 
     private void getBalanceLocal() {
@@ -275,8 +258,11 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
                     }
 
                     @Override
-                    public void onResponseError(PaymentError status) {
-                        super.onResponseError(status);
+                    public void onResponseError(PaymentError paymentError) {
+                        if (paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT) {
+                            // Go to LinkBankActivity with page index = 1 (Tab "Liên kết tài khoản")
+                            mNavigator.startLinkAccountActivity(getActivity());
+                        }
                     }
                 }).build();
     }
