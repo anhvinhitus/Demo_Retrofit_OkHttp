@@ -108,8 +108,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         //bankCode [ZPVCB] cardKey[160525000004003ZPVCB] cardType[ZPVCB]
         return new BankAccount(dBankAccount.firstaccountno,
                 dBankAccount.lastaccountno,
-                dBankAccount.getFirstNumber(),
-                dBankAccount.getLastNumber(),
                 dBankAccount.bankcode);
     }
 
@@ -227,14 +225,8 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
             return;
         }
 
-        String firstAccountNo = ((DBankAccount) mappedCreditCard).firstaccountno;
-        String lastAccountNo = ((DBankAccount) mappedCreditCard).lastaccountno;
-        BankAccount bankAccount = new BankAccount(firstAccountNo,
-                lastAccountNo,
-                mappedCreditCard.getFirstNumber(),
-                mappedCreditCard.getLastNumber(),
-                mappedCreditCard.bankcode);
-        mView.insertData(bankAccount);
+        DBankAccount dBankAccount = ((DBankAccount) mappedCreditCard);
+        mView.insertData(transform(dBankAccount));
 
         if (mPayAfterLinkAcc) {
             mView.showConfirmPayAfterLinkAcc();

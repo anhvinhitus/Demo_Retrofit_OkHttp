@@ -113,9 +113,13 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         }
 
         public void bindView(final BankAccount bankAccount, boolean isLastItem) {
-            mTvAccountName.setText(bankAccount.getPhoneNumber());
-            bindBankAccount(mLineVertical, mImgLogo, bankAccount);
+            bindBankAccountInfo(mTvAccountName, bankAccount);
+            bindBankImage(mLineVertical, mImgLogo, bankAccount);
             setMargin(isLastItem);
+        }
+
+        private void bindBankAccountInfo(TextView tvAccountInfo, BankAccount bankAccount) {
+            tvAccountInfo.setText(bankAccount.getAccountInfo());
         }
 
         private void setMargin(boolean isLastItem) {
@@ -145,7 +149,7 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
         }
     }
 
-    public void bindBankAccount(View lineVertical, ImageView imgLogo, BankAccount bankAccount) {
+    void bindBankImage(View lineVertical, ImageView imgLogo, BankAccount bankAccount) {
         BankAccountStyle bankAccountStyle = BankUtils.getBankAccountStyle(bankAccount);
         setLineStyle(lineVertical, bankAccountStyle.mLineColor);
         setBankIcon(imgLogo, bankAccountStyle.mBankIcon);

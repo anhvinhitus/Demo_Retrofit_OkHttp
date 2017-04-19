@@ -3,6 +3,11 @@ package vn.com.vng.zalopay.bank.models;
 import android.text.TextUtils;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.util.PhoneUtil;
+import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 
 /**
  * Created by longlv on 1/17/17.
@@ -10,29 +15,30 @@ import timber.log.Timber;
  */
 
 public class BankAccount {
-    private final int FIRST_NUMBER_SHOW = 3;
-    private final int LAST_NUMBER_SHOW = 3;
 
-    public String mFirstAccountNo;
-    public String mLastAccountNo;
-    public String mFirst6PhoneNumber;
-    public String mLast4PhoneNumber;
+    private String mFirstAccountNo;
+    private String mLastAccountNo;
     public String mBankCode;
 
     public BankAccount(String firstAccountNo,
                        String lastAccountNo,
-                       String first6CardNo,
-                       String last4CardNo,
                        String bankCode) {
         this.mFirstAccountNo = firstAccountNo;
         this.mLastAccountNo = lastAccountNo;
-        this.mFirst6PhoneNumber = first6CardNo;
-        this.mLast4PhoneNumber = last4CardNo;
         this.mBankCode = bankCode;
     }
 
-    public String getPhoneNumber() {
-        String phoneNumber = mFirst6PhoneNumber + mLast4PhoneNumber;
+    public String getAccountInfo() {
+        if (ECardType.PVCB.toString().equalsIgnoreCase(mBankCode)) {
+            return getPhoneNumberScreened(getCurrentUserPhone());
+        } else {
+            return mFirstAccountNo + mLastAccountNo;
+        }
+    }
+
+    private String getPhoneNumberScreened(String phoneNumber) {
+        final int FIRST_NUMBER_SHOW = 3;
+        final int LAST_NUMBER_SHOW = 3;
         try {
             if (TextUtils.isEmpty(phoneNumber)) {
                 return "";
@@ -48,6 +54,19 @@ public class BankAccount {
             }
         } catch (Exception e) {
             Timber.e(e, "Function getPhoneNumber throw exception [%s]", e.getMessage());
+        }
+        return phoneNumber;
+    }
+
+    private String getCurrentUserPhone() {
+        String phoneNumber = "";
+        UserComponent userComponent = AndroidApplication.instance().getUserComponent();
+        if (userComponent == null) {
+            return "";
+        }
+        User user = userComponent.currentUser();
+        if (user != null) {
+            phoneNumber = PhoneUtil.formatPhoneNumber(user.phonenumber);
         }
         return phoneNumber;
     }
