@@ -210,7 +210,6 @@ public class AdapterLinkAcc extends AdapterBase {
         }
         if (isLoginStep() || isConfirmStep() || isOtpStep()) {
             mWebViewProcessor.hit();
-            linkAccGuiProcessor.visibleProgress();
             Log.d(this, "hit " + mPageCode);
             forceVirtualKeyboard(); // force virtual keyboard
             Log.d(this, "mIsExitWithoutConfirm " + mIsExitWithoutConfirm);
