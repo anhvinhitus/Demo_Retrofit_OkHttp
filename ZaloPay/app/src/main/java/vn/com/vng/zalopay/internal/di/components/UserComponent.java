@@ -1,3 +1,4 @@
+
 package vn.com.vng.zalopay.internal.di.components;
 
 import com.zalopay.apploader.ReactNativeHostable;
@@ -59,7 +60,6 @@ import vn.com.vng.zalopay.requestsupport.RequestSupportFragment;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
-import vn.com.vng.zalopay.searchcategory.SearchCategoryFragment;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.share.HandleZaloIntegration;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyFragment;
@@ -227,8 +227,6 @@ public interface UserComponent {
     void inject(FingerprintSuggestDialog d);
 
     void inject(WebBottomSheetDialogFragment f);
-
-    void inject(SearchCategoryFragment f);
 
     void inject(InternalReactFragment d);
 
