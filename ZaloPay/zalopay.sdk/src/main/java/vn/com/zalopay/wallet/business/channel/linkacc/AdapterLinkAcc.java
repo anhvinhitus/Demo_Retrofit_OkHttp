@@ -66,6 +66,7 @@ public class AdapterLinkAcc extends AdapterBase {
     public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
     public static String VCB_REFRESH_CAPTCHA = "zpsdk_atm_vcb_refresh_captcha";
     public String mUrlReload;
+    public boolean mIsLoadingCaptcha = false;
     protected ZPWNotification mNotification;
     private int COUNT_ERROR_PASS = 1;
     private int COUNT_ERROR_CAPTCHA = 1;
@@ -1067,33 +1068,51 @@ public class AdapterLinkAcc extends AdapterBase {
     public ZPWNotification getNotification() {
         return mNotification;
     }
-
+    public boolean isLoadingCaptcha(){
+        return mIsLoadingCaptcha;
+    }
     private View.OnClickListener refreshCaptcha = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(COUNT_REFRESH_CAPTCHA_REGISTER >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password)))
-            {
-                linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb),null);
-                return;
+            if(!isLoadingCaptcha()) {
+                if(COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password)))
+                {
+                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb),null);
+                    return;
+                }
+                Log.d(this,"refreshCaptcha()");
+                mIsLoadingCaptcha = true;
+                mWebViewProcessor.refreshCaptcha();
+                COUNT_REFRESH_CAPTCHA_REGISTER ++;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mIsLoadingCaptcha = false;
+                        }
+                    }, 2000);
+                }
             }
-            Log.d(this,"refreshCaptcha()");
-            showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-            mWebViewProcessor.refreshCaptcha();
-            COUNT_REFRESH_CAPTCHA_REGISTER ++;
-        }
-    };
+       };
     private View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(COUNT_REFRESH_CAPTCHA_LOGIN >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password)))
-            {
-                linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb),null);
-                return;
+
+            if(!isLoadingCaptcha()) {
+                Log.d(this, "refreshCaptcha()");
+                if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
+                    return;
+                }
+                mIsLoadingCaptcha = true;
+                mWebViewProcessor.reload();
+                COUNT_REFRESH_CAPTCHA_LOGIN++;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mIsLoadingCaptcha = false;
+                    }
+                }, 2000);
             }
-            Log.d(this,"refreshCaptcha()");
-            showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
-            mWebViewProcessor.reload();
-            COUNT_REFRESH_CAPTCHA_LOGIN ++;
         }
     };
 }
