@@ -2,9 +2,8 @@ package vn.com.vng.zalopay.ui.activity;
 
 import vn.com.vng.zalopay.ui.fragment.BalanceManagementFragment;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
-public class BalanceManagementActivity extends UserBaseToolBarActivity {
+public class BalanceManagementActivity extends BaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {

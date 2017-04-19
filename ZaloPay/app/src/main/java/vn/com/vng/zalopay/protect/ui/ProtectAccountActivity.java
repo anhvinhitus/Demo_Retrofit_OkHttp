@@ -1,13 +1,13 @@
 package vn.com.vng.zalopay.protect.ui;
 
+import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
 /**
  * Created by hieuvm on 12/24/16.
  */
 
-public class ProtectAccountActivity extends UserBaseToolBarActivity {
+public class ProtectAccountActivity extends BaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {

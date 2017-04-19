@@ -40,7 +40,12 @@ public class AppLocationModule {
 
     @Singleton
     @Provides
-    LocationStore.RepositoryFactory provideLocationRepositoryFactory(LocationStore.Repository repository) {
-        return () -> repository;
+    LocationStore.RepositoryFactory provideLocationRepositoryFactory() {
+        return new LocationStore.RepositoryFactory() {
+            @Override
+            public LocationStore.Repository get() {
+                return AndroidApplication.instance().getAppComponent().locationRepository();
+            }
+        };
     }
 }

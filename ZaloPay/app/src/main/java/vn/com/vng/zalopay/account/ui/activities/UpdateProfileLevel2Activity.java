@@ -1,10 +1,8 @@
 package vn.com.vng.zalopay.account.ui.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
@@ -28,15 +26,14 @@ import vn.com.vng.zalopay.account.ui.presenter.PreProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IPreProfileView;
 import vn.com.vng.zalopay.event.ReceiveOTPEvent;
 import vn.com.vng.zalopay.event.RefreshPaymentSdkEvent;
-import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
-import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
+import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
+import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
-public class UpdateProfileLevel2Activity extends UserBaseToolBarActivity
+public class UpdateProfileLevel2Activity extends BaseToolBarActivity
         implements IPreProfileView,
         PinProfileFragment.OnPinProfileFragmentListener,
         OtpProfileFragment.OnOTPFragmentListener {
@@ -54,8 +51,8 @@ public class UpdateProfileLevel2Activity extends UserBaseToolBarActivity
     NonSwipeableViewPager mViewPager;
 
     @Override
-    protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
-        userComponent.inject(this);
+    protected void setupActivityComponent() {
+        getUserComponent().inject(this);
     }
 
     @Override
@@ -126,14 +123,11 @@ public class UpdateProfileLevel2Activity extends UserBaseToolBarActivity
 
     @Override
     protected void onDestroy() {
-        if (isUserSessionStarted()) {
-            presenter.detachView();
-            presenter.destroy();
-            hideLoading();
-            eventBus.removeStickyEvent(ReceiveOTPEvent.class);
-        }
-
+        presenter.destroy();
         super.onDestroy();
+        hideLoading();
+        mProgressDialog = null;
+        eventBus.removeStickyEvent(ReceiveOTPEvent.class);
     }
 
     @Override
@@ -256,10 +250,5 @@ public class UpdateProfileLevel2Activity extends UserBaseToolBarActivity
             eventBus.postSticky(new ReceiveOTPEvent(otp));
         }
 
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
     }
 }

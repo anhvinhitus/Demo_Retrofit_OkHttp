@@ -13,13 +13,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.user.UserBaseActivity;
 
 /**
  * Created by hieuvm on 2/23/17.
  */
 
-public abstract class AbstractReactActivity extends UserBaseActivity implements PermissionAwareActivity {
+public abstract class AbstractReactActivity extends BaseActivity implements PermissionAwareActivity {
 
     private PermissionListener mPermissionListener;
 
@@ -27,7 +26,7 @@ public abstract class AbstractReactActivity extends UserBaseActivity implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (isUserSessionStarted() && savedInstanceState == null) {
+        if (savedInstanceState == null) {
             Fragment fragment = getReactFragment();
             if (fragment != null && getFragmentManager().findFragmentByTag(fragment.getTag()) == null) {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

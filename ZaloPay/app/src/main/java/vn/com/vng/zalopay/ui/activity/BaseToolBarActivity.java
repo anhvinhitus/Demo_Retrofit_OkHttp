@@ -22,7 +22,9 @@ public abstract class BaseToolBarActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+       // mToolbar.setTitleTextAppearance(this, R.style.Toolbar_TitleText);
     }
+
 
     protected int getResLayoutId() {
         return R.layout.activity_common_actionbar;

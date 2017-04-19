@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import butterknife.OnClick;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.activity.ExternalCallSplashScreenActivity;
@@ -32,8 +31,8 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
     private SweetAlertDialog mProgressDialog;
 
     @Override
-    protected void setupActivityComponent(ApplicationComponent applicationComponent) {
-        applicationComponent.inject(this);
+    protected void setupActivityComponent() {
+        getAppComponent().inject(this);
     }
 
     @Override
@@ -177,7 +176,7 @@ public class LoginZaloActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void showNetworkError() {
-        DialogHelper.showNetworkErrorDialog(this, null);
+        DialogHelper.showNetworkErrorDialog(getActivity(), null);
     }
 
     private void destroyErrorDialog() {

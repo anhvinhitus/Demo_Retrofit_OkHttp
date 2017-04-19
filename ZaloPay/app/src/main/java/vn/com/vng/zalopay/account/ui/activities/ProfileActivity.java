@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.account.ui.activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.text.TextUtils;
@@ -21,13 +20,12 @@ import vn.com.vng.zalopay.account.ui.presenter.ProfileInfoPresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileInfoView;
 import vn.com.vng.zalopay.data.zalosdk.ZaloSdkApi;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.internal.di.components.UserComponent;
+import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
-public class ProfileActivity extends UserBaseToolBarActivity implements IProfileInfoView, AppBarLayout.OnOffsetChangedListener {
+public class ProfileActivity extends BaseToolBarActivity implements IProfileInfoView, AppBarLayout.OnOffsetChangedListener {
 
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
@@ -88,8 +86,8 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
     }
 
     @Override
-    protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
-        userComponent.inject(this);
+    protected void setupActivityComponent() {
+        getUserComponent().inject(this);
     }
 
     @Override
@@ -105,20 +103,17 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (isUserSessionStarted()) {
-            presenter.attachView(this);
-            initView();
-        }
+        initView();
+        navigator.showSuggestionDialog(this);
     }
 
     private void initView() {
+        presenter.attachView(this);
         mZaloSdkApi.getProfile();
         getToolbar().setTitleTextColor(Color.TRANSPARENT);
 
         mCollapsingToolbarLayout.setTitleEnabled(false);
         mAppBarLayout.addOnOffsetChangedListener(this);
-        navigator.showSuggestionDialog(this);
     }
 
     @Override
@@ -159,11 +154,8 @@ public class ProfileActivity extends UserBaseToolBarActivity implements IProfile
 
     @Override
     public void onDestroy() {
-        if (isUserSessionStarted()) {
-            mAppBarLayout.removeOnOffsetChangedListener(this);
-            presenter.detachView();
-            presenter.destroy();
-        }
+        mAppBarLayout.removeOnOffsetChangedListener(this);
+        presenter.destroy();
         super.onDestroy();
     }
 

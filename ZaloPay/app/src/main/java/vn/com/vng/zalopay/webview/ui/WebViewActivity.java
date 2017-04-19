@@ -12,9 +12,8 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
-public class WebViewActivity extends UserBaseToolBarActivity {
+public class WebViewActivity extends BaseToolBarActivity {
 
 
     @BindView(R.id.iv_logo)

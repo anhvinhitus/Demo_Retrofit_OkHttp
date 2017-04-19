@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.ui.activity.BaseActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 
@@ -24,8 +23,8 @@ public class IntentHandlerActivity extends BaseActivity implements IIntentHandle
     IntentHandlerPresenter mPresenter;
 
     @Override
-    protected void setupActivityComponent(ApplicationComponent applicationComponent) {
-        applicationComponent.inject(this);
+    protected void setupActivityComponent() {
+        getAppComponent().inject(this);
     }
 
     @Override

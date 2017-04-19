@@ -4,9 +4,9 @@ import android.os.Bundle;
 
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
-public class WarningRootedActivity extends UserBaseToolBarActivity {
+public class WarningRootedActivity extends BaseToolBarActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
