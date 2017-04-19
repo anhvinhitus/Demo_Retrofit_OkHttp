@@ -89,8 +89,6 @@ public interface ApplicationComponent {
 
     LocationStore.RepositoryFactory locationRepositoryFactory();
 
-    LocationStore.Repository locationRepository();
-
     /*INJECT*/
 
     void inject(SplashScreenFragment f);

@@ -1,7 +1,5 @@
 package vn.com.vng.zalopay.ui.view;
 
-import android.app.Activity;
-
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 
@@ -12,8 +10,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 public interface ILoginView extends ILoadDataView {
 
     void gotoMainActivity();
-
-    Activity getActivity();
 
     void gotoInvitationCode();
 

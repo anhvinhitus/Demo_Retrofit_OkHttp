@@ -6,9 +6,10 @@ import android.widget.EditText;
 
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 
-public class RequestSupportActivity extends BaseToolBarActivity {
+public class RequestSupportActivity extends UserBaseToolBarActivity {
 
     @Override
     public BaseFragment getFragmentToHost() {

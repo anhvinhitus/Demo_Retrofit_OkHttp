@@ -17,11 +17,11 @@ import butterknife.OnPageChange;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.monitors.MonitorEvents;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
-import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
 
-public class ScanToPayActivity extends BaseToolBarActivity {
+public class ScanToPayActivity extends UserBaseToolBarActivity {
 
     private ScanToPayPagerAdapter mSectionsPagerAdapter;
 

@@ -7,8 +7,9 @@ import com.zalopay.ui.widget.IconFontDrawable;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
-public class WebAppActivity extends BaseToolBarActivity {
+public class WebAppActivity extends UserBaseToolBarActivity {
     @Override
     public BaseFragment getFragmentToHost() {
         return WebAppFragment.newInstance(getIntent().getExtras());

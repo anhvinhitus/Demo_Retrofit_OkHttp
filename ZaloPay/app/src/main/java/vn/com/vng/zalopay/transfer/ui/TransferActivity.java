@@ -9,8 +9,9 @@ import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
-public class TransferActivity extends BaseToolBarActivity {
+public class TransferActivity extends UserBaseToolBarActivity {
 
     Constants.ActivateSource mActivateSource = Constants.ActivateSource.FromTransferActivity;
 

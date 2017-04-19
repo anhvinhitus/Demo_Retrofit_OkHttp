@@ -236,7 +236,7 @@ public final class LoginPresenter extends AbstractPresenter<ILoginView> implemen
         AndroidApplication.instance().createUserComponent(user);
 
         if (mIsCallingExternal) {
-            sendResultSuccess(mView.getActivity());
+            sendResultSuccess((Activity) mView.getContext());
         } else {
             gotoHomeScreen();
             ZPAnalytics.trackEvent(ZPEvents.APPLAUNCHHOMEFROMLOGIN);

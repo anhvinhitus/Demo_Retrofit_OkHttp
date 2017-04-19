@@ -14,10 +14,12 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.ui.activity.BaseToolBarActivity;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
+import vn.com.vng.zalopay.user.UserBaseToolBarActivity;
 
-public class LinkBankActivity extends BaseToolBarActivity
+public class LinkBankActivity extends UserBaseToolBarActivity
         implements ILinkBankView, LinkCardFragment.ILinkCardListener {
 
     /**
@@ -43,9 +45,8 @@ public class LinkBankActivity extends BaseToolBarActivity
         return null;
     }
 
-    @Override
-    protected void setupActivityComponent() {
-        getUserComponent().inject(this);
+    protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
+        userComponent.inject(this);
     }
 
     @Override
@@ -116,13 +117,15 @@ public class LinkBankActivity extends BaseToolBarActivity
 
     @Override
     protected void onDestroy() {
-        mPresenter.destroy();
+        if (isUserSessionStarted()) {
+            mPresenter.destroy();
+        }
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        getActivity().setResult(Activity.RESULT_CANCELED);
+        setResult(Activity.RESULT_CANCELED);
         super.onBackPressed();
     }
 

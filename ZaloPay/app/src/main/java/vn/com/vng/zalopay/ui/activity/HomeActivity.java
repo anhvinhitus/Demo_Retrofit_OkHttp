@@ -1,9 +1,11 @@
 package vn.com.vng.zalopay.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -19,6 +21,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnPageChange;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
 import vn.com.vng.zalopay.widget.FragmentLifecycle;
@@ -74,15 +77,22 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     }
 
     @Override
-    protected void setupActivityComponent() {
-        getUserComponent().inject(this);
+    protected void onUserComponentSetup(@NonNull UserComponent userComponent) {
+        userComponent.inject(this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter.attachView(this);
-        mPresenter.initialize();
+
+        if (isUserSessionStarted()) {
+            mPresenter.attachView(this);
+            mPresenter.initialize();
+            initView();
+        }
+    }
+
+    private void initView() {
 
         mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mViewPager.getLayoutParams();
@@ -195,8 +205,12 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
     @Override
     protected void onDestroy() {
-        mPresenter.detachView();
-        mPresenter.destroy();
+
+        if (isUserSessionStarted()) {
+            mPresenter.detachView();
+            mPresenter.destroy();
+        }
+
         super.onDestroy();
     }
 
@@ -299,5 +313,10 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     @Override
     public void refreshIconFont() {
         initTabIconFont();
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 }

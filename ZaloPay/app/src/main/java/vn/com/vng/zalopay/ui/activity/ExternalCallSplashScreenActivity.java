@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.internal.di.components.ApplicationComponent;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.ExternalCallSplashScreenPresenter;
 import vn.com.vng.zalopay.ui.view.IExternalCallSplashScreenView;
@@ -30,8 +28,8 @@ public class ExternalCallSplashScreenActivity extends BaseActivity implements IE
     private String callingPackage;
 
     @Override
-    protected void setupActivityComponent() {
-        getAppComponent().inject(this);
+    protected void setupActivityComponent(ApplicationComponent applicationComponent) {
+        applicationComponent.inject(this);
     }
 
     @Override
