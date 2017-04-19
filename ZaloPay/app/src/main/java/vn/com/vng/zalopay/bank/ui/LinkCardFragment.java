@@ -214,8 +214,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     private void showLinkCardEmpty() {
         Timber.d("Show layout link card empty.");
-        if (mBankSupportFragment.getCountLinkCardSupport() <= 0
-                || mBankSupportFragment.getCountLinkAccountSupport() <= 0) {
+        if (mBankSupportFragment.getCountCardSupport() <= 0) {
             mBankSupportFragment.getCardSupport();
         }
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
@@ -272,6 +271,14 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         mAdapter = null;
         mBankSupportFragment = null;
         super.onDestroy();
+    }
+
+    @Override
+    public void refreshBanksSupport() {
+        Timber.d("refreshBanksSupport ");
+        if (mBankSupportFragment != null) {
+            mBankSupportFragment.notifyDataChanged();
+        }
     }
 
     public void refreshLinkedCard() {

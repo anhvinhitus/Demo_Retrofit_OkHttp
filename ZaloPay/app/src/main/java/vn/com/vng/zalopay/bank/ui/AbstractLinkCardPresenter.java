@@ -19,6 +19,7 @@ import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
+import vn.com.vng.zalopay.event.DownloadSDKResourceComplete;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -67,6 +68,8 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     abstract void onPayResponseError(PaymentError paymentError);
 
     abstract void onLoadIconFontSuccess();
+
+    abstract void onDownloadPaymentSDKComplete();
 
     abstract void showLoadingView();
 
@@ -295,5 +298,10 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     public void onLoadIconFontSuccess(LoadIconFontEvent event) {
         mEventBus.removeStickyEvent(LoadIconFontEvent.class);
         onLoadIconFontSuccess();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadSDKResourceComplete(DownloadSDKResourceComplete event) {
+        onDownloadPaymentSDKComplete();
     }
 }

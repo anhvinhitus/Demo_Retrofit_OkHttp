@@ -44,8 +44,7 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
     @Inject
     BankSupportPresenter mPresenter;
 
-    private BankSupportAdapter mLinkCardAdapter;
-    private BankSupportAdapter mLinkAccAdapter;
+    private BankSupportAdapter mAdapter;
 
     public BankSupportFragment() {
         // Required empty public constructor
@@ -87,14 +86,13 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         mPresenter.iniData(getArguments());
-        mLinkCardAdapter = new BankSupportAdapter(getContext());
-        mLinkAccAdapter = new BankSupportAdapter(getContext());
+        mAdapter = new BankSupportAdapter(getContext());
 
         mBankRecyclerView.setHasFixedSize(true);
         mBankRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMN_COUNT));
         mBankRecyclerView.setNestedScrollingEnabled(false);
         //mBankRecyclerView.addItemDecoration(new GridSpacingItemDecoration(COLUMN_COUNT, 2, false));
-        mBankRecyclerView.setAdapter(mLinkCardAdapter);
+        mBankRecyclerView.setAdapter(mAdapter);
         mBankRecyclerView.setFocusable(false);
 
         mPresenter.getCardSupportIfNeed();
@@ -106,18 +104,11 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
         }
     }
 
-    public int getCountLinkCardSupport() {
-        if (mLinkCardAdapter == null) {
+    public int getCountCardSupport() {
+        if (mAdapter == null) {
             return 0;
         }
-        return mLinkCardAdapter.getItemCount();
-    }
-
-    public int getCountLinkAccountSupport() {
-        if (mLinkAccAdapter == null) {
-            return 0;
-        }
-        return mLinkAccAdapter.getItemCount();
+        return mAdapter.getItemCount();
     }
 
     @Override
@@ -141,8 +132,7 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
     @Override
     public void onDestroy() {
         hideProgressDialog();
-        mLinkCardAdapter = null;
-        mLinkAccAdapter = null;
+        mAdapter = null;
         //release cache
         CShareDataWrapper.dispose();
         mPresenter.destroy();
@@ -166,15 +156,19 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
             return;
         }
         hideProgressDialog();
-        if (mLinkCardAdapter == null) {
+        if (mAdapter == null) {
             Timber.d("Refresh Bank Supports error because adapter is null.");
             return;
         }
         if (Lists.isEmptyOrNull(cardSupportList)) {
-            mLinkCardAdapter.setData(Collections.emptyList());
+            mAdapter.setData(Collections.emptyList());
         } else {
-            mLinkCardAdapter.setData(cardSupportList);
+            mAdapter.setData(cardSupportList);
         }
+    }
+
+    public void notifyDataChanged() {
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

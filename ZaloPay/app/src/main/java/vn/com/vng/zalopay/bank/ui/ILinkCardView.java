@@ -19,6 +19,8 @@ interface ILinkCardView extends ILoadDataView {
 
     Activity getActivity();
 
+    void refreshBanksSupport();
+
     void refreshLinkedCard();
 
     void setData(List<BankCard> bankCards);

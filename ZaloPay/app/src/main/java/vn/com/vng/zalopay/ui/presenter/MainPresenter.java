@@ -41,6 +41,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.PassportRepository;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
+import vn.com.vng.zalopay.event.DownloadSDKResourceComplete;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
@@ -286,6 +287,13 @@ public class MainPresenter extends AbstractPresenter<IHomeView> {
                 refreshBanners();
                 AppVersionUtils.handleEventUpdateVersion(mView.getActivity(),
                         forceUpdate, latestVersion, msg);
+            }
+
+            @Override
+            public void onDownloadResourceComplete() {
+                if (mEventBus != null) {
+                    mEventBus.post(new DownloadSDKResourceComplete());
+                }
             }
         });
     }
