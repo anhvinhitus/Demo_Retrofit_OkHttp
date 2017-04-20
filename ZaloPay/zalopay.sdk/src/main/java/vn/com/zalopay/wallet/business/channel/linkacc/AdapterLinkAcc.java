@@ -1080,10 +1080,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 // hide webview && show web parse
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE);
+                showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
         }
-        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
         mWebViewProcessor.start(pUrl);
     }
 
