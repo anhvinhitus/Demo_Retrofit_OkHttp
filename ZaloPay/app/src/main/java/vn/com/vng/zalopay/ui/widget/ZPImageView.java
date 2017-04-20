@@ -66,7 +66,7 @@ public class ZPImageView extends SimpleDraweeView {
 
         //setImageBitmap(ResourceHelper.getBitmap(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName));
         String filePath = ResourceHelper.getResource(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName);
-        Timber.d("setDrawable filePath 2 [%s]", filePath);
+        Timber.d("Draw image from file [%s]", filePath);
         setImageURI(UriUtil.getUriForFile(new File(filePath)));
     }
 }
