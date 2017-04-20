@@ -35,7 +35,7 @@ import vn.com.vng.zalopay.webview.widget.ZPWebViewProcessor;
  * Fragment
  */
 public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.IWebViewListener,
-        WebBottomSheetDialogFragment.OnClickListener {
+        WebBottomSheetDialogFragment.BottomSheetEventListener {
 
     protected ZPWebView mWebView;
     protected ZPWebViewProcessor mWebViewProcessor;
@@ -332,16 +332,15 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
     }
 
     private void showBottomSheetDialog() {
-        mBottomSheetDialog = WebBottomSheetDialogFragment.newInstance();
         Bundle bundle = new Bundle();
-        bundle.putString("currenturl", mWebViewProcessor.getCurrentUrl());
-        mBottomSheetDialog.setArguments(bundle);
-        mBottomSheetDialog.setOnClickListener(this);
+        bundle.putString("current_url", mWebViewProcessor.getCurrentUrl());
+        mBottomSheetDialog = WebBottomSheetDialogFragment.newInstance(bundle);
+        mBottomSheetDialog.setBottomSheetEventListener(this);
         mBottomSheetDialog.show(getChildFragmentManager(), "bottomsheet");
     }
 
     @Override
-    public void handleClickRefreshWeb() {
+    public void onRequestRefreshPage() {
         refreshWeb();
         mBottomSheetDialog.dismiss();
     }

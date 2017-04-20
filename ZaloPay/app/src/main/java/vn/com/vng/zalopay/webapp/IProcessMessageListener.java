@@ -22,6 +22,4 @@ interface IProcessMessageListener {
     void hideLoading();
 
     void writeLog(String type, long time, String data);
-
-    Context getContext();
 }

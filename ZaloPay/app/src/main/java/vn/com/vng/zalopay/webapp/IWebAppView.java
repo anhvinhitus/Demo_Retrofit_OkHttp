@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.webapp;
 
+import vn.com.vng.webapp.framework.IWebViewListener;
 import vn.com.vng.zalopay.ui.presenter.IPaymentDataView;
 
 /**
@@ -7,6 +8,23 @@ import vn.com.vng.zalopay.ui.presenter.IPaymentDataView;
  * *
  */
 
-interface IWebAppView extends IPaymentDataView {
+interface IWebAppView extends IPaymentDataView, IWebViewListener {
 
+    /**
+     * Tell view to update progress of loading webview
+     * @param progress current progress in scale 0--100
+     */
+    void updateLoadProgress(int progress);
+
+    void dismissBottomSheet();
+
+    /**
+     * Hide error view
+     */
+    void hideError();
+
+    /**
+     * Request to logout current user
+     */
+    void logout();
 }

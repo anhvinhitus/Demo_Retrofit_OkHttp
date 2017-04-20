@@ -8,8 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -18,10 +16,6 @@ import android.widget.TextView;
 import com.zalopay.ui.widget.IconFont;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
-import org.json.JSONObject;
-
-import java.util.Collections;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -29,11 +23,10 @@ import butterknife.internal.DebouncingOnClickListener;
 import timber.log.Timber;
 import vn.com.vng.webapp.framework.IWebViewListener;
 import vn.com.vng.webapp.framework.ZPWebViewApp;
-import vn.com.vng.webapp.framework.ZPWebViewAppProcessor;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
+import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.AndroidUtils;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -41,10 +34,13 @@ import vn.com.vng.zalopay.utils.DialogHelper;
 
 /**
  * Created by chucvv on 8/28/16.
- * Fragment
+ * WebAppFragment
  */
-public class WebAppFragment extends BaseFragment implements IWebViewListener, IProcessMessageListener, IWebAppView,
-        WebBottomSheetDialogFragment.OnClickListener {
+public class WebAppFragment extends BaseFragment
+        implements
+            IWebViewListener,
+            IWebAppView
+{
 
     public static WebAppFragment newInstance(Bundle bundle) {
         WebAppFragment fragment = new WebAppFragment();
@@ -54,7 +50,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
 
     @Override
     protected void setupFragmentComponent() {
-        getUserComponent().inject(this);
+        getUserComponent().inject(WebAppFragment.this);
     }
 
     @Override
@@ -62,12 +58,11 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         return R.layout.webapp_fragment_mainview;
     }
 
-    protected ZPWebViewAppProcessor mWebViewProcessor;
+    private WebBottomSheetDialogFragment mBottomSheetDialog;
 
     private View layoutRetry;
     private ImageView imgError;
     private TextView tvError;
-    private WebBottomSheetDialogFragment mBottomSheetDialog;
 
     @BindView(R.id.progressBar)
     ProgressBar mProgressBar;
@@ -86,12 +81,13 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         super.onViewCreated(view, savedInstanceState);
         initPresenter(view);
         initRetryView(view);
-        initWebView(view);
         loadDefaultWebView();
     }
 
     protected void initPresenter(View view) {
-        mPresenter.attachView(this);
+        mPresenter.attachView(WebAppFragment.this);
+        ZPWebViewApp webView = (ZPWebViewApp) view.findViewById(R.id.webview);
+        mPresenter.initWebView(webView);
     }
 
     protected void loadDefaultWebView() {
@@ -100,56 +96,11 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
             return;
         }
         String originalUrl = bundle.getString(Constants.ARG_URL);
-        loadUrl(originalUrl);
-    }
-
-    protected String getCurrentUrl() {
-        if (mWebViewProcessor == null) {
-            return null;
-        }
-        return mWebViewProcessor.getCurrentUrl();
-    }
-
-    private void initWebView(View rootView) {
-        ZPWebViewApp webView = (ZPWebViewApp) rootView.findViewById(R.id.webview);
-        mWebViewProcessor = new ZPWebViewAppProcessor(webView, this);
-        mWebViewProcessor.registerNativeModule(new ProcessNativeModule(this));
-
-        webView.setWebChromeClient(new WebChromeClient() {
-            public void onProgressChanged(WebView view, int progress) {
-                Timber.d("WebLoading progress: %s", progress);
-                if (mProgressBar == null) {
-                    return;
-                }
-
-                if (progress < 100 && mProgressBar.getVisibility() == ProgressBar.GONE) {
-                    mProgressBar.setVisibility(ProgressBar.VISIBLE);
-                }
-                mProgressBar.setProgress(progress);
-                if (progress >= 100) {
-                    mProgressBar.setVisibility(ProgressBar.GONE);
-                }
-            }
-
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-
-                getActivity().setTitle(title);
-            }
-        });
-    }
-
-    public void loadUrl(final String pUrl) {
-        if (mWebViewProcessor == null) {
-            return;
-        }
-        mWebViewProcessor.start(pUrl, getActivity());
+        mPresenter.loadUrl(originalUrl);
     }
 
     protected void onClickRetryWebView() {
-        hideError();
-        refreshWeb();
+        mPresenter.onRequestRefreshPage();
     }
 
     private void initRetryView(View rootView) {
@@ -221,7 +172,7 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
 
                     @Override
                     public void onOKevent() {
-                        if (mWebViewProcessor != null && mWebViewProcessor.isLoadPageFinished()) {
+                        if (mPresenter.isLoadPageFinished()) {
                             return;
                         }
                         showProgressDialog(timeout);
@@ -230,67 +181,15 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
     }
 
     @Override
-    public void hideLoading() {
-        AndroidUtils.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                hideProgressDialog();
-            }
-        });
-    }
-
-    @Override
-    public void writeLog(String type, long time, String data) {
-        switch (type) {
-            case "info":
-                Timber.i("time: %s, data: %s", time, data);
-                break;
-            case "warn":
-                Timber.w("time: %s, data: %s", time, data);
-                break;
-            case "error":
-                Timber.e("time: %s, data: %s", time, data);
-                break;
-            default:
-                Timber.d("type: %s, time: %s, data: %s", type, time, data);
-        }
-    }
-
-    @Override
     public void onReceivedTitle(String title) {
-
-    }
-
-    @Override
-    public void showDialog(final int dialogType, final String title, final String message, final String buttonLabel) {
-        AndroidUtils.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                DialogHelper.showCustomDialog(getActivity(),
-                        dialogType,
-                        title,
-                        message,
-                        null,
-                        Collections.singletonList(buttonLabel).toArray(new String[0]));
-            }
-        });
-    }
-
-    @Override
-    public void showLoading() {
-        AndroidUtils.runOnUIThread(new Runnable() {
-            @Override
-            public void run() {
-                showProgressDialogWithTimeout();
-            }
-        });
+        getActivity().setTitle(title);
     }
 
     public void showError(String message) {
         showErrorDialog(message, getString(R.string.txt_close), null);
     }
 
-    protected void hideError() {
+    public void hideError() {
         Timber.d("hideError layoutRetry [%s]", layoutRetry);
         if (layoutRetry == null) {
             return;
@@ -302,44 +201,28 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
     public void onResume() {
         super.onResume();
         mPresenter.resume();
-        if (mWebViewProcessor != null) {
-            mWebViewProcessor.onResume();
-        }
     }
 
     @Override
     public void onPause() {
         mPresenter.pause();
-        if (mWebViewProcessor != null) {
-            mWebViewProcessor.onPause();
-        }
         super.onPause();
     }
 
     @Override
     public void onDestroyView() {
         mPresenter.detachView();
-        if (mWebViewProcessor != null) {
-            mWebViewProcessor.onDestroyView();
-        }
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
         mPresenter.destroy();
-        if (mWebViewProcessor != null) {
-            mWebViewProcessor.onDestroy();
-        }
         super.onDestroy();
     }
 
     public boolean onBackPressed() {
-        if (mWebViewProcessor != null && mWebViewProcessor.onBackPress()) {
-            return true;
-        } else {
-            return super.onBackPressed();
-        }
+        return mPresenter.onBackPressed() || super.onBackPressed();
     }
 
     @Override
@@ -366,27 +249,6 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
         mPresenter.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void refreshWeb() {
-        Timber.d("Request to reload web view");
-        hideError();
-        mWebViewProcessor.refreshWeb(getActivity());
-    }
-
-    @Override
-    public void payOrder(JSONObject jsonObject, IPaymentListener listener) {
-        mPresenter.pay(jsonObject, listener);
-    }
-
-    @Override
-    public void transferMoney(JSONObject jsonObject, IPaymentListener listener) {
-        mPresenter.transferMoney(jsonObject, listener);
-    }
-
-    @Override
-    public void logout() {
-        getAppComponent().eventBus().postSticky(new TokenPaymentExpiredEvent());
-    }
-
     @Override
     public void finishActivity() {
         if (getActivity() == null) {
@@ -397,21 +259,47 @@ public class WebAppFragment extends BaseFragment implements IWebViewListener, IP
 
     @Override
     public Fragment getFragment() {
-        return this;
+        return WebAppFragment.this;
     }
 
     private void showBottomSheetDialog() {
-        mBottomSheetDialog = WebBottomSheetDialogFragment.newInstance();
-        Bundle bundle = new Bundle();
-        bundle.putString("currenturl", mWebViewProcessor.getCurrentUrl());
-        mBottomSheetDialog.setArguments(bundle);
-        mBottomSheetDialog.setOnClickListener(this);
+        mBottomSheetDialog = mPresenter.createBottomSheetFragment();
         mBottomSheetDialog.show(getChildFragmentManager(), "bottomsheet");
     }
 
+    public void logout() {
+        getAppComponent().eventBus().postSticky(new TokenPaymentExpiredEvent());
+    }
+
+    public void showLoading() {
+        AndroidUtils.runOnUIThread(this::showProgressDialogWithTimeout);
+    }
+
+    public void hideLoading() {
+        AndroidUtils.runOnUIThread(this::hideProgressDialog);
+    }
+
     @Override
-    public void handleClickRefreshWeb() {
-        refreshWeb();
+    public void updateLoadProgress(int progress) {
+        if (mProgressBar == null) {
+            return;
+        }
+
+        if (progress < 100 && mProgressBar.getVisibility() == ProgressBar.GONE) {
+            mProgressBar.setVisibility(ProgressBar.VISIBLE);
+        }
+        mProgressBar.setProgress(progress);
+        if (progress >= 100) {
+            mProgressBar.setVisibility(ProgressBar.GONE);
+        }
+    }
+
+    @Override
+    public void dismissBottomSheet() {
+        if (mBottomSheetDialog == null) {
+            return;
+        }
+
         mBottomSheetDialog.dismiss();
     }
 }
