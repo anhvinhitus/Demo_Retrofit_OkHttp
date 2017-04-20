@@ -170,6 +170,7 @@ public class AdapterLinkAcc extends AdapterBase {
         public void onClick(View v) {
             if (!isLoadingCaptcha()) {
                 if (COUNT_REFRESH_CAPTCHA_REGISTER > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
                     linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
                     return;
                 }
@@ -193,6 +194,7 @@ public class AdapterLinkAcc extends AdapterBase {
             if (!isLoadingCaptcha()) {
                 Log.d(this, "refreshCaptcha()");
                 if (COUNT_REFRESH_CAPTCHA_LOGIN > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
                     linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_refresh_captcha_message_vcb), null);
                     return;
                 }
