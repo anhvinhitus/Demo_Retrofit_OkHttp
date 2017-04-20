@@ -225,7 +225,12 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             return;
         }
         renderActivity();
-        getAdapter().init();
+        try {
+            getAdapter().init();
+        } catch (Exception e) {
+            Log.d(this, e);
+            return;
+        }
         if (GlobalData.isChannelHasInputCard()) {
             renderResourceAfterDelay();
         }
@@ -578,7 +583,12 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     protected void initChannel() {
-        getAdapter().init();
+        try {
+            getAdapter().init();
+        } catch (Exception e) {
+            Log.d(this, e);
+            return;
+        }
         getAdapter().setListener();
         renderResourceAfterDelay();
         updateFontCardNumber();

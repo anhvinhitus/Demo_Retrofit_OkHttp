@@ -233,11 +233,16 @@ public class SDKPayment {
             SDKReportTask.makeReportError(SDKReportTask.INVALID_PAYMENTINFO, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
         }
         DialogManager.closeProcessDialog();
-        DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.WARNING_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_warning), pMessage, pIndex -> {
+        if (GlobalData.getPaymentListener() != null) {
+            GlobalData.getPaymentListener().onError(new CError(pPayError, pMessage));
+        }
+        SingletonLifeCircleManager.disposeAll();
+
+      /*  DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.WARNING_TYPE, GlobalData.getMerchantActivity().getString(R.string.dialog_title_warning), pMessage, pIndex -> {
             if (GlobalData.getPaymentListener() != null)
                 GlobalData.getPaymentListener().onError(new CError(pPayError, pMessage));
 
             SingletonLifeCircleManager.disposeAll();
-        }, new String[]{GlobalData.getStringResource(RS.string.dialog_close_button)});
+        }, new String[]{GlobalData.getStringResource(RS.string.dialog_close_button)});*/
     }
 }

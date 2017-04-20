@@ -230,6 +230,12 @@ public abstract class AdapterBase {
         return mResponseStatus;
     }
 
+    public void setmResponseStatus(StatusResponse mResponseStatus) {
+        this.mResponseStatus = mResponseStatus;
+    }
+
+    public abstract void init() throws Exception;
+
     public abstract DPaymentChannel getChannelConfig() throws Exception;
 
     public abstract void onProcessPhrase() throws Exception;
@@ -297,9 +303,6 @@ public abstract class AdapterBase {
 
     public boolean isFailNetworkingPharse() {
         return getPageName().equals(PAGE_FAIL_NETWORKING);
-    }
-
-    public void init() {
     }
 
     public void onFinish() {

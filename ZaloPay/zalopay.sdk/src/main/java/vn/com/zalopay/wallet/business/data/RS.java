@@ -298,6 +298,7 @@ public class RS {
         public static final String zingpaysdk_invalid_app_trans = "zingpaysdk_invalid_app_trans";
         public static final String zingpaysdk_missing_app_pmt_info = "zingpaysdk_missing_app_pmt_info";
         public static final String zingpaysdk_invalid_token = "zingpaysdk_invalid_token";
+        public static final String sdk_invalid_missing_linkaccInfo = "sdk_invalid_missing_linkaccInfo";
 
         public static final String zpw_string_fee_free = "zpw_string_fee_free";
 
@@ -401,7 +402,7 @@ public class RS {
         public static final String zpw_string_vcb_link_login = "zpw_string_vcb_link_login";
         public static final String zpw_vcb_value_otp_sms = "zpw_vcb_value_otp_sms";
         public static final String zpw_vcb_wallet_type = "zpw_vcb_wallet_type";
-        public static final String  zpw_string_refresh_captcha_message_vcb = "zpw_string_refresh_captcha_message_vcb";
+        public static final String zpw_string_refresh_captcha_message_vcb = "zpw_string_refresh_captcha_message_vcb";
 
         public static final String zpw_string_title_err_login_vcb = "zpw_string_title_err_login_vcb";
 

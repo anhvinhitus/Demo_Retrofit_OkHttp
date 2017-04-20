@@ -194,11 +194,11 @@ public class GlobalData {
     }
 
     public static boolean isLinkAccFlow() {
-        return getPaymentInfo().linkAccInfo != null && getPaymentInfo().linkAccInfo.isLinkAcc();
+        return getPaymentInfo() != null && getPaymentInfo().linkAccInfo != null && getPaymentInfo().linkAccInfo.isLinkAcc();
     }
 
     public static boolean isUnLinkAccFlow() {
-        return getPaymentInfo().linkAccInfo != null && getPaymentInfo().linkAccInfo.isUnlinkAcc();
+        return getPaymentInfo() != null && getPaymentInfo().linkAccInfo != null && getPaymentInfo().linkAccInfo.isUnlinkAcc();
     }
 
     public static boolean isLinkCardChannel() {
