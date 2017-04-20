@@ -2,12 +2,11 @@ package vn.com.vng.zalopay.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.BitmapFactory;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+
+import com.facebook.common.util.UriUtil;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.File;
 
@@ -22,7 +21,7 @@ import vn.com.vng.zalopay.data.appresources.ResourceHelper;
  * Show image from local png
  */
 
-public class ZPImageView extends ImageView {
+public class ZPImageView extends SimpleDraweeView {
 
     public ZPImageView(Context context) {
         super(context);
@@ -35,12 +34,6 @@ public class ZPImageView extends ImageView {
 
     public ZPImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initAttrs(context, attrs);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public ZPImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         initAttrs(context, attrs);
     }
 
@@ -68,9 +61,12 @@ public class ZPImageView extends ImageView {
         setImageURI(imageUri);*/
 
         if (!fileName.endsWith(Constants.FILE_PNG)) {
-            fileName+= Constants.FILE_PNG;
+            fileName += Constants.FILE_PNG;
         }
 
-        setImageBitmap(ResourceHelper.getBitmap(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName));
+        //setImageBitmap(ResourceHelper.getBitmap(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName));
+        String filePath = ResourceHelper.getResource(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName);
+        Timber.d("setDrawable filePath 2 [%s]", filePath);
+        setImageURI(UriUtil.getUriForFile(new File(filePath)));
     }
 }

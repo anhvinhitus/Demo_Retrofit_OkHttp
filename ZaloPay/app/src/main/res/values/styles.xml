@@ -209,6 +209,11 @@
         <item name="failureImage">@color/silver</item>
     </style>
 
+    <style name="CoverDraweeView" parent="NormalDraweeView">
+        <item name="failureImage">@color/colorPrimary</item>
+        <item name="placeholderImage">@color/colorPrimary</item>
+    </style>
+
     <style name="NormalDraweeView">
         <item name="actualImageScaleType">centerCrop</item>
         <item name="failureImageScaleType">centerCrop</item>
