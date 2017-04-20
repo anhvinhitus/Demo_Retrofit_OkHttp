@@ -68,11 +68,11 @@ public class BankLoader extends SingletonBase {
         try {
             if (isNeedToLoadBankList()) {
                 //there a loading bank list task is running
-                if (GetBankList.isLoading()) {
+                /*if (GetBankList.isLoading()) {
                     Log.d("loadBankList", "===there're a task is running");
                     return;
                 }
-
+*/
                 BaseRequest getBankList = new GetBankList(pListener);
                 getBankList.makeRequest();
                 return;
