@@ -1585,7 +1585,10 @@ public abstract class AdapterBase {
         if (isCardFlow() && getGuiProcessor() != null) {
             getGuiProcessor().useWebView(false);
         }
-
+        //hide webview
+        if (GlobalData.isBankAccountLink() && GlobalData.shouldNativeWebFlow() && getGuiProcessor() != null) {
+            getGuiProcessor().useWebView(false);
+        }
         //notify to app to do some background task
         try {
             if (GlobalData.getPaymentListener() != null && GlobalData.getPaymentInfo() != null)

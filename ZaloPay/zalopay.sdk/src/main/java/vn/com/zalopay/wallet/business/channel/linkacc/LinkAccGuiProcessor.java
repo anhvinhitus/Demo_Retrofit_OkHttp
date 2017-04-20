@@ -77,6 +77,12 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     private ProgressBar pgbProgress;
     private TextView txtMessage;
     private LoginHolder loginHolder;
+
+    @Override
+    public void useWebView(boolean pIsUseWebView) {
+        mAdapter.getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(pIsUseWebView ? View.VISIBLE : View.GONE); // disable webview
+    }
+
     ///////LISTENER////////
     // listener EditText
     private TextWatcher mLoginEditTextWatcher = new TextWatcher() {
