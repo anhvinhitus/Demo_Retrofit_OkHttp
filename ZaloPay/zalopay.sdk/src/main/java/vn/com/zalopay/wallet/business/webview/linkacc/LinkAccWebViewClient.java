@@ -41,41 +41,25 @@ import vn.com.zalopay.wallet.utils.GsonUtils;
 public class LinkAccWebViewClient extends PaymentWebViewClient {
     public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
     public static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
-    public static final int TIME_REQUEST_RETRY_LOADING_AGAIN = 10000; // 10s
-    public static final int TIME_WAITING_LOAD_AJAX_GET_RESULT = 5000; // 5s
-    public static final int TIME_WAITING_LOAD_AJAX_GET_MESSAGE = 200; // 200ms
     protected static final String HTTP_EXCEPTION = "http://sdk.jsexception";
     // value is used for
     // detect valid url
     // in the case
     // webview on
     // Android 2.3
-    private boolean mIsLoading = false;
     private boolean isRedirected = false;
-    // private boolean mIsRedirect = false;
-    // private boolean mIsFreeze = false;
 
     private AdapterLinkAcc mAdapter = null;
     private LinkAccWebView mWebPaymentBridge = null;
 
     private List<DBankScript> mBankScripts = ResourceManager.getInstance(null).getBankScripts();
-    private String mCurrentUrlPattern = null;
-    private String mStartedtUrl = null;
     private String mCurrentUrl = null;
-    private String mUrl = null;
-
-    private long mLastStartPageTime = 0;
-    private Handler mHandler = new Handler();
 
     private int mEventID = 0;
     private String mPageCode = null;
 
     private boolean mIsFirst = true;
     private boolean mIsRefreshCaptcha = false;
-    private boolean mIsRetry = false;
-
-    private int mProgress = 0;
-    private int mProgressOld = 0;
     /***
      * listener for WebChromeClient
      */
@@ -140,7 +124,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         Log.i("///// onPageStarted: ", url);
         if (!isRedirected) {
             // code somethings if you want when starts
-            mUrl = url;
         }
 
         isRedirected = false;
@@ -155,7 +138,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onLoadResource(WebView view, String url) {
-        Log.d("TAG", "///// onLoadResource: " + url);
+        Log.d("onLoadResource", url);
         if (shouldOnCheckMatchOnLoadResouce(url)) {
             onPageFinishedAuto(url);
         }
@@ -163,7 +146,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Log.d("OverrideUrl", "///// shouldOverrideUrlLoading:" + url);
+        Log.d("shouldOverrideUrlLoading", url);
         view.loadUrl(url);
         isRedirected = true;
         return true;
@@ -171,11 +154,9 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onPageFinished(WebView view, final String url) {
-        Log.d("///// onPageFinished: ", url);
+        Log.d("load page finish ", url);
         if (!isRedirected) {
-            //Do something you want when finished loading
-            Log.i("Runnable", "=========== ALREADY FINISHED ===========");
-            Log.i("Runnable", url);
+            Log.d("load page finish on the first", url);
             onPageFinishedAuto(url);
         }
     }
@@ -269,7 +250,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     public void hit() {
         mAdapter.onEvent(EEventType.ON_HIT);
-        mCurrentUrlPattern = null;
         matchAndRunJs(mCurrentUrl, EJavaScriptType.HIT, false);
     }
 
@@ -394,8 +374,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     @JavascriptInterface
     public void onJsPaymentResult(String pResult) {
         Log.d("Js", "==== onJsPaymentResult: " + pResult);
-        // Modify this variable to inform that it not run in ajax mode
-        mLastStartPageTime++;
 
         final String result = pResult;
 
