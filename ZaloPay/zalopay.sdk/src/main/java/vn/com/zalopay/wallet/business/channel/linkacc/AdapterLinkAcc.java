@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
+import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -120,6 +121,12 @@ public class AdapterLinkAcc extends AdapterBase {
     };
     private int mNumAllowLoginWrong;
     private Handler mHandler = new Handler();
+
+    @Override
+    public CardGuiProcessor getGuiProcessor() {
+        return linkAccGuiProcessor;
+    }
+
     private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
         public void onProcessing() {
@@ -574,6 +581,9 @@ public class AdapterLinkAcc extends AdapterBase {
             // get value progress  &  show it
             int value = (int) pAdditionParams[0];
             linkAccGuiProcessor.setProgress(value);
+            if (!linkAccGuiProcessor.isProgressVisible()) {
+                linkAccGuiProcessor.visibleProgress();
+            }
             return null;
         }
 
@@ -1038,10 +1048,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 // hide webview && show web parse
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE);
-                showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
         }
+        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
         mWebViewProcessor.start(pUrl);
     }
 

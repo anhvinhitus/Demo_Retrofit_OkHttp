@@ -253,7 +253,7 @@ public abstract class AdapterBase {
         return false;
     }
 
-    public boolean shouldFocusAfterCloseQuitDialog(){
+    public boolean shouldFocusAfterCloseQuitDialog() {
         return isCaptchaStep() || isOtpStep();
     }
 
@@ -904,8 +904,8 @@ public abstract class AdapterBase {
     public void onClickSubmission() {
         try {
             mIsShowDialog = false;
-            Log.d(this,"page name "+ getPageName());
-            Log.d(this,"payment result " + GsonUtils.toJsonString(GlobalData.getPaymentResult()));
+            Log.d(this, "page name " + getPageName());
+            Log.d(this, "payment result " + GsonUtils.toJsonString(GlobalData.getPaymentResult()));
 
             ZPWUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
 
@@ -1658,6 +1658,10 @@ public abstract class AdapterBase {
         dismissDialogFingerPrint();
         //hide webview
         if (isCardFlow() && getGuiProcessor() != null) {
+            getGuiProcessor().useWebView(false);
+        }
+        //hide webview
+        if (GlobalData.isBankAccountLink() && GlobalData.shouldNativeWebFlow() && getGuiProcessor() != null) {
             getGuiProcessor().useWebView(false);
         }
         //notify to app to do some background task

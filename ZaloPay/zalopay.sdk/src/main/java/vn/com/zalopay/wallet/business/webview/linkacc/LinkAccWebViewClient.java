@@ -339,7 +339,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     }
 
     public void fillOtpOnWebFlow(String pOtp) {
-        executeJs(Constants.AUTOFILL_OTP_WEBFLOW_JS, pOtp);
+        DLinkAccScriptInput input = genJsInput();
+        input.otp = pOtp;
+        String inputScript = GsonUtils.toJsonString(input);
+        executeJs(Constants.AUTOFILL_OTP_WEBFLOW_JS, inputScript);
     }
 
     public void executeJs(String pJsFileName, String pJsInput) {
