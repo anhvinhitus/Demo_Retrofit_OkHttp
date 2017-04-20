@@ -296,30 +296,6 @@
                     android:hint="@string/not_update" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/separate"
-                android:layout_marginTop="@dimen/spacing.medium"
-                android:background="@color/separate" />
-
-            <LinearLayout
-                android:id="@+id/layoutSignOut"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:padding="@dimen/spacing.medium">
-
-                <com.zalopay.ui.widget.IconFontTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/txt_leftmenu_sigout"
-                    app:iconLeftColor="@color/menu_font_ic_gray"
-                    app:iconLeftName="@string/menu_logout"
-                    app:iconLeftPadding="@dimen/app_padding"
-                    app:iconLeftSize="@dimen/font_size_menu" />
-            </LinearLayout>
-
             <!--<View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separate"

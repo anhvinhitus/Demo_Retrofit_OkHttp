@@ -2,10 +2,8 @@ package vn.com.vng.zalopay.account.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
@@ -19,7 +17,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.account.ui.presenter.ProfilePresenter;
 import vn.com.vng.zalopay.account.ui.view.IProfileView;
@@ -27,8 +24,6 @@ import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.utils.DialogHelper;
-import vn.com.zalopay.analytics.ZPAnalytics;
-import vn.com.zalopay.analytics.ZPEvents;
 
 public class ProfileFragment extends BaseFragment implements IProfileView {
 
@@ -73,25 +68,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @BindView(R.id.layoutChangePin)
     View layoutChangePin;
-
-    @OnClick(R.id.layoutSignOut)
-    public void onClickSignOut() {
-        showConfirmSignOut();
-    }
-
-    private void showConfirmSignOut() {
-        new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE, R.style.alert_dialog)
-                .setContentText(getString(R.string.txt_confirm_sigout))
-                .setCancelText(getString(R.string.cancel))
-                .setTitleText(getString(R.string.confirm))
-                .setConfirmText(getString(R.string.txt_leftmenu_sigout))
-                .setConfirmClickListener(sweetAlertDialog -> {
-                    sweetAlertDialog.dismiss();
-                    mPresenter.logout();
-                    ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
-                })
-                .show();
-    }
 
     @Override
     protected void setupFragmentComponent() {
