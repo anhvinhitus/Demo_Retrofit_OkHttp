@@ -1,3 +1,6 @@
+Zalo Pay (Production v2.10.0 - build 223) - Released on 2017-04-20
+- Build Production
+
 Zalo Pay (Staging v2.10.0 - build 222) - Released on 2017-04-20
 - [SDK] [Bank] Refresh list support banks when PaymentSDK download resource successfully.
 - [SDK] [Vcb] Auto fill otp on web flow
