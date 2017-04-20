@@ -84,7 +84,7 @@ public class AdapterLinkAcc extends AdapterBase {
         BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
             @Override
             public void onCheckExistBankAccountComplete(boolean pExisted) {
-                showProgressBar(false, null);
+                hideLoadingDialog();
                 if (!pExisted) {
                     unlinkAccSuccess();
                 } else {
@@ -95,7 +95,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             @Override
             public void onCheckExistBankAccountFail(String pMessage) {
-                showProgressBar(false, null);
+                hideLoadingDialog();
                 Log.d(this, "runnableWaitingNotifyUnLinkAcc==" + pMessage);
                 unlinkAccFail(pMessage, mTransactionID);
             }
@@ -106,7 +106,7 @@ public class AdapterLinkAcc extends AdapterBase {
         BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
             @Override
             public void onCheckExistBankAccountComplete(boolean pExisted) {
-                showProgressBar(false, null);
+                hideLoadingDialog();
                 if (pExisted) {
                     linkAccSuccess();
                 } else {
@@ -116,7 +116,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             @Override
             public void onCheckExistBankAccountFail(String pMessage) {
-                showProgressBar(false, null);
+                hideLoadingDialog();
                 linkAccFail(pMessage, mTransactionID);
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
@@ -131,6 +131,7 @@ public class AdapterLinkAcc extends AdapterBase {
         @Override
         public void onComplete() {
             try {
+                hideLoadingDialog();
                 // get bank config
                 BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(GlobalData.getPaymentInfo().linkAccInfo.getBankCode()), BankConfig.class);
                 if (bankConfig == null || !bankConfig.isBankActive()) {
@@ -142,13 +143,11 @@ public class AdapterLinkAcc extends AdapterBase {
                         loginBankUrl = GlobalData.getStringResource(RS.string.zpw_string_vcb_link_login);
                         Log.d(this, "vcb login url from config is empty, using url from string");
                     }
-                    //loginBankUrl = "https://docs.goog.com/spreadsheets/d/17lfPOzku7ckrH6fk17J0z0aqk_mBUPZEfwO5GFGYtNA/edit#gid=477604210";
                     initWebView(loginBankUrl);
                 }
             } catch (Exception e) {
                 Log.e(this, e);
             }
-            showProgressBar(false,null);
         }
 
         @Override
@@ -218,7 +217,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
     public void startFlow() {
         Log.d(this, "start flow link account");
-        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+        visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         BankLoader.loadBankList(mLoadBankListListener);
     }
 
@@ -330,7 +329,7 @@ public class AdapterLinkAcc extends AdapterBase {
             Log.d(this, "stopping reload bank account because user in result screen");
             return;
         }
-        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+        visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         mHandler.postDelayed(runnableWaitingNotifyUnLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
 
@@ -341,7 +340,7 @@ public class AdapterLinkAcc extends AdapterBase {
             return;
         }
         // loop to get notification here.
-        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
+        visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         mHandler.postDelayed(runnableWaitingNotifyLinkAcc, Constants.TIMES_DELAY_TO_GET_NOTIFY);
     }
 
@@ -565,13 +564,13 @@ public class AdapterLinkAcc extends AdapterBase {
         return false;
     }
 
-    protected void visibleLoading() {
-        if (!linkAccGuiProcessor.isProgressVisible()) {
-            linkAccGuiProcessor.visibleProgress();
-        }
+    protected void visibleLoadingDialog(String pMessage) {
         if (!DialogManager.isShowingProgressDialog()) {
-            showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+            showProgressBar(true, pMessage);
         }
+    }
+    protected void hideLoadingDialog(){
+        showProgressBar(false,null);
     }
 
     @Override
@@ -580,11 +579,12 @@ public class AdapterLinkAcc extends AdapterBase {
         if (pEventType == EEventType.ON_PROGRESSING) {
             // get value progress  &  show it
             int value = (int) pAdditionParams[0];
-            linkAccGuiProcessor.setProgress(value);
-            if (!linkAccGuiProcessor.isProgressVisible()) {
-                linkAccGuiProcessor.visibleProgress();
-            }
-            if(value >= 100){
+            if(value < 100){
+                linkAccGuiProcessor.setProgress(value);
+                if (!linkAccGuiProcessor.isProgressVisible()) {
+                    linkAccGuiProcessor.visibleProgress();
+                }
+            }else{
                 linkAccGuiProcessor.hideProgress();
             }
             return null;
@@ -592,7 +592,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // Event: HIT
         if (pEventType == EEventType.ON_HIT) {
-            visibleLoading();
+            visibleLoadingDialog(GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
             return null;
         }
 
@@ -604,7 +604,6 @@ public class AdapterLinkAcc extends AdapterBase {
 
         // Event: RENDER
         if (pEventType == EEventType.ON_REQUIRE_RENDER) {
-            linkAccGuiProcessor.hideProgress();
             /***
              * sometimes load website timeout
              * user go to result screen, need
@@ -623,7 +622,7 @@ public class AdapterLinkAcc extends AdapterBase {
             // Login page
             if (page.equals(VCB_LOGIN_PAGE)) {
                 Log.d(this, "event login page");
-                showProgressBar(false, null); // close process dialog
+                hideLoadingDialog(); // close process dialog
                 //for testing
                 if (!SDKApplication.isReleaseBuild() && !GlobalData.shouldNativeWebFlow()) {
                     linkAccGuiProcessor.setAccountTest();
@@ -700,7 +699,7 @@ public class AdapterLinkAcc extends AdapterBase {
             // Register page
             if (page.equals(VCB_REGISTER_PAGE)) {
                 Log.d(this, "event register page");
-                showProgressBar(false, null);
+                hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
                 mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
@@ -801,7 +800,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             case WRONG_CAPTCHA:
                                 if (COUNT_ERROR_CAPTCHA >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_captcha))) {
                                     if (!TextUtils.isEmpty(response.message)) {
-                                        showProgressBar(false, null); // close process dialog
+                                        hideLoadingDialog(); // close process dialog
                                         String msgErr = response.message;
                                         linkAccFail(msgErr, mTransactionID);
                                         return null;
@@ -833,7 +832,7 @@ public class AdapterLinkAcc extends AdapterBase {
                             default:
                                 // FAIL. Fail register
                                 if (!TextUtils.isEmpty(response.message)) {
-                                    showProgressBar(false, null); // close process dialog
+                                    hideLoadingDialog(); // close process dialog
                                     String msgErr = response.message;
                                     linkAccFail(msgErr, mTransactionID);
                                     return null;
@@ -856,7 +855,7 @@ public class AdapterLinkAcc extends AdapterBase {
             // Unregister page
             if (page.equals(VCB_UNREGISTER_PAGE)) {
                 Log.d(this, "event on unregister page complete");
-                showProgressBar(false, null);
+                hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
                 mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
@@ -905,7 +904,6 @@ public class AdapterLinkAcc extends AdapterBase {
             if (page.equals(VCB_REGISTER_COMPLETE_PAGE)) {
                 Log.d(this, "event on register page complete");
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
-                linkAccGuiProcessor.hideProgress();
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
                     // SUCCESS. Success register
@@ -914,7 +912,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 } else {
                     // FAIL. Fail register
                     if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
-                        showProgressBar(false, null); // close process dialog
+                        hideLoadingDialog(); // close process dialog
                         String msgErr = response.message;
                         linkAccFail(msgErr, mTransactionID);
                     } else {
@@ -923,12 +921,12 @@ public class AdapterLinkAcc extends AdapterBase {
                             // get & check bankaccount list
                             checkLinkAccountList();
                         } else {
-                            showProgressBar(false, null);
+                            hideLoadingDialog();
                             if (!GlobalData.shouldNativeWebFlow()) {
                                 getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
                                     @Override
                                     public void onCancelEvent() {
-                                        showProgressBar(false, null); // close process dialog
+                                        hideLoadingDialog(); // close process dialog
                                         String msgErr = GlobalData.getStringResource(RS.string.zpw_string_cancel_retry_otp);
                                         linkAccFail(msgErr, mTransactionID);
                                     }
@@ -937,7 +935,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                     public void onOKevent() {
                                         //retry reload the previous page
                                         if (!TextUtils.isEmpty(mUrlReload)) {
-                                            showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
+                                            visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_loading_website_message));
                                             linkAccGuiProcessor.resetCaptchaConfirm();
                                             linkAccGuiProcessor.resetOtp();
                                             mWebViewProcessor.reloadWebView(mUrlReload);
@@ -977,7 +975,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 } else {
                     // FAIL. Fail register
                     if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
-                        showProgressBar(false, null);
+                        hideLoadingDialog();
                         String msgErr = response.message;
                         unlinkAccFail(msgErr, mTransactionID);
                     } else {
@@ -987,7 +985,7 @@ public class AdapterLinkAcc extends AdapterBase {
                         } else if (!GlobalData.shouldNativeWebFlow()) {
                             showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                         }
-                        showProgressBar(false, null);
+                        hideLoadingDialog();
                         linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().setText(null);
                         forceVirtualKeyboard();
                     }
@@ -1002,7 +1000,7 @@ public class AdapterLinkAcc extends AdapterBase {
         if (pEventType == EEventType.ON_FAIL) {
             // fail.
             Log.d(this, "event on fail");
-            showProgressBar(false, null);
+            hideLoadingDialog();
             //networking is offline
             if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
                 showFailScreenOnType(GlobalData.getOfflineMessage());
@@ -1038,7 +1036,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 runnableWaitingNotifyUnLinkAcc.run();
             } else {
                 Log.d(this, "notification=" + mNotification != null ? GsonUtils.toJsonString(mNotification) : "null");
-                showProgressBar(false, null);
+                hideLoadingDialog();
             }
         }
         return pAdditionParams;
@@ -1068,9 +1066,15 @@ public class AdapterLinkAcc extends AdapterBase {
                 // hide webview && show web parse
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE);
-                showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));//show loading view
+                visibleLoadingDialog(GlobalData.getStringResource(RS.string.zpw_loading_website_message));//show loading view
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
+        }
+
+        //networking is offline
+        if (!ConnectionUtil.isOnline(GlobalData.getAppContext())) {
+            showFailScreenOnType(GlobalData.getOfflineMessage());
+            return;
         }
         mWebViewProcessor.start(pUrl);
     }
