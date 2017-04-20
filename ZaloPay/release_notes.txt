@@ -1,3 +1,7 @@
+Zalo Pay (Production v2.10.0 - build 224) - Released on 2017-04-20
+- [SDK] Vcb web flow update
+- [SDK] Vcb fix bug retry get numberphone
+
 Zalo Pay (Production v2.10.0 - build 223) - Released on 2017-04-20
 - Build Production
 
