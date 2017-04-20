@@ -1,3 +1,8 @@
+Zalo Pay (Staging v2.10.0 - build 222) - Released on 2017-04-20
+- [SDK] [Bank] Refresh list support banks when PaymentSDK download resource successfully.
+- [SDK] [Vcb] Auto fill otp on web flow
+- [SDK] Vcb web flow - Dùng confirm dialog that cho snackbar trong trường hợp sai otp
+
 Zalo Pay (Production v2.10.0 - build 221) - Released on 2017-04-19
 - [SDK] Hạn chế click refresh captcha quá nhanh.
 
