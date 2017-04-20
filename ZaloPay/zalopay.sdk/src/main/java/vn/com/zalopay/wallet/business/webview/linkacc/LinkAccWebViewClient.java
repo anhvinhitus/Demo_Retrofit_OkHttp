@@ -59,6 +59,9 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     private boolean mIsFirst = true;
     private boolean mIsRefreshCaptcha = false;
+
+    private String mLastAutoScriptFile = null;
+    private String mLastAutoScriptInput = null;
     /***
      * listener for WebChromeClient
      */
@@ -230,6 +233,16 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         mWebPaymentBridge.loadUrl(pUrl);
     }
 
+    /***
+     * retry run again last script auto to
+     * get number phone list after timeout
+     */
+    public void runLastScript() {
+        if (mLastAutoScriptFile != null) {
+            executeJs(mLastAutoScriptFile, mLastAutoScriptInput);
+            Log.d(this, "run script file " + mLastAutoScriptFile + " input " + mLastAutoScriptInput);
+        }
+    }
 
     public void stop() {
         mWebPaymentBridge.stopLoading();
@@ -291,8 +304,11 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 input.isAjax = pIsAjax;
                 String inputScript = GsonUtils.toJsonString(input);
 
-                if (pType == EJavaScriptType.AUTO)
+                if (pType == EJavaScriptType.AUTO) {
+                    mLastAutoScriptFile = bankScript.autoJs;
+                    mLastAutoScriptInput = inputScript;
                     executeJs(bankScript.autoJs, inputScript);
+                }
 
                 if (pType == EJavaScriptType.HIT)
                     executeJs(bankScript.hitJs, inputScript);
