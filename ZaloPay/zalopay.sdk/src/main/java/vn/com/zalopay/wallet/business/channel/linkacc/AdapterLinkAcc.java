@@ -801,7 +801,7 @@ public class AdapterLinkAcc extends AdapterBase {
                                     if (!GlobalData.shouldNativeWebFlow()) {
                                         showMessage(null, response.message, TSnackbar.LENGTH_LONG);
                                     }
-                                    linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText("");
+                                    linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().setText(null);
                                     linkAccGuiProcessor.getRegisterHolder().getEdtCaptcha().requestFocus();
 
                                     new Handler().postDelayed(new Runnable() {
@@ -904,32 +904,28 @@ public class AdapterLinkAcc extends AdapterBase {
                             checkLinkAccountList();
                         } else {
                             showProgressBar(false, null);
-                            if (!GlobalData.shouldNativeWebFlow()) {
-                                getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
-                                    @Override
-                                    public void onCancelEvent() {
-                                        showProgressBar(false, null); // close process dialog
-                                        String msgErr = GlobalData.getStringResource(RS.string.zpw_string_cancel_retry_otp);
-                                        linkAccFail(msgErr, mTransactionID);
-                                    }
+                            getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
+                                @Override
+                                public void onCancelEvent() {
+                                    showProgressBar(false, null); // close process dialog
+                                    String msgErr = GlobalData.getStringResource(RS.string.zpw_string_cancel_retry_otp);
+                                    linkAccFail(msgErr, mTransactionID);
+                                }
 
-                                    @Override
-                                    public void onOKevent() {
-
-                                        //retry reload the previous page
-                                        if (!TextUtils.isEmpty(mUrlReload)) {
+                                @Override
+                                public void onOKevent() {
+                                    //retry reload the previous page
+                                    if (!TextUtils.isEmpty(mUrlReload)) {
+                                        if(!GlobalData.shouldNativeWebFlow())
+                                        {
                                             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
                                             linkAccGuiProcessor.resetCaptchaConfirm();
                                             linkAccGuiProcessor.resetOtp();
-                                            mWebViewProcessor.reloadWebView(mUrlReload);
                                         }
+                                        mWebViewProcessor.reloadWebView(mUrlReload);
                                     }
-                                }, response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button));
-
-                            } else {
-                                showMessage(null, response.message, TSnackbar.LENGTH_LONG);
-                                mWebViewProcessor.reloadWebView(mUrlReload);
-                            }
+                                }
+                            }, response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button));
                         }
                     }
 
