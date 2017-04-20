@@ -52,6 +52,7 @@ import vn.com.zalopay.wallet.utils.PaymentUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
+import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 /**
@@ -312,9 +313,6 @@ public class AdapterLinkAcc extends AdapterBase {
         if (isLoginStep() || isConfirmStep() || isOtpStep()) {
             mWebViewProcessor.hit();
             Log.d(this, "hit " + mPageCode);
-            if (mIsExitWithoutConfirm) {
-                mIsExitWithoutConfirm = !(isLoginStep());//need to show dialog ask for exit if user go to confirm page-> otp page
-            }
         }
 
 
@@ -452,6 +450,7 @@ public class AdapterLinkAcc extends AdapterBase {
             getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
+        PaymentSnackBar.getInstance().dismiss();
     }
 
     /***
@@ -746,6 +745,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event register page");
                 showProgressBar(false, null);
                 mPageCode = PAGE_VCB_CONFIRM_LINK;
+                mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 // set captcha
@@ -891,6 +891,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 Log.d(this, "event on unregister page complete");
                 showProgressBar(false, null);
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
+                mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
                 // set wallet unregister
