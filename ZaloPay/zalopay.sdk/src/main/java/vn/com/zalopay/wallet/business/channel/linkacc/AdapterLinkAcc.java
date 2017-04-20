@@ -760,28 +760,30 @@ public class AdapterLinkAcc extends AdapterBase {
                     }
                 }
 
-                if ((response.phoneNumList == null || response.phoneNumList.size() <= 0) && COUNT_RETRY_GET_NUMBERPHONE < Constants.VCB_MAX_RETRY_GET_NUMBERPHONE) {
-                    mWebViewProcessor.runLastScript();
-                    COUNT_RETRY_GET_NUMBERPHONE++;
-                    Log.d(this, "run last script again to get number phone list");
-                    return null;
-                } else if (response.phoneNumList == null || response.phoneNumList.size() <= 0) {
-                    // don't have account link
-                    linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_register), mTransactionID);
-                } else {
-                    mHashMapPhoneNum = HashMapUtils.JsonArrayToHashMap(response.phoneNumList);
+                if(response.phoneNumList != null){
+                    if (response.phoneNumList.size() <= 0 && COUNT_RETRY_GET_NUMBERPHONE < Constants.VCB_MAX_RETRY_GET_NUMBERPHONE) {
+                        mWebViewProcessor.runLastScript();
+                        COUNT_RETRY_GET_NUMBERPHONE++;
+                        Log.d(this, "run last script again to get number phone list");
+                        return null;
+                    } else if (response.phoneNumList.size() <= 0) {
+                        // don't have account link
+                        linkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_phonenumber_notfound_register), mTransactionID);
+                    } else {
+                        mHashMapPhoneNum = HashMapUtils.JsonArrayToHashMap(response.phoneNumList);
 
-                    List<String> phoneNum = HashMapUtils.getKeys(mHashMapPhoneNum);
-                    //validate zalopay phone and vcb phone must same
-                    if (!isValidPhoneList(phoneNum)) {
-                        return pAdditionParams;
-                    }
-                    linkAccGuiProcessor.setPhoneNumList(phoneNum);
-                    linkAccGuiProcessor.setPhoneNum(phoneNum);
+                        List<String> phoneNum = HashMapUtils.getKeys(mHashMapPhoneNum);
+                        //validate zalopay phone and vcb phone must same
+                        if (!isValidPhoneList(phoneNum)) {
+                            return pAdditionParams;
+                        }
+                        linkAccGuiProcessor.setPhoneNumList(phoneNum);
+                        linkAccGuiProcessor.setPhoneNum(phoneNum);
 
-                    // MapAccount API. just using for web VCB
-                    if (GlobalData.shouldNativeWebFlow()) {
-                        submitMapAccount(getAccNumValue());
+                        // MapAccount API. just using for web VCB
+                        if (GlobalData.shouldNativeWebFlow()) {
+                            submitMapAccount(getAccNumValue());
+                        }
                     }
                 }
 
