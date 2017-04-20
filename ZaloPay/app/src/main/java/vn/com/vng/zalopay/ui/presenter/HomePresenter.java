@@ -38,7 +38,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.AlertNotificationEvent;
-import vn.com.vng.zalopay.event.DownloadSDKResourceComplete;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.PaymentDataEvent;
@@ -50,7 +49,6 @@ import vn.com.vng.zalopay.location.LocationProvider;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.service.AbsPWResponseListener;
-import vn.com.vng.zalopay.service.DefaultPaymentResponseListener;
 import vn.com.vng.zalopay.service.GlobalEventHandlingService;
 import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
@@ -65,7 +63,6 @@ import vn.com.vng.zalopay.utils.RootUtils;
 import vn.com.vng.zalopay.zpsdk.DefaultZPGatewayInfoCallBack;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -269,12 +266,13 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                         forceUpdate, latestVersion, msg);
             }
 
-            @Override
+            // TODO: 4/20/17 - longlv: waiting PaymentSDK update
+            /*@Override
             public void onDownloadResourceComplete() {
                 if (mEventBus != null) {
                     mEventBus.post(new DownloadSDKResourceComplete());
                 }
-            }
+            }*/
         });
     }
 
