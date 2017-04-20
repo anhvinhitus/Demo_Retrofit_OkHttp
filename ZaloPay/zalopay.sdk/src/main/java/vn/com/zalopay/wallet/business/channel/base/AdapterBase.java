@@ -237,7 +237,7 @@ public abstract class AdapterBase {
         this.mResponseStatus = mResponseStatus;
     }
 
-    public abstract void init();
+    public abstract void init() throws Exception;
 
     public abstract DPaymentChannel getChannelConfig() throws Exception;
 

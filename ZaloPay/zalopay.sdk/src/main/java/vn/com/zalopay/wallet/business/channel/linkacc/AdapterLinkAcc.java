@@ -214,7 +214,7 @@ public class AdapterLinkAcc extends AdapterBase {
     }
 
     @Override
-    public void init() {
+    public void init() throws Exception {
         // init Gui for ATM channel
         linkAccGuiProcessor = new LinkAccGuiProcessor(this);
         this.mGuiProcessor = linkAccGuiProcessor;
@@ -231,6 +231,8 @@ public class AdapterLinkAcc extends AdapterBase {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
         } else if (GlobalData.isUnLinkAccFlow()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
+        } else {
+            throw new Exception(GlobalData.getStringResource(RS.string.zpw_error_paymentinfo));
         }
         linkAccGuiProcessor.getLoginHolder().btnRefreshCaptcha.setOnClickListener(refreshCaptchaLogin);
         linkAccGuiProcessor.getRegisterHolder().getButtonRefreshCaptcha().setOnClickListener(refreshCaptcha);
@@ -300,7 +302,7 @@ public class AdapterLinkAcc extends AdapterBase {
             json.put("firstaccountno", StringUtil.getFirstStringWithSize(pAccNum, 6));
             json.put("lastaccountno", StringUtil.getLastStringWithSize(pAccNum, 4));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(this, e);
         }
 
         String jsonSt = json.toString();

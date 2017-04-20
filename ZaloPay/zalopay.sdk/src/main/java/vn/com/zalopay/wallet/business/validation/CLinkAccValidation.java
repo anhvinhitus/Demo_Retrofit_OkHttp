@@ -18,15 +18,17 @@ public class CLinkAccValidation implements IPaymentValidate {
 
     @Override
     public String onValidateOrderInfo(ZPWPaymentInfo pParams) {
-        if (pParams == null) {
-            return GlobalData.getStringResource(RS.string.zingpaysdk_missing_app_pmt_info);
+        if (pParams == null || pParams.linkAccInfo == null) {
+            return GlobalData.getStringResource(RS.string.sdk_invalid_missing_linkaccInfo);
         }
 
-        if (TextUtils.isEmpty(pParams.userInfo.accessToken))
+        if (TextUtils.isEmpty(pParams.userInfo.accessToken)) {
             return GlobalData.getStringResource(RS.string.zingpaysdk_invalid_token);
+        }
 
-        if (pParams.appID < 0)
+        if (pParams.appID < 0) {
             return GlobalData.getStringResource(RS.string.zalopay_invalid_app_id);
+        }
 
         return null;
     }

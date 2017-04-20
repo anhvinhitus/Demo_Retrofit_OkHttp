@@ -84,7 +84,7 @@
     <string name="zpw_alert_order_not_submit">Mạng không ổn định, giao dịch chưa được gửi đi. Vui lòng kiểm tra kết nối mạng và thử lại!</string>
 
     <string name="zingpaysdk_alert_input_error">Dữ liệu giao dịch không hợp lệ</string>
-    <string name="zpw_error_paymentinfo">Dữ liệu giao dịch không còn hiệu lực.\nVui lòng thực hiện lại giao dịch.</string>
+    <string name="zpw_error_paymentinfo">Dữ liệu không còn hiệu lực.\nVui lòng thực hiện lại thao tác.</string>
     <string name="zingpaysdk_alert_context_error">Ngữ cảnh ứng dụng đã kết thúc.\nVui lòng đóng ứng dụng và khởi động lại ứng dụng để thực hiện lại!</string>
 
     <!--alert no interet-->
@@ -109,6 +109,7 @@
     <string name="zingpaysdk_invalid_app_amount">Số tiền không hợp lệ.</string>
     <string name="zingpaysdk_invalid_user_id_user_name">Thông tin tài khoản Zalo Pay không hợp lệ</string>
     <string name="zingpaysdk_invalid_token">Token không hợp lệ</string>
+    <string name="sdk_invalid_missing_linkaccInfo">Thiếu thông tin loại ngân hàng liên kết</string>
 
     <string name="zalopay_invalid_app_id">App id không hợp lệ</string>
 
