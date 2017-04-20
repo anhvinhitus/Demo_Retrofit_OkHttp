@@ -148,6 +148,7 @@ public class AdapterLinkAcc extends AdapterBase {
             } catch (Exception e) {
                 Log.e(this, e);
             }
+            showProgressBar(false,null);
         }
 
         @Override
@@ -438,7 +439,15 @@ public class AdapterLinkAcc extends AdapterBase {
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
         Log.d(this, "sender " + pSender + " otp " + pOtp);
-        if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !GlobalData.shouldNativeWebFlow()) {
+        /*if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !GlobalData.shouldNativeWebFlow()) {
+            Log.d(this, "user is not in otp phase, skip auto fill otp");
+            return;
+        }*/
+        if (GlobalData.shouldNativeWebFlow()) {
+            Log.d(this, "user following web flow, skip auto fill otp");
+            return;
+        }
+        if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase()) {
             Log.d(this, "user is not in otp phase, skip auto fill otp");
             return;
         }
@@ -465,12 +474,13 @@ public class AdapterLinkAcc extends AdapterBase {
                         if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                             continue;
                         }
-                        if (GlobalData.shouldNativeWebFlow()) {
+                        linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
+                        /*if (GlobalData.shouldNativeWebFlow()) {
                             mWebViewProcessor.fillOtpOnWebFlow(otp);
                             Log.d(this, "fill otp into website vcb directly");
                         } else {
                             linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
-                        }
+                        }*/
                         break;
                     }
                 }
@@ -574,6 +584,9 @@ public class AdapterLinkAcc extends AdapterBase {
             if (!linkAccGuiProcessor.isProgressVisible()) {
                 linkAccGuiProcessor.visibleProgress();
             }
+            if(value >= 100){
+                linkAccGuiProcessor.hideProgress();
+            }
             return null;
         }
 
@@ -619,6 +632,11 @@ public class AdapterLinkAcc extends AdapterBase {
                 mPageCode = PAGE_VCB_LOGIN;
 
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
+
+                if (GlobalData.shouldNativeWebFlow()) {
+                    Log.d(this, "user following web flow, skip event login vcb");
+                    return pAdditionParams;
+                }
 
                 // set captcha
                 if (!TextUtils.isEmpty(response.otpimg) && response.otpimg.length() > 10) {
@@ -687,6 +705,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
+                if (GlobalData.shouldNativeWebFlow()) {
+                    Log.d(this, "user following web flow, skip event login vcb");
+                    return pAdditionParams;
+                }
                 // set captcha
                 if (!TextUtils.isEmpty(response.otpimg) && response.otpimg.length() > 10) {
                     linkAccGuiProcessor.setCaptchaImgB64Confirm(response.otpimg);
@@ -717,7 +739,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     }
                 }
 
-                if(response.phoneNumList != null){
+                if (response.phoneNumList != null) {
                     if (response.phoneNumList.size() <= 0 && COUNT_RETRY_GET_NUMBERPHONE < Constants.VCB_MAX_RETRY_GET_NUMBERPHONE) {
                         mWebViewProcessor.runLastScript();
                         COUNT_RETRY_GET_NUMBERPHONE++;
@@ -762,8 +784,9 @@ public class AdapterLinkAcc extends AdapterBase {
                     mPageCode = PAGE_VCB_OTP;
                     linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().requestFocus();
                     // submit MapAccount for webview VCB parse
-                    if (!GlobalData.shouldNativeWebFlow())
+                    if (!GlobalData.shouldNativeWebFlow()) {
                         submitMapAccount(getAccNumValue());
+                    }
 
                     getActivity().renderByResource();
                     getActivity().enableSubmitBtn(false);
@@ -838,6 +861,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
+                if (GlobalData.shouldNativeWebFlow()) {
+                    Log.d(this, "user following web flow, skip event login vcb");
+                    return pAdditionParams;
+                }
                 // set wallet unregister
                 if (response.walletUnRegList != null) {
                     mHashMapWalletUnReg = HashMapUtils.JsonArrayToHashMap(response.walletUnRegList);
@@ -897,27 +924,31 @@ public class AdapterLinkAcc extends AdapterBase {
                             checkLinkAccountList();
                         } else {
                             showProgressBar(false, null);
-                            getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
-                                @Override
-                                public void onCancelEvent() {
-                                    showProgressBar(false, null); // close process dialog
-                                    String msgErr = GlobalData.getStringResource(RS.string.zpw_string_cancel_retry_otp);
-                                    linkAccFail(msgErr, mTransactionID);
-                                }
+                            if (!GlobalData.shouldNativeWebFlow()) {
+                                getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
+                                    @Override
+                                    public void onCancelEvent() {
+                                        showProgressBar(false, null); // close process dialog
+                                        String msgErr = GlobalData.getStringResource(RS.string.zpw_string_cancel_retry_otp);
+                                        linkAccFail(msgErr, mTransactionID);
+                                    }
 
-                                @Override
-                                public void onOKevent() {
-                                    //retry reload the previous page
-                                    if (!TextUtils.isEmpty(mUrlReload)) {
-                                        if (!GlobalData.shouldNativeWebFlow()) {
+                                    @Override
+                                    public void onOKevent() {
+                                        //retry reload the previous page
+                                        if (!TextUtils.isEmpty(mUrlReload)) {
                                             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
                                             linkAccGuiProcessor.resetCaptchaConfirm();
                                             linkAccGuiProcessor.resetOtp();
+                                            mWebViewProcessor.reloadWebView(mUrlReload);
                                         }
-                                        mWebViewProcessor.reloadWebView(mUrlReload);
                                     }
-                                }
-                            }, response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button));
+                                }, response.message, getActivity().getString(R.string.dialog_retry_button), getActivity().getString(R.string.dialog_close_button));
+
+                            }/* else {
+                                showMessage(null, response.message, TSnackbar.LENGTH_LONG);
+                                mWebViewProcessor.reloadWebView(mUrlReload);
+                            }*/
                         }
                     }
 
@@ -1037,10 +1068,10 @@ public class AdapterLinkAcc extends AdapterBase {
                 // hide webview && show web parse
                 getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE);
+                showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));//show loading view
                 mWebViewProcessor = new LinkAccWebViewClient(this);
             }
         }
-        showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_loading_website_message));
         mWebViewProcessor.start(pUrl);
     }
 

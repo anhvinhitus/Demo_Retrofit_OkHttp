@@ -34,6 +34,10 @@ import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
 
+import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_REGISTER_COMPLETE_PAGE;
+import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_REGISTER_PAGE;
+import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_UNREGISTER_COMPLETE_PAGE;
+
 /**
  * @author SinhTT
  */
@@ -138,6 +142,10 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 || pUrl.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_unregister_complete));
     }
 
+    protected boolean shouldExecuteJs() {
+        return !TextUtils.isEmpty(mPageCode) && (mPageCode.equals(VCB_REGISTER_COMPLETE_PAGE) || mPageCode.equals(VCB_UNREGISTER_COMPLETE_PAGE));
+    }
+
     @Override
     public void onLoadResource(WebView view, String url) {
         Log.d("onLoadResource", url);
@@ -159,7 +167,13 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         Log.d("load page finish ", url);
         if (!isRedirected) {
             Log.d("load page finish on the first", url);
-            onPageFinishedAuto(url);
+            if (url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_auto_select_service))) {
+                DLinkAccScriptInput input = genJsInput();
+                String inputScript = GsonUtils.toJsonString(input);
+                executeJs(Constants.AUTO_SELECT_SERVICE_JS, inputScript); // auto select service #a href tag
+            }else{
+                onPageFinishedAuto(url);
+            }
         }
     }
 
@@ -295,11 +309,16 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 mCurrentUrl = url;
                 Log.d("WebView", "$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
                 isMatched = true;
-                if (bankScript.pageCode.equals(mAdapter.VCB_REGISTER_PAGE)) {
-                    mAdapter.mUrlReload = url;
+                if (bankScript.pageCode.equals(VCB_REGISTER_PAGE)) {
+                    //mAdapter.mUrlReload = url;
                 }
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;
+
+                if (!shouldExecuteJs()) { //prevent load js on web flow
+                    return;
+                }
+
                 DLinkAccScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;
                 String inputScript = GsonUtils.toJsonString(input);
@@ -310,8 +329,9 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                     executeJs(bankScript.autoJs, inputScript);
                 }
 
-                if (pType == EJavaScriptType.HIT)
+                if (pType == EJavaScriptType.HIT) {
                     executeJs(bankScript.hitJs, inputScript);
+                }
 
                 // break loop for
                 break;
@@ -320,8 +340,9 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 DLinkAccScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;
                 String inputScript = GsonUtils.toJsonString(input);
-                if (pType == EJavaScriptType.HIT)
+                if (pType == EJavaScriptType.HIT) {
                     executeJs(bankScript.hitJs, inputScript);
+                }
                 // break loop for
                 mIsRefreshCaptcha = false;
                 break;
