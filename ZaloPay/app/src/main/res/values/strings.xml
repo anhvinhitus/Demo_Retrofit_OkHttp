@@ -243,7 +243,7 @@
     <string name="withdraw_condition_card_note">Cần liên kết một trong các thẻ ATM nội địa:</string>
     <string name="withdraw_condition_account_note">Cần liên kết một trong các tài khoản:</string>
     <string name="withdraw_condition_pin">Mật khẩu thanh toán</string>
-    <string name="withdraw_description">Rút tiền về thẻ đã liên kết</string>
+    <string name="withdraw_description">Rút tiền về thẻ/tài khoản đã liên kết</string>
 
     <string name="account_existed">Zalo Pay ID đã được sử dụng</string>
 
