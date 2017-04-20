@@ -73,29 +73,8 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     private WebChromeClient wcClient = new WebChromeClient() {
         @Override
         public void onProgressChanged(final WebView view, int newProgress) {
-            Log.i("LOADING...", String.valueOf(newProgress) + "%");
+            Log.i("load in progress...", String.valueOf(newProgress) + "%");
             mAdapter.onEvent(EEventType.ON_PROGRESSING, newProgress);
-
-//            // check for retry.
-//            if (mProgress != newProgress) {
-//                mProgress = newProgress;
-//                mIsRetry = true;
-//            }
-//
-//            // set value
-//            if (mIsRetry) {
-//                mProgressOld = mProgress;
-//                mIsRetry = false;
-//            }
-//
-//            mHandler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    if (mProgress == mProgressOld && mProgress < 100) {
-//                        retry(view, mUrl);
-//                    }
-//                }
-//            }, TIME_REQUEST_RETRY_LOADING_AGAIN);
         }
     };
 
@@ -128,7 +107,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        Log.i("///// onPageStarted: ", url);
+        Log.i("onPageStarted: ", url);
         if (!isRedirected) {
             // code somethings if you want when starts
         }
@@ -309,7 +288,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         for (DBankScript bankScript : mBankScripts) {
             if (bankScript.eventID != IGNORE_EVENT_ID_FOR_HTTPS && url.matches(bankScript.url) && !mIsRefreshCaptcha) {
                 mCurrentUrl = url;
-                Log.d("WebView", "$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
+                Log.d("matchAndRunJs", "url: " + url + " ,type: " + pType);
                 isMatched = true;
                 if (bankScript.pageCode.equals(VCB_REGISTER_PAGE)) {
                     //mAdapter.mUrlReload = url;
@@ -338,7 +317,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 // break loop for
                 break;
             } else if (mIsRefreshCaptcha && bankScript.pageCode.equals(mAdapter.VCB_REFRESH_CAPTCHA)) {
-                Log.d("WebView", "$$$$$$ matchAndRunJs: " + url + " ,type: " + pType);
+                Log.d("matchAndRunJs", "url: " + url + " ,type: " + pType);
                 DLinkAccScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;
                 String inputScript = GsonUtils.toJsonString(input);
