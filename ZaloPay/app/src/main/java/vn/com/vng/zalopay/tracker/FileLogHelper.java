@@ -23,11 +23,11 @@ public class FileLogHelper {
 
     private static final String ZIP_SUFFIX = ".zip";
 
-    public static Observable<String[]> listZipFileLog() {
-        return listZipFile(FileLog.sDirectoryFileLog);
+    public static Observable<String[]> listFileLogs() {
+        return listFileLogs(FileLog.sDirectoryFileLog, FileLog.sCurrentFile);
     }
 
-    private static Observable<String[]> listZipFile(File directory) {
+    private static Observable<String[]> listFileLogs(File directory, File exclude) {
         return ObservableHelper.makeObservable(() -> {
             if (!directory.exists() || !directory.isDirectory()) {
                 return new String[]{};
@@ -40,8 +40,12 @@ public class FileLogHelper {
                         continue;
                     }
 
+                    if (file.equals(exclude)) {
+                        continue;
+                    }
+
                     String fileName = file.getName();
-                    if (fileName.endsWith(ZIP_SUFFIX)) {
+                    if (!fileName.endsWith(ZIP_SUFFIX)) {
                         ret.add(file.getAbsolutePath());
                     }
                 }
@@ -59,6 +63,7 @@ public class FileLogHelper {
             }
 
             String zipFile = file.getAbsolutePath().replace(".txt", ZIP_SUFFIX);
+            FileUtils.deleteFileAtPathSilently(zipFile);
 
             try {
                 FileUtils.zip(new String[]{filePath}, zipFile);
@@ -72,9 +77,9 @@ public class FileLogHelper {
     public static Observable<String> uploadFileLog(String filePath, FileLogStore.Repository fileLogRepository) {
         return FileLogHelper.zipFileLog(filePath)
                 .filter(s -> !TextUtils.isEmpty(s))
-                .doOnNext(s -> FileUtils.deleteFileAtPathSilently(filePath)) // Remove .txt
                 .flatMap(fileLogRepository::uploadFileLog) // Upload file
                 .doOnNext(FileUtils::deleteFileAtPathSilently) // Remove .zip
+                .doOnNext(s -> FileUtils.deleteFileAtPathSilently(filePath)) // Remove .txt
                 .doOnError(Timber::w);
     }
 

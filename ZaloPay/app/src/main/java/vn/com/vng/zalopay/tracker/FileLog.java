@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.tracker;
 
-import android.os.Environment;
 import android.support.annotation.NonNull;
 
 import com.zalopay.apploader.internal.FileUtils;
@@ -24,21 +23,20 @@ import vn.com.vng.zalopay.event.UploadFileLogEvent;
 
 final class FileLog {
 
-    private static final long INTERVAL_CREATE_FILE = 1 * 60 * 1000;// 300000; //ms
+    private static final long INTERVAL_CREATE_FILE = 300000; //ms
     private static final String MSG_FORMAT = "%s,%s,%s,%s";
     private static final String FILE_NAME_FORMAT = "zalopay-logs-%s.txt";
     private static final String PREF_CREATE_FILE_TIME = "file_log_create_time";
-     static final File sDirectoryFileLog;
+    static final File sDirectoryFileLog;
     private static final SimpleDateFormat sDateFormat;
 
     //
-    private static File sCurrentFile = null;
+    static File sCurrentFile = null;
     private static BufferedWriter sBufferedWriter;
     private static Long mFileCreateTime;
 
     static {
-        //sDirectoryFileLog = new File(AndroidApplication.instance().getFilesDir(), "logs");
-        sDirectoryFileLog = new File(Environment.getExternalStorageDirectory(), "logs");
+        sDirectoryFileLog = new File(AndroidApplication.instance().getFilesDir(), "logs");
         sDateFormat = new SimpleDateFormat("yyyyMMddhhmm", Locale.getDefault());
     }
 

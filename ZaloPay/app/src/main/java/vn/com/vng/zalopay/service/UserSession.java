@@ -157,13 +157,12 @@ public class UserSession {
     private void uploadFileLog(String filePath) {
         Subscription subscription = FileLogHelper.uploadFileLog(filePath, mFileLogRepository)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscription);
     }
 
     private void uploadFileLogs() {
-        Subscription subscription = FileLogHelper.listZipFileLog()
+        Subscription subscription = FileLogHelper.listFileLogs()
                 .flatMap(Observable::from)
                 .flatMap(this::uploadFileLogIgnoreError)
                 .delaySubscription(30, TimeUnit.SECONDS)
