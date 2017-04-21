@@ -32,6 +32,7 @@ public class FileLogHelper {
             if (!directory.exists() || !directory.isDirectory()) {
                 return new String[]{};
             }
+
             File[] files = directory.listFiles();
             List<String> ret = new ArrayList<>();
             if (files != null) {
@@ -45,9 +46,12 @@ public class FileLogHelper {
                     }
 
                     String fileName = file.getName();
+
                     if (!fileName.endsWith(ZIP_SUFFIX)) {
-                        ret.add(file.getAbsolutePath());
+                        continue;
                     }
+
+                    ret.add(file.getAbsolutePath());
                 }
             }
 
