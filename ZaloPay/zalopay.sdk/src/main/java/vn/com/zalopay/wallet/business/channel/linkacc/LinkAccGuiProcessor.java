@@ -471,16 +471,16 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         getLoginHolder().getEdtUsername().addTextChangedListener(mLoginEditTextWatcher);
         getLoginHolder().getEdtPassword().addTextChangedListener(mLoginEditTextWatcher);
         getLoginHolder().getEdtCaptcha().addTextChangedListener(mLoginEditTextWatcher);
-        getLoginHolder().getEdtCaptcha().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
+       // getLoginHolder().getEdtCaptcha().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
         getLoginHolder().getEdtCaptcha().requestFocus();
 
         getRegisterHolder().getEdtCaptcha().addTextChangedListener(mConfirmCaptchaEditTextWatcher);
         getRegisterHolder().getEdtCaptcha().requestFocus();
-        getRegisterHolder().getEdtCaptcha().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
+        //getRegisterHolder().getEdtCaptcha().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
         getConfirmOTPHolder().getEdtConfirmOTP().addTextChangedListener(mConfirmOtpEditTextWatcher);
-        getConfirmOTPHolder().getEdtConfirmOTP().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
+        //getConfirmOTPHolder().getEdtConfirmOTP().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
         getUnregisterHolder().getEdtPassword().addTextChangedListener(mUnRegPassEditTextWatcher);
-        getUnregisterHolder().getEdtPassword().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
+        //getUnregisterHolder().getEdtPassword().setOnFocusChangeListener(mOnFocusChangeListenerLoginHolder);
     }
 
 
