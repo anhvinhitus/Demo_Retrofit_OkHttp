@@ -17,7 +17,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.authentication.PaymentFingerPrint;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
-import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
@@ -28,6 +27,7 @@ import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.location.AppLocation;
 import vn.com.vng.zalopay.location.LocationProvider;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.network.NetworkConnectionException;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
@@ -37,6 +37,7 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.error.CError;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKPayment;
@@ -53,6 +54,7 @@ public class PaymentWrapper {
         void onResponseError(int status);
     }
 
+    final ILinkCardListener mLinkCardListener;
     final IRedirectListener mRedirectListener;
     final IResponseListener responseListener;
     private final ZaloPayRepository zaloPayRepository;
@@ -71,12 +73,13 @@ public class PaymentWrapper {
     PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
                    TransactionStore.Repository transactionRepository,
                    IResponseListener responseListener, IRedirectListener redirectListener,
-                   boolean showNotificationLinkCard) {
+                   ILinkCardListener linkCardListener, boolean showNotificationLinkCard) {
         Timber.d("Create new instance of PaymentWrapper[%s]", this);
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.responseListener = responseListener;
         this.mRedirectListener = redirectListener;
+        this.mLinkCardListener = linkCardListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
         mWalletListener = new WalletListener(this, transactionRepository, balanceRepository);
     }
@@ -102,9 +105,9 @@ public class PaymentWrapper {
         EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
         mActivity = activity;
         ZPWPaymentInfo paymentInfo = transform(order);
-        User mUser =  getUserComponent().currentUser();
+        User mUser = getUserComponent().currentUser();
         paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
-        paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName );
+        paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName);
         callPayAPI(activity, paymentInfo, forcedPaymentChannel);
     }
 
@@ -294,6 +297,7 @@ public class PaymentWrapper {
         mUserInfo.avatar = avatar;
         return mUserInfo;
     }
+
     private UserInfo createUserTransFerInfo(String displayName, String avatar, String zaloPayName) {
         UserInfo mUserInfo = new UserInfo();
         mUserInfo.userName = displayName;
@@ -301,6 +305,7 @@ public class PaymentWrapper {
         mUserInfo.avatar = avatar;
         return mUserInfo;
     }
+
     private UserInfo assignBaseUserInfo(UserInfo userInfo) {
         User user = null;
         if (getUserComponent() != null) {
@@ -475,6 +480,10 @@ public class PaymentWrapper {
         }
 
         mNavigator.startLinkAccountActivityForResult(mActivity);
+    }
+
+    public interface ILinkCardListener {
+        void startLinkAccount(DBaseMap bankInfo);
     }
 
     public interface IRedirectListener {

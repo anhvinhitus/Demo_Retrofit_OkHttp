@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -33,6 +32,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
+import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
@@ -54,8 +54,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     User mUser;
 
-    private SharedPreferences mSharedPreferences;
-
     protected EventBus mEventBus;
 
     abstract Activity getActivity();
@@ -65,8 +63,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     abstract void onPreComplete();
 
     abstract void onAddCardSuccess(DBaseMap mappedCreditCard);
-
-    abstract void onPayResponseError(PaymentError paymentError);
 
     abstract void onLoadIconFontSuccess();
 
@@ -90,17 +86,16 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                               Navigator navigator,
                               BalanceStore.Repository balanceRepository,
                               TransactionStore.Repository transactionRepository,
-                              User user,
-                              SharedPreferences sharedPreferences, EventBus eventBus) {
+                              User user, EventBus eventBus) {
         mNavigator = navigator;
         this.mUser = user;
-        mSharedPreferences = sharedPreferences;
         this.mEventBus = eventBus;
         paymentWrapper = new PaymentWrapperBuilder()
                 .setBalanceRepository(balanceRepository)
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
+                .setLinkCardListener(new LinkCardListener())
                 .build();
 
         mGetCardSupportListListener = new IGetCardSupportListListener() {
@@ -170,7 +165,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         mPayAfterLinkAcc = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_ACC);
     }
 
-    public void getListBankSupport(IGetCardSupportListListener listListener) {
+    void getListBankSupport(IGetCardSupportListListener listListener) {
         showLoadingView();
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mUser.zaloPayId;
@@ -207,6 +202,34 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         }
     }
 
+    void linkAccount(ZPCard zpCard) {
+        if (zpCard == null) {
+            return;
+        }
+        linkAccount(zpCard.getCardCode());
+    }
+
+    private void linkAccount(String bankCode) {
+        if (paymentWrapper == null || mView == null || TextUtils.isEmpty(bankCode)) {
+            return;
+        }
+        Timber.d("Link account, card code [%s]", bankCode);
+        paymentWrapper.linkAccount(getActivity(), bankCode);
+        hideLoadingView();
+    }
+
+    private class LinkCardListener implements PaymentWrapper.ILinkCardListener {
+
+        @Override
+        public void startLinkAccount(DBaseMap bankInfo) {
+            if (bankInfo == null) {
+                return;
+            }
+            Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
+            linkAccount(bankInfo.bankcode);
+        }
+    }
+
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
 
         @Override
@@ -226,11 +249,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         public void onResponseError(PaymentError paymentError) {
             if (paymentError == PaymentError.ERR_CODE_INTERNET) {
                 showNetworkErrorDialog();
-            } else if (paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT) {
-                // Go to LinkBankActivity with page index = 1 (Tab "Liên kết tài khoản")
-                mNavigator.startLinkAccountActivityAndFinish(getActivity());
-            } else {
-                onPayResponseError(paymentError);
             }
         }
 

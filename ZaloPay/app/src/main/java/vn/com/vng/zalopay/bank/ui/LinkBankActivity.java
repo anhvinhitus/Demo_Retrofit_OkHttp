@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
@@ -155,5 +156,11 @@ public class LinkBankActivity extends BaseToolBarActivity
             return;
         }
         mViewPager.setCurrentItem(LinkBankPagerIndex.LINK_ACCOUNT.getValue());
+        if (mSectionsPagerAdapter != null) {
+            Fragment fragment = mSectionsPagerAdapter.getItem(LinkBankPagerIndex.LINK_ACCOUNT.getValue());
+            if (fragment instanceof LinkAccountFragment) {
+                ((LinkAccountFragment)fragment).getMapBankAccount();
+            }
+        }
     }
 }
