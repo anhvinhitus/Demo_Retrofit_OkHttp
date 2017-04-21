@@ -47,6 +47,7 @@ public class RS {
     }
 
     public static final class string {
+        public static final String sdk_vcb_flow_type = "sdk_vcb_flow_type";
         public static final String zpw_string_special_bankscript_vcb_auto_select_service = "zpw_string_special_bankscript_vcb_auto_select_service";
         public static final String sdk_error_numberphone_sdk_vcb = "sdk_error_numberphone_sdk_vcb";
         public static final String prefix_numberphone_vcb = "prefix_numberphone_vcb";
