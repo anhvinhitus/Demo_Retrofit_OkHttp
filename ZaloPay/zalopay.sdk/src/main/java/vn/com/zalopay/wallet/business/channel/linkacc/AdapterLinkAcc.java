@@ -438,14 +438,14 @@ public class AdapterLinkAcc extends AdapterBase {
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
         Log.d(this, "sender " + pSender + " otp " + pOtp);
-        /*if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !GlobalData.shouldNativeWebFlow()) {
-            Log.d(this, "user is not in otp phase, skip auto fill otp");
-            return;
-        }*/
         if (GlobalData.shouldNativeWebFlow()) {
             Log.d(this, "user following web flow, skip auto fill otp");
             return;
         }
+        /*if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !GlobalData.shouldNativeWebFlow()) {
+            Log.d(this, "user is not in otp phase, skip auto fill otp");
+            return;
+        }*/
         if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase()) {
             Log.d(this, "user is not in otp phase, skip auto fill otp");
             return;
@@ -1016,7 +1016,7 @@ public class AdapterLinkAcc extends AdapterBase {
         }
         //event notification from app.
         if (pEventType == EEventType.ON_NOTIFY_BANKACCOUNT) {
-            if (isFinalScreen()) {
+            if (isFinalScreen() && !isTransactionFail()) {
                 Log.d(this, "stopping reload bank account from notification because user in result screen");
                 return pAdditionParams;
             }
