@@ -26,7 +26,7 @@ public class GreenDaoGenerator {
         addRedPacket(appSchema);
         addMerchantUser(appSchema);
 
-        new DaoGenerator("./daogenerator/src-template/").generateAll(appSchema, "./data/src/main/java");
+        new DaoGenerator("./daogenerator/src-template/").generateAll(appSchema, "./zalopay.data/src/main/java");
     }
 
     private static void addRedPacket(Schema appSchema) {
