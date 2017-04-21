@@ -1058,8 +1058,8 @@ public class AdapterLinkAcc extends AdapterBase {
         }
         //event notification from app.
         if (pEventType == EEventType.ON_NOTIFY_BANKACCOUNT) {
-            if (isFinalScreen() && !isTransactionFail()) {
-                Log.d(this, "stopping reload bank account from notification because user in result screen");
+            if (isFinalScreen() && isTransactionSuccess()) {
+                Log.d(this, "stopping reload bank account from notification because user in success screen");
                 return pAdditionParams;
             }
             mNotification = (ZPWNotification) pAdditionParams[0];
