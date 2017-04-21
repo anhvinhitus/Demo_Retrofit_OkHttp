@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.bank.ui;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -8,6 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -28,6 +30,9 @@ class LinkBankPresenter extends AbstractPresenter<ILinkBankView> {
 
     @Inject
     User mUser;
+
+    @Inject
+    SharedPreferences mPreferences;
 
     @Inject
     LinkBankPresenter() {
@@ -60,8 +65,7 @@ class LinkBankPresenter extends AbstractPresenter<ILinkBankView> {
      * Reference: https://gitlab.com/zalopay/bugs/issues/273
      */
     private void changePageInContext() {
-        SharedPreferences editor = mView.getContext().getSharedPreferences(Constants.PREF_LINK_BANK, MODE_PRIVATE);
-        int lastPageIndex = editor.getInt(Constants.PREF_LINK_BANK_LAST_INDEX, -1);
+        int lastPageIndex = mPreferences.getInt(Constants.PREF_LINK_BANK_LAST_INDEX, -1);
         if (lastPageIndex < 0) {
             List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
             List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);

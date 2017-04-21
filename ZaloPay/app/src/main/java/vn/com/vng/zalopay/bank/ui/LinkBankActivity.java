@@ -39,6 +39,9 @@ public class LinkBankActivity extends BaseToolBarActivity
     @Inject
     LinkBankPresenter mPresenter;
 
+    @Inject
+    SharedPreferences mPreferences;
+
     @Override
     public BaseFragment getFragmentToHost() {
         return null;
@@ -97,7 +100,7 @@ public class LinkBankActivity extends BaseToolBarActivity
     @Override
     protected void onStop() {
         super.onStop();
-        SharedPreferences.Editor editor = getSharedPreferences(Constants.PREF_LINK_BANK, MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = mPreferences.edit();
         int curPosition = mViewPager.getCurrentItem();
         editor.putInt(Constants.PREF_LINK_BANK_LAST_INDEX, curPosition);
         editor.apply();
