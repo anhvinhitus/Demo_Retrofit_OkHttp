@@ -42,6 +42,7 @@ import vn.com.vng.zalopay.internal.di.modules.UserAccountModule;
 import vn.com.vng.zalopay.internal.di.modules.UserApiModule;
 import vn.com.vng.zalopay.internal.di.modules.UserBalanceModule;
 import vn.com.vng.zalopay.internal.di.modules.UserControllerModule;
+import vn.com.vng.zalopay.internal.di.modules.UserFileLogModule;
 import vn.com.vng.zalopay.internal.di.modules.UserFriendModule;
 import vn.com.vng.zalopay.internal.di.modules.UserMerchantModule;
 import vn.com.vng.zalopay.internal.di.modules.UserModule;
@@ -98,7 +99,8 @@ import vn.com.vng.zalopay.withdraw.ui.fragment.WithdrawFragment;
                 UserFriendModule.class,
                 UserRedPacketModule.class,
                 QRCodeModule.class,
-                UserSocketModule.class
+                UserSocketModule.class,
+                UserFileLogModule.class
 
         }
 )

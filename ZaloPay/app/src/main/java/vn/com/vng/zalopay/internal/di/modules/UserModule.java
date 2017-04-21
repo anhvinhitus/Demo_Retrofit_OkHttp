@@ -17,6 +17,7 @@ import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
+import vn.com.vng.zalopay.data.filelog.FileLogStore;
 import vn.com.vng.zalopay.data.transfer.TransferLocalStorage;
 import vn.com.vng.zalopay.data.transfer.TransferRepository;
 import vn.com.vng.zalopay.data.transfer.TransferStore;
@@ -48,8 +49,8 @@ public class UserModule {
     @UserScope
     UserSession providesUserSession(Context context, UserConfig userConfig, EventBus eventBus,
                                     NotificationService service,
-                                    BalanceStore.Repository repository) {
-        return new UserSession(context, user, userConfig, eventBus, service, repository);
+                                    BalanceStore.Repository repository, FileLogStore.Repository fileLogRepository) {
+        return new UserSession(context, user, userConfig, eventBus, service, repository, fileLogRepository);
     }
 
     @Provides

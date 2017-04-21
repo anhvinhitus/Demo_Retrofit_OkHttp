@@ -10,17 +10,24 @@ import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
+import vn.com.vng.zalopay.data.filelog.FileLogStore;
 import vn.com.vng.zalopay.data.ws.connection.NotificationService;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.event.UploadFileLogEvent;
+import vn.com.vng.zalopay.tracker.FileLogHelper;
 
 /**
  * Created by hieuvm on 11/23/16.
@@ -28,26 +35,25 @@ import vn.com.vng.zalopay.event.NetworkChangeEvent;
 
 public class UserSession {
 
+    private final Context mContext;
+    private final User mUser;
+    private final EventBus mEventBus;
+    private final UserConfig mUserConfig;
+    private final NotificationService mNotifyService;
+    private final BalanceStore.Repository mBalanceRepository;
+    private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
+    private final FileLogStore.Repository mFileLogRepository;
+
     public static long mLastTimeCheckPassword = 0;
     public static String mHashPassword;
-
-    private Context mContext;
-
-    private User mUser;
-    private EventBus mEventBus;
-    private UserConfig mUserConfig;
-
     private static Boolean userInitialized = false;
-    private NotificationService mNotifyService;
-    private BalanceStore.Repository mBalanceRepository;
-
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     public UserSession(Context context, User user,
                        UserConfig mUserConfig,
                        EventBus eventBus,
                        NotificationService notifyService,
-                       BalanceStore.Repository balanceRepository
+                       BalanceStore.Repository balanceRepository,
+                       FileLogStore.Repository fileLogRepository
 
     ) {
 
@@ -57,6 +63,7 @@ public class UserSession {
         this.mUserConfig = mUserConfig;
         this.mNotifyService = notifyService;
         this.mBalanceRepository = balanceRepository;
+        this.mFileLogRepository = fileLogRepository;
     }
 
     public void beginSession() {
@@ -75,8 +82,10 @@ public class UserSession {
 
         Subscription subscription = mBalanceRepository.balanceLocal()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Long>());
+                .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscription);
+
+        uploadFileLogs();
     }
 
     public void endSession() {
@@ -138,4 +147,35 @@ public class UserSession {
     public void onNoSubscriber(NoSubscriberEvent event) {
         Timber.d("onNoSubscriber: %s", event.originalEvent);
     }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onUploadFileLogEvent(UploadFileLogEvent event) {
+        Timber.d("onUploadFileLogEvent : filePath [%s]", event.filePath);
+        uploadFileLog(event.filePath);
+    }
+
+    private void uploadFileLog(String filePath) {
+        Subscription subscription = FileLogHelper.uploadFileLog(filePath, mFileLogRepository)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<>());
+        mCompositeSubscription.add(subscription);
+    }
+
+    private void uploadFileLogs() {
+        Subscription subscription = FileLogHelper.listZipFileLog()
+                .flatMap(Observable::from)
+                .flatMap(this::uploadFileLogIgnoreError)
+                .delaySubscription(30, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mCompositeSubscription.add(subscription);
+    }
+
+    private Observable<String> uploadFileLogIgnoreError(String path) {
+        return FileLogHelper.uploadFileLog(path, mFileLogRepository)
+                .onErrorResumeNext(Observable.empty());
+    }
+
+
 }

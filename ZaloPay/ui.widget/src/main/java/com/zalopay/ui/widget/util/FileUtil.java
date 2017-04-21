@@ -69,18 +69,4 @@ public class FileUtil {
             }
         }
     }
-
-
-    public static boolean isFileExists(String filePath) {
-        if (TextUtils.isEmpty(filePath)) {
-            return false;
-        }
-        try {
-            File file = new File(filePath);
-            return file.exists();
-        } catch (Exception e) {
-            Log.e("FileUtil", "isFileExists throw exception: " + e.getMessage());
-            return false;
-        }
-    }
 }

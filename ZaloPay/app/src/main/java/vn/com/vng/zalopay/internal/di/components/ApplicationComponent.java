@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.internal.di.components;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.zalopay.apploader.BundleService;
@@ -68,6 +69,8 @@ public interface ApplicationComponent {
 
     @Named("OkHttpClientTimeoutLonger")
     OkHttpClient okHttpClientTimeoutLonger();
+
+    SharedPreferences sharedPreferences();
 
     Gson gson();
 
