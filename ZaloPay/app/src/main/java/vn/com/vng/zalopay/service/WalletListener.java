@@ -105,7 +105,13 @@ class WalletListener implements ZPPaymentListener {
                     mPaymentWrapper.responseListener.onResponseError(PaymentError.ERR_TRANXSTATUS_NEED_LINKCARD);
                     break;
                 case ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT:
-                    mPaymentWrapper.responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT);
+                    if (mPaymentWrapper.mLinkCardListener != null) {
+                        Timber.d("pay onComplete, startLinkAccount");
+                        mPaymentWrapper.mLinkCardListener.startLinkAccount(pPaymentResult.paymentInfo.mapBank);
+                    } else {
+                        Timber.d("pay onComplete, set onResponseError: ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT");
+                        mPaymentWrapper.responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT);
+                    }
                     break;
                 case ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT:
                     if (mPaymentWrapper.mRedirectListener == null) {

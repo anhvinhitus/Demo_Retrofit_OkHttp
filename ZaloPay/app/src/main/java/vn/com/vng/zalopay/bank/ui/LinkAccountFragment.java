@@ -131,7 +131,13 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
         initBankSupportFragment();
 
-        mPresenter.getMapBankAccount();
+        getMapBankAccount();
+    }
+
+    public void getMapBankAccount() {
+        if (mPresenter != null) {
+            mPresenter.getMapBankAccount();
+        }
     }
 
     private void initBankSupportFragment() {

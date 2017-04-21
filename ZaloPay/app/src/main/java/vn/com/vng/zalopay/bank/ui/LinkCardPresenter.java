@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,7 +30,6 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
@@ -54,11 +52,8 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                       Navigator navigator,
                       BalanceStore.Repository balanceRepository,
                       TransactionStore.Repository transactionRepository,
-                      User user,
-                      SharedPreferences sharedPreferences,
-                      EventBus eventBus) {
-        super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
-                user, sharedPreferences, eventBus);
+                      User user, EventBus eventBus) {
+        super(zaloPayRepository, navigator, balanceRepository, transactionRepository, user, eventBus);
     }
 
     void getListCard() {
@@ -226,16 +221,6 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             mView.onAddCardSuccess(mapBank);
         } else if (mapBank instanceof DBankAccount) {
             mView.gotoTabLinkAccount();
-        }
-    }
-
-    @Override
-    void onPayResponseError(PaymentError paymentError) {
-        if (paymentError != null &&
-                paymentError == PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT) {
-            if (mView != null) {
-                mView.gotoTabLinkAccount();
-            }
         }
     }
 

@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -33,7 +32,6 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
-import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
@@ -53,10 +51,8 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                          Navigator navigator,
                          BalanceStore.Repository balanceRepository,
                          TransactionStore.Repository transactionRepository,
-                         User user,
-                         SharedPreferences sharedPreferences, EventBus eventBus) {
-        super(zaloPayRepository, navigator, balanceRepository, transactionRepository,
-                user, sharedPreferences, eventBus);
+                         User user, EventBus eventBus) {
+        super(zaloPayRepository, navigator, balanceRepository, transactionRepository, user, eventBus);
     }
 
     void getMapBankAccount() {
@@ -76,15 +72,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LinkAccountIfNotLinkedSubscriber(zpCard));
         mSubscription.add(subscription);
-    }
-
-    private void linkAccount(ZPCard zpCard) {
-        if (paymentWrapper == null || mView == null || zpCard == null) {
-            return;
-        }
-        Timber.d("Link account, card code [%s]", zpCard.getCardCode());
-        paymentWrapper.linkAccount(getActivity(), zpCard.getCardCode());
-        hideLoadingView();
     }
 
     private List<BankAccount> transform(List<DBankAccount> bankAccounts) {
@@ -231,11 +218,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         if (mPayAfterLinkAcc) {
             mView.showConfirmPayAfterLinkAcc();
         }
-    }
-
-    @Override
-    void onPayResponseError(PaymentError paymentError) {
-
     }
 
     @Override

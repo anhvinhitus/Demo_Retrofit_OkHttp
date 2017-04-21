@@ -10,6 +10,7 @@ public class PaymentWrapperBuilder {
     private TransactionStore.Repository mTransactionRepository;
     private PaymentWrapper.IResponseListener mResponseListener;
     private PaymentWrapper.IRedirectListener mRedirectListener = null;
+    private PaymentWrapper.ILinkCardListener mLinkCardListener = null;
     private boolean mShowNotificationLinkCard = true;
 
     public PaymentWrapperBuilder setBalanceRepository(BalanceStore.Repository balanceRepository) {
@@ -34,6 +35,11 @@ public class PaymentWrapperBuilder {
 
     public PaymentWrapperBuilder setRedirectListener(PaymentWrapper.IRedirectListener redirectListener) {
         mRedirectListener = redirectListener;
+        return this;
+    }
+
+    public PaymentWrapperBuilder setLinkCardListener(PaymentWrapper.ILinkCardListener linkCardListener) {
+        mLinkCardListener = linkCardListener;
         return this;
     }
 
@@ -64,6 +70,6 @@ public class PaymentWrapperBuilder {
 //        }
 //
         return new PaymentWrapper(mBalanceRepository, mZaloPayRepository, mTransactionRepository,
-                mResponseListener, mRedirectListener, mShowNotificationLinkCard);
+                mResponseListener, mRedirectListener, mLinkCardListener, mShowNotificationLinkCard);
     }
 }

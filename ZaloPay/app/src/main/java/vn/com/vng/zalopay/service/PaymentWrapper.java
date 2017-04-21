@@ -27,6 +27,7 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
+import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
@@ -34,10 +35,12 @@ import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.error.CError;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * Created by huuhoa on 6/3/16.
@@ -50,6 +53,7 @@ public class PaymentWrapper {
         void onResponseError(int status);
     }
 
+    final ILinkCardListener mLinkCardListener;
     final IRedirectListener mRedirectListener;
     final IResponseListener responseListener;
     private final ZaloPayRepository zaloPayRepository;
@@ -68,12 +72,13 @@ public class PaymentWrapper {
     PaymentWrapper(BalanceStore.Repository balanceRepository, ZaloPayRepository zaloPayRepository,
                    TransactionStore.Repository transactionRepository,
                    IResponseListener responseListener, IRedirectListener redirectListener,
-                   boolean showNotificationLinkCard) {
+                   ILinkCardListener linkCardListener, boolean showNotificationLinkCard) {
         Timber.d("Create new instance of PaymentWrapper[%s]", this);
         this.balanceRepository = balanceRepository;
         this.zaloPayRepository = zaloPayRepository;
         this.responseListener = responseListener;
         this.mRedirectListener = redirectListener;
+        this.mLinkCardListener = linkCardListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
         mWalletListener = new WalletListener(this, transactionRepository, balanceRepository);
     }
@@ -464,6 +469,10 @@ public class PaymentWrapper {
         }
 
         mNavigator.startLinkAccountActivityForResult(mActivity);
+    }
+
+    public interface ILinkCardListener {
+        void startLinkAccount(DBaseMap bankInfo);
     }
 
     public interface IRedirectListener {
