@@ -17,8 +17,6 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
-import static android.content.Context.MODE_PRIVATE;
-
 /**
  * Created by longlv on 2/6/17.
  * Presenter of LinkBankActivity
@@ -27,10 +25,12 @@ import static android.content.Context.MODE_PRIVATE;
 class LinkBankPresenter extends AbstractPresenter<ILinkBankView> {
 
     private final User mUser;
+    private SharedPreferences mPreferences;
 
     @Inject
-    LinkBankPresenter(User user) {
+    LinkBankPresenter(User user, SharedPreferences preferences) {
         this.mUser = user;
+        this.mPreferences = preferences;
     }
 
     void initPageStart(Bundle bundle) {
@@ -59,8 +59,7 @@ class LinkBankPresenter extends AbstractPresenter<ILinkBankView> {
      * Reference: https://gitlab.com/zalopay/bugs/issues/273
      */
     private void changePageInContext() {
-        SharedPreferences editor = mView.getContext().getSharedPreferences(Constants.PREF_LINK_BANK, MODE_PRIVATE);
-        int lastPageIndex = editor.getInt(Constants.PREF_LINK_BANK_LAST_INDEX, -1);
+        int lastPageIndex = mPreferences.getInt(Constants.PREF_LINK_BANK_LAST_INDEX, -1);
         if (lastPageIndex < 0) {
             List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
             List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);

@@ -83,7 +83,6 @@ public interface Constants {
     String ARG_SHOW_NOTIFICATION_LINK_CARD = "show_notification_link_card";
 
     // Link bank tab state
-    String PREF_LINK_BANK = "pref_link_bank";
     String PREF_LINK_BANK_LAST_INDEX = "pref_link_bank_last_index";
 
     // Link bank status
