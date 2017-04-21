@@ -1168,7 +1168,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setView(R.id.zpw_notransid_textview, false);
         } else {
             setView(R.id.zpw_transaction_wrapper, false);
-            setView(R.id.zpw_notransid_textview, GlobalData.isUnLinkAccFlow() ? false : true);//hide all if unlink account
+            setView(R.id.zpw_notransid_textview, (GlobalData.shouldNativeWebFlow() || GlobalData.isUnLinkAccFlow()) ? false : true);//hide all if unlink account
         }
 
         ZPWUtils.applyFont(findViewById(R.id.zpw_textview_transaction),
@@ -1188,7 +1188,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setView(R.id.zpw_notransid_textview, false);
         } else {
             setView(R.id.zpw_transaction_wrapper, false);
-            setView(R.id.zpw_notransid_textview, GlobalData.isUnLinkAccFlow() ? false : true);//hide all if unlink account
+            setView(R.id.zpw_notransid_textview, (GlobalData.shouldNativeWebFlow() || GlobalData.isUnLinkAccFlow()) ? false : true);//hide all if unlink account
         }
 
         setView(R.id.zpw_pay_info_buttom_view, true);
