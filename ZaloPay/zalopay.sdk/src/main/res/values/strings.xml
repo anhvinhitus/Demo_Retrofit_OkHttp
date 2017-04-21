@@ -487,7 +487,7 @@
     <string name="zpw_string_linkacc_accNumDef_hint">Số tài khoản mặc định</string>
 
     <string name="zpw_string_linkacc_notice_description">Liên kết ngân hàng thành công,\nBạn có thể tiếp tục sử dụng các dịch vụ khác.</string>
-    <string name="zpw_string_unlinkacc_notice_description">Quý khách hủy thành công kết nối\ngiữa Zalo Pay và TK ngân hàng Vietcombank</string>
+    <string name="zpw_string_unlinkacc_notice_description">Quý khách hủy thành công kết nối giữa Zalo Pay và TK ngân hàng Vietcombank</string>
 
     <string name="zpw_error_authen_pin">Hiện tại không thể sử dụng vân tay để giao dịch. Tiếp tục giao dịch sử dụng Mật Khẩu Thanh Toán!</string>
 
@@ -547,4 +547,5 @@
     <string name="prefix_numberphone_vcb">3</string>
     <string name="suffix_numberphone_vcb">3</string>
     <string name="sdk_error_numberphone_sdk_vcb"><![CDATA[Số điện thoại đăng ký Vietcombank <b>%1$s</b> và số điện thoại đăng ký mật khẩu thanh toán Zalo Pay <b>%2$s</b> không giống nhau. Vui lòng kiểm tra lại.]]></string>
+    <string name="sdk_vcb_flow_type">1</string>
 </resources>

@@ -728,7 +728,7 @@ public class GlobalData {
     }
 
     public static boolean shouldNativeWebFlow() {
-        try {
+        /*try {
             BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(GlobalData.getPaymentInfo().linkAccInfo.getBankCode()), BankConfig.class);
             if (bankConfig != null && !bankConfig.isCoverBank()) {
                 return true;
@@ -736,8 +736,8 @@ public class GlobalData {
         } catch (Exception e) {
             Log.e("shouldNativeWebFlow",e);
         }
-        return false;
-
+        return false;*/
+        return GlobalData.getStringResource(RS.string.sdk_vcb_flow_type).equals("1") ? true : false;
     }
 
     public static EBankFunction getCurrentBankFunction() {
