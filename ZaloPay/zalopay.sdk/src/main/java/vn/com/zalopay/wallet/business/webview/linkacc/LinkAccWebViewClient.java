@@ -147,7 +147,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         Log.d("load page finish ", url);
         if (!isRedirected) {
             Log.d("load page finish on the first", url);
-            if (url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_auto_select_service))) {
+            if (GlobalData.shouldNativeWebFlow() && url.matches(GlobalData.getStringResource(RS.string.zpw_string_special_bankscript_vcb_auto_select_service))) {
                 DLinkAccScriptInput input = genJsInput();
                 String inputScript = GsonUtils.toJsonString(input);
                 executeJs(Constants.AUTO_SELECT_SERVICE_JS, inputScript); // auto select service #a href tag
@@ -291,12 +291,12 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 Log.d("matchAndRunJs", "url: " + url + " ,type: " + pType);
                 isMatched = true;
                 if (bankScript.pageCode.equals(VCB_REGISTER_PAGE)) {
-                    //mAdapter.mUrlReload = url;
+                    mAdapter.mUrlReload = url;
                 }
                 mEventID = bankScript.eventID;
                 mPageCode = bankScript.pageCode;
 
-                if (!shouldExecuteJs()) { //prevent load js on web flow
+                if (GlobalData.shouldNativeWebFlow() && !shouldExecuteJs()) { //prevent load js on web flow
                     return;
                 }
 
