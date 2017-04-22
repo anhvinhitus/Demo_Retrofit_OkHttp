@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -106,7 +107,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 .setZaloPayRepository(zaloPayRepository)
                 .setTransactionRepository(transactionRepository)
                 .setResponseListener(new PaymentResponseListener())
-                .setLinkCardListener(new LinkCardListener())
+                .setLinkCardListener(new LinkCardListener(this))
                 .build();
 
         mGetCardSupportListListener = new IGetCardSupportListListener() {
@@ -303,11 +304,20 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         }
     }
 
-    private class LinkCardListener implements PaymentWrapper.ILinkCardListener {
+    private static class LinkCardListener implements PaymentWrapper.ILinkCardListener {
+        WeakReference<AbstractLinkCardPresenter> mWeakReference;
+
+        LinkCardListener(AbstractLinkCardPresenter presenter) {
+            mWeakReference = new WeakReference<>(presenter);
+        }
 
         @Override
         public void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
-            onErrorLinkCardButInputBankAccount(bankInfo);
+            if (mWeakReference.get() == null) {
+                return;
+            }
+
+            mWeakReference.get().onErrorLinkCardButInputBankAccount(bankInfo);
         }
     }
 
