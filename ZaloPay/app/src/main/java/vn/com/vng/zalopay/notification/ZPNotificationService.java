@@ -249,7 +249,15 @@ public class ZPNotificationService implements OnReceivedPushMessageListener, Not
         mNotificationHelper.recoveryRedPacketStatus();
     }
 
-    private void sendMessageRecovery(long timeStamp) {
+    private void sendMessageRecovery(Long time) {
+
+        long timeStamp;
+        if (time == null || time == 0) {
+            timeStamp = 1;
+        } else {
+            timeStamp = time;
+        }
+
         Timber.d("Send message recovery timeStamp [%s]", timeStamp);
         if (mLastTimeRecovery > 0 && mLastTimeRecovery <= timeStamp) {
             Timber.d("ignore recovery [%s]", timeStamp);
