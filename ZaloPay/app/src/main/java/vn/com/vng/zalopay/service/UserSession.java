@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -28,8 +27,8 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.event.UploadFileLogEvent;
 import vn.com.vng.zalopay.network.NetworkHelper;
+import vn.com.vng.zalopay.network.RetryFileLogUpload;
 import vn.com.vng.zalopay.tracker.FileLogHelper;
-import vn.com.zalopay.wallet.utils.NetworkUtil;
 
 /**
  * Created by hieuvm on 11/23/16.
@@ -160,6 +159,7 @@ public class UserSession {
         Subscription subscription = Observable.just(NetworkHelper.isNetworkAvailable(mContext))
                 .filter(Boolean::booleanValue)
                 .flatMap(aBoolean -> FileLogHelper.uploadFileLog(filePath, mFileLogRepository))
+                .retryWhen(new RetryFileLogUpload())
                 .doOnError(Timber::w)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
