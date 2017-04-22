@@ -151,19 +151,33 @@ public class LinkBankActivity extends BaseToolBarActivity
     }
 
     @Override
-    public void gotoTabLinkAccount() {
-        if (mViewPager == null) {
+    public void gotoTabLinkAccAndReloadLinkedAcc() {
+        gotoTabLinkAccount();
+        reloadLinkedAccount();
+    }
+
+    @Override
+    public void gotoTabLinkAccAndShowDialog(String message) {
+        showNotificationDialog(message);
+        gotoTabLinkAccount();
+    }
+
+    private void reloadLinkedAccount() {
+        if (mSectionsPagerAdapter == null) {
             return;
         }
-        if (mViewPager.getCurrentItem() == LinkBankPagerIndex.LINK_ACCOUNT.getValue()) {
-            return;
-        }
-        mViewPager.setCurrentItem(LinkBankPagerIndex.LINK_ACCOUNT.getValue());
-        if (mSectionsPagerAdapter != null) {
-            Fragment fragment = mSectionsPagerAdapter.getItem(LinkBankPagerIndex.LINK_ACCOUNT.getValue());
-            if (fragment instanceof LinkAccountFragment) {
-                ((LinkAccountFragment)fragment).getMapBankAccount();
-            }
+        Fragment fragment = mSectionsPagerAdapter.getPage(LinkBankPagerIndex.LINK_ACCOUNT.getValue());
+        if (fragment instanceof LinkAccountFragment) {
+            LinkAccountFragment linkAccountFragment = ((LinkAccountFragment) fragment);
+            linkAccountFragment.getLinkedBankAccount();
         }
     }
+
+    private void gotoTabLinkAccount() {
+        if (mViewPager != null
+                && mViewPager.getCurrentItem() != LinkBankPagerIndex.LINK_ACCOUNT.getValue()) {
+            mViewPager.setCurrentItem(LinkBankPagerIndex.LINK_ACCOUNT.getValue());
+        }
+    }
+
 }

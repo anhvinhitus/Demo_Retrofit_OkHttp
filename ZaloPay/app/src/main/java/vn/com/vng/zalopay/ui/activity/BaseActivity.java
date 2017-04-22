@@ -288,6 +288,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                 listener);
     }
 
+    public void showNotificationDialog(String message) {
+        DialogHelper.showNotificationDialog(getActivity(),
+                message);
+    }
+
     public void showWarningDialog(String message,
                                   final ZPWOnEventDialogListener cancelListener) {
         DialogHelper.showWarningDialog(getActivity(),

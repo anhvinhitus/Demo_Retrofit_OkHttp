@@ -71,7 +71,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @OnClick(R.id.btn_add_account)
     public void onClickAddBankAccount() {
-        mPresenter.addBankAccount();
+        mPresenter.addLinkAccount();
     }
 
     @Inject
@@ -79,7 +79,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @OnClick(R.id.btn_add_more)
     public void onClickAddMoreBankAccount() {
-        mPresenter.addBankAccount();
+        mPresenter.addLinkAccount();
     }
 
     public LinkAccountFragment() {
@@ -132,12 +132,12 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
         initBankSupportFragment();
 
-        getMapBankAccount();
+        getLinkedBankAccount();
     }
 
-    public void getMapBankAccount() {
+    public void getLinkedBankAccount() {
         if (mPresenter != null) {
-            mPresenter.getMapBankAccount();
+            mPresenter.getLinkedBankAccount();
         }
     }
 

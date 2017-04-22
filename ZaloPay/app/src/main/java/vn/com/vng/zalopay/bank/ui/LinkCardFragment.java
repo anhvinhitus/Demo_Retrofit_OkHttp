@@ -78,9 +78,16 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     @Override
-    public void gotoTabLinkAccount() {
+    public void gotoTabLinkAccAndReloadLinkedAcc() {
         if (mListener != null) {
-            mListener.gotoTabLinkAccount();
+            mListener.gotoTabLinkAccAndReloadLinkedAcc();
+        }
+    }
+
+    @Override
+    public void gotoTabLinkAccAndShowDialog(String message) {
+        if (mListener != null) {
+            mListener.gotoTabLinkAccAndShowDialog(message);
         }
     }
 
@@ -413,7 +420,8 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         mBottomSheetDialog.show();
     }
 
-    public interface ILinkCardListener {
-        void gotoTabLinkAccount();
+    interface ILinkCardListener {
+        void gotoTabLinkAccAndReloadLinkedAcc();
+        void gotoTabLinkAccAndShowDialog(String message);
     }
 }

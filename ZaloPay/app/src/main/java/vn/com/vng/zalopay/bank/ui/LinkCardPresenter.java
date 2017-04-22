@@ -2,6 +2,7 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
@@ -9,9 +10,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -20,12 +19,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.bank.BankUtils;
+import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
@@ -33,6 +33,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
@@ -60,48 +61,13 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
     void getListCard() {
         showLoadingView();
-        Subscription subscription = ObservableHelper.makeObservable(new Callable<List<BankCard>>() {
-            @Override
-            public List<BankCard> call() throws Exception {
-                List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-                return transform(mapCardLis);
-            }
+        Subscription subscription = ObservableHelper.makeObservable(() -> {
+            List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+            return transformBankCard(mapCardLis);
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LinkCardSubscriber());
         mSubscription.add(subscription);
     }
-
-    private BankCard transform(DMappedCard card) {
-        BankCard bankCard = null;
-
-        if (card != null) {
-            bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode);
-            try {
-                bankCard.type = detectCardType(card.bankcode, card.first6cardno);
-                Timber.d("transform bankCard : type %s cardname %s first %s last %s", bankCard.type, card.cardname, card.first6cardno, card.last4cardno);
-            } catch (Exception e) {
-                Timber.d(e, "transform DMappedCard to BankCard exception [%s]", e.getMessage());
-            }
-        }
-
-        return bankCard;
-    }
-
-    private List<BankCard> transform(List<DMappedCard> cards) {
-        if (Lists.isEmptyOrNull(cards)) return Collections.emptyList();
-
-        List<BankCard> list = new ArrayList<>();
-
-        for (DMappedCard dMappedCard : cards) {
-            BankCard bCard = transform(dMappedCard);
-            if (bCard != null) {
-                list.add(bCard);
-            }
-        }
-
-        return list;
-    }
-
 
     @Override
     public void resume() {
@@ -225,7 +191,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         if (mapBank instanceof DMappedCard) {
             mView.onAddCardSuccess(mapBank);
         } else if (mapBank instanceof DBankAccount) {
-            mView.gotoTabLinkAccount();
+            mView.gotoTabLinkAccAndReloadLinkedAcc();
         }
     }
 
@@ -241,6 +207,16 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         if (mView != null) {
             mView.refreshBanksSupport();
         }
+    }
+
+    @Override
+    public void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+        super.onErrorLinkCardButInputBankAccount(bankInfo);
+        if (bankInfo == null) {
+            return;
+        }
+        Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
+        getLinkedBankAccount(new GetLinkedBankAccSubscriber(bankInfo.bankcode));
     }
 
     @Override
@@ -331,4 +307,45 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         }
     }
 
+    private class GetLinkedBankAccSubscriber extends DefaultSubscriber<List<BankAccount>> {
+        private String mBankCode;
+
+        GetLinkedBankAccSubscriber(String bankCode) {
+            super();
+            mBankCode = bankCode;
+        }
+
+        @Override
+        public void onNext(List<BankAccount> bankAccounts) {
+            hideLoadingView();
+            if (checkLinkedBankAccount(bankAccounts, mBankCode)) {
+                String bankName = BankUtils.getBankName(mBankCode);
+                String message;
+                if (!TextUtils.isEmpty(bankName)) {
+                    message = String.format(getString(R.string.bank_account_has_linked),
+                            bankName);
+                } else {
+                    message = getString(R.string.bank_account_has_linked_this_bank);
+                }
+                if (mView != null) {
+                    mView.gotoTabLinkAccAndShowDialog(message);
+                }
+            } else {
+                linkAccount(mBankCode);
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            hideLoadingView();
+            linkAccount(mBankCode);
+        }
+    }
+
+    private String getString(@StringRes int stringResource) {
+        if (mView == null || mView.getContext() == null) {
+            return "";
+        }
+        return mView.getContext().getString(stringResource);
+    }
 }

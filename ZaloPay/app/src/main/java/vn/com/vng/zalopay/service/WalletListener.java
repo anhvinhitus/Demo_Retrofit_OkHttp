@@ -6,6 +6,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import rx.Subscription;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
@@ -27,18 +28,21 @@ class WalletListener implements ZPPaymentListener {
     private PaymentWrapper mPaymentWrapper;
     private final TransactionStore.Repository mTransactionRepository;
     private final BalanceStore.Repository mBalanceRepository;
+    private CompositeSubscription mCompositeSubscription;
 
     WalletListener(PaymentWrapper paymentWrapper,
                    TransactionStore.Repository transactionRepository,
-                   BalanceStore.Repository balanceRepository) {
+                   BalanceStore.Repository balanceRepository,
+                   CompositeSubscription compositeSubscription) {
         mPaymentWrapper = paymentWrapper;
         mBalanceRepository = balanceRepository;
         mTransactionRepository = transactionRepository;
+        mCompositeSubscription = compositeSubscription;
     }
 
     @Override
     public void onComplete(ZPPaymentResult pPaymentResult) {
-        Timber.d("pay onComplete pPaymentResult [%s]", pPaymentResult);
+        Timber.d("pay complete, result [%s]", pPaymentResult);
         boolean paymentIsCompleted = true;
         if (pPaymentResult == null) {
             if (NetworkHelper.isNetworkAvailable(mPaymentWrapper.mActivity)) {
@@ -49,7 +53,7 @@ class WalletListener implements ZPPaymentListener {
             mPaymentWrapper.clearPendingOrder();
         } else {
             EPaymentStatus resultStatus = pPaymentResult.paymentStatus;
-            Timber.d("pay onComplete resultStatus [%s]", pPaymentResult.paymentStatus);
+            Timber.d("pay complete, status [%s]", pPaymentResult.paymentStatus);
             switch (resultStatus) {
                 case ZPC_TRANXSTATUS_SUCCESS:
                     if (mPaymentWrapper.mShowNotificationLinkCard) {
@@ -106,10 +110,11 @@ class WalletListener implements ZPPaymentListener {
                     break;
                 case ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT:
                     if (mPaymentWrapper.mLinkCardListener != null) {
-                        Timber.d("pay onComplete, startLinkAccount");
-                        mPaymentWrapper.mLinkCardListener.startLinkAccount(pPaymentResult.paymentInfo.mapBank);
+                        Timber.d("pay complete, switch to link account because link card but user input bank account");
+                        mPaymentWrapper.mLinkCardListener
+                                .onErrorLinkCardButInputBankAccount(pPaymentResult.paymentInfo.mapBank);
                     } else {
-                        Timber.d("pay onComplete, set onResponseError: ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT");
+                        Timber.w("pay complete, response error: ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT");
                         mPaymentWrapper.responseListener.onResponseError(PaymentError.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT);
                     }
                     break;
@@ -198,19 +203,21 @@ class WalletListener implements ZPPaymentListener {
     private void updateTransactionSuccess() {
         Subscription subscription = mTransactionRepository.fetchTransactionHistorySuccessLatest()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
+        mCompositeSubscription.add(subscription);
     }
 
     private void updateTransactionFail() {
         Subscription subscription = mTransactionRepository.fetchTransactionHistoryFailLatest()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<Boolean>());
+                .subscribe(new DefaultSubscriber<>());
+        mCompositeSubscription.add(subscription);
     }
 
     private void updateBalance() {
-        // update balance
         Subscription subscription = mBalanceRepository.updateBalance()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
+        mCompositeSubscription.add(subscription);
     }
 }

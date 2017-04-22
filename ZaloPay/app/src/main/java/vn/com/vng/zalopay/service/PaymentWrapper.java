@@ -81,7 +81,8 @@ public class PaymentWrapper {
         this.mRedirectListener = redirectListener;
         this.mLinkCardListener = linkCardListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
-        mWalletListener = new WalletListener(this, transactionRepository, balanceRepository);
+        mWalletListener = new WalletListener(this, transactionRepository,
+                balanceRepository, mCompositeSubscription);
     }
 
     public void payWithToken(Activity activity, long appId, String transactionToken) {
@@ -483,7 +484,7 @@ public class PaymentWrapper {
     }
 
     public interface ILinkCardListener {
-        void startLinkAccount(DBaseMap bankInfo);
+        void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo);
     }
 
     public interface IRedirectListener {
