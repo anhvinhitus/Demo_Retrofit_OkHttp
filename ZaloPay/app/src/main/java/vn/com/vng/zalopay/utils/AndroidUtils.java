@@ -1069,13 +1069,13 @@ public class AndroidUtils {
 
     public static String getUrlPlayStore(String campaign, String trackingContent) {
         return "market://details?id=" +
-                BuildConfig.APPLICATION_ID +
+                BuildConfig.PACKAGE_IN_PLAY_STORE +
                 getGooglePlayCampaign(campaign, trackingContent, "play-store");
     }
 
     private static String getUrlWebPlayStore(String campaign, String trackingContent) {
         return "https://play.google.com/store/apps/details?id=" +
-                BuildConfig.APPLICATION_ID +
+                BuildConfig.PACKAGE_IN_PLAY_STORE +
                 getGooglePlayCampaign(campaign, trackingContent, "web");
     }
 
