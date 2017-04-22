@@ -27,7 +27,6 @@ import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
-import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
@@ -40,7 +39,6 @@ import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
-import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 
 /**
  * Created by huuhoa on 6/3/16.
@@ -80,7 +78,8 @@ public class PaymentWrapper {
         this.mRedirectListener = redirectListener;
         this.mLinkCardListener = linkCardListener;
         this.mShowNotificationLinkCard = showNotificationLinkCard;
-        mWalletListener = new WalletListener(this, transactionRepository, balanceRepository);
+        mWalletListener = new WalletListener(this, transactionRepository,
+                balanceRepository, mCompositeSubscription);
     }
 
     public void payWithToken(Activity activity, long appId, String transactionToken) {
@@ -472,7 +471,7 @@ public class PaymentWrapper {
     }
 
     public interface ILinkCardListener {
-        void startLinkAccount(DBaseMap bankInfo);
+        void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo);
     }
 
     public interface IRedirectListener {

@@ -10,12 +10,22 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
+import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.data.util.ObservableHelper;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
+import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.DownloadSDKResourceComplete;
@@ -30,11 +40,12 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
-import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
@@ -164,6 +175,16 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         mPayAfterLinkAcc = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_ACC);
     }
 
+    void getLinkedBankAccount(DefaultSubscriber<List<BankAccount>> subscriber) {
+        showLoadingView();
+        Subscription subscription = ObservableHelper.makeObservable(() -> {
+            List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+            return transformBankAccount(mapCardLis);
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+        mSubscription.add(subscription);
+    }
+
     void getListBankSupport(IGetCardSupportListListener listListener) {
         showLoadingView();
         UserInfo userInfo = new UserInfo();
@@ -177,7 +198,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         getListBankSupport(mGetCardSupportListListener);
     }
 
-    void addBankAccount() {
+    void addLinkAccount() {
         if (getContext() == null) {
             return;
         }
@@ -208,7 +229,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         linkAccount(zpCard.getCardCode());
     }
 
-    private void linkAccount(String bankCode) {
+    void linkAccount(String bankCode) {
         if (paymentWrapper == null || mView == null || TextUtils.isEmpty(bankCode)) {
             return;
         }
@@ -217,16 +238,19 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         hideLoadingView();
     }
 
-    private class LinkCardListener implements PaymentWrapper.ILinkCardListener {
-
-        @Override
-        public void startLinkAccount(DBaseMap bankInfo) {
-            if (bankInfo == null) {
-                return;
-            }
-            Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
-            linkAccount(bankInfo.bankcode);
+    boolean checkLinkedBankAccount(List<BankAccount> listBankAccount, String bankCode) {
+        if (Lists.isEmptyOrNull(listBankAccount)) {
+            return false;
         }
+        for (BankAccount bankAccount : listBankAccount) {
+            if (bankAccount == null || TextUtils.isEmpty(bankAccount.mBankCode)) {
+                continue;
+            }
+            if (bankAccount.mBankCode.equalsIgnoreCase(bankCode)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private class PaymentResponseListener extends DefaultPaymentResponseListener {
@@ -276,8 +300,74 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 AbstractLinkCardPresenter.this.onPreComplete();
             }
         }
-
     }
+
+    private class LinkCardListener implements PaymentWrapper.ILinkCardListener {
+
+        @Override
+        public void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+            onErrorLinkCardButInputBankAccount(bankInfo);
+        }
+    }
+
+    protected void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+    }
+
+    List<BankCard> transformBankCard(List<DMappedCard> cards) {
+        if (Lists.isEmptyOrNull(cards)) return Collections.emptyList();
+
+        List<BankCard> list = new ArrayList<>();
+
+        for (DMappedCard dMappedCard : cards) {
+            BankCard bCard = transformBankCard(dMappedCard);
+            if (bCard != null) {
+                list.add(bCard);
+            }
+        }
+
+        return list;
+    }
+
+    private BankCard transformBankCard(DMappedCard card) {
+        BankCard bankCard = null;
+
+        if (card != null) {
+            bankCard = new BankCard(card.cardname, card.first6cardno, card.last4cardno, card.bankcode);
+            try {
+                bankCard.type = detectCardType(card.bankcode, card.first6cardno);
+                Timber.d("transform bankCard : type %s cardname %s first %s last %s", bankCard.type, card.cardname, card.first6cardno, card.last4cardno);
+            } catch (Exception e) {
+                Timber.d(e, "transform DMappedCard to BankCard exception [%s]", e.getMessage());
+            }
+        }
+
+        return bankCard;
+    }
+
+    List<BankAccount> transformBankAccount(List<DBankAccount> bankAccounts) {
+        if (Lists.isEmptyOrNull(bankAccounts)) return Collections.emptyList();
+
+        List<BankAccount> list = new ArrayList<>();
+        for (DBankAccount dBankAccount : bankAccounts) {
+            BankAccount bankAccount = transformBankAccount(dBankAccount);
+            if (bankAccount != null) {
+                list.add(bankAccount);
+            }
+        }
+        return list;
+    }
+
+    BankAccount transformBankAccount(DBankAccount dBankAccount) {
+        if (dBankAccount == null) {
+            return null;
+        }
+
+        //bankCode [ZPVCB] cardKey[160525000004003ZPVCB] cardType[ZPVCB]
+        return new BankAccount(dBankAccount.firstaccountno,
+                dBankAccount.lastaccountno,
+                dBankAccount.bankcode);
+    }
+
 
     String detectCardType(String bankcode, String first6cardno) {
         if (TextUtils.isEmpty(bankcode)) {

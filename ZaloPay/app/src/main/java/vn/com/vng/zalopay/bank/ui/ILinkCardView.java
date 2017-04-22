@@ -41,5 +41,7 @@ interface ILinkCardView extends ILoadDataView {
 
     void showListBankSupportDialog(ArrayList<ZPCard> cards);
 
-    void gotoTabLinkAccount();
+    void gotoTabLinkAccAndReloadLinkedAcc();
+
+    void gotoTabLinkAccAndShowDialog(String message);
 }

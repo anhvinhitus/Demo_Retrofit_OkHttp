@@ -4,12 +4,16 @@ import android.text.TextUtils;
 
 import java.util.HashMap;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.bank.models.BankAccountStyle;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.utils.GsonUtils;
 
 /**
  * Created by longlv on 1/17/17.
@@ -81,6 +85,30 @@ public class BankUtils {
             return mBankAccountStyles.get(bankAccount.mBankCode);
         } else {
             return BANK_ACCOUNT_DEFAULT;
+        }
+    }
+
+    public static String getBankName(String bankCode) {
+        if (TextUtils.isEmpty(bankCode)) {
+            return "";
+        }
+        String strBankConfig = "";
+        try {
+            strBankConfig = SharedPreferencesManager.getInstance().getBankConfig(bankCode);
+        } catch (Exception e) {
+            Timber.w(e, "Function getBankName throw exception [%s]", e.getMessage());
+        }
+        if (TextUtils.isEmpty(strBankConfig)) {
+            return "";
+        }
+        BankConfig bankConfig = GsonUtils.fromJsonString(strBankConfig, BankConfig.class);
+        if (bankConfig == null || TextUtils.isEmpty(bankConfig.name)) {
+            return "";
+        }
+        if (bankConfig.name.startsWith("NH")) {
+            return bankConfig.name.substring(2);
+        } else {
+            return bankConfig.name;
         }
     }
 }

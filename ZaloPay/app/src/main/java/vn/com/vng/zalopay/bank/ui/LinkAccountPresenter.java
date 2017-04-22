@@ -55,53 +55,23 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         super(zaloPayRepository, navigator, balanceRepository, transactionRepository, user, eventBus);
     }
 
-    void getMapBankAccount() {
-        showLoadingView();
-        Subscription subscription = ObservableHelper.makeObservable(() -> {
-            List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
-            return transform(mapCardLis);
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new GetLinkedAccountSubscriber());
-        mSubscription.add(subscription);
-    }
-
     void linkAccountIfNotExist(ZPCard zpCard) {
         Subscription subscription = ObservableHelper.makeObservable(() -> {
             List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
-            return transform(mapCardLis);
+            return transformBankAccount(mapCardLis);
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new LinkAccountIfNotLinkedSubscriber(zpCard));
         mSubscription.add(subscription);
     }
 
-    private List<BankAccount> transform(List<DBankAccount> bankAccounts) {
-        if (Lists.isEmptyOrNull(bankAccounts)) return Collections.emptyList();
-
-        List<BankAccount> list = new ArrayList<>();
-        for (DBankAccount dBankAccount : bankAccounts) {
-            BankAccount bankAccount = transform(dBankAccount);
-            if (bankAccount != null) {
-                list.add(bankAccount);
-            }
-        }
-        return list;
-    }
-
-    private BankAccount transform(DBankAccount dBankAccount) {
-        if (dBankAccount == null) {
-            return null;
-        }
-
-        //bankCode [ZPVCB] cardKey[160525000004003ZPVCB] cardType[ZPVCB]
-        return new BankAccount(dBankAccount.firstaccountno,
-                dBankAccount.lastaccountno,
-                dBankAccount.bankcode);
+    void getLinkedBankAccount() {
+        getLinkedBankAccount(new GetLinkedAccountSubscriber());
     }
 
     @Override
     public void resume() {
         if (mView != null && mView.getUserVisibleHint()) {
-            getMapBankAccount();
+            getLinkedBankAccount();
         }
     }
 
@@ -213,7 +183,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
 
         DBankAccount dBankAccount = ((DBankAccount) mappedCreditCard);
-        mView.insertData(transform(dBankAccount));
+        mView.insertData(transformBankAccount(dBankAccount));
 
         if (mPayAfterLinkAcc) {
             mView.showConfirmPayAfterLinkAcc();
@@ -335,7 +305,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
                     @Override
                     public void onOKevent() {
-                        getMapBankAccount();
+                        getLinkedBankAccount();
                     }
                 });
     }
@@ -374,22 +344,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         mView.showError(message);
     }
 
-    private boolean isExist(List<BankAccount> bankAccounts, @NonNull ZPCard zpCard) {
-        if (Lists.isEmptyOrNull(bankAccounts)) {
-            return false;
-        }
-        for (int i = 0; i < bankAccounts.size(); i++) {
-            BankAccount bankAccount = bankAccounts.get(i);
-            if (bankAccount == null || TextUtils.isEmpty(bankAccount.mBankCode)) {
-                continue;
-            }
-            if (bankAccount.mBankCode.equals(zpCard.getCardCode())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private class LinkAccountIfNotLinkedSubscriber extends DefaultSubscriber<List<BankAccount>> {
         private ZPCard mZPCard;
 
@@ -411,7 +365,10 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
         @Override
         public void onNext(List<BankAccount> bankAccounts) {
-            if (isExist(bankAccounts, mZPCard)) {
+            if (mZPCard == null) {
+                return;
+            }
+            if (checkLinkedBankAccount(bankAccounts, mZPCard.getCardCode())) {
                 showAccountHasLinked(mZPCard);
             } else {
                 linkAccount(mZPCard);
@@ -430,7 +387,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshBankAccount(RefreshBankAccountEvent event) {
         if (!event.mIsError) {
-            getMapBankAccount();
+            getLinkedBankAccount();
         }
     }
 }
