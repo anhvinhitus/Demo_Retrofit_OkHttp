@@ -39,6 +39,7 @@ import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ThrowToLoginScreenEvent;
 import vn.com.vng.zalopay.domain.model.AppResource;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
@@ -304,6 +305,12 @@ public class PaymentApplicationActivity extends ReactBasedActivity {
     public void onTokenPaymentExpired(TokenPaymentExpiredEvent event) {
         Timber.i("SESSION EXPIRED in Screen %s", TAG);
         clearUserSession(getString(R.string.exception_token_expired_message));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onForceUpdateApp(ForceUpdateAppEvent event) {
+        Timber.i("Force update app in Screen %s", TAG);
+        clearUserSession(null);
     }
 
     protected boolean clearUserSession(String message) {

@@ -13,7 +13,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.R;
-import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
+import vn.com.vng.zalopay.event.ForceUpdateAppEvent;
 
 /**
  * Created by longlv on 05/08/2016.
@@ -117,7 +117,7 @@ public class AppVersionUtils {
 
     private static void clearSession() {
         EventBus eventBus = AndroidApplication.instance().getAppComponent().eventBus();
-        eventBus.postSticky(new TokenPaymentExpiredEvent());
+        eventBus.postSticky(new ForceUpdateAppEvent());
     }
 
     private static void showDialogUpgradeApp(final Activity activity, final boolean forceUpdate) {
