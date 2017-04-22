@@ -1,4 +1,8 @@
 Zalo Pay (Production v2.10.0 - build 228) - Released on 2017-04-22
+- Bỏ thông báo lỗi "Phiên làm việc đã  hết hạn. Vui lòng đăng nhập lại để tiếp tục." ở màn hình đăng nhập khi force update.
+- Update UI khi user nhập vào số thẻ vietcombank trong tab Liên Kết Thẻ (user đã liên kết tài khoản vietcombank).
+
+Zalo Pay (Production v2.10.0 - build 228) - Released on 2017-04-22
 - Fix recovery notification.
 - Update UI khi user nhập vào số thẻ vietcombank trong tab Liên Kết Thẻ (user đã liên kết tài khoản vietcombank).
 
