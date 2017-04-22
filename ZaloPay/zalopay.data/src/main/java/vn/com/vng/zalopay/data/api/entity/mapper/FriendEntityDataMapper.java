@@ -16,6 +16,7 @@ import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.cache.model.ContactGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGD;
+import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.data.util.Strings;
@@ -70,10 +71,9 @@ public class FriendEntityDataMapper {
 
         ZaloPayProfileGD item = new ZaloPayProfileGD();
 
-        try {
-            item.zaloId = Long.parseLong(entity.zaloid);
-        } catch (Exception ex) {
-            Timber.e(ex, "transform user fail");
+        item.zaloId = ConvertHelper.parseLong(entity.zaloid, 0);
+
+        if (item.zaloId <= 0) {
             return null;
         }
 
@@ -81,13 +81,7 @@ public class FriendEntityDataMapper {
         item.status = entity.status;
 
         String phone = PhoneUtil.formatPhoneNumber(entity.phonenumber);
-        if (!TextUtils.isEmpty(phone)) {
-            item.phoneNumber = Long.valueOf(phone);
-        } else {
-            item.phoneNumber = 0L;
-        }
-
-
+        item.phoneNumber = ConvertHelper.parseLong(phone, 0L);
         item.zaloPayName = entity.zalopayname;
         item.avatar = entity.avatar;
         item.displayName = entity.displayName;
@@ -103,7 +97,7 @@ public class FriendEntityDataMapper {
         entity.userid = gd.zaloPayId;
         entity.zaloid = String.valueOf(gd.zaloId);
         entity.zalopayname = gd.zaloPayName;
-        entity.phonenumber = gd.phoneNumber == null ? 0 : gd.phoneNumber;
+        entity.phonenumber = ConvertHelper.unboxValue(gd.phoneNumber, 0);
         entity.status = gd.status;
         entity.avatar = gd.avatar;
         entity.displayName = gd.displayName;
@@ -137,7 +131,7 @@ public class FriendEntityDataMapper {
         List<ContactGD> ret = new ArrayList<>();
 
         for (ContactPhone number : contact.numbers) {
-            long phoneNumber = convert(number.number);
+            long phoneNumber = ConvertHelper.parseLong(number.number, 0);
             if (phoneNumber <= 0) {
                 continue;
             }
@@ -150,17 +144,6 @@ public class FriendEntityDataMapper {
         }
 
         return ret;
-    }
-
-    private long convert(String number) {
-        long phoneNumber = 0;
-
-        try {
-            phoneNumber = Long.parseLong(number);
-        } catch (NumberFormatException ignore) {
-        }
-
-        return phoneNumber;
     }
 
     public List<ZaloUserEntity> transformZaloUserEntity(List<ZaloFriendGD> gd) {

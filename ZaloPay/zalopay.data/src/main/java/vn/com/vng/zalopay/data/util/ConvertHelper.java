@@ -31,4 +31,12 @@ public class ConvertHelper {
             return value;
         }
     }
+
+    public static long parseLong(String value, long defaultValue) {
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException ignore) {
+            return defaultValue;
+        }
+    }
 }
