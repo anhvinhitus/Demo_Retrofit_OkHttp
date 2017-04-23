@@ -34,7 +34,7 @@ public class ZaloPayProfileGD {
     private transient ZaloPayProfileGDDao myDao;
 
     @ToOne(joinProperty = "zaloId")
-    private ZaloFriendGD zaloInfo;
+    private ZaloProfileGD zaloInfo;
 
     @Generated
     private transient Long zaloInfo__resolvedKey;
@@ -55,12 +55,12 @@ public class ZaloPayProfileGD {
 
     /** To-one relationship, resolved on first access. */
     @Generated
-    public ZaloFriendGD getZaloInfo() {
+    public ZaloProfileGD getZaloInfo() {
         long __key = this.zaloId;
         if (zaloInfo__resolvedKey == null || !zaloInfo__resolvedKey.equals(__key)) {
             __throwIfDetached();
-            ZaloFriendGDDao targetDao = daoSession.getZaloFriendGDDao();
-            ZaloFriendGD zaloInfoNew = targetDao.load(__key);
+            ZaloProfileGDDao targetDao = daoSession.getZaloProfileGDDao();
+            ZaloProfileGD zaloInfoNew = targetDao.load(__key);
             synchronized (this) {
                 zaloInfo = zaloInfoNew;
             	zaloInfo__resolvedKey = __key;
@@ -70,7 +70,7 @@ public class ZaloPayProfileGD {
     }
 
     @Generated
-    public void setZaloInfo(ZaloFriendGD zaloInfo) {
+    public void setZaloInfo(ZaloProfileGD zaloInfo) {
         if (zaloInfo == null) {
             throw new DaoException("To-one property 'zaloId' has not-null constraint; cannot set to-one to null");
         }

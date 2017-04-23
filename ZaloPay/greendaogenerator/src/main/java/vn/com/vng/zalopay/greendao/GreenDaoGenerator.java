@@ -113,7 +113,7 @@ public class GreenDaoGenerator {
 
 
     private static Entity addZaloProfile(Schema appSchema) {
-        Entity zaloEntity = appSchema.addEntity("ZaloFriendGD");
+        Entity zaloEntity = appSchema.addEntity("ZaloProfileGD");
         zaloEntity.setConstructors(false);
         zaloEntity.addStringProperty("userName");
         zaloEntity.addStringProperty("displayName");

@@ -25,7 +25,7 @@ public class DaoMaster extends AbstractDaoMaster {
         TransactionLogDao.createTable(db, ifNotExists);
         TransactionLogBackupDao.createTable(db, ifNotExists);
         DataManifestDao.createTable(db, ifNotExists);
-        ZaloFriendGDDao.createTable(db, ifNotExists);
+        ZaloProfileGDDao.createTable(db, ifNotExists);
         ZaloPayProfileGDDao.createTable(db, ifNotExists);
         ContactGDDao.createTable(db, ifNotExists);
         TransferRecentDao.createTable(db, ifNotExists);
@@ -36,7 +36,6 @@ public class DaoMaster extends AbstractDaoMaster {
         PackageInBundleGDDao.createTable(db, ifNotExists);
         SentBundleGDDao.createTable(db, ifNotExists);
         ReceivePackageGDDao.createTable(db, ifNotExists);
-        RedPacketAppInfoGDDao.createTable(db, ifNotExists);
         MerchantUserDao.createTable(db, ifNotExists);
     }
 
@@ -46,7 +45,7 @@ public class DaoMaster extends AbstractDaoMaster {
         TransactionLogDao.dropTable(db, ifExists);
         TransactionLogBackupDao.dropTable(db, ifExists);
         DataManifestDao.dropTable(db, ifExists);
-        ZaloFriendGDDao.dropTable(db, ifExists);
+        ZaloProfileGDDao.dropTable(db, ifExists);
         ZaloPayProfileGDDao.dropTable(db, ifExists);
         ContactGDDao.dropTable(db, ifExists);
         TransferRecentDao.dropTable(db, ifExists);
@@ -57,7 +56,6 @@ public class DaoMaster extends AbstractDaoMaster {
         PackageInBundleGDDao.dropTable(db, ifExists);
         SentBundleGDDao.dropTable(db, ifExists);
         ReceivePackageGDDao.dropTable(db, ifExists);
-        RedPacketAppInfoGDDao.dropTable(db, ifExists);
         MerchantUserDao.dropTable(db, ifExists);
     }
 
@@ -81,7 +79,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(TransactionLogDao.class);
         registerDaoClass(TransactionLogBackupDao.class);
         registerDaoClass(DataManifestDao.class);
-        registerDaoClass(ZaloFriendGDDao.class);
+        registerDaoClass(ZaloProfileGDDao.class);
         registerDaoClass(ZaloPayProfileGDDao.class);
         registerDaoClass(ContactGDDao.class);
         registerDaoClass(TransferRecentDao.class);
@@ -92,7 +90,6 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(PackageInBundleGDDao.class);
         registerDaoClass(SentBundleGDDao.class);
         registerDaoClass(ReceivePackageGDDao.class);
-        registerDaoClass(RedPacketAppInfoGDDao.class);
         registerDaoClass(MerchantUserDao.class);
     }
 

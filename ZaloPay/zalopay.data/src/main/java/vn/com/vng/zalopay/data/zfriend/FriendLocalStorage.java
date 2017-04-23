@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import org.greenrobot.greendao.internal.SqlUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,8 +19,8 @@ import vn.com.vng.zalopay.data.cache.SqlBaseScopeImpl;
 import vn.com.vng.zalopay.data.cache.model.ContactGD;
 import vn.com.vng.zalopay.data.cache.model.ContactGDDao;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendGDDao;
+import vn.com.vng.zalopay.data.cache.model.ZaloProfileGD;
+import vn.com.vng.zalopay.data.cache.model.ZaloProfileGDDao;
 import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGDDao;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -37,7 +36,7 @@ import static vn.com.vng.zalopay.data.Constants.MANIFEST_LASTTIME_SYNC_CONTACT;
 
 public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.LocalStorage {
 
-    private ZaloFriendGDDao mZaloUserDao;
+    private ZaloProfileGDDao mZaloUserDao;
     private ZaloPayProfileGDDao mZaloPayUserDao;
     private ContactGDDao mContactDao;
 
@@ -45,7 +44,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
 
     public FriendLocalStorage(DaoSession daoSession) {
         super(daoSession);
-        this.mZaloUserDao = getDaoSession().getZaloFriendGDDao();
+        this.mZaloUserDao = getDaoSession().getZaloProfileGDDao();
         this.mZaloPayUserDao = getDaoSession().getZaloPayProfileGDDao();
         this.mContactDao = getDaoSession().getContactGDDao();
         this.mDataMapper = new FriendEntityDataMapper();
@@ -54,7 +53,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     @Override
     public void putZaloUser(List<ZaloUserEntity> val) {
         Timber.d("Put list zalo user size [%s]", val.size());
-        List<ZaloFriendGD> list = mDataMapper.transformZaloUser(val);
+        List<ZaloProfileGD> list = mDataMapper.transformZaloUser(val);
         if (!Lists.isEmptyOrNull(list)) {
             mZaloUserDao.insertOrReplaceInTx(list);
         }
@@ -63,7 +62,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     @NonNull
     @Override
     public List<ZaloUserEntity> getZaloUsers() {
-        List<ZaloFriendGD> list = mZaloUserDao.queryBuilder()
+        List<ZaloProfileGD> list = mZaloUserDao.queryBuilder()
                 .list();
         Timber.d("get all zalo user size [%s]", list.size());
         return mDataMapper.transformZaloUserEntity(list);
@@ -72,8 +71,8 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     @NonNull
     @Override
     public List<ZaloUserEntity> getZaloUsers(List<Long> zaloids) {
-        List<ZaloFriendGD> list = mZaloUserDao.queryBuilder()
-                .where(ZaloFriendGDDao.Properties.ZaloId.in(zaloids))
+        List<ZaloProfileGD> list = mZaloUserDao.queryBuilder()
+                .where(ZaloProfileGDDao.Properties.ZaloId.in(zaloids))
                 .list();
         Timber.d("get zalo users from zaloids [%s] resultSize [%s]", zaloids.toArray(), list.size());
         return mDataMapper.transformZaloUserEntity(list);
@@ -96,7 +95,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     @Override
     public void putZaloUser(ZaloUserEntity entity) {
         Timber.d("Put zalo zaloid [%s] to db", entity == null ? 0 : entity.userId);
-        ZaloFriendGD item = mDataMapper.transform(entity);
+        ZaloProfileGD item = mDataMapper.transform(entity);
         if (item != null) {
             mZaloUserDao.insertOrReplaceInTx(item);
         }
@@ -172,8 +171,8 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     @Override
     public List<RedPacketUserEntity> getRedPacketUsersEntity(List<Long> zaloids) {
         String strZaloIds = Strings.joinWithDelimiter(",", zaloids);
-        List<ZaloFriendGD> list = mZaloUserDao.queryDeep("WHERE T.\"" + ZaloFriendGDDao.Properties.ZaloId.columnName + "\" IN (" + strZaloIds + ") AND T.\""
-                + ZaloFriendGDDao.Properties.UsingApp.columnName + "\" = 1 AND T0.\""
+        List<ZaloProfileGD> list = mZaloUserDao.queryDeep("WHERE T.\"" + ZaloProfileGDDao.Properties.ZaloId.columnName + "\" IN (" + strZaloIds + ") AND T.\""
+                + ZaloProfileGDDao.Properties.UsingApp.columnName + "\" = 1 AND T0.\""
                 + ZaloPayProfileGDDao.Properties.ZaloPayId.columnName + "\" IS NOT NULL");
         Timber.d("Get redpacket user entity size [%s]", list.size());
         return mDataMapper.transformRedPacketEntity(list);
@@ -201,8 +200,8 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
     @Override
     @NonNull
     public List<ZaloUserEntity> getZaloUserWithoutZaloPayId() {
-        List<ZaloFriendGD> list = mZaloUserDao.queryDeep("WHERE T.\""
-                + ZaloFriendGDDao.Properties.UsingApp.columnName + "\" = 1 AND T0.\""
+        List<ZaloProfileGD> list = mZaloUserDao.queryDeep("WHERE T.\""
+                + ZaloProfileGDDao.Properties.UsingApp.columnName + "\" = 1 AND T0.\""
                 + ZaloPayProfileGDDao.Properties.ZaloPayId.columnName + "\" IS NULL");
 
         Timber.d("Get zalo user without zalopayid size [%s] ", list.size());
@@ -256,19 +255,19 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
             builder.append(" IFNULL( T1.\"");
             builder.append(ContactGDDao.Properties.DisplayName.columnName);
             builder.append("\",T.\"");
-            builder.append(ZaloFriendGDDao.Properties.DisplayName.columnName);
+            builder.append(ZaloProfileGDDao.Properties.DisplayName.columnName);
             builder.append("\") AS ");
             builder.append(ColumnIndex.ALIAS_DISPLAY_NAME);
             builder.append(',');
             builder.append(" IFNULL( T1.\"");
             builder.append(ContactGDDao.Properties.Fulltextsearch.columnName);
             builder.append("\",T.\"");
-            builder.append(ZaloFriendGDDao.Properties.Fulltextsearch.columnName);
+            builder.append(ZaloProfileGDDao.Properties.Fulltextsearch.columnName);
             builder.append("\") AS ");
             builder.append(ColumnIndex.ALIAS_FULL_TEXT_SEARCH);
         } else {
             builder.append(" T.");
-            builder.append(ZaloFriendGDDao.Properties.DisplayName.columnName);
+            builder.append(ZaloProfileGDDao.Properties.DisplayName.columnName);
             builder.append(" AS ");
             builder.append(ColumnIndex.ALIAS_DISPLAY_NAME);
             builder.append(',');
@@ -285,7 +284,7 @@ public class FriendLocalStorage extends SqlBaseScopeImpl implements FriendStore.
         builder.append(mZaloPayUserDao.getTablename());
         builder.append(" T0");
         builder.append(" ON T.\"");
-        builder.append(ZaloFriendGDDao.Properties.ZaloId.columnName);
+        builder.append(ZaloProfileGDDao.Properties.ZaloId.columnName);
         builder.append("\"=T0.\"");
         builder.append(ZaloPayProfileGDDao.Properties.ZaloId.columnName);
         builder.append("\"");

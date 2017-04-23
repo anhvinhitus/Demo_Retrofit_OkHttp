@@ -14,7 +14,7 @@ import vn.com.vng.zalopay.data.api.entity.RedPacketUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloPayUserEntity;
 import vn.com.vng.zalopay.data.api.entity.ZaloUserEntity;
 import vn.com.vng.zalopay.data.cache.model.ContactGD;
-import vn.com.vng.zalopay.data.cache.model.ZaloFriendGD;
+import vn.com.vng.zalopay.data.cache.model.ZaloProfileGD;
 import vn.com.vng.zalopay.data.cache.model.ZaloPayProfileGD;
 import vn.com.vng.zalopay.data.util.ConvertHelper;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -34,12 +34,12 @@ public class FriendEntityDataMapper {
     public FriendEntityDataMapper() {
     }
 
-    public ZaloFriendGD transform(ZaloUserEntity entity) {
+    public ZaloProfileGD transform(ZaloUserEntity entity) {
         if (entity == null || entity.userId <= 0) {
             return null;
         }
 
-        ZaloFriendGD item = new ZaloFriendGD();
+        ZaloProfileGD item = new ZaloProfileGD();
         item.zaloId = entity.userId;
         item.userName = (entity.userName);
         item.avatar = (entity.avatar);
@@ -49,7 +49,7 @@ public class FriendEntityDataMapper {
         return item;
     }
 
-    public ZaloUserEntity transform(ZaloFriendGD zaloFriendGD) {
+    public ZaloUserEntity transform(ZaloProfileGD zaloFriendGD) {
         if (zaloFriendGD == null) {
             return null;
         }
@@ -104,7 +104,7 @@ public class FriendEntityDataMapper {
         return entity;
     }
 
-    public RedPacketUserEntity transformRedPacketEntity(ZaloFriendGD zaloFriendGD) {
+    public RedPacketUserEntity transformRedPacketEntity(ZaloProfileGD zaloFriendGD) {
         if (zaloFriendGD == null) {
             return null;
         }
@@ -146,11 +146,11 @@ public class FriendEntityDataMapper {
         return ret;
     }
 
-    public List<ZaloUserEntity> transformZaloUserEntity(List<ZaloFriendGD> gd) {
+    public List<ZaloUserEntity> transformZaloUserEntity(List<ZaloProfileGD> gd) {
         return Lists.transform(gd, this::transform);
     }
 
-    public List<ZaloFriendGD> transformZaloUser(List<ZaloUserEntity> entities) {
+    public List<ZaloProfileGD> transformZaloUser(List<ZaloUserEntity> entities) {
         return Lists.transform(entities, this::transform);
     }
 
@@ -162,7 +162,7 @@ public class FriendEntityDataMapper {
         return Lists.transform(gd, this::transform);
     }
 
-    public List<RedPacketUserEntity> transformRedPacketEntity(List<ZaloFriendGD> gd) {
+    public List<RedPacketUserEntity> transformRedPacketEntity(List<ZaloProfileGD> gd) {
         return Lists.transform(gd, this::transformRedPacketEntity);
     }
 
