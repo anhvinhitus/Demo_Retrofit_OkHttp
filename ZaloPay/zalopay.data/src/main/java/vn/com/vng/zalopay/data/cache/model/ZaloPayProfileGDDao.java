@@ -191,11 +191,8 @@ public class ZaloPayProfileGDDao extends AbstractDao<ZaloPayProfileGD, Long> {
             SqlUtils.appendColumns(builder, "T", getAllColumns());
             builder.append(',');
             SqlUtils.appendColumns(builder, "T0", daoSession.getZaloProfileGDDao().getAllColumns());
-            builder.append(',');
-            SqlUtils.appendColumns(builder, "T1", daoSession.getContactGDDao().getAllColumns());
             builder.append(" FROM ZALO_PAY_PROFILE_GD T");
             builder.append(" LEFT JOIN ZALO_PROFILE_GD T0 ON T.\"ZALO_ID\"=T0.\"_id\"");
-            builder.append(" LEFT JOIN CONTACT_GD T1 ON T.\"PHONE_NUMBER\"=T1.\"PHONE_NUMBER\"");
             builder.append(' ');
             selectDeep = builder.toString();
         }
@@ -210,10 +207,6 @@ public class ZaloPayProfileGDDao extends AbstractDao<ZaloPayProfileGD, Long> {
          if(zaloInfo != null) {
             entity.setZaloInfo(zaloInfo);
         }
-        offset += daoSession.getZaloProfileGDDao().getAllColumns().length;
-
-        ContactGD contact = loadCurrentOther(daoSession.getContactGDDao(), cursor, offset);
-        entity.setContact(contact);
 
         return entity;    
     }

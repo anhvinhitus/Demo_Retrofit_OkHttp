@@ -9,7 +9,7 @@ import org.greenrobot.greendao.generator.ToMany;
 
 
 public class GreenDaoGenerator {
-    private static final int APP_DB_VERSION = 58;
+    private static final int APP_DB_VERSION = 59;
     private static final int GLOBAL_DB_VERSION = 1;
 
     /**
@@ -164,7 +164,7 @@ public class GreenDaoGenerator {
         Property phoneNumberForContact = contactEntity.addLongProperty("phoneNumber")
                 .notNull().primaryKey().getProperty();
 
-        zaloPayEntity.addToOne(contactEntity, phoneNumberForZalopay, "contact");
+        // zaloPayEntity.addToOne(contactEntity, phoneNumberForZalopay, "contact");
         // contactEntity.addToOne(zaloPayEntity, phoneNumberForContact, "zaloPayInfo");
 
     }

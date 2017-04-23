@@ -39,12 +39,6 @@ public class ZaloPayProfileGD {
     @Generated
     private transient Long zaloInfo__resolvedKey;
 
-    @ToOne(joinProperty = "phoneNumber")
-    private ContactGD contact;
-
-    @Generated
-    private transient Long contact__resolvedKey;
-
 
     /** called by internal mechanisms, do not call yourself. */
     @Generated
@@ -78,31 +72,6 @@ public class ZaloPayProfileGD {
             this.zaloInfo = zaloInfo;
             zaloId = zaloInfo.zaloId;
             zaloInfo__resolvedKey = zaloId;
-        }
-    }
-
-    /** To-one relationship, resolved on first access. */
-    @Generated
-    public ContactGD getContact() {
-        Long __key = this.phoneNumber;
-        if (contact__resolvedKey == null || !contact__resolvedKey.equals(__key)) {
-            __throwIfDetached();
-            ContactGDDao targetDao = daoSession.getContactGDDao();
-            ContactGD contactNew = targetDao.load(__key);
-            synchronized (this) {
-                contact = contactNew;
-            	contact__resolvedKey = __key;
-            }
-        }
-        return contact;
-    }
-
-    @Generated
-    public void setContact(ContactGD contact) {
-        synchronized (this) {
-            this.contact = contact;
-            phoneNumber = contact == null ? null : contact.phoneNumber;
-            contact__resolvedKey = phoneNumber;
         }
     }
 
