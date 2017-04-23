@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import java.util.List;
 
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.Query;
 import rx.Observable;
 import vn.com.vng.zalopay.data.Constants;
@@ -19,7 +18,7 @@ import vn.com.vng.zalopay.data.cache.SqlBaseScope;
 import vn.com.vng.zalopay.network.API_NAME;
 import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 import vn.com.vng.zalopay.domain.model.Person;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloProfile;
 import vn.com.zalopay.analytics.ZPEvents;
 
 /**
@@ -103,9 +102,9 @@ public interface FriendStore {
         Observable<Cursor> searchZaloFriend(String s);
 
         @Nullable
-        ZaloFriend transform(Cursor cursor);
+        ZaloProfile transform(Cursor cursor);
 
-        Observable<List<ZaloFriend>> getZaloFriendList();
+        Observable<List<ZaloProfile>> getZaloFriendList();
 
         Observable<Boolean> checkListZaloIdForClient();
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.data.cache.model.GetReceivePacket;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloProfile;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageStatus;
@@ -95,7 +95,7 @@ class DataMapper {
         return friendList;
     }
 
-    static WritableMap transform(ZaloFriend friend) {
+    static WritableMap transform(ZaloProfile friend) {
         if (friend == null) {
             return null;
         }
@@ -118,8 +118,8 @@ class DataMapper {
 
         for (T item : list) {
             WritableMap map;
-            if (item instanceof ZaloFriend) {
-                map = transform((ZaloFriend) item);
+            if (item instanceof ZaloProfile) {
+                map = transform((ZaloProfile) item);
             } else if (item instanceof PackageInBundle) {
                 map = transform((PackageInBundle) item);
             } else if (item instanceof SentBundle) {

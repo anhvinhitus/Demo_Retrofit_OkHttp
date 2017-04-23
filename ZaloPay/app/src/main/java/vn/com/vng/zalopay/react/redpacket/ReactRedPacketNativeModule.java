@@ -40,7 +40,7 @@ import vn.com.vng.zalopay.data.redpacket.RedPacketStore;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloProfile;
 import vn.com.vng.zalopay.domain.model.redpacket.BundleOrder;
 import vn.com.vng.zalopay.domain.model.redpacket.GetSentBundle;
 import vn.com.vng.zalopay.domain.model.redpacket.PackageInBundle;
@@ -386,9 +386,9 @@ public class ReactRedPacketNativeModule extends ReactContextBaseJavaModule
     public void getAllFriend(Promise promise) {
         Timber.d("getAllFriend promise [%s]", promise);
         Subscription subscription = mFriendRepository.getZaloFriendList()
-                .map(new Func1<List<ZaloFriend>, WritableArray>() {
+                .map(new Func1<List<ZaloProfile>, WritableArray>() {
                     @Override
-                    public WritableArray call(List<ZaloFriend> friends) {
+                    public WritableArray call(List<ZaloProfile> friends) {
                         return DataMapper.transform(friends);
                     }
                 })

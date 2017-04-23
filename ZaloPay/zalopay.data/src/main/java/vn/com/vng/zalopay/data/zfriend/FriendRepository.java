@@ -26,7 +26,7 @@ import vn.com.vng.zalopay.data.zfriend.contactloader.Contact;
 import vn.com.vng.zalopay.data.zfriend.contactloader.ContactFetcher;
 import vn.com.vng.zalopay.domain.model.Person;
 import vn.com.vng.zalopay.domain.model.User;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloProfile;
 
 import static vn.com.vng.zalopay.data.util.ObservableHelper.makeObservable;
 
@@ -83,21 +83,21 @@ public class FriendRepository implements FriendStore.Repository {
 
     @Nullable
     @Override
-    public ZaloFriend transform(Cursor cursor) {
+    public ZaloProfile transform(Cursor cursor) {
         if (cursor == null || cursor.isClosed()) {
             return null;
         }
         try {
-            ZaloFriend zaloFriend = new ZaloFriend();
-            zaloFriend.userId = cursor.getLong(ColumnIndex.ID);
-            zaloFriend.userName = cursor.getString(ColumnIndex.USER_NAME);
-            zaloFriend.displayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_DISPLAY_NAME));
-            zaloFriend.avatar = cursor.getString(ColumnIndex.AVATAR);
-            zaloFriend.usingApp = cursor.getInt(ColumnIndex.USING_APP) == 1;
-            zaloFriend.zaloPayId = cursor.getString(cursor.getColumnIndex(ColumnIndex.ZALOPAY_ID));
-            zaloFriend.normalizeDisplayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_FULL_TEXT_SEARCH));
-            zaloFriend.status = cursor.getInt(cursor.getColumnIndex(ColumnIndex.STATUS));
-            return zaloFriend;
+            ZaloProfile zaloProfile = new ZaloProfile();
+            zaloProfile.userId = cursor.getLong(ColumnIndex.ID);
+            zaloProfile.userName = cursor.getString(ColumnIndex.USER_NAME);
+            zaloProfile.displayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_DISPLAY_NAME));
+            zaloProfile.avatar = cursor.getString(ColumnIndex.AVATAR);
+            zaloProfile.usingApp = cursor.getInt(ColumnIndex.USING_APP) == 1;
+            zaloProfile.zaloPayId = cursor.getString(cursor.getColumnIndex(ColumnIndex.ZALOPAY_ID));
+            zaloProfile.normalizeDisplayName = cursor.getString(cursor.getColumnIndex(ColumnIndex.ALIAS_FULL_TEXT_SEARCH));
+            zaloProfile.status = cursor.getInt(cursor.getColumnIndex(ColumnIndex.STATUS));
+            return zaloProfile;
         } catch (Exception e) {
             Timber.d(e, "Transform friend exception");
             return null;
@@ -141,22 +141,22 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Override
-    public Observable<List<ZaloFriend>> getZaloFriendList() {
+    public Observable<List<ZaloProfile>> getZaloFriendList() {
 
-        Observable<List<ZaloFriend>> observableFriendLocal = getFriendLocal()
+        Observable<List<ZaloProfile>> observableFriendLocal = getFriendLocal()
                 .filter(zaloFriends -> !Lists.isEmptyOrNull(zaloFriends));
 
-        Observable<List<ZaloFriend>> observableZaloApi = fetchZaloFriendFullInfo()
+        Observable<List<ZaloProfile>> observableZaloApi = fetchZaloFriendFullInfo()
                 .flatMap(aBoolean -> getFriendLocal());
 
         return Observable.concat(observableFriendLocal, observableZaloApi)
                 .first();
     }
 
-    private Observable<List<ZaloFriend>> getFriendLocal() {
+    private Observable<List<ZaloProfile>> getFriendLocal() {
         return getZaloFriendsCursorLocal()
                 .map(cursor -> {
-                    List<ZaloFriend> ret = transformZaloFriend(cursor);
+                    List<ZaloProfile> ret = transformZaloFriend(cursor);
                     if (cursor != null && !cursor.isClosed()) {
                         cursor.close();
                     }
@@ -164,20 +164,20 @@ public class FriendRepository implements FriendStore.Repository {
                 });
     }
 
-    private List<ZaloFriend> transformZaloFriend(Cursor cursor) {
+    private List<ZaloProfile> transformZaloFriend(Cursor cursor) {
         if (cursor == null || cursor.isClosed()) {
             return Collections.emptyList();
         }
-        List<ZaloFriend> ret = new ArrayList<>();
+        List<ZaloProfile> ret = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                ZaloFriend zaloFriend = transform(cursor);
-                if (zaloFriend == null) {
+                ZaloProfile zaloProfile = transform(cursor);
+                if (zaloProfile == null) {
                     continue;
                 }
 
-                ret.add(zaloFriend);
+                ret.add(zaloProfile);
                 cursor.moveToNext();
             }
         }

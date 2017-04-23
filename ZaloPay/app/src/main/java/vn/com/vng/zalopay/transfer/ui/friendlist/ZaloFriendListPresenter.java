@@ -3,7 +3,6 @@ package vn.com.vng.zalopay.transfer.ui.friendlist;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import javax.inject.Inject;
@@ -20,7 +19,7 @@ import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.zfriend.FriendConfig;
 import vn.com.vng.zalopay.data.zfriend.FriendStore;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloProfile;
 import vn.com.vng.zalopay.exception.ErrorMessageFactory;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
@@ -96,26 +95,26 @@ final class ZaloFriendListPresenter extends AbstractPresenter<IZaloFriendListVie
     }
 
     void startTransfer(Fragment fragment, Cursor cursor) {
-        ZaloFriend zaloFriend = mFriendRepository.transform(cursor);
-        if (zaloFriend == null) {
+        ZaloProfile zaloProfile = mFriendRepository.transform(cursor);
+        if (zaloProfile == null) {
             return;
         }
 
-        if (zaloFriend.status == 1) {
+        if (zaloProfile.status == 1) {
 
-            TransferObject object = new TransferObject(zaloFriend);
+            TransferObject object = new TransferObject(zaloProfile);
             object.transferMode = Constants.TransferMode.TransferToZaloFriend;
             object.activateSource = Constants.ActivateSource.FromTransferActivity;
 
             mNavigator.startActivityForResult(fragment, object, Constants.REQUEST_CODE_TRANSFER);
         } else {
-            showDialogNotUsingApp(zaloFriend);
+            showDialogNotUsingApp(zaloProfile);
         }
     }
 
-    private void showDialogNotUsingApp(ZaloFriend zaloFriend) {
+    private void showDialogNotUsingApp(ZaloProfile zaloProfile) {
         if (mView != null) {
-            String message = String.format(mContext.getString(R.string.account_not_use_zalopay), zaloFriend.displayName, zaloFriend.displayName);
+            String message = String.format(mContext.getString(R.string.account_not_use_zalopay), zaloProfile.displayName, zaloProfile.displayName);
             DialogHelper.showNotificationDialog((Activity) mView.getContext(),
                     message,
                     null);

@@ -1,7 +1,7 @@
 package vn.com.vng.zalopay.transfer.ui;
 
 import vn.com.vng.zalopay.domain.model.RecentTransaction;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloProfile;
 import vn.com.vng.zalopay.ui.presenter.IPresenter;
 
 /**
@@ -30,7 +30,7 @@ public interface TransferMoneyPresenter extends IPresenter<ITransferView> {
     void doTransfer();
 
     void onViewCreated();
-    void initView(ZaloFriend zaloFriend, RecentTransaction recentTransaction, Long amount, String message);
+    void initView(ZaloProfile zaloProfile, RecentTransaction recentTransaction, Long amount, String message);
     void navigateBack();
     void setTransferMode(int anInt);
 }

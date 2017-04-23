@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by longlv on 11/06/2016.
  */
 
-public class ZaloFriend extends AbstractData implements Parcelable {
+public class ZaloProfile extends AbstractData implements Parcelable {
 
     public long userId;
     public String zaloPayId;
@@ -39,10 +39,10 @@ public class ZaloFriend extends AbstractData implements Parcelable {
         dest.writeLong(this.status);
     }
 
-    public ZaloFriend() {
+    public ZaloProfile() {
     }
 
-    private ZaloFriend(Parcel in) {
+    private ZaloProfile(Parcel in) {
         this.userId = in.readLong();
         this.zaloPayId = in.readString();
         this.userName = in.readString();
@@ -55,15 +55,15 @@ public class ZaloFriend extends AbstractData implements Parcelable {
         this.status = in.readLong();
     }
 
-    public static final Creator<ZaloFriend> CREATOR = new Creator<ZaloFriend>() {
+    public static final Creator<ZaloProfile> CREATOR = new Creator<ZaloProfile>() {
         @Override
-        public ZaloFriend createFromParcel(Parcel source) {
-            return new ZaloFriend(source);
+        public ZaloProfile createFromParcel(Parcel source) {
+            return new ZaloProfile(source);
         }
 
         @Override
-        public ZaloFriend[] newArray(int size) {
-            return new ZaloFriend[size];
+        public ZaloProfile[] newArray(int size) {
+            return new ZaloProfile[size];
         }
     };
 }
