@@ -62,8 +62,7 @@ public class AdapterBankCard extends AdapterBase {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void init() throws Exception{
         this.mGuiProcessor = new BankCardGuiProcessor(this);
         if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard())
             getGuiProcessor().initPager();

@@ -41,9 +41,7 @@ public class AdapterCreditCard extends AdapterBase {
     }
 
     @Override
-    public void init() {
-        super.init();
-
+    public void init() throws Exception {
         this.mGuiProcessor = new CreditCardGuiProcessor(this);
         if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard()) {
             getGuiProcessor().initPager();

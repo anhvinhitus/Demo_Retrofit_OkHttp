@@ -34,8 +34,7 @@ public class AdapterZaloPay extends AdapterBase {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void init() throws Exception{
         getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zingpaysdk_pmc_name_zalopay));
         showFee();
     }
