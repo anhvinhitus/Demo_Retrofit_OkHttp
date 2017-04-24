@@ -80,19 +80,13 @@ dependencies {
     compile libs.rxJava
     compile libs.rxAndroid
 
-    compile libs.retrofit
-    compile libs.retrofitAdapter
-    compile libs.retrofitConverter
-    compile libs.retrofitLogging
-    compile libs.okHttp
     compile libs.greenDao
     compile libs.timber
     compile libs.eventbus
     compile libs.gson
-    compile libs.wire_runtime
-    compile libs.zalopay_analytics
-    compile libs.zalopay_feedback
 
+   
+    compile libs.zalopay_feedback
     compile project(':zalopay.domain')
     compile project(':zalopay.network')
 }

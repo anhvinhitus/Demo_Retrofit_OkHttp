@@ -35,16 +35,10 @@ dependencies {
     def tests = rootProject.ext.testingLibraries
 
     testCompile tests.junit
-    compile libs.support_appcompat_v7
 
     compile libs.rxJava
     compile libs.rxAndroid
+
     compile libs.timber
     compile libs.gson
-
-    compile libs.support_annotations
-    compile libs.dagger
-
-    provided libs.daggerCompiler
-    provided libs.javaxAnnotation
 }

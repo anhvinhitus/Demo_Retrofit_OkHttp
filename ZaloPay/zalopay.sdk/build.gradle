@@ -54,15 +54,6 @@ dependencies {
 
     def libs = rootProject.ext.libraries
 
-    compile libs.support_appcompat_v7
-    compile libs.support_design
-
-    compile libs.retrofit
-    compile libs.retrofitConverter
-    compile libs.retrofitLogging
-    compile libs.retrofitAdapter
-    compile libs.okHttp
-
     compile libs.timber
 
     compile(libs.circularreveal) {
