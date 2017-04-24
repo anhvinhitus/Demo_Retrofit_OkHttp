@@ -6,8 +6,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.zalopay.ui.widget.slider.SliderLayout;
-
 import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 
@@ -41,10 +39,6 @@ public class HomeSpacingItemDecoration extends RecyclerView.ItemDecoration {
         for (int position = 0; position < childCount; position++) {
             View child = parent.getChildAt(position);
 
-            if (child instanceof SliderLayout) {
-                continue;
-            }
-
             int left = child.getRight();
             int right = left + mDivider.getIntrinsicHeight();
             int top = child.getTop();
@@ -60,11 +54,6 @@ public class HomeSpacingItemDecoration extends RecyclerView.ItemDecoration {
         int childCount = parent.getChildCount();
         for (int position = 0; position < childCount; position++) {
             View child = parent.getChildAt(position);
-
-        /*    if (child instanceof SliderLayout) {
-
-                continue;
-            }*/
 
             int left = child.getLeft();
             int right = child.getRight();
