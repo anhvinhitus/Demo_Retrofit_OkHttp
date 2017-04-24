@@ -1,11 +1,16 @@
 package vn.com.vng.zalopay.utils;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Collections;
 import java.util.List;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.domain.model.User;
+import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
@@ -106,9 +111,7 @@ public class CShareDataWrapper {
     }
 
     public static void pushNotificationToSdk(User user, int notificationType, String message) {
-        // TODO: 4/14/17 - longlv: waiting PaymentSDK update
-        CShareData.getInstance().notifyLinkBankAccountFinish(new ZPWNotification(notificationType, message));
-        /*if (user == null
+        if (user == null
                 || TextUtils.isEmpty(user.zaloPayId)
                 || TextUtils.isEmpty(user.accesstoken)) {
             return;
@@ -133,7 +136,7 @@ public class CShareDataWrapper {
                                         notificationType, pErrorMess);
                                 EventBus.getDefault().post(new RefreshBankAccountEvent(pErrorMess));
                             }
-                        });*/
+                        });
     }
 
     public static void notifyTransactionFinish(Object... pObject) {
