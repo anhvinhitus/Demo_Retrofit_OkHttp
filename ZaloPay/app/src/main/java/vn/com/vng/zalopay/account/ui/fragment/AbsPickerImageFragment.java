@@ -71,14 +71,16 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
             return;
         }
 
-        try {
-            Intent i = new Intent(
-                    Intent.ACTION_PICK,
-                    MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-            i.setType("image/*");
+        Intent i = new Intent(
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        i.setType("image/*");
+
+        if (i.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(i, requestCode);
-        } catch (Exception ex) {
-            Timber.d(ex, "Start pick image");
+        } else {
+            Timber.d("No Activity found to handle Intent %s" + Intent.ACTION_PICK);
+            showToast(R.string.this_action_can_not_be_performed);
         }
     }
 
@@ -90,32 +92,35 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
             return;
         }
 
-        try {
-            Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            Uri contentUri = getCaptureImageOutputUri(name, true);
-            Timber.d("Start capture image : uri [%s]", contentUri.toString());
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            } else {
-                List<ResolveInfo> resInfoList =
-                        getContext().getPackageManager()
-                                .queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Uri contentUri = getCaptureImageOutputUri(name, true);
+        Timber.d("Start capture image : uri [%s]", contentUri.toString());
 
-                for (ResolveInfo resolveInfo : resInfoList) {
-                    String packageName = resolveInfo.activityInfo.packageName;
-                    getContext().grantUriPermission(packageName, contentUri,
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
-                                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        } else {
+            List<ResolveInfo> resInfoList =
+                    getContext().getPackageManager()
+                            .queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                getContext().grantUriPermission(packageName, contentUri,
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
-
-            i.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
-
-            startActivityForResult(i, requestCode);
-        } catch (Exception ex) {
-            Timber.w(ex, "Start capture image");
         }
+
+        i.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+
+        if (i.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(i, requestCode);
+        } else {
+            Timber.d("No Activity found to handle Intent %s" + MediaStore.ACTION_IMAGE_CAPTURE);
+            showToast(R.string.this_action_can_not_be_performed);
+        }
+
     }
 
     @Override
