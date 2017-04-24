@@ -112,13 +112,14 @@ public class WebViewFragment extends BaseFragment implements ZPWebViewProcessor.
         mWebView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 Timber.d("WebLoading progress: %s", progress);
-                if (progress < 100 && mProgressBar.getVisibility() == ProgressBar.GONE) {
-                    mProgressBar.setVisibility(ProgressBar.VISIBLE);
-                }
-
-                mProgressBar.setProgress(progress);
-                if (progress >= 100) {
-                    mProgressBar.setVisibility(ProgressBar.GONE);
+                if (mProgressBar != null) {
+                    if (progress < 100 && mProgressBar.getVisibility() == ProgressBar.GONE) {
+                        mProgressBar.setVisibility(ProgressBar.VISIBLE);
+                    }
+                    mProgressBar.setProgress(progress);
+                    if (progress >= 100) {
+                        mProgressBar.setVisibility(ProgressBar.GONE);
+                    }
                 }
             }
 
