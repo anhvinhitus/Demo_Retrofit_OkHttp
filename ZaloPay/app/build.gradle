@@ -436,9 +436,7 @@ dependencies {
     apt libs.daggerCompiler
     provided libs.javaxAnnotation
 
-    compile libs.play_services_map
     compile libs.play_services_gcm
-    compile libs.play_services_analytics
 
     compile(libs.crashlytics) {
         transitive = true;
