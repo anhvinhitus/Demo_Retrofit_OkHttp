@@ -80,7 +80,6 @@ public class IntroAppFragment extends BaseFragment {
      *
      * @return A new instance of fragment IntroAppFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static IntroAppFragment newInstance() {
         return new IntroAppFragment();
     }

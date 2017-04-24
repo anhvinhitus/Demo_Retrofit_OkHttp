@@ -25,7 +25,6 @@ public class SubIntroAppFragment extends BaseFragment {
      * @param introStep mIntroResource.
      * @return A new instance of fragment SubIntroAppFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static SubIntroAppFragment newInstance(int introStep) {
         SubIntroAppFragment fragment = new SubIntroAppFragment();
         Bundle args = new Bundle();

@@ -57,7 +57,6 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
      *
      * @return A new instance of fragment CardSupportFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static BankSupportFragment newInstance(boolean autoLoadData, LinkBankType bankType) {
         Bundle args = new Bundle();
         args.putBoolean(Constants.ARG_AUTO_LOAD_DATA, autoLoadData);

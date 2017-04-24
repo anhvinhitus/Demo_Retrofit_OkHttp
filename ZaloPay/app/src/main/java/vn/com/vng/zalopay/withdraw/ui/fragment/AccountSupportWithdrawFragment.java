@@ -51,7 +51,6 @@ public class AccountSupportWithdrawFragment extends BaseFragment {
      *
      * @return A new instance of fragment CardSupportWithdrawFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static AccountSupportWithdrawFragment newInstance() {
         return new AccountSupportWithdrawFragment();
     }

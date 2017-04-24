@@ -92,7 +92,6 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
      *
      * @return A new instance of fragment LinkAccountFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static LinkAccountFragment newInstance(Bundle bundle) {
         LinkAccountFragment fragment = new LinkAccountFragment();
         fragment.setArguments(bundle);

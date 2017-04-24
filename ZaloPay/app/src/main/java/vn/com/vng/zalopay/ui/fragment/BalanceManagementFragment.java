@@ -85,7 +85,6 @@ public class BalanceManagementFragment extends BaseFragment implements IBalanceM
      *
      * @return A new instance of fragment BalanceManagementFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static BalanceManagementFragment newInstance() {
         return new BalanceManagementFragment();
     }

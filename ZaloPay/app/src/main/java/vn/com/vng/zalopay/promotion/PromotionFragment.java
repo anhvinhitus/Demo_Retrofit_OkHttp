@@ -27,7 +27,6 @@ public class PromotionFragment extends Fragment {
      *
      * @return A new instance of fragment PromotionFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static PromotionFragment newInstance() {
         return new PromotionFragment();
     }

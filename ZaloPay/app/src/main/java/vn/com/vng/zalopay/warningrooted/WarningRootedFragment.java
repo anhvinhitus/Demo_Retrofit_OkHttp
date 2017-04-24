@@ -91,7 +91,6 @@ public class WarningRootedFragment extends BaseFragment {
      *
      * @return A new instance of fragment WarningRootedFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static WarningRootedFragment newInstance() {
         return new WarningRootedFragment();
     }

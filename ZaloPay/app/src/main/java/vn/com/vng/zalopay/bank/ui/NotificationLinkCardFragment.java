@@ -51,7 +51,6 @@ public class NotificationLinkCardFragment extends BaseFragment {
      *
      * @return A new instance of fragment NotificationLinkCardFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static NotificationLinkCardFragment newInstance(Bundle bundle) {
         NotificationLinkCardFragment fragment = new NotificationLinkCardFragment();
         fragment.setArguments(bundle);
