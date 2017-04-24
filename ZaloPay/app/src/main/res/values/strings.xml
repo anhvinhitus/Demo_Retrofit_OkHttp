@@ -98,6 +98,7 @@
     <string name="txt_link_card_success">Liên kết thẻ thành công.</string>
     <string name="txt_link_card_fail">Liên kết thẻ thất bại.</string>
     <string name="txt_remove_link">Hủy Liên Kết</string>
+    <string name="txt_remove_link_successfully">Xóa thẻ thành công</string>
     <string name="txt_confirm_remove_card">Bạn có muốn hủy thông tin thẻ đã liên kết này không?</string>
     <string name="txt_confirm_remove_account">Bạn có muốn hủy thông tin tài khoản đã liên kết này không?</string>
     <string name="txt_confirm_remove_vcb_account">Bạn cần đăng nhập tài khoản Vietcombank để hủy liên kết</string>

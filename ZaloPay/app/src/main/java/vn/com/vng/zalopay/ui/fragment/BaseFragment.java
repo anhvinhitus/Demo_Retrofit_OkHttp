@@ -213,6 +213,12 @@ public abstract class BaseFragment extends Fragment {
                 cancelListener);
     }
 
+    public void showNotificationDialog(String message) {
+        showErrorDialog(message,
+                getString(R.string.txt_close),
+                null);
+    }
+
     public void showErrorDialog(String message) {
         showErrorDialog(message,
                 getString(R.string.txt_close),

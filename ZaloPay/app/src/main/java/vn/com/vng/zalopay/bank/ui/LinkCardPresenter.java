@@ -155,6 +155,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
                         mapCard.last4cardno, mapCard.bankcode);
                 mView.removeData(bankCard);
             }
+            showNotificationDialog(R.string.txt_remove_link_successfully);
         }
 
         @Override
@@ -288,6 +289,14 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         }
         mView.hideLoading();
         mView.showError(getContext().getString(msgResource));
+    }
+
+    private void showNotificationDialog(int msgResource) {
+        if (mView == null || mView.getContext() == null) {
+            return;
+        }
+        mView.hideLoading();
+        mView.showNotificationDialog(getContext().getString(msgResource));
     }
 
     @Override
