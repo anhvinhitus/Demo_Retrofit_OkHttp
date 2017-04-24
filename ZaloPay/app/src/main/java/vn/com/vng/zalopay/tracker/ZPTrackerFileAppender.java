@@ -1,12 +1,9 @@
 package vn.com.vng.zalopay.tracker;
 
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-import java.util.ArrayDeque;
 import java.util.concurrent.Executor;
 
-import timber.log.Timber;
 import vn.com.zalopay.analytics.ZPTracker;
 
 /**
@@ -14,7 +11,7 @@ import vn.com.zalopay.analytics.ZPTracker;
  * ZPTrackerFileLog for translate ZPTracker to ZaloPay Server
  */
 
-public class ZPTrackerFileLog implements ZPTracker {
+public class ZPTrackerFileAppender implements ZPTracker {
 
     private static final int USER_EVENT_TYPE = 1;
     private static final int TIMING_TYPE = 2;
@@ -23,7 +20,7 @@ public class ZPTrackerFileLog implements ZPTracker {
 
     private static final Object LOCK = new Object();
 
-    public static Executor getExecutor() {
+    private static Executor getExecutor() {
         synchronized (LOCK) {
             if (executor == null) {
                 executor = new SerialExecutor();
@@ -50,30 +47,6 @@ public class ZPTrackerFileLog implements ZPTracker {
     @Override
     public void trackApptransidEvent(String apptransid, int appid, int step, int step_result, int pcmid, int transtype, long transid, int sdk_result, int server_result, String source) {
 
-    }
-
-    private static class SerialExecutor implements Executor {
-        final ArrayDeque<Runnable> mTasks = new ArrayDeque<>();
-        Runnable mActive;
-
-        public synchronized void execute(@NonNull final Runnable r) {
-            mTasks.offer(() -> {
-                try {
-                    r.run();
-                } finally {
-                    scheduleNext();
-                }
-            });
-            if (mActive == null) {
-                scheduleNext();
-            }
-        }
-
-        private synchronized void scheduleNext() {
-            if ((mActive = mTasks.poll()) != null) {
-                AsyncTask.THREAD_POOL_EXECUTOR.execute(mActive);
-            }
-        }
     }
 
     private static class WriteLogRunnable implements Runnable {

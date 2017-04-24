@@ -40,7 +40,7 @@ import vn.com.vng.zalopay.location.LocationProvider;
 import vn.com.vng.zalopay.paymentapps.PaymentAppConfig;
 import vn.com.vng.zalopay.tracker.ZPTrackerAnswers;
 import vn.com.vng.zalopay.tracker.ZPTrackerApptransid;
-import vn.com.vng.zalopay.tracker.ZPTrackerFileLog;
+import vn.com.vng.zalopay.tracker.ZPTrackerFileAppender;
 import vn.com.vng.zalopay.tracker.ZPTrackerGA;
 import vn.com.vng.zalopay.utils.ConfigUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -163,7 +163,7 @@ public class AndroidApplication extends Application {
         ZPAnalytics.addDefaultTracker();
         ZPAnalytics.addTracker(new ZPTrackerGA(tracker));
         ZPAnalytics.addTracker(new ZPTrackerAnswers());
-        ZPAnalytics.addTracker(new ZPTrackerFileLog());
+        ZPAnalytics.addTracker(new ZPTrackerFileAppender());
         ZPAnalytics.addTracker(new ZPTrackerApptransid(appComponent.appTransIdLogRepository()));
     }
 
