@@ -396,6 +396,9 @@
     <string name="personal_view_detail_text">Xem chi tiết</string>
 
     <string name="link.account.support.only.vietcombank">Hiện tại Zalo Pay chỉ hỗ trợ liên kết tài khoản Vietcombank. Liên kết tài khoản các ngân hàng khác sẽ được hỗ trợ trong thời gian tới.</string>
-    <string name="this.action.can.not.be.performed">Không thể thực hiện tác vụ này</string>
+
+    <string name="missing.image.pick">Vui lòng kiểm tra lại ứng dụng thư viện ảnh trên thiết bị của bạn</string>
+    <string name="missing.image.capture">Vui lòng kiểm tra lại ứng dụng chụp ảnh trên thiết bị của bạn</string>
+
 </resources>
 

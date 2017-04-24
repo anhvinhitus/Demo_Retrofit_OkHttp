@@ -80,7 +80,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
             startActivityForResult(i, requestCode);
         } else {
             Timber.d("No Activity found to handle Intent %s" + Intent.ACTION_PICK);
-            showToast(R.string.this_action_can_not_be_performed);
+            showToast(R.string.missing_image_pick);
         }
     }
 
@@ -118,7 +118,7 @@ public abstract class AbsPickerImageFragment extends RuntimePermissionFragment {
             startActivityForResult(i, requestCode);
         } else {
             Timber.d("No Activity found to handle Intent %s" + MediaStore.ACTION_IMAGE_CAPTURE);
-            showToast(R.string.this_action_can_not_be_performed);
+            showToast(R.string.missing_image_capture);
         }
 
     }
