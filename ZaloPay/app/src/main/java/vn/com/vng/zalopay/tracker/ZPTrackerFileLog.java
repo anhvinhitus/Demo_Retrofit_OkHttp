@@ -11,7 +11,7 @@ import vn.com.zalopay.analytics.ZPTracker;
 
 /**
  * Created by hieuvm on 4/20/17.
- * *
+ * ZPTrackerFileLog for translate ZPTracker to ZaloPay Server
  */
 
 public class ZPTrackerFileLog implements ZPTracker {
@@ -85,7 +85,7 @@ public class ZPTrackerFileLog implements ZPTracker {
 
         @Override
         public void run() {
-            FileLog.append(mLogData);
+            FileLog.Instance.append(mLogData);
         }
     }
 }
