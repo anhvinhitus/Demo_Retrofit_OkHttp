@@ -1,6 +1,7 @@
 package vn.com.vng.zalopay.tracker;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.zalopay.apploader.internal.FileUtils;
 
@@ -31,17 +32,17 @@ final class FileLog {
     private static final String PREF_CREATE_FILE_TIME = "file_log_create_time";
 
 
-    private final File sDirectoryFileLog;
-    private final SimpleDateFormat sDateFormat;
+    private final File mDirectoryFileLog;
+    private final SimpleDateFormat mDateFormat;
 
     //
-    private File sCurrentFile = null;
-    private BufferedWriter sBufferedWriter;
+    private File mCurrentFile = null;
+    private BufferedWriter mBufferedWriter;
     private Long mFileCreateTime;
 
     private FileLog() {
-        sDirectoryFileLog = new File(AndroidApplication.instance().getFilesDir(), "logs");
-        sDateFormat = new SimpleDateFormat("yyyyMMddhhmm", Locale.getDefault());
+        mDirectoryFileLog = new File(AndroidApplication.instance().getFilesDir(), "logs");
+        mDateFormat = new SimpleDateFormat("yyyyMMddhhmm", Locale.getDefault());
     }
 
     void append(LogData logData) {
@@ -51,17 +52,17 @@ final class FileLog {
     }
 
     private void ensureFileLogReady(LogData logData) {
-        FileUtils.mkdirs(sDirectoryFileLog);
+        FileUtils.mkdirs(mDirectoryFileLog);
         long timestamp = logData.timestamp;
         long lastFileCreateTime = getFileCreateTime();
         if (Math.abs(timestamp - lastFileCreateTime) >= INTERVAL_CREATE_FILE) { // tạo file mới
             Timber.d("Create new file log");
-            File oldFile = sCurrentFile;
-            sCurrentFile = createFileLog(timestamp);
+            File oldFile = mCurrentFile;
+            mCurrentFile = createFileLog(timestamp);
 
             setFileCreateTime(timestamp);
             closeWriter();
-            createWriter(sCurrentFile);
+            createWriter(mCurrentFile);
 
             if (oldFile != null) {
                 postFileLog(oldFile.getAbsolutePath());
@@ -69,15 +70,15 @@ final class FileLog {
 
         } else {
 
-            if (sBufferedWriter != null) {
+            if (mBufferedWriter != null) {
                 return;
             }
 
-            if (sCurrentFile == null) {
-                sCurrentFile = createFileLog(lastFileCreateTime);
+            if (mCurrentFile == null) {
+                mCurrentFile = createFileLog(lastFileCreateTime);
             }
 
-            createWriter(sCurrentFile);
+            createWriter(mCurrentFile);
         }
     }
 
@@ -87,9 +88,9 @@ final class FileLog {
     }
 
     private File createFileLog(long timestamp) {
-        String fileName = String.format(Locale.getDefault(), FILE_NAME_FORMAT, sDateFormat.format(new Date(timestamp)));
+        String fileName = String.format(Locale.getDefault(), FILE_NAME_FORMAT, mDateFormat.format(new Date(timestamp)));
         Timber.d("Create file log : name [%s]", fileName);
-        return new File(sDirectoryFileLog, fileName);
+        return new File(mDirectoryFileLog, fileName);
     }
 
     private void setFileCreateTime(long timestamp) {
@@ -110,10 +111,10 @@ final class FileLog {
 
     private void writeToFile(@NonNull LogData logData) {
         try {
-            if (sBufferedWriter != null) {
-                sBufferedWriter.write(formatMsg(logData));
-                sBufferedWriter.newLine();
-                sBufferedWriter.flush();
+            if (mBufferedWriter != null) {
+                mBufferedWriter.write(formatMsg(logData));
+                mBufferedWriter.newLine();
+                mBufferedWriter.flush();
             }
         } catch (IOException e) {
             Timber.e(e, "Write file log");
@@ -122,7 +123,7 @@ final class FileLog {
 
     private void createWriter(File file) {
         try {
-            sBufferedWriter = new BufferedWriter(new FileWriter(file, true));
+            mBufferedWriter = new BufferedWriter(new FileWriter(file, true));
         } catch (IOException e) {
             Timber.e(e, "Create file write");
         }
@@ -130,11 +131,11 @@ final class FileLog {
 
     private void closeWriter() {
         try {
-            if (sBufferedWriter != null) {
-                sBufferedWriter.newLine();
-                sBufferedWriter.flush();
-                sBufferedWriter.close();
-                sBufferedWriter = null;
+            if (mBufferedWriter != null) {
+                mBufferedWriter.newLine();
+                mBufferedWriter.flush();
+                mBufferedWriter.close();
+                mBufferedWriter = null;
             }
         } catch (IOException e) {
             Timber.e(e, "Close file log");
@@ -143,13 +144,13 @@ final class FileLog {
 
     public void delete() {
         closeWriter();
-        if (sCurrentFile != null && sCurrentFile.exists()) {
-            sCurrentFile.delete();
+        if (mCurrentFile != null && mCurrentFile.exists()) {
+            mCurrentFile.delete();
         }
     }
 
     void cleanupLogs() {
-        FileUtils.deleteDirectory(sDirectoryFileLog, false);
+        FileUtils.deleteDirectory(mDirectoryFileLog, false);
     }
 
     private String formatMsg(@NonNull LogData logData) {
@@ -157,11 +158,12 @@ final class FileLog {
     }
 
     File getRootDirectory() {
-        return sDirectoryFileLog;
+        return mDirectoryFileLog;
     }
 
+    @Nullable
     File getCurrentFileLog() {
-        return sCurrentFile;
+        return mCurrentFile;
     }
 
     static class LogData {
