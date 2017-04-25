@@ -238,7 +238,7 @@ public class NotificationHelper {
         if (needReloadBalanceAndTransaction(notify)) {
             Timber.d("Receive notification type [%s] -> Reload transaction & balance.",
                     notify.notificationtype);
-            this.updateTransaction();
+            this.updateTransactionHistorySuccess();
             this.updateBalance();
         } else {
             Timber.d("Receive notification type [%s] -> Don't need reload transaction & balance",
@@ -421,8 +421,8 @@ public class NotificationHelper {
         nm.cancelAll();
     }
 
-    private void updateTransaction() {
-        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistoryLatest()
+    private void updateTransactionHistorySuccess() {
+        Subscription subscriptionSuccess = mTransactionRepository.fetchTransactionHistorySuccessLatest()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscriptionSuccess);
