@@ -97,20 +97,27 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
         if (TextUtils.isEmpty(avatar)) {
             return;
         }
-        ivAvatar.setImageURI(avatar);
+
+        if (ivAvatar != null) {
+            ivAvatar.setImageURI(avatar);
+        }
     }
 
     @Override
     public void setDisplayName(String displayName) {
-        tvName.setText(displayName);
+        if (tvName != null) {
+            tvName.setText(displayName);
+        }
     }
 
     @Override
     public void setZaloPayName(String zaloPayName) {
-        if (TextUtils.isEmpty(zaloPayName)) {
-            tvZaloPayId.setText(getString(R.string.zalopay_name_not_update));
-        } else {
-            tvZaloPayId.setText(String.format(getString(R.string.leftmenu_zalopayid), zaloPayName));
+        if (tvZaloPayId != null) {
+            if (TextUtils.isEmpty(zaloPayName)) {
+                tvZaloPayId.setText(getString(R.string.zalopay_name_not_update));
+            } else {
+                tvZaloPayId.setText(String.format(getString(R.string.leftmenu_zalopayid), zaloPayName));
+            }
         }
     }
 
