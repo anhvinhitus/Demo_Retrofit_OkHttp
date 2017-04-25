@@ -17,12 +17,15 @@ import javax.inject.Inject;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
+import vn.com.vng.zalopay.app.AppLifeCycle;
 import vn.com.vng.zalopay.app.ApplicationState;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ApplicationSession;
 import vn.com.vng.zalopay.navigation.Navigator;
+import vn.com.vng.zalopay.react.base.HomePagerAdapter;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
+import vn.com.vng.zalopay.ui.activity.HomeActivity;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
@@ -163,7 +166,11 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
 
             Activity activity = (Activity) mView.getContext();
             if (activity.isTaskRoot()) {
-                mNavigator.startHomeActivity(activity, false);
+                startHomeActivity(activity, false);
+            } else {
+                if (AppLifeCycle.isLastActivity(HomeActivity.class.getSimpleName())) {
+                    startHomeActivity(activity, true);
+                }
             }
 
         } finally {
@@ -171,6 +178,15 @@ public class IntentHandlerPresenter extends AbstractPresenter<IIntentHandlerView
                 finish(false);
             }
         }
+    }
+
+    private void startHomeActivity(Activity activity, boolean singleTop) {
+        Intent homeIntent = mNavigator.intentHomeActivity(activity, false);
+        if (singleTop) {
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
+        homeIntent.putExtra("tab_menu", HomePagerAdapter.TAB_PERSONAL_INDEX);
+        activity.startActivity(homeIntent);
     }
 
     private void handleZaloIntegration(final Uri data) {
