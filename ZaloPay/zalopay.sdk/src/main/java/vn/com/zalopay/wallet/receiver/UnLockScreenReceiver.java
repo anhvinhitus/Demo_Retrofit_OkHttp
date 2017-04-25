@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.message.UnlockScreenEventMessage;
+import vn.com.zalopay.wallet.message.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.business.data.Log;
 
 /***
@@ -18,7 +18,7 @@ public class UnLockScreenReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
             Log.d(this, "==== UnLock ====");
-            PaymentEventBus.shared().postSticky(new UnlockScreenEventMessage());
+            PaymentEventBus.shared().postSticky(new SdkUnlockScreenMessage());
         }
 
     }

@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.message;
 
-public class SmsEventMessage extends BaseEventMessage {
+public class SdkSmsMessage {
     public String sender;
     public String message;
 }

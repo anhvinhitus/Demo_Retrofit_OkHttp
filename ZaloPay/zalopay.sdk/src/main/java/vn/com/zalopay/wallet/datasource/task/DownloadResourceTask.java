@@ -11,7 +11,7 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.datasource.DataRepository;
-import vn.com.zalopay.wallet.message.DownloadResourceEventMessage;
+import vn.com.zalopay.wallet.message.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.StorageUtil;
@@ -81,7 +81,7 @@ public class DownloadResourceTask extends BaseTask<ResponseBody> {
     }
 
     protected void onPostResult(boolean pIsSuccess, String pMessage) {
-        DownloadResourceEventMessage eventMessage = new DownloadResourceEventMessage();
+        SdkDownloadResourceMessage eventMessage = new SdkDownloadResourceMessage();
         eventMessage.success = pIsSuccess;
         eventMessage.message = pMessage;
         PaymentEventBus.shared().post(eventMessage);

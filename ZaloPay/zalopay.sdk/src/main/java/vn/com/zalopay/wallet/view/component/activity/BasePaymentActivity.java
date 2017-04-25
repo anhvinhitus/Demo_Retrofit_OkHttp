@@ -45,9 +45,7 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Stack;
 import rx.Observer;
 import rx.Single;
@@ -88,12 +86,12 @@ import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
-import vn.com.zalopay.wallet.message.DownloadResourceEventMessage;
-import vn.com.zalopay.wallet.message.LoadingTaskEventMessage;
+import vn.com.zalopay.wallet.message.SdkDownloadResourceMessage;
+import vn.com.zalopay.wallet.message.SdkLoadingTaskMessage;
 import vn.com.zalopay.wallet.message.NetworkEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.message.ResourceInitialEventMessage;
-import vn.com.zalopay.wallet.message.UpVersionMessage;
+import vn.com.zalopay.wallet.message.SdkResourceInitMessage;
+import vn.com.zalopay.wallet.message.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.PermissionUtils;
@@ -243,13 +241,13 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     private Feedback mFeedback = null;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnTaskInProcessEvent(LoadingTaskEventMessage pMessage)
+    public void OnTaskInProcessEvent(SdkLoadingTaskMessage pMessage)
     {
         Log.d(this,"OnTaskInProcessEvent" + GsonUtils.toJsonString(pMessage));
         showProgress(true, pMessage.message);
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnInitialResourceCompleteEvent(ResourceInitialEventMessage pMessage)
+    public void OnInitialResourceCompleteEvent(SdkResourceInitMessage pMessage)
     {
         Log.d(this,"OnFinishInitialResourceEvent" + GsonUtils.toJsonString(pMessage));
         if (pMessage.success) {
@@ -291,19 +289,19 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnUpVersionEvent(UpVersionMessage pMessage)
+    public void OnUpVersionEvent(SdkUpVersionMessage pMessage)
     {
         Log.d(this,"OnUpVersionEvent" + GsonUtils.toJsonString(pMessage));
         notifyUpVersionToApp(pMessage.forceupdate, pMessage.version, pMessage.message);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnDownloadResourceMessageEvent(DownloadResourceEventMessage result) {
+    public void OnDownloadResourceMessageEvent(SdkDownloadResourceMessage result) {
         Log.d(this, "OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
         if (result.success) {
            initializeResource();
         } else {
-            ResourceInitialEventMessage message = new ResourceInitialEventMessage();
+            SdkResourceInitMessage message = new SdkResourceInitMessage();
             message.success = result.success;
             message.message = result.message;
             PaymentEventBus.shared().post(message);
@@ -329,7 +327,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        ResourceInitialEventMessage message = new ResourceInitialEventMessage();
+                        SdkResourceInitMessage message = new SdkResourceInitMessage();
                         message.success = false;
                         message.message = GlobalData.getStringResource(RS.string.zpw_alert_error_resource_not_download);
                         PaymentEventBus.shared().post(message);
@@ -338,7 +336,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
                     @Override
                     public void onNext(Boolean success) {
-                        ResourceInitialEventMessage message = new ResourceInitialEventMessage();
+                        SdkResourceInitMessage message = new SdkResourceInitMessage();
                         message.success = success;
                         PaymentEventBus.shared().post(message);
                     }

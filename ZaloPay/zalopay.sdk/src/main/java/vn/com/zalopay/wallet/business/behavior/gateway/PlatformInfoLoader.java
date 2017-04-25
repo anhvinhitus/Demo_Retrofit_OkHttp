@@ -2,13 +2,6 @@ package vn.com.zalopay.wallet.business.behavior.gateway;
 
 import android.text.TextUtils;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.io.File;
-
-import rx.Observable;
-import rx.Subscriber;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
@@ -17,15 +10,11 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.DownloadResourceTask;
 import vn.com.zalopay.wallet.datasource.task.PlatformInfoTask;
-import vn.com.zalopay.wallet.message.DownloadResourceEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
-import vn.com.zalopay.wallet.listener.ZPWInitResourceListener;
-import vn.com.zalopay.wallet.message.ResourceInitialEventMessage;
-import vn.com.zalopay.wallet.message.UpVersionMessage;
-import vn.com.zalopay.wallet.utils.GsonUtils;
+import vn.com.zalopay.wallet.message.SdkResourceInitMessage;
+import vn.com.zalopay.wallet.message.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.StorageUtil;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class PlatformInfoLoader extends SingletonBase {
@@ -51,7 +40,7 @@ public class PlatformInfoLoader extends SingletonBase {
             if (pMessage != null) {
                 ErrorManager.updateTransactionResult(pMessage.returncode);
             }
-            ResourceInitialEventMessage message = new ResourceInitialEventMessage();
+            SdkResourceInitMessage message = new SdkResourceInitMessage();
             message.success = false;
             message.message = pMessage != null ? pMessage.returnmessage : null;
             PaymentEventBus.shared().post(message);
@@ -66,7 +55,7 @@ public class PlatformInfoLoader extends SingletonBase {
                     ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
                 }
             }
-            UpVersionMessage message = new UpVersionMessage();
+            SdkUpVersionMessage message = new SdkUpVersionMessage();
             message.forceupdate = pForceUpdate;
             message.version = pVersion;
             message.message = pMessage;
@@ -121,7 +110,7 @@ public class PlatformInfoLoader extends SingletonBase {
         }
         //everything is ok now.
         else {
-            ResourceInitialEventMessage message = new ResourceInitialEventMessage();
+            SdkResourceInitMessage message = new SdkResourceInitMessage();
             message.success = true;
             PaymentEventBus.shared().post(message);
         }

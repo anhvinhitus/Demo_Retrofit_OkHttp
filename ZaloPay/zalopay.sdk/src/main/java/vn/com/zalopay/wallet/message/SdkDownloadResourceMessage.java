@@ -1,6 +1,6 @@
 package vn.com.zalopay.wallet.message;
 
-public class ResourceInitialEventMessage extends BaseEventMessage {
+public class SdkDownloadResourceMessage {
     public boolean success;
     public String message;
 }

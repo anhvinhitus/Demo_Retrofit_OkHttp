@@ -1,5 +1,5 @@
 package vn.com.zalopay.wallet.message;
 
-public class LoadingTaskEventMessage extends BaseEventMessage {
+public class SdkLoadingTaskMessage {
     public String message;
 }

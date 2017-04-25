@@ -31,8 +31,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DStaticViewGroup;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.message.SmsEventMessage;
-import vn.com.zalopay.wallet.message.UnlockScreenEventMessage;
+import vn.com.zalopay.wallet.message.SdkSmsMessage;
+import vn.com.zalopay.wallet.message.SdkUnlockScreenMessage;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 
@@ -751,21 +751,21 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnUnLockScreenEvent(UnlockScreenEventMessage pUnlockScreenEventMessage) {
+    public void OnUnLockScreenEvent(SdkUnlockScreenMessage pUnlockScreenEventMessage) {
         if (getAdapter() != null && mAdapter.isCardFlow()) {
             getAdapter().getGuiProcessor().moveScrollViewToCurrentFocusView();
         }
-        PaymentEventBus.shared().removeStickyEvent(UnlockScreenEventMessage.class);
+        PaymentEventBus.shared().removeStickyEvent(SdkUnlockScreenMessage.class);
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void OnPaymentSmsEvent(SmsEventMessage pSmsEventMessage) {
+    public void OnPaymentSmsEvent(SdkSmsMessage pSmsEventMessage) {
         String sender = pSmsEventMessage.sender;
         String body = pSmsEventMessage.message;
         if (!TextUtils.isEmpty(sender) && !TextUtils.isEmpty(body) && getAdapter() != null) {
             getAdapter().autoFillOtp(sender, body);
         }
-        PaymentEventBus.shared().removeStickyEvent(SmsEventMessage.class);
+        PaymentEventBus.shared().removeStickyEvent(SdkSmsMessage.class);
         Log.d(this, "on payment otp event " + GsonUtils.toJsonString(pSmsEventMessage));
     }
 }

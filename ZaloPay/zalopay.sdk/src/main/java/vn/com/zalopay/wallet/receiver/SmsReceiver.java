@@ -8,7 +8,7 @@ import android.telephony.SmsMessage;
 import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.message.PaymentEventBus;
-import vn.com.zalopay.wallet.message.SmsEventMessage;
+import vn.com.zalopay.wallet.message.SdkSmsMessage;
 import vn.com.zalopay.wallet.business.data.Log;
 
 /***
@@ -50,7 +50,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
             if (!TextUtils.isEmpty(body)) {
                 //send otp to channel activity
-                SmsEventMessage smsEventMessage = new SmsEventMessage();
+                SdkSmsMessage smsEventMessage = new SdkSmsMessage();
                 smsEventMessage.sender = sender;
                 smsEventMessage.message = body;
                 PaymentEventBus.shared().postSticky(smsEventMessage);
