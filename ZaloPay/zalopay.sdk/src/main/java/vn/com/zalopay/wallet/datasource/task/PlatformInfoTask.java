@@ -56,17 +56,6 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
     }
 
     /***
-     * constructor
-     * @param pListener
-     */
-    public PlatformInfoTask(ZPWGetGatewayInfoListener pListener, boolean pForceReload, boolean pNoDownloadResource, boolean pCallBackAsSoonAsPossible) {
-        super();
-        this.mGetGatewayInfoListener = pListener;
-        this.mForceReload = pForceReload;
-        this.mNoDownloadResource = pNoDownloadResource;
-    }
-
-    /***
      * is retry case from server.this variable is true
      * then need to reuse callable request in RequestKeeper.
      * @param pListener

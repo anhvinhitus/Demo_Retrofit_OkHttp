@@ -137,7 +137,7 @@ public class BGatewayInfo extends SingletonBase {
             }
             this.mClientCallback.onProcessing();
             Log.d(this, "get platforminfo from server");
-            getPlatformInfo(new PlatformInfoTask(mListener, false, false, true));
+            getPlatformInfo(new PlatformInfoTask(mListener, false, false));
         } else if (mClientCallback != null) {
             Log.d(getClass().getName(), "get platforminfo from cache");
             mClientCallback.onFinish();
