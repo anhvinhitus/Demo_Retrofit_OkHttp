@@ -1658,7 +1658,7 @@ public abstract class AdapterBase {
         try {
             DPaymentChannelView channel = ChannelStartProcessor.getInstance(null).getChannel();
             if (channel != null) {
-                getActivity().setImage(R.id.zpw_zalopay_logo_imageview, ResourceManager.getImage(channel.channel_icon));
+                getActivity().setImage(R.id.zpw_zalopay_logo_imageview, channel.channel_icon);
                 getActivity().setVisible(R.id.linearlayout_price, false);
                 getActivity().setVisible(R.id.zalopay_info_error, false);
                 getActivity().setVisible(R.id.zpw_channel_layout, true);
@@ -1679,9 +1679,7 @@ public abstract class AdapterBase {
             } else {
                 GlobalData.getChannelActivityCallBack().onCallBackAction(mIsShowDialog, pMessage);
             }
-
             getActivity().finish();
-
             Log.d(this, "===terminate===GlobalData.getChannelActivityCallBack() != null");
             return;
         }
