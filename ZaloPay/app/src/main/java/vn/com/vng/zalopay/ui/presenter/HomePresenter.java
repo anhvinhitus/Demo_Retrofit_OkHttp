@@ -265,14 +265,6 @@ public class HomePresenter extends AbstractPresenter<IHomeView> {
                 AppVersionUtils.handleEventUpdateVersion(mView.getActivity(),
                         forceUpdate, latestVersion, msg);
             }
-
-            // TODO: 4/20/17 - longlv: waiting PaymentSDK update
-            /*@Override
-            public void onDownloadResourceComplete() {
-                if (mEventBus != null) {
-                    mEventBus.post(new DownloadSDKResourceComplete());
-                }
-            }*/
         });
     }
 

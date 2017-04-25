@@ -31,7 +31,6 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
-import vn.com.vng.zalopay.event.DownloadSDKResourceComplete;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.react.error.PaymentError;
@@ -52,6 +51,7 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
+import vn.com.zalopay.wallet.message.SdkDownloadResourceMessage;
 
 /**
  * Created by longlv on 10/25/16.
@@ -423,7 +423,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDownloadSDKResourceComplete(DownloadSDKResourceComplete event) {
+    public void onDownloadSDKResourceComplete(SdkDownloadResourceMessage event) {
         onDownloadPaymentSDKComplete();
     }
 }
