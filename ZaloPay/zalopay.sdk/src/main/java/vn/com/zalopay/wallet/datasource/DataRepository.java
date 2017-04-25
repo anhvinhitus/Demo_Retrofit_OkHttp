@@ -22,7 +22,7 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
-import vn.com.zalopay.wallet.message.NetworkEventMessage;
+import vn.com.zalopay.wallet.message.SdkNetworkEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 
 public class DataRepository<T extends BaseResponse> extends SingletonBase {
@@ -104,7 +104,7 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
 
     protected boolean verifyException(Throwable t) {
         if ((t instanceof SSLHandshakeException || t instanceof SSLPeerUnverifiedException)) {
-            NetworkEventMessage networkEventMessage = new NetworkEventMessage();
+            SdkNetworkEventMessage networkEventMessage = new SdkNetworkEventMessage();
             networkEventMessage.origin = Constants.API_ORIGIN;
             PaymentEventBus.shared().post(networkEventMessage);
             return true;

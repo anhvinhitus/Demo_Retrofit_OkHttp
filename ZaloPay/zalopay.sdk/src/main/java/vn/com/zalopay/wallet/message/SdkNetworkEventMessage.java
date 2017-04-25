@@ -1,5 +1,5 @@
 package vn.com.zalopay.wallet.message;
 
-public class NetworkEventMessage {
+public class SdkNetworkEventMessage {
     public int origin;
 }

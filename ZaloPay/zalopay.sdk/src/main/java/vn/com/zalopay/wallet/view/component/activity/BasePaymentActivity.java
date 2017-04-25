@@ -88,7 +88,7 @@ import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
 import vn.com.zalopay.wallet.message.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.message.SdkLoadingTaskMessage;
-import vn.com.zalopay.wallet.message.NetworkEventMessage;
+import vn.com.zalopay.wallet.message.SdkNetworkEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.message.SdkUpVersionMessage;
@@ -2013,7 +2013,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnNetworkEvent(NetworkEventMessage pNetworkEventMessage) {
+    public void OnNetworkEvent(SdkNetworkEventMessage pNetworkEventMessage) {
         //user sitting in the result screen
         if (getCurrentActivity() instanceof PaymentChannelActivity && ((PaymentChannelActivity) getCurrentActivity()).getAdapter().isFinalScreen()) {
             Log.d(this, "onNetworkMessageEvent user is on fail screen...");
