@@ -1,41 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="vn.com.vng.zalopay.ui.activity.HomeActivity">
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical"
+             tools:context="vn.com.vng.zalopay.ui.activity.HomeActivity">
 
     <com.zalopay.ui.widget.viewpager.NonSwipeableViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="56dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        />
 
-    <FrameLayout
+    <vn.com.vng.zalopay.ui.widget.HomeBottomNavigationView
+        android:id="@+id/navigation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="56dp"
-            android:background="@color/separate" />
-
-        <!-- This is the Bottom Bavigation Bar -->
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/navigation"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_gravity="bottom"
-            android:paddingTop="0dp"
-            app:itemBackground="@color/white"
-            app:itemIconTint="@color/bottom_nav_icon_color_selector"
-            app:itemTextColor="@color/bottom_nav_icon_color_selector"
-            app:menu="@menu/bottom_navigation_items" />
-    </FrameLayout>
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        android:paddingTop="0dp"
+        app:itemBackground="@color/white"
+        app:itemIconTint="@color/bottom_nav_icon_color_selector"
+        app:itemTextColor="@color/bottom_nav_icon_color_selector"
+        />
 
 </FrameLayout>
