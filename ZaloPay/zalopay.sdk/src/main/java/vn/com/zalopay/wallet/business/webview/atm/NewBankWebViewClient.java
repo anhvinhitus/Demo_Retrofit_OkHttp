@@ -47,8 +47,6 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
     private String mStartedtUrl = null;
     private String mCurrentUrl = null;
     private DBankScript mCurrentBankScript = null;
-
-    private long mLastStartPageTime = 0;
     private Handler mHandler = new Handler();
 
     private int mEventID = 0;
@@ -58,12 +56,9 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
 
     public NewBankWebViewClient(AdapterBase pAdapter) {
         super(pAdapter);
-
         if (getAdapter() != null) {
-
             mWebPaymentBridge = (BankWebView) getAdapter().getActivity().findViewById(R.id.webviewParser);
             //mWebPaymentBridge = new BankWebView(getAdapter().getActivity().getApplicationContext());
-
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
         }
@@ -77,7 +72,6 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
 
     @Override
     public void hit() {
-        mLastStartPageTime = System.currentTimeMillis();
         matchAndRunJs(EJavaScriptType.HIT, false);
     }
 
@@ -138,29 +132,12 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
         }
     }
 
-    public void executeJs(String pJsFileName, String pJsInput) {
-        if (!TextUtils.isEmpty(pJsFileName)) {
-            Log.d(this, pJsFileName);
-            Log.d(this, pJsInput);
-
-            String jsContent = null;
-            for (String jsFile : pJsFileName.split(Constants.COMMA)) {
-                jsContent = ResourceManager.getJavascriptContent(jsFile);
-                jsContent = String.format(jsContent, pJsInput);
-                mWebPaymentBridge.runScript(jsContent);
-            }
-        }
-    }
-
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         Log.i(this, "===onPageStarted: ===" + url);
 
         mStartedtUrl = url;
         mIsLoadingFinished = false;
-
-        // Modify this variable to inform that it not run in ajax mode
-        mLastStartPageTime++;
         if (mStartedtUrl.contains(BuildConfig.HOST_COMPLETE)) {
             view.stopLoading();
         }
@@ -172,9 +149,6 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
         if (!mIsLoadingFinished) {
             mIsRedirect = true;
         }
-        // Modify this variable to inform that it not run in ajax mode
-        mLastStartPageTime++;
-
         mIsLoadingFinished = false;
         view.loadUrl(url);
 
@@ -195,12 +169,7 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
         countIntervalCheck++;
         Log.d(this, "===intervalCheck===" + countIntervalCheck);
         mIsRunningScript = true;
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                matchAndRunJs(EJavaScriptType.AUTO, false);
-            }
-        }, DELAY_TIME_TO_RUN_SCRIPT);
+        mHandler.postDelayed(() -> matchAndRunJs(EJavaScriptType.AUTO, false), DELAY_TIME_TO_RUN_SCRIPT);
     }
 
     public void onLoadResource(WebView view, final String url) {
@@ -212,11 +181,6 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
             }
             intervalCheck();
         }
-    }
-
-    @JavascriptInterface
-    public void logDebug(String msg) {
-        Log.d(this, "****** Debug webview: " + msg);
     }
 
     @Override
@@ -255,38 +219,21 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
     public void onJsPaymentResult(String pResult) {
         mIsRunningScript = false;
         Log.d(this, "==== onJsPaymentResult: " + pResult);
-        // Modify this variable to inform that it not run in ajax mode
-        mLastStartPageTime++;
-
         final String result = pResult;
-
-        getAdapter().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
-
-				/*
-                if(scriptOutput != null && !scriptOutput.stopIntervalCheck )
-				{
-					intervalCheck();
-					return;
-				}
-				*/
-                countIntervalCheck = 0;
-
-                EEventType eventType = convertPageIdToEvent(mEventID);
-                BaseResponse response = genResponse(eventType, scriptOutput);
-
-                if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
-                    // Auto hit at first step
-                    mIsFirst = false;
-                    hit();
+        getAdapter().getActivity().runOnUiThread(() -> {
+            DAtmScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DAtmScriptOutput.class);
+            countIntervalCheck = 0;
+            EEventType eventType = convertPageIdToEvent(mEventID);
+            BaseResponse response = genResponse(eventType, scriptOutput);
+            if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
+                // Auto hit at first step
+                mIsFirst = false;
+                hit();
+            } else {
+                if (eventType == EEventType.ON_REQUIRE_RENDER) {
+                    getAdapter().onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
                 } else {
-                    if (eventType == EEventType.ON_REQUIRE_RENDER) {
-                        getAdapter().onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
-                    } else {
-                        getAdapter().onEvent(eventType, response, mPageCode, mEventID);
-                    }
+                    getAdapter().onEvent(eventType, response, mPageCode, mEventID);
                 }
             }
         });

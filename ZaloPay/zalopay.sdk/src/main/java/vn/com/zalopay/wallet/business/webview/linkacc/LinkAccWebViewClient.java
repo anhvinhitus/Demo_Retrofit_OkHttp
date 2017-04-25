@@ -1,10 +1,7 @@
 package vn.com.zalopay.wallet.business.webview.linkacc;
 
-import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
-import android.os.Build;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
@@ -43,7 +40,6 @@ import static vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc.VCB_
  * @author SinhTT
  */
 public class LinkAccWebViewClient extends PaymentWebViewClient {
-    public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
     public static final int IGNORE_EVENT_ID_FOR_HTTPS = -2; // This event id
     protected static final String HTTP_EXCEPTION = "http://sdk.jsexception";
     // value is used for
@@ -151,7 +147,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
                 DLinkAccScriptInput input = genJsInput();
                 String inputScript = GsonUtils.toJsonString(input);
                 executeJs(Constants.AUTO_SELECT_SERVICE_JS, inputScript); // auto select service #a href tag
-            }else{
+            } else {
                 onPageFinishedAuto(url);
             }
         }
@@ -343,24 +339,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         executeJs(Constants.AUTOFILL_OTP_WEBFLOW_JS, inputScript);
     }
 
-    public void executeJs(String pJsFileName, String pJsInput) {
-        if (!TextUtils.isEmpty(pJsFileName)) {
-            String jsContent;
-            Log.d("executeJs", pJsFileName);
-            Log.d("executeJs", pJsInput);
-            for (String jsFile : pJsFileName.split(Constants.COMMA)) {
-                jsContent = ResourceManager.getJavascriptContent(jsFile);
-                jsContent = String.format(jsContent, pJsInput);
-                mWebPaymentBridge.runScript(jsContent);
-            }
-        }
-    }
-
-    @JavascriptInterface
-    public void logDebug(String msg) {
-        Log.d("Js", "****** Debug webview: " + msg);
-    }
-
     /***
      * run normal. not ajax
      *
@@ -368,20 +346,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
      */
     public void onPageFinishedAuto(String url) {
         matchAndRunJs(url, EJavaScriptType.AUTO, false);
-    }
-
-    /***
-     * run when load ajax
-     *
-     * @param pUrl
-     */
-    public void onPageFinishedAjax(final String pUrl, long pDelay) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                matchAndRunJs(pUrl, EJavaScriptType.AUTO, true);
-            }
-        }, pDelay); // delay 1s for Ajax run
     }
 
     /***
@@ -428,10 +392,6 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         }
     }
 
-    public boolean isVerifyCardComplete() {
-        return mEventID == 1;
-    }
-
     public StatusResponse genResponse(EEventType pEventType, DLinkAccScriptOutput pScriptOutput) {
         StatusResponse ret = null;
         switch (pEventType) {
@@ -450,24 +410,5 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
         }
 
         return ret;
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    @SuppressWarnings("deprecation")
-    public void dispose() {
-        // When clearing the webview reference. Simply set it to null is not
-        // enough.
-        // http://garena.github.io/blog/2014/07/18/android-prevent-webview-from-memory-leak/
-        if (mWebPaymentBridge != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                mWebPaymentBridge.removeJavascriptInterface(JAVA_SCRIPT_INTERFACE_NAME);
-            }
-            mWebPaymentBridge.setWebViewClient(null);
-            mWebPaymentBridge.removeAllViews();
-            mWebPaymentBridge.clearHistory();
-            mWebPaymentBridge.freeMemory();
-            mWebPaymentBridge.destroy();
-            mWebPaymentBridge = null;
-        }
     }
 }

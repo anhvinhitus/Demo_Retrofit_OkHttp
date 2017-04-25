@@ -30,6 +30,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnCloseDialogListener;
@@ -37,9 +39,10 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnProgressDialogTimeoutListener;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnSweetDialogListener;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -47,7 +50,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Stack;
-import rx.Observer;
+
 import rx.Single;
 import rx.SingleSubscriber;
 import rx.Subscription;
@@ -86,10 +89,10 @@ import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.listener.ZPWPaymentOpenNetworkingDialogListener;
 import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SdkDownloadResourceMessage;
 import vn.com.zalopay.wallet.message.SdkLoadingTaskMessage;
 import vn.com.zalopay.wallet.message.SdkNetworkEventMessage;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.message.SdkUpVersionMessage;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
@@ -239,110 +242,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     };
     private boolean isVisibilitySupport = false;
     private Feedback mFeedback = null;
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnTaskInProcessEvent(SdkLoadingTaskMessage pMessage)
-    {
-        Log.d(this,"OnTaskInProcessEvent" + GsonUtils.toJsonString(pMessage));
-        showProgress(true, pMessage.message);
-    }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnInitialResourceCompleteEvent(SdkResourceInitMessage pMessage)
-    {
-        Log.d(this,"OnFinishInitialResourceEvent" + GsonUtils.toJsonString(pMessage));
-        if (pMessage.success) {
-            Subscription subscription = Single.zip(MapCardHelper.loadMapCardList(false,GlobalData.getPaymentInfo().userInfo),
-                    BankAccountHelper.loadBankAccountList(false), (t1, t2) -> true)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new SingleSubscriber<Boolean>() {
-                        @Override
-                        public void onSuccess(Boolean aBoolean) {
-                            readyForPayment();
-                        }
-
-                        @Override
-                        public void onError(Throwable error) {
-                            showDialogAndExit(GlobalData.getStringResource(RS.string.zpw_generic_error), true);
-                            Log.d("onError", error);
-                        }
-                    });
-            mCompositeSubscription.add(subscription);
-        } else {
-            Log.d(this, "init resource error " + pMessage);
-            /***
-             * delete folder resource to download again.
-             * this prevent case file resource downloaded but was damaged on the wire so
-             * can not parse json file.
-             */
-            try {
-                String resPath = SharedPreferencesManager.getInstance().getUnzipPath();
-                if (!TextUtils.isEmpty(resPath))
-                    StorageUtil.deleteRecursive(new File(resPath));
-            } catch (Exception e) {
-                Log.d(this, e);
-            }
-            String message = pMessage.message;
-            if (TextUtils.isEmpty(message)) {
-                message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
-            }
-            showDialogAndExit(message, ErrorManager.shouldShowDialog());   //notify error and close sdk
-        }
-    }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnUpVersionEvent(SdkUpVersionMessage pMessage)
-    {
-        Log.d(this,"OnUpVersionEvent" + GsonUtils.toJsonString(pMessage));
-        notifyUpVersionToApp(pMessage.forceupdate, pMessage.version, pMessage.message);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnDownloadResourceMessageEvent(SdkDownloadResourceMessage result) {
-        Log.d(this, "OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
-        if (result.success) {
-           initializeResource();
-        } else {
-            SdkResourceInitMessage message = new SdkResourceInitMessage();
-            message.success = result.success;
-            message.message = result.message;
-            PaymentEventBus.shared().post(message);
-        }
-    }
-
-    public void initializeResource()
-    {
-        if(!BGatewayInfo.isValidConfig())
-        {
-            Log.d(this,"call init resource but not ready for now, waiting for downloading resource");
-            return;
-        }
-
-        Subscription subscription = ResourceManager.createResourceObservable()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d("init resource complete","onCompleted");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        SdkResourceInitMessage message = new SdkResourceInitMessage();
-                        message.success = false;
-                        message.message = GlobalData.getStringResource(RS.string.zpw_alert_error_resource_not_download);
-                        PaymentEventBus.shared().post(message);
-                        Log.d("init resource fail",e);
-                    }
-
-                    @Override
-                    public void onNext(Boolean success) {
-                        SdkResourceInitMessage message = new SdkResourceInitMessage();
-                        message.success = success;
-                        PaymentEventBus.shared().post(message);
-                    }
-                });
-        mCompositeSubscription.add(subscription);
-    }
     /***
      * check static resource listener.
      */
@@ -350,7 +249,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         @Override
         public void onCheckResourceStaticComplete(boolean isSuccess, String pError) {
             if (isSuccess) {
-                Subscription subscription = Single.zip(MapCardHelper.loadMapCardList(false,GlobalData.getPaymentInfo().userInfo),
+                Subscription subscription = Single.zip(MapCardHelper.loadMapCardList(false, GlobalData.getPaymentInfo().userInfo),
                         BankAccountHelper.loadBankAccountList(false), (t1, t2) -> true)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new SingleSubscriber<Boolean>() {
@@ -430,7 +329,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     };
     //close snackbar networking alert listener
     private onCloseSnackBar mOnCloseSnackBarListener = this::askToOpenSettingNetwoking;
-
     private View.OnClickListener mSupportButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -521,13 +419,102 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnTaskInProcessEvent(SdkLoadingTaskMessage pMessage) {
+        Log.d(this, "OnTaskInProcessEvent" + GsonUtils.toJsonString(pMessage));
+        showProgress(true, pMessage.message);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnInitialResourceCompleteEvent(SdkResourceInitMessage pMessage) {
+        Log.d(this, "OnFinishInitialResourceEvent" + GsonUtils.toJsonString(pMessage));
+        if (pMessage.success) {
+            Subscription subscription = Single.zip(MapCardHelper.loadMapCardList(false, GlobalData.getPaymentInfo().userInfo),
+                    BankAccountHelper.loadBankAccountList(false), (t1, t2) -> true)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new SingleSubscriber<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean aBoolean) {
+                            readyForPayment();
+                        }
+
+                        @Override
+                        public void onError(Throwable error) {
+                            showDialogAndExit(GlobalData.getStringResource(RS.string.zpw_generic_error), true);
+                            Log.d("onError", error);
+                        }
+                    });
+            mCompositeSubscription.add(subscription);
+        } else {
+            Log.d(this, "init resource error " + pMessage);
+            /***
+             * delete folder resource to download again.
+             * this prevent case file resource downloaded but was damaged on the wire so
+             * can not parse json file.
+             */
+            try {
+                String resPath = SharedPreferencesManager.getInstance().getUnzipPath();
+                if (!TextUtils.isEmpty(resPath))
+                    StorageUtil.deleteRecursive(new File(resPath));
+            } catch (Exception e) {
+                Log.d(this, e);
+            }
+            String message = pMessage.message;
+            if (TextUtils.isEmpty(message)) {
+                message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
+            }
+            showDialogAndExit(message, ErrorManager.shouldShowDialog());   //notify error and close sdk
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnUpVersionEvent(SdkUpVersionMessage pMessage) {
+        Log.d(this, "OnUpVersionEvent" + GsonUtils.toJsonString(pMessage));
+        notifyUpVersionToApp(pMessage.forceupdate, pMessage.version, pMessage.message);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnDownloadResourceMessageEvent(SdkDownloadResourceMessage result) {
+        Log.d(this, "OnDownloadResourceMessageEvent " + GsonUtils.toJsonString(result));
+        if (result.success) {
+            initializeResource();
+        } else {
+            SdkResourceInitMessage message = new SdkResourceInitMessage();
+            message.success = result.success;
+            message.message = result.message;
+            PaymentEventBus.shared().post(message);
+        }
+    }
+
+    public void initializeResource() {
+        if (!BGatewayInfo.isValidConfig()) {
+            Log.d(this, "call init resource but not ready for now, waiting for downloading resource");
+            return;
+        }
+        Subscription subscription = ResourceManager.initResource()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    SdkResourceInitMessage message = new SdkResourceInitMessage();
+                    message.success = true;
+                    PaymentEventBus.shared().post(message);
+                }, throwable -> {
+                    SdkResourceInitMessage message = new SdkResourceInitMessage();
+                    message.success = false;
+                    message.message = GlobalData.getStringResource(RS.string.zpw_alert_error_resource_not_download);
+                    PaymentEventBus.shared().post(message);
+                    Log.d("init resource fail", throwable);
+                });
+        mCompositeSubscription.add(subscription);
+    }
+
     protected void loadStaticReload() {
         try {
             Log.d(this, "check static resource start");
             PlatformInfoLoader.getInstance().checkStaticResource();
         } catch (Exception e) {
-            showDialogAndExit( GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), true);   //notify error and close sdk
-            Log.e(this,e);
+            showDialogAndExit(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error), true);   //notify error and close sdk
+            Log.e(this, e);
         }
     }
 
@@ -618,7 +605,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
     public void requestPermission(Context pContext) {
         if (PermissionUtils.isNeedToRequestPermissionAtRuntime() && !PermissionUtils.checkIfAlreadyhavePermission(pContext)) {
-            PermissionUtils.requestForSpecificPermission(this,Constants.REQUEST_CODE_SMS);
+            PermissionUtils.requestForSpecificPermission(this, Constants.REQUEST_CODE_SMS);
         }
     }
 
@@ -923,6 +910,10 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
+    public void setImage(int pId, String pImageName) {
+        ResourceManager.loadImageIntoView(findViewById(pId),pImageName);
+    }
+
     public View findViewById(String pName) {
         return findViewById(RS.getID(pName));
     }
@@ -1198,8 +1189,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().description)) {
                 setVisible(R.id.payment_description_label, true);
                 setText(R.id.payment_description_label, GlobalData.getPaymentInfo().description);
-            } else
-            {
+            } else {
                 setVisible(R.id.payment_description_label, false);
             }
         } else if (GlobalData.isBankAccountLink()) { // show label for linkAcc
@@ -1232,7 +1222,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
             }
-            if(!SdkUtils.isTablet(this)) {
+            if (!SdkUtils.isTablet(this)) {
                 int[] locate = new int[2];
                 View view = findViewById(R.id.zpw_pay_info_buttom_view);
                 view.getLocationInWindow(locate);
@@ -1286,8 +1276,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
 
             Long paymentTime = GlobalData.getPaymentInfo().appTime;
-            if(paymentTime == null || paymentTime == 0)
-            {
+            if (paymentTime == null || paymentTime == 0) {
                 paymentTime = new Date().getTime();
             }
             setTransferDate(SdkUtils.convertDateTime(paymentTime));
@@ -1958,6 +1947,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             }
         }
     }
+
     // fresco load Uri
     private SimpleDraweeView findViewAndLoadUri(@IdRes int viewId, String uri) {
         SimpleDraweeView view = this.findAndPrepare(viewId);
@@ -1973,6 +1963,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     public void setTransferDate(String pDate) {
         setText(R.id.text_transfer_date, pDate);
     }
+
     //endregion
     public void setTextInputLayoutHintError(EditText pEditext, String pError, Context pContext) {
         if (pEditext == null) {

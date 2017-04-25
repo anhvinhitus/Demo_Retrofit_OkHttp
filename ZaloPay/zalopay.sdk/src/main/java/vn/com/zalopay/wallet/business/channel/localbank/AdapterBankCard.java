@@ -509,6 +509,14 @@ public class AdapterBankCard extends AdapterBase {
         }
     }
 
+    @Override
+    public void onFinish() {
+        super.onFinish();
+        if(mWebViewProcessor != null){
+            mWebViewProcessor.dispose();
+        }
+    }
+
     public boolean hasBidvBankInMapCardList(String pCardNumber) {
         try {
             if (TextUtils.isEmpty(pCardNumber) || pCardNumber.length() < 6) {

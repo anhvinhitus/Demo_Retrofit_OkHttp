@@ -27,7 +27,7 @@ public class SharedPreferencesManager extends SingletonBase {
         super();
         if (GlobalData.getAppContext() == null)
             throw new Exception("Truy cập không còn hợp lệ");
-        mContext = new WeakReference<Context>(GlobalData.getAppContext());
+        mContext = new WeakReference<>(GlobalData.getAppContext());
     }
 
     public static synchronized SharedPreferencesManager getInstance() throws Exception {

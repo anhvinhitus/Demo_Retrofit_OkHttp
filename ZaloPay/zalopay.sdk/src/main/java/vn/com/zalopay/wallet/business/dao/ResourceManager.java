@@ -5,6 +5,9 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.view.View;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,8 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import rx.Observable;
-import rx.Subscriber;
+import rx.Completable;
+import rx.Single;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
@@ -32,13 +35,13 @@ import vn.com.zalopay.wallet.view.component.activity.ActivityRendering;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class ResourceManager extends SingletonBase {
-    protected static final String TAG = ResourceManager.class.getCanonicalName();
     public static final String CONFIG_FILE = "config.json";
+    protected static final String TAG = ResourceManager.class.getSimpleName();
     private static final String PREFIX_JS = "/js/";
     private static final String PREFIX_IMG = "/img/";
     private static final String PREFIX_FONT = "/fonts/";
     private static final String HIDE_IMG_NAME = "0.png";
-    public static boolean mIsCreated = false;
+    public static boolean mResourceCreated = false;
     private static String mUnzipPath = null;
     private static ResourceManager mCommonResourceManager = null;
     private static Map<String, ResourceManager> mResourceManagerMap = null;
@@ -63,41 +66,24 @@ public class ResourceManager extends SingletonBase {
                     mResourceManagerMap = new HashMap<>();
                 }
             }
-
             ResourceManager resourceManager = mResourceManagerMap.get(pPageName);
-
             if (resourceManager != null) {
                 return resourceManager;
             }
 
             resourceManager = new ResourceManager();
             mResourceManagerMap.put(pPageName, resourceManager);
-
             return resourceManager;
         }
-    }
-
-    public static Observable<Boolean> createResourceObservable() {
-        return Observable.create(subscriber -> {
-            try {
-                ResourceManager.initResource();
-                subscriber.onNext(ResourceManager.isInit());
-                subscriber.onCompleted();
-            } catch (Exception e) {
-                subscriber.onError(e);
-            }
-        });
     }
 
     private static String getUnzipFolderPath() throws Exception {
         if (SharedPreferencesManager.getInstance() == null) {
             throw new Exception("Missing shared preferences!!!");
         }
-
         if (mUnzipPath == null) {
             mUnzipPath = SharedPreferencesManager.getInstance().getUnzipPath();
         }
-
         return mUnzipPath;
     }
 
@@ -138,7 +124,6 @@ public class ResourceManager extends SingletonBase {
 
     /***
      * load config from config.json
-     *
      * @return
      * @throws Exception
      */
@@ -155,7 +140,7 @@ public class ResourceManager extends SingletonBase {
                     InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-                    String line = "";
+                    String line;
                     StringBuilder stringBuilder = new StringBuilder();
 
                     while ((line = bufferedReader.readLine()) != null) {
@@ -179,59 +164,76 @@ public class ResourceManager extends SingletonBase {
     }
 
     public static boolean isInit() {
-        return (mIsCreated == true) && (mConfigFromServer != null);
+        return (mResourceCreated == true) && (mConfigFromServer != null);
     }
 
-    public static synchronized void initResource() throws Exception {
-        try {
-            Log.d(TAG, "initialize resource");
-            String json = loadResourceFile(null, CONFIG_FILE);
-            if (TextUtils.isEmpty(json)) {
-                mIsCreated = false;
-                return;
-            }
-            mConfigFromServer = (new DConfigFromServer()).fromJsonString(json);
-            ResourceManager commonResourceManager = getInstance(null);
-            if (mConfigFromServer.stringMap != null) {
-                commonResourceManager.setString(mConfigFromServer.stringMap);
-            }
-            if (mConfigFromServer.pageList != null) {
-                for (DPage page : mConfigFromServer.pageList) {
-                    getInstance(page.pageName).mPageConfig = page;
+    public static synchronized Completable initResource() {
+        return Completable.create(completableSubscriber -> {
+            try {
+                Log.d(TAG, "initializing resource");
+                String json = loadResourceFile(null, CONFIG_FILE);
+                if (TextUtils.isEmpty(json)) {
+                    mResourceCreated = false;
+                    completableSubscriber.onError(new Exception("Lỗi đọc file resource"));
+                } else {
+                    mConfigFromServer = (new DConfigFromServer()).fromJsonString(json);
+                    ResourceManager commonResourceManager = getInstance(null);
+                    if (mConfigFromServer.stringMap != null) {
+                        commonResourceManager.setString(mConfigFromServer.stringMap);
+                    }
+                    if (mConfigFromServer.pageList != null) {
+                        for (DPage page : mConfigFromServer.pageList) {
+                            getInstance(page.pageName).mPageConfig = page;
+                        }
+                    }
+                    mResourceCreated = true;
+                    completableSubscriber.onCompleted();
                 }
+            } catch (Exception e) {
+                mResourceCreated = false;
+                completableSubscriber.onError(e);
             }
-            mIsCreated = true;
-        } catch (Exception e) {
-            Log.e(TAG, e);
-            mIsCreated = false;
-        }
+        });
     }
 
-    public static String getJavascriptContent(String pJsName) {
-        try {
-            return loadResourceFile(PREFIX_JS, pJsName);
-        } catch (Exception e) {
-            Log.e("getJavascriptContent", e);
-        }
-        return null;
+    public static Single<String> getJavascriptContent(String pJsName) {
+        return Single.create(singleSubscriber -> {
+            try {
+                singleSubscriber.onSuccess(loadResourceFile(PREFIX_JS, pJsName));
+            } catch (Exception e) {
+                singleSubscriber.onError(e);
+            }
+        });
     }
 
     public static Bitmap getImage(String imageName) {
         if (imageName.equals(HIDE_IMG_NAME)) {
             return null;
         }
-
         String imgLocalPath;
         Bitmap bitmap = null;
         try {
             imgLocalPath = String.format("%s%s%s%s%s", getUnzipFolderPath(), File.separator, PREFIX_IMG, File.separator, imageName);
-
             bitmap = BitmapFactory.decodeFile(imgLocalPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return bitmap;
+    }
+
+    /***
+     * load image into SimpleDraweeView
+     * use Fresco
+     * @param pView
+     * @param pImageName
+     */
+    public static void loadImageIntoView(View pView, String pImageName) {
+        try {
+            String pFilePath = String.format("%s%s%s%s%s", getUnzipFolderPath(), File.separator, PREFIX_IMG, File.separator, pImageName);
+            ((SimpleDraweeView)pView).setImageURI(pFilePath);
+        } catch (Exception e) {
+            Log.d("loadImageIntoView", e);
+        }
     }
 
     public static String getPathFont() {
@@ -268,46 +270,44 @@ public class ResourceManager extends SingletonBase {
 
 
     public List<DCardIdentifier> getCreditCardIdentifier() {
-        if (mConfigFromServer == null)
+        if (mConfigFromServer == null) {
             return null;
-
+        }
         return mConfigFromServer.CCIdentifier;
     }
 
     public List<DCardIdentifier> getBankCardIdentifier() {
-        if (mConfigFromServer == null)
+        if (mConfigFromServer == null) {
             return null;
-
+        }
         return mConfigFromServer.BankIdentifier;
     }
 
     public List<DBankScript> getBankScripts() {
-        if (mConfigFromServer == null)
+        if (mConfigFromServer == null) {
             return null;
-
+        }
         return mConfigFromServer.bankScripts;
     }
 
     //get otp pattern for each of bank.
     public ArrayList<DOtpReceiverPattern> getOtpReceiverPattern(String pBankCode) {
-        if (mConfigFromServer == null || mConfigFromServer.otpReceiverPattern == null)
+        if (mConfigFromServer == null || mConfigFromServer.otpReceiverPattern == null) {
             return null;
-
+        }
         ArrayList<DOtpReceiverPattern> otpReceiverPattern = new ArrayList<>();
-
         for (DOtpReceiverPattern pattern : mConfigFromServer.otpReceiverPattern) {
             if (pattern.bankcode.equals(pBankCode)) {
                 otpReceiverPattern.add(pattern);
             }
         }
-
         return otpReceiverPattern;
     }
 
     //get otp pattern for each of bank.
     public DCardIdentifier getBankIdentifier(String pCode) {
         if (mConfigFromServer == null || mConfigFromServer.BankIdentifier == null) {
-            Log.d(this, "===mConfigFromServer=NULL");
+            Log.d(this, "mConfigFromServer is null");
             return null;
         }
         DCardIdentifier cardIdentifier = null;
@@ -322,7 +322,7 @@ public class ResourceManager extends SingletonBase {
 
     public List<DKeyBoardConfig> getKeyBoardConfig() {
         if (mConfigFromServer == null) {
-            Log.d(this, "===mConfigFromServer=NULL");
+            Log.d(this, "mConfigFromServer is null");
             return null;
         }
         return mConfigFromServer.keyboard;
@@ -337,8 +337,9 @@ public class ResourceManager extends SingletonBase {
     }
 
     public ActivityRendering produceRendering(BasePaymentActivity pActivity) {
-        if (this.mPageConfig == null)
+        if (this.mPageConfig == null) {
             return null;
+        }
         return new ActivityRendering(this, pActivity);
     }
 }
