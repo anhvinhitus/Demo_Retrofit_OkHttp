@@ -3,6 +3,7 @@ package vn.com.vng.zalopay.notification;
 /**
  * Created by huuhoa on 7/23/16.
  * Constants for notification type
+ * Ref: https://docs.google.com/spreadsheets/d/1aEQ1BxVLIJT24podXtZTFh0026YYbn_6Fx4mAeOeEfQ/edit#gid=0
  */
 public class NotificationType {
 
@@ -14,6 +15,9 @@ public class NotificationType {
     public static final int RECEIVE_RED_PACKET = 6;
     public static final int REFUND_RED_PACKET = 7;
     public static final int DONATE_MONEY = 9;
+    public static final int RECOVERY_MONEY = 10;
+    public static final int MERCHANT_TRANSFER = 11;
+    public static final int DEPOSIT_FROM_WEB_VCB_SUCCESS = 12;
 
     public static final int UPDATE_PROFILE_LEVEL_OK = 100;
     public static final int PAYMENT_APP_PROMOTION = 101;
@@ -23,45 +27,16 @@ public class NotificationType {
     public static final int REFUND_TRANSACTION = 105;
     public static final int REFUND_TRANSACTION_BANK = 106;
     public static final int RETRY_TRANSACTION = 107;
+    public static final int NOTIFICATION_MERCHANT_APP = 108;
     public static final int APP_P2P_NOTIFICATION = 109;
     public static final int RESET_PAYMENT_PASSWORD = 110;
     public static final int NOTIFICATION_RECEIVE_RED_PACKET = 111;
-    public static final int RECOVERY_MONEY = 10;
-    public static final int MERCHANT_TRANSFER = 11;
-    public static final int DEPOSIT_FROM_WEB_VCB_SUCCESS = 12;
+
     public static final int LINK_CARD_EXPIRED = 112;
     public static final int MERCHANT_BILL = 113; //Thanh toán đơn hàng
-
+    public static final int NOTIFICATION_ALL_USER = 114;
     public static final int UNLINK_ACCOUNT = 115;
     public static final int LINK_ACCOUNT = 116;
-
-    static boolean isTransactionNotification(long notificationType) {
-        return notificationType == ORDER_PAYMENT ||
-                notificationType == TOPUP_WALLET ||
-                notificationType == ADD_BANK_CARD ||
-                notificationType == MONEY_TRANSFER ||
-                notificationType == MONEY_WITHDRAW ||
-                notificationType == RECEIVE_RED_PACKET ||
-                notificationType == REFUND_RED_PACKET ||
-                notificationType == REFUND_TRANSACTION ||
-                notificationType == RETRY_TRANSACTION ||
-                notificationType == REFUND_TRANSACTION_BANK ||
-                notificationType == DONATE_MONEY ||
-                notificationType == RECOVERY_MONEY ||
-                notificationType == MERCHANT_TRANSFER ||
-                notificationType == DEPOSIT_FROM_WEB_VCB_SUCCESS
-                ;
-    }
-
-    static boolean isProfileNotification(long notificationType) {
-        return notificationType == UPDATE_PROFILE_LEVEL_OK
-                || notificationType == UPLOAD_PROFILE_LEVEL_3
-                || notificationType == UPDATE_PROFILE_LEVEL_FAILED;
-    }
-
-    static boolean isRedPacket(long notificationType) {
-        return notificationType == SEND_RED_PACKET;
-    }
 
     static boolean shouldMarkRead(long notificationType) {
         return notificationType == ORDER_PAYMENT || notificationType == APP_P2P_NOTIFICATION;

@@ -235,10 +235,14 @@ public class NotificationHelper {
     }
 
     private void shouldUpdateTransAndBalance(NotificationData notify) {
-        Timber.d("Should update transaction and balance");
-        if (NotificationType.isTransactionNotification(notify.notificationtype)) {
+        if (needReloadBalanceAndTransaction(notify)) {
+            Timber.d("Receive notification type [%s] -> Reload transaction & balance.",
+                    notify.notificationtype);
             this.updateTransaction();
             this.updateBalance();
+        } else {
+            Timber.d("Receive notification type [%s] -> Don't need reload transaction & balance",
+                    notify.notificationtype);
         }
     }
 
@@ -487,6 +491,87 @@ public class NotificationHelper {
     private void resetPaymentPassword() {
         refreshGatewayInfo();
         mUserConfig.removeFingerprint();
+    }
+
+    private boolean needReloadBalanceAndTransaction(NotificationData notify) {
+        if (notify == null) {
+            return false;
+        }
+        switch ((int) notify.notificationtype) {
+            case NotificationType.ORDER_PAYMENT:
+                //Reload balance & transaction when handle callback from PaymentSDK.
+                return false;
+            case NotificationType.TOPUP_WALLET:
+                //Reload balance & transaction when handle callback from PaymentSDK.
+                return false;
+            case NotificationType.ADD_BANK_CARD:
+                //Reload balance & transaction when handle callback from PaymentSDK.
+                return false;
+            case NotificationType.MONEY_TRANSFER:
+                //If anyone transfer money to me then reload.
+                //Else Reload balance & transaction when handle callback from PaymentSDK.
+                return mUser.zaloPayId.equalsIgnoreCase(notify.destuserid);
+            case NotificationType.MONEY_WITHDRAW:
+                //Reload balance & transaction when handle callback from PaymentSDK.
+                return false;
+            case NotificationType.RECEIVE_RED_PACKET:
+                return true;
+            case NotificationType.REFUND_RED_PACKET:
+                return true;
+            case NotificationType.DONATE_MONEY:
+                return true;
+            case NotificationType.RECOVERY_MONEY:
+                return true;
+            case NotificationType.MERCHANT_TRANSFER:
+                return true;
+            case NotificationType.DEPOSIT_FROM_WEB_VCB_SUCCESS:
+                return true;
+
+            //Notification Profile -> don't need reload
+            case NotificationType.UPDATE_PROFILE_LEVEL_OK:
+                return false;
+            case NotificationType.UPDATE_PROFILE_LEVEL_FAILED:
+                return false;
+            case NotificationType.UPLOAD_PROFILE_LEVEL_3:
+                return false;
+
+            case NotificationType.REFUND_TRANSACTION:
+                return true;
+            case NotificationType.REFUND_TRANSACTION_BANK:
+                //Yêu cầu hoàn tiền đang được ngân hàng xử lý
+                return true;
+            case NotificationType.RETRY_TRANSACTION:
+                //Giao dịch của bạn đã retry thành công
+                return true;
+
+            case NotificationType.APP_P2P_NOTIFICATION:
+                //Balance & transaction not change
+                return false;
+            case NotificationType.RESET_PAYMENT_PASSWORD:
+                //Balance & transaction not change
+                return false;
+
+            case NotificationType.NOTIFICATION_RECEIVE_RED_PACKET:
+                //Reloaded when receive red packet.
+                return false;
+
+            case NotificationType.LINK_CARD_EXPIRED:
+                //Balance & transaction not change
+                return false;
+
+            case NotificationType.MERCHANT_BILL:
+                return true;
+
+            case NotificationType.LINK_ACCOUNT:
+                //Balance & transaction not change
+                return false;
+            case NotificationType.UNLINK_ACCOUNT:
+                //Balance & transaction not change
+                return false;
+
+            default:
+                return true;
+        }
     }
 
 }
