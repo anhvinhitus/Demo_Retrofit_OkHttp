@@ -78,6 +78,7 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;
         CShareDataWrapper.getCardSupportList(userInfo, mGetCardSupportListListener);
+        Timber.d("Get list bank support %s , auto load data: %s", mBankType, mAutoLoadData);
     }
 
     @Override
@@ -168,7 +169,6 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
         }
         mAutoLoadData = bundle.getBoolean(Constants.ARG_AUTO_LOAD_DATA, false);
         mBankType = (LinkBankType) bundle.getSerializable(Constants.ARG_LINK_BANK_TYPE);
-        Timber.d("Get list bank support %s , auto load data: %s", mBankType, mAutoLoadData);
     }
 
     void getCardSupportIfNeed() {
