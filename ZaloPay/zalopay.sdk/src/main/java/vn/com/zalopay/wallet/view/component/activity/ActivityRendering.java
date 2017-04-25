@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.view.component.activity;
 
-import android.app.Activity;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,7 +12,6 @@ import java.util.Map.Entry;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DKeyBoardConfig;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicEditText;
 import vn.com.zalopay.wallet.business.entity.staticconfig.page.DDynamicViewGroup;
@@ -64,13 +62,13 @@ public class ActivityRendering {
                  */
                 //set keyboard for some view
                 if (TextUtils.isEmpty(keyboard.bankcode)) {
-                    mOwnerActivity.setKeyBoard(keyboard.view, EKeyBoardType.fromString(keyboard.type));
+                    mOwnerActivity.setKeyBoard(keyboard.view, keyboard.type);
                     Log.d("renderKeyBoard", "set keyboard for view" + (keyboard != null ? GsonUtils.toJsonString(keyboard) : "NULL"));
                     continue;
                 }
                 //set keyboard by bank
                 if (BankCardCheck.getInstance().isDetected() && BankCardCheck.getInstance().getDetectBankCode().equalsIgnoreCase(keyboard.bankcode)) {
-                    mOwnerActivity.setKeyBoard(keyboard.view, EKeyBoardType.fromString(keyboard.type));
+                    mOwnerActivity.setKeyBoard(keyboard.view, keyboard.type);
                     Log.d("renderKeyBoard", "set keyboard for bank" + (BankCardCheck.getInstance().getDetectBankCode() + "-" + (keyboard != null ? GsonUtils.toJsonString(keyboard) : "NULL")));
                 }
             }

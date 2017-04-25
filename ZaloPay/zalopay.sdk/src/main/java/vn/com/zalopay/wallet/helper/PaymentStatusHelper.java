@@ -2,12 +2,11 @@ package vn.com.zalopay.wallet.helper;
 
 import android.text.TextUtils;
 
-import retrofit2.http.PUT;
 import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.constants.PaymentActionStatus;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.EStatusActionType;
 
 public class PaymentStatusHelper {
     public static boolean isNetworkingErrorResponse(BaseResponse pResponse) {
@@ -78,14 +77,14 @@ public class PaymentStatusHelper {
         if (pResponse == null) {
             return false;
         }
-        return String.valueOf(pResponse.actiontype).equalsIgnoreCase(EStatusActionType.THREE3DS.toString());
+        return pResponse.actiontype == PaymentActionStatus.THREE3DS;
     }
 
     public static boolean isOtpResponse(SecurityResponse pResponse) {
         if (pResponse == null) {
             return false;
         }
-        return String.valueOf(pResponse.actiontype).equalsIgnoreCase(EStatusActionType.OTP.toString());
+        return pResponse.actiontype == PaymentActionStatus.OTP;
     }
 
     public static boolean isPaymentOverLimitPerDay(StatusResponse pResponse) {

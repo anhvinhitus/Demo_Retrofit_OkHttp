@@ -14,7 +14,6 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,12 +29,12 @@ import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.AuthenType;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.enumeration.EAuthenType;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
 import vn.com.zalopay.wallet.utils.BitmapUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
 import vn.com.zalopay.wallet.view.adapter.LocalCardFragmentAdapter;
@@ -50,7 +49,8 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 public class BankCardGuiProcessor extends CardGuiProcessor {
     private RadioGroup mInputRadioGroupAuthenType;
 
-    private EAuthenType mAuthenType = EAuthenType.SMS;
+    @AuthenType
+    private String mAuthenType = AuthenType.OTP;
 
     private View mOtpTokenLayoutRootView;
     private View mOtpTockenLayoutView;
@@ -97,30 +97,24 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         mRadioButtonSms = (AppCompatRadioButton) getAdapter().getActivity().findViewById(R.id.radioSelectionSmS);
         mRadioButtonToken = (AppCompatRadioButton) getAdapter().getActivity().findViewById(R.id.radioSelectionToken);
 
-        mRadioButtonSms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mOtpAuthenEditText.setVisibility(View.VISIBLE);
-                    mTextLayoutOtp.setVisibility(View.VISIBLE);
-                    mTokenAuthenEditText.setVisibility(View.GONE);
-                    mTextLayoutToken.setVisibility(View.GONE);
+        mRadioButtonSms.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mOtpAuthenEditText.setVisibility(View.VISIBLE);
+                mTextLayoutOtp.setVisibility(View.VISIBLE);
+                mTokenAuthenEditText.setVisibility(View.GONE);
+                mTextLayoutToken.setVisibility(View.GONE);
 
-                    mAuthenType = EAuthenType.SMS;
-                }
+                mAuthenType = AuthenType.OTP;
             }
         });
-        mRadioButtonToken.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mOtpAuthenEditText.setVisibility(View.GONE);
-                    mTextLayoutOtp.setVisibility(View.GONE);
-                    mTokenAuthenEditText.setVisibility(View.VISIBLE);
-                    mTextLayoutToken.setVisibility(View.VISIBLE);
+        mRadioButtonToken.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mOtpAuthenEditText.setVisibility(View.GONE);
+                mTextLayoutOtp.setVisibility(View.GONE);
+                mTokenAuthenEditText.setVisibility(View.VISIBLE);
+                mTextLayoutToken.setVisibility(View.VISIBLE);
 
-                    mAuthenType = EAuthenType.TOKEN;
-                }
+                mAuthenType = AuthenType.TOKEN;
             }
         });
 
@@ -411,7 +405,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         return index;
     }
 
-    public EAuthenType getAuthenType() {
+    @AuthenType
+    public String getAuthenType() {
         return mAuthenType;
     }
 
@@ -436,11 +431,11 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
         if (mOtpTockenLayoutView.getVisibility() == View.VISIBLE) {
             if (mInputRadioGroupAuthenType.getCheckedRadioButtonId() == R.id.radioButtonToken)
-                mAuthenType = EAuthenType.TOKEN;
+                mAuthenType = AuthenType.TOKEN;
         }
         if (mOtpTokenLayoutRootView.getVisibility() == View.VISIBLE) {
             if (mAuthenRadioGroup.getCheckedRadioButtonId() == R.id.radioSelectionToken)
-                mAuthenType = EAuthenType.TOKEN;
+                mAuthenType = AuthenType.TOKEN;
         }
     }
 
@@ -478,26 +473,25 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
         mOtpTokenLayoutRootView.setVisibility(View.VISIBLE);
 
-        if (mAuthenType == EAuthenType.SMS) {
-            mRadioGroupAuthenSelectionView.setVisibility(View.GONE);
-            mTokenAuthenEditText.setVisibility(View.GONE);
-            mTextLayoutToken.setVisibility(View.GONE);
+        switch (mAuthenType) {
+            case AuthenType.OTP:
+                mRadioGroupAuthenSelectionView.setVisibility(View.GONE);
+                mTokenAuthenEditText.setVisibility(View.GONE);
+                mTextLayoutToken.setVisibility(View.GONE);
 
-            mOtpAuthenEditText.setVisibility(View.VISIBLE);
-            mTextLayoutOtp.setVisibility(View.VISIBLE);
+                mOtpAuthenEditText.setVisibility(View.VISIBLE);
+                mTextLayoutOtp.setVisibility(View.VISIBLE);
+                showKeyBoardOnEditTextAndScroll(mOtpAuthenEditText);
+                break;
+            case AuthenType.TOKEN:
+                mRadioGroupAuthenSelectionView.setVisibility(View.GONE);
+                mOtpAuthenEditText.setVisibility(View.GONE);
+                mTextLayoutOtp.setVisibility(View.GONE);
 
-            showKeyBoardOnEditTextAndScroll(mOtpAuthenEditText);
-
-        } else if (mAuthenType == EAuthenType.TOKEN) {
-
-            mRadioGroupAuthenSelectionView.setVisibility(View.GONE);
-            mOtpAuthenEditText.setVisibility(View.GONE);
-            mTextLayoutOtp.setVisibility(View.GONE);
-
-            mTokenAuthenEditText.setVisibility(View.VISIBLE);
-            mTextLayoutToken.setVisibility(View.VISIBLE);
-
-            showKeyBoardOnEditTextAndScroll(mTokenAuthenEditText);
+                mTokenAuthenEditText.setVisibility(View.VISIBLE);
+                mTextLayoutToken.setVisibility(View.VISIBLE);
+                showKeyBoardOnEditTextAndScroll(mTokenAuthenEditText);
+                break;
         }
 
         checkEnableSubmitButton();
@@ -530,8 +524,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         return "";
     }
 
-    public String getOnlinePassword()
-    {
+    public String getOnlinePassword() {
         return mOnlinePasswordEditText.getString();
     }
 
@@ -691,7 +684,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         boolean isCoverBankCaptcha = checkValidRequiredEditText(mCaptchaWebEditText);
         boolean isAccountName = checkValidRequiredEditText(mAccountNameEditText);
         boolean isAccountPassword = checkValidRequiredEditText(mAccountPasswordEditText);
-        boolean isOnlinePassword    = checkValidRequiredEditText(mOnlinePasswordEditText);
+        boolean isOnlinePassword = checkValidRequiredEditText(mOnlinePasswordEditText);
 
         boolean isOtp = true;
         boolean isToken = true;

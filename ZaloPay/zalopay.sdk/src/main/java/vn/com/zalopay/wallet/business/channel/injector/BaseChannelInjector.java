@@ -13,8 +13,9 @@ import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
@@ -25,7 +26,6 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.CChannelHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public abstract class BaseChannelInjector {
     public static final int MIN_VALUE_CHANNEL = 1000000000;
@@ -78,8 +78,8 @@ public abstract class BaseChannelInjector {
                     checkSupportAmount(channel);
 
                     //check maintenance for cc
-                    if ((channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, EBankFunction.PAY_BY_CARD))
-                            || (channel.isBankAccount() && isBankMaintenance(channel.bankcode, EBankFunction.PAY_BY_BANK_ACCOUNT))) {
+                    if ((channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_CARD))
+                            || (channel.isBankAccount() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_BANK_ACCOUNT))) {
                         channel.setStatus(EPaymentChannelStatus.MAINTENANCE);
                     }
                 }
@@ -145,7 +145,7 @@ public abstract class BaseChannelInjector {
                 Log.d(this, "===getMappedBankAccount===mapBankAccountKeyList=NULL");
                 return;
             }
-            Log.d(this,"===getMapBankAccount===mapBankAccountKeyList="+mapBankAccountKeyList);
+            Log.d(this, "===getMapBankAccount===mapBankAccountKeyList=" + mapBankAccountKeyList);
             for (String mapCardID : mapBankAccountKeyList.split(Constants.COMMA)) {
                 if (TextUtils.isEmpty(mapCardID)) {
                     continue;
@@ -178,7 +178,7 @@ public abstract class BaseChannelInjector {
                     //check this map card/map bankaccount is support or not
                     checkAllowBankAccount(activeChannel);
 
-                    if (isBankMaintenance(bankAccount.bankcode, EBankFunction.PAY_BY_BANKACCOUNT_TOKEN)) {
+                    if (isBankMaintenance(bankAccount.bankcode, BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN)) {
                         activeChannel.setStatus(EPaymentChannelStatus.MAINTENANCE);
                     }
 
@@ -222,10 +222,10 @@ public abstract class BaseChannelInjector {
             String mappCardIdList = SharedPreferencesManager.getInstance().getMapCardKeyList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
 
             if (TextUtils.isEmpty(mappCardIdList)) {
-                Log.d(this,"===getMapCard===mappCardIdList=NULL");
+                Log.d(this, "===getMapCard===mappCardIdList=NULL");
                 return;
             }
-            Log.d(this,"===getMapCard===mappCardIdList="+mappCardIdList);
+            Log.d(this, "===getMapCard===mappCardIdList=" + mappCardIdList);
             for (String mapCardID : mappCardIdList.split(Constants.COMMA)) {
                 if (TextUtils.isEmpty(mapCardID))
                     continue;
@@ -265,7 +265,7 @@ public abstract class BaseChannelInjector {
                         checkAllowMapCardCC(activeChannel);
                     }
 
-                    if (isBankMaintenance(mappCard.bankcode, EBankFunction.PAY_BY_CARD_TOKEN)) {
+                    if (isBankMaintenance(mappCard.bankcode, BankFunctionCode.PAY_BY_CARD_TOKEN)) {
                         activeChannel.setStatus(EPaymentChannelStatus.MAINTENANCE);
                     }
 
@@ -535,7 +535,7 @@ public abstract class BaseChannelInjector {
      * @param pBankCode
      * @return
      */
-    protected boolean isBankMaintenance(String pBankCode, EBankFunction pBankFunction) {
+    protected boolean isBankMaintenance(String pBankCode, @BankFunctionCode int pBankFunction) {
         if (TextUtils.isEmpty(pBankCode)) {
             return false;
         }

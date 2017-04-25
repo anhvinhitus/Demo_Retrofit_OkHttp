@@ -10,25 +10,19 @@ import android.webkit.WebView;
 
 import java.util.List;
 
-import rx.SingleSubscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 import vn.com.zalopay.wallet.BuildConfig;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptInput;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EJavaScriptType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentReturnCode;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
@@ -240,7 +234,7 @@ public class BankWebViewClient extends PaymentWebViewClient {
 
             case ON_PAYMENT_COMPLETED:
                 ret.returnmessage = pScriptOutput.message;
-                ret.returncode = EPaymentReturnCode.ATM_VERIFY_OTP_SUCCESS.getValue();
+                ret.returncode = ParseWebCode.ATM_VERIFY_OTP_SUCCESS;
                 return ret;
 
             default:

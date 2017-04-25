@@ -11,9 +11,9 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.atm.BankFunction;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.task.BankListTask;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
@@ -32,52 +32,12 @@ public class BankLoader extends SingletonBase {
         maintenanceBank = null;
         maintenanceBankFunction = null;
     }
+
     public static synchronized BankLoader getInstance() {
         if (BankLoader._object == null) {
             BankLoader._object = new BankLoader();
         }
         return BankLoader._object;
-    }
-
-    /***
-     * get detail maintenance message from bankconfig
-     * @return
-     */
-    public String getFormattedBankMaintenaceMessage() {
-        String message = "Ngân hàng đang bảo trì.Vui lòng quay lại sau ít phút.";
-        try {
-            String maintenanceTo = "";
-
-            if(maintenanceBank != null)
-            {
-                message = maintenanceBank.maintenancemsg;
-            }
-            if (maintenanceBank != null && maintenanceBank.isBankFunctionAllMaintenance()) {
-                if (maintenanceBank.maintenanceto > 0) {
-                    maintenanceTo = SdkUtils.convertDateTime(maintenanceBank.maintenanceto);
-                }
-                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
-                    message = String.format(message, maintenanceTo);
-                } else if (TextUtils.isEmpty(message)) {
-                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
-                    message = String.format(message, maintenanceBank.name, maintenanceTo);
-                }
-            }
-            if (maintenanceBank != null && maintenanceBankFunction != null && maintenanceBankFunction.isFunctionMaintenance()) {
-                if (maintenanceBankFunction.maintenanceto > 0) {
-                    maintenanceTo = SdkUtils.convertDateTime(maintenanceBankFunction.maintenanceto);
-                }
-                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
-                    message = String.format(message, maintenanceTo);
-                } else if (TextUtils.isEmpty(message)) {
-                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
-                    message = String.format(message, maintenanceBank.name, maintenanceTo);
-                }
-            }
-        } catch (Exception ex) {
-            Log.e("getFormattedBankMaintenaceMessage", ex);
-        }
-        return message;
     }
 
     /***
@@ -133,6 +93,46 @@ public class BankLoader extends SingletonBase {
         }
     }
 
+    /***
+     * get detail maintenance message from bankconfig
+     * @return
+     */
+    public String getFormattedBankMaintenaceMessage() {
+        String message = "Ngân hàng đang bảo trì.Vui lòng quay lại sau ít phút.";
+        try {
+            String maintenanceTo = "";
+
+            if (maintenanceBank != null) {
+                message = maintenanceBank.maintenancemsg;
+            }
+            if (maintenanceBank != null && maintenanceBank.isBankFunctionAllMaintenance()) {
+                if (maintenanceBank.maintenanceto > 0) {
+                    maintenanceTo = SdkUtils.convertDateTime(maintenanceBank.maintenanceto);
+                }
+                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
+                    message = String.format(message, maintenanceTo);
+                } else if (TextUtils.isEmpty(message)) {
+                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
+                    message = String.format(message, maintenanceBank.name, maintenanceTo);
+                }
+            }
+            if (maintenanceBank != null && maintenanceBankFunction != null && maintenanceBankFunction.isFunctionMaintenance()) {
+                if (maintenanceBankFunction.maintenanceto > 0) {
+                    maintenanceTo = SdkUtils.convertDateTime(maintenanceBankFunction.maintenanceto);
+                }
+                if (!TextUtils.isEmpty(message) && message.contains("%s")) {
+                    message = String.format(message, maintenanceTo);
+                } else if (TextUtils.isEmpty(message)) {
+                    message = GlobalData.getStringResource(RS.string.zpw_string_bank_maitenance);
+                    message = String.format(message, maintenanceBank.name, maintenanceTo);
+                }
+            }
+        } catch (Exception ex) {
+            Log.e("getFormattedBankMaintenaceMessage", ex);
+        }
+        return message;
+    }
+
     public BankConfig getBankByBankCode(String pBankCode) {
         if (!TextUtils.isEmpty(pBankCode)) {
             try {
@@ -165,7 +165,7 @@ public class BankLoader extends SingletonBase {
      * @param pBankCode
      * @return
      */
-    public boolean isBankMaintenance(String pBankCode, EBankFunction pBankFunction) {
+    public boolean isBankMaintenance(String pBankCode, @BankFunctionCode int pBankFunction) {
         BankConfig bankConfig = getBankByBankCode(pBankCode);
         if (bankConfig != null && bankConfig.isBankMaintenence(pBankFunction)) {
             maintenanceBank = bankConfig;

@@ -10,10 +10,11 @@ import com.zalopay.ui.widget.dialog.SweetAlertDialog;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.error.CError;
@@ -25,7 +26,6 @@ import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -109,7 +109,7 @@ public class SDKPayment {
             return;
         }
         //set listener and data payment to global static
-        try{
+        try {
             SDKApplication.createPaymentInfoComponent(pPaymentInfo);
             GlobalData.setSDKData(pMerchantActivity, pPaymentListener, pPaymentOption);
         } catch (Exception e) {
@@ -195,7 +195,7 @@ public class SDKPayment {
             }
 
             //check maintenance link bank account
-            if (GlobalData.isBankAccountLink() && BankLoader.getInstance().isBankMaintenance(GlobalData.getPaymentInfo().linkAccInfo.getBankCode(), EBankFunction.LINK_BANK_ACCOUNT)) {
+            if (GlobalData.isBankAccountLink() && BankLoader.getInstance().isBankMaintenance(GlobalData.getPaymentInfo().linkAccInfo.getBankCode(), BankFunctionCode.LINK_BANK_ACCOUNT)) {
                 DialogManager.showSweetDialog(GlobalData.getMerchantActivity(), SweetAlertDialog.INFO_TYPE,
                         GlobalData.getMerchantActivity().getString(R.string.dialog_title_normal),
                         BankLoader.getInstance().getFormattedBankMaintenaceMessage(), pIndex -> {

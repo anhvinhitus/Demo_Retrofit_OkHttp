@@ -71,8 +71,8 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.EKeyBoardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
@@ -708,20 +708,20 @@ public abstract class BasePaymentActivity extends FragmentActivity {
      * @param pKeyBoardType
      * @return
      */
-    public View setKeyBoard(String pStrID, EKeyBoardType pKeyBoardType) {
+    public View setKeyBoard(String pStrID, @KeyboardType int pKeyBoardType) {
         final int ID = getViewID(pStrID);
         View view = this.findViewById(ID);
         if (view == null && isVisible(view)) {
             return view;
         }
-        if (pKeyBoardType == EKeyBoardType.NUMBER && view instanceof EditText) {
+        if (pKeyBoardType == KeyboardType.NUMBER && view instanceof EditText) {
             //user using the laban key for exmple
             if (!SdkUtils.useDefaultKeyBoard(this)) {
                 ((EditText) view).setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             } else {
                 ((EditText) view).setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
             }
-        } else if (pKeyBoardType == EKeyBoardType.TEXT && view instanceof EditText) {
+        } else if (pKeyBoardType == KeyboardType.TEXT && view instanceof EditText) {
             ((EditText) view).setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         }
         return view;
@@ -911,7 +911,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     public void setImage(int pId, String pImageName) {
-        ResourceManager.loadImageIntoView(findViewById(pId),pImageName);
+        ResourceManager.loadImageIntoView(findViewById(pId), pImageName);
     }
 
     public View findViewById(String pName) {

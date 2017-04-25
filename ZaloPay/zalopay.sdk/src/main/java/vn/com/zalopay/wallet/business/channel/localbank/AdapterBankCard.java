@@ -16,11 +16,11 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.CardChannel;
+import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardChannelType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentReturnCode;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
@@ -51,8 +51,7 @@ public class AdapterBankCard extends AdapterBase {
         if (GlobalData.isWithDrawChannel()) {
             mConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getZaloPayChannelConfig(), DPaymentChannel.class);
         }
-
-        GlobalData.cardChannelType = ECardChannelType.ATM;
+        GlobalData.cardChannelType = CardChannel.ATM;
 
     }
 
@@ -62,7 +61,7 @@ public class AdapterBankCard extends AdapterBase {
     }
 
     @Override
-    public void init() throws Exception{
+    public void init() throws Exception {
         this.mGuiProcessor = new BankCardGuiProcessor(this);
         if (getGuiProcessor() != null && GlobalData.isChannelHasInputCard())
             getGuiProcessor().initPager();
@@ -224,7 +223,7 @@ public class AdapterBankCard extends AdapterBase {
 
                 BaseResponse response = (BaseResponse) pAdditionParams[0];
 
-                if (response.returncode == EPaymentReturnCode.ATM_VERIFY_OTP_SUCCESS.getValue()) {
+                if (response.returncode == ParseWebCode.ATM_VERIFY_OTP_SUCCESS) {
                     getTransactionStatus(mTransactionID, false, GlobalData.getStringResource(RS.string.zingpaysdk_alert_get_status));
                 } else {
                     showTransactionFailView(response.getMessage());
@@ -512,7 +511,7 @@ public class AdapterBankCard extends AdapterBase {
     @Override
     public void onFinish() {
         super.onFinish();
-        if(mWebViewProcessor != null){
+        if (mWebViewProcessor != null) {
             mWebViewProcessor.dispose();
         }
     }

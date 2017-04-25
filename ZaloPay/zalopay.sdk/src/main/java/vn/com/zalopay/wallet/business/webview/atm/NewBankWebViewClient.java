@@ -15,16 +15,15 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
-import vn.com.zalopay.wallet.business.data.Constants;
+import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.constants.ParseWebCode;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptInput;
 import vn.com.zalopay.wallet.business.entity.atm.DAtmScriptOutput;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentReturnCode;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankScript;
 import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class NewBankWebViewClient extends PaymentWebViewClient {
     public static final long DELAY_TIME_TO_RUN_SCRIPT = 4000;
@@ -264,7 +263,7 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
 
             case ON_PAYMENT_COMPLETED:
                 ret.returnmessage = pScriptOutput.message;
-                ret.returncode = EPaymentReturnCode.ATM_VERIFY_OTP_SUCCESS.getValue();
+                ret.returncode = ParseWebCode.ATM_VERIFY_OTP_SUCCESS;
                 return ret;
 
             default:

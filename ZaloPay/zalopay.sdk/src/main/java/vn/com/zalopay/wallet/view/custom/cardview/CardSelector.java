@@ -13,11 +13,11 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.creditcard.CreditCardCheck;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.base.CardColorText;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardChannelType;
-import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.CardChannel;
+import vn.com.zalopay.wallet.business.entity.base.CardColorText;
+import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 
 public class CardSelector {
     private static CardColorText CardColorTextDefault = new CardColorText(R.color.default_color_text_normal, R.color.default_color_text_highline, R.color.default_color_text_selected);
@@ -86,9 +86,9 @@ public class CardSelector {
             if (TextUtils.isEmpty(bankCode)) {
                 bankCode = CreditCardCheck.getInstance().getCodeBankForVerify();
             }
-        } else if (GlobalData.cardChannelType == ECardChannelType.ATM) {
+        } else if (GlobalData.cardChannelType == CardChannel.ATM) {
             bankCode = BankCardCheck.getInstance().getCodeBankForVerify();
-        } else if (GlobalData.cardChannelType == ECardChannelType.CC) {
+        } else if (GlobalData.cardChannelType == CardChannel.CREDIT) {
             bankCode = CreditCardCheck.getInstance().getCodeBankForVerify();
         }
 

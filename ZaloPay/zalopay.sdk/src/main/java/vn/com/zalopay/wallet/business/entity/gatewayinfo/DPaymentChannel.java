@@ -5,10 +5,10 @@ import com.google.gson.Gson;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CPaymentCalculateFee;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.FeeType;
+import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
 
 /***
  * channel class
@@ -23,15 +23,14 @@ public class DPaymentChannel {
     public double discount = -1;
     public double feerate = -1;
     public double minfee = -1;
-    public EFeeCalType feecaltype = EFeeCalType.SUM;
 
     public double totalfee = 0;
-
     public int requireotp = 1;
-
     public long amountrequireotp = 0;
-
     public boolean isBankAccountMap = false;
+
+    @FeeType
+    public String feecaltype = null;
 
     /***
      * rule - still show channel not allow in channel list (status = 0) , each channel have 2 policy to allow or not
@@ -49,7 +48,6 @@ public class DPaymentChannel {
 
     /***
      * copy constructor
-     *
      * @param channel
      */
     public DPaymentChannel(DPaymentChannel channel) {
@@ -76,7 +74,6 @@ public class DPaymentChannel {
 
     /***
      * require otp depend on transaction amount
-     *
      * @return
      */
     public boolean isNeedToCheckTransactionAmount() {
@@ -99,9 +96,9 @@ public class DPaymentChannel {
     }
 
     public DPaymentChannel fromJsonString(String pJson) {
-        if (pJson == null)
+        if (pJson == null) {
             return new DPaymentChannel();
-
+        }
         return (new Gson()).fromJson(pJson, this.getClass());
     }
 
@@ -163,7 +160,6 @@ public class DPaymentChannel {
 
     /***
      * status must be 0
-     *
      * @return
      */
     public boolean isAllowByAmount() {
@@ -181,10 +177,6 @@ public class DPaymentChannel {
      */
     public boolean isAllowByLevel() {
         return isAllowByLevel;
-    }
-
-    public void setAllowByLevel(boolean allowByLevel) {
-        isAllowByLevel = allowByLevel;
     }
 
     public boolean isAllowByAmountAndFee() {

@@ -10,13 +10,13 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardChannelType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
@@ -49,16 +49,18 @@ public class GlobalData {
     //static amount when user select 1 channel for paying.
     public static double orderAmountTotal = 0;
     public static double orderAmountFee = 0;
-    public static ECardChannelType cardChannelType = ECardChannelType.ATM;
+    @CardChannel
+    public static int cardChannelType = CardChannel.ATM;
     //callback to merchant after sdk retry load gateway info
     protected static WeakReference<ZPWGatewayInfoCallback> mMerchantCallBack;
+    @BankFunctionCode
+    private static int bankFunction = BankFunctionCode.PAY;
     //app's activity is calling sdk.
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
     private static ZPWPaymentInfo mPaymentInfo = null;
     private static ZPPaymentOption mPaymentOption = null;
     private static ETransactionType transactionType = ETransactionType.PAY;
-    private static EBankFunction bankFunction = EBankFunction.PAY;
     private static ZPPaymentResult paymentResult = null;
     /***
      * user level,map table
@@ -398,7 +400,7 @@ public class GlobalData {
                 !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
                 mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc))) {
             transactionType = ETransactionType.LINK_ACC;
-            bankFunction = EBankFunction.LINK_BANK_ACCOUNT;
+            bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
             return ETransactionType.LINK_ACC;
         }
 
@@ -408,7 +410,7 @@ public class GlobalData {
                 mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_card))) {
             appID = Long.parseLong(GlobalData.getStringResource(RS.string.zpw_conf_wallet_id));
             transactionType = ETransactionType.LINK_CARD;
-            bankFunction = EBankFunction.LINK_CARD;
+            bankFunction = BankFunctionCode.LINK_CARD;
             return ETransactionType.LINK_CARD;
         }
 
@@ -417,7 +419,7 @@ public class GlobalData {
                 !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
                 mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_wallet_transfer))) {
             transactionType = ETransactionType.WALLET_TRANSFER;
-            bankFunction = EBankFunction.PAY;
+            bankFunction = BankFunctionCode.PAY;
             return ETransactionType.WALLET_TRANSFER;
         }
 
@@ -426,44 +428,46 @@ public class GlobalData {
                 !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
                 mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_withdraw))) {
             transactionType = ETransactionType.WITHDRAW;
-            bankFunction = EBankFunction.WITHDRAW;
+            bankFunction = BankFunctionCode.WITHDRAW;
             return ETransactionType.WITHDRAW;
         }
 
         //topup.
         if (GlobalData.appID == Long.parseLong(getStringResource(RS.string.zpw_conf_wallet_id))) {
             transactionType = ETransactionType.TOPUP;
-            bankFunction = EBankFunction.PAY;
+            bankFunction = BankFunctionCode.PAY;
             return ETransactionType.TOPUP;
         }
 
         //pay. with other case.
         transactionType = ETransactionType.PAY;
-        bankFunction = EBankFunction.PAY;
+        bankFunction = BankFunctionCode.PAY;
         return ETransactionType.PAY;
     }
 
-    public static EBankFunction getPayBankFunction(DPaymentChannelView pChannel) {
+    @BankFunctionCode
+    public static int getPayBankFunction(DPaymentChannelView pChannel) {
         if (pChannel.isBankAccountMap()) {
-            bankFunction = EBankFunction.PAY_BY_BANKACCOUNT_TOKEN;
+            bankFunction = BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
         } else if (pChannel.isMapCardChannel()) {
-            bankFunction = EBankFunction.PAY_BY_CARD_TOKEN;
+            bankFunction = BankFunctionCode.PAY_BY_CARD_TOKEN;
         } else if (pChannel.isBankAccount()) {
-            bankFunction = EBankFunction.PAY_BY_BANK_ACCOUNT;
+            bankFunction = BankFunctionCode.PAY_BY_BANK_ACCOUNT;
         } else {
-            bankFunction = EBankFunction.PAY_BY_CARD;
+            bankFunction = BankFunctionCode.PAY_BY_CARD;
         }
 
         return bankFunction;
     }
 
-    public static EBankFunction getBankFunctionPay() {
+    @BankFunctionCode
+    public static int getBankFunctionPay() {
         if (GlobalData.isMapBankAccountChannel()) {
-            bankFunction = EBankFunction.PAY_BY_BANKACCOUNT_TOKEN;
+            bankFunction = BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN;
         } else if (GlobalData.isMapCardChannel()) {
-            bankFunction = EBankFunction.PAY_BY_CARD_TOKEN;
+            bankFunction = BankFunctionCode.PAY_BY_CARD_TOKEN;
         } else {
-            bankFunction = EBankFunction.PAY_BY_CARD;
+            bankFunction = BankFunctionCode.PAY_BY_CARD;
         }
         return bankFunction;
     }
@@ -517,7 +521,7 @@ public class GlobalData {
         PaymentSessionInfo paymentSessionInfo = PaymentSessionInfo.shared();
         GlobalData.mPaymentInfo = paymentSessionInfo.getPaymentInfo();
         GlobalData.appID = GlobalData.mPaymentInfo.appID;
-        GlobalData.mMerchantActivity = new WeakReference<Activity>(pActivity);
+        GlobalData.mMerchantActivity = new WeakReference<>(pActivity);
         GlobalData.mListener = pPaymentListener;
         GlobalData.mPaymentOption = pPaymentOption;
 
@@ -762,11 +766,12 @@ public class GlobalData {
         return GlobalData.getStringResource(RS.string.sdk_vcb_flow_type).equals("1") ? true : false;
     }
 
-    public static EBankFunction getCurrentBankFunction() {
+    @BankFunctionCode
+    public static int getCurrentBankFunction() {
         return bankFunction;
     }
 
-    public static void setCurrentBankFunction(EBankFunction pBankFunction) {
+    public static void setCurrentBankFunction(@BankFunctionCode int pBankFunction) {
         bankFunction = pBankFunction;
     }
     //endregion

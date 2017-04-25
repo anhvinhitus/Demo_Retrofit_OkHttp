@@ -34,10 +34,10 @@ import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.BankFlow;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardFlowType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.staticconfig.DCardIdentifier;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
@@ -414,7 +414,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             initForMapCardAndZaloPay();
         }
 
-        getAdapter().setECardFlowType(ECardFlowType.API);
+        getAdapter().setECardFlowType(BankFlow.API);
 
         getAdapter().showFee();
 
@@ -855,10 +855,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             String bankCode = getDetectedBankCode();
 
             //bidv card must paid by mapcard
-            if(!GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)
+            if (!GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)
                     && ((AdapterBankCard) getAdapter()).isBidvBankPayment()
-                    && ((AdapterBankCard) getAdapter()).preventPaymentBidvCard(getCardNumber()))
-            {
+                    && ((AdapterBankCard) getAdapter()).preventPaymentBidvCard(getCardNumber())) {
                 return;
             }
 
@@ -1454,10 +1453,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected boolean isInputBankMaintenance() {
         boolean isBankDetect = BankCardCheck.getInstance().isDetected();
-        if (isBankDetect && GlobalData.getCurrentBankFunction() == EBankFunction.PAY) {
-            GlobalData.setCurrentBankFunction(EBankFunction.PAY_BY_CARD);
+        if (isBankDetect && GlobalData.getCurrentBankFunction() == BankFunctionCode.PAY) {
+            GlobalData.setCurrentBankFunction(BankFunctionCode.PAY_BY_CARD);
             if (BankCardCheck.getInstance().isBankAccount()) {
-                GlobalData.setCurrentBankFunction(EBankFunction.PAY_BY_BANK_ACCOUNT);
+                GlobalData.setCurrentBankFunction(BankFunctionCode.PAY_BY_BANK_ACCOUNT);
             }
         }
 

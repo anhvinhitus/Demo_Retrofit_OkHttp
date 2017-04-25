@@ -8,15 +8,15 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -33,6 +33,7 @@ public class ChannelStartProcessor extends SingletonBase {
         public void onProcessing() {
             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         }
+
         @Override
         public void onComplete() {
             if (!isBankMaintenance() && isBankSupport()) {
@@ -40,6 +41,7 @@ public class ChannelStartProcessor extends SingletonBase {
             }
             showProgressBar(false, null);
         }
+
         @Override
         public void onError(String pMessage) {
             alertNetworking();
@@ -53,8 +55,7 @@ public class ChannelStartProcessor extends SingletonBase {
 
     public static ChannelStartProcessor getInstance(PaymentGatewayActivity pOwnerActivity) {
 
-        if (ChannelStartProcessor._object == null)
-        {
+        if (ChannelStartProcessor._object == null) {
             ChannelStartProcessor._object = new ChannelStartProcessor(pOwnerActivity);
         }
         return ChannelStartProcessor._object;
@@ -174,7 +175,7 @@ public class ChannelStartProcessor extends SingletonBase {
      * @return
      */
     private boolean isBankMaintenance() {
-        if (GlobalData.getCurrentBankFunction() == EBankFunction.PAY) {
+        if (GlobalData.getCurrentBankFunction() == BankFunctionCode.PAY) {
             GlobalData.getBankFunctionPay();
         }
         return getActivity().showBankMaintenance(GlobalData.getPaymentInfo().mapBank.bankcode);
@@ -188,6 +189,7 @@ public class ChannelStartProcessor extends SingletonBase {
     private boolean isBankSupport() {
         return getActivity().showBankSupport(GlobalData.getPaymentInfo().mapBank.bankcode);
     }
+
     /**
      * Show dialog confirm upgrade level
      */

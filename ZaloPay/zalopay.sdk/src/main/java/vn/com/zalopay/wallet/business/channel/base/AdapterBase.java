@@ -21,13 +21,13 @@ import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
 import vn.com.zalopay.wallet.business.channel.localbank.AdapterBankCard;
 import vn.com.zalopay.wallet.business.channel.localbank.BankCardGuiProcessor;
 import vn.com.zalopay.wallet.business.channel.zalopay.AdapterZaloPay;
-import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
@@ -35,7 +35,6 @@ import vn.com.zalopay.wallet.business.entity.base.DPaymentCard;
 import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardFlowType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
@@ -102,7 +101,6 @@ public abstract class AdapterBase {
     protected CardGuiProcessor mGuiProcessor = null;
     protected DialogFragment mFingerPrintDialog = null;
     protected StatusResponse mResponseStatus;
-    protected ECardFlowType mECardFlowType;
     protected boolean isLoadWebTimeout = false;
     protected int numberRetryOtp = 0;
     protected DPaymentCard mCard;
@@ -129,6 +127,9 @@ public abstract class AdapterBase {
     protected boolean mIsOrderSubmit = false;
     protected boolean mCanEditCardInfo = false;
     protected String mLayoutId = null;
+
+    @BankFlow
+    protected int mECardFlowType;
     /**
      * show Fail view
      *
@@ -342,11 +343,12 @@ public abstract class AdapterBase {
         isLoadWebTimeout = loadWebTimeout;
     }
 
-    public ECardFlowType getECardFlowType() {
+    @BankFlow
+    public int getECardFlowType() {
         return mECardFlowType;
     }
 
-    public void setECardFlowType(ECardFlowType mECardFlowType) {
+    public void setECardFlowType(@BankFlow int mECardFlowType) {
         this.mECardFlowType = mECardFlowType;
     }
 
@@ -355,11 +357,11 @@ public abstract class AdapterBase {
     }
 
     public boolean isParseWebFlow() {
-        return getECardFlowType() == ECardFlowType.PARSEWEB;
+        return getECardFlowType() == BankFlow.PARSEWEB;
     }
 
     public boolean isLoadWeb() {
-        return getECardFlowType() == ECardFlowType.LOADWEB;
+        return getECardFlowType() == BankFlow.LOADWEB;
     }
 
     public boolean isCardFlow() {
@@ -720,7 +722,7 @@ public abstract class AdapterBase {
                         }
                         //flow cover parse web (vietinbank)
                         if (isCardFlow() && getGuiProcessor().getCardFinder().isDetected() && getGuiProcessor().getCardFinder().getDetectBankConfig() != null && getGuiProcessor().getCardFinder().getDetectBankConfig().isCoverBank()) {
-                            setECardFlowType(ECardFlowType.PARSEWEB);
+                            setECardFlowType(BankFlow.PARSEWEB);
                             showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
                             initWebView(dataResponse.redirecturl);
                             endingCountTimeLoadCaptchaOtp();
@@ -728,7 +730,7 @@ public abstract class AdapterBase {
                         //flow load web 3ds of cc
                         else {
                             try {
-                                setECardFlowType(ECardFlowType.LOADWEB);
+                                setECardFlowType(BankFlow.LOADWEB);
                                 getGuiProcessor().loadUrl(dataResponse.redirecturl);
                                 showProgressBar(false, null);
                                 //begin count timer loading site until finish transaction

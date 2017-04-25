@@ -4,10 +4,9 @@ import java.util.List;
 
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CWithDrawCalculateFee;
-import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
-import vn.com.zalopay.wallet.business.entity.enumeration.EBankStatus;
-import vn.com.zalopay.wallet.business.entity.enumeration.EFeeCalType;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.BankStatus;
+import vn.com.zalopay.wallet.constants.FeeType;
 
 public class BankConfig {
     public String code;
@@ -15,22 +14,24 @@ public class BankConfig {
     public int banktype;
     public String otptype;
     public String type;
-    public int status;
     public int interfacetype;
     public int requireotp;
     public int allowwithdraw = 0;
     public double feerate = -1;
     public double minfee = -1;
-    public EFeeCalType feecaltype = EFeeCalType.SUM;
-
     public long maintenancefrom = 0;
     public long maintenanceto = 0;
     public String maintenancemsg = null;
-
     public int supporttype = 1;
     public double totalfee = 0;
     public String loginbankurl;
     public List<BankFunction> functions = null;
+
+    @FeeType
+    public String feecaltype = null;
+
+    @BankStatus
+    public int status;
 
     @Override
     public boolean equals(Object object) {
@@ -49,8 +50,7 @@ public class BankConfig {
         return totalfee;
     }
 
-    public boolean isBankMaintenence(EBankFunction pBankFunction) {
-        Log.d(this, "===isBankMaintenence===pBankFunction=" + ((pBankFunction != null) ? pBankFunction.toString() : "NULL"));
+    public boolean isBankMaintenence(@BankFunctionCode int pBankFunction) {
         return isBankFunctionAllMaintenance() || isBankFunctionMaintenance(pBankFunction);
     }
 
@@ -59,7 +59,7 @@ public class BankConfig {
      * @return
      */
     public boolean isBankFunctionAllMaintenance() {
-        return status == Integer.parseInt(EBankStatus.MAINTENANCE.toString());
+        return status == BankStatus.MAINTENANCE;
     }
 
     /***
@@ -67,7 +67,7 @@ public class BankConfig {
      * @return
      */
     public boolean isBankActive() {
-        return status == Integer.parseInt(EBankStatus.ACTIVE.toString());
+        return status == BankStatus.ACTIVE;
     }
 
     /***
@@ -75,16 +75,13 @@ public class BankConfig {
      * @param pBankFunction
      * @return
      */
-    public boolean isBankFunctionMaintenance(EBankFunction pBankFunction) {
-        if (pBankFunction == null) {
-            return false;
-        }
+    public boolean isBankFunctionMaintenance(@BankFunctionCode int pBankFunction) {
         if (functions == null) {
             return false;
         }
         BankFunction bankFunction = null;
         for (int i = 0; i < functions.size(); i++) {
-            if (functions.get(i).bankfunction.equalsIgnoreCase(pBankFunction.toString())) {
+            if (functions.get(i).bankfunction == pBankFunction) {
                 bankFunction = functions.get(i);
                 break;
             }
@@ -95,13 +92,13 @@ public class BankConfig {
         return false;
     }
 
-    public BankFunction getBankFunction(EBankFunction pBankFunction) {
+    public BankFunction getBankFunction(@BankFunctionCode int pBankFunction) {
         if (functions == null) {
             return null;
         }
 
         for (int i = 0; i < functions.size(); i++) {
-            if (functions.get(i).bankfunction.equalsIgnoreCase(pBankFunction.toString())) {
+            if (functions.get(i).bankfunction == pBankFunction) {
                 return functions.get(i);
             }
         }
