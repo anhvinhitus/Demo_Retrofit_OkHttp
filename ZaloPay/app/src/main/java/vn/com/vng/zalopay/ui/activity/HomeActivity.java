@@ -54,7 +54,7 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
 
     @BindView(R.id.navigation)
     HomeBottomNavigationView mBottomNavigationView;
-    
+
     HomePagerAdapter mHomePagerAdapter;
 
     @Override

@@ -85,7 +85,7 @@ public class AndroidUtils {
     private static boolean waitingForSms = false;
     private static final Object smsLock = new Object();
 
-    public static int statusBarHeight = 0;
+    public static Integer statusBarHeight;
     public static float density = 1;
     public static Point displaySize = new Point();
     public static DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -101,8 +101,6 @@ public class AndroidUtils {
         leftBaseline = isTablet(AndroidApplication.instance()) ? 80 : 72;
         checkDisplaySize();
         applicationHandler = new Handler(AndroidApplication.instance().getMainLooper());
-
-        statusBarHeight = AndroidUtils.getStatusBarHeight(AndroidApplication.instance());
     }
 
     public static String getScreenType() {
@@ -764,11 +762,17 @@ public class AndroidUtils {
 
 
     public static int getStatusBarHeight(Context context) {
-        if (statusBarHeight >= 0) return statusBarHeight;
+        if (statusBarHeight != null) {
+            return statusBarHeight;
+        }
+
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
+        } else {
+            statusBarHeight = 0;
         }
+
         return statusBarHeight;
     }
 

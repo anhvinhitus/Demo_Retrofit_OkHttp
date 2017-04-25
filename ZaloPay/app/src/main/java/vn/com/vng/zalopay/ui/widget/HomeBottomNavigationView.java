@@ -50,6 +50,7 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         initTabIconFont();
         addLineTop();
         BottomNavigationViewHelper.disableShiftMode(this);
+        setOnNavigationItemSelectedListener(this);
     }
 
 
@@ -98,9 +99,23 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
     }
 
     public void setSelected(int position) {
+        setSelectedInternal(position);
+        if (position == HomePagerAdapter.TAB_MAIN_INDEX) {
+            setSelectedItemId(R.id.menu_home);
+        } else if (position == HomePagerAdapter.TAB_SHOW_SHOW_INDEX) {
+            setSelectedItemId(R.id.menu_nearby);
+        } else if (position == HomePagerAdapter.TAB_PROMOTION_INDEX) {
+            setSelectedItemId(R.id.menu_promotion);
+        } else if (position == HomePagerAdapter.TAB_PERSONAL_INDEX) {
+            setSelectedItemId(R.id.menu_profile);
+        }
+    }
+
+    private void setSelectedInternal(int position) {
         if (mPager == null) {
             throw new RuntimeException("Viewpager not initialized");
         }
+
         mPager.setCurrentItem(position, false);
     }
 
@@ -118,16 +133,16 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
 
         switch (item.getItemId()) {
             case R.id.menu_home:
-                setSelected(HomePagerAdapter.TAB_MAIN_INDEX);
+                setSelectedInternal(HomePagerAdapter.TAB_MAIN_INDEX);
                 return true;
             case R.id.menu_nearby:
-                setSelected(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
+                setSelectedInternal(HomePagerAdapter.TAB_SHOW_SHOW_INDEX);
                 return true;
             case R.id.menu_promotion:
-                setSelected(HomePagerAdapter.TAB_PROMOTION_INDEX);
+                setSelectedInternal(HomePagerAdapter.TAB_PROMOTION_INDEX);
                 return true;
             case R.id.menu_profile:
-                setSelected(HomePagerAdapter.TAB_PERSONAL_INDEX);
+                setSelectedInternal(HomePagerAdapter.TAB_PERSONAL_INDEX);
                 return true;
         }
 
