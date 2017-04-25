@@ -22,8 +22,8 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.datasource.interfaces.IRequest;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
-import vn.com.zalopay.wallet.message.SdkNetworkEventMessage;
 import vn.com.zalopay.wallet.message.PaymentEventBus;
+import vn.com.zalopay.wallet.message.SdkNetworkEventMessage;
 
 public class DataRepository<T extends BaseResponse> extends SingletonBase {
     private static DataRepository _object;
@@ -148,6 +148,14 @@ public class DataRepository<T extends BaseResponse> extends SingletonBase {
             return;
         }
         inProgress();
+        getData(pRequest, pParams);
+    }
+
+    public synchronized void loadDataParallel(IRequest pRequest, Map<String, String> pParams) {
+        getData(pRequest, pParams);
+    }
+
+    protected synchronized void getData(IRequest pRequest, Map<String, String> pParams) {
         mSubscription = pRequest.getRequest(mDataSource, pParams)
                 .retryWhen(new RetryWithDelay(Constants.API_MAX_RETRY, Constants.API_DELAY_RETRY))
                 .doOnNext(doOnNextAction)

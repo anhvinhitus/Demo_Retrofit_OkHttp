@@ -30,7 +30,7 @@ public class BankListTask extends BaseTask<BankConfigResponse> {
     @Override
     protected void doRequest() {
         try {
-            shareDataRepository().setTask(this).loadData(new LoadBankListImpl(), getDataParams());
+            shareDataRepository().setTask(this).loadDataParallel(new LoadBankListImpl(), getDataParams());
         } catch (Exception e) {
             onRequestFail(null);
             Log.e(this, e);
