@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_info_finish"
     android:visibility="gone">
 
@@ -10,14 +11,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
-
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/zpw_payment_fail_imageview"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/sdk_ic_fail_size"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/zpw_margin_bottom_supper_supper_label"
-            android:layout_marginTop="@dimen/zpw_margin_top_supper_supper_label" />
+            android:layout_marginTop="@dimen/zpw_margin_top_supper_supper_label"
+            app:viewAspectRatio="1"
+            android:scaleType="centerInside" />
 
         <TextView
             android:id="@+id/zpw_payment_fail_textview"
@@ -80,12 +82,14 @@
             android:layout_width="match_parent"
             android:layout_height="40dp">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/zpw_payment_fail_iv_update_info"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/sdk_update_info_size"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_horizontal"
+                app:viewAspectRatio="1"
+                android:scaleType="centerInside"/>
 
             <TextView
                 android:id="@+id/zpw_payment_fail_tv_update_info_content"
@@ -99,13 +103,15 @@
                 android:textColor="@color/text_color_bold"
                 android:textSize="@dimen/zpw_text_size_medium" />
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/zpw_payment_fail_iv_update_info_next"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/sdk_update_info_next_size"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/zpw_margin_10" />
+                android:layout_marginRight="@dimen/zpw_margin_10"
+                app:viewAspectRatio="1"
+                android:scaleType="centerInside" />
 
             <View
                 android:layout_width="match_parent"
@@ -121,12 +127,14 @@
             android:layout_width="match_parent"
             android:layout_height="40dp">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/zpw_payment_fail_iv_support"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/sdk_update_info_size"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_horizontal"
+                app:viewAspectRatio="1"
+                android:scaleType="centerInside"/>
 
             <TextView
                 android:id="@+id/zpw_payment_fail_tv_support_content"
@@ -140,13 +148,15 @@
                 android:textColor="@color/text_color_bold"
                 android:textSize="@dimen/zpw_text_size_medium" />
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/zpw_payment_fail_iv_support_next"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/sdk_update_info_next_size"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/zpw_margin_10" />
+                android:layout_marginRight="@dimen/zpw_margin_10"
+                app:viewAspectRatio="1"
+                android:scaleType="centerInside"/>
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

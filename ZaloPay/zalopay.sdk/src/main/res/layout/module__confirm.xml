@@ -40,10 +40,9 @@
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/zpw_zalopay_logo_imageview"
-                    android:layout_width="@dimen/bank_logo_width"
+                    android:layout_width="@dimen/sdk_ic_channal_size"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical"
-                    app:placeholderImage="@drawable/ic_logozalopay"
                     app:viewAspectRatio="1"
                     android:scaleType="centerInside" />
 
