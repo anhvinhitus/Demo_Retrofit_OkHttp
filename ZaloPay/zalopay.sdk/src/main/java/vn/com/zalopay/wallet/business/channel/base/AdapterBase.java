@@ -1721,15 +1721,10 @@ public abstract class AdapterBase {
             buttonText = GlobalData.getStringResource(RS.string.dialog_retry_button);
         }
 
-        getActivity().showInfoDialog(new ZPWOnEventDialogListener() {
-            @Override
-            public void onOKevent() {
-                /***
-                 * error networking. if user in pin input pharse,then need to try inputting again
-                 */
-                if (finalMessage.equals(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)) && isRequirePinPharse()) {
-                    moveToRequirePin();
-                }
+        getActivity().showInfoDialog(() -> {
+            //error networking. if user in pin input pharse,then need to try inputting again
+            if (finalMessage.equals(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error)) && isRequirePinPharse()) {
+                moveToRequirePin();
             }
         }, message, buttonText);
     }
@@ -1780,7 +1775,7 @@ public abstract class AdapterBase {
 
     public void releaseClickSubmit() {
         mMoreClick = true;
-        Log.d(this, "====release click submit===");
+        Log.d(this, "release submit button");
     }
 
     public void showProgressBar(boolean pIsShow, String pStatusMessage) {

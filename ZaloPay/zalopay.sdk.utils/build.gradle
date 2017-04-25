@@ -25,4 +25,6 @@ dependencies {
     def libs = rootProject.ext.libraries
     compile libs.support_design
     compile libs.gson
+    compile libs.rxJava
+    compile libs.rxAndroid
 }

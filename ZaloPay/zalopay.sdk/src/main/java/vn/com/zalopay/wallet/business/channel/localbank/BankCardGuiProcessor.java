@@ -34,7 +34,7 @@ import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.enumeration.EAuthenType;
 import vn.com.zalopay.wallet.listener.OnDetectCardListener;
-import vn.com.zalopay.wallet.utils.BitmapUtil;
+import vn.com.zalopay.wallet.utils.BitmapUtils;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.view.adapter.CardFragmentBaseAdapter;
@@ -627,7 +627,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         if (TextUtils.isEmpty(pB64Encoded))
             return;
 
-        Bitmap bitmap = BitmapUtil.b64ToImage(pB64Encoded);
+        Bitmap bitmap = BitmapUtils.b64ToImage(pB64Encoded);
 
         if (bitmap != null) {
             mCaptchaImage.setImageBitmap(bitmap);

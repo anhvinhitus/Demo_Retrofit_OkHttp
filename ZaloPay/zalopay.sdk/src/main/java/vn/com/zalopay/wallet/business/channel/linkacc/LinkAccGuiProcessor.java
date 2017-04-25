@@ -38,7 +38,7 @@ import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.utils.BitmapUtil;
+import vn.com.zalopay.wallet.utils.BitmapUtils;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 import vn.com.zalopay.wallet.utils.SpinnerUtils;
@@ -504,7 +504,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         if (TextUtils.isEmpty(pB64Encoded))
             return;
 
-        Bitmap bitmap = BitmapUtil.b64ToImage(pB64Encoded);
+        Bitmap bitmap = BitmapUtils.b64ToImage(pB64Encoded);
 
         if (bitmap != null) {
             getLoginHolder().getImgCaptcha().setVisibility(View.VISIBLE);
@@ -559,7 +559,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         if (TextUtils.isEmpty(pB64Encoded))
             return;
 
-        Bitmap bitmap = BitmapUtil.b64ToImage(pB64Encoded);
+        Bitmap bitmap = BitmapUtils.b64ToImage(pB64Encoded);
 
         if (bitmap != null) {
             getRegisterHolder().getImgCaptcha().setVisibility(View.VISIBLE);

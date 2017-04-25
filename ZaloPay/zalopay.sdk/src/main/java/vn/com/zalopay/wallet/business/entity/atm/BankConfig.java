@@ -18,7 +18,6 @@ public class BankConfig {
     public int status;
     public int interfacetype;
     public int requireotp;
-
     public int allowwithdraw = 0;
     public double feerate = -1;
     public double minfee = -1;
@@ -29,31 +28,24 @@ public class BankConfig {
     public String maintenancemsg = null;
 
     public int supporttype = 1;
-
     public double totalfee = 0;
-
     public String loginbankurl;
-
     public List<BankFunction> functions = null;
 
     @Override
     public boolean equals(Object object) {
         boolean sameSame = false;
-
         if (object != null && object instanceof BankConfig) {
             BankConfig other = (BankConfig) object;
-
             if (code.equals(other.code)) {
                 sameSame = true;
             }
         }
-
         return sameSame;
     }
 
     public double calculateFee() {
         totalfee = CBaseCalculateFee.getInstance().setCalculator(new CWithDrawCalculateFee(this)).countFee();
-
         return totalfee;
     }
 
@@ -64,7 +56,6 @@ public class BankConfig {
 
     /***
      * bank maintenance all functions
-     *
      * @return
      */
     public boolean isBankFunctionAllMaintenance() {
@@ -75,13 +66,12 @@ public class BankConfig {
      * check this bank is active for payment
      * @return
      */
-    public boolean isBankActive()
-    {
+    public boolean isBankActive() {
         return status == Integer.parseInt(EBankStatus.ACTIVE.toString());
     }
+
     /***
      * bank maintenance by function: withdraw, link card...
-     *
      * @param pBankFunction
      * @return
      */
@@ -92,7 +82,6 @@ public class BankConfig {
         if (functions == null) {
             return false;
         }
-
         BankFunction bankFunction = null;
         for (int i = 0; i < functions.size(); i++) {
             if (functions.get(i).bankfunction.equalsIgnoreCase(pBankFunction.toString())) {
