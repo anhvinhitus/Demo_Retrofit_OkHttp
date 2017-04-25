@@ -24,6 +24,7 @@ import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.bank.models.BankAccountStyle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
+import vn.com.vng.zalopay.utils.FrescoHelper;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -144,8 +145,7 @@ class LinkAccountAdapter extends AbsRecyclerAdapter<BankAccount, RecyclerView.Vi
             imgLogo.setImageDrawable(null);
         } else {
             String fileName = getContext().getString(bankIcon);
-            imgLogo.setImageBitmap(ResourceHelper
-                    .getBitmap(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName));
+            FrescoHelper.setImage(imgLogo, ResourceHelper.getResource(getContext(), BuildConfig.ZALOPAY_APP_ID, fileName));
         }
     }
 

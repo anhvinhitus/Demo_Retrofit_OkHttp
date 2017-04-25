@@ -37,6 +37,7 @@ import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
+import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -158,7 +159,20 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
         @Override
         public void onNext(List<BankCard> bankCards) {
-            LinkCardPresenter.this.onGetLinkCardSuccess(bankCards);
+            /*ArrayList<BankCard> tmp = new ArrayList<>();
+            BankCard vtbCard = new BankCard("Nguyen Van V", "970415", "3538", ECardType.PVTB.toString());
+            vtbCard.type = vtbCard.bankcode;
+            tmp.add(vtbCard);
+            BankCard vcbCard = new BankCard("Nguyen Van A", "686868", "1231", ECardType.PVCB.toString());
+            vcbCard.type = vcbCard.bankcode;
+            tmp.add(vcbCard);
+            BankCard sCard = new BankCard("Nguyen Van W", "970403", "1234", ECardType.PSCB.toString());
+            sCard.type = sCard.bankcode;
+            tmp.add(sCard);
+            BankCard sgCard = new BankCard("Nguyen Van S", "157979", "9999", ECardType.PSGCB.toString());
+            sgCard.type = sgCard.bankcode;
+            tmp.add(sgCard);*/
+            onGetLinkCardSuccess(bankCards);
         }
     }
 

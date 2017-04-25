@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +25,7 @@ import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.data.appresources.ResourceHelper;
 import vn.com.vng.zalopay.domain.model.BankCard;
+import vn.com.vng.zalopay.utils.FrescoHelper;
 
 /**
  * Created by AnhHieu on 5/10/16.
@@ -145,8 +145,7 @@ class LinkCardAdapter extends AbsRecyclerAdapter<BankCard, RecyclerView.ViewHold
             imgLogo.setImageDrawable(null);
         } else {
             String iconName = getContext().getString(bankIcon);
-            imgLogo.setImageBitmap(ResourceHelper
-                    .getBitmap(getContext(), BuildConfig.ZALOPAY_APP_ID, iconName));
+            FrescoHelper.setImage(imgLogo, ResourceHelper.getResource(getContext(), BuildConfig.ZALOPAY_APP_ID, iconName));
         }
     }
 

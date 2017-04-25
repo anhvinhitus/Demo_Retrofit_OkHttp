@@ -327,9 +327,9 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         @Override
         public void onNext(List<BankAccount> bankAccounts) {
             /*ArrayList<BankAccount> tmp = new ArrayList<>();
-            tmp.add(new BankAccount("A", "Nguyễn Văn", "0123456", "1231", "123PSCB"));
-            tmp.add(new BankAccount("B", "Nguyễn Văn", "098765", "4321", "ZPVCB"));
-            tmp.add(new BankAccount("C", "Nguyễn Văn", "054321", "6789", "123PVTB"));*/
+            tmp.add(new BankAccount("0123456", "1231", ECardType.PSCB.toString()));
+            tmp.add(new BankAccount("098765", "4321", ECardType.PVCB.toString()));
+            tmp.add(new BankAccount("054321", "6789", ECardType.PVTB.toString()));*/
             onGetLinkedAccountSuccess(bankAccounts);
         }
     }

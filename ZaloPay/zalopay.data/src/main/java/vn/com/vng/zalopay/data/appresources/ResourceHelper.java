@@ -67,6 +67,7 @@ public class ResourceHelper {
                 getBundleRootFolder(), appId, screenType, resourceName);
     }
 
+    @Deprecated
     public static Bitmap getBitmap(Context context, int appId, String resourceName) {
         if (context == null || TextUtils.isEmpty(resourceName)) {
             return null;
