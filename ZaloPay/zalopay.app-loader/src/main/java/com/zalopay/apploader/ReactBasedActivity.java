@@ -45,6 +45,11 @@ public abstract class ReactBasedActivity extends AppCompatActivity implements De
     protected abstract void doInjection();
 
     public void handleException(Throwable e) {
+
+        if (getUseDeveloperSupport()) {
+            return;
+        }
+
         finish();
     }
 
