@@ -15,13 +15,13 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.CChannelHelper;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
@@ -80,7 +80,7 @@ public abstract class BaseChannelInjector {
                     //check maintenance for cc
                     if ((channel.isCreditCardChannel() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_CARD))
                             || (channel.isBankAccount() && isBankMaintenance(channel.bankcode, BankFunctionCode.PAY_BY_BANK_ACCOUNT))) {
-                        channel.setStatus(EPaymentChannelStatus.MAINTENANCE);
+                        channel.setStatus(PaymentChannelStatus.MAINTENANCE);
                     }
                 }
 
@@ -179,7 +179,7 @@ public abstract class BaseChannelInjector {
                     checkAllowBankAccount(activeChannel);
 
                     if (isBankMaintenance(bankAccount.bankcode, BankFunctionCode.PAY_BY_BANKACCOUNT_TOKEN)) {
-                        activeChannel.setStatus(EPaymentChannelStatus.MAINTENANCE);
+                        activeChannel.setStatus(PaymentChannelStatus.MAINTENANCE);
                     }
 
                     DPaymentChannelView channel = new DPaymentChannelView(activeChannel);
@@ -266,7 +266,7 @@ public abstract class BaseChannelInjector {
                     }
 
                     if (isBankMaintenance(mappCard.bankcode, BankFunctionCode.PAY_BY_CARD_TOKEN)) {
-                        activeChannel.setStatus(EPaymentChannelStatus.MAINTENANCE);
+                        activeChannel.setStatus(PaymentChannelStatus.MAINTENANCE);
                     }
 
                     DPaymentChannelView channel = new DPaymentChannelView(activeChannel);
@@ -575,7 +575,7 @@ public abstract class BaseChannelInjector {
         }
 
         if (!isSupportAtm)
-            pChannel.setStatus(EPaymentChannelStatus.DISABLE);
+            pChannel.setStatus(PaymentChannelStatus.DISABLE);
 
         return isSupportAtm;
     }
@@ -589,7 +589,7 @@ public abstract class BaseChannelInjector {
         }
 
         if (!isSupportBankAccount)
-            pChannel.setStatus(EPaymentChannelStatus.DISABLE);
+            pChannel.setStatus(PaymentChannelStatus.DISABLE);
 
         return isSupportBankAccount;
     }
@@ -609,7 +609,7 @@ public abstract class BaseChannelInjector {
         }
 
         if (!isSupportCC)
-            pChannel.setStatus(EPaymentChannelStatus.DISABLE);
+            pChannel.setStatus(PaymentChannelStatus.DISABLE);
 
         return isSupportCC;
     }

@@ -4,10 +4,10 @@ import java.util.Iterator;
 
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
@@ -45,9 +45,9 @@ public class WithDrawChannelInjector extends BaseChannelInjector {
             channelView.totalfee = bankConfig.calculateFee();
 
             if (!bankConfig.isAllowWithDraw()) {
-                channelView.setStatus(EPaymentChannelStatus.DISABLE);
+                channelView.setStatus(PaymentChannelStatus.DISABLE);
             } else if (bankConfig.isBankMaintenence(BankFunctionCode.WITHDRAW)) {
-                channelView.setStatus(EPaymentChannelStatus.MAINTENANCE);
+                channelView.setStatus(PaymentChannelStatus.MAINTENANCE);
             }
             //check fee + amount <= balance
             else if (!GlobalData.isEnoughMoneyForTransaction((long) channelView.totalfee)) {

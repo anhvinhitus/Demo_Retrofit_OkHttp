@@ -8,7 +8,7 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.constants.FeeType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannelStatus;
+import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 
 /***
  * channel class
@@ -17,7 +17,6 @@ public class DPaymentChannel {
 
     public int pmcid = 0;
     public String pmcname = null;
-    public EPaymentChannelStatus status = EPaymentChannelStatus.DISABLE;
     public long minvalue = -1;
     public long maxvalue = -1;
     public double discount = -1;
@@ -31,6 +30,9 @@ public class DPaymentChannel {
 
     @FeeType
     public String feecaltype = null;
+
+    @PaymentChannelStatus
+    public int status = PaymentChannelStatus.DISABLE;
 
     /***
      * rule - still show channel not allow in channel list (status = 0) , each channel have 2 policy to allow or not
@@ -102,15 +104,11 @@ public class DPaymentChannel {
         return (new Gson()).fromJson(pJson, this.getClass());
     }
 
-    public boolean isPromoted() {
-        return discount > -1;
-    }
-
     public boolean isEnable() {
-        return status == EPaymentChannelStatus.ENABLE;
+        return status == PaymentChannelStatus.ENABLE;
     }
 
-    public void setStatus(EPaymentChannelStatus pStatus) {
+    public void setStatus(@PaymentChannelStatus int pStatus) {
         status = pStatus;
     }
 
@@ -188,7 +186,7 @@ public class DPaymentChannel {
     }
 
     public boolean isMaintenance() {
-        return status == EPaymentChannelStatus.MAINTENANCE;
+        return status == PaymentChannelStatus.MAINTENANCE;
     }
 
     public boolean isBankAccountMap() {

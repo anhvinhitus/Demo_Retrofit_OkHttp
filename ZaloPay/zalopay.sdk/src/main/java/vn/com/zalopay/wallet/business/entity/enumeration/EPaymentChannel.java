@@ -19,17 +19,6 @@ public enum EPaymentChannel {
         name = pName;
     }
 
-    public static EPaymentChannel fromString(String pString) {
-        if (pString != null) {
-            for (EPaymentChannel value : EPaymentChannel.values()) {
-                if (pString.equalsIgnoreCase(value.name)) {
-                    return value;
-                }
-            }
-        }
-        return null;
-    }
-
     public static List<EPaymentChannel> all() {
         List<EPaymentChannel> all = new ArrayList<EPaymentChannel>();
         Collections.addAll(all, EPaymentChannel.values());
