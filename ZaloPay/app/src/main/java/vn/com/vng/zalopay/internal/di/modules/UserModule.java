@@ -17,7 +17,7 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.scope.UserScope;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.service.UserSession;
-
+import vn.com.vng.zalopay.data.filelog.FileLogStore;
 import com.zalopay.apploader.ReactNativeHostable;
 import com.zalopay.apploader.ReactNativeHostLongLife;
 
@@ -43,9 +43,9 @@ public class UserModule {
     @UserScope
     UserSession providesUserSession(Context context, UserConfig userConfig, EventBus eventBus,
                                     ZPNotificationService service,
-                                    BalanceStore.Repository repository) {
+                                    BalanceStore.Repository repository, FileLogStore.Repository fileLogRepository) {
         
-        return new UserSession(context, user, userConfig, eventBus, service, repository);
+        return new UserSession(context, user, userConfig, eventBus, service, repository, fileLogRepository);
     }
 
     @Provides

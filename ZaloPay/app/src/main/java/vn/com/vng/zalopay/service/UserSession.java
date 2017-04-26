@@ -21,6 +21,11 @@ import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
+import vn.com.vng.zalopay.tracker.FileLogHelper;
+import vn.com.vng.zalopay.event.UploadFileLogEvent;
+import rx.android.schedulers.AndroidSchedulers;
+import java.util.concurrent.TimeUnit;
+import rx.Observable;
 
 /**
  * Created by hieuvm on 11/23/16.
@@ -46,7 +51,8 @@ public class UserSession {
                        UserConfig mUserConfig,
                        EventBus eventBus,
                        ZPNotificationService notifyService,
-                       BalanceStore.Repository balanceRepository
+                       BalanceStore.Repository balanceRepository,
+                       FileLogStore.Repository fileLogRepository
 
     ) {
 
@@ -56,6 +62,7 @@ public class UserSession {
         this.mUserConfig = mUserConfig;
         this.mNotifyService = notifyService;
         this.mBalanceRepository = balanceRepository;
+        this.mFileLogRepository = fileLogRepository;
     }
 
     public void beginSession() {
@@ -76,6 +83,8 @@ public class UserSession {
                 .subscribeOn(Schedulers.io())
                 .subscribe(new DefaultSubscriber<Long>());
         mCompositeSubscription.add(subscription);
+
+        uploadFileLogs();
     }
 
     public void endSession() {
@@ -106,7 +115,7 @@ public class UserSession {
     }
 
     public void ensureUserInitialized() {
-        Timber.d("ensureUserInitialized");
+        Timber.d("Ensure user initialized");
         beginSession();
     }
 
@@ -137,4 +146,35 @@ public class UserSession {
     public void onNoSubscriber(NoSubscriberEvent event) {
         Timber.d("onNoSubscriber: %s", event.originalEvent);
     }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onUploadFileLogEvent(UploadFileLogEvent event) {
+        Timber.d("onUploadFileLogEvent : filePath [%s]", event.filePath);
+        uploadFileLog(event.filePath);
+    }
+
+    private void uploadFileLog(String filePath) {
+        Subscription subscription = FileLogHelper.uploadFileLog(filePath, mFileLogRepository)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultSubscriber<>());
+        mCompositeSubscription.add(subscription);
+    }
+
+    private void uploadFileLogs() {
+        Subscription subscription = FileLogHelper.listZipFileLog()
+                .flatMap(Observable::from)
+                .flatMap(this::uploadFileLogIgnoreError)
+                .delaySubscription(30, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new DefaultSubscriber<>());
+        mCompositeSubscription.add(subscription);
+    }
+
+    private Observable<String> uploadFileLogIgnoreError(String path) {
+        return FileLogHelper.uploadFileLog(path, mFileLogRepository)
+                .onErrorResumeNext(Observable.empty());
+    }
+
+
 }

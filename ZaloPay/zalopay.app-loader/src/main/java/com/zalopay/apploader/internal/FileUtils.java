@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import timber.log.Timber;
 
@@ -66,7 +68,7 @@ public class FileUtils {
         }
     }
 
-    public static void deleteDirectory(File directory) {
+    public static void deleteDirectory(File directory, boolean deleteParent) {
         if (directory.exists()) {
             File[] files = directory.listFiles();
             if (files != null) {
@@ -80,7 +82,13 @@ public class FileUtils {
             }
         }
 
-        directory.delete();
+        if (deleteParent) {
+            directory.delete();
+        }
+    }
+
+    public static void deleteDirectory(File directory) {
+        deleteDirectory(directory, true);
     }
 
     public static void deleteDirectoryAtPath(String directoryPath) {
@@ -287,4 +295,30 @@ public class FileUtils {
         }
         return null;
     }
+
+    public static void zip(String[] files, String zipFile) throws IOException {
+        BufferedInputStream origin = null;
+        ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)));
+        try {
+            byte data[] = new byte[WRITE_BUFFER_SIZE];
+
+            for (int i = 0; i < files.length; i++) {
+                FileInputStream fi = new FileInputStream(files[i]);
+                origin = new BufferedInputStream(fi, WRITE_BUFFER_SIZE);
+                try {
+                    ZipEntry entry = new ZipEntry(files[i].substring(files[i].lastIndexOf("/") + 1));
+                    out.putNextEntry(entry);
+                    int count;
+                    while ((count = origin.read(data, 0, WRITE_BUFFER_SIZE)) != -1) {
+                        out.write(data, 0, count);
+                    }
+                } finally {
+                    origin.close();
+                }
+            }
+        } finally {
+            out.close();
+        }
+    }
+
 }
