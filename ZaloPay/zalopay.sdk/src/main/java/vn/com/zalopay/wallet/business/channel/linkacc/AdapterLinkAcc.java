@@ -20,7 +20,6 @@ import java.util.TreeMap;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
-import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -54,6 +53,13 @@ import vn.com.zalopay.wallet.utils.StringUtil;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.PaymentSnackBar;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
+
+import static vn.com.zalopay.wallet.constants.BankAccountError.ACCOUNT_LOCKED;
+import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_CAPCHA;
+import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_PASSWORD;
+import static vn.com.zalopay.wallet.constants.BankAccountError.EMPTY_USERNAME;
+import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_CAPTCHA;
+import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_USERNAME_PASSWORD;
 
 /**
  * Created by SinhTT on 14/11/2016.
@@ -613,8 +619,9 @@ public class AdapterLinkAcc extends AdapterBase {
             showProgressBar(true, pMessage);
         }
     }
-    protected void hideLoadingDialog(){
-        showProgressBar(false,null);
+
+    protected void hideLoadingDialog() {
+        showProgressBar(false, null);
     }
 
     @Override
@@ -623,12 +630,12 @@ public class AdapterLinkAcc extends AdapterBase {
         if (pEventType == EEventType.ON_PROGRESSING) {
             // get value progress  &  show it
             int value = (int) pAdditionParams[0];
-            if(value < 100){
+            if (value < 100) {
                 linkAccGuiProcessor.setProgress(value);
                 if (!linkAccGuiProcessor.isProgressVisible()) {
                     linkAccGuiProcessor.visibleProgress();
                 }
-            }else{
+            } else {
                 linkAccGuiProcessor.hideProgress();
             }
             return null;
@@ -839,7 +846,7 @@ public class AdapterLinkAcc extends AdapterBase {
                     if (!TextUtils.isEmpty(response.message)) {
                         switch (VcbUtils.getVcbType(response.message)) {
                             case EMPTY_CAPCHA:
-                                showMessage(getActivity().getString(R.string.dialog_title_normal), VcbUtils.getVcbType(response.message).toString(), TSnackbar.LENGTH_LONG);
+                                showMessage(getActivity().getString(R.string.dialog_title_normal), response.message, TSnackbar.LENGTH_LONG);
                                 break;
                             case WRONG_CAPTCHA:
                                 if (COUNT_ERROR_CAPTCHA >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_captcha))) {
