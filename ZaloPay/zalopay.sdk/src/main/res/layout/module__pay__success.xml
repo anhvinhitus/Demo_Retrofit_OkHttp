@@ -1,5 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/credit_card_holder_success"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,7 +23,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/zpw_margin_bottom_supper_supper_label"
             android:layout_marginTop="@dimen/zpw_margin_top_supper_supper_label"
-            fresco:viewAspectRatio="1"
+            app:viewAspectRatio="1"
             android:scaleType="centerInside" />
 
 
@@ -98,9 +98,9 @@
                     android:layout_width="@dimen/zpw_width_avatar"
                     android:layout_height="@dimen/zpw_width_avatar"
                     android:layout_gravity="center"
-                    fresco:roundAsCircle="true"
-                    fresco:placeholderImage="@drawable/ava_default"
-                    fresco:actualImageScaleType="centerInside"/>
+                    app:roundAsCircle="true"
+                    app:placeholderImage="@drawable/ava_default"
+                    app:actualImageScaleType="centerInside"/>
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/zpw_payment_success_arow"
@@ -109,16 +109,16 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/zpw_padding_15"
                     android:layout_marginRight="@dimen/zpw_padding_15"
-                    fresco:viewAspectRatio="1"
-                    android:scaleType="centerInside" />
+                    app:viewAspectRatio="1"
+                    app:actualImageScaleType="fitCenter"/>
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/img_avatarTo"
                     android:layout_width="@dimen/zpw_width_avatar"
                     android:layout_height="@dimen/zpw_width_avatar"
                     android:layout_gravity="center"
-                    fresco:roundAsCircle="true"
-                    fresco:placeholderImage="@drawable/ava_default"
-                    fresco:actualImageScaleType="centerInside"/>
+                    app:roundAsCircle="true"
+                    app:placeholderImage="@drawable/ava_default"
+                    app:actualImageScaleType="centerInside"/>
             </LinearLayout>
             <RelativeLayout
                 android:layout_width="match_parent"

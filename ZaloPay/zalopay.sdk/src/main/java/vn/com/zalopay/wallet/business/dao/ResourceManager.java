@@ -229,7 +229,7 @@ public class ResourceManager extends SingletonBase {
      */
     public static void loadImageIntoView(View pView, String pImageName) {
         try {
-            String pFilePath = String.format("%s%s%s%s%s", getUnzipFolderPath(), File.separator, PREFIX_IMG, File.separator, pImageName);
+            String pFilePath = String.format("file://%s%s%s%s%s", getUnzipFolderPath(), File.separator, PREFIX_IMG, File.separator, pImageName);
             ((SimpleDraweeView)pView).setImageURI(pFilePath);
         } catch (Exception e) {
             Log.d("loadImageIntoView", e);

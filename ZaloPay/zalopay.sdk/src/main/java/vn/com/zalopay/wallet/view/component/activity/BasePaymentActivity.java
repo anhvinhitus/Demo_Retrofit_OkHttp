@@ -887,31 +887,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         }
     }
 
-    public void setImage(String pStrID, Bitmap pBitmap) {
-        int ID = getViewID(pStrID);
-        ImageView imageView = ((ImageView) this.findViewById(ID));
-        if (imageView != null) {
-            if (pBitmap == null) {
-                imageView.setVisibility(View.GONE);
-            } else {
-                imageView.setImageBitmap(pBitmap);
-            }
-        }
-    }
-
-    public void setImage(int pId, Bitmap pBitmap) {
-        View view = findViewById(pId);
-        if (view != null && view instanceof ImageView) {
-            if (pBitmap == null) {
-                view.setVisibility(View.GONE);
-            } else {
-                ((ImageView) view).setImageBitmap(pBitmap);
-            }
-        }
-    }
-
     public void setImage(int pId, String pImageName) {
         ResourceManager.loadImageIntoView(findViewById(pId), pImageName);
+    }
+
+    public void setImage(String pId, String pImageName) {
+        ResourceManager.loadImageIntoView(findViewById(getViewID(pId)), pImageName);
     }
 
     public View findViewById(String pName) {
@@ -1847,7 +1828,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             mBitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
             byte[] byteArray = stream.toByteArray();
-
             String transactionTitle = getTransactionTitle();
 
             if (GlobalData.isLinkCardChannel()) {

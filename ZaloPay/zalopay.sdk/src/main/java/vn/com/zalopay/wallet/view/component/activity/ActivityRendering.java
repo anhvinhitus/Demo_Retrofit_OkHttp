@@ -153,7 +153,7 @@ public class ActivityRendering {
             return;
         }
         for (DStaticView imgView : pImgViewList) {
-            pActivity.setImage(imgView.id, ResourceManager.getImage(imgView.value));
+            pActivity.setImage(imgView.id,imgView.value);
         }
     }
 

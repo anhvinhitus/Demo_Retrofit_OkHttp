@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView channelIconImageView, nextIconImageView;
+        SimpleDraweeView channelIconImageView, nextIconImageView;
         TextView channelNameTextView, channelFeeTextview, currencyUnitTextView;
         View lineView;
 
@@ -93,8 +94,8 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
             convertView = inflater.inflate(mLayoutId, null);
             holder = new ZPWItemChannelHolder();
 
-            channelIconImageView = (ImageView) convertView.findViewById(R.id.zpw_channel_icon);
-            nextIconImageView = (ImageView) convertView.findViewById(R.id.zpw_channel_next_icon);
+            channelIconImageView = (SimpleDraweeView) convertView.findViewById(R.id.zpw_channel_icon);
+            nextIconImageView = (SimpleDraweeView) convertView.findViewById(R.id.zpw_channel_next_icon);
             channelNameTextView = (TextView) convertView.findViewById(R.id.zpw_channel_name_textview);
             channelFeeTextview = (TextView) convertView.findViewById(R.id.zpw_channel_fee);
             lineView = convertView.findViewById(R.id.zpw_line_view);
@@ -122,22 +123,20 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
             try {
 
                 //icon channel
-                Bitmap iconChannel = ResourceManager.getImage(channel.channel_icon);
-                channelIconImageView.setImageBitmap(iconChannel);
+                ResourceManager.loadImageIntoView(channelIconImageView, channel.channel_icon);
                 channelIconImageView.setAlpha(255);
 
                 //remargin line view
                 int bitmapSize = (int) (2 * getContext().getResources().getDimension(R.dimen.zpw_item_listview_padding_left_right));
-                if (iconChannel != null) {
-                    bitmapSize += iconChannel.getWidth();
+                if (mActivity != null) {
+                    bitmapSize += mActivity.getResources().getDimension(R.dimen.sdk_ic_channal_size);
                 }
-
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) SdkUtils.convertDpToPixel(0.5f, getContext()));
                 params.setMargins(bitmapSize, 0, 0, 0);
                 lineView.setLayoutParams(params);
 
                 //next icon view
-                nextIconImageView.setImageBitmap(ResourceManager.getImage(channel.channel_next_icon));
+                ResourceManager.loadImageIntoView(nextIconImageView, channel.channel_next_icon);
                 nextIconImageView.setVisibility(View.VISIBLE);
 
                 //channel name
@@ -164,7 +163,6 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
 
                         nextIconImageView.setVisibility(View.GONE);
                         channelIconImageView.setAlpha(mAlphaColor);
-
                         return convertView;
                     }
 

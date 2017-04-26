@@ -4,8 +4,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 public class ZPWItemChannelHolder {
-    public ImageView channelIconImageView, nextIconImageView;
+    public SimpleDraweeView channelIconImageView, nextIconImageView;
     public TextView channelNameTextView, channelFeeTextView, currencyUnitTextView;
     public View lineView;
 }
