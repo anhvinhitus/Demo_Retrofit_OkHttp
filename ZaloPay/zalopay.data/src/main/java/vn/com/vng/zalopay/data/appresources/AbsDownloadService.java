@@ -75,7 +75,7 @@ public abstract class AbsDownloadService extends IntentService {
             boolean result = task.execute();
 
             if (task.getDownloadInfo().appid == mZaloPayAppId) {
-                EventBus.getDefault().postSticky(new DownloadZaloPayResourceEvent(result));
+                EventBus.getDefault().postSticky(new DownloadZaloPayResourceEvent(result, task.getDownloadInfo()));
             } else {
                 EventBus.getDefault().postSticky(new DownloadAppEvent(result, task.getDownloadInfo()));
             }

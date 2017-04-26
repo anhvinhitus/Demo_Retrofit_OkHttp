@@ -374,4 +374,10 @@ public class AppResourceRepository implements AppResourceStore.Repository {
         return listApp;
     }
 
+
+    @Override
+    public Boolean existAppResource(long appid) {
+        AppResourceEntity entity = mLocalStorage.get(appid);
+        return entity != null && entity.stateDownload >= DownloadState.STATE_SUCCESS;
+    }
 }

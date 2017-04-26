@@ -10,13 +10,19 @@ import com.facebook.react.bridge.JSApplicationCausedNativeException;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
+import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
+import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
 import vn.com.vng.zalopay.event.UncaughtRuntimeExceptionEvent;
+import vn.com.vng.zalopay.utils.ConfigUtil;
 import vn.com.zalopay.wallet.view.dialog.SweetAlertDialog;
 
 /**
@@ -27,10 +33,12 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
     private Message mCurrentMessage;
     private Message mCurrentMessageAtLogin;
     private final EventBus mEventBus;
+    private final AppResourceStore.Repository mAppRepository;
 
-    public GlobalEventHandlingServiceImpl(EventBus eventBus) {
+    public GlobalEventHandlingServiceImpl(EventBus eventBus, AppResourceStore.Repository appRepository) {
         this.mEventBus = eventBus;
         this.mEventBus.register(this);
+        this.mAppRepository = appRepository;
     }
 
     @Override
@@ -80,14 +88,14 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
     @Subscribe
     public void onPaymentAppException(PaymentAppExceptionEvent event) {
         enqueueMessage(SweetAlertDialog.WARNING_TYPE, "ĐÓNG", "Có lỗi xảy ra trong quá trình thực thi ứng dụng.");
-        Crashlytics.log(Log.ERROR, "EXCEPTION", String.format("Payment App %d causes exception: %s", event.getAppId(), event.getInnerException().getMessage()));
+        Crashlytics.log(Log.ERROR, "EXCEPTION", String.format(Locale.getDefault(), "Payment App %d causes exception: %s", event.getAppId(), event.getInnerException().getMessage()));
         Crashlytics.logException(event.getInnerException());
         Answers.getInstance().logCustom(new CustomEvent("EXCEPTION APP " + String.valueOf(event.getAppId())));
     }
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        Timber.i("Exception with type: %s", ex.getClass());
+        Timber.i("Exception with type: %s message: %s", ex.getClass(), ex.getMessage());
         if (ex instanceof RuntimeException) {
             RuntimeException runtimeException = (RuntimeException) ex;
 
@@ -109,5 +117,25 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
             }
         }
         Timber.e(ex, "UncaughtException!!!");
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onDownloadResourceSuccessEvent(DownloadZaloPayResourceEvent event) {
+
+        if (!event.isDownloadSuccess || event.mDownloadInfo == null) {
+            return;
+        }
+
+        Timber.d("on Download app 1 resource success : url [%s]", event.mDownloadInfo.url);
+
+        if (!mAppRepository.existAppResource(event.mDownloadInfo.appid)) {
+            return;
+        }
+
+        Timber.d("begin load config");
+
+        ConfigUtil.loadConfigFromResource();
+        AndroidApplication.instance().initIconFont(true);
     }
 }

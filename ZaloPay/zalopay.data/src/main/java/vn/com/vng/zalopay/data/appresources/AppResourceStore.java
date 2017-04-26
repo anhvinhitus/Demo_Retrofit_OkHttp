@@ -70,6 +70,8 @@ public interface AppResourceStore {
         Observable<List<AppResource>> fetchListAppHome();
 
         Observable<Void> resetStateResource(long appId);
+
+        Boolean existAppResource(long appid);
     }
 
 }
