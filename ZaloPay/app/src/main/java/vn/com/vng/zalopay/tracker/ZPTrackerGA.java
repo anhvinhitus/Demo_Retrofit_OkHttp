@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.service;
+package vn.com.vng.zalopay.tracker;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;

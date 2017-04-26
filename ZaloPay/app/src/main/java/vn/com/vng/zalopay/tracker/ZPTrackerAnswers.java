@@ -1,4 +1,4 @@
-package vn.com.vng.zalopay.service;
+package vn.com.vng.zalopay.tracker;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
