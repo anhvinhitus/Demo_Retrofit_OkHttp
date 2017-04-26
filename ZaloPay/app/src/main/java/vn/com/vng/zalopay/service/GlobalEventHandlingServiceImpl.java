@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
 import vn.com.vng.zalopay.AndroidApplication;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.eventbus.DownloadZaloPayResourceEvent;
 import vn.com.vng.zalopay.event.InternalAppExceptionEvent;
 import vn.com.vng.zalopay.event.PaymentAppExceptionEvent;
@@ -32,10 +33,12 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
     private Message mCurrentMessage;
     private Message mCurrentMessageAtLogin;
     private final EventBus mEventBus;
+    private final AppResourceStore.Repository mAppRepository;
 
-    public GlobalEventHandlingServiceImpl(EventBus eventBus) {
+    public GlobalEventHandlingServiceImpl(EventBus eventBus, AppResourceStore.Repository appRepository) {
         this.mEventBus = eventBus;
         this.mEventBus.register(this);
+        this.mAppRepository = appRepository;
     }
 
     @Override
@@ -120,11 +123,17 @@ public class GlobalEventHandlingServiceImpl implements GlobalEventHandlingServic
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onDownloadResourceSuccessEvent(DownloadZaloPayResourceEvent event) {
 
-        Timber.d("on Download app 1 resource success : url [%s]", event.mDownloadInfo.url);
-
-        if (!event.isDownloadSuccess) {
+        if (!event.isDownloadSuccess || event.mDownloadInfo == null) {
             return;
         }
+
+        Timber.d("on Download app 1 resource success : url [%s]", event.mDownloadInfo.url);
+
+        if (!mAppRepository.existAppResource(event.mDownloadInfo.appid)) {
+            return;
+        }
+
+        Timber.d("begin load config");
 
         ConfigUtil.loadConfigFromResource();
         AndroidApplication.instance().initIconFont(true);

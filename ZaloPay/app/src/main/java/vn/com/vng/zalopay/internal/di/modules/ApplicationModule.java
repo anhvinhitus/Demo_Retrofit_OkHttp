@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.BuildConfig;
 import vn.com.vng.zalopay.UIThread;
 import vn.com.vng.zalopay.UserConfigImpl;
+import vn.com.vng.zalopay.data.appresources.AppResourceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.cache.model.DaoMaster;
 import vn.com.vng.zalopay.data.cache.model.DaoSession;
@@ -128,8 +129,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    GlobalEventHandlingService providesGlobalEventService(EventBus eventBus) {
-        return new GlobalEventHandlingServiceImpl(eventBus);
+    GlobalEventHandlingService providesGlobalEventService(EventBus eventBus, AppResourceStore.Repository appRepository) {
+        return new GlobalEventHandlingServiceImpl(eventBus, appRepository);
     }
 
     @Provides
