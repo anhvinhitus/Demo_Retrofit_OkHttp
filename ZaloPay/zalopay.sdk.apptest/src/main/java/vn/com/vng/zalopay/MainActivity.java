@@ -744,7 +744,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
 
                     @Override
                     public void onError(CError pError) {
-                        Log.e("ZMP", "onError CallBack: " + pError.payError.toString() + ",message: " + pError.messError);
+                        Log.e("ZMP", "onError CallBack: " + pError.payError + ",message: " + pError.messError);
                     }
 
                     @Override
