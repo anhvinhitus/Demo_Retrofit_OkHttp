@@ -60,6 +60,7 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
             //mWebPaymentBridge = new BankWebView(getAdapter().getActivity().getApplicationContext());
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
+            setPaymentWebView(mWebPaymentBridge);
         }
     }
 

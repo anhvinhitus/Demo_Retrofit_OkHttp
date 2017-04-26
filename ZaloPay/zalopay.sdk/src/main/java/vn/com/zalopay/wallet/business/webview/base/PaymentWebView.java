@@ -1,6 +1,8 @@
 package vn.com.zalopay.wallet.business.webview.base;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
@@ -61,6 +63,16 @@ public class PaymentWebView extends WebView {
         Log.d(this, "===loadPaymentUrl===pUrl=" + pUrl);
         mRecentLoadingUrl = pUrl;
         loadUrl(pUrl);
+    }
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    public void runScript(String scriptContent) {
+        Log.d(this, "##### runScript: " + scriptContent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            evaluateJavascript(scriptContent, null);
+        } else {
+            loadUrl("javascript:{" + scriptContent + "}");
+        }
     }
 
     public void release() {

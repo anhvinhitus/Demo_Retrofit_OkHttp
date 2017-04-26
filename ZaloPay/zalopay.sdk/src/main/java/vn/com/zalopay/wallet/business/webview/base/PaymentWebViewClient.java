@@ -26,7 +26,7 @@ import vn.com.zalopay.wallet.utils.GsonUtils;
 public abstract class PaymentWebViewClient extends WebViewClient {
     public static final String JAVA_SCRIPT_INTERFACE_NAME = "zingpaysdk_wv";
     protected WeakReference<AdapterBase> mAdapter;
-    protected BankWebView mWebPaymentBridge = null;
+    protected PaymentWebView mWebPaymentBridge = null;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public PaymentWebViewClient(AdapterBase pAdapter) {
@@ -48,6 +48,10 @@ public abstract class PaymentWebViewClient extends WebViewClient {
         return null;
     }
 
+    public void setPaymentWebView( PaymentWebView pPaymentWebView)
+    {
+        mWebPaymentBridge = pPaymentWebView;
+    }
     public String getCurrentUrl() {
         return mWebPaymentBridge.getUrl();
     }
@@ -90,7 +94,7 @@ public abstract class PaymentWebViewClient extends WebViewClient {
                         .subscribe(new SingleSubscriber<String>() {
                             @Override
                             public void onSuccess(String fileContent) {
-                                if (!TextUtils.isEmpty(fileContent)) {
+                                if (!TextUtils.isEmpty(fileContent) && mWebPaymentBridge != null) {
                                     String jsContent = String.format(fileContent, pJsInput);
                                     mWebPaymentBridge.runScript(jsContent);
                                 }

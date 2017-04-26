@@ -12,6 +12,10 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.util.List;
 
+import rx.SingleSubscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
@@ -84,6 +88,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.setWebChromeClient(wcClient);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
+            setPaymentWebView(mWebPaymentBridge);
         }
     }
 
@@ -98,6 +103,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             mWebPaymentBridge.setWebViewClient(this);
             mWebPaymentBridge.setWebChromeClient(wcClient);
             mWebPaymentBridge.addJavascriptInterface(this, JAVA_SCRIPT_INTERFACE_NAME);
+            setPaymentWebView(mWebPaymentBridge);
         }
     }
 

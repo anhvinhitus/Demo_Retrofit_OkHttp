@@ -52,15 +52,5 @@ public class BankWebView extends PaymentWebView {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    public void runScript(String scriptContent) {
-        Log.d(this, "##### runScript: " + scriptContent);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            evaluateJavascript(scriptContent, null);
-        } else {
-            loadUrl("javascript:{" + scriptContent + "}");
-        }
-    }
 
 }
