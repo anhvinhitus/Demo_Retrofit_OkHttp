@@ -19,6 +19,9 @@ import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
+import static vn.com.zalopay.wallet.constants.PaymentError.COMPONENT_NULL;
+import static vn.com.zalopay.wallet.constants.PaymentError.DATA_INVALID;
+import static vn.com.zalopay.wallet.constants.PaymentError.NETWORKING_ERROR;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_CLOSE;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_FAIL;
 import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID;
