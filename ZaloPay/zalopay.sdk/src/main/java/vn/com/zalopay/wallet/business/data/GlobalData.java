@@ -78,7 +78,7 @@ public class GlobalData {
     }
 
     public static void setMerchantCallBack(ZPWGatewayInfoCallback pMerchantCallBack) {
-        GlobalData.mMerchantCallBack = new WeakReference<ZPWGatewayInfoCallback>(pMerchantCallBack);
+        GlobalData.mMerchantCallBack = new WeakReference<>(pMerchantCallBack);
     }
 
     public static IChannelActivityCallBack getChannelActivityCallBack() {
@@ -89,7 +89,7 @@ public class GlobalData {
     }
 
     public static void setChannelActivityCallBack(IChannelActivityCallBack mChannelActivityCallBack) {
-        GlobalData.mChannelActivityCallBack = new WeakReference<IChannelActivityCallBack>(mChannelActivityCallBack);
+        GlobalData.mChannelActivityCallBack = new WeakReference<>(mChannelActivityCallBack);
     }
 
     //endregion

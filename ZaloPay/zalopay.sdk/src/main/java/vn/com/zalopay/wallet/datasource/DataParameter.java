@@ -252,7 +252,7 @@ public class DataParameter {
         }
         if (GlobalData.isMapCardChannel() && GlobalData.getPaymentInfo().mapBank.isValid()) {
             DMappedCreditCard mapCard = new DMappedCreditCard((DMappedCard) GlobalData.getPaymentInfo().mapBank);
-            params.put(ConstantParams.CHARGE_INFO, mapCard.toJsonString());
+            params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(mapCard));
         } else if (GlobalData.isMapBankAccountChannel() && GlobalData.getPaymentInfo().mapBank.isValid()) {
             params.put(ConstantParams.CHARGE_INFO, GsonUtils.toJsonString(GlobalData.getPaymentInfo().mapBank));
         } else if (pAdapter != null && pAdapter.isCardFlow()) {

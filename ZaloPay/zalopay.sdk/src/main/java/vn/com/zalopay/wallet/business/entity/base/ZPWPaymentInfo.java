@@ -2,17 +2,14 @@ package vn.com.zalopay.wallet.business.entity.base;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 
-public class ZPWPaymentInfo extends BaseEntity<ZPWPaymentInfo> {
+public class ZPWPaymentInfo {
     public long appID;
     public String appTransID;
-    public String walletTransID;
     public String appUser;
     public long appTime;
     public long amount;
@@ -26,13 +23,10 @@ public class ZPWPaymentInfo extends BaseEntity<ZPWPaymentInfo> {
     public UserInfo userTransfer;
     public LinkAccInfo linkAccInfo;
     public int[] forceChannelIds;
-    public ZPWPaymentInfo() {
-        mapBank = new DMappedCard();
-    }
     public PaymentLocation mLocation = new PaymentLocation();
 
-    public static ZPWPaymentInfo fromJson(String pJson) {
-        return (new Gson()).fromJson(pJson, ZPWPaymentInfo.class);
+    public ZPWPaymentInfo() {
+        mapBank = new DMappedCard();
     }
 
     public boolean isForceChannel() {

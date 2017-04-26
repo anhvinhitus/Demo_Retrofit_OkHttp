@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import vn.com.zalopay.wallet.business.entity.base.BaseEntity;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
-public class DMappedCreditCard extends BaseEntity<DMappedCreditCard> {
+public class DMappedCreditCard {
     public String f6no;
     public String l4no;
     public String bankcode;
