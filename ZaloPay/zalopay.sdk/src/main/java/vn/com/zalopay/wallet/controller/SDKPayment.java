@@ -12,15 +12,15 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.business.validation.CValidation;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.PaymentError;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
@@ -104,7 +104,7 @@ public class SDKPayment {
         //validate payment info and activity
         if (pMerchantActivity == null || pPaymentInfo == null) {
             if (pPaymentListener != null) {
-                pPaymentListener.onError(new CError(EPayError.COMPONENT_NULL, "Component (activity,payment info) is null"));
+                pPaymentListener.onError(new CError(PaymentError.COMPONENT_NULL, "Component (activity,payment info) is null"));
             }
             return;
         }
@@ -113,7 +113,7 @@ public class SDKPayment {
             SDKApplication.createPaymentInfoComponent(pPaymentInfo);
             GlobalData.setSDKData(pMerchantActivity, pPaymentListener, pPaymentOption);
         } catch (Exception e) {
-            onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_input_error), EPayError.DATA_INVALID);
+            onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
             return;
         }
         //set fingerprint listener from merchant
@@ -131,14 +131,14 @@ public class SDKPayment {
             Log.d("pay", "===transtype: ===" + GlobalData.getTransactionType().toString());
         } catch (Exception e) {
             Log.e("pay", e);
-            onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_context_error), EPayError.DATA_INVALID);
+            onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_context_error), PaymentError.DATA_INVALID);
             return;
         }
         try {
             //check internet connection
             if (!ConnectionUtil.isOnline(pMerchantActivity)) {
                 if (GlobalData.getPaymentListener() != null) {
-                    GlobalData.getPaymentListener().onError(new CError(EPayError.NETWORKING_ERROR, GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)));
+                    GlobalData.getPaymentListener().onError(new CError(PaymentError.NETWORKING_ERROR, GlobalData.getStringResource(RS.string.zingpaysdk_alert_no_connection)));
                 }
 
                 SingletonLifeCircleManager.disposeAll();
@@ -149,14 +149,14 @@ public class SDKPayment {
             //validate params order info
             String validateMessage = validation.onValidateOrderInfo(pPaymentInfo);
             if (!TextUtils.isEmpty(validateMessage)) {
-                onReturnCancel(validateMessage, EPayError.DATA_INVALID);
+                onReturnCancel(validateMessage, PaymentError.DATA_INVALID);
                 return;
             }
             //validate user
             String validateUser = validation.onValidateUser();
 
             if (!TextUtils.isEmpty(validateUser)) {
-                onReturnCancel(validateUser, EPayError.DATA_INVALID);
+                onReturnCancel(validateUser, PaymentError.DATA_INVALID);
                 return;
             }
 
@@ -208,7 +208,7 @@ public class SDKPayment {
                 return;
             }
         } catch (Exception e) {
-            onReturnCancel(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), EPayError.DATA_INVALID);
+            onReturnCancel(GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
             Log.e("pay", e);
             return;
         }
@@ -228,8 +228,8 @@ public class SDKPayment {
      *
      * @param pMessage
      */
-    private static void onReturnCancel(final String pMessage, final EPayError pPayError) {
-        if (pPayError == EPayError.DATA_INVALID) {
+    private static void onReturnCancel(final String pMessage, @PaymentError int pPayError) {
+        if (pPayError == PaymentError.DATA_INVALID) {
             SDKReportTask.makeReportError(SDKReportTask.INVALID_PAYMENTINFO, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
         }
         DialogManager.closeProcessDialog();

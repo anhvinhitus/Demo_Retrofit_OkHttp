@@ -1,15 +1,13 @@
 package vn.com.zalopay.wallet.business.entity.error;
 
-import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
+import vn.com.zalopay.wallet.constants.PaymentError;
 
-/**
- * Created by admin on 8/9/16.
- */
 public class CError {
-    public EPayError payError;
+    @PaymentError
+    public int payError;
     public String messError;
 
-    public CError(EPayError pErrorCode, String pErrorMessage) {
+    public CError(@PaymentError int pErrorCode, String pErrorMessage) {
         this.payError = pErrorCode;
         this.messError = pErrorMessage;
     }

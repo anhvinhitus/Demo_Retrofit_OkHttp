@@ -33,7 +33,6 @@ import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -42,6 +41,8 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+
+import static vn.com.zalopay.wallet.constants.PaymentError.DATA_INVALID;
 
 /**
  * Created by huuhoa on 6/3/16.
@@ -349,7 +350,7 @@ public class PaymentWrapper {
 
         paymentInfo.userInfo = assignBaseUserInfo(paymentInfo.userInfo);
         if (paymentInfo.userInfo.level < 0 || TextUtils.isEmpty(paymentInfo.userInfo.userProfile)) {
-            mWalletListener.onError(new CError(EPayError.DATA_INVALID, owner.getString(R.string.please_update_profile)));
+            mWalletListener.onError(new CError(DATA_INVALID, owner.getString(R.string.please_update_profile)));
             mActivity = null;
             return;
         }
