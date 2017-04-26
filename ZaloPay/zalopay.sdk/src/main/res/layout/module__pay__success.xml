@@ -24,7 +24,7 @@
             android:layout_marginBottom="@dimen/zpw_margin_bottom_supper_supper_label"
             android:layout_marginTop="@dimen/zpw_margin_top_supper_supper_label"
             app:viewAspectRatio="1"
-            android:scaleType="centerInside" />
+            app:actualImageScaleType="centerInside" />
 
 
         <TextView

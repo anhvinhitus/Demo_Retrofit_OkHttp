@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
                 app:viewAspectRatio="1"
-                android:scaleType="centerInside"/>
+                app:actualImageScaleType="centerInside"/>
 
             <LinearLayout
                 android:id="@+id/zpw_layout_channel"
@@ -83,7 +83,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/zpw_item_listview_padding_left_right"
             app:viewAspectRatio="1"
-            android:scaleType="centerInside"/>
+            app:actualImageScaleType="centerInside"/>
 
         <View
             android:id="@+id/zpw_line_view"

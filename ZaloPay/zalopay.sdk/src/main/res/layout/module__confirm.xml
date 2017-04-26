@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical"
                     app:viewAspectRatio="1"
-                    android:scaleType="centerInside" />
+                    app:actualImageScaleType="centerInside" />
 
                 <LinearLayout
                     android:id="@+id/zpw_channel_layout"
