@@ -38,7 +38,7 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         init();
     }
 
-    private void addLineTop() {
+    private void addLineSeparate() {
         View line = new View(getContext());
         line.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.separate));
         addView(line, new LayoutParams(LayoutParams.MATCH_PARENT, AndroidUtils.dp(0.5F)));
@@ -48,7 +48,7 @@ public class HomeBottomNavigationView extends BottomNavigationView implements Bo
         inflateMenu(R.menu.bottom_navigation_items);
         changeBottomNavigationLayout();
         initTabIconFont();
-        addLineTop();
+        addLineSeparate();
         BottomNavigationViewHelper.disableShiftMode(this);
         setOnNavigationItemSelectedListener(this);
     }
