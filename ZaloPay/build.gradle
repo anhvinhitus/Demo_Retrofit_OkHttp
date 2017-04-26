@@ -45,11 +45,11 @@ allprojects {
     }
 }
 
-task runDomainUnitTests(dependsOn: [':domain:test']) {
+task runDomainUnitTests(dependsOn: [':zalopay.domain:test']) {
     description 'Run unit tests for the domain layer.'
 }
 
-task runDataUnitTests(dependsOn: [':data:cleanTestDebugUnitTest', ':data:testDebugUnitTest']) {
+task runDataUnitTests(dependsOn: [':zalopay.data:cleanTestDebugUnitTest', ':zalopay.data:testDebugUnitTest']) {
     description 'Run unit tests for the data layer.'
 }
 
