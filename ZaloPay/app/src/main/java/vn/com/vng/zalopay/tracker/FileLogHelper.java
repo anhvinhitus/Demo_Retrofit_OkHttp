@@ -47,13 +47,15 @@ public class FileLogHelper {
 
                     String fileName = file.getName();
 
-                    if (!fileName.endsWith(ZIP_SUFFIX)) {
+                    if (fileName.endsWith(ZIP_SUFFIX)) {
                         continue;
                     }
 
                     ret.add(file.getAbsolutePath());
                 }
             }
+
+            Timber.d("filelogs should upload size [%s]", ret.size());
 
             return ret.toArray(new String[ret.size()]);
         });
@@ -66,25 +68,48 @@ public class FileLogHelper {
                 return "";
             }
 
-            String zipFile = file.getAbsolutePath().replace(".txt", ZIP_SUFFIX);
-            FileUtils.deleteFileAtPathSilently(zipFile);
+            String zipFilePath = file.getAbsolutePath().replace(".txt", ZIP_SUFFIX);
+            File zipFile = new File(zipFilePath);
+
+            if (zipFile.exists()) {
+                return zipFilePath;
+            }
 
             try {
-                FileUtils.zip(new String[]{filePath}, zipFile);
-                return zipFile;
+                FileUtils.zip(new String[]{filePath}, zipFilePath);
+                return zipFilePath;
             } catch (IOException e) {
+                Timber.d(e, "Zip file error");
                 return "";
             }
         });
     }
 
     public static Observable<String> uploadFileLog(String filePath, FileLogStore.Repository fileLogRepository) {
-        return FileLogHelper.zipFileLog(filePath)
+        return FileLogHelper.zipFileLog(filePath) // Zip file
                 .filter(s -> !TextUtils.isEmpty(s))
                 .flatMap(fileLogRepository::uploadFileLog) // Upload file
-                .doOnNext(FileUtils::deleteFileAtPathSilently) // Remove .zip
                 .doOnNext(s -> FileUtils.deleteFileAtPathSilently(filePath)) // Remove .txt
-                .doOnError(Timber::w);
+                .doOnNext(FileUtils::deleteFileAtPathSilently) // Remove .zip
+                ;
     }
 
+    private static Observable<String> uploadFileLogIgnoreError(String path, FileLogStore.Repository fileLogRepository) {
+        return FileLogHelper.uploadFileLog(path, fileLogRepository)
+                .onErrorResumeNext(Observable.empty());
+    }
+
+    public static Observable<Boolean> uploadFileLogs(FileLogStore.Repository fileLogRepository) {
+        return FileLogHelper.listFileLogs()
+                .flatMap(Observable::from)
+                .flatMap(path -> uploadFileLogIgnoreError(path, fileLogRepository))
+                .map(s -> Boolean.TRUE);
+    }
+
+    public static Observable<Boolean> cleanupLogs() {
+        return ObservableHelper.makeObservable(() -> {
+            FileLog.cleanupLogs();
+            return true;
+        });
+    }
 }

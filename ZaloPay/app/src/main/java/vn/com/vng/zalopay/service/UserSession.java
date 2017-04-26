@@ -154,27 +154,34 @@ public class UserSession {
     }
 
     private void uploadFileLog(String filePath) {
-        Subscription subscription = FileLogHelper.uploadFileLog(filePath, mFileLogRepository)
+        Subscription subscription = Observable.just(NetworkHelper.isNetworkAvailable(mContext))
+                .filter(Boolean::booleanValue)
+                .flatMap(aBoolean -> FileLogHelper.uploadFileLog(filePath, mFileLogRepository))
+                .doOnError(Timber::w)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscription);
     }
 
+
+    private int numFileUpload;
+
     private void uploadFileLogs() {
-        Subscription subscription = FileLogHelper.listZipFileLog()
-                .flatMap(Observable::from)
-                .flatMap(this::uploadFileLogIgnoreError)
+        Subscription subscription = Observable.just(NetworkHelper.isNetworkAvailable(mContext))
+                .filter(Boolean::booleanValue)
+                .flatMap(aBoolean -> FileLogHelper.uploadFileLogs(mFileLogRepository))
                 .delaySubscription(30, TimeUnit.SECONDS)
+                .doOnError(Timber::w)
+                .doOnTerminate(() -> Timber.d("Number file upload success [%s]", numFileUpload))
                 .subscribeOn(Schedulers.io())
-                .subscribe(new DefaultSubscriber<>());
+                .subscribe(new DefaultSubscriber<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        numFileUpload++;
+                    }
+                });
         mCompositeSubscription.add(subscription);
     }
-
-    private Observable<String> uploadFileLogIgnoreError(String path) {
-        return FileLogHelper.uploadFileLog(path, mFileLogRepository)
-                .onErrorResumeNext(Observable.empty());
-    }
-
 
 }

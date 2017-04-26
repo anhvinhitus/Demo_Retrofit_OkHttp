@@ -83,14 +83,6 @@ final class FileLog {
         }
     }
 
-    public static void deleteFileLog(String path) {
-        File file = new File(path);
-        if (!file.exists()) {
-            return;
-        }
-        file.delete();
-    }
-
     private static void postFileLog(String path) {
         AndroidApplication.instance().getAppComponent()
                 .eventBus().post(new UploadFileLogEvent(path));
@@ -160,10 +152,6 @@ final class FileLog {
 
     public static void cleanupLogs() {
         FileUtils.deleteDirectory(sDirectoryFileLog, false);
-    }
-
-    public static String[] listFileLogs() {
-        return new String[]{};
     }
 
     private static String formatMsg(@NonNull LogData logData) {
