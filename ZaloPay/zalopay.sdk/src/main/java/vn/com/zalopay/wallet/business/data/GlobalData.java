@@ -12,7 +12,6 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
@@ -62,7 +61,6 @@ public class GlobalData {
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
     private static ZPWPaymentInfo mPaymentInfo = null;
-    private static ZPPaymentOption mPaymentOption = null;
     private static ZPPaymentResult paymentResult = null;
     /***
      * user level,map table
@@ -389,59 +387,37 @@ public class GlobalData {
         return false;
     }
 
+    public static void selectBankFunctionByTransactionType() {
+        switch (transactionType) {
+            case TransactionType.LINK_ACCOUNT:
+                bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
+                break;
+            case TransactionType.LINK_CARD:
+                bankFunction = BankFunctionCode.LINK_CARD;
+                break;
+            case TransactionType.MONEY_TRANSFER:
+                bankFunction = BankFunctionCode.PAY;
+                break;
+            case TransactionType.WITHDRAW:
+                bankFunction = BankFunctionCode.WITHDRAW;
+                break;
+            case TransactionType.TOPUP:
+                bankFunction = BankFunctionCode.PAY;
+                break;
+            case TransactionType.PAY:
+                bankFunction = BankFunctionCode.PAY;
+        }
+    }
+
     /***
      * Get transtype of payment.
      */
     @TransactionType
     public static int getTransactionType() {
-        //link account bank.
-        if (mPaymentOption != null &&
-                !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
-                mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc))) {
-            transactionType = TransactionType.LINK_ACCOUNT;
-            bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
-            return TransactionType.LINK_ACCOUNT;
-        }
-
-        //link card.
-        if (mPaymentOption != null &&
-                !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
-                mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_card))) {
-            appID = Long.parseLong(GlobalData.getStringResource(RS.string.zpw_conf_wallet_id));
-            transactionType = TransactionType.LINK_CARD;
-            bankFunction = BankFunctionCode.LINK_CARD;
-            return TransactionType.LINK_CARD;
-        }
-
-        //wallet tranfer.
-        if (mPaymentOption != null &&
-                !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
-                mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_wallet_transfer))) {
-            transactionType = TransactionType.MONEY_TRANSFER;
-            bankFunction = BankFunctionCode.PAY;
-            return TransactionType.MONEY_TRANSFER;
-        }
-
-        //withdraw.
-        if (mPaymentOption != null &&
-                !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
-                mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_withdraw))) {
-            transactionType = TransactionType.WITHDRAW;
-            bankFunction = BankFunctionCode.WITHDRAW;
-            return TransactionType.WITHDRAW;
-        }
-
-        //topup.
-        if (GlobalData.appID == Long.parseLong(getStringResource(RS.string.zpw_conf_wallet_id))) {
+        if (transactionType == TransactionType.PAY && (GlobalData.appID == Long.parseLong(getStringResource(RS.string.zpw_conf_wallet_id)))) {
             transactionType = TransactionType.TOPUP;
-            bankFunction = BankFunctionCode.PAY;
-            return TransactionType.TOPUP;
         }
-
-        //pay. with other case.
-        transactionType = TransactionType.PAY;
-        bankFunction = BankFunctionCode.PAY;
-        return TransactionType.PAY;
+        return transactionType;
     }
 
     @BankFunctionCode
@@ -472,10 +448,7 @@ public class GlobalData {
     }
 
     public static void initApplication(ZPWPaymentInfo pPaymentInfo) {
-        Log.d("GlobalData", "initApplication(ZPWPaymentInfo pPaymentInfo)()");
         GlobalData.mPaymentInfo = pPaymentInfo;
-        GlobalData.mPaymentOption = new ZPPaymentOption(null);
-
         initResultReturn();
     }
 
@@ -484,7 +457,6 @@ public class GlobalData {
             GlobalData.mPaymentInfo.userInfo.zaloPayUserId = pPaymentInfo.userInfo.zaloPayUserId;
             GlobalData.mPaymentInfo.userInfo.accessToken = pPaymentInfo.userInfo.accessToken;
         } else {
-            Log.d("GlobalData", "initApplicationUserInfo(ZPWPaymentInfo pPaymentInfo)");
             GlobalData.mPaymentInfo = pPaymentInfo;
         }
     }
@@ -513,7 +485,7 @@ public class GlobalData {
     /***
      * alwaw call this to set static listener and info.
      */
-    public static void setSDKData(Activity pActivity, ZPPaymentListener pPaymentListener, ZPPaymentOption pPaymentOption) throws Exception {
+    public static void setSDKData(Activity pActivity, ZPPaymentListener pPaymentListener, @TransactionType int pTransactionType) throws Exception {
         if (!isAccessRight()) {
             throw new Exception("Violate Design Pattern! Only 'pay' static method of ZingPayService class can set application!");
         }
@@ -522,7 +494,7 @@ public class GlobalData {
         GlobalData.appID = GlobalData.mPaymentInfo.appID;
         GlobalData.mMerchantActivity = new WeakReference<>(pActivity);
         GlobalData.mListener = pPaymentListener;
-        GlobalData.mPaymentOption = pPaymentOption;
+        GlobalData.transactionType = pTransactionType;
 
         //reset data
         GlobalData.paymentResult = null;

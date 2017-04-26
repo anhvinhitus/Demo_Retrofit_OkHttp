@@ -12,15 +12,14 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.business.validation.CValidation;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.PaymentError;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
@@ -85,21 +84,19 @@ public class SDKPayment {
         }
     }
 
-    /**
+    /***
      * Pay, app call sdk and set paymentinfo
-     *
-     * @param owner             ownerActivity
-     * @param paymentMethodType paymentMethodType
-     * @param info              pay ment info
-     * @param listener          call back
+     * @param owner
+     * @param pTransactionType
+     * @param info
+     * @param listener
+     * @param pExtraParams
      */
-    public synchronized static void pay(Activity owner, EPaymentChannel paymentMethodType, ZPWPaymentInfo info, ZPPaymentListener listener, Object... pExtraParams) {
-
-        ZPPaymentOption option = new ZPPaymentOption(paymentMethodType);
-        pay(owner, info, option, listener, pExtraParams);
+    public synchronized static void pay(Activity owner, @TransactionType int pTransactionType, ZPWPaymentInfo info, ZPPaymentListener listener, Object... pExtraParams) {
+        pay(owner, info, pTransactionType, listener, pExtraParams);
     }
 
-    private synchronized static void pay(final Activity pMerchantActivity, final ZPWPaymentInfo pPaymentInfo, final ZPPaymentOption pPaymentOption, final ZPPaymentListener pPaymentListener, Object... pExtraParams) {
+    private synchronized static void pay(final Activity pMerchantActivity, final ZPWPaymentInfo pPaymentInfo, @TransactionType int pTransactionType, final ZPPaymentListener pPaymentListener, Object... pExtraParams) {
 
         //validate payment info and activity
         if (pMerchantActivity == null || pPaymentInfo == null) {
@@ -111,7 +108,7 @@ public class SDKPayment {
         //set listener and data payment to global static
         try {
             SDKApplication.createPaymentInfoComponent(pPaymentInfo);
-            GlobalData.setSDKData(pMerchantActivity, pPaymentListener, pPaymentOption);
+            GlobalData.setSDKData(pMerchantActivity, pPaymentListener, pTransactionType);
         } catch (Exception e) {
             onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_input_error), PaymentError.DATA_INVALID);
             return;
@@ -124,11 +121,13 @@ public class SDKPayment {
                 }
             }
         }
-        Log.d("pay", "===info payment===" + GsonUtils.toJsonString(pPaymentInfo));
+        Log.d("pay", "payment transaction type " + pTransactionType);
+        Log.d("pay", "payment info " + GsonUtils.toJsonString(pPaymentInfo));
         //check where context is end?
         try {
             GlobalData.getTransactionType();
-            Log.d("pay", "===transtype: ===" + GlobalData.getTransactionType());
+            GlobalData.selectBankFunctionByTransactionType();
+            Log.d("pay", "transaction type" + GlobalData.getTransactionType());
         } catch (Exception e) {
             Log.e("pay", e);
             onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_context_error), PaymentError.DATA_INVALID);

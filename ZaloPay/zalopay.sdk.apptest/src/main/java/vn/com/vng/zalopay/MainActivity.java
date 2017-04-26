@@ -23,16 +23,17 @@ import vn.com.vng.zalopay.util.AppUtils;
 import vn.com.vng.zalopay.util.HMACUtil;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.ListUserProfile;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
@@ -40,7 +41,6 @@ import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class MainActivity extends ActionBarActivity implements Callback {
 
@@ -74,6 +74,19 @@ public class MainActivity extends ActionBarActivity implements Callback {
 
         }
     };
+    private EditText editTextAppID;
+    private EditText editTextZaloUserID;
+    private EditText editTextAccessToken;
+    private EditText username;
+    private EditText itemName;
+    private EditText itemPrice;
+    private EditText desc;
+    private CheckBox chkLinkCard, chkWalletTransfer, chkWithDraw, chkLinkAcc;
+    private RadioButton radioLink, radioUnlink;
+    private boolean isFirstLoad = true;
+    private String key1 = "E3kCLDkLL2GDhaYhEahsbviSfzwSCDXi";
+    private String key = "YhEahsbviSfzwSCDXiE3kCLDkLL2GDha";
+    private String mUserID;
     OnClickListener onGetAccessTockenListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -82,8 +95,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
             paymentInfo.userInfo.zaloPayUserId = mUserID;
             paymentInfo.userInfo.accessToken = editTextAccessToken.getText().toString();
             SDKApplication.loadGatewayInfo(paymentInfo,
-                    new ZPWGatewayInfoCallback()
-                    {
+                    new ZPWGatewayInfoCallback() {
                         @Override
                         public void onFinish() {
                             Log.d("loadGatewayInfo", "onSuccess");
@@ -97,20 +109,18 @@ public class MainActivity extends ActionBarActivity implements Callback {
 
                         @Override
                         public void onError(String pMessage) {
-                            Log.e("loadGatewayInfo", ! TextUtils.isEmpty(pMessage) ? pMessage: "error");
+                            Log.e("loadGatewayInfo", !TextUtils.isEmpty(pMessage) ? pMessage : "error");
                         }
 
                         @Override
                         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
-                            Log.e("loadGatewayInfo", "need to update new version : "+ pVersion + ".Message: "+ pMessage);
+                            Log.e("loadGatewayInfo", "need to update new version : " + pVersion + ".Message: " + pMessage);
                         }
                     });
-            for (int i=0;i<10;i++)
-            {
-                Log.d(this,"i="+i);
+            for (int i = 0; i < 10; i++) {
+                Log.d(this, "i=" + i);
                 SDKApplication.refreshGatewayInfo(paymentInfo,
-                        new ZPWGatewayInfoCallback()
-                        {
+                        new ZPWGatewayInfoCallback() {
                             @Override
                             public void onFinish() {
                                 Log.d("loadGatewayInfo", "onSuccess");
@@ -124,12 +134,12 @@ public class MainActivity extends ActionBarActivity implements Callback {
 
                             @Override
                             public void onError(String pMessage) {
-                                Log.e("loadGatewayInfo", ! TextUtils.isEmpty(pMessage) ? pMessage: "error");
+                                Log.e("loadGatewayInfo", !TextUtils.isEmpty(pMessage) ? pMessage : "error");
                             }
 
                             @Override
                             public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
-                                Log.e("loadGatewayInfo", "need to update new version : "+ pVersion + ".Message: "+ pMessage);
+                                Log.e("loadGatewayInfo", "need to update new version : " + pVersion + ".Message: " + pMessage);
                             }
                         });
                 /*try {
@@ -462,7 +472,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
 			*/
 
 			/*
-			paymentInfo = new ZPWPaymentInfo();
+            paymentInfo = new ZPWPaymentInfo();
 			paymentInfo.userInfo.zaloUserId = mUserID;
 			paymentInfo.userInfo.accessToken = editTextAccessToken.getText().toString();
 			paymentInfo.walletTransID = "8603984916740465452";
@@ -484,19 +494,6 @@ public class MainActivity extends ActionBarActivity implements Callback {
 
         }
     };
-    private EditText editTextAppID;
-    private EditText editTextZaloUserID;
-    private EditText editTextAccessToken;
-    private EditText username;
-    private EditText itemName;
-    private EditText itemPrice;
-    private EditText desc;
-    private CheckBox chkLinkCard, chkWalletTransfer, chkWithDraw, chkLinkAcc;
-    private RadioButton radioLink, radioUnlink;
-    private boolean isFirstLoad = true;
-    private String key1 = "E3kCLDkLL2GDhaYhEahsbviSfzwSCDXi";
-    private String key = "YhEahsbviSfzwSCDXiE3kCLDkLL2GDha";
-    private String mUserID;
     private ZPWPaymentInfo paymentInfo;
     private ServiceAPI mServiceAPI;
     private Call mCallBack;
@@ -525,38 +522,39 @@ public class MainActivity extends ActionBarActivity implements Callback {
             //paymentInfo.forceChannelIds[1] = CShareData.getInstance().getATMChannelId();
             //paymentInfo.forceChannelIds[2] = CShareData.getInstance().getCreditCardChannelId();
 
-            EPaymentChannel forcedPaymentChannel = null;
+            @TransactionType
+            int forcedPaymentChannel = TransactionType.PAY;
 
             paymentInfo.chargeInfo = null;
 
             if (chkLinkAcc.isChecked()) {
-                forcedPaymentChannel = EPaymentChannel.LINK_ACC;
+                forcedPaymentChannel = TransactionType.LINK_ACCOUNT;
             }
 
             if (chkLinkCard.isChecked()) {
-                forcedPaymentChannel = EPaymentChannel.LINK_CARD;
+                forcedPaymentChannel = TransactionType.LINK_CARD;
             }
 
             if (chkWalletTransfer.isChecked()) {
-                forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
+                forcedPaymentChannel = TransactionType.MONEY_TRANSFER;
             }
 
             if (chkWithDraw.isChecked()) {
-                forcedPaymentChannel = EPaymentChannel.WITHDRAW;
+                forcedPaymentChannel = TransactionType.WITHDRAW;
             }
 
             paymentInfo.appID = Long.parseLong(editTextAppID.getText().toString());
 
             paymentInfo.appTime = System.currentTimeMillis();
 
-            if (forcedPaymentChannel == EPaymentChannel.LINK_ACC) {
+            if (forcedPaymentChannel == TransactionType.LINK_ACCOUNT) {
                 // set linker Type for Link Account Bank
                 if (radioLink.isChecked()) {
                     paymentInfo.linkAccInfo = new LinkAccInfo("ZPVCB", ELinkAccType.LINK);
                 } else if (radioUnlink.isChecked()) {
                     paymentInfo.linkAccInfo = new LinkAccInfo("ZPVCB", ELinkAccType.UNLINK);
                 }
-            } else if (forcedPaymentChannel == EPaymentChannel.LINK_CARD) {
+            } else if (forcedPaymentChannel == TransactionType.LINK_CARD) {
 
             } else {
                 paymentInfo.appTransID = AppUtils.convertDate(System.currentTimeMillis()) + System.currentTimeMillis();
@@ -696,8 +694,8 @@ public class MainActivity extends ActionBarActivity implements Callback {
         }
     }
 
-    private void onPay(EPaymentChannel forcedPaymentChannel) {
-        SDKPayment.pay(MainActivity.this, forcedPaymentChannel,
+    private void onPay(@TransactionType int pTransactionType) {
+        SDKPayment.pay(MainActivity.this, pTransactionType,
                 paymentInfo, new ZPPaymentListener() {
                     @Override
                     public void onComplete(final ZPPaymentResult pPaymentResult) {
@@ -713,7 +711,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
 
                                 DialogManager.showSweetDialogCustom(GlobalData.getMerchantActivity(), "onComplete CallBack: " + GsonUtils.toJsonString(pPaymentResult), "Text Button",
                                         SweetAlertDialog.NORMAL_TYPE, null);
-					/*			DialogManager.showSweetDialogNoInternet(GlobalData.getMerchantActivity(), getString(R.string.zingpaysdk_alert_content_nointernet), "right", "left", new OnCustomContentDialogEventListener() {
+                    /*			DialogManager.showSweetDialogNoInternet(GlobalData.getMerchantActivity(), getString(R.string.zingpaysdk_alert_content_nointernet), "right", "left", new OnCustomContentDialogEventListener() {
 									@Override
 									public void onLeftButtonClick() {
 

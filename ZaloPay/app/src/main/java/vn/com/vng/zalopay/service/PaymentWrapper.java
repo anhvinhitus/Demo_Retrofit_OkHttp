@@ -33,12 +33,12 @@ import vn.com.zalopay.wallet.business.entity.base.PaymentLocation;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
@@ -63,7 +63,8 @@ public class PaymentWrapper {
     final Navigator mNavigator = AndroidApplication.instance().getAppComponent().navigator();
     boolean mShowNotificationLinkCard;
     private ZPWPaymentInfo mPendingOrder;
-    private EPaymentChannel mPendingChannel;
+    @TransactionType
+    private int mPendingTransaction;
 
     private final ZPPaymentListener mWalletListener;
 
@@ -97,20 +98,20 @@ public class PaymentWrapper {
     }
 
     public void withdraw(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
-        EPaymentChannel forcedPaymentChannel = EPaymentChannel.WITHDRAW;
+        int transactionType = TransactionType.WITHDRAW;
         ZPWPaymentInfo paymentInfo = transform(order);
         paymentInfo.userInfo = createUserInfo(displayName, avatar, phoneNumber, zaloPayName);
-        callPayAPI(activity, paymentInfo, forcedPaymentChannel);
+        callPayAPI(activity, paymentInfo, transactionType);
     }
 
     public void transfer(Activity activity, Order order, String displayName, String avatar, String phoneNumber, String zaloPayName) {
-        EPaymentChannel forcedPaymentChannel = EPaymentChannel.WALLET_TRANSFER;
+        int transactionType = TransactionType.MONEY_TRANSFER;
         mActivity = activity;
         ZPWPaymentInfo paymentInfo = transform(order);
         User mUser = getUserComponent().currentUser();
         paymentInfo.userInfo = createUserInfo(displayName, mUser.avatar, phoneNumber, zaloPayName);
         paymentInfo.userTransfer = createUserTransFerInfo(displayName, avatar, zaloPayName);
-        callPayAPI(activity, paymentInfo, forcedPaymentChannel);
+        callPayAPI(activity, paymentInfo, transactionType);
     }
 
     public void payWithOrder(Activity activity, Order order) {
@@ -137,7 +138,7 @@ public class PaymentWrapper {
             Timber.d("payWithOrder: ZPWPaymentInfo is ready");
 
 //        paymentInfo.mac = ZingMobilePayService.generateHMAC(paymentInfo, 1, keyMac);
-            callPayAPI(activity, paymentInfo, null);
+            callPayAPI(activity, paymentInfo, TransactionType.PAY);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
@@ -174,7 +175,7 @@ public class PaymentWrapper {
             paymentInfo.appID = BuildConfig.ZALOPAY_APP_ID;
             paymentInfo.appTime = System.currentTimeMillis();
 
-            callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_CARD);
+            callPayAPI(activity, paymentInfo, TransactionType.LINK_CARD);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
@@ -204,7 +205,7 @@ public class PaymentWrapper {
             paymentInfo.appTime = System.currentTimeMillis();
             paymentInfo.linkAccInfo = linkAccInfo;
 
-            callPayAPI(activity, paymentInfo, EPaymentChannel.LINK_ACC);
+            callPayAPI(activity, paymentInfo, TransactionType.LINK_ACCOUNT);
         } catch (NumberFormatException e) {
             Timber.e(e, "Exception with number format");
             responseListener.onParameterError("exception");
@@ -227,7 +228,7 @@ public class PaymentWrapper {
 
         Timber.d("Continue pay pending order : userInfo [%s] zalopayId [%s] accessToken [%s]", mPendingOrder.userInfo, mPendingOrder.userInfo.zaloPayUserId, mPendingOrder.userInfo.accessToken);
 
-        callPayAPI(mActivity, mPendingOrder, mPendingChannel);
+        callPayAPI(mActivity, mPendingOrder, mPendingTransaction);
     }
 
     private void onUpdateProfileAndLinkAcc(int resultCode) {
@@ -341,7 +342,7 @@ public class PaymentWrapper {
         return PhoneUtil.formatPhoneNumber(user.phonenumber);
     }
 
-    private void callPayAPI(Activity owner, ZPWPaymentInfo paymentInfo, EPaymentChannel paymentChannel) {
+    private void callPayAPI(Activity owner, ZPWPaymentInfo paymentInfo, @TransactionType int transactionType) {
         mActivity = owner;
         if (paymentInfo == null || owner == null) {
             mActivity = null;
@@ -358,8 +359,8 @@ public class PaymentWrapper {
             paymentInfo.userInfo.balance = balanceRepository.currentBalance();
         }
 
-        if (paymentChannel != EPaymentChannel.LINK_CARD
-                && paymentChannel != EPaymentChannel.LINK_ACC
+        if (transactionType != TransactionType.LINK_CARD
+                && transactionType != TransactionType.LINK_ACCOUNT
                 && !validPaymentInfo(paymentInfo)) {
             responseListener.onAppError(owner.getString(R.string.data_invalid_try_again));
             Exception e = new Exception(
@@ -373,11 +374,11 @@ public class PaymentWrapper {
             return;
         }
 
-        Timber.d("Call Pay to sdk activity [%s] paymentChannel [%s] paymentInfo [%s]",
-                owner, paymentChannel, paymentInfo);
+        Timber.d("Call Pay to sdk activity [%s] transactionType [%s] paymentInfo [%s]",
+                owner, transactionType, paymentInfo);
         mPendingOrder = paymentInfo;
-        mPendingChannel = paymentChannel;
-        SDKPayment.pay(owner, paymentChannel, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()));
+        mPendingTransaction = transactionType;
+        SDKPayment.pay(owner, transactionType, paymentInfo, mWalletListener, new PaymentFingerPrint(AndroidApplication.instance()));
     }
 
     private boolean validPaymentInfo(ZPWPaymentInfo paymentInfo) {
@@ -555,7 +556,6 @@ public class PaymentWrapper {
     void clearPendingOrder() {
         Timber.d("clearPendingOrder");
         mPendingOrder = null;
-        mPendingChannel = null;
     }
 
     public void setShowNotificationLinkCard(boolean showNotificationLinkCard) {
