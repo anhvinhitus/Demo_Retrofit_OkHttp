@@ -8,7 +8,7 @@ import rx.functions.Func1;
 
 /**
  * Created by hieuvm on 4/22/17.
- * *
+ * Sử dụng để retry upload filelog
  */
 
 public class RetryFileLogUpload implements

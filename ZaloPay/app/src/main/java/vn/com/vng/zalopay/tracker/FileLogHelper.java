@@ -16,7 +16,7 @@ import vn.com.vng.zalopay.data.util.ObservableHelper;
 
 /**
  * Created by hieuvm on 4/21/17.
- * *
+ * Static helper for filelog implementations
  */
 
 public class FileLogHelper {
@@ -24,7 +24,7 @@ public class FileLogHelper {
     private static final String ZIP_SUFFIX = ".zip";
 
     public static Observable<String[]> listFileLogs() {
-        return listFileLogs(FileLog.sDirectoryFileLog, FileLog.sCurrentFile);
+        return listFileLogs(FileLog.Instance.getRootDirectory(), FileLog.Instance.getCurrentFileLog());
     }
 
     private static Observable<String[]> listFileLogs(File directory, File exclude) {
@@ -108,7 +108,7 @@ public class FileLogHelper {
 
     public static Observable<Boolean> cleanupLogs() {
         return ObservableHelper.makeObservable(() -> {
-            FileLog.cleanupLogs();
+            FileLog.Instance.cleanupLogs();
             return true;
         });
     }

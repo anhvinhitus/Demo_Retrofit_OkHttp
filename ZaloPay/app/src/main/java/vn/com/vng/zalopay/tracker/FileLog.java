@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.tracker;
 
-import android.os.Environment;
 import android.support.annotation.NonNull;
 
 import com.zalopay.apploader.internal.FileUtils;
@@ -24,35 +23,34 @@ import vn.com.vng.zalopay.event.UploadFileLogEvent;
 
 final class FileLog {
 
-    private static final long INTERVAL_CREATE_FILE = 1 * 60 * 1000;// 300000; //ms
+    static final FileLog Instance = new FileLog();
+
+    private static final long INTERVAL_CREATE_FILE = 300000; //ms
     private static final String MSG_FORMAT = "%s,%s,%s,%s";
     private static final String FILE_NAME_FORMAT = "zalopay-logs-%s.txt";
     private static final String PREF_CREATE_FILE_TIME = "file_log_create_time";
-     static final File sDirectoryFileLog;
-    private static final SimpleDateFormat sDateFormat;
+
+
+    private final File sDirectoryFileLog;
+    private final SimpleDateFormat sDateFormat;
 
     //
-    private static File sCurrentFile = null;
-    private static BufferedWriter sBufferedWriter;
-    private static Long mFileCreateTime;
+    private File sCurrentFile = null;
+    private BufferedWriter sBufferedWriter;
+    private Long mFileCreateTime;
 
-    static {
-        //sDirectoryFileLog = new File(AndroidApplication.instance().getFilesDir(), "logs");
-        sDirectoryFileLog = new File(Environment.getExternalStorageDirectory(), "logs");
+    private FileLog() {
+        sDirectoryFileLog = new File(AndroidApplication.instance().getFilesDir(), "logs");
         sDateFormat = new SimpleDateFormat("yyyyMMddhhmm", Locale.getDefault());
     }
 
-    private FileLog() {
-    }
-
-
-    static void append(LogData logData) {
+    void append(LogData logData) {
         Timber.d("write log : eventType %s eventId %s value %s timestamp %s", logData.eventType, logData.eventId, logData.value, logData.timestamp);
         ensureFileLogReady(logData);
         writeToFile(logData);
     }
 
-    private static void ensureFileLogReady(LogData logData) {
+    private void ensureFileLogReady(LogData logData) {
         FileUtils.mkdirs(sDirectoryFileLog);
         long timestamp = logData.timestamp;
         long lastFileCreateTime = getFileCreateTime();
@@ -83,18 +81,18 @@ final class FileLog {
         }
     }
 
-    private static void postFileLog(String path) {
+    private void postFileLog(String path) {
         AndroidApplication.instance().getAppComponent()
                 .eventBus().post(new UploadFileLogEvent(path));
     }
 
-    private static File createFileLog(long timestamp) {
+    private File createFileLog(long timestamp) {
         String fileName = String.format(Locale.getDefault(), FILE_NAME_FORMAT, sDateFormat.format(new Date(timestamp)));
         Timber.d("Create file log : name [%s]", fileName);
         return new File(sDirectoryFileLog, fileName);
     }
 
-    private static void setFileCreateTime(long timestamp) {
+    private void setFileCreateTime(long timestamp) {
         mFileCreateTime = timestamp;
         AndroidApplication.instance().getAppComponent()
                 .sharedPreferences().edit()
@@ -102,7 +100,7 @@ final class FileLog {
                 .apply();
     }
 
-    private static long getFileCreateTime() {
+    private long getFileCreateTime() {
         if (mFileCreateTime == null) {
             mFileCreateTime = AndroidApplication.instance().getAppComponent()
                     .sharedPreferences().getLong(PREF_CREATE_FILE_TIME, 0);
@@ -110,7 +108,7 @@ final class FileLog {
         return mFileCreateTime;
     }
 
-    private static void writeToFile(@NonNull LogData logData) {
+    private void writeToFile(@NonNull LogData logData) {
         try {
             if (sBufferedWriter != null) {
                 sBufferedWriter.write(formatMsg(logData));
@@ -122,7 +120,7 @@ final class FileLog {
         }
     }
 
-    private static void createWriter(File file) {
+    private void createWriter(File file) {
         try {
             sBufferedWriter = new BufferedWriter(new FileWriter(file, true));
         } catch (IOException e) {
@@ -130,7 +128,7 @@ final class FileLog {
         }
     }
 
-    private static void closeWriter() {
+    private void closeWriter() {
         try {
             if (sBufferedWriter != null) {
                 sBufferedWriter.newLine();
@@ -143,19 +141,27 @@ final class FileLog {
         }
     }
 
-    public static void delete() {
+    public void delete() {
         closeWriter();
         if (sCurrentFile != null && sCurrentFile.exists()) {
             sCurrentFile.delete();
         }
     }
 
-    public static void cleanupLogs() {
+    void cleanupLogs() {
         FileUtils.deleteDirectory(sDirectoryFileLog, false);
     }
 
-    private static String formatMsg(@NonNull LogData logData) {
+    private String formatMsg(@NonNull LogData logData) {
         return String.format(Locale.getDefault(), MSG_FORMAT, logData.eventType, logData.eventId, logData.value == null ? "" : logData.value, logData.timestamp);
+    }
+
+    File getRootDirectory() {
+        return sDirectoryFileLog;
+    }
+
+    File getCurrentFileLog() {
+        return sCurrentFile;
     }
 
     static class LogData {
@@ -167,10 +173,10 @@ final class FileLog {
             this.timestamp = timestamp;
         }
 
-        public int eventType;
-        public int eventId;
+        int eventType;
+        int eventId;
         public Long value;
-        public long timestamp;
+        long timestamp;
     }
 
 }
