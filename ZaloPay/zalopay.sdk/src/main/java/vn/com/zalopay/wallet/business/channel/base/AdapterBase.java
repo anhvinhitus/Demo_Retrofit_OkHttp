@@ -27,7 +27,6 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.PaymentPermission;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.BankFlow;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BankAccountListResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
@@ -36,7 +35,6 @@ import vn.com.zalopay.wallet.business.entity.base.SecurityResponse;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.base.WebViewError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -47,6 +45,8 @@ import vn.com.zalopay.wallet.business.fingerprint.FPError;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.business.transaction.SDKTransactionAdapter;
+import vn.com.zalopay.wallet.constants.BankFlow;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.CheckOrderStatusFailSubmit;
@@ -1601,8 +1601,8 @@ public abstract class AdapterBase {
 
         //keep error code ZPC_TRANXSTATUS_TOKEN_INVALID to app known
         if (GlobalData.getPaymentResult() != null &&
-                (GlobalData.getPaymentResult().paymentStatus != EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID
-                        && GlobalData.getPaymentResult().paymentStatus != EPaymentStatus.ZPC_TRANXSTATUS_LOCK_USER)) {
+                (GlobalData.getPaymentResult().paymentStatus != PaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID
+                        && GlobalData.getPaymentResult().paymentStatus != PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER)) {
             GlobalData.setResultFail();
         }
 

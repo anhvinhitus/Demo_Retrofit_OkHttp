@@ -4,9 +4,9 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
-import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 import vn.com.zalopay.wallet.business.data.Log;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.helper.PaymentStatusHelper;
 
 /***
  * error code map table
@@ -68,8 +68,8 @@ public class ErrorManager {
 
     public static boolean shouldShowDialog() {
         if (GlobalData.getPaymentResult() != null &&
-                (GlobalData.getPaymentResult().paymentStatus != EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID
-                        && GlobalData.getPaymentResult().paymentStatus != EPaymentStatus.ZPC_TRANXSTATUS_LOCK_USER)) {
+                (GlobalData.getPaymentResult().paymentStatus != PaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID
+                        && GlobalData.getPaymentResult().paymentStatus != PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER)) {
             return true;
         }
         return false;
@@ -77,16 +77,15 @@ public class ErrorManager {
 
     public static boolean needToTerminateTransaction() {
         if (GlobalData.getPaymentResult() != null && (
-                GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING
-                        || GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE
-                        || GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT
-                        || GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD
-                        || GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS
-                        || GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID
-                        || GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_LOCK_USER
-                        || GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH
-                        || GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID
-                        || GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE)) {
+                GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_PROCESSING
+                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_UPGRADE
+                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT
+                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_SUCCESS
+                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID
+                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER
+                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH
+                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID
+                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE)) {
             return true;
         }
         return false;

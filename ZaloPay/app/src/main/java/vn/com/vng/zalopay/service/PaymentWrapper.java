@@ -35,11 +35,11 @@ import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ELinkAccType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPayError;
 import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentChannel;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.linkacc.LinkAccInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 
@@ -538,16 +538,14 @@ public class PaymentWrapper {
         }
     }
 
-    boolean shouldClearPendingOrder(EPaymentStatus resultStatus) {
-        if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
+    boolean shouldClearPendingOrder(@PaymentStatus int resultStatus) {
+        if (resultStatus == PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH) {
             return false;
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD) {
+        }  else if (resultStatus == PaymentStatus.ZPC_TRANXSTATUS_UPGRADE) {
             return false;
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE) {
+        } else if (resultStatus == PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT) {
             return false;
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT) {
-            return false;
-        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT) {
+        } else if (resultStatus == PaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT) {
             return false;
         }
         return true;

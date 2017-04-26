@@ -71,9 +71,7 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
@@ -82,6 +80,8 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
+import vn.com.zalopay.wallet.constants.KeyboardType;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
@@ -637,7 +637,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
         super.finish();
         if (mIsBackClick) {
             //notify to app know that user click back on sdk.
-            if (GlobalData.getPaymentResult() != null && GlobalData.getPaymentResult().paymentStatus == EPaymentStatus.ZPC_TRANXSTATUS_FAIL) {
+            if (GlobalData.getPaymentResult() != null && GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_FAIL) {
                 GlobalData.setResultUserClose();
             }
             slideOutTransition();

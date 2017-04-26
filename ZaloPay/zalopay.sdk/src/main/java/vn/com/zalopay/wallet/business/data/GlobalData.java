@@ -10,14 +10,11 @@ import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
-import vn.com.zalopay.wallet.constants.BankFunctionCode;
-import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
@@ -28,6 +25,9 @@ import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.entity.user.UserProfile;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
 import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.CardChannel;
+import vn.com.zalopay.wallet.constants.PaymentStatus;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
@@ -269,80 +269,76 @@ public class GlobalData {
     }
 
     //region set transaction result to notify to app
-    public static void setResult(EPaymentStatus pStatus) {
+    public static void setResult(@PaymentStatus int pStatus) {
         GlobalData.getPaymentResult().paymentStatus = pStatus;
     }
 
     public static void setResultSuccess() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_SUCCESS;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_SUCCESS;
     }
 
     public static void setResultFail() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_FAIL;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_FAIL;
     }
 
     public static void setResultMoneyNotEnough() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH;
     }
 
     public static void setResultProcessing() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_PROCESSING;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_PROCESSING;
     }
 
     public static void setResultUpgrade() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_UPGRADE;
     }
 
     public static void setResultUpgradeCMND() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_CMND_EMAIL;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_UPGRADE_CMND_EMAIL;
     }
 
     public static void setResultInvalidInput() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID;
     }
 
     public static void setResultInvalidToken() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID;
     }
 
     public static void setResultLockUser() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_LOCK_USER;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER;
     }
 
     public static void setResultServiceMaintenance() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE;
     }
 
     public static void setResultUserClose() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_CLOSE;
-    }
-
-    public static void setResultUpgradeAndSave() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_CLOSE;
     }
 
     public static void setResultNeedToLinkCard() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD;
     }
 
     public static void setResultNoInternet() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET;
     }
 
     public static void setResultNeedToLinkAccount() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT;
     }
 
     public static void setResultNeedToLinkAccountBeforePayment() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT;
     }
 
     public static void setResultUpLevelLinkAccountAndPayment() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT;
     }
 
     public static void setResultNeedToLinkCardBeforePayment() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT;
+        GlobalData.getPaymentResult().paymentStatus = PaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT;
     }
     //endregion
 
@@ -629,7 +625,7 @@ public class GlobalData {
 
     public static ZPPaymentResult getPaymentResult() {
         if (GlobalData.paymentResult == null) {
-            GlobalData.paymentResult = new ZPPaymentResult(mPaymentInfo, EPaymentStatus.ZPC_TRANXSTATUS_FAIL);
+            GlobalData.paymentResult = new ZPPaymentResult(mPaymentInfo, PaymentStatus.ZPC_TRANXSTATUS_FAIL);
         }
 
         return GlobalData.paymentResult;

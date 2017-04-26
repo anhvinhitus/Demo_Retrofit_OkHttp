@@ -16,9 +16,24 @@ import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.react.error.PaymentError;
 import vn.com.vng.zalopay.utils.AppVersionUtils;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.enumeration.EPaymentStatus;
 import vn.com.zalopay.wallet.business.entity.error.CError;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
+
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_CLOSE;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_FAIL;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_NO_INTERNET;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_PROCESSING;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_SUCCESS;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_UPGRADE;
+import static vn.com.zalopay.wallet.constants.PaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT;
 
 /**
  * Created by huuhoa on 12/8/16.
@@ -52,7 +67,7 @@ class WalletListener implements ZPPaymentListener {
             }
             mPaymentWrapper.clearPendingOrder();
         } else {
-            EPaymentStatus resultStatus = pPaymentResult.paymentStatus;
+            int resultStatus = pPaymentResult.paymentStatus;
             Timber.d("pay complete, status [%s]", pPaymentResult.paymentStatus);
             switch (resultStatus) {
                 case ZPC_TRANXSTATUS_SUCCESS:
