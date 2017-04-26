@@ -11,6 +11,7 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnCloseDialogListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.data.RS;
@@ -97,10 +98,10 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
 
     @Override
     public void initViews() {
-        this.mGatewayActivity = new WeakReference<BasePaymentActivity>(BasePaymentActivity.getPaymentGatewayActivity());
+        this.mGatewayActivity = new WeakReference<>(BasePaymentActivity.getPaymentGatewayActivity());
 
         if (getGatewayActivity() != null) {
-            this.mMoveToChannelListener = new WeakReference<IMoveToChannel>(getGatewayActivity().getMoveToChannelListener());
+            this.mMoveToChannelListener = new WeakReference<>(getGatewayActivity().getMoveToChannelListener());
         }
 
         this.mChannelListView = (ListView) findViewById(R.id.channelListView);
@@ -142,11 +143,10 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
         this.mChannelListView.setOnItemClickListener(mChannelItemClick);
     }
 
-    protected ArrayList<DPaymentChannelView> createChannels() {
+    protected List<DPaymentChannelView> createChannels() {
         mChannelList.clear();
         if (getGatewayActivity() != null && !getGatewayActivity().isFinishing()) {
             ArrayList<DPaymentChannelView> channelList = getGatewayActivity().getChannelList();
-
             for (DPaymentChannelView channel : channelList) {
                 if (channel.isMapCardChannel() && !TextUtils.isEmpty(channel.bankcode) && channel.bankcode.equals(mBankCode)) {
                     mChannelList.add(channel.clone());
@@ -158,7 +158,9 @@ public class MapListSelectionActivity extends BasePaymentDialogActivity {
 
     protected boolean selectChannel(int pPosition) {
         if (pPosition >= 0 && getMoveToChannelListener() != null) {
-            getMoveToChannelListener().moveToChannel(mChannelList.get(pPosition));
+            if (mChannelList != null && mChannelList.size() > 0) {
+                getMoveToChannelListener().moveToChannel(mChannelList.get(pPosition));
+            }
         }
         return true;
     }
