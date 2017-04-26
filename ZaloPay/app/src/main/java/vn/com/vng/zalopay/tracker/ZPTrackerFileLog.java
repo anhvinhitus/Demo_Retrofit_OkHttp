@@ -16,7 +16,8 @@ import vn.com.zalopay.analytics.ZPTracker;
 
 public class ZPTrackerFileLog implements ZPTracker {
 
-    private int id = 0;
+    private static final int USER_EVENT_TYPE = 1;
+    private static final int TIMING_TYPE = 2;
 
     private static volatile Executor executor;
 
@@ -33,7 +34,7 @@ public class ZPTrackerFileLog implements ZPTracker {
 
     @Override
     public void trackEvent(int eventId, Long eventValue) {
-        getExecutor().execute(new WriteLogRunnable(new FileLog.LogData(id++, eventId, eventValue, System.currentTimeMillis())));
+        getExecutor().execute(new WriteLogRunnable(new FileLog.LogData(USER_EVENT_TYPE, eventId, eventValue, System.currentTimeMillis())));
     }
 
     @Override
@@ -43,7 +44,7 @@ public class ZPTrackerFileLog implements ZPTracker {
 
     @Override
     public void trackTiming(int eventId, long value) {
-
+        getExecutor().execute(new WriteLogRunnable(new FileLog.LogData(TIMING_TYPE, eventId, value, System.currentTimeMillis())));
     }
 
     @Override
