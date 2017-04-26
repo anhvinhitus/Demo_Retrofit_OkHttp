@@ -14,20 +14,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.ServerErrorMessage;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -37,7 +31,6 @@ import vn.com.vng.zalopay.network.NetworkHelper;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -61,13 +54,8 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     }
 
     void getListCard() {
-        showLoadingView();
-        Subscription subscription = ObservableHelper.makeObservable(() -> {
-            List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-            return transformBankCard(mapCardLis);
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new LinkCardSubscriber());
-        mSubscription.add(subscription);
+        List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+        mView.setData(transformBankCard(mapCardLis));
     }
 
     @Override
@@ -75,11 +63,6 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         if (mView != null && mView.getUserVisibleHint()) {
             getListCard();
         }
-    }
-
-    private void onGetLinkCardSuccess(List<BankCard> list) {
-        hideLoadingView();
-        mView.setData(list);
     }
 
     void removeLinkCard(BankCard bankCard) {
@@ -143,39 +126,6 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         }
     }
 
-    private final class LinkCardSubscriber extends DefaultSubscriber<List<BankCard>> {
-        LinkCardSubscriber() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            hideLoadingView();
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-        }
-
-        @Override
-        public void onNext(List<BankCard> bankCards) {
-            /*ArrayList<BankCard> tmp = new ArrayList<>();
-            BankCard vtbCard = new BankCard("Nguyen Van V", "970415", "3538", ECardType.PVTB.toString());
-            vtbCard.type = vtbCard.bankcode;
-            tmp.add(vtbCard);
-            BankCard vcbCard = new BankCard("Nguyen Van A", "686868", "1231", ECardType.PVCB.toString());
-            vcbCard.type = vcbCard.bankcode;
-            tmp.add(vcbCard);
-            BankCard sCard = new BankCard("Nguyen Van W", "970403", "1234", ECardType.PSCB.toString());
-            sCard.type = sCard.bankcode;
-            tmp.add(sCard);
-            BankCard sgCard = new BankCard("Nguyen Van S", "157979", "9999", ECardType.PSGCB.toString());
-            sgCard.type = sgCard.bankcode;
-            tmp.add(sgCard);*/
-            onGetLinkCardSuccess(bankCards);
-        }
-    }
-
     @Override
     Activity getActivity() {
         if (mView == null) {
@@ -230,7 +180,22 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             return;
         }
         Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
-        getLinkedBankAccount(new GetLinkedBankAccSubscriber(bankInfo.bankcode));
+        List<BankAccount> bankAccounts = getLinkedBankAccount();
+        if (checkLinkedBankAccount(bankAccounts, bankInfo.bankcode)) {
+            String bankName = BankUtils.getBankName(bankInfo.bankcode);
+            String message;
+            if (!TextUtils.isEmpty(bankName)) {
+                message = String.format(getString(R.string.bank_account_has_linked),
+                        bankName);
+            } else {
+                message = getString(R.string.bank_account_has_linked_this_bank);
+            }
+            if (mView != null) {
+                mView.gotoTabLinkAccAndShowDialog(message);
+            }
+        } else {
+            linkAccount(bankInfo.bankcode);
+        }
     }
 
     @Override
@@ -318,41 +283,6 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             if (mView != null) {
                 mView.showListBankSupportDialog(cards);
             }
-        }
-    }
-
-    private class GetLinkedBankAccSubscriber extends DefaultSubscriber<List<BankAccount>> {
-        private String mBankCode;
-
-        GetLinkedBankAccSubscriber(String bankCode) {
-            super();
-            mBankCode = bankCode;
-        }
-
-        @Override
-        public void onNext(List<BankAccount> bankAccounts) {
-            hideLoadingView();
-            if (checkLinkedBankAccount(bankAccounts, mBankCode)) {
-                String bankName = BankUtils.getBankName(mBankCode);
-                String message;
-                if (!TextUtils.isEmpty(bankName)) {
-                    message = String.format(getString(R.string.bank_account_has_linked),
-                            bankName);
-                } else {
-                    message = getString(R.string.bank_account_has_linked_this_bank);
-                }
-                if (mView != null) {
-                    mView.gotoTabLinkAccAndShowDialog(message);
-                }
-            } else {
-                linkAccount(mBankCode);
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            hideLoadingView();
-            linkAccount(mBankCode);
         }
     }
 

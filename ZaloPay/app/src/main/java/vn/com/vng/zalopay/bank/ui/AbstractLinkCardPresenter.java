@@ -16,9 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -26,8 +23,6 @@ import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -177,14 +172,9 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         mPayAfterLinkAcc = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_ACC);
     }
 
-    void getLinkedBankAccount(DefaultSubscriber<List<BankAccount>> subscriber) {
-        showLoadingView();
-        Subscription subscription = ObservableHelper.makeObservable(() -> {
-            List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
-            return transformBankAccount(mapCardLis);
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
-        mSubscription.add(subscription);
+    List<BankAccount> getLinkedBankAccount() {
+        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        return transformBankAccount(mapCardLis);
     }
 
     void getListBankSupport(IGetCardSupportListListener listListener) {

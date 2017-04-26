@@ -52,14 +52,13 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
 
             @Override
             public void onComplete(ArrayList<ZPCard> cardSupportList) {
-                Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
+                Timber.d("Get support bank type [%s] onComplete list card [%s]", mBankType, cardSupportList);
                 refreshListBank(cardSupportList);
             }
 
             @Override
             public void onError(String pErrorMess) {
-                Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
-                hideLoading();
+                Timber.d("Get support bank type [%s] onError [%s]", mBankType, pErrorMess);
                 showRetryDialog();
             }
 
@@ -72,8 +71,7 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
         };
     }
 
-    void getCardSupport() {
-        showLoading();
+    private void getCardSupport() {
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;

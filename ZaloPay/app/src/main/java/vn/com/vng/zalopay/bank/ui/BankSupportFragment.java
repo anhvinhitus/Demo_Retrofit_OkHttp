@@ -98,19 +98,6 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
         mPresenter.getCardSupportIfNeed();
     }
 
-    public void getCardSupport() {
-        if (mPresenter != null) {
-            mPresenter.getCardSupport();
-        }
-    }
-
-    public int getCountCardSupport() {
-        if (mAdapter == null) {
-            return 0;
-        }
-        return mAdapter.getItemCount();
-    }
-
     @Override
     public void onPause() {
         mPresenter.pause();
@@ -168,7 +155,9 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
     }
 
     public void notifyDataChanged() {
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
