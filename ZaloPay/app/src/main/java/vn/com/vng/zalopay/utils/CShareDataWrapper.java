@@ -13,7 +13,6 @@ import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -44,7 +43,7 @@ public class CShareDataWrapper {
         return CShareData.getInstance().getMapBankAccountList(zaloPayId);
     }
 
-    public static ECardType detectCardType(UserInfo userInfo, String first6CardNo) {
+    public static String detectCardType(UserInfo userInfo, String first6CardNo) {
         return CShareData.getInstance().setUserInfo(userInfo).detectCardType(first6CardNo);
     }
 

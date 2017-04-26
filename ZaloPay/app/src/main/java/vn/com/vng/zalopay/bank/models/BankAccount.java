@@ -7,7 +7,7 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.data.util.PhoneUtil;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.internal.di.components.UserComponent;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.constants.CardType;
 
 /**
  * Created by longlv on 1/17/17.
@@ -29,7 +29,7 @@ public class BankAccount {
     }
 
     public String getAccountInfo() {
-        if (ECardType.PVCB.toString().equalsIgnoreCase(mBankCode)) {
+        if (CardType.PVCB.equalsIgnoreCase(mBankCode)) {
             return getPhoneNumberScreened(getCurrentUserPhone());
         } else {
             return mFirstAccountNo + mLastAccountNo;

@@ -15,12 +15,13 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
+import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.CardTypeUtils;
 import vn.com.zalopay.wallet.constants.PaymentChannelStatus;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.CChannelHelper;
@@ -166,9 +167,9 @@ public abstract class BaseChannelInjector {
 
                 DPaymentChannel activeChannel = null;
 
-                ECardType eCardType = ECardType.fromString(bankAccount.bankcode);
+                String eCardType = CardTypeUtils.fromBankCode(bankAccount.bankcode);
 
-                if (eCardType != ECardType.UNDEFINE && ECardType.isBankAccount(eCardType)) {
+                if (eCardType != CardType.UNDEFINE && CardTypeUtils.isBankAccount(eCardType)) {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankAccountChannelConfig(), DPaymentChannel.class);
                 }
 
@@ -245,9 +246,9 @@ public abstract class BaseChannelInjector {
 
                 boolean isBankCard = false;
 
-                ECardType eCardType = ECardType.fromString(mappCard.bankcode);
+                String eCardType = CardTypeUtils.fromBankCode(mappCard.bankcode);
 
-                if (eCardType != ECardType.UNDEFINE) {
+                if (eCardType != CardType.UNDEFINE) {
                     activeChannel = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getATMChannelConfig(), DPaymentChannel.class);
 
                     isBankCard = true;
@@ -314,10 +315,8 @@ public abstract class BaseChannelInjector {
 
                             //populate channel name
                             channel.pmcname = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), CreditCardCheck.getInstance().getDetectedBankName()) + mappCard.last4cardno;
-
-                            ECardType cardType = ECardType.fromString(CreditCardCheck.getInstance().getCodeBankForVerify());
-
-                            CChannelHelper.inflatChannelIcon(channel, cardType.toString());
+                            String cardType = CardTypeUtils.fromBankCode(CreditCardCheck.getInstance().getCodeBankForVerify());
+                            CChannelHelper.inflatChannelIcon(channel, cardType);
                         }
 
                     }
@@ -429,10 +428,8 @@ public abstract class BaseChannelInjector {
 
                         //populate channel name
                         channel.pmcname = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), CreditCardCheck.getInstance().getDetectedBankName()) + mappCard.last4cardno;
-
-                        ECardType cardType = ECardType.fromString(CreditCardCheck.getInstance().getCodeBankForVerify());
-
-                        CChannelHelper.inflatChannelIcon(channel, cardType.toString());
+                        String cardType = CardTypeUtils.fromBankCode(CreditCardCheck.getInstance().getCodeBankForVerify());
+                        CChannelHelper.inflatChannelIcon(channel, cardType);
                     }
 
                 }

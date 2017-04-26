@@ -28,9 +28,9 @@ import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
@@ -77,7 +77,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                 continue;
             }
             Timber.d("Check linked vcb, bankCode [%s]", bankAccount.mBankCode);
-            if (ECardType.PVCB.toString().equals(bankAccount.mBankCode)) {
+            if (CardType.PVCB.equals(bankAccount.mBankCode)) {
                 return true;
             }
         }
@@ -117,7 +117,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                 List<ZPCard> banksSupportLinkAcc = getBanksSupportLinkAccount(cardSupportList);
                 if (!Lists.isEmptyOrNull(banksSupportLinkAcc)
                         && banksSupportLinkAcc.size() == 1
-                        && ECardType.PVCB.toString().equals(banksSupportLinkAcc.get(0).getCardCode())) {
+                        && CardType.PVCB.equals(banksSupportLinkAcc.get(0).getCardCode())) {
                     mView.showSupportVcbOnly();
                 } else {
                     mView.hideSupportVcbOnly();

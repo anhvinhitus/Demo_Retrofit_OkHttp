@@ -12,7 +12,7 @@ import vn.com.vng.zalopay.bank.models.BankCardStyle;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
 /**
@@ -29,23 +29,23 @@ public class BankUtils {
 
     static {
         BANK_DEFAULT = new BankCardStyle(0, R.color.bg_vietinbank_start, R.color.bg_vietinbank_end);
-        mBankSettings.put(ECardType.JCB.toString(), new BankCardStyle(R.string.ic_jcb, R.color.bg_jcb_start, R.color.bg_jcb_end));
-        mBankSettings.put(ECardType.VISA.toString(), new BankCardStyle(R.string.ic_visa, R.color.bg_visa_start, R.color.bg_visa_end));
-        mBankSettings.put(ECardType.MASTER.toString(), new BankCardStyle(R.string.ic_mastercard, R.color.bg_master_card_start, R.color.bg_master_card_end));
-        mBankSettings.put(ECardType.PVTB.toString(), new BankCardStyle(R.string.ic_vietinbank, R.color.bg_vietinbank_start, R.color.bg_vietinbank_end));
-        mBankSettings.put(ECardType.PBIDV.toString(), new BankCardStyle(R.string.ic_bidv, R.color.bg_bidv_start, R.color.bg_bidv_end));
-        mBankSettings.put(ECardType.PVCB.toString(), new BankCardStyle(R.string.ic_vietcombank, R.color.bg_vietcombank_start, R.color.bg_vietcombank_end));
-        mBankSettings.put(ECardType.PSCB.toString(), new BankCardStyle(R.string.ic_sacombank, R.color.bg_sacombank_start, R.color.bg_sacombank_end));
-        mBankSettings.put(ECardType.PSGCB.toString(), new BankCardStyle(R.string.ic_sgcb, R.color.bg_commercialbank_start, R.color.bg_commercialbank_end));
-        /*mBankSettings.put(ECardType.PEIB.toString(), new BankCardStyle(R.string.ic_eximbank, R.color.bg_eximbank_start, R.color.bg_eximbank_end));
-        mBankSettings.put(ECardType.PAGB.toString(), new BankCardStyle(R.string.ic_agribank, R.color.bg_agribank_start, R.color.bg_agribank_end));
-        mBankSettings.put(ECardType.PTPB.toString(), new BankCardStyle(R.string.ic_tpbank, R.color.bg_tpbank_start, R.color.bg_tpbank_end));*/
-        mBankSettings.put(ECardType.UNDEFINE.toString(), BANK_DEFAULT);
+        mBankSettings.put(CardType.JCB, new BankCardStyle(R.string.ic_jcb, R.color.bg_jcb_start, R.color.bg_jcb_end));
+        mBankSettings.put(CardType.VISA, new BankCardStyle(R.string.ic_visa, R.color.bg_visa_start, R.color.bg_visa_end));
+        mBankSettings.put(CardType.MASTER, new BankCardStyle(R.string.ic_mastercard, R.color.bg_master_card_start, R.color.bg_master_card_end));
+        mBankSettings.put(CardType.PVTB, new BankCardStyle(R.string.ic_vietinbank, R.color.bg_vietinbank_start, R.color.bg_vietinbank_end));
+        mBankSettings.put(CardType.PBIDV, new BankCardStyle(R.string.ic_bidv, R.color.bg_bidv_start, R.color.bg_bidv_end));
+        mBankSettings.put(CardType.PVCB, new BankCardStyle(R.string.ic_vietcombank, R.color.bg_vietcombank_start, R.color.bg_vietcombank_end));
+        mBankSettings.put(CardType.PSCB, new BankCardStyle(R.string.ic_sacombank, R.color.bg_sacombank_start, R.color.bg_sacombank_end));
+        mBankSettings.put(CardType.PSGCB, new BankCardStyle(R.string.ic_sgcb, R.color.bg_commercialbank_start, R.color.bg_commercialbank_end));
+        /*mBankSettings.put(CardType.PEIB.toString(), new BankCardStyle(R.string.ic_eximbank, R.color.bg_eximbank_start, R.color.bg_eximbank_end));
+        mBankSettings.put(CardType.PAGB.toString(), new BankCardStyle(R.string.ic_agribank, R.color.bg_agribank_start, R.color.bg_agribank_end));
+        mBankSettings.put(CardType.PTPB.toString(), new BankCardStyle(R.string.ic_tpbank, R.color.bg_tpbank_start, R.color.bg_tpbank_end));*/
+        mBankSettings.put(CardType.UNDEFINE, BANK_DEFAULT);
 
         BANK_ACCOUNT_DEFAULT = new BankAccountStyle(0, R.color.bg_line_sacombank);
-        mBankAccountStyles.put(ECardType.PSCB.toString(), new BankAccountStyle(R.string.ic_sacombank_large, R.color.bg_line_sacombank));
-        mBankAccountStyles.put(ECardType.PVCB.toString(), new BankAccountStyle(R.string.ic_vietcombank_large, R.color.bg_line_vietcombank));
-        mBankAccountStyles.put(ECardType.PVTB.toString(), new BankAccountStyle(R.string.ic_vietinbank_large, R.color.bg_line_vietinbank));
+        mBankAccountStyles.put(CardType.PSCB, new BankAccountStyle(R.string.ic_sacombank_large, R.color.bg_line_sacombank));
+        mBankAccountStyles.put(CardType.PVCB, new BankAccountStyle(R.string.ic_vietcombank_large, R.color.bg_line_vietcombank));
+        mBankAccountStyles.put(CardType.PVTB, new BankAccountStyle(R.string.ic_vietinbank_large, R.color.bg_line_vietinbank));
     }
 
     public static String formatBankCardNumber(String first6cardno, String last4cardno) {

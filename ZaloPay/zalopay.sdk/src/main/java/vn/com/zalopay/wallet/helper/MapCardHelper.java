@@ -10,21 +10,22 @@ import vn.com.zalopay.wallet.business.channel.localbank.BankCardCheck;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.DMapCardResult;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.CardTypeUtils;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.MapCardListTask;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 public class MapCardHelper {
     private static final String TAG = MapCardHelper.class.getCanonicalName();
+
     /***
      * reload map card list info
      */
@@ -34,7 +35,7 @@ public class MapCardHelper {
                 if (pReload) {
                     SharedPreferencesManager.getInstance().setCardInfoCheckSum(null);
                 }
-                BaseTask getCardInfoList = new MapCardListTask(subscriber::onSuccess,pUserInfo);
+                BaseTask getCardInfoList = new MapCardListTask(subscriber::onSuccess, pUserInfo);
                 getCardInfoList.makeRequest();
             } catch (Exception e) {
                 subscriber.onError(e);
@@ -117,8 +118,8 @@ public class MapCardHelper {
             CreditCardCheck cardCheck = CreditCardCheck.getInstance();
             cardCheck.detectOnSync(saveCardInfo.first6cardno);
             if (cardCheck.isDetected()) {
-                ECardType cardType = ECardType.fromString(cardCheck.getCodeBankForVerify());
-                mapCardResult.setCardLogo(CChannelHelper.makeCardIconNameFromBankCode(cardType.toString()));
+                String cardType = CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerify());
+                mapCardResult.setCardLogo(CChannelHelper.makeCardIconNameFromBankCode(cardType));
                 bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), cardCheck.getDetectedBankName());
             }
         }

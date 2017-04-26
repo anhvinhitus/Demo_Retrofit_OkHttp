@@ -39,11 +39,11 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.message.SdkDownloadResourceMessage;
@@ -369,28 +369,27 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 dBankAccount.bankcode);
     }
 
-
     String detectCardType(String bankcode, String first6cardno) {
         if (TextUtils.isEmpty(bankcode)) {
-            return ECardType.UNDEFINE.toString();
-        } else if (bankcode.equals(ECardType.PVTB.toString())) {
-            return ECardType.PVTB.toString();
-        } else if (bankcode.equals(ECardType.PBIDV.toString())) {
-            return ECardType.PBIDV.toString();
-        } else if (bankcode.equals(ECardType.PVCB.toString())) {
-            return ECardType.PVCB.toString();
-        } else if (bankcode.equals(ECardType.PSCB.toString())) {
-            return ECardType.PSCB.toString();
-        } else if (bankcode.equals(ECardType.PSGCB.toString())) {
-            return ECardType.PSGCB.toString();
+            return CardType.UNDEFINE;
+        } else if (bankcode.equals(CardType.PVTB)) {
+            return CardType.PVTB;
+        } else if (bankcode.equals(CardType.PBIDV)) {
+            return CardType.PBIDV;
+        } else if (bankcode.equals(CardType.PVCB)) {
+            return CardType.PVCB;
+        } else if (bankcode.equals(CardType.PSCB)) {
+            return CardType.PSCB;
+        } else if (bankcode.equals(CardType.PSGCB)) {
+            return CardType.PSGCB;
         /*} else if (bankcode.equals(ECardType.PEIB.toString())) {
             return ECardType.PEIB.toString();
         } else if (bankcode.equals(ECardType.PAGB.toString())) {
             return ECardType.PAGB.toString();
         } else if (bankcode.equals(ECardType.PTPB.toString())) {
             return ECardType.PTPB.toString();*/
-        } else if (bankcode.equals(ECardType.UNDEFINE.toString())) {
-            return ECardType.UNDEFINE.toString();
+        } else if (bankcode.equals(CardType.UNDEFINE)) {
+            return CardType.UNDEFINE;
         } else {
 
             UserInfo userInfo = new UserInfo();
@@ -403,7 +402,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 Timber.w(e, "detectCardType exception [%s]", e.getMessage());
             }
         }
-        return ECardType.UNDEFINE.toString();
+        return CardType.UNDEFINE;
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)

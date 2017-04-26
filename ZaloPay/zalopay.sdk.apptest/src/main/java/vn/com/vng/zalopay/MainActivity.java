@@ -3,7 +3,6 @@ package vn.com.vng.zalopay;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,16 +32,18 @@ import vn.com.zalopay.wallet.business.entity.user.ListUserProfile;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.fingerprint.IFPCallback;
 import vn.com.zalopay.wallet.business.fingerprint.IPaymentFingerPrint;
+import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.ZPPaymentListener;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
+import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 
-public class MainActivity extends ActionBarActivity implements Callback {
+public class MainActivity extends Activity implements Callback {
 
     public static String mUrl;
     IGetCardSupportListListener iGetCardSupportListListener = new IGetCardSupportListListener() {
@@ -74,23 +75,18 @@ public class MainActivity extends ActionBarActivity implements Callback {
 
         }
     };
-    private EditText editTextAppID;
-    private EditText editTextZaloUserID;
-    private EditText editTextAccessToken;
-    private EditText username;
-    private EditText itemName;
-    private EditText itemPrice;
-    private EditText desc;
-    private CheckBox chkLinkCard, chkWalletTransfer, chkWithDraw, chkLinkAcc;
-    private RadioButton radioLink, radioUnlink;
-    private boolean isFirstLoad = true;
-    private String key1 = "E3kCLDkLL2GDhaYhEahsbviSfzwSCDXi";
-    private String key = "YhEahsbviSfzwSCDXiE3kCLDkLL2GDha";
-    private String mUserID;
     OnClickListener onGetAccessTockenListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
+            try {
+                String cardType = CShareData.getInstance().detectCardType("41111").toString();
+                Log.e("detectCardType ", cardType);
+                Log.e("detectCardType ", String.valueOf(cardType == CardType.JCB));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            /*ZPWPaymentInfo paymentInfo = new ZPWPaymentInfo();
             paymentInfo.userInfo = new UserInfo();
             paymentInfo.userInfo.zaloPayUserId = mUserID;
             paymentInfo.userInfo.accessToken = editTextAccessToken.getText().toString();
@@ -142,12 +138,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
                                 Log.e("loadGatewayInfo", "need to update new version : " + pVersion + ".Message: " + pMessage);
                             }
                         });
-                /*try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
-            }
+            }*/
             /*
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -255,15 +246,6 @@ public class MainActivity extends ActionBarActivity implements Callback {
 			*/
 
 			/*
-
-			try
-			{
-				Log.e("detectCardType",CShareData.getInstance().detectCardType("41111").toString());
-
-			} catch (Exception e)
-			{
-				e.printStackTrace();
-			}
 
 			try
 			{
@@ -494,6 +476,19 @@ public class MainActivity extends ActionBarActivity implements Callback {
 
         }
     };
+    private EditText editTextAppID;
+    private EditText editTextZaloUserID;
+    private EditText editTextAccessToken;
+    private EditText username;
+    private EditText itemName;
+    private EditText itemPrice;
+    private EditText desc;
+    private CheckBox chkLinkCard, chkWalletTransfer, chkWithDraw, chkLinkAcc;
+    private RadioButton radioLink, radioUnlink;
+    private boolean isFirstLoad = true;
+    private String key1 = "E3kCLDkLL2GDhaYhEahsbviSfzwSCDXi";
+    private String key = "YhEahsbviSfzwSCDXiE3kCLDkLL2GDha";
+    private String mUserID;
     private ZPWPaymentInfo paymentInfo;
     private ServiceAPI mServiceAPI;
     private Call mCallBack;
@@ -712,7 +707,7 @@ public class MainActivity extends ActionBarActivity implements Callback {
                                 DialogManager.showSweetDialogCustom(GlobalData.getMerchantActivity(), "onComplete CallBack: " + GsonUtils.toJsonString(pPaymentResult), "Text Button",
                                         SweetAlertDialog.NORMAL_TYPE, null);
                     /*			DialogManager.showSweetDialogNoInternet(GlobalData.getMerchantActivity(), getString(R.string.zingpaysdk_alert_content_nointernet), "right", "left", new OnCustomContentDialogEventListener() {
-									@Override
+                                    @Override
 									public void onLeftButtonClick() {
 
 									}

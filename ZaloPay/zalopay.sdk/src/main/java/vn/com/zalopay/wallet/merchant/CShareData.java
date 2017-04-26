@@ -30,7 +30,6 @@ import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
@@ -39,17 +38,17 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
+import vn.com.zalopay.wallet.constants.CardType;
+import vn.com.zalopay.wallet.constants.CardTypeUtils;
 import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
-import vn.com.zalopay.wallet.merchant.listener.IDetectCardTypeListener;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 import vn.com.zalopay.wallet.merchant.strategy.IMerchantTask;
-import vn.com.zalopay.wallet.merchant.strategy.TaskDetectCardType;
 import vn.com.zalopay.wallet.merchant.strategy.TaskGetCardSupportList;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
@@ -515,42 +514,14 @@ public class CShareData extends SingletonBase {
      * @param pCardNumber
      * @return type card
      */
-    public ECardType detectCardType(String pCardNumber) {
+    public String detectCardType(String pCardNumber) {
         loadConfigBundle();
-
         if (mConfigFromServer != null) {
             CreditCardCheck cardCheck = new CreditCardCheck(mConfigFromServer.CCIdentifier);
             cardCheck.detectOnSync(pCardNumber);
-
-            return ECardType.fromString(cardCheck.getCodeBankForVerify());
+            return CardTypeUtils.fromBankCode(cardCheck.getCodeBankForVerify());
         } else {
-            return ECardType.UNDEFINE;
-        }
-    }
-
-    /***
-     * detect type of visa card.
-     * use this for sure that nessesary resource all always is downloaded before detecting
-     * @param pCardNumber
-     * @param pDetectCardTypeListener
-     */
-    public void detectCardType(String pCardNumber, IDetectCardTypeListener pDetectCardTypeListener) {
-        loadConfigBundle();
-
-        if (mConfigFromServer != null) {
-            CreditCardCheck cardCheck = new CreditCardCheck(mConfigFromServer.CCIdentifier);
-            cardCheck.detectOnSync(pCardNumber);
-
-            ECardType eCardType = ECardType.fromString(cardCheck.getCodeBankForVerify());
-
-            if (pDetectCardTypeListener != null) {
-                pDetectCardTypeListener.onComplete(eCardType);
-            }
-        } else {
-            mMerchantTask = new TaskDetectCardType(pCardNumber);
-            mMerchantTask.setTaskListener(pDetectCardTypeListener);
-
-            checkStaticResource();
+            return CardType.UNDEFINE;
         }
     }
 
