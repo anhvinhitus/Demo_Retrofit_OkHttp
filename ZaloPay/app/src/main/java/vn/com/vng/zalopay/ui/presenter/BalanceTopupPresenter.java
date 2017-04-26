@@ -33,7 +33,7 @@ import vn.com.vng.zalopay.service.PaymentWrapper;
 import vn.com.vng.zalopay.service.PaymentWrapperBuilder;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
+import vn.com.zalopay.wallet.constants.TransactionType;
 
 /**
  * Created by longlv on 10/05/2016.
@@ -105,7 +105,7 @@ public class BalanceTopupPresenter extends AbstractPresenter<IBalanceTopupView> 
         Subscription subscription = mZaloPayRepository.createwalletorder(
                 BuildConfig.ZALOPAY_APP_ID,
                 amount,
-                ETransactionType.TOPUP.toString(),
+                String.valueOf(TransactionType.TOPUP),
                 mUser.zaloPayId,
                 description)
                 .subscribeOn(Schedulers.io())

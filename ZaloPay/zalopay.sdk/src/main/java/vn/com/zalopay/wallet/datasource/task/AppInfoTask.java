@@ -6,16 +6,16 @@ import vn.com.zalopay.wallet.business.channel.injector.BaseChannelInjector;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DChannelMapApp;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.DataParameter;
 import vn.com.zalopay.wallet.datasource.implement.LoadAppInfoImpl;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * get app info
@@ -43,9 +43,8 @@ public class AppInfoTask extends BaseTask<DAppInfoResponse> {
     public void onDoTaskOnResponse(DAppInfoResponse pResponse) {
         try {
             Log.d(this, "onDoTaskOnResponse");
-            if(pResponse == null || pResponse.returncode != 1)
-            {
-                Log.d(this,"request not success...stopping saving response to cache");
+            if (pResponse == null || pResponse.returncode != 1) {
+                Log.d(this, "request not success...stopping saving response to cache");
                 return;
             }
             long expiredTime = pResponse.expiredtime + System.currentTimeMillis();
@@ -67,12 +66,10 @@ public class AppInfoTask extends BaseTask<DAppInfoResponse> {
                             SharedPreferencesManager.getInstance().setPmcConfig(appChannelID, GsonUtils.toJsonString(channel));
                             //get min,max of this channel to app use
                             if (channel.isEnable()) {
-                                if (channel.minvalue < minValue)
-                                {
+                                if (channel.minvalue < minValue) {
                                     minValue = channel.minvalue;
                                 }
-                                if (channel.maxvalue > maxValue)
-                                {
+                                if (channel.maxvalue > maxValue) {
                                     maxValue = channel.maxvalue;
                                 }
                             }
@@ -82,9 +79,9 @@ public class AppInfoTask extends BaseTask<DAppInfoResponse> {
                         SharedPreferencesManager.getInstance().setPmcConfigList(keyMap, mapAppChannelIDList);
                         Log.d(this, "===set ids channel list to cache===" + mapAppChannelIDList.toString());
                         //save min,max value for each channel.those values is used by app
-                        if (String.valueOf(channelMap.transtype).equalsIgnoreCase(ETransactionType.WALLET_TRANSFER.toString()) ||
-                                String.valueOf(channelMap.transtype).equalsIgnoreCase(ETransactionType.TOPUP.toString()) ||
-                                String.valueOf(channelMap.transtype).equalsIgnoreCase(ETransactionType.WITHDRAW.toString())) {
+                        if (channelMap.transtype == TransactionType.MONEY_TRANSFER ||
+                                channelMap.transtype == TransactionType.TOPUP ||
+                                channelMap.transtype == TransactionType.WITHDRAW) {
                             Log.d(this, "===set min/max: transtype to cache===" + channelMap.transtype + " - " + minValue + " => " + maxValue);
                             if (minValue != BaseChannelInjector.MIN_VALUE_CHANNEL)
                                 SharedPreferencesManager.getInstance().setMinValueChannel(String.valueOf(channelMap.transtype), minValue);

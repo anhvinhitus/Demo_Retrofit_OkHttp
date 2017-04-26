@@ -11,9 +11,9 @@ import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
 import vn.com.zalopay.wallet.configure.SDKConfiguration;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.RemoveMapCardTask;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
@@ -80,6 +80,7 @@ public class SDKApplication extends Application {
         BaseTask removeMapCardTask = new RemoveMapCardTask(pParams, pListener);
         removeMapCardTask.makeRequest();
     }
+
     private static boolean newVersion() {
         String checksumSDKV = null;
         try {
@@ -88,6 +89,7 @@ public class SDKApplication extends Application {
         }
         return !SdkUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV);
     }
+
     /***
      * clear all cache if user use
      * newer version
@@ -173,7 +175,7 @@ public class SDKApplication extends Application {
      * @param pAccessToken
      */
     private static void loadAppWalletInfo(String pZaloPayUserId, String pAccessToken) {
-        AppInfoLoader.get(BuildConfig.ZALOAPP_ID, ETransactionType.WALLET_TRANSFER, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
+        AppInfoLoader.get(BuildConfig.ZALOAPP_ID, TransactionType.MONEY_TRANSFER, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
             @Override
             public void onProcessing() {
                 Log.d("loadAppWalletInfo", "onProcessing");
@@ -198,7 +200,7 @@ public class SDKApplication extends Application {
      * @param pAccessToken
      */
     private static void loadAppWithDrawInfo(String pZaloPayUserId, String pAccessToken) {
-        AppInfoLoader.get(BuildConfig.WITHDRAWAPP_ID, ETransactionType.WITHDRAW, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
+        AppInfoLoader.get(BuildConfig.WITHDRAWAPP_ID, TransactionType.WITHDRAW, pZaloPayUserId, pAccessToken).setOnLoadAppInfoListener(new ILoadAppInfoListener() {
             @Override
             public void onProcessing() {
                 Log.d("loadAppWithDrawInfo", "onProcessing");

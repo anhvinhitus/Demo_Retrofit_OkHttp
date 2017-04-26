@@ -263,7 +263,7 @@ public class DataParameter {
         if (!TextUtils.isEmpty(GlobalData.getTransactionPin())) {
             params.put(ConstantParams.PIN, GlobalData.getTransactionPin());
         }
-        params.put(ConstantParams.TRANS_TYPE, GlobalData.getTransactionType().toString());
+        params.put(ConstantParams.TRANS_TYPE, String.valueOf(GlobalData.getTransactionType()));
         params.put(ConstantParams.ACCESS_TOKEN, GlobalData.getPaymentInfo().userInfo.accessToken);
         params.put(ConstantParams.USER_ID, GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
         params.put(ConstantParams.ZALO_ID, GlobalData.getPaymentInfo().userInfo.zaloUserId);

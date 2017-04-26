@@ -128,7 +128,7 @@ public class SDKPayment {
         //check where context is end?
         try {
             GlobalData.getTransactionType();
-            Log.d("pay", "===transtype: ===" + GlobalData.getTransactionType().toString());
+            Log.d("pay", "===transtype: ===" + GlobalData.getTransactionType());
         } catch (Exception e) {
             Log.e("pay", e);
             onReturnCancel(pMerchantActivity.getResources().getString(R.string.zingpaysdk_alert_context_error), PaymentError.DATA_INVALID);

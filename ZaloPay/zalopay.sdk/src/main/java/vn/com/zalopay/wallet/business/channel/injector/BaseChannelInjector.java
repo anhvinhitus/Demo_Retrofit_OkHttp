@@ -632,7 +632,7 @@ public abstract class BaseChannelInjector {
 
     public void getChannels(ZPWOnGetChannelListener pListener) throws Exception {
         try {
-            pmcConfigList = AppInfoLoader.getChannelsForAppFromCache(String.valueOf(GlobalData.appID), GlobalData.getTransactionType().toString());
+            pmcConfigList = AppInfoLoader.getChannelsForAppFromCache(String.valueOf(GlobalData.appID), GlobalData.getTransactionType());
             detectChannel(pListener);
         } catch (Exception ex) {
             throw ex;

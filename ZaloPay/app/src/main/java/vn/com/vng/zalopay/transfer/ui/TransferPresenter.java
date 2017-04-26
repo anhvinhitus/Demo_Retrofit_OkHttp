@@ -53,7 +53,7 @@ import vn.com.vng.zalopay.utils.CurrencyUtil;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
+import vn.com.zalopay.wallet.constants.TransactionType;
 
 
 /**
@@ -337,7 +337,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
         mPreviousTransferId = null;
         Subscription subscription = mZaloPayRepository.createwalletorder(BuildConfig.ZALOPAY_APP_ID,
                 amount,
-                ETransactionType.WALLET_TRANSFER.toString(),
+                String.valueOf(TransactionType.MONEY_TRANSFER),
                 "1;" + mTransferObject.zalopayId,
                 mView.getMessage(),
                 mTransferObject.displayName)
@@ -411,12 +411,7 @@ public class TransferPresenter extends AbstractPresenter<ITransferView> {
     private void saveTransferRecent() {
         int transactionType;
 
-        try {
-            transactionType = Integer.valueOf(ETransactionType.WALLET_TRANSFER.toString());
-        } catch (NumberFormatException e) {
-            Timber.d(e, "Parse transaction type");
-            return;
-        }
+        transactionType = TransactionType.MONEY_TRANSFER;
 
         RecentTransaction recent = transform(mTransferObject);
 

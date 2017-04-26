@@ -32,7 +32,6 @@ import vn.com.zalopay.wallet.business.entity.base.CardInfoListResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -40,6 +39,7 @@ import vn.com.zalopay.wallet.business.entity.staticconfig.DConfigFromServer;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
@@ -313,7 +313,7 @@ public class CShareData extends SingletonBase {
 
     public long getMinTranferValue() {
         try {
-            return SharedPreferencesManager.getInstance().getMinValueChannel(ETransactionType.WALLET_TRANSFER.toString());
+            return SharedPreferencesManager.getInstance().getMinValueChannel(String.valueOf(TransactionType.MONEY_TRANSFER));
         } catch (Exception ex) {
             Log.e(this, ex);
         }
@@ -322,7 +322,7 @@ public class CShareData extends SingletonBase {
 
     public long getMaxTranferValue() {
         try {
-            return SharedPreferencesManager.getInstance().getMaxValueChannel(ETransactionType.WALLET_TRANSFER.toString());
+            return SharedPreferencesManager.getInstance().getMaxValueChannel(String.valueOf(TransactionType.MONEY_TRANSFER));
         } catch (Exception ex) {
             Log.e(this, ex);
         }
@@ -331,7 +331,7 @@ public class CShareData extends SingletonBase {
 
     public long getMinDepositValue() {
         try {
-            return SharedPreferencesManager.getInstance().getMinValueChannel(ETransactionType.TOPUP.toString());
+            return SharedPreferencesManager.getInstance().getMinValueChannel(String.valueOf(TransactionType.TOPUP));
         } catch (Exception ex) {
             Log.e(this, ex);
         }
@@ -340,7 +340,7 @@ public class CShareData extends SingletonBase {
 
     public long getMaxDepositValue() {
         try {
-            return SharedPreferencesManager.getInstance().getMaxValueChannel(ETransactionType.TOPUP.toString());
+            return SharedPreferencesManager.getInstance().getMaxValueChannel(String.valueOf(TransactionType.TOPUP));
         } catch (Exception ex) {
             Log.e(this, ex);
         }
@@ -349,7 +349,7 @@ public class CShareData extends SingletonBase {
 
     public long getMinWithDrawValue() {
         try {
-            return SharedPreferencesManager.getInstance().getMinValueChannel(ETransactionType.WITHDRAW.toString());
+            return SharedPreferencesManager.getInstance().getMinValueChannel(String.valueOf(TransactionType.WITHDRAW));
         } catch (Exception ex) {
             Log.e(this, ex);
         }
@@ -358,7 +358,7 @@ public class CShareData extends SingletonBase {
 
     public long getMaxWithDrawValue() {
         try {
-            return SharedPreferencesManager.getInstance().getMaxValueChannel(ETransactionType.WITHDRAW.toString());
+            return SharedPreferencesManager.getInstance().getMaxValueChannel(String.valueOf(TransactionType.WITHDRAW));
         } catch (Exception ex) {
             Log.e(this, ex);
         }

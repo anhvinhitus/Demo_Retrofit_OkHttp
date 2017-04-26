@@ -25,7 +25,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -73,7 +72,6 @@ import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.business.entity.base.StatusResponse;
 import vn.com.zalopay.wallet.business.entity.enumeration.ESuggestActionType;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.feedback.Feedback;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfoResponse;
@@ -82,6 +80,7 @@ import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonLifeCircleManager;
 import vn.com.zalopay.wallet.constants.KeyboardType;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.helper.MapCardHelper;
@@ -1164,7 +1163,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
         //show transaction amount when ! withdraw
-        if (GlobalData.orderAmountTotal > 0 && GlobalData.getTransactionType() != ETransactionType.WITHDRAW && !GlobalData.isTranferMoneyChannel()) {
+        if (GlobalData.orderAmountTotal > 0 && GlobalData.getTransactionType() != TransactionType.WITHDRAW && !GlobalData.isTranferMoneyChannel()) {
 
             setTextHtml(R.id.payment_price_label, StringUtil.formatVnCurrence(String.valueOf(GlobalData.orderAmountTotal)));
             if (!TextUtils.isEmpty(GlobalData.getPaymentInfo().description)) {

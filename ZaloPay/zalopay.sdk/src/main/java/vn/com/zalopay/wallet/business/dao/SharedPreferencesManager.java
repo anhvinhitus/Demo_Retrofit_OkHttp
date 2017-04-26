@@ -481,7 +481,7 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public String getPmcConfigByPmcID(String pID) {
-        String channelIDkey = GlobalData.appID + Constants.UNDERLINE + GlobalData.getTransactionType().toString()
+        String channelIDkey = GlobalData.appID + Constants.UNDERLINE + GlobalData.getTransactionType()
                 + Constants.UNDERLINE + pID;
         return getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_prefix) + channelIDkey);
     }

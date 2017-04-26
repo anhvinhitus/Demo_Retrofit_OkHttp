@@ -15,7 +15,6 @@ import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentOption;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
@@ -28,6 +27,7 @@ import vn.com.zalopay.wallet.business.fingerprint.PaymentFingerPrint;
 import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.constants.CardChannel;
 import vn.com.zalopay.wallet.constants.PaymentStatus;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.controller.SDKApplication;
 import vn.com.zalopay.wallet.controller.SDKPayment;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
@@ -55,12 +55,14 @@ public class GlobalData {
     protected static WeakReference<ZPWGatewayInfoCallback> mMerchantCallBack;
     @BankFunctionCode
     private static int bankFunction = BankFunctionCode.PAY;
+    @TransactionType
+    private static int transactionType = TransactionType.PAY;
+
     //app's activity is calling sdk.
     private static WeakReference<Activity> mMerchantActivity = null;
     private static ZPPaymentListener mListener = null;
     private static ZPWPaymentInfo mPaymentInfo = null;
     private static ZPPaymentOption mPaymentOption = null;
-    private static ETransactionType transactionType = ETransactionType.PAY;
     private static ZPPaymentResult paymentResult = null;
     /***
      * user level,map table
@@ -192,7 +194,7 @@ public class GlobalData {
     }
 
     public static boolean isBankAccountLink() {
-        return transactionType == ETransactionType.LINK_ACC;
+        return transactionType == TransactionType.LINK_ACCOUNT;
     }
 
     public static boolean isLinkAccFlow() {
@@ -204,23 +206,23 @@ public class GlobalData {
     }
 
     public static boolean isLinkCardChannel() {
-        return transactionType == ETransactionType.LINK_CARD;
+        return transactionType == TransactionType.LINK_CARD;
     }
 
     public static boolean isTranferMoneyChannel() {
-        return transactionType == ETransactionType.WALLET_TRANSFER;
+        return transactionType == TransactionType.MONEY_TRANSFER;
     }
 
     public static boolean isTopupChannel() {
-        return transactionType == ETransactionType.TOPUP;
+        return transactionType == TransactionType.TOPUP;
     }
 
     public static boolean isWithDrawChannel() {
-        return transactionType == ETransactionType.WITHDRAW;
+        return transactionType == TransactionType.WITHDRAW;
     }
 
     public static boolean isPayChannel() {
-        return transactionType == ETransactionType.PAY;
+        return transactionType == TransactionType.PAY;
     }
 
     public static boolean isChannelHasInputCard() {
@@ -390,14 +392,15 @@ public class GlobalData {
     /***
      * Get transtype of payment.
      */
-    public static ETransactionType getTransactionType() {
+    @TransactionType
+    public static int getTransactionType() {
         //link account bank.
         if (mPaymentOption != null &&
                 !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
                 mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_acc))) {
-            transactionType = ETransactionType.LINK_ACC;
+            transactionType = TransactionType.LINK_ACCOUNT;
             bankFunction = BankFunctionCode.LINK_BANK_ACCOUNT;
-            return ETransactionType.LINK_ACC;
+            return TransactionType.LINK_ACCOUNT;
         }
 
         //link card.
@@ -405,40 +408,40 @@ public class GlobalData {
                 !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
                 mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_link_card))) {
             appID = Long.parseLong(GlobalData.getStringResource(RS.string.zpw_conf_wallet_id));
-            transactionType = ETransactionType.LINK_CARD;
+            transactionType = TransactionType.LINK_CARD;
             bankFunction = BankFunctionCode.LINK_CARD;
-            return ETransactionType.LINK_CARD;
+            return TransactionType.LINK_CARD;
         }
 
         //wallet tranfer.
         if (mPaymentOption != null &&
                 !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
                 mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_wallet_transfer))) {
-            transactionType = ETransactionType.WALLET_TRANSFER;
+            transactionType = TransactionType.MONEY_TRANSFER;
             bankFunction = BankFunctionCode.PAY;
-            return ETransactionType.WALLET_TRANSFER;
+            return TransactionType.MONEY_TRANSFER;
         }
 
         //withdraw.
         if (mPaymentOption != null &&
                 !TextUtils.isEmpty(mPaymentOption.getIncludePaymentMethodType()) &&
                 mPaymentOption.getIncludePaymentMethodType().equals(getStringResource(RS.string.zingpaysdk_conf_gwinfo_channel_withdraw))) {
-            transactionType = ETransactionType.WITHDRAW;
+            transactionType = TransactionType.WITHDRAW;
             bankFunction = BankFunctionCode.WITHDRAW;
-            return ETransactionType.WITHDRAW;
+            return TransactionType.WITHDRAW;
         }
 
         //topup.
         if (GlobalData.appID == Long.parseLong(getStringResource(RS.string.zpw_conf_wallet_id))) {
-            transactionType = ETransactionType.TOPUP;
+            transactionType = TransactionType.TOPUP;
             bankFunction = BankFunctionCode.PAY;
-            return ETransactionType.TOPUP;
+            return TransactionType.TOPUP;
         }
 
         //pay. with other case.
-        transactionType = ETransactionType.PAY;
+        transactionType = TransactionType.PAY;
         bankFunction = BankFunctionCode.PAY;
-        return ETransactionType.PAY;
+        return TransactionType.PAY;
     }
 
     @BankFunctionCode
@@ -734,7 +737,7 @@ public class GlobalData {
 
             for (int i = 0; i < getUserProfileList().profilelevelpermisssion.size(); i++) {
                 if (getUserProfileList().profilelevelpermisssion.get(i).pmcid == pPmcID
-                        && getUserProfileList().profilelevelpermisssion.get(i).transtype == Integer.parseInt(transactionType.toString())) {
+                        && getUserProfileList().profilelevelpermisssion.get(i).transtype == transactionType) {
                     return getUserProfileList().profilelevelpermisssion.get(i);
                 }
             }

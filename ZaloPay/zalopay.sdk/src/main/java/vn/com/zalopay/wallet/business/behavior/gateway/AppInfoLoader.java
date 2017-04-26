@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DAppInfo;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
+import vn.com.zalopay.wallet.constants.TransactionType;
 import vn.com.zalopay.wallet.datasource.task.AppInfoTask;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.listener.ILoadAppInfoListener;
 import vn.com.zalopay.wallet.utils.GsonUtils;
-import vn.com.zalopay.wallet.business.data.Log;
 
 /***
  * get app info
@@ -24,9 +24,10 @@ public class AppInfoLoader extends SingletonBase {
     private long appId;
     private String zaloUserId;
     private String accessToken;
-    private ETransactionType transactionType;
+    @TransactionType
+    private int transactionType;
 
-    public AppInfoLoader(long pAppId, ETransactionType pTransType, String pZaloUserId, String pAccessToken) {
+    public AppInfoLoader(long pAppId, @TransactionType int pTransType, String pZaloUserId, String pAccessToken) {
         super();
         this.appId = pAppId;
         this.transactionType = pTransType;
@@ -34,7 +35,7 @@ public class AppInfoLoader extends SingletonBase {
         this.accessToken = pAccessToken;
     }
 
-    public static synchronized AppInfoLoader get(long pAppId, ETransactionType pTransType, String pZaloUserId, String pAccessToken) {
+    public static synchronized AppInfoLoader get(long pAppId, @TransactionType int pTransType, String pZaloUserId, String pAccessToken) {
         return new AppInfoLoader(pAppId, pTransType, pZaloUserId, pAccessToken);
     }
 
@@ -44,7 +45,7 @@ public class AppInfoLoader extends SingletonBase {
      * @param pTransType
      * @return
      */
-    public static ArrayList<String> getChannelsForAppFromCache(String pAppID, String pTransType) throws Exception {
+    public static ArrayList<String> getChannelsForAppFromCache(String pAppID, @TransactionType int pTransType) throws Exception {
         String sKey = pAppID + Constants.UNDERLINE + pTransType;
         return SharedPreferencesManager.getInstance().getPmcConfigList(sKey);
     }
@@ -54,7 +55,7 @@ public class AppInfoLoader extends SingletonBase {
             try {
                 appInfo = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(GlobalData.appID)), DAppInfo.class);
             } catch (Exception e) {
-                Log.e(TAG,e);
+                Log.e(TAG, e);
             }
         }
         return appInfo;
@@ -91,7 +92,7 @@ public class AppInfoLoader extends SingletonBase {
      */
     private boolean existedAppInfoOnCache() {
         try {
-            ArrayList<String> mapChannelIDList = getChannelsForAppFromCache(String.valueOf(appId), transactionType.toString());
+            ArrayList<String> mapChannelIDList = getChannelsForAppFromCache(String.valueOf(appId), transactionType);
             return mapChannelIDList != null && mapChannelIDList.size() > 0 && !isExpiredTime();
         } catch (Exception e) {
             Log.e(this, e);

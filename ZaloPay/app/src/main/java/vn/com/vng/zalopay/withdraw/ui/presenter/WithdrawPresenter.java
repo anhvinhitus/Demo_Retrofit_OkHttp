@@ -33,7 +33,7 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.withdraw.ui.view.IWithdrawView;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.enumeration.ETransactionType;
+import vn.com.zalopay.wallet.constants.TransactionType;
 
 /**
  * Created by longlv on 11/08/2016.
@@ -90,7 +90,7 @@ public class WithdrawPresenter extends AbstractPresenter<IWithdrawView> {
                         if (amount > balance) {
                             return Observable.error(new UserInputException(R.string.withdraw_exceed_balance));
                         } else {
-                            return mZaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, ETransactionType.WITHDRAW.toString(), mUser.zaloPayId, mContext.getString(R.string.withdraw_description));
+                            return mZaloPayRepository.createwalletorder(WITHDRAW_APPID, amount, String.valueOf(TransactionType.WITHDRAW), mUser.zaloPayId, mContext.getString(R.string.withdraw_description));
                         }
                     }
                 })
