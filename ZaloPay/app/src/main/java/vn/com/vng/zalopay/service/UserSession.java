@@ -10,6 +10,9 @@ import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -17,15 +20,15 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.NewSessionEvent;
+import vn.com.vng.zalopay.data.filelog.FileLogStore;
+import vn.com.vng.zalopay.data.net.adapter.RetryFileLogUpload;
+import vn.com.vng.zalopay.data.util.NetworkHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.NetworkChangeEvent;
+import vn.com.vng.zalopay.event.UploadFileLogEvent;
 import vn.com.vng.zalopay.notification.ZPNotificationService;
 import vn.com.vng.zalopay.tracker.FileLogHelper;
-import vn.com.vng.zalopay.event.UploadFileLogEvent;
-import rx.android.schedulers.AndroidSchedulers;
-import java.util.concurrent.TimeUnit;
-import rx.Observable;
 
 /**
  * Created by hieuvm on 11/23/16.
@@ -44,6 +47,7 @@ public class UserSession {
     private static Boolean userInitialized = false;
     private ZPNotificationService mNotifyService;
     private BalanceStore.Repository mBalanceRepository;
+    private FileLogStore.Repository mFileLogRepository;
 
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
