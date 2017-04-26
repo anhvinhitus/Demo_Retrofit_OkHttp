@@ -157,9 +157,9 @@ public class UserSession {
         Subscription subscription = Observable.just(NetworkHelper.isNetworkAvailable(mContext))
                 .filter(Boolean::booleanValue)
                 .flatMap(aBoolean -> FileLogHelper.uploadFileLog(filePath, mFileLogRepository))
+                .retryWhen(new RetryFileLogUpload())
                 .doOnError(Timber::w)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<>());
         mCompositeSubscription.add(subscription);
     }
