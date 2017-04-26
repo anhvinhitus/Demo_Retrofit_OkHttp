@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
@@ -36,10 +37,10 @@ import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
 public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelView> {
     protected int mAlphaColor = 100;
     private Activity mActivity;
-    private ArrayList<DPaymentChannelView> mChannelList = null;
+    private List<DPaymentChannelView> mChannelList = null;
     private int mLayoutId;
 
-    public GatewayChannelListViewAdapter(Activity pActivity, int pLayoutId, ArrayList<DPaymentChannelView> pChannelList) {
+    public GatewayChannelListViewAdapter(Activity pActivity, int pLayoutId, List<DPaymentChannelView> pChannelList) {
         super(pActivity, pLayoutId, pChannelList);
 
         this.mActivity = pActivity;
