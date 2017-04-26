@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.event.RefreshWebEvent;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
@@ -76,8 +77,12 @@ final class WebBottomSheetPresenter extends AbstractPresenter<IWebBottomSheetVie
     }
 
     void handleClickOpenInBrowser(Context context, String currentUrl) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
-        context.startActivity(browserIntent);
+        try {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
+            context.startActivity(browserIntent);
+        } catch (Exception e) {
+            Timber.e(e, "Cannot open web in default browser");
+        }
     }
 
     private void setClipboard(Context context, String text) {
