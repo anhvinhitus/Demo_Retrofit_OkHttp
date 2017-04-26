@@ -2,36 +2,25 @@ package vn.com.vng.zalopay.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
-import android.support.annotation.StringRes;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnPageChange;
-import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.react.base.AbstractReactActivity;
 import vn.com.vng.zalopay.react.base.HomePagerAdapter;
-import vn.com.vng.zalopay.ui.widget.HomeBottomNavigationView;
-import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.presenter.HomePresenter;
 import vn.com.vng.zalopay.ui.view.IHomeView;
-import vn.com.vng.zalopay.ui.widget.BottomNavigationDrawable;
+import vn.com.vng.zalopay.ui.widget.HomeBottomNavigationView;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.BottomNavigationViewHelper;
 import vn.com.vng.zalopay.utils.DialogHelper;
+import vn.com.vng.zalopay.widget.FragmentLifecycle;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
@@ -60,11 +49,6 @@ public class HomeActivity extends AbstractReactActivity implements IHomeView {
     @Override
     protected int getResLayoutId() {
         return R.layout.activity_home_new;
-    }
-
-    @Override
-    public Fragment getReactFragment() {
-        return null;
     }
 
     @Override
