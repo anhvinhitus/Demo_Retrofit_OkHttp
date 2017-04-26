@@ -213,7 +213,7 @@ public class TransactionRepository implements TransactionStore.Repository {
     }
 
     private boolean shouldRecurse(List<TransHistoryEntity> data, long timestamp, long nextTimestamp, int sortOrder, int statusType, long thresholdTime) {
-        if (timestamp == 0 && thresholdTime == 0) { // lần đầu k req hết.
+        if (timestamp <= 0 && thresholdTime <= 0) { // lần đầu k req hết.
             return false;
         }
 
