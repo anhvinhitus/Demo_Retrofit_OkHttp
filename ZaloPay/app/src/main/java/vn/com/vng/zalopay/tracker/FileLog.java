@@ -175,10 +175,10 @@ final class FileLog {
             this.timestamp = timestamp;
         }
 
-        int eventType;
-        int eventId;
-        public Long value;
-        long timestamp;
+        final int eventType;
+        final int eventId;
+        final public Long value;
+        final long timestamp;
     }
 
 }

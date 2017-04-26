@@ -34,25 +34,27 @@ public class FileLogHelper {
             }
 
             File[] files = directory.listFiles();
+            if (files == null) {
+                return new String[]{};
+            }
+
             List<String> ret = new ArrayList<>();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isDirectory()) {
-                        continue;
-                    }
-
-                    if (file.equals(exclude)) {
-                        continue;
-                    }
-
-                    String fileName = file.getName();
-
-                    if (fileName.endsWith(ZIP_SUFFIX)) {
-                        continue;
-                    }
-
-                    ret.add(file.getAbsolutePath());
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    continue;
                 }
+
+                if (file.equals(exclude)) {
+                    continue;
+                }
+
+                String fileName = file.getName();
+
+                if (fileName.endsWith(ZIP_SUFFIX)) {
+                    continue;
+                }
+
+                ret.add(file.getAbsolutePath());
             }
 
             Timber.d("filelogs should upload size [%s]", ret.size());
