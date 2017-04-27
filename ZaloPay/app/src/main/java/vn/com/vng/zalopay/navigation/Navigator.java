@@ -276,7 +276,6 @@ public class Navigator implements INavigator {
     }
 
 
-
     @Override
     public void startLinkAccountActivityForResult(final Activity activity) {
         Timber.d("Start Link  bank for result, activity[%s]", activity);
@@ -658,7 +657,7 @@ public class Navigator implements INavigator {
         context.startActivity(intent);
     }
 
-    private boolean shouldShowPinDialog() {
+    public boolean shouldShowPinDialog() {
         boolean useProtect = mUserConfig.isUseProtectAccount();
         if (!useProtect) {
             return false;
@@ -933,6 +932,26 @@ public class Navigator implements INavigator {
             context.startActivity(browserIntent);
         } catch (Exception e) {
             Timber.e(e, "Cannot open web in default browser");
+        }
+    }
+
+    private Intent intentProtectAccountActivity(Context context) {
+        return new Intent(context, ProtectAccountActivity.class);
+    }
+
+    public void startChangePinActivity(Context context) {
+        if (shouldShowPinDialog()) {
+            showPinDialog(context, intentChangePinActivity((Activity) context), false);
+        } else {
+            startChangePin((Activity) context);
+        }
+    }
+
+    public void startProtectAccountActivity(Context context) {
+        if (shouldShowPinDialog()) {
+            showPinDialog(context, intentProtectAccountActivity(context), false);
+        } else {
+            startProtectAccount(context);
         }
     }
 }
