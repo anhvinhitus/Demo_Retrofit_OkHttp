@@ -18,7 +18,6 @@ import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.InsideApp;
 import vn.com.vng.zalopay.utils.AndroidUtils;
-import vn.com.vng.zalopay.utils.ImageLoader;
 
 /**
  * Created by khattn on 3/27/17.
@@ -141,12 +140,6 @@ public class SearchAppResultModel extends EpoxyModelWithHolder<SearchAppResultMo
 
         @BindView(R.id.itemLayout)
         View itemLayout;
-
-        ImageLoader mImageLoader;
-
-        AppItemHolder() {
-            mImageLoader = AndroidApplication.instance().getAppComponent().imageLoader();
-        }
 
         @Override
         protected void bindView(View itemView) {

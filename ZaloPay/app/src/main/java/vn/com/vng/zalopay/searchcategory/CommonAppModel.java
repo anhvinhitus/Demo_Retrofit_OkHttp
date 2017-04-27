@@ -45,7 +45,7 @@ class CommonAppModel extends EpoxyModelWithHolder<CommonAppModel.AppItemHolder> 
         super.bind(holder);
         holder.mIconView.setText(app.appName);
         setIconFont(holder.mIconView.getTopIcon(), app);
-        holder.itemLayout.setOnClickListener(viewClickListener);
+        holder.mIconView.setOnClickListener(viewClickListener);
     }
 
     @Override
@@ -118,9 +118,6 @@ class CommonAppModel extends EpoxyModelWithHolder<CommonAppModel.AppItemHolder> 
     static class AppItemHolder extends EpoxyHolder {
         @BindView(R.id.tvInsideApp)
         IconFontTextView mIconView;
-
-        @BindView(R.id.itemLayout)
-        View itemLayout;
 
         @Override
         protected void bindView(View itemView) {

@@ -22,7 +22,7 @@ import butterknife.BindView;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.domain.model.InsideApp;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloProfile;
 import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.vng.zalopay.ui.widget.GridSpacingItemDecoration;
 import vn.com.vng.zalopay.utils.DialogHelper;
@@ -217,7 +217,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
     }
 
     @Override
-    public void onClickFriendItem(ZaloFriend app, int position) {
+    public void onClickFriendItem(ZaloProfile app, int position) {
 
     }
 
@@ -235,7 +235,7 @@ public class SearchCategoryFragment extends BaseFragment implements ISearchCateg
     }
 
     @Override
-    public void setFindResult(List<InsideApp> apps, List<ZaloFriend> friends, String key) {
+    public void setFindResult(List<InsideApp> apps, List<ZaloProfile> friends, String key) {
         mResultAdapter.setResult(apps, friends, key);
     }
 }

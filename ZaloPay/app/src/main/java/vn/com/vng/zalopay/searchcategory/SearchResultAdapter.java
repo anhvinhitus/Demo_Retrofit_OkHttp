@@ -13,7 +13,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.data.util.Strings;
 import vn.com.vng.zalopay.domain.model.InsideApp;
-import vn.com.vng.zalopay.domain.model.ZaloFriend;
+import vn.com.vng.zalopay.domain.model.ZaloProfile;
 
 /**
  * Created by khattn on 3/28/17.
@@ -33,7 +33,7 @@ class SearchResultAdapter extends EpoxyAdapter {
 
         void onClickSeeMoreApp();
 
-        void onClickFriendItem(ZaloFriend app, int position);
+        void onClickFriendItem(ZaloProfile app, int position);
 
         void onClickSeeMoreFriend();
     }
@@ -57,7 +57,7 @@ class SearchResultAdapter extends EpoxyAdapter {
         clickListener = listener;
     }
 
-    synchronized void setResult(List<InsideApp> appList, List<ZaloFriend> friendList, String searchText) {
+    synchronized void setResult(List<InsideApp> appList, List<ZaloProfile> friendList, String searchText) {
         models.clear();
         setChangeColor(appList, friendList, searchText);
 
@@ -92,13 +92,13 @@ class SearchResultAdapter extends EpoxyAdapter {
         notifyModelsChanged();
     }
 
-    private void setChangeColor(List<InsideApp> appList, List<ZaloFriend> friendList, String text) {
+    private void setChangeColor(List<InsideApp> appList, List<ZaloProfile> friendList, String text) {
         for (InsideApp app : appList) {
             int idx = Strings.getIndexOfSearchString(app.appName, text);
             app.appName = changeWordColor(app.appName, idx, idx + text.length());
         }
 
-        for (ZaloFriend friend : friendList) {
+        for (ZaloProfile friend : friendList) {
             int idx = Strings.getIndexOfSearchString(friend.displayName, text);
             friend.displayName = changeWordColor(friend.displayName, idx, idx + text.length());
         }
@@ -170,13 +170,13 @@ class SearchResultAdapter extends EpoxyAdapter {
         return listModel;
     }
 
-    private SearchFriendResultModel transform(ZaloFriend resource, boolean isLastPosition) {
+    private SearchFriendResultModel transform(ZaloProfile resource, boolean isLastPosition) {
         SearchFriendResultModel model = new SearchFriendResultModel(resource, isLastPosition);
         model.setClickListener(friendClickListener);
         return model;
     }
 
-    private List<SearchFriendResultModel> friendTransform(List<ZaloFriend> resources) {
+    private List<SearchFriendResultModel> friendTransform(List<ZaloProfile> resources) {
         List<SearchFriendResultModel> listModel = new ArrayList<>();
         for (int i = 0; i < resources.size(); i++) {
             boolean isLastPosition = (i == resources.size() - 1);

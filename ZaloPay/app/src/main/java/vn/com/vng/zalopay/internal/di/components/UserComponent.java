@@ -60,6 +60,7 @@ import vn.com.vng.zalopay.react.base.InternalReactFragment;
 import vn.com.vng.zalopay.scanners.beacons.CounterBeaconFragment;
 import vn.com.vng.zalopay.scanners.nfc.ScanNFCFragment;
 import vn.com.vng.zalopay.scanners.qrcode.QRCodeFragment;
+import vn.com.vng.zalopay.searchcategory.SearchCategoryFragment;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.share.HandleZaloIntegration;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyFragment;
@@ -232,4 +233,6 @@ public interface UserComponent {
     void inject(ExternalReactFragment f);
 
     void inject(HomeActivity activity);
+
+    void inject(SearchCategoryFragment f);
 }
