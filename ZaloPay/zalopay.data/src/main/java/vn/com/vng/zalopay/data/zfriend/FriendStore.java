@@ -101,10 +101,15 @@ public interface FriendStore {
 
         Observable<Cursor> searchZaloFriend(String s);
 
+        Observable<List<ZaloFriend>> findFriends(String s);
+
         @Nullable
         ZaloProfile transform(Cursor cursor);
 
-        Observable<List<ZaloProfile>> getZaloFriendList();
+        @Nullable
+        List<ZaloFriend> transformZaloFriend(Cursor cursor);
+
+        Observable<List<ZaloFriend>> getZaloFriendList();
 
         Observable<Boolean> checkListZaloIdForClient();
 

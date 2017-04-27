@@ -141,8 +141,19 @@ public class FriendRepository implements FriendStore.Repository {
     }
 
     @Override
-    public Observable<List<ZaloProfile>> getZaloFriendList() {
+    public Observable<List<ZaloFriend>> findFriends(String s) {
+        return searchZaloFriend(s)
+                .map(cursor -> {
+                    List<ZaloFriend> ret = transformZaloFriend(cursor);
+                    if (cursor != null && !cursor.isClosed()) {
+                        cursor.close();
+                    }
+                    return ret;
+                });
+    }
 
+    @Override
+    public Observable<List<ZaloFriend>> getZaloFriendList() {
         Observable<List<ZaloProfile>> observableFriendLocal = getFriendLocal()
                 .filter(zaloFriends -> !Lists.isEmptyOrNull(zaloFriends));
 
@@ -164,7 +175,9 @@ public class FriendRepository implements FriendStore.Repository {
                 });
     }
 
-    private List<ZaloProfile> transformZaloFriend(Cursor cursor) {
+    @Nullable
+    @Override
+    public List<ZaloFriend> transformZaloFriend(Cursor cursor) {
         if (cursor == null || cursor.isClosed()) {
             return Collections.emptyList();
         }
