@@ -2,7 +2,9 @@ package vn.com.vng.zalopay.utils;
 
 import android.content.res.AssetManager;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.zalopay.ui.widget.util.FileUtil;
@@ -66,19 +68,25 @@ public class ConfigUtil {
         }
     }
 
-    private static boolean loadConfig(String jsonConfig) throws JsonSyntaxException {
+    private static boolean loadConfig(String jsonConfig) {
         if (TextUtils.isEmpty(jsonConfig)) {
             return false;
         }
-        Gson gson = new Gson();
-        Config config = gson.fromJson(jsonConfig, Config.class);
-        if (config != null) {
-            mConfig = config;
-            loadConfigPhoneFormat(config);
-            FriendConfig.sEnableSyncContact = isSyncContact();
-            return true;
+
+        try {
+            Gson gson = new Gson();
+            Config config = gson.fromJson(jsonConfig, Config.class);
+            if (config != null) {
+                mConfig = config;
+                loadConfigPhoneFormat(config);
+                FriendConfig.sEnableSyncContact = isSyncContact();
+                return true;
+            }
+        } catch (JsonSyntaxException e) {
+            Crashlytics.log(Log.ERROR, "EXCEPTION", String.format("Fail to load config with config: %s", jsonConfig));
+            return false;
         }
-        
+
         return false;
     }
 
