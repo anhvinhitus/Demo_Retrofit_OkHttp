@@ -10,15 +10,18 @@ import com.google.gson.annotations.SerializedName;
 public class InsideApp {
 
     public static class Constants {
-        public static final long WITHDRAW = 1;
-        public static final long RECHARGE = 2;
-        public static final long LINK_CARD = 3;
-        public static final long PAY_QR_CODE = 4;
-        public static final long HISTORY = 5;
-        public static final long SUPPORT_CENTER = 6;
-        public static final long INFORMATION = 7;
-        public static final long PROFILE = 8;
-        public static final long NOTIFICATION = 9;
+        public static final int WITHDRAW = 1;
+        public static final int RECHARGE = 2;
+        public static final int LINK_CARD = 3;
+        public static final int PAY_QR_CODE = 4;
+        public static final int HISTORY = 5;
+        public static final int SUPPORT_CENTER = 6;
+        public static final int INFORMATION = 7;
+        public static final int PROFILE = 8;
+        public static final int NOTIFICATION = 9;
+        public static final int BALANCE = 10;
+        public static final int CHANGE_PIN = 11;
+        public static final int PROTECT_ACCOUNT = 12;
     }
 
     public long appId;
