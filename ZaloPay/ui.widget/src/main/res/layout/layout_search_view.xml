@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/searchbox_height"
+    android:layout_marginBottom="@dimen/spacing.small.t"
+    android:layout_marginRight="@dimen/spacing.medium"
+    android:background="@drawable/edt_search_box"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/spacing.medium.s"
+    android:paddingRight="@dimen/spacing.medium.s">
+
+    <com.zalopay.ui.widget.edittext.ZPEditText
+        android:id="@+id/edtSearch"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:hint="Tìm kiếm"
+        android:inputType="text"
+        android:maxLines="1"
+        android:textSize="@dimen/textsize.small.s"
+        app:zlp_clearButton="true"
+        app:zlp_clearButtonPaddingRight="0dp"
+        app:zlp_clearButtonSize="@dimen/font_size_xmedium"
+        app:zlp_floatingLabel="none"
+        app:zlp_hideUnderline="true"
+        app:zlp_textColorHint="@color/hint" />
+
+    <com.zalopay.ui.widget.IconFont
+        android:id="@+id/ifSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textColor="@color/hint" />
+</LinearLayout>

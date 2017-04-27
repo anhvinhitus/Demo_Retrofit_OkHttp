@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing.huge.l"
+            android:gravity="center_vertical"
+            android:text="@string/search_intro"
+            android:textAlignment="center"
+            android:textColor="@color/txt_item_sub"
+            android:textSize="@dimen/font_size_xnormal" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing.medium.t"
+        android:layout_marginLeft="@dimen/spacing.medium"
+        android:layout_marginTop="@dimen/spacing.medium.m"
+        android:background="@color/background"
+        android:text="@string/search_representative_app"
+        android:textColor="@color/txt_item_sub"
+        android:textSize="@dimen/font_size_xnormal" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separate"
+        android:background="@color/separate" />
+</LinearLayout>

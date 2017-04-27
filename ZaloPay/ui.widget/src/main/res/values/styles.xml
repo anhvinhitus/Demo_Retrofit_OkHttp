@@ -248,4 +248,21 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.01</item>
     </style>
+
+    <style name="ZaloPayEditText">
+        <item name="zlp_autoValidate">false</item>
+        <item name="zlp_checkCharactersCountAtBeginning">false</item>
+        <item name="zlp_clearButton">true</item>
+        <item name="zlp_clearButtonSize">15sp</item>
+        <item name="zlp_floatingLabel">none</item>
+        <item name="zlp_paddingLeftLine">0dp</item>
+        <item name="zlp_textColorHint">@color/hint</item>
+        <item name="zlp_hideUnderline">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="zlp_validateOnFocusLost">true</item>
+        <item name="android:inputType">text</item>
+        <item name="android:textSize">13sp</item>
+        <item name="zlp_textColor">@color/black</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
 </resources>

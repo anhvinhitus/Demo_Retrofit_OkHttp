@@ -403,6 +403,8 @@
         <attr name="zlp_iconRight" format="reference" />
         <attr name="zlp_iconPadding" format="dimension" />
         <attr name="zlp_clearButton" format="boolean" />
+        <attr name="zlp_clearButtonSize" format="dimension" />
+        <attr name="zlp_clearButtonPaddingRight" format="dimension" />
         <attr name="zlp_floatingLabelTextSize" format="dimension" />
         <attr name="zlp_floatingLabelTextColor" format="color" />
         <attr name="zlp_bottomTextSize" format="dimension" />

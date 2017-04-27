@@ -21,6 +21,7 @@
     <dimen name="textsize.tiny.t">8sp</dimen>
     <dimen name="textsize.tiny.s">10sp</dimen>
     <dimen name="textsize.tiny">12sp</dimen>
+    <dimen name="textsize.small.s">13sp</dimen>
     <dimen name="textsize.small">14sp</dimen>
     <dimen name="textsize.normal.s">16sp</dimen>
     <dimen name="textsize.normal">18sp</dimen>
