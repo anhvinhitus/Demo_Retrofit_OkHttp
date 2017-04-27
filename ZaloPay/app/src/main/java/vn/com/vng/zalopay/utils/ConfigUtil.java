@@ -86,7 +86,7 @@ public class ConfigUtil {
                 return true;
             }
         } catch (JsonSyntaxException e) {
-            Crashlytics.log(Log.ERROR, "EXCEPTION", String.format("Fail to load config with config: %s", jsonConfig));
+            Timber.e("Fail to load config with config: %s", jsonConfig);
             return false;
         }
 
