@@ -418,9 +418,10 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     }
 
     @Override
-    protected void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage) {
-        GlobalData.getPaymentListener().onUpVersion(pForceUpdate, pVersion, pMessage);
-
+    public void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage) {
+        if(GlobalData.getPaymentListener() != null){
+            GlobalData.getPaymentListener().onUpVersion(pForceUpdate, pVersion, pMessage);
+        }
         if (pForceUpdate) {
             finish();
         }
@@ -505,17 +506,18 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
         showNoticeDialog(new ZPWOnEventConfirmDialogListener() {
                              @Override
                              public void onCancelEvent() {
-                                 GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
-
+                                 if(GlobalData.getPaymentListener() != null){
+                                     GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
+                                 }
                                  finish();
                              }
 
                              @Override
                              public void onOKevent() {
                                  GlobalData.setResultNeedToLinkCard();
-
-                                 GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
-
+                                 if(GlobalData.getPaymentListener() != null){
+                                     GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
+                                 }
                                  finish();
                              }
                          }, GlobalData.getStringResource(RS.string.zpw_string_alert_linkcard_channel_withdraw), GlobalData.getStringResource(RS.string.dialog_linkcard_button),

@@ -259,6 +259,7 @@
     <string name="dialog_close_button">  ĐÓNG  </string>
     <string name="dialog_linkcard_button">  LIÊN KẾT </string>
     <string name="dialog_linkaccount_button">LIÊN KẾT TÀI KHOẢN</string>
+    <string name="dialog_update_versionapp_button">Nâng cấp</string>
 
     <string name="dialog_choose_again_button">NGUỒN KHÁC</string>
 
@@ -548,4 +549,6 @@
     <string name="suffix_numberphone_vcb">3</string>
     <string name="sdk_error_numberphone_sdk_vcb"><![CDATA[Số điện thoại đăng ký Vietcombank <b>%1$s</b> và số điện thoại đăng ký mật khẩu thanh toán Zalo Pay <b>%2$s</b> không giống nhau. Vui lòng kiểm tra lại.]]></string>
     <string name="sdk_vcb_flow_type">1</string>
+    <string name="sdk_warning_version_support_linkchannel"><![CDATA[Vui lòng nâng cấp phiên bản mới nhất để thực hiện liên kết với <b>%1$s</b>]]></string>
+    <string name="sdk_warning_version_support_payment"><![CDATA[Vui lòng nâng cấp phiên bản mới nhất để thực hiện giao dịch với <b>%1$s</b>]]></string>
 </resources>

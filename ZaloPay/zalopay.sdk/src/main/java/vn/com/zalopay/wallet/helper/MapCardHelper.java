@@ -164,29 +164,22 @@ public class MapCardHelper {
         //this is atm
         if (!TextUtils.isEmpty(saveCardInfo.bankcode) && !saveCardInfo.bankcode.equals(Constants.CCCode)) {
             mapCardResult.setCardLogo(CChannelHelper.makeCardIconNameFromBankCode(saveCardInfo.bankcode));
-
             //populate channel name
             bankName = BankCardCheck.getInstance().getDetectedBankName();
-
             if (!TextUtils.isEmpty(bankName) && bankName.startsWith("NH")) {
                 bankName = bankName.substring(2);
-
                 bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card_atm), bankName);
             } else if (!TextUtils.isEmpty(bankName)) {
                 bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), bankName);
             }
-
         }
         //cc
         else {
             CreditCardCheck cardCheck = CreditCardCheck.getInstance();
             cardCheck.detectCard(saveCardInfo.first6cardno);
-
             if (cardCheck.isDetected()) {
                 ECardType cardType = ECardType.fromString(cardCheck.getCodeBankForVerify());
-
                 mapCardResult.setCardLogo(CChannelHelper.makeCardIconNameFromBankCode(cardType.toString()));
-
                 bankName = String.format(GlobalData.getStringResource(RS.string.zpw_save_credit_card), cardCheck.getDetectedBankName());
             }
         }
@@ -196,8 +189,6 @@ public class MapCardHelper {
         }
 
         mapCardResult.setBankName(bankName);
-
-
         GlobalData.getPaymentResult().mapCardResult = mapCardResult;
 
         Log.d("notifyNewMapCardToApp", "===mapCardResult=" + GsonUtils.toJsonString(mapCardResult));

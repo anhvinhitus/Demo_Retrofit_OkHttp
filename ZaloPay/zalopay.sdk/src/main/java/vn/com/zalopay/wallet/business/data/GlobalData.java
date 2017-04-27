@@ -320,10 +320,6 @@ public class GlobalData {
         GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_CLOSE;
     }
 
-    public static void setResultUpgradeAndSave() {
-        GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE_SAVECARD;
-    }
-
     public static void setResultNeedToLinkCard() {
         GlobalData.getPaymentResult().paymentStatus = EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD;
     }

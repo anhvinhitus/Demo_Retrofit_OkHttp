@@ -83,6 +83,13 @@ public class BankCardCheck extends CardCheck {
         return null;
     }
 
+    public String getShortBankName() {
+        if (mSelectedBank != null) {
+            return mSelectedBank.getShortBankName();
+        }
+        return null;
+    }
+
     /***
      * detect bank type
      *

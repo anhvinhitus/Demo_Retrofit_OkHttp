@@ -457,7 +457,6 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     }
 
     protected void onCloseDialogSelection() {
-
     }
 
     protected String getCloseButtonText() {
@@ -478,8 +477,9 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
         showWarningDialog(() -> {
             GlobalData.updateResultNetworkingError(pMessage);
-            GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
-
+            if(GlobalData.getPaymentListener() != null){
+                GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
+            }
             finish();
         }, pMessage);
     }

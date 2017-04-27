@@ -858,14 +858,15 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public void setDetectedCard() {
-
         try {
-            if (isInputBankMaintenance()) {
-                return;
-            }
-
             String bankName = getDetectedBankName();
             String bankCode = getDetectedBankCode();
+
+            setCardNumberHint(bankName);
+
+            if (!TextUtils.isEmpty(bankCode)) {
+                getCardView().switchCardDateHintByBankCode(bankCode);
+            }
 
             //bidv card must paid by mapcard
             if (!GlobalData.isLinkCardChannel() && (getAdapter() instanceof AdapterBankCard)
@@ -874,15 +875,17 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 return;
             }
 
-            setCardNumberHint(bankName);
-
-            if (!TextUtils.isEmpty(bankCode)) {
-                getCardView().switchCardDateHintByBankCode(bankCode);
-            }
-
             //user input bank account
             if (BankAccountHelper.isBankAccount(bankCode) && validateUserLevelBankAccount() && getAdapter() != null && getAdapter().getActivity() != null) {
                 showWarningBankAccount();
+            }
+
+            if (isInputBankMaintenance()) {
+                return;
+            }
+            if (getCardFinder().isDetected() && !getCardFinder().getDetectBankConfig().isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+                showWarningBankVersionSupport();
+                return;
             }
         } catch (Exception e) {
             Log.e(this, e);
@@ -940,6 +943,29 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
         }
 
         return userLevelValid;
+    }
+
+    protected void showWarningBankVersionSupport() {
+        BankConfig bankConfig = getCardFinder().getDetectBankConfig();
+        if (bankConfig == null) {
+            Log.d(this, "bank config is null");
+            return;
+        }
+        String pMessage = GlobalData.isLinkCardChannel() ? GlobalData.getStringResource(RS.string.sdk_warning_version_support_linkchannel) : GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+        pMessage = String.format(pMessage, bankConfig.getShortBankName());
+        getAdapter().getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
+                                                         @Override
+                                                         public void onCancelEvent() {
+                                                             clearCardNumberAndShowKeyBoard();
+                                                         }
+
+                                                         @Override
+                                                         public void onOKevent() {
+                                                             getAdapter().getActivity().notifyUpVersionToApp(false, bankConfig.minappversion, null);
+                                                             getAdapter().getActivity().recycleActivity();
+                                                         }
+                                                     }, pMessage,
+                GlobalData.getStringResource(RS.string.dialog_update_versionapp_button), GlobalData.getStringResource(RS.string.dialog_retry_input_card_button));
     }
 
     protected void showWarningBankAccount() {
@@ -1004,6 +1030,12 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             if (BankAccountHelper.isBankAccount(pBankCode) && getAdapter() != null && getAdapter().getActivity() != null) {
                 showWarningBankAccount();
             }
+
+            if (getCardFinder().isDetected() && !getCardFinder().getDetectBankConfig().isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+                showWarningBankVersionSupport();
+                return;
+            }
+
         } catch (Exception e) {
             Log.e(this, e);
         }

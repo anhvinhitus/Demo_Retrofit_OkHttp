@@ -291,7 +291,7 @@ public abstract class BaseChannelInjector {
 
                         if (BankCardCheck.getInstance().isDetected()) {
                             //populate channel name
-                            String bankName = BankCardCheck.getInstance().getDetectedBankName();
+                            String bankName = BankCardCheck.getInstance().getShortBankName();
 
                             if (TextUtils.isEmpty(bankName)) {
                                 bankName = GlobalData.getStringResource(RS.string.zpw_save_credit_card_default);

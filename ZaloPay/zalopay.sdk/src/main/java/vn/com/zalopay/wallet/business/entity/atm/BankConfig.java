@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.business.entity.atm;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
@@ -34,7 +36,33 @@ public class BankConfig {
 
     public String loginbankurl;
 
+    /***
+     * Bank version support feature
+     * user input card number or select bank channel which not support on older version
+     * then need to show dialog into to user know about newer version
+     */
+    public String minappversion;
+
     public List<BankFunction> functions = null;
+
+    public String getShortBankName() {
+        if (!TextUtils.isEmpty(name) && name.startsWith("NH")) {
+            return name.substring(2);
+        }
+        return name;
+    }
+
+    public boolean isVersionSupport(String pAppVersion) {
+        if (TextUtils.isEmpty(pAppVersion)) {
+            return true;
+        }
+        int minAppVersionSupport = getMinAppVersionSupport();
+        if (minAppVersionSupport == 0) {
+            return true;
+        }
+        pAppVersion = pAppVersion.replace(".", "");
+        return Integer.parseInt(pAppVersion) >= minAppVersionSupport;
+    }
 
     @Override
     public boolean equals(Object object) {
@@ -75,10 +103,10 @@ public class BankConfig {
      * check this bank is active for payment
      * @return
      */
-    public boolean isBankActive()
-    {
+    public boolean isBankActive() {
         return status == Integer.parseInt(EBankStatus.ACTIVE.toString());
     }
+
     /***
      * bank maintenance by function: withdraw, link card...
      *
@@ -136,5 +164,13 @@ public class BankConfig {
 
     public boolean isBankAccount() {
         return supporttype == 2;
+    }
+
+    public int getMinAppVersionSupport() {
+        if (!TextUtils.isEmpty(minappversion)) {
+            String clearMinAppVersion = minappversion.replace(".", "");
+            return Integer.parseInt(clearMinAppVersion);
+        }
+        return 0;
     }
 }

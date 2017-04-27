@@ -6,6 +6,7 @@ import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.RS;
+import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
 import vn.com.zalopay.wallet.business.entity.enumeration.EBankFunction;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
@@ -13,10 +14,10 @@ import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
-import vn.com.zalopay.wallet.listener.ZPWOnEventDialogListener;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.Log;
+import vn.com.zalopay.wallet.utils.ZPWUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentGatewayActivity;
@@ -33,13 +34,23 @@ public class ChannelStartProcessor extends SingletonBase {
         public void onProcessing() {
             showProgressBar(true, GlobalData.getStringResource(RS.string.zpw_string_alert_loading_bank));
         }
+
         @Override
         public void onComplete() {
-            if (!isBankMaintenance() && isBankSupport()) {
+            String pBankCode = mChannel.bankcode;
+            if (!isBankVersionSupport(pBankCode)) {
+                BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(pBankCode);
+                if (bankConfig != null) {
+                    String pMessage = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+                    pMessage = String.format(pMessage, bankConfig.getShortBankName());
+                    showSupportBankVersionDialog(pMessage, bankConfig.minappversion);
+                }
+            } else if (!isBankMaintenance(pBankCode) && isBankSupport()) {
                 startChannel();
             }
             showProgressBar(false, null);
         }
+
         @Override
         public void onError(String pMessage) {
             alertNetworking();
@@ -53,8 +64,7 @@ public class ChannelStartProcessor extends SingletonBase {
 
     public static ChannelStartProcessor getInstance(PaymentGatewayActivity pOwnerActivity) {
 
-        if (ChannelStartProcessor._object == null)
-        {
+        if (ChannelStartProcessor._object == null) {
             ChannelStartProcessor._object = new ChannelStartProcessor(pOwnerActivity);
         }
         return ChannelStartProcessor._object;
@@ -78,11 +88,10 @@ public class ChannelStartProcessor extends SingletonBase {
      * start payment channel
      */
     public void startGateWay() {
+        Log.d(this, "user selected channel for payment " + GsonUtils.toJsonString(mChannel));
         // Lost connection,show alert dialog
-        if (getActivity() != null && !ConnectionUtil.isOnline(getActivity())) {
-            if (getActivity() != null && !getActivity().isFinishing())
-                getActivity().askToOpenSettingNetwoking(null);
-
+        if (getActivity() != null && !ConnectionUtil.isOnline(getActivity()) && getActivity() != null) {
+            getActivity().askToOpenSettingNetwoking(null);
             return;
         }
 
@@ -94,23 +103,15 @@ public class ChannelStartProcessor extends SingletonBase {
             }
             //withdraw
             if (GlobalData.isWithDrawChannel()) {
-                startChannel();
+                BankLoader.loadBankList(mLoadBankListListener);
                 return;
             }
 
             //validate in maptable
-            Log.d(this,"table map payment "+ GsonUtils.toJsonString(GlobalData.getUserProfileList()));
-            Log.d(this,"user selected channel for payment "+ GsonUtils.toJsonString(mChannel));
+            Log.d(this, "table map payment " + GsonUtils.toJsonString(GlobalData.getUserProfileList()));
             int iCheck = GlobalData.checkPermissionByChannelMap(mChannel.pmcid);
-            Log.d(this,"check result from map "+ iCheck);
             if (iCheck == Constants.LEVELMAP_INVALID) {
-                getActivity().showWarningDialog(new ZPWOnEventDialogListener() {
-                    @Override
-                    public void onOKevent() {
-                        getActivity().recycleGateway();
-                    }
-                }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
-
+                getActivity().showWarningDialog(() -> getActivity().recycleGateway(), GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
                 return;
             } else if (iCheck == Constants.LEVELMAP_BAN && getChannel().isBankAccountMap()) {
                 confirmUpgradeLevel(GlobalData.getStringResource(RS.string.zpw_string_alert_profilelevel_update_and_before_payby_bankaccount));
@@ -131,8 +132,7 @@ public class ChannelStartProcessor extends SingletonBase {
             if (mChannel != null && mChannel.isBankAccount() && !mChannel.isBankAccountMap) {
                 //use don't have vietcombank link
                 if (!BankAccountHelper.hasBankAccountOnCache(GlobalData.getPaymentInfo().userInfo.zaloPayUserId, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank)) && getActivity() != null) {
-                    //callback bankcode to app , app will direct user to link bank account to right that bank
-                    DBankAccount dBankAccount = new DBankAccount();
+                    DBankAccount dBankAccount = new DBankAccount(); //callback bankcode to app , app will direct user to link bank account to right that bank
                     dBankAccount.bankcode = GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank);
                     GlobalData.getPaymentInfo().mapBank = dBankAccount;
 
@@ -145,30 +145,45 @@ public class ChannelStartProcessor extends SingletonBase {
                 }
                 return;
             }
-            //reload bank account
+            //reload bank list
             if (GlobalData.isMapCardChannel() || GlobalData.isMapBankAccountChannel()) {
-                try {
-                    BankLoader.loadBankList(mLoadBankListListener);
-                } catch (Exception e) {
-                    alertNetworking();
-
-                    Log.e(this, e);
-                }
+                BankLoader.loadBankList(mLoadBankListListener);
+            } else if (!mChannel.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()))) {
+                String message = GlobalData.getStringResource(RS.string.sdk_warning_version_support_payment);
+                showSupportBankVersionDialog(String.format(message,mChannel.pmcname), mChannel.minappversion);
             } else {
                 startChannel();
             }
 
         } catch (Exception ex) {
             Log.e(this, ex);
-
-            getActivity().showWarningDialog(new ZPWOnEventDialogListener() {
-                @Override
-                public void onOKevent() {
-                    getActivity().recycleGateway();
-                }
-            }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
+            getActivity().showWarningDialog(() -> getActivity().recycleGateway(), GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
             return;
         }
+    }
+
+    private void showSupportBankVersionDialog(String pMessage, String pMinVersion) {
+        getActivity().showConfirmDialog(new ZPWOnEventConfirmDialogListener() {
+                                            @Override
+                                            public void onCancelEvent() {
+                                            }
+
+                                            @Override
+                                            public void onOKevent() {
+                                                getActivity().notifyUpVersionToApp(false, pMinVersion, null);
+                                                getActivity().recycleActivity();
+                                            }
+                                        }, pMessage,
+                GlobalData.getStringResource(RS.string.dialog_update_versionapp_button), GlobalData.getStringResource(RS.string.dialog_close_button));
+
+    }
+
+    private boolean isBankVersionSupport(String pBankCode) {
+        BankConfig bankConfig = BankLoader.getInstance().getBankByBankCode(pBankCode);
+        if (bankConfig != null) {
+            return bankConfig.isVersionSupport(ZPWUtils.getAppVersion(GlobalData.getAppContext()));
+        }
+        return true;
     }
 
     /**
@@ -176,11 +191,11 @@ public class ChannelStartProcessor extends SingletonBase {
      *
      * @return
      */
-    private boolean isBankMaintenance() {
+    private boolean isBankMaintenance(String pBankCode) {
         if (GlobalData.getCurrentBankFunction() == EBankFunction.PAY) {
             GlobalData.getBankFunctionPay();
         }
-        return getActivity().showBankMaintenance(GlobalData.getPaymentInfo().mapBank.bankcode);
+        return getActivity().showBankMaintenance(pBankCode);
     }
 
     /**
@@ -189,8 +204,9 @@ public class ChannelStartProcessor extends SingletonBase {
      * @return
      */
     private boolean isBankSupport() {
-        return getActivity().showBankSupport(GlobalData.getPaymentInfo().mapBank.bankcode);
+        return getActivity().showBankSupport(mChannel.bankcode);
     }
+
     /**
      * Show dialog confirm upgrade level
      */
@@ -226,14 +242,8 @@ public class ChannelStartProcessor extends SingletonBase {
         showProgressBar(false, null);
         BasePaymentActivity activity = (BasePaymentActivity) BasePaymentActivity.getCurrentActivity();
         if (activity != null && activity instanceof PaymentGatewayActivity && !activity.isFinishing()) {
-            activity.showWarningDialog(new ZPWOnEventDialogListener() {
-                @Override
-                public void onOKevent() {
-                    getActivity().recycleGateway();
-                }
-            }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+            activity.showWarningDialog(() -> getActivity().recycleGateway(), GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
         }
-
     }
 
     private void startChannel() {

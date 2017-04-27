@@ -1,5 +1,7 @@
 package vn.com.zalopay.wallet.business.entity.gatewayinfo;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 
 import vn.com.zalopay.wallet.business.behavior.view.paymentfee.CBaseCalculateFee;
@@ -34,6 +36,13 @@ public class DPaymentChannel {
     public boolean isBankAccountMap = false;
 
     /***
+     * Bank version support feature
+     * user input card number or select bank channel which not support on older version
+     * then need to show dialog into to user know about newer version
+     */
+    public String minappversion;
+
+    /***
      * rule - still show channel not allow in channel list (status = 0) , each channel have 2 policy to allow or not
      * 1. user level - depend on user table map
      * 2. transaction amount not in range supported by channel
@@ -49,7 +58,6 @@ public class DPaymentChannel {
 
     /***
      * copy constructor
-     *
      * @param channel
      */
     public DPaymentChannel(DPaymentChannel channel) {
@@ -72,11 +80,11 @@ public class DPaymentChannel {
         this.isAllowByAmount = channel.isAllowByAmount;
         this.isAllowByLevel = channel.isAllowByLevel;
         this.isBankAccountMap = channel.isBankAccountMap;
+        this.minappversion = channel.minappversion;
     }
 
     /***
      * require otp depend on transaction amount
-     *
      * @return
      */
     public boolean isNeedToCheckTransactionAmount() {
@@ -203,4 +211,23 @@ public class DPaymentChannel {
         return isBankAccountMap;
     }
 
+    public int getMinAppVersionSupport() {
+        if (!TextUtils.isEmpty(minappversion)) {
+            String clearMinAppVersion = minappversion.replace(".", "");
+            return Integer.parseInt(clearMinAppVersion);
+        }
+        return 0;
+    }
+
+    public boolean isVersionSupport(String pAppVersion) {
+        if (TextUtils.isEmpty(pAppVersion)) {
+            return true;
+        }
+        int minAppVersionSupport = getMinAppVersionSupport();
+        if (minAppVersionSupport == 0) {
+            return true;
+        }
+        pAppVersion = pAppVersion.replace(".", "");
+        return Integer.parseInt(pAppVersion) >= minAppVersionSupport;
+    }
 }

@@ -48,6 +48,10 @@ public class RS {
     }
 
     public static final class string {
+        public static final String dialog_update_versionapp_button = "dialog_update_versionapp_button";
+        public static final String sdk_warning_version_support_linkchannel = "sdk_warning_version_support_linkchannel";
+        public static final String sdk_warning_version_support_payment = "sdk_warning_version_support_payment";
+
         public static final String sdk_vcb_flow_type = "sdk_vcb_flow_type";
         public static final String zpw_string_special_bankscript_vcb_auto_select_service = "zpw_string_special_bankscript_vcb_auto_select_service";
         public static final String sdk_error_numberphone_sdk_vcb = "sdk_error_numberphone_sdk_vcb";

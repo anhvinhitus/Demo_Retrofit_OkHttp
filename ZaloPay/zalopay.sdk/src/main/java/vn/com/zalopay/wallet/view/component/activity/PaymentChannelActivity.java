@@ -186,9 +186,10 @@ public class PaymentChannelActivity extends BasePaymentActivity {
     }
 
     @Override
-    protected void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage) {
-        GlobalData.getPaymentListener().onUpVersion(pForceUpdate, pVersion, pMessage);
-
+    public void notifyUpVersionToApp(boolean pForceUpdate, String pVersion, String pMessage) {
+        if(GlobalData.getPaymentListener() != null){
+            GlobalData.getPaymentListener().onUpVersion(pForceUpdate, pVersion, pMessage);
+        }
         if (pForceUpdate) {
             recycleActivity();
         }
@@ -759,7 +760,6 @@ public class PaymentChannelActivity extends BasePaymentActivity {
             GlobalData.getChannelActivityCallBack().onExitAction();
             Log.d(this, "===recycleActivity===GlobalData.getChannelActivityCallBack().onExitAction()");
         } else if (GlobalData.getPaymentListener() != null) {
-            //callback to app
             GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
             Log.d(this, "===recycleActivity===GlobalData.getPaymentListener() != null");
         } else {
