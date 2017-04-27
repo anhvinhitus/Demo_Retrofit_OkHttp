@@ -46,16 +46,27 @@ public class NetworkCollector implements IFeedbackCollector {
      */
     @Override
     public JSONObject doInBackground() {
+        JSONObject retVal = new JSONObject();
+
         try {
             TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+            if (telephonyManager != null) {
+                retVal.put("mno", telephonyManager.getNetworkOperatorName());
+            } else {
+                retVal.put("mno", "UNKNOWN");
+            }
+
             ConnectivityManager connectivityManager = (ConnectivityManager) mContext
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-            JSONObject retVal = new JSONObject();
-            retVal.put("connection_state", networkInfo.getState());
-            retVal.put("connection_type", networkInfo.getTypeName());
-            retVal.put("mno", telephonyManager.getNetworkOperatorName());
+            if (networkInfo != null) {
+                retVal.put("connection_state", networkInfo.getState());
+                retVal.put("connection_type", networkInfo.getTypeName());
+            } else {
+                retVal.put("connection_state", NetworkInfo.State.DISCONNECTED);
+                retVal.put("connection_type", "UNKNOWN");
+            }
 
             return retVal;
         } catch (JSONException e) {
