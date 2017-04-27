@@ -139,6 +139,8 @@ public class ZPEditText extends AppCompatEditText {
     private boolean validateOnFocusLost;
 
     private boolean showClearButton;
+    private int clearButtonSize;
+    private int clearButtonPaddingRight;
     private boolean firstShown;
     private int iconSize;
     private int iconOuterWidth;
@@ -256,7 +258,12 @@ public class ZPEditText extends AppCompatEditText {
         underlineColor = typedArray.getColor(R.styleable.ZPEditText_zlp_underlineColor, -1);
         autoValidate = typedArray.getBoolean(R.styleable.ZPEditText_zlp_autoValidate, false);
         showClearButton = typedArray.getBoolean(R.styleable.ZPEditText_zlp_clearButton, false);
+        clearButtonSize = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_clearButtonSize, 0);
+        clearButtonPaddingRight = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_clearButtonPaddingRight, -1);
         clearButtonBitmaps = BitmapFactory.decodeResource(getResources(), R.drawable.ic_remove_circle);
+        if(clearButtonSize != 0) {
+            clearButtonBitmaps = Bitmap.createScaledBitmap(clearButtonBitmaps, clearButtonSize, clearButtonSize, false);
+        }
         iconPadding = typedArray.getDimensionPixelSize(R.styleable.ZPEditText_zlp_iconPadding, getPixel(2));
         floatingLabelAlwaysShown = typedArray.getBoolean(R.styleable.ZPEditText_zlp_floatingLabelAlwaysShown, false);
         validateOnFocusLost = typedArray.getBoolean(R.styleable.ZPEditText_zlp_validateOnFocusLost, false);
@@ -913,7 +920,11 @@ public class ZPEditText extends AppCompatEditText {
         if (hasFocus() && showClearButton && !TextUtils.isEmpty(getText()) && isEnabled()) {
             int buttonLeft = endX;
             Bitmap clearButtonBitmap = clearButtonBitmaps;
-            buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) / 2;
+            if(clearButtonPaddingRight != -1) {
+                buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) - clearButtonPaddingRight;
+            } else {
+                buttonLeft += (iconOuterWidth - clearButtonBitmap.getWidth()) / 2;
+            }
             int iconTop = lineStartY + bottomSpacing - iconOuterHeight + (iconOuterHeight - clearButtonBitmap.getHeight()) / 2;
             canvas.drawBitmap(clearButtonBitmap, buttonLeft, iconTop, paint);
         }
