@@ -320,12 +320,12 @@ public class ZaloPayFragment extends RuntimePermissionFragment implements IZaloP
 
     @OnClick(R.id.header_view_top_search)
     public void onClickSearchOnToolbar() {
-        showToast("Event search clicked!");
+        navigator.startSearchCategoryActivity(getContext());
     }
 
     @OnClick(R.id.header_top_rl_search_view)
     public void onClickSearchViewOnToolbar() {
-        showToast("Event search clicked");
+        navigator.startSearchCategoryActivity(getContext());
     }
 
     @Override

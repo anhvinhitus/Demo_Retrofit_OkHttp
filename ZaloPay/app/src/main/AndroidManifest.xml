@@ -390,6 +390,10 @@
             android:label="@string/title_activity_link_bank"/>
 
         <activity
+            android:name=".searchcategory.SearchCategoryActivity"
+            android:label="@string/title.activity.search.category"/>
+
+        <activity
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
             android:exported="false"/>
 

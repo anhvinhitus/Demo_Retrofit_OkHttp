@@ -52,6 +52,7 @@ import vn.com.vng.zalopay.paymentapps.ui.PaymentApplicationActivity;
 import vn.com.vng.zalopay.protect.ui.ProtectAccountActivity;
 import vn.com.vng.zalopay.react.Helpers;
 import vn.com.vng.zalopay.scanners.ui.ScanToPayActivity;
+import vn.com.vng.zalopay.searchcategory.SearchCategoryActivity;
 import vn.com.vng.zalopay.service.UserSession;
 import vn.com.vng.zalopay.transfer.model.TransferObject;
 import vn.com.vng.zalopay.transfer.ui.ReceiveMoneyActivity;
@@ -516,6 +517,11 @@ public class Navigator implements INavigator {
 
     public void startInvitationCodeActivity(Context context) {
         Intent intent = new Intent(context, InvitationCodeActivity.class);
+        context.startActivity(intent);
+    }
+
+    public void startSearchCategoryActivity(Context context) {
+        Intent intent = new Intent(context, SearchCategoryActivity.class);
         context.startActivity(intent);
     }
 
