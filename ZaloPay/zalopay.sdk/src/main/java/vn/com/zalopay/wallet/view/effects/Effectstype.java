@@ -5,12 +5,12 @@ public enum Effectstype {
 
     private Class<? extends BaseEffects> effectsClazz;
 
-    private Effectstype(Class<? extends BaseEffects> mclass) {
+    Effectstype(Class<? extends BaseEffects> mclass) {
         effectsClazz = mclass;
     }
 
     public BaseEffects getAnimator() {
-        BaseEffects bEffects = null;
+        BaseEffects bEffects;
         try {
             bEffects = effectsClazz.newInstance();
         } catch (ClassCastException e) {

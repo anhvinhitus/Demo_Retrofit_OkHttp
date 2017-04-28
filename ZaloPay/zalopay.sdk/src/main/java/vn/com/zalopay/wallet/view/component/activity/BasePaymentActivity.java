@@ -108,7 +108,7 @@ import vn.com.zalopay.wallet.view.custom.VPaymentValidDateEditText;
 import vn.com.zalopay.wallet.view.custom.topsnackbar.TSnackbar;
 
 public abstract class BasePaymentActivity extends FragmentActivity {
-    private static Stack<BasePaymentActivity> mActivityStack = new Stack<BasePaymentActivity>();//stack to keep activity
+    private static Stack<BasePaymentActivity> mActivityStack = new Stack<>();//stack to keep activity
     public boolean mIsBackClick = true;
     public boolean processingOrder = false;//this is flag prevent user back when user is submitting trans,authen payer,getstatus
     protected CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -154,7 +154,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     ZPWOnProgressDialogTimeoutListener mProgressDialogTimeoutListener = new ZPWOnProgressDialogTimeoutListener() {
         @Override
         public void onProgressTimeout() {
-            final WeakReference<Activity> activity = new WeakReference<Activity>(BasePaymentActivity.getCurrentActivity());
+            final WeakReference<Activity> activity = new WeakReference<>(BasePaymentActivity.getCurrentActivity());
             if (activity.get() == null || activity.get().isFinishing()) {
                 Log.d(this, "===mProgressDialogTimeoutListener===activity == null || activity.isFinishing()");
                 return;
@@ -413,7 +413,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 mActivityStack.get(0).mIsBackClick = pAttr[0];
                 mActivityStack.get(1).mIsBackClick = pAttr[0];
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -570,7 +570,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             message = GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error);
         }
 
-        showWarningDialog(() -> recycleActivity(), message);
+        showWarningDialog(this::recycleActivity, message);
     }
 
     public void showDialogWarningLinkCardAndResetCardNumber() {
@@ -732,15 +732,12 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (view != null && view instanceof TextView) {
                 ((TextView) view).setTextColor(pColor);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
     public boolean isVisible(View view) {
-        if (view == null) {
-            return false;
-        }
-        return view.getVisibility() == View.VISIBLE;
+        return view != null && view.getVisibility() == View.VISIBLE;
     }
 
     public void setTextHtml(int pId, String pHtmlText) {
@@ -749,7 +746,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             if (view != null && view instanceof TextView) {
                 ((TextView) view).setText(Html.fromHtml(pHtmlText));
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -926,20 +923,17 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                 return;
             }
             numberOfRetryOpenNetwoking++;
-            DialogManager.showSweetDialog(activity, SweetAlertDialog.NO_INTERNET, getString(R.string.zingpaysdk_alert_title_nointernet), getString(R.string.zingpaysdk_alert_content_nointernet), new ZPWOnSweetDialogListener() {
-                @Override
-                public void onClickDiaLog(int pIndex) {
-                    if (pIndex == 0) {
-                        if (pListener != null)
-                            pListener.onCloseNetworkingDialog();
+            DialogManager.showSweetDialog(activity, SweetAlertDialog.NO_INTERNET, getString(R.string.zingpaysdk_alert_title_nointernet), getString(R.string.zingpaysdk_alert_content_nointernet), pIndex -> {
+                if (pIndex == 0) {
+                    if (pListener != null)
+                        pListener.onCloseNetworkingDialog();
 
-                    } else if (pIndex == 1) {
-                        startActivity(new Intent(Settings.ACTION_SETTINGS));
-                        if (pListener != null)
-                            pListener.onOpenSettingDialogClicked();
-                    }
+                } else if (pIndex == 1) {
+                    startActivity(new Intent(Settings.ACTION_SETTINGS));
+                    if (pListener != null)
+                        pListener.onOpenSettingDialogClicked();
                 }
-            }, new String[]{GlobalData.getStringResource(RS.string.dialog_turn_off), GlobalData.getStringResource(RS.string.dialog_turn_on)});
+            }, GlobalData.getStringResource(RS.string.dialog_turn_off), GlobalData.getStringResource(RS.string.dialog_turn_on));
         }
     }
 
@@ -1106,7 +1100,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setVisible(R.id.zpw_notransid_textview, false);
         } else {
             setVisible(R.id.zpw_transaction_wrapper, false);
-            setVisible(R.id.zpw_notransid_textview, (GlobalData.shouldNativeWebFlow() || GlobalData.isUnLinkAccFlow()) ? false : true);//hide all if unlink account
+            setVisible(R.id.zpw_notransid_textview, !(GlobalData.shouldNativeWebFlow() || GlobalData.isUnLinkAccFlow()));//hide all if unlink account
         }
         applyFont(findViewById(R.id.zpw_textview_transaction), GlobalData.getStringResource(RS.string.zpw_font_medium));
         addOrRemoveProperty(R.id.payment_method_name, RelativeLayout.CENTER_IN_PARENT);
@@ -1151,7 +1145,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
             setVisible(R.id.zpw_notransid_textview, false);
         } else {
             setVisible(R.id.zpw_transaction_wrapper, false);
-            setVisible(R.id.zpw_notransid_textview, (GlobalData.shouldNativeWebFlow() || GlobalData.isUnLinkAccFlow()) ? false : true);//hide all if unlink account
+            setVisible(R.id.zpw_notransid_textview, !(GlobalData.shouldNativeWebFlow() || GlobalData.isUnLinkAccFlow()));//hide all if unlink account
         }
         setVisible(R.id.zpw_pay_info_buttom_view, true);
         if (GlobalData.isRedPacketChannel()) {
@@ -1624,7 +1618,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -1922,7 +1916,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
                 textInputLayout.setHint(!TextUtils.isEmpty(pMessage) ? pMessage : (textInputLayout.getTag() != null ? textInputLayout.getTag().toString() : null));
 
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }
@@ -1977,7 +1971,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
 
                 textInputLayout.setHint(pError);
 
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }

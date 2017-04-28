@@ -50,12 +50,9 @@ public class BallPulseIndicator extends BaseIndicatorController {
             scaleAnim.setRepeatCount(-1);
             scaleAnim.setStartDelay(delays[i]);
 
-            scaleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    scaleFloats[index] = (float) animation.getAnimatedValue();
-                    postInvalidate();
-                }
+            scaleAnim.addUpdateListener(animation -> {
+                scaleFloats[index] = (float) animation.getAnimatedValue();
+                postInvalidate();
             });
             scaleAnim.start();
             animators.add(scaleAnim);

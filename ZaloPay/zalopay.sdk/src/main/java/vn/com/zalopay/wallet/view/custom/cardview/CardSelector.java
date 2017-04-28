@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.ArrayMap;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import vn.com.zalopay.wallet.R;
@@ -28,24 +27,6 @@ public class CardSelector {
     private int mResCenterImageId;
     private int mResLogoId;
     private CardColorText mCardColorText;
-    private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
-        @Override
-        public void onProcessing() {
-            Log.d(this, "===loading bank list===");
-        }
-
-        @Override
-        public void onComplete() {
-            Log.d(this, "===load bank list onComplete===");
-            populateCardSelector();
-        }
-
-        @Override
-        public void onError(String pMessage) {
-
-            Log.d(this, "===load bank list error " + pMessage);
-        }
-    };
 
     public CardSelector() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -58,6 +39,24 @@ public class CardSelector {
             populateCardSelector();
         } else {
             //reload bank map
+            ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
+                @Override
+                public void onProcessing() {
+                    Log.d(this, "===loading bank list===");
+                }
+
+                @Override
+                public void onComplete() {
+                    Log.d(this, "===load bank list onComplete===");
+                    populateCardSelector();
+                }
+
+                @Override
+                public void onError(String pMessage) {
+
+                    Log.d(this, "===load bank list error " + pMessage);
+                }
+            };
             BankLoader.loadBankList(mLoadBankListListener);
         }
 
@@ -109,7 +108,7 @@ public class CardSelector {
 
     protected CardSelector createCardSelector(String pBankCode) {
         CardSelector card = null;
-        CardColorText cardColorText = null;
+        CardColorText cardColorText;
         //Bitmap bitmap = ResourceManager.getImage(String.format("bank_%s%s",pBankCode, Constants.BITMAP_EXTENSION));
 
         if (pBankCode.equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_viettinbank))) {
@@ -154,9 +153,8 @@ public class CardSelector {
 
     protected void populateCardSelector() {
         if (BankLoader.existedBankListOnMemory()) {
-            Iterator it = BankLoader.mapBank.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
+            for (Object o : BankLoader.mapBank.entrySet()) {
+                Map.Entry pair = (Map.Entry) o;
 
                 String bankCode = String.valueOf(pair.getValue());
 

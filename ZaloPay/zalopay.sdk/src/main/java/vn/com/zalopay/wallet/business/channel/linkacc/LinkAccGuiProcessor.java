@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.business.channel.linkacc;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -12,7 +11,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -160,7 +158,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     };
 
-    private FrameLayout llRoot;
     private View submitButton;
     private boolean isVisibilitySpinner = false;
     private View.OnClickListener mSpinnerButtonClickListener = new View.OnClickListener() {
@@ -245,12 +242,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
         isVisibilitySpinner = false;
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setView(R.id.zpw_vcb_dialog_spinner, false);
-            }
-        }, 300);
+        handler.postDelayed(() -> setView(R.id.zpw_vcb_dialog_spinner, false), 300);
     }
 
     public boolean getVisibilitySpinnerView() {
@@ -301,11 +293,8 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         }
     }
 
-    public boolean isProgressVisible(){
-        if(pgbProgress != null){
-            return pgbProgress.getVisibility() == View.VISIBLE;
-        }
-        return false;
+    public boolean isProgressVisible() {
+        return pgbProgress != null && pgbProgress.getVisibility() == View.VISIBLE;
     }
 
     public LinearLayout getLlRoot_linear_layout() {
@@ -350,15 +339,12 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         loginHolder.edtCaptchaTextInputLayout = (TextInputLayout) mAdapter.getActivity().findViewById(R.id.edt_login_captcha_textInputLayout);
         loginHolder.edtCaptcha.setGroupText(false);
         loginHolder.srvScrollView = (ScrollView) mAdapter.getActivity().findViewById(R.id.zpw_scrollview_container);
-        loginHolder.edtCaptcha.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    mAdapter.onClickSubmission();
-                    return true;
-                }
-                return false;
+        loginHolder.edtCaptcha.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                mAdapter.onClickSubmission();
+                return true;
             }
+            return false;
         });
 
         loginHolder.imgCaptcha = (ImageView) mAdapter.getActivity().findViewById(R.id.img_login_captcha);
@@ -401,15 +387,12 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
             }
         });
         registerHolder.edtCaptcha.setGroupText(false);
-        registerHolder.edtCaptcha.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    mAdapter.onClickSubmission();
-                    return true;
-                }
-                return false;
+        registerHolder.edtCaptcha.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                mAdapter.onClickSubmission();
+                return true;
             }
+            return false;
         });
         registerHolder.imgCaptcha = (ImageView) mAdapter.getActivity().findViewById(R.id.img_register_captcha);
         registerHolder.webCaptcha = (WebView) mAdapter.getActivity().findViewById(R.id.web_register_captcha);
@@ -419,15 +402,12 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         confirmOTPHolder.llConfirmOTP = (LinearLayout) mAdapter.getActivity().findViewById(R.id.zpw_vcb_otp);
         confirmOTPHolder.edtConfirmOTP = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_otp_OTP);
         confirmOTPHolder.edtConfirmOTP.setGroupText(false);
-        confirmOTPHolder.edtConfirmOTP.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    mAdapter.onClickSubmission();
-                    return true;
-                }
-                return false;
+        confirmOTPHolder.edtConfirmOTP.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                mAdapter.onClickSubmission();
+                return true;
             }
+            return false;
         });
 
         // new gui init unregister
@@ -439,15 +419,12 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         unregisterHolder.edtPhoneNumber.setKeyListener(null);
         unregisterHolder.edtPassword = (VPaymentDrawableEditText) mAdapter.getActivity().findViewById(R.id.edt_unregister_password);
         unregisterHolder.edtPassword.setGroupText(false);
-        unregisterHolder.edtPassword.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    mAdapter.onClickSubmission();
-                    return true;
-                }
-                return false;
+        unregisterHolder.edtPassword.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                mAdapter.onClickSubmission();
+                return true;
             }
+            return false;
         });
 
         // message
@@ -456,8 +433,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         // progress
         pgbProgress = (ProgressBar) mAdapter.getActivity().findViewById(R.id.pgb_progress);
 
-        //
-        llRoot = (FrameLayout) mAdapter.getActivity().findViewById(R.id.ll_test_rootview);
         submitButton = mAdapter.getActivity().findViewById(R.id.zpw_vcb_submit);
 
         // set group text
@@ -526,13 +501,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html><html><head></head><body style='margin:0;padding:0'><img src='").append(pUrl)
                 .append("' style='margin:0;padding:0;' width='120px' alt='' /></body>");
-        getLoginHolder().getWebCaptcha().setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+        getLoginHolder().getWebCaptcha().setOnTouchListener((v, event) -> true);
 
         WebSettings webSettings = getLoginHolder().getWebCaptcha().getSettings();
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
@@ -581,13 +550,7 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
         StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html><html><head></head><body style='margin:0;padding:0'><img src='").append(pUrl)
                 .append("' style='margin:0;padding:0;' width='120px' alt='' /></body>");
-        getRegisterHolder().getWebCaptcha().setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+        getRegisterHolder().getWebCaptcha().setOnTouchListener((v, event) -> true);
 
         WebSettings webSettings = getRegisterHolder().getWebCaptcha().getSettings();
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
@@ -646,11 +609,10 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public void setWalletList(ArrayList<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(mAdapter.getActivity(),
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mAdapter.getActivity(),
                     android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getRegisterHolder().getSpnWalletType().setAdapter(adapter);
-            return;
         }
     }
 
@@ -659,37 +621,30 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public void setAccNumList(ArrayList<String> pList) {
         if (pList != null) {
-            getRegisterHolder().getSpnAccNumberDefault().setAdapter(new ArrayAdapter<String>(mAdapter.getActivity(),
+            getRegisterHolder().getSpnAccNumberDefault().setAdapter(new ArrayAdapter<>(mAdapter.getActivity(),
                     android.R.layout.simple_spinner_item, pList));
             getRegisterHolder().getSpnAccNumberDefault().setClickable(true);
-            getRegisterHolder().getSpnAccNumberDefault().setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
+            getRegisterHolder().getSpnAccNumberDefault().setOnTouchListener((view, motionEvent) -> {
 
-                    // TODO: code here to show dialog_spinner
+                // TODO: code here to show dialog_spinner
 
-                    showDialogSpinnerView();
-                    if (getNumberPickerView() != null) {
-                        NumberPicker picker = (NumberPicker) getNumberPickerView();
-                        picker.setMinValue(0);
-                        picker.setMaxValue(getRegisterHolder().getSpnAccNumberDefault().getCount() - 1);
-                        picker.setDisplayedValues(SpinnerUtils.getItems(getRegisterHolder().getSpnAccNumberDefault()));
-                        picker.setWrapSelectorWheel(false);
-                        picker.setValue(getRegisterHolder().getSpnAccNumberDefault().getSelectedItemPosition());
-                        picker.setOnScrollListener(new NumberPicker.OnScrollListener() {
-                            @Override
-                            public void onScrollStateChange(NumberPicker numberPicker, int i) {
-                                // selection position i
-                                mPositionSpn = numberPicker.getValue();
-                            }
-                        });
-                    }
-                    return true;
+                showDialogSpinnerView();
+                if (getNumberPickerView() != null) {
+                    NumberPicker picker = (NumberPicker) getNumberPickerView();
+                    picker.setMinValue(0);
+                    picker.setMaxValue(getRegisterHolder().getSpnAccNumberDefault().getCount() - 1);
+                    picker.setDisplayedValues(SpinnerUtils.getItems(getRegisterHolder().getSpnAccNumberDefault()));
+                    picker.setWrapSelectorWheel(false);
+                    picker.setValue(getRegisterHolder().getSpnAccNumberDefault().getSelectedItemPosition());
+                    picker.setOnScrollListener((numberPicker, i) -> {
+                        // selection position i
+                        mPositionSpn = numberPicker.getValue();
+                    });
                 }
+                return true;
             });
 
 
-            return;
         }
     }
 
@@ -699,7 +654,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     public void setAccNum(ArrayList<String> pList) {
         if (pList != null) {
             getRegisterHolder().getEdtAccNumDefault().setText(pList.get(0));
-            return;
         }
     }
 
@@ -708,11 +662,10 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public void setPhoneNumList(List<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(mAdapter.getActivity(),
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mAdapter.getActivity(),
                     android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getRegisterHolder().getSpnPhoneNumber().setAdapter(adapter);
-            return;
         }
     }
 
@@ -722,7 +675,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     public void setPhoneNum(List<String> pList) {
         if (pList != null) {
             getRegisterHolder().getEdtPhoneNum().setText(pList.get(0));
-            return;
         }
     }
 
@@ -731,11 +683,10 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public void setOtpValidList(ArrayList<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(mAdapter.getActivity(),
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mAdapter.getActivity(),
                     android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getRegisterHolder().getSpnOTPValidType().setAdapter(adapter);
-            return;
         }
     }
 
@@ -764,11 +715,10 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public void setWalletUnRegList(List<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(mAdapter.getActivity(),
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mAdapter.getActivity(),
                     android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getUnregisterHolder().getSpnWalletType().setAdapter(adapter);
-            return;
         }
     }
 
@@ -777,11 +727,10 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
      */
     public void setPhoneNumUnRegList(List<String> pList) {
         if (pList != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(mAdapter.getActivity(),
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mAdapter.getActivity(),
                     android.R.layout.simple_spinner_item, pList);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             getUnregisterHolder().getSpnPhoneNumber().setAdapter(adapter);
-            return;
         }
     }
 
@@ -791,7 +740,6 @@ public class LinkAccGuiProcessor extends CardGuiProcessor {
     public void setPhoneNumUnReg(List<String> pList) {
         if (pList != null) {
             getUnregisterHolder().getEdtPhoneNumber().setText(pList.get(0));
-            return;
         }
     }
 

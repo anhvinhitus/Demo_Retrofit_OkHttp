@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.view.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.text.TextUtils;
 
 import java.util.ArrayList;
 

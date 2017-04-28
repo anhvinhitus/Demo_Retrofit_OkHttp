@@ -57,7 +57,7 @@ public class AppInfoTask extends BaseTask<DAppInfoResponse> {
                     for (DChannelMapApp channelMap : pResponse.transtypepmcs) {
                         minValue = BaseChannelInjector.MIN_VALUE_CHANNEL;
                         maxValue = BaseChannelInjector.MAX_VALUE_CHANNEL;
-                        ArrayList<String> mapAppChannelIDList = new ArrayList<String>();
+                        ArrayList<String> mapAppChannelIDList = new ArrayList<>();
                         String keyMap = mAppId + Constants.UNDERLINE + channelMap.transtype;
                         for (DPaymentChannel channel : channelMap.pmclist) {
                             String appChannelID = keyMap + Constants.UNDERLINE + channel.pmcid;

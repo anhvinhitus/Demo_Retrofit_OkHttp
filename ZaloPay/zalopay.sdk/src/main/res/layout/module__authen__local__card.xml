@@ -118,7 +118,6 @@
                     android:text="@string/zpw_string_token"
                     android:textColor="@color/text_color_bold"
                     android:theme="@style/PaymentRadioButton" />
-                />
 
             </RadioGroup>
 

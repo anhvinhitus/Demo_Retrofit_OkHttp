@@ -1,7 +1,5 @@
 package vn.com.zalopay.wallet.business.channel.injector;
 
-import java.util.Iterator;
-
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.atm.BankConfig;
@@ -32,9 +30,7 @@ public class WithDrawChannelInjector extends BaseChannelInjector {
      * @throws Exception
      */
     protected void crossCheckWithDraw() throws Exception {
-        for (Iterator<DPaymentChannelView> iterator = mChannelList.iterator(); iterator.hasNext(); ) {
-            DPaymentChannelView channelView = iterator.next();
-
+        for (DPaymentChannelView channelView : mChannelList) {
             BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(channelView.bankcode), BankConfig.class);
 
             if (bankConfig == null) {

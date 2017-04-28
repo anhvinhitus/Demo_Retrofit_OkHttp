@@ -60,7 +60,7 @@
     <string name="zingpaysdk_alert_processing_ask_to_retry">Giao dịch vẫn còn đang xử lý.\nBạn có muốn thử lại?</string>
     <string name="zingpaysdk_alert_error_networking_ask_to_retry">Không thể kết nối tới Zalo Pay, vui lòng kiểm tra kết nối mạng.\nBạn có muốn thử lại?</string>
 
-    <string name="zpw_error_transaction_duplicate_message">Giao dịch chưa hoàn thành.\nVui lòng thực hiện lại giao dịch...!</string>
+    <string name="zpw_error_transaction_duplicate_message">Giao dịch chưa hoàn thành.\nVui lòng thực hiện lại giao dịch!</string>
 
     <string name="zingpaysdk_alert_processing_get_status_fail">Vui lòng kiểm tra kết quả giao dịch trong phần Lịch Sử Thanh Toán sau ít phút</string>
     <string name="zingpaysdk_alert_processing_get_status_linkcard_fail">Vui lòng kiểm tra kết quả trong phần Liên Kết Thẻ sau ít phút</string>
@@ -200,7 +200,7 @@
     <string name="zpw_string_captcha">Nhập mã bảo mật</string>
 
     <string name="zpw_string_acc_name_hint">10 số tài khoản thẻ đa năng</string>
-    <string name="zpw_string_acc_password_hint">06-16 số mật mã</string>
+    <string name="zpw_string_acc_password_hint">06–16 số mật mã</string>
 
     <string name="zpw_string_credit_card_expired_date_hint">Nhập ngày hết hạn (mm/yy)</string>
     <string name="zpw_string_credit_card_cvv_hint">CVV</string>

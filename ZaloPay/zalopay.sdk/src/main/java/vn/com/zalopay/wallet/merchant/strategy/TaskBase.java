@@ -41,6 +41,6 @@ public abstract class TaskBase implements IMerchantTask {
 
     @Override
     public void setTaskListener(IMerchantListener pListener) {
-        this.mListener = new WeakReference<IMerchantListener>(pListener);
+        this.mListener = new WeakReference<>(pListener);
     }
 }

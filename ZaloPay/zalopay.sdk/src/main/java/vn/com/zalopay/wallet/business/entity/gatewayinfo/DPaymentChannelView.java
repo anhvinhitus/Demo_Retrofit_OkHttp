@@ -15,13 +15,11 @@ public class DPaymentChannelView extends DPaymentChannel {
 
     public DPaymentChannelView clone() {
         DPaymentChannelView paymentChannel = new DPaymentChannelView(this);
-
         paymentChannel.channel_icon = this.channel_icon;
         paymentChannel.channel_next_icon = this.channel_next_icon;
         paymentChannel.l4no = this.l4no;
         paymentChannel.f6no = this.f6no;
         paymentChannel.bankcode = this.bankcode;
-
         return paymentChannel;
     }
 

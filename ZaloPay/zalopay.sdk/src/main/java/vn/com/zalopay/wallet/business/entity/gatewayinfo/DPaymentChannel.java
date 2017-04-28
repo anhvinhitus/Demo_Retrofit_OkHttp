@@ -79,7 +79,7 @@ public class DPaymentChannel {
      * @return
      */
     public boolean isNeedToCheckTransactionAmount() {
-        return amountrequireotp > 0 ? true : false;
+        return amountrequireotp > 0;
     }
 
     /***
@@ -129,10 +129,8 @@ public class DPaymentChannel {
             return true;
         if (maxvalue == -1 && pAmount >= minvalue)
             return true;
-        if (pAmount >= minvalue && pAmount <= maxvalue)
-            return true;
+        return pAmount >= minvalue && pAmount <= maxvalue;
 
-        return false;
     }
 
     public boolean isChannel(String pChannelId) {

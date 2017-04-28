@@ -75,7 +75,7 @@ public class CCWebViewClient extends PaymentWebViewClient {
             getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewError(errorCode, description));
         }
         if (getAdapter() != null) {
-            StringBuffer errStringBuilder = new StringBuffer();
+            StringBuilder errStringBuilder = new StringBuilder();
             errStringBuilder.append(description);
             errStringBuilder.append(failingUrl);
             try {

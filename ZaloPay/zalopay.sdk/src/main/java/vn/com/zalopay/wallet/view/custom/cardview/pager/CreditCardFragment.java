@@ -14,7 +14,6 @@ import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
-import vn.com.zalopay.wallet.utils.ViewUtils;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 import vn.com.zalopay.wallet.view.component.activity.PaymentChannelActivity;
 import vn.com.zalopay.wallet.view.custom.VPaymentEditText;
@@ -76,7 +75,7 @@ public abstract class CreditCardFragment extends Fragment {
     public CardGuiProcessor getGuiProcessor() {
         if (mGuiProcessor == null || mGuiProcessor.get() == null) {
             try {
-                mGuiProcessor = new WeakReference<CardGuiProcessor>(getPaymentAdapter().getGuiProcessor());
+                mGuiProcessor = new WeakReference<>(getPaymentAdapter().getGuiProcessor());
 
                 return mGuiProcessor.get();
 

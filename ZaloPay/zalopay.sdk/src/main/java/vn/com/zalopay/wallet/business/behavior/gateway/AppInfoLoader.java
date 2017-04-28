@@ -79,7 +79,7 @@ public class AppInfoLoader extends SingletonBase {
         try {
             long currentTime = System.currentTimeMillis();
             long expiredTime = SharedPreferencesManager.getInstance().getExpiredTimeAppChannel(String.valueOf(appId));
-            return currentTime > expiredTime ? true : false;
+            return currentTime > expiredTime;
         } catch (Exception e) {
             Log.e(this, e);
         }

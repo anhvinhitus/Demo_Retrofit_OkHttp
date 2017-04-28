@@ -6,7 +6,6 @@ import android.widget.EditText;
 
 import java.lang.ref.WeakReference;
 
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -27,7 +26,7 @@ import vn.com.zalopay.wallet.view.custom.cardview.pager.CardNumberFragment;
 public class CreditCardGuiProcessor extends CardGuiProcessor {
     public CreditCardGuiProcessor(AdapterCreditCard pAdapterCreditCard) {
         super();
-        mAdapter = new WeakReference<AdapterBase>(pAdapterCreditCard);
+        mAdapter = new WeakReference<>(pAdapterCreditCard);
         init();
     }
 
@@ -57,7 +56,6 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
         if (mWebView != null) {
             //mWebView.setUserAgent("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36");
             mWebView.setUserAgent("Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36");
-            ;
         }
     }
 
@@ -104,10 +102,8 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
 
     @Override
     protected boolean validateCardNumberLength() {
-        if (GlobalData.isLinkCardChannel() && getBankCardFinder().isDetected())
-            return true;
+        return GlobalData.isLinkCardChannel() && getBankCardFinder().isDetected() || getCreditCardFinder().isValidCardLength();
 
-        return getCreditCardFinder().isValidCardLength();
     }
 
     @Override
@@ -194,7 +190,7 @@ public class CreditCardGuiProcessor extends CardGuiProcessor {
             return true;
         }
 
-        boolean isCheckPattern = (pView instanceof VPaymentDrawableEditText || pView instanceof VPaymentValidDateEditText) ? ((VPaymentEditText) pView).isValid() : true;
+        boolean isCheckPattern = !(pView instanceof VPaymentDrawableEditText || pView instanceof VPaymentValidDateEditText) || ((VPaymentEditText) pView).isValid();
 
         return isCheckPattern && (pView.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(pView.getText().toString()));
     }

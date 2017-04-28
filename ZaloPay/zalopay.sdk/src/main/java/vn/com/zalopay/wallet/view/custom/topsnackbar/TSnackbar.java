@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -72,19 +71,16 @@ public final class TSnackbar {
     private static final int MSG_DISMISS = 1;
 
     static {
-        sHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message message) {
-                switch (message.what) {
-                    case MSG_SHOW:
-                        ((TSnackbar) message.obj).showView();
-                        return true;
-                    case MSG_DISMISS:
-                        ((TSnackbar) message.obj).hideView(message.arg1);
-                        return true;
-                }
-                return false;
+        sHandler = new Handler(Looper.getMainLooper(), message -> {
+            switch (message.what) {
+                case MSG_SHOW:
+                    ((TSnackbar) message.obj).showView();
+                    return true;
+                case MSG_DISMISS:
+                    ((TSnackbar) message.obj).hideView(message.arg1);
+                    return true;
             }
+            return false;
         });
     }
 
@@ -207,10 +203,7 @@ public final class TSnackbar {
     public boolean isCardSupportPopup() {
         GridView gridView = mView.getGridViewBankList();
 
-        if (gridView != null && gridView.getVisibility() == View.VISIBLE)
-            return true;
-
-        return false;
+        return gridView != null && gridView.getVisibility() == View.VISIBLE;
 
     }
 
@@ -313,32 +306,26 @@ public final class TSnackbar {
         View rootView = mView.getSnackBarRootView();
 
         if (rootView != null)
-            rootView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
+            rootView.setOnTouchListener((view, motionEvent) -> {
 
-                    dismiss();
+                dismiss();
 
-                    if (mCloseCardPopupListener != null)
-                        mCloseCardPopupListener.onCloseCardPopup();
+                if (mCloseCardPopupListener != null)
+                    mCloseCardPopupListener.onCloseCardPopup();
 
-                    return false;
-                }
+                return false;
             });
 
         GridView gridView = mView.getGridViewBankList();
 
         if (gridView != null && gridView.getVisibility() == View.VISIBLE)
-            gridView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    dismiss();
+            gridView.setOnTouchListener((view, motionEvent) -> {
+                dismiss();
 
-                    if (mCloseCardPopupListener != null)
-                        mCloseCardPopupListener.onCloseCardPopup();
+                if (mCloseCardPopupListener != null)
+                    mCloseCardPopupListener.onCloseCardPopup();
 
-                    return false;
-                }
+                return false;
             });
     }
 
@@ -366,14 +353,11 @@ public final class TSnackbar {
         TextView textViewAction = mView.getActionMessageView();
 
         if (textViewAction != null) {
-            textViewAction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dismiss();
+            textViewAction.setOnClickListener(view -> {
+                dismiss();
 
-                    if (mOnCloseSnackBar != null)
-                        mOnCloseSnackBar.onClose();
-                }
+                if (mOnCloseSnackBar != null)
+                    mOnCloseSnackBar.onClose();
             });
         }
     }
@@ -522,12 +506,7 @@ public final class TSnackbar {
                     // non-user initiated action. Hence we need to make sure that we callback
                     // and keep our state up to date. We need to post the call since removeView()
                     // will call through to onDetachedFromWindow and thus overflow.
-                    sHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            onViewHidden(Callback.DISMISS_EVENT_MANUAL);
-                        }
-                    });
+                    sHandler.post(() -> onViewHidden(Callback.DISMISS_EVENT_MANUAL));
                 }
             }
         });
@@ -537,12 +516,9 @@ public final class TSnackbar {
             animateViewIn();
         } else {
             // Otherwise, add one of our layout change listeners and animate it in when laid out
-            mView.setOnLayoutChangeListener(new SnackbarLayout.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View view, int left, int top, int right, int bottom) {
-                    animateViewIn();
-                    mView.setOnLayoutChangeListener(null);
-                }
+            mView.setOnLayoutChangeListener((view, left, top, right, bottom) -> {
+                animateViewIn();
+                mView.setOnLayoutChangeListener(null);
             });
         }
     }

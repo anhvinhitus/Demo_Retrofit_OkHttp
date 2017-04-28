@@ -35,7 +35,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannel;
 import vn.com.zalopay.wallet.business.entity.linkacc.DLinkAccScriptOutput;
 import vn.com.zalopay.wallet.business.entity.staticconfig.atm.DOtpReceiverPattern;
-import vn.com.zalopay.wallet.business.webview.base.PaymentWebViewClient;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebView;
 import vn.com.zalopay.wallet.business.webview.linkacc.LinkAccWebViewClient;
 import vn.com.zalopay.wallet.controller.SDKApplication;
@@ -43,7 +42,6 @@ import vn.com.zalopay.wallet.datasource.task.SubmitMapAccountTask;
 import vn.com.zalopay.wallet.helper.BankAccountHelper;
 import vn.com.zalopay.wallet.listener.ICheckExistBankAccountListener;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
-import vn.com.zalopay.wallet.listener.onCloseSnackBar;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.HashMapUtils;
@@ -68,23 +66,23 @@ import static vn.com.zalopay.wallet.constants.BankAccountError.WRONG_USERNAME_PA
 
 public class AdapterLinkAcc extends AdapterBase {
 
-    public static String VCB_LOGIN_PAGE = "zpsdk_atm_vcb_login_page";
-    public static String VCB_REGISTER_PAGE = "zpsdk_atm_vcb_register_page";
-    public static String VCB_UNREGISTER_PAGE = "zpsdk_atm_vcb_unregister_page";
-    public static String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
-    public static String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
-    public static String VCB_REFRESH_CAPTCHA = "zpsdk_atm_vcb_refresh_captcha";
+    public static final String VCB_LOGIN_PAGE = "zpsdk_atm_vcb_login_page";
+    public static final String VCB_REGISTER_PAGE = "zpsdk_atm_vcb_register_page";
+    public static final String VCB_UNREGISTER_PAGE = "zpsdk_atm_vcb_unregister_page";
+    public static final String VCB_REGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_register_complete_page";
+    public static final String VCB_UNREGISTER_COMPLETE_PAGE = "zpsdk_atm_vcb_unregister_complete_page";
+    public static final String VCB_REFRESH_CAPTCHA = "zpsdk_atm_vcb_refresh_captcha";
 
-    public static String SCREEN_LINK_ACC = RS.layout.screen__link__acc;
+    public static final String SCREEN_LINK_ACC = RS.layout.screen__link__acc;
 
-    public static String PAGE_VCB_LOGIN = RS.layout.screen__vcb__login;
-    public static String PAGE_VCB_CONFIRM_LINK = RS.layout.screen__vcb__confirm_link;
-    public static String PAGE_VCB_OTP = RS.layout.screen_vcb_otp;
-    public static String PAGE_VCB_CONFIRM_UNLINK = RS.layout.screen__vcb__confirm_unlink;
-    public static String PAGE_LINKACC_SUCCESS = RS.layout.screen__linkacc__success;
-    public static String PAGE_LINKACC_FAIL = RS.layout.screen__linkacc__fail;
-    public static String PAGE_UNLINKACC_SUCCESS = RS.layout.screen__unlinkacc__success;
-    public static String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
+    public static final String PAGE_VCB_LOGIN = RS.layout.screen__vcb__login;
+    public static final String PAGE_VCB_CONFIRM_LINK = RS.layout.screen__vcb__confirm_link;
+    public static final String PAGE_VCB_OTP = RS.layout.screen_vcb_otp;
+    public static final String PAGE_VCB_CONFIRM_UNLINK = RS.layout.screen__vcb__confirm_unlink;
+    public static final String PAGE_LINKACC_SUCCESS = RS.layout.screen__linkacc__success;
+    public static final String PAGE_LINKACC_FAIL = RS.layout.screen__linkacc__fail;
+    public static final String PAGE_UNLINKACC_SUCCESS = RS.layout.screen__unlinkacc__success;
+    public static final String PAGE_UNLINKACC_FAIL = RS.layout.screen__unlinkacc__fail;
 
     public String mUrlReload;
     public boolean mIsLoadingCaptcha = false;
@@ -95,10 +93,11 @@ public class AdapterLinkAcc extends AdapterBase {
     private int COUNT_REFRESH_CAPTCHA_REGISTER = 1;
     private int COUNT_RETRY_GET_NUMBERPHONE = 1;
     private LinkAccGuiProcessor linkAccGuiProcessor;
-    private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
-    private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
+    private TreeMap<String, String> mHashMapAccNum;
+    private TreeMap<String, String> mHashMapPhoneNum;
+    private TreeMap<String, String> mHashMapPhoneNumUnReg;
     private LinkAccWebViewClient mWebViewProcessor = null;
-    protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
+    protected final Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
         BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
             @Override
@@ -120,7 +119,7 @@ public class AdapterLinkAcc extends AdapterBase {
             }
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
-    protected Runnable runnableWaitingNotifyLinkAcc = () -> {
+    protected final Runnable runnableWaitingNotifyLinkAcc = () -> {
         // get & check bankaccount list
         BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
             @Override
@@ -141,8 +140,8 @@ public class AdapterLinkAcc extends AdapterBase {
         }, GlobalData.getStringResource(RS.string.zpw_string_bankcode_vietcombank));
     };
     private int mNumAllowLoginWrong;
-    private Handler mHandler = new Handler();
-    private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
+    private final Handler mHandler = new Handler();
+    private final ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
         public void onProcessing() {
         }
@@ -155,7 +154,6 @@ public class AdapterLinkAcc extends AdapterBase {
                 BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(GlobalData.getPaymentInfo().linkAccInfo.getBankCode()), BankConfig.class);
                 if (bankConfig == null || !bankConfig.isBankActive()) {
                     getActivity().onExit(GlobalData.getStringResource(RS.string.zpw_string_bank_not_support), true);
-                    return;
                 } else {
                     String loginBankUrl = bankConfig.loginbankurl;
                     if (TextUtils.isEmpty(loginBankUrl)) {
@@ -176,7 +174,7 @@ public class AdapterLinkAcc extends AdapterBase {
             getActivity().onExit(pMessage, true);
         }
     };
-    private View.OnClickListener refreshCaptcha = new View.OnClickListener() {
+    private final View.OnClickListener refreshCaptcha = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (!isLoadingCaptcha()) {
@@ -189,16 +187,11 @@ public class AdapterLinkAcc extends AdapterBase {
                 mIsLoadingCaptcha = true;
                 mWebViewProcessor.refreshCaptcha();
                 COUNT_REFRESH_CAPTCHA_REGISTER++;
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mIsLoadingCaptcha = false;
-                    }
-                }, 2000);
+                new Handler().postDelayed(() -> mIsLoadingCaptcha = false, 2000);
             }
         }
     };
-    private View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
+    private final View.OnClickListener refreshCaptchaLogin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
@@ -212,12 +205,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 mIsLoadingCaptcha = true;
                 mWebViewProcessor.reload();
                 COUNT_REFRESH_CAPTCHA_LOGIN++;
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mIsLoadingCaptcha = false;
-                    }
-                }, 2000);
+                new Handler().postDelayed(() -> mIsLoadingCaptcha = false, 2000);
             }
         }
     };
@@ -508,7 +496,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 for (DOtpReceiverPattern otpReceiverPattern : patternList) {
                     Log.d(this, "checking pattern " + GsonUtils.toJsonString(otpReceiverPattern));
                     if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
-                        int start = 0;
+                        int start;
                         pOtp = pOtp.trim();
                         //read the begining of sms content
                         if (otpReceiverPattern.begin) {
@@ -568,7 +556,7 @@ public class AdapterLinkAcc extends AdapterBase {
         int numberOfSuffix = Integer.parseInt(GlobalData.getStringResource(RS.string.suffix_numberphone_vcb));
         String prefixPhone = pNumberPhone.substring(0, numberOfPrefix);
         String suffixPhone = pNumberPhone.substring(pNumberPhone.length() - numberOfSuffix, pNumberPhone.length());
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         stringBuffer.append(prefixPhone).append("***").append(suffixPhone);
         return stringBuffer.toString();
     }
@@ -587,7 +575,7 @@ public class AdapterLinkAcc extends AdapterBase {
             return true;
         }
         String phoneZalopay = GlobalData.getPaymentInfo().userInfo.phoneNumber;
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         if (phoneZalopay.startsWith("+84")) {
             stringBuffer.append("0");
             stringBuffer.append(phoneZalopay.substring(3));
@@ -769,7 +757,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                 // set list wallet
                 if (response.walletList != null) {
-                    mHashMapWallet = HashMapUtils.JsonArrayToHashMap(response.walletList);
+                    TreeMap<String, String> mHashMapWallet = HashMapUtils.JsonArrayToHashMap(response.walletList);
                     ArrayList<String> walletList = HashMapUtils.getKeys(mHashMapWallet);
                     linkAccGuiProcessor.setWalletList(walletList);
                 }
@@ -819,7 +807,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
                 // set OTP valid type
                 if (response.otpValidTypeList != null) {
-                    mHashMapOTPValid = HashMapUtils.JsonArrayToHashMap(response.otpValidTypeList);
+                    TreeMap<String, String> mHashMapOTPValid = HashMapUtils.JsonArrayToHashMap(response.otpValidTypeList);
                     ArrayList<String> otpValid = HashMapUtils.getKeys(mHashMapOTPValid);
                     linkAccGuiProcessor.setOtpValidList(otpValid);
                 }
@@ -916,7 +904,7 @@ public class AdapterLinkAcc extends AdapterBase {
                 }
                 // set wallet unregister
                 if (response.walletUnRegList != null) {
-                    mHashMapWalletUnReg = HashMapUtils.JsonArrayToHashMap(response.walletUnRegList);
+                    TreeMap<String, String> mHashMapWalletUnReg = HashMapUtils.JsonArrayToHashMap(response.walletUnRegList);
                     List<String> walletList = HashMapUtils.getKeys(mHashMapWalletUnReg);
                     linkAccGuiProcessor.setWalletUnRegList(walletList);
                 }
@@ -1095,11 +1083,8 @@ public class AdapterLinkAcc extends AdapterBase {
     protected void showMessage(String pTitle, String pMessage, int pDuration) {
         getActivity().showMessageSnackBar(getActivity().findViewById(R.id.zpsdk_header),
                 pTitle,
-                pMessage, null, pDuration, new onCloseSnackBar() {
-                    @Override
-                    public void onClose() {
+                pMessage, null, pDuration, () -> {
 
-                    }
                 });
     }
 

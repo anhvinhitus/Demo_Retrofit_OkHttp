@@ -24,7 +24,7 @@ public class BankListActivity extends BasePaymentDialogActivity {
     protected View mRippleButtonSelectBank;
 
     public static void setCloseDialogListener(ZPWOnCloseDialogListener pListener) {
-        BankListActivity.mCloseCardSupportDialogListener = new WeakReference<ZPWOnCloseDialogListener>(pListener);
+        BankListActivity.mCloseCardSupportDialogListener = new WeakReference<>(pListener);
     }
 
     public ZPWOnCloseDialogListener getListener() {
@@ -36,7 +36,7 @@ public class BankListActivity extends BasePaymentDialogActivity {
     }
 
     public static void setAdapter(CardSupportAdapter pAdapter) {
-        BankListActivity.mCardSupportGridViewAdapter = new WeakReference<CardSupportAdapter>(pAdapter);
+        BankListActivity.mCardSupportGridViewAdapter = new WeakReference<>(pAdapter);
     }
 
     public void onBackPressed() {

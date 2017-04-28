@@ -180,7 +180,6 @@ public class GetStatus extends BaseTask<StatusResponse> {
                 if (dataResponse != null && PaymentStatusHelper.is3DSResponse(dataResponse) || PaymentStatusHelper.isOtpResponse(dataResponse)) {
                     cancelTimer();
                     onPostResult(pResponse);
-                    return;
                 }
             } catch (Exception ex) {
                 Log.e(this, ex);

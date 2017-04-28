@@ -115,7 +115,7 @@ public class ActivityRendering {
 
             //add action keyboard. the done action if this is the last view
             if (pDynamicViewGroup.View != null && pDynamicViewGroup.View.size() > 0) {
-                View view = null;
+                View view;
                 View lastView = null;
 
                 for (Entry<String, Boolean> entry : pDynamicViewGroup.View.entrySet()) {

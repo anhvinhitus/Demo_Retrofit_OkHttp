@@ -68,31 +68,31 @@ import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
 
 public abstract class AdapterBase {
 
-    public static String PAGE_SUCCESS = RS.layout.screen__success;
+    public static final String PAGE_SUCCESS = RS.layout.screen__success;
 
-    public static String PAGE_SUCCESS_SPECIAL = RS.layout.screen__success__special;
+    public static final String PAGE_SUCCESS_SPECIAL = RS.layout.screen__success__special;
 
-    public static String PAGE_REQUIRE_PIN = RS.layout.screen__require_pin;
+    public static final String PAGE_REQUIRE_PIN = RS.layout.screen__require_pin;
 
-    public static String PAGE_FAIL = RS.layout.screen__fail;
+    public static final String PAGE_FAIL = RS.layout.screen__fail;
 
-    public static String PAGE_FAIL_NETWORKING = RS.layout.screen__fail_networking;
+    public static final String PAGE_FAIL_NETWORKING = RS.layout.screen__fail_networking;
 
-    public static String PAGE_FAIL_PROCESSING = RS.layout.screen__fail_processing;
+    public static final String PAGE_FAIL_PROCESSING = RS.layout.screen__fail_processing;
 
-    public static String PAGE_BALANCE_ERROR = RS.layout.screen__zalopay__balance_error;
+    public static final String PAGE_BALANCE_ERROR = RS.layout.screen__zalopay__balance_error;
 
-    public static String SCREEN_CC = RS.layout.screen__card;
+    public static final String SCREEN_CC = RS.layout.screen__card;
 
-    public static String SCREEN_ATM = RS.layout.screen__card;
+    public static final String SCREEN_ATM = RS.layout.screen__card;
 
-    public static String PAGE_AUTHEN = RS.layout.screen__local__card__authen;
+    public static final String PAGE_AUTHEN = RS.layout.screen__local__card__authen;
 
-    public static String PAGE_COVER_BANK_AUTHEN = RS.layout.screen__cover__bank__authen;
+    public static final String PAGE_COVER_BANK_AUTHEN = RS.layout.screen__cover__bank__authen;
 
-    public static String PAGE_SELECTION_ACCOUNT_BANK = RS.layout.screen_selection_account_list;
+    public static final String PAGE_SELECTION_ACCOUNT_BANK = RS.layout.screen_selection_account_list;
 
-    public static String PAGE_CONFIRM = RS.layout.screen__confirm;
+    public static final String PAGE_CONFIRM = RS.layout.screen__confirm;
     //detect card info is mapped by logged user
     public static boolean existedMapCard = false;
     //payment config
@@ -103,7 +103,7 @@ public abstract class AdapterBase {
     protected StatusResponse mResponseStatus;
     protected boolean isLoadWebTimeout = false;
     protected int numberRetryOtp = 0;
-    protected DPaymentCard mCard;
+    protected final DPaymentCard mCard;
     protected DMappedCard mMapCard;
     protected String mTransactionID;
     protected String mPageCode;
@@ -138,14 +138,14 @@ public abstract class AdapterBase {
     protected boolean preventRetryLoadMapCardList = false;
     //prevent click duplicate
     private boolean mMoreClick = true;
-    private View.OnClickListener onSupportClickListener = new View.OnClickListener() {
+    private final View.OnClickListener onSupportClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             getActivity().showSupportView(mTransactionID);
         }
     };
     private String olderPassword = null;
-    private IFPCallback mFingerPrintCallback = new IFPCallback() {
+    private final IFPCallback mFingerPrintCallback = new IFPCallback() {
         @Override
         public void onError(FPError pError) {
             dismissDialogFingerPrint();
@@ -185,11 +185,11 @@ public abstract class AdapterBase {
             startSubmitTransaction();
         }
     };
-    private View.OnClickListener onUpdateInfoClickListener = v -> {
+    private final View.OnClickListener onUpdateInfoClickListener = v -> {
         GlobalData.setResultUpgradeCMND();
         onClickSubmission();
     };
-    private View.OnClickListener okClickListener = new View.OnClickListener() {
+    private final View.OnClickListener okClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Log.d(this, "===okClickListener===starting...click");
@@ -210,7 +210,7 @@ public abstract class AdapterBase {
 
     public AdapterBase(PaymentChannelActivity pOwnerActivity) {
         if (pOwnerActivity != null) {
-            mOwnerActivity = new WeakReference<PaymentChannelActivity>(pOwnerActivity);
+            mOwnerActivity = new WeakReference<>(pOwnerActivity);
         }
 
         try {
@@ -402,7 +402,7 @@ public abstract class AdapterBase {
 
     public PaymentChannelActivity getActivity() {
         if (mOwnerActivity.get() == null && BasePaymentActivity.getCurrentActivity() instanceof PaymentChannelActivity) {
-            mOwnerActivity = new WeakReference<PaymentChannelActivity>((PaymentChannelActivity) BasePaymentActivity.getCurrentActivity());
+            mOwnerActivity = new WeakReference<>((PaymentChannelActivity) BasePaymentActivity.getCurrentActivity());
         }
         if (mOwnerActivity != null && mOwnerActivity.get() != null) {
             return mOwnerActivity.get();
@@ -420,7 +420,7 @@ public abstract class AdapterBase {
     /***
      * submit order to server
      */
-    protected boolean startSubmitTransaction() {
+    protected void startSubmitTransaction() {
         if (GlobalData.getPaymentInfo() == null || !GlobalData.getPaymentInfo().isPaymentInfoValid()) {
             Log.e(this, "===startSubmitTransaction===" + GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
 
@@ -428,7 +428,7 @@ public abstract class AdapterBase {
                 GlobalData.setResultInvalidInput();
             }
             getActivity().onExit(GlobalData.getStringResource(RS.string.zpw_error_paymentinfo), true);
-            return false;
+            return;
         }
 
         getActivity().processingOrder = true;
@@ -447,8 +447,6 @@ public abstract class AdapterBase {
             Log.e(this, e);
             terminate(GlobalData.getStringResource(RS.string.zpw_string_error_layout), true);
         }
-
-        return mIsOrderSubmit;
     }
 
     public boolean needToSwitchChannel() {
@@ -466,12 +464,12 @@ public abstract class AdapterBase {
                 && !getPageName().equals(PAGE_FAIL) && !getPageName().equals(PAGE_FAIL_NETWORKING) && !getPageName().equals(PAGE_FAIL_PROCESSING);
     }
 
-    protected boolean processWrongOtp() {
+    protected void processWrongOtp() {
         numberRetryOtp++;
         //over number of retry
         if (numberRetryOtp > Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry))) {
             showTransactionFailView(GlobalData.getStringResource(RS.string.zpw_string_alert_over_retry_otp));
-            return false;
+            return;
         }
 
         showDialogWithCallBack(mResponseStatus.getMessage(), GlobalData.getStringResource(RS.string.dialog_close_button), () -> {
@@ -481,8 +479,6 @@ public abstract class AdapterBase {
                 getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpAuthenPayerEditText());
             }
         });
-
-        return true;
     }
 
     public void autoFillOtp(String pSender, String pOtp) {
@@ -1011,17 +1007,13 @@ public abstract class AdapterBase {
     }
 
     public void moveToConfirmScreen() throws Exception {
-        try {
 
-            getActivity().setConfirmTitle();
+        getActivity().setConfirmTitle();
 
-            //add overswipe for rootview scrollview
-            ScrollView scrollViewRoot = (ScrollView) getActivity().findViewById(R.id.zpw_scrollview_container);
-            if (scrollViewRoot != null) {
-                OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
-            }
-        } catch (Exception ex) {
-            throw ex;
+        //add overswipe for rootview scrollview
+        ScrollView scrollViewRoot = (ScrollView) getActivity().findViewById(R.id.zpw_scrollview_container);
+        if (scrollViewRoot != null) {
+            OverScrollDecoratorHelper.setUpOverScroll(scrollViewRoot);
         }
 
     }
@@ -1485,7 +1477,7 @@ public abstract class AdapterBase {
     /***
      * show success view base
      */
-    protected synchronized boolean showTransactionSuccessView() {
+    protected synchronized void showTransactionSuccessView() {
         //stop timer
         if (getActivity() != null && !getActivity().isFinishing()) {
             getActivity().cancelTransactionExpiredTimer();
@@ -1518,7 +1510,7 @@ public abstract class AdapterBase {
 
         //if this is redpacket,then close sdk and callback to app
         if (processResultForRedPackage()) {
-            return false;
+            return;
         }
 
         //show intro fingerprint dialog
@@ -1552,7 +1544,7 @@ public abstract class AdapterBase {
         }
 
         SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
-        return processSaveCardOnResult();
+        processSaveCardOnResult();
     }
 
     public boolean isTransactionErrorNetworking(String pMessage) {
@@ -1683,7 +1675,6 @@ public abstract class AdapterBase {
             }
             getActivity().finish();
             Log.d(this, "===terminate===GlobalData.getChannelActivityCallBack() != null");
-            return;
         }
         // one of 2 activty is destroyed
         else {
@@ -1899,33 +1890,26 @@ public abstract class AdapterBase {
      */
 
     protected boolean isExistedCardNumberOnCache() throws Exception {
-        try {
-            if (getGuiProcessor() == null) {
-                Log.d("isExistedCardNumberOnCache", "getGuiProcessor() = null");
-                return false;
-            }
-            String cardNumber = getGuiProcessor().getCardNumber();
-            if (TextUtils.isEmpty(cardNumber) || cardNumber.length() <= 6) {
-                return false;
-            }
-
-            String first6cardno = cardNumber.substring(0, 6);
-            String last4cardno = cardNumber.substring(cardNumber.length() - 4);
-            //get card on cache
-            String strMappedCard = null;
-            try {
-                strMappedCard = SharedPreferencesManager.getInstance().getMapCardByKey(first6cardno + last4cardno);
-            } catch (Exception e) {
-                Log.d(this, e);
-            }
-
-            if (!TextUtils.isEmpty(strMappedCard) && GsonUtils.fromJsonString(strMappedCard, DMappedCard.class) instanceof DMappedCard) {
-                return true;
-            }
-        } catch (Exception ex) {
-            throw ex;
+        if (getGuiProcessor() == null) {
+            Log.d("isExistedCardNumberOnCache", "getGuiProcessor() = null");
+            return false;
         }
-        return false;
+        String cardNumber = getGuiProcessor().getCardNumber();
+        if (TextUtils.isEmpty(cardNumber) || cardNumber.length() <= 6) {
+            return false;
+        }
+
+        String first6cardno = cardNumber.substring(0, 6);
+        String last4cardno = cardNumber.substring(cardNumber.length() - 4);
+        //get card on cache
+        String strMappedCard = null;
+        try {
+            strMappedCard = SharedPreferencesManager.getInstance().getMapCardByKey(first6cardno + last4cardno);
+        } catch (Exception e) {
+            Log.d(this, e);
+        }
+
+        return !TextUtils.isEmpty(strMappedCard) && GsonUtils.fromJsonString(strMappedCard, DMappedCard.class) instanceof DMappedCard;
     }
 
     /**
@@ -1979,50 +1963,38 @@ public abstract class AdapterBase {
     }
 
     public void sdkReportErrorOnTransactionFail() throws Exception {
-        try {
-            if (PaymentPermission.allowSendLogOnTransactionFail()) {
-                String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
-                if (!TextUtils.isEmpty(paymentError)) {
-                    paymentError = String.format(paymentError, Constants.RESULT_PHARSE, 200, GsonUtils.toJsonString(mResponseStatus));
-                    sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
-                }
+        if (PaymentPermission.allowSendLogOnTransactionFail()) {
+            String paymentError = GlobalData.getStringResource(RS.string.zpw_sdkreport_error_message);
+            if (!TextUtils.isEmpty(paymentError)) {
+                paymentError = String.format(paymentError, Constants.RESULT_PHARSE, 200, GsonUtils.toJsonString(mResponseStatus));
+                sdkReportError(SDKReportTask.TRANSACTION_FAIL, paymentError);
             }
-        } catch (Exception e) {
-            throw e;
         }
     }
 
     public void sdkReportError(int pErrorCode, String pMessage) throws Exception {
+        String bankCode = null;
         try {
-            String bankCode = null;
-            try {
-                if (getGuiProcessor() != null) {
-                    bankCode = getGuiProcessor().getDetectedBankCode();
-                }
-            } catch (Exception ex) {
-                Log.d(this, ex);
+            if (getGuiProcessor() != null) {
+                bankCode = getGuiProcessor().getDetectedBankCode();
             }
-            SDKReportTask.makeReportError(pErrorCode, mTransactionID, pMessage, bankCode);
-        } catch (Exception e) {
-            throw e;
+        } catch (Exception ex) {
+            Log.d(this, ex);
         }
+        SDKReportTask.makeReportError(pErrorCode, mTransactionID, pMessage, bankCode);
     }
 
 
     public void sdkReportError(int pErrorCode) throws Exception {
+        String bankCode = null;
         try {
-            String bankCode = null;
-            try {
-                if (getGuiProcessor() != null) {
-                    bankCode = getGuiProcessor().getDetectedBankCode();
-                }
-            } catch (Exception ex) {
-                Log.d(this, ex);
+            if (getGuiProcessor() != null) {
+                bankCode = getGuiProcessor().getDetectedBankCode();
             }
-            SDKReportTask.makeReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
-        } catch (Exception e) {
-            throw e;
+        } catch (Exception ex) {
+            Log.d(this, ex);
         }
+        SDKReportTask.makeReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
     }
 
     /***
@@ -2031,19 +2003,15 @@ public abstract class AdapterBase {
      * @throws Exception
      */
     public void sdkTrustReportError(int pErrorCode) throws Exception {
+        String bankCode = null;
         try {
-            String bankCode = null;
-            try {
-                if (getGuiProcessor() != null) {
-                    bankCode = getGuiProcessor().getDetectedBankCode();
-                }
-            } catch (Exception ex) {
-                Log.d(this, ex);
+            if (getGuiProcessor() != null) {
+                bankCode = getGuiProcessor().getDetectedBankCode();
             }
-            TrustSDKReportTask.makeTrustReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
-        } catch (Exception e) {
-            throw e;
+        } catch (Exception ex) {
+            Log.d(this, ex);
         }
+        TrustSDKReportTask.makeTrustReportError(pErrorCode, mTransactionID, mResponseStatus.toJsonString(), bankCode);
     }
 
     protected DialogFragment getDialogFingerPrint() {

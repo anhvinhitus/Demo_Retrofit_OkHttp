@@ -23,6 +23,6 @@ public class DAtmScriptOutput {
     public boolean stopIntervalCheck = false;
 
     public boolean isError() {
-        return (shouldStop == true && !TextUtils.isEmpty(message));
+        return (shouldStop && !TextUtils.isEmpty(message));
     }
 }

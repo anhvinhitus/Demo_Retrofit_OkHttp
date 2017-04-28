@@ -14,7 +14,7 @@
             android:id="@+id/card_field_container_pager"
             android:layout_width="match_parent"
             android:layout_height="@dimen/viewpager_height"
-            android:orientation="horizontal"></android.support.v4.view.ViewPager>
+            android:orientation="horizontal" />
 
     </LinearLayout>
 
@@ -63,7 +63,6 @@
                 android:text="@string/zpw_string_token"
                 android:textColor="@color/text_color_bold"
                 android:theme="@style/PaymentRadioButton" />
-            />
 
         </RadioGroup>
 

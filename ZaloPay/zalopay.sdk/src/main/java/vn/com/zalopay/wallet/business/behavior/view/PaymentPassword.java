@@ -96,12 +96,7 @@ public class PaymentPassword {
 
     public void showSoftKeyBoard() {
         if (gridPasswordView != null) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    gridPasswordView.forceInputViewGetFocus();
-                }
-            }, 100);
+            new Handler().postDelayed(() -> gridPasswordView.forceInputViewGetFocus(), 100);
         }
     }
 

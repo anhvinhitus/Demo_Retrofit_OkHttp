@@ -52,10 +52,7 @@ public class BankLoader extends SingletonBase {
         long expiredTime = SharedPreferencesManager.getInstance().getExpiredBankList();
         String checkSum = SharedPreferencesManager.getInstance().getCheckSumBankList();
         String cachedBankList = SharedPreferencesManager.getInstance().getBankMap();
-        if (expiredTime < System.currentTimeMillis() || TextUtils.isEmpty(cachedBankList) || TextUtils.isEmpty(checkSum)) {
-            return true;
-        }
-        return false;
+        return expiredTime < System.currentTimeMillis() || TextUtils.isEmpty(cachedBankList) || TextUtils.isEmpty(checkSum);
     }
 
     public static boolean existedBankListOnMemory() {
@@ -67,7 +64,6 @@ public class BankLoader extends SingletonBase {
             if (isNeedToLoadBankList()) {
                 BaseTask baseTask = new BankListTask(pListener);
                 baseTask.makeRequest();
-                return;
             }
             //bank list is on memory now
             else if (existedBankListOnMemory()) {

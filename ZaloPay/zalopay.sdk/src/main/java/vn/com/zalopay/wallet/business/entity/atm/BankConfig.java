@@ -86,10 +86,7 @@ public class BankConfig {
                 break;
             }
         }
-        if (bankFunction != null && bankFunction.isFunctionMaintenance()) {
-            return true;
-        }
-        return false;
+        return bankFunction != null && bankFunction.isFunctionMaintenance();
     }
 
     public BankFunction getBankFunction(@BankFunctionCode int pBankFunction) {

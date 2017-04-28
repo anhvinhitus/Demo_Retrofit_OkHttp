@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +103,7 @@ public class AdapterBankCard extends AdapterBase {
             if (patternList != null && patternList.size() > 0) {
                 for (DOtpReceiverPattern otpReceiverPattern : patternList) {
                     if (!TextUtils.isEmpty(otpReceiverPattern.sender) && otpReceiverPattern.sender.equalsIgnoreCase(pSender)) {
-                        int start = 0;
+                        int start;
                         pOtp = pOtp.trim();
                         //read the begining of sms content
                         if (otpReceiverPattern.begin) {
@@ -176,7 +175,6 @@ public class AdapterBankCard extends AdapterBase {
     @Override
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
         try {
-            Object base = super.onEvent(pEventType, pAdditionParams);
             if (pEventType == EEventType.ON_ATM_AUTHEN_PAYER_COMPLETE) {
                 //check result authen, otp code is 17: wrong otp, other code terminate
                 if (PaymentStatusHelper.isNeedToGetStatusAfterAuthenPayer(mResponseStatus) && !PaymentStatusHelper.isWrongOtpResponse(mResponseStatus)) {
@@ -317,19 +315,15 @@ public class AdapterBankCard extends AdapterBase {
                         response.message = GlobalData.getStringResource(RS.string.zpw_alert_captcha_vietcombank_update);
                     }
 
-                    showDialogWithCallBack(response.message, GlobalData.getStringResource(RS.string.dialog_close_button), new ZPWOnEventDialogListener() {
-
-                        @Override
-                        public void onOKevent() {
-                            if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing()) {
-                                //reset otp and show keyboard again
-                                ((BankCardGuiProcessor) getGuiProcessor()).resetCaptcha();
-                                getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
-                            } else if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
-                                //reset otp and show keyboard again
-                                ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
-                                getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
-                            }
+                    showDialogWithCallBack(response.message, GlobalData.getStringResource(RS.string.dialog_close_button), () -> {
+                        if (((BankCardGuiProcessor) getGuiProcessor()).isCaptchaProcessing()) {
+                            //reset otp and show keyboard again
+                            ((BankCardGuiProcessor) getGuiProcessor()).resetCaptcha();
+                            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getCaptchaEditText());
+                        } else if (((BankCardGuiProcessor) getGuiProcessor()).isOtpWebProcessing()) {
+                            //reset otp and show keyboard again
+                            ((BankCardGuiProcessor) getGuiProcessor()).resetOtpWeb();
+                            getGuiProcessor().showKeyBoardOnEditTextAndScroll(((BankCardGuiProcessor) getGuiProcessor()).getOtpWebEditText());
                         }
                     });
                 }
@@ -392,10 +386,8 @@ public class AdapterBankCard extends AdapterBase {
 
     @Override
     public boolean isInputStep() {
-        if (getPageName().equals(SCREEN_ATM))
-            return true;
+        return getPageName().equals(SCREEN_ATM) || super.isInputStep();
 
-        return super.isInputStep();
     }
 
     @Override
@@ -457,55 +449,51 @@ public class AdapterBankCard extends AdapterBase {
 
     @Override
     public void onProcessPhrase() throws Exception {
-        try {
-            //authen payer atm
-            if (isAuthenPayerPharse()) {
+        //authen payer atm
+        if (isAuthenPayerPharse()) {
 
-                showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_otp));
+            showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_otp));
 
-                getActivity().processingOrder = true;
+            getActivity().processingOrder = true;
 
-                SDKTransactionAdapter.shared().authenPayer(this, mTransactionID, ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType().toString(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
+            SDKTransactionAdapter.shared().authenPayer(this, mTransactionID, ((BankCardGuiProcessor) getGuiProcessor()).getAuthenType(), ((BankCardGuiProcessor) getGuiProcessor()).getAuthenValue());
 
-                if (mOtpEndTime == 0)
-                    mOtpBeginTime = System.currentTimeMillis();
+            if (mOtpEndTime == 0)
+                mOtpBeginTime = System.currentTimeMillis();
 
-                return;
-            }
-
-            //web flow
-            if (((BankCardGuiProcessor) getGuiProcessor()).isCoverBankInProcess()) {
-                if (!checkNetworkingAndShowRequest()) {
-                    return;
-                }
-
-                showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
-
-                //the first time load captcha
-                if (mCaptchaEndTime == 0) {
-                    mCaptchaBeginTime = System.currentTimeMillis();
-                }
-
-                //the first time load otp
-                if (mOtpEndTime == 0) {
-                    mOtpBeginTime = System.currentTimeMillis();
-                }
-
-                mWebViewProcessor.hit();
-
-                return;
-            }
-
-            if (!GlobalData.isMapCardChannel() && !GlobalData.isMapBankAccountChannel()) {
-                getGuiProcessor().populateCard();
-                tranferPaymentCardToMapCard();
-            }
-
-            startSubmitTransaction();
-
-        } catch (Exception e) {
-            throw e;
+            return;
         }
+
+        //web flow
+        if (((BankCardGuiProcessor) getGuiProcessor()).isCoverBankInProcess()) {
+            if (!checkNetworkingAndShowRequest()) {
+                return;
+            }
+
+            showProgressBar(true, GlobalData.getStringResource(RS.string.zingpaysdk_alert_processing_bank));
+
+            //the first time load captcha
+            if (mCaptchaEndTime == 0) {
+                mCaptchaBeginTime = System.currentTimeMillis();
+            }
+
+            //the first time load otp
+            if (mOtpEndTime == 0) {
+                mOtpBeginTime = System.currentTimeMillis();
+            }
+
+            mWebViewProcessor.hit();
+
+            return;
+        }
+
+        if (!GlobalData.isMapCardChannel() && !GlobalData.isMapBankAccountChannel()) {
+            getGuiProcessor().populateCard();
+            tranferPaymentCardToMapCard();
+        }
+
+        startSubmitTransaction();
+
     }
 
     @Override
@@ -605,11 +593,8 @@ public class AdapterBankCard extends AdapterBase {
     public boolean isBidvBankPayment() {
         BankCardCheck atmCardCheck = getGuiProcessor().getBankCardFinder();
 
-        if (atmCardCheck != null && atmCardCheck.isDetected() && atmCardCheck.getDetectBankCode().equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv))) {
-            return true;
-        }
+        return atmCardCheck != null && atmCardCheck.isDetected() && atmCardCheck.getDetectBankCode().equalsIgnoreCase(GlobalData.getStringResource(RS.string.zpw_string_bankcode_bidv));
 
-        return false;
     }
 
     protected boolean continueProcessForBidvBank(String pMessage) {

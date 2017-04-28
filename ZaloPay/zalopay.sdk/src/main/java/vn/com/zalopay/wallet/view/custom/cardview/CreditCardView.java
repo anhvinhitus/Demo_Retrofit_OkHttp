@@ -457,7 +457,7 @@ public class CreditCardView extends FrameLayout {
 
         mCardColorText = card.getCardColorText();
         //can not detect
-        if (mNeedToReveal != true && card.getResCardId() == R.drawable.card_color_round_rect_default) {
+        if (!mNeedToReveal && card.getResCardId() == R.drawable.card_color_round_rect_default) {
             mNeedToReveal = true;
             setCardNumber(getCardNumber());
 
@@ -531,12 +531,7 @@ public class CreditCardView extends FrameLayout {
             animator.setInterpolator(new AccelerateDecelerateInterpolator());
             animator.setDuration(duration);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    cardContainer.setBackgroundResource(drawableId);
-                }
-            }, duration);
+            new Handler().postDelayed(() -> cardContainer.setBackgroundResource(drawableId), duration);
 
             mRevealView.setVisibility(View.VISIBLE);
             animator.start();

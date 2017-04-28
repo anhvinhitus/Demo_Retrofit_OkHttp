@@ -9,7 +9,7 @@ import vn.com.zalopay.wallet.controller.SDKApplication;
  * log class
  */
 public class Log {
-    public static final boolean IS_LOG_ENABLE = (SDKApplication.isReleaseBuild()) ? false : true;
+    public static final boolean IS_LOG_ENABLE = !SDKApplication.isReleaseBuild();
 
     public static final String TAG = "ZALOPAY SDK";
 

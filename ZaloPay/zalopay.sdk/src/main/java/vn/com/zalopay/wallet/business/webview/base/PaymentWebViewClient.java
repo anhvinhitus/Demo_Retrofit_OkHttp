@@ -18,7 +18,6 @@ import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.enumeration.EEventType;
-import vn.com.zalopay.wallet.business.webview.atm.BankWebView;
 import vn.com.zalopay.wallet.business.webview.atm.BankWebViewClient;
 import vn.com.zalopay.wallet.business.webview.atm.NewBankWebViewClient;
 import vn.com.zalopay.wallet.utils.GsonUtils;
@@ -30,7 +29,7 @@ public abstract class PaymentWebViewClient extends WebViewClient {
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public PaymentWebViewClient(AdapterBase pAdapter) {
-        mAdapter = new WeakReference<AdapterBase>(pAdapter);
+        mAdapter = new WeakReference<>(pAdapter);
     }
 
     public static PaymentWebViewClient createPaymentWebViewClientByBank(AdapterBase pAdapter) {

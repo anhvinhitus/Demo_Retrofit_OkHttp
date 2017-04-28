@@ -6,7 +6,6 @@ import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,25 +121,22 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     /***
      * user tap on done on keyboard
      */
-    protected TextView.OnEditorActionListener mEditorActionListener = new TextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (getAdapter().isInputStep()) {
-                    onDoneTapped();
-                    return true;
-                } else if (checkEnableSubmitButton()) {
-                    getAdapter().onClickSubmission();
-                }
-
-            } else if ((actionId == EditorInfo.IME_ACTION_NEXT) && getAdapter().isInputStep()) {
-                showNext();
-
+    protected TextView.OnEditorActionListener mEditorActionListener = (v, actionId, event) -> {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            if (getAdapter().isInputStep()) {
+                onDoneTapped();
                 return true;
+            } else if (checkEnableSubmitButton()) {
+                getAdapter().onClickSubmission();
             }
 
-            return false;
+        } else if ((actionId == EditorInfo.IME_ACTION_NEXT) && getAdapter().isInputStep()) {
+            showNext();
+
+            return true;
         }
+
+        return false;
     };
     protected View.OnClickListener mClickOnEditTextListener = new View.OnClickListener() {
         @Override
@@ -295,30 +291,19 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             }
         }
     };
-    protected View.OnTouchListener mOnTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                moveScrollViewToCurrentFocusView();
-            }
-            return false;
+    protected View.OnTouchListener mOnTouchListener = (view, motionEvent) -> {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            moveScrollViewToCurrentFocusView();
         }
+        return false;
     };
-    protected ZPWOnCloseDialogListener mCloseDialogListener = new ZPWOnCloseDialogListener() {
-        @Override
-        public void onCloseCardSupportDialog() {
-            clearCardNumberAndShowKeyBoard();
-        }
-    };
+    protected ZPWOnCloseDialogListener mCloseDialogListener = this::clearCardNumberAndShowKeyBoard;
     /***
      * click on delete icon / bank support icon
      */
-    protected View.OnClickListener mOnQuestionIconClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (!isCardInputSupport()) {
-                showSupportCardList();
-            }
+    protected View.OnClickListener mOnQuestionIconClick = view -> {
+        if (!isCardInputSupport()) {
+            showSupportCardList();
         }
     };
     /***
@@ -671,11 +656,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected boolean isValidCardCVV() {
         try {
-            if (TextUtils.isEmpty(getCardCVVView().getText().toString())) {
-                return true;
-            }
+            return TextUtils.isEmpty(getCardCVVView().getText().toString()) || getCardCVVView().isValidPattern() && (getCardCVVView().getText().toString().length() == 3);
 
-            return getCardCVVView().isValidPattern() && (getCardCVVView().getText().toString().length() == 3);
         } catch (Exception e) {
             Log.d(this, e);
         }
@@ -705,11 +687,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
     protected boolean isValidCardDate() {
         try {
-            if (TextUtils.isEmpty(getCardDateView().getText().toString())) {
-                return true;
-            }
+            return TextUtils.isEmpty(getCardDateView().getText().toString()) || getCardDateView().isValidPattern() && (getCardDateView().getText().toString().length() == 5);
 
-            return getCardDateView().isValidPattern() && (getCardDateView().getText().toString().length() == 5);
         } catch (Exception e) {
             Log.d(this, e);
         }
@@ -749,11 +728,8 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             isDetected = getCreditCardFinder().isDetected() ? getCreditCardFinder().isDetected() : getBankCardFinder().isDetected();
         }
 
-        if (isAllowValidateCardNumberByLuhn() && isDetected) {
-            return getCardFinder().isValidCardLuhn(getCardNumber());
-        }
+        return !(isAllowValidateCardNumberByLuhn() && isDetected) || getCardFinder().isValidCardLuhn(getCardNumber());
 
-        return true;
     }
 
     /***
@@ -1082,13 +1058,9 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
             BankConfig bank = getCardFinder().getDetectBankConfig();
 
             //parser otp:token here otp:SMS|token:Token
-            if (!TextUtils.isEmpty(bank.otptype) &&
+            mUseOtpToken = !TextUtils.isEmpty(bank.otptype) &&
                     bank.otptype.contains(GlobalData.getStringResource(RS.string.sms_option))
-                    && bank.otptype.contains(GlobalData.getStringResource(RS.string.token_option))) {
-                mUseOtpToken = true;
-            } else {
-                mUseOtpToken = false;
-            }
+                    && bank.otptype.contains(GlobalData.getStringResource(RS.string.token_option));
 
             if (bank != null) {
 
@@ -1163,7 +1135,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dotSize, dotSize);
 
-        params.setMargins((int) (dotSize), 0, (int) (dotSize), 0);
+        params.setMargins(dotSize, 0, dotSize, 0);
 
         mDotView.addView(dot, params);
     }
@@ -1228,12 +1200,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
                 getCardView().setCardHolderName(null);
                 getCardView().setCardDate(null);
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        getViewPager().setCurrentItem(1);
-                    }
-                }, 300);
+                new Handler().postDelayed(() -> getViewPager().setCurrentItem(1), 300);
             } catch (Exception e) {
                 Log.e(this, e);
             }
@@ -1551,12 +1518,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     public void moveScrollViewToCurrentFocusView() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mScrollViewRoot.fullScroll(View.FOCUS_DOWN);
-            }
-        }, 300);
+        new Handler().postDelayed(() -> mScrollViewRoot.fullScroll(View.FOCUS_DOWN), 300);
     }
 
     /***
@@ -1720,7 +1682,7 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     protected DCardIdentifier getSelectBankCardIdentifier() {
-        DCardIdentifier cardIdentifier = null;
+        DCardIdentifier cardIdentifier;
 
         if (GlobalData.isLinkCardChannel()) {
             cardIdentifier = getBankCardFinder().getCardIdentifier();
@@ -1814,12 +1776,10 @@ public abstract class CardGuiProcessor extends SingletonBase implements ViewPage
     }
 
     protected boolean isNeedValidateOnTextChange(View view) {
-        if (view != null && (view.getId() == R.id.zpsdk_otp_ctl
+        return !(view != null && (view.getId() == R.id.zpsdk_otp_ctl
                 || view.getId() == R.id.zpsdk_captchar_ctl
                 || view.getId() == R.id.edittext_otp
-                || view.getId() == R.id.edittext_token))
-            return false;
-        return true;
+                || view.getId() == R.id.edittext_token));
     }
 
     protected boolean validateInputOnTextChange() {

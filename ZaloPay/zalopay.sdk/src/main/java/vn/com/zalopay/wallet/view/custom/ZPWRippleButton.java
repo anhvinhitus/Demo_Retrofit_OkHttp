@@ -7,10 +7,8 @@ import android.graphics.Paint;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.Button;
 
-public class ZPWRippleButton extends Button {
-    private float duration = 250;
+public class ZPWRippleButton extends android.support.v7.widget.AppCompatButton {
 
     private float speed = 1;
     private float radius = 0;
@@ -81,6 +79,7 @@ public class ZPWRippleButton extends Button {
 
                 radius = 1;
                 endRadius = Math.max(Math.max(Math.max(width - rippleX, rippleX), rippleY), height - rippleY);
+                float duration = 250;
                 speed = endRadius / duration * 10;
                 handler.postDelayed(new Runnable() {
                     @Override

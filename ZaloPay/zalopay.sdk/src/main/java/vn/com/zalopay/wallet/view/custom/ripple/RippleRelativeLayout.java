@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.RelativeLayout;
 
 public class RippleRelativeLayout extends RelativeLayout {
@@ -45,10 +44,7 @@ public class RippleRelativeLayout extends RelativeLayout {
         // the view must contain an onClickListener to receive UP touch events. touchEffectAnimator
         // doesn't return any value in onTouchEvent for flexibility. so it is developers
         // responsibility to add a listener
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
+        setOnClickListener(view -> {
         });
     }
 

@@ -105,14 +105,11 @@ public class TouchEffectAnimator {
             mCircleAlpha = MAX_RIPPLE_ALPHA;
             mRectAlpha = 0;
 
-            ValueGeneratorAnim valueGeneratorAnim = new ValueGeneratorAnim(new InterpolatedTimeCallback() {
-                @Override
-                public void onTimeUpdate(float interpolatedTime) {
-                    if (hasRippleEffect)
-                        mRadius = requiredRadius * interpolatedTime;
-                    mRectAlpha = (int) (interpolatedTime * MAX_RIPPLE_ALPHA);
-                    mView.invalidate();
-                }
+            ValueGeneratorAnim valueGeneratorAnim = new ValueGeneratorAnim(interpolatedTime -> {
+                if (hasRippleEffect)
+                    mRadius = requiredRadius * interpolatedTime;
+                mRectAlpha = (int) (interpolatedTime * MAX_RIPPLE_ALPHA);
+                mView.invalidate();
             });
             valueGeneratorAnim.setInterpolator(new DecelerateInterpolator());
             valueGeneratorAnim.setDuration(animDuration);
@@ -141,20 +138,17 @@ public class TouchEffectAnimator {
     }
 
     private void fadeOutEffect() {
-        ValueGeneratorAnim valueGeneratorAnim = new ValueGeneratorAnim(new InterpolatedTimeCallback() {
-            @Override
-            public void onTimeUpdate(float interpolatedTime) {
-                mCircleAlpha = (int) (MAX_RIPPLE_ALPHA - (MAX_RIPPLE_ALPHA * interpolatedTime));
-                mRectAlpha = mCircleAlpha;
-                mView.invalidate();
-            }
+        ValueGeneratorAnim valueGeneratorAnim = new ValueGeneratorAnim(interpolatedTime -> {
+            mCircleAlpha = (int) (MAX_RIPPLE_ALPHA - (MAX_RIPPLE_ALPHA * interpolatedTime));
+            mRectAlpha = mCircleAlpha;
+            mView.invalidate();
         });
         valueGeneratorAnim.setDuration(animDuration / 3);
         mView.startAnimation(valueGeneratorAnim);
     }
 
     interface InterpolatedTimeCallback {
-        public void onTimeUpdate(float interpolatedTime);
+        void onTimeUpdate(float interpolatedTime);
     }
 
     class ValueGeneratorAnim extends Animation {

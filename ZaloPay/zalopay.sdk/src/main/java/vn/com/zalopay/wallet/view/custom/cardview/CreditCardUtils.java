@@ -1,7 +1,6 @@
 package vn.com.zalopay.wallet.view.custom.cardview;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import java.util.Calendar;
 

@@ -108,7 +108,7 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
             //zalopay channel transtype
             if (pResponse.transtypepmcs != null && pResponse.transtypepmcs.size() > 0) {
                 for (DChannelMapApp channelMap : pResponse.transtypepmcs) {
-                    ArrayList<String> mapAppChannelIDList = new ArrayList<String>();
+                    ArrayList<String> mapAppChannelIDList = new ArrayList<>();
                     String keyMap = String.valueOf(pResponse.info != null ? pResponse.info.appid : GlobalData.appID);
                     keyMap += Constants.UNDERLINE + channelMap.transtype;
                     for (DPaymentChannel channel : channelMap.pmclist) {

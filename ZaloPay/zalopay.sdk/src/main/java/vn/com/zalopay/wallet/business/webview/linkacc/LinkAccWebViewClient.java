@@ -12,10 +12,6 @@ import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
 
 import java.util.List;
 
-import rx.SingleSubscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import vn.com.zalopay.wallet.R;
 import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.linkacc.AdapterLinkAcc;
@@ -193,7 +189,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
             getAdapter().onEvent(EEventType.ON_LOADSITE_ERROR, new WebViewError(errorCode, description));
         }
         if (getAdapter() != null) {
-            StringBuffer errStringBuilder = new StringBuffer();
+            StringBuilder errStringBuilder = new StringBuilder();
             errStringBuilder.append(description);
             errStringBuilder.append("\n");
             errStringBuilder.append(failingUrl);
@@ -318,7 +314,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
                 // break loop for
                 break;
-            } else if (mIsRefreshCaptcha && bankScript.pageCode.equals(mAdapter.VCB_REFRESH_CAPTCHA)) {
+            } else if (mIsRefreshCaptcha && bankScript.pageCode.equals(AdapterLinkAcc.VCB_REFRESH_CAPTCHA)) {
                 Log.d("matchAndRunJs", "url: " + url + " ,type: " + pType);
                 DLinkAccScriptInput input = genJsInput();
                 input.isAjax = pIsAjax;
@@ -363,23 +359,20 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
 
         final String result = pResult;
 
-        getAdapter().getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
-                EEventType eventType = convertPageIdToEvent(mEventID);
-                StatusResponse response = genResponse(eventType, scriptOutput);
-                Log.d("Js", "==== onJsPaymentResult: " + mEventID + "==" + pResult);
-                if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
-                    // Auto hit at first step
-                    mIsFirst = false;
-                    hit();
+        getAdapter().getActivity().runOnUiThread(() -> {
+            DLinkAccScriptOutput scriptOutput = GsonUtils.fromJsonString(result, DLinkAccScriptOutput.class);
+            EEventType eventType = convertPageIdToEvent(mEventID);
+            StatusResponse response = genResponse(eventType, scriptOutput);
+            Log.d("Js", "==== onJsPaymentResult: " + mEventID + "==" + pResult);
+            if (mEventID == 0 && mIsFirst && !scriptOutput.isError()) {
+                // Auto hit at first step
+                mIsFirst = false;
+                hit();
+            } else {
+                if (eventType == EEventType.ON_REQUIRE_RENDER) {
+                    mAdapter.onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
                 } else {
-                    if (eventType == EEventType.ON_REQUIRE_RENDER) {
-                        mAdapter.onEvent(EEventType.ON_REQUIRE_RENDER, scriptOutput, mPageCode);
-                    } else {
-                        mAdapter.onEvent(eventType, response, mPageCode, mEventID);
-                    }
+                    mAdapter.onEvent(eventType, response, mPageCode, mEventID);
                 }
             }
         });
@@ -399,7 +392,7 @@ public class LinkAccWebViewClient extends PaymentWebViewClient {
     }
 
     public StatusResponse genResponse(EEventType pEventType, DLinkAccScriptOutput pScriptOutput) {
-        StatusResponse ret = null;
+        StatusResponse ret;
         switch (pEventType) {
             default:
                 ret = new StatusResponse();

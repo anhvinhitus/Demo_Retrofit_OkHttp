@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.merchant.strategy;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
@@ -72,9 +71,8 @@ public class TaskGetCardSupportList extends TaskBase {
 
         //load bank
         if (BankLoader.mapBank != null) {
-            Iterator it = BankLoader.mapBank.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
+            for (Object o : BankLoader.mapBank.entrySet()) {
+                Map.Entry pair = (Map.Entry) o;
                 String bankCode = String.valueOf(pair.getValue());
                 if (!TextUtils.isEmpty(bankCode)) {
                     boolean isBankAccount = BankAccountHelper.isBankAccount(bankCode);

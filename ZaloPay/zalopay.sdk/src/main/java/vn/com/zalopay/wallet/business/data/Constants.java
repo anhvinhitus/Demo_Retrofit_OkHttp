@@ -1,6 +1,7 @@
 package vn.com.zalopay.wallet.business.data;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Constants {
@@ -59,7 +60,7 @@ public class Constants {
     public static final int SERVER_MAINTENANCE_CODE = -999;
     public static final int UPGRADE_LEVEL_CODE = -119;
     public static final List<Integer> MONEY_NOT_ENOUGH_CODE = Arrays.asList(-62, -63);
-    public static final List<Integer> PAYMENT_LIMIT_PER_DAY_CODE = Arrays.asList(-133);
+    public static final List<Integer> PAYMENT_LIMIT_PER_DAY_CODE = Collections.singletonList(-133);
     public static final int TRANSACTION_PROCESSING = 5;
     public static final int AUTHEN_PAYER_OTP_WRONG_CODE = 17;
     public static final List<Integer> GET_STATUS_AUTHEN_PAYER_CODE = Arrays.asList(14, 18);

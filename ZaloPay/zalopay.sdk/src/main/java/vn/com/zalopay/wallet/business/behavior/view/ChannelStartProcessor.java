@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.business.behavior.view;
 import android.content.Intent;
 
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
 import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -102,12 +101,7 @@ public class ChannelStartProcessor extends SingletonBase {
             //validate in maptable
             int iCheck = GlobalData.checkPermissionByChannelMap(mChannel.pmcid);
             if (iCheck == Constants.LEVELMAP_INVALID) {
-                getActivity().showWarningDialog(new ZPWOnEventDialogListener() {
-                    @Override
-                    public void onOKevent() {
-                        getActivity().recycleGateway();
-                    }
-                }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
+                getActivity().showWarningDialog(() -> getActivity().recycleGateway(), GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
 
                 return;
             } else if (iCheck == Constants.LEVELMAP_BAN && getChannel().isBankAccountMap()) {
@@ -159,13 +153,7 @@ public class ChannelStartProcessor extends SingletonBase {
         } catch (Exception ex) {
             Log.e(this, ex);
 
-            getActivity().showWarningDialog(new ZPWOnEventDialogListener() {
-                @Override
-                public void onOKevent() {
-                    getActivity().recycleGateway();
-                }
-            }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
-            return;
+            getActivity().showWarningDialog(() -> getActivity().recycleGateway(), GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
         }
     }
 
@@ -195,7 +183,7 @@ public class ChannelStartProcessor extends SingletonBase {
      */
     private void confirmUpgradeLevel(final String pMessage) {
         String closeButtonText = GlobalData.getStringResource(RS.string.dialog_choose_again_button);
-        if (getActivity().isUniqueChannel()) {
+        if (PaymentGatewayActivity.isUniqueChannel()) {
             closeButtonText = GlobalData.getStringResource(RS.string.dialog_close_button);
         }
 
@@ -225,12 +213,7 @@ public class ChannelStartProcessor extends SingletonBase {
         showProgressBar(false, null);
         BasePaymentActivity activity = (BasePaymentActivity) BasePaymentActivity.getCurrentActivity();
         if (activity != null && activity instanceof PaymentGatewayActivity && !activity.isFinishing()) {
-            activity.showWarningDialog(new ZPWOnEventDialogListener() {
-                @Override
-                public void onOKevent() {
-                    getActivity().recycleGateway();
-                }
-            }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+            activity.showWarningDialog(() -> getActivity().recycleGateway(), GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
         }
 
     }

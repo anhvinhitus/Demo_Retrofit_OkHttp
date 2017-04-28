@@ -58,10 +58,7 @@ public class SharedPreferencesManager extends SingletonBase {
 
     public boolean setString(String pKey, String pValue) {
         SharedPreferences sharedPreferences = getSharedPreferences();
-        if (sharedPreferences != null) {
-            return sharedPreferences.edit().putString(pKey, pValue).commit();
-        }
-        return false;
+        return sharedPreferences != null && sharedPreferences.edit().putString(pKey, pValue).commit();
     }
 
     private long getLong(String pKey) {
@@ -73,10 +70,7 @@ public class SharedPreferencesManager extends SingletonBase {
 
     public boolean setLong(String pKey, long pValue) {
         SharedPreferences sharedPreferences = getSharedPreferences();
-        if (sharedPreferences != null) {
-            return sharedPreferences.edit().putLong(pKey, pValue).commit();
-        }
-        return false;
+        return sharedPreferences != null && sharedPreferences.edit().putLong(pKey, pValue).commit();
     }
 
     private int getInt(String pKey) {
@@ -90,10 +84,7 @@ public class SharedPreferencesManager extends SingletonBase {
     public boolean setInt(String pKey, int pValue) {
         SharedPreferences sharedPreferences = getSharedPreferences();
 
-        if (sharedPreferences != null) {
-            return sharedPreferences.edit().putInt(pKey, pValue).commit();
-        }
-        return false;
+        return sharedPreferences != null && sharedPreferences.edit().putInt(pKey, pValue).commit();
     }
 
     private boolean getBoolean(String pKey, boolean defaultValue) {
@@ -107,11 +98,8 @@ public class SharedPreferencesManager extends SingletonBase {
     public boolean setBoolean(String pKey, boolean pValue) {
         SharedPreferences sharedPreferences = getSharedPreferences();
 
-        if (sharedPreferences != null) {
-            return sharedPreferences.edit().putBoolean(pKey, pValue).commit();
-        }
+        return sharedPreferences != null && sharedPreferences.edit().putBoolean(pKey, pValue).commit();
 
-        return false;
     }
 
     public String pickCachedCardNumber() {
@@ -503,7 +491,7 @@ public class SharedPreferencesManager extends SingletonBase {
     }
 
     public ArrayList<String> getPmcConfigList(String pKey) {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
 
         String raw = getString(mContext.get().getResources().getString(R.string.zingpaysdk_conf_gwinfo_channel_list) + pKey);
 

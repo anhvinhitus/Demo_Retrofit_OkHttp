@@ -64,10 +64,8 @@ public class AdapterCreditCard extends AdapterBase {
 
     @Override
     public boolean isInputStep() {
-        if (getPageName().equals(SCREEN_CC))
-            return true;
+        return getPageName().equals(SCREEN_CC) || super.isInputStep();
 
-        return super.isInputStep();
     }
 
     @Override
@@ -108,16 +106,12 @@ public class AdapterCreditCard extends AdapterBase {
 
     @Override
     public void onProcessPhrase() {
-        try {
-            if (!GlobalData.isMapCardChannel() && !GlobalData.isMapBankAccountChannel()) {
-                getGuiProcessor().populateCard();
-                tranferPaymentCardToMapCard();
-            }
-
-            startSubmitTransaction();
-        } catch (Exception e) {
-            throw e;
+        if (!GlobalData.isMapCardChannel() && !GlobalData.isMapBankAccountChannel()) {
+            getGuiProcessor().populateCard();
+            tranferPaymentCardToMapCard();
         }
+
+        startSubmitTransaction();
     }
 
 }

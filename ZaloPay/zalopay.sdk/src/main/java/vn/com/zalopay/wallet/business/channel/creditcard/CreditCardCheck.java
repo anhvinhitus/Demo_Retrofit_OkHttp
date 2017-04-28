@@ -97,8 +97,8 @@ public class CreditCardCheck extends CardCheck {
                 if (strStartPin.contains(",")) {
                     startPin = strStartPin.split(",");
 
-                    for (int i = 0; i < startPin.length; i++) {
-                        if (pCardNumber.equals(startPin[i]) || pCardNumber.startsWith(startPin[i])) {
+                    for (String aStartPin : startPin) {
+                        if (pCardNumber.equals(aStartPin) || pCardNumber.startsWith(aStartPin)) {
                             mIdentifier = identifier;
                             break;
                         }

@@ -96,24 +96,20 @@ public class AdapterZaloPay extends AdapterBase {
 
     @Override
     public void onProcessPhrase() {
-        try {
-            if (isRequirePinPharse()) {
-                if (!TextUtils.isEmpty(GlobalData.getTransactionPin()))
-                    startSubmitTransaction();
+        if (isRequirePinPharse()) {
+            if (!TextUtils.isEmpty(GlobalData.getTransactionPin()))
+                startSubmitTransaction();
 
-                return;
-            }
-
-            if (isBalanceErrorPharse()) {
-                GlobalData.setResultMoneyNotEnough();
-                terminate(GlobalData.getStringResource(RS.string.zpw_string_not_enough_money_wallet), false);
-                return;
-            }
-
-            startSubmitTransaction();
-
-        } catch (Exception e) {
-            throw e;
+            return;
         }
+
+        if (isBalanceErrorPharse()) {
+            GlobalData.setResultMoneyNotEnough();
+            terminate(GlobalData.getStringResource(RS.string.zpw_string_not_enough_money_wallet), false);
+            return;
+        }
+
+        startSubmitTransaction();
+
     }
 }

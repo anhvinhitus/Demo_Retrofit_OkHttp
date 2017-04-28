@@ -115,9 +115,9 @@ public class SDKPayment {
         }
         //set fingerprint listener from merchant
         if (pExtraParams != null && pExtraParams.length > 0) {
-            for (int i = 0; i < pExtraParams.length; i++) {
-                if (pExtraParams[i] instanceof IPaymentFingerPrint) {
-                    GlobalData.setIFingerPrint((IPaymentFingerPrint) pExtraParams[i]);
+            for (Object pExtraParam : pExtraParams) {
+                if (pExtraParam instanceof IPaymentFingerPrint) {
+                    GlobalData.setIFingerPrint((IPaymentFingerPrint) pExtraParam);
                 }
             }
         }
@@ -172,7 +172,7 @@ public class SDKPayment {
                                 GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
                             }
                             SingletonLifeCircleManager.disposeAll();
-                        }, new String[]{GlobalData.getStringResource(RS.string.dialog_close_button)});
+                        }, GlobalData.getStringResource(RS.string.dialog_close_button));
                 return;
             }
             //user have no link bank account so no need to unlink
@@ -189,7 +189,7 @@ public class SDKPayment {
                                 GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
                             }
                             SingletonLifeCircleManager.disposeAll();
-                        }, new String[]{GlobalData.getStringResource(RS.string.dialog_close_button)});
+                        }, GlobalData.getStringResource(RS.string.dialog_close_button));
                 return;
             }
 
@@ -203,7 +203,7 @@ public class SDKPayment {
                                 GlobalData.getPaymentListener().onComplete(GlobalData.getPaymentResult());
                             }
                             SingletonLifeCircleManager.disposeAll();
-                        }, new String[]{GlobalData.getStringResource(RS.string.dialog_close_button)});
+                        }, GlobalData.getStringResource(RS.string.dialog_close_button));
                 return;
             }
         } catch (Exception e) {

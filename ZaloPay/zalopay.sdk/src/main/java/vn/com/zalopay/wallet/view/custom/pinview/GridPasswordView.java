@@ -53,12 +53,7 @@ public class GridPasswordView extends LinearLayout implements PasswordView {
     private ImeDelBugFixedEditText mInputView;
     private OnPasswordChangedListener mListener;
     private PasswordTransformationMethod mTransformationMethod;
-    private OnClickListener mOnClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            forceInputViewGetFocus();
-        }
-    };
+    private OnClickListener mOnClickListener = v -> forceInputViewGetFocus();
     private ImeDelBugFixedEditText.OnDelKeyEventListener onDelKeyEventListener = new ImeDelBugFixedEditText.OnDelKeyEventListener() {
 
         @Override
@@ -115,15 +110,12 @@ public class GridPasswordView extends LinearLayout implements PasswordView {
         }
     };
     @Deprecated
-    private OnKeyListener onKeyListener = new OnKeyListener() {
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DEL) {
-                onDelKeyEventListener.onDeleteClick();
-                return true;
-            }
-            return false;
+    private OnKeyListener onKeyListener = (v, keyCode, event) -> {
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DEL) {
+            onDelKeyEventListener.onDeleteClick();
+            return true;
         }
+        return false;
     };
 
     public GridPasswordView(Context context) {
@@ -318,9 +310,9 @@ public class GridPasswordView extends LinearLayout implements PasswordView {
     @Override
     public String getPassWord() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < mPasswordArr.length; i++) {
-            if (mPasswordArr[i] != null)
-                sb.append(mPasswordArr[i]);
+        for (String aMPasswordArr : mPasswordArr) {
+            if (aMPasswordArr != null)
+                sb.append(aMPasswordArr);
         }
         return sb.toString();
     }

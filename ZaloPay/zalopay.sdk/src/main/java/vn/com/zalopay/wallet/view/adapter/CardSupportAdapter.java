@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.behavior.gateway.BankLoader;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
@@ -55,7 +54,7 @@ public class CardSupportAdapter extends BaseAdapter {
         ImageView imImageIcon;
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(BasePaymentActivity.getCurrentActivity().getApplicationContext()).inflate(R.layout.gridview__item__bank, null);
+            convertView = LayoutInflater.from(BasePaymentActivity.getCurrentActivity().getApplicationContext()).inflate(R.layout.gridview__item__bank, parent);
             holder = new ZPWItemBankHolder();
             imImageIcon = (ImageView) convertView.findViewById(R.id.imBankIcon);
             holder.imBankIcon = imImageIcon;

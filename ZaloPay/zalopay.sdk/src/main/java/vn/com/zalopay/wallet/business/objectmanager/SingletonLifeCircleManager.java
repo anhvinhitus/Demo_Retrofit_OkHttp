@@ -25,7 +25,7 @@ public class SingletonLifeCircleManager {
      */
     public static synchronized void register(Class<?> pClassHasStaticAttr) {
         if (mClassHasStaticAttrList == null) {
-            mClassHasStaticAttrList = new HashSet<Class<?>>();
+            mClassHasStaticAttrList = new HashSet<>();
         }
 
         mClassHasStaticAttrList.add(pClassHasStaticAttr);
@@ -40,9 +40,7 @@ public class SingletonLifeCircleManager {
 
         if (mClassHasStaticAttrList != null) {
 
-            for (Class<?> clazz : mClassHasStaticAttrList) {
-                dispose(clazz);
-            }
+            mClassHasStaticAttrList.forEach(SingletonLifeCircleManager::dispose);
 
             mClassHasStaticAttrList = null;
         }
@@ -70,19 +68,19 @@ public class SingletonLifeCircleManager {
 
         Field[] fields = clazz.getDeclaredFields();
 
-        for (int i = 0; i < fields.length; i++) {
+        for (Field field : fields) {
 
-            if (Modifier.isStatic(fields[i].getModifiers()) && !Modifier.isFinal(fields[i].getModifiers())
-                    && !fields[i].getType().isPrimitive()) {
+            if (Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers())
+                    && !field.getType().isPrimitive()) {
                 try {
 
-                    if (Modifier.isPrivate(fields[i].getModifiers())) {
-                        fields[i].setAccessible(true);
+                    if (Modifier.isPrivate(field.getModifiers())) {
+                        field.setAccessible(true);
                     }
 
-                    fields[i].set(null, null);
+                    field.set(null, null);
 
-                    Log.i("RELEASE_STATIC_OBJ", "**** Release " + fields[i].getName());
+                    Log.i("RELEASE_STATIC_OBJ", "**** Release " + field.getName());
                 } catch (Exception e) {
                     Log.d("RELEASE_STATIC_OBJ", e);
                 }
@@ -95,18 +93,18 @@ public class SingletonLifeCircleManager {
 
         Field[] fields = clazz.getDeclaredFields();
 
-        for (int i = 0; i < fields.length; i++) {
+        for (Field field : fields) {
 
-            if (!Modifier.isFinal(fields[i].getModifiers()) && !fields[i].getType().isPrimitive()) {
+            if (!Modifier.isFinal(field.getModifiers()) && !field.getType().isPrimitive()) {
                 try {
 
-                    if (Modifier.isPrivate(fields[i].getModifiers())) {
-                        fields[i].setAccessible(true);
+                    if (Modifier.isPrivate(field.getModifiers())) {
+                        field.setAccessible(true);
                     }
 
-                    fields[i].set(null, null);
+                    field.set(null, null);
 
-                    Log.i("RELEASE_OBJ", "**** Release " + fields[i].getName());
+                    Log.i("RELEASE_OBJ", "**** Release " + field.getName());
                 } catch (Exception e) {
                     Log.d("RELEASE_OBJ", e);
                 }

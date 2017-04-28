@@ -10,19 +10,18 @@ import android.text.StaticLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
 import vn.com.zalopay.wallet.listener.onShowDetailOrderListener;
-import vn.com.zalopay.wallet.business.data.Log;
 
-public class EllipsizingTextView extends TextView {
+public class EllipsizingTextView extends android.support.v7.widget.AppCompatTextView {
     private static final String ELLIPSIS = "...";
-    private final List<EllipsizeListener> ellipsizeListeners = new ArrayList<EllipsizeListener>();
+    private final List<EllipsizeListener> ellipsizeListeners = new ArrayList<>();
     private int mOffsetDrawable = 0;
     private boolean isEllipsized;
     private boolean isStale;
@@ -33,7 +32,6 @@ public class EllipsizingTextView extends TextView {
     private float lineAdditionalVerticalPadding = 0.0f;
     private Drawable drawableRight;
     private Rect bounds;
-    private int actionX, actionY;
     private onShowDetailOrderListener mShowDetailOrderListener;
 
     public EllipsizingTextView(Context context) {
@@ -98,14 +96,14 @@ public class EllipsizingTextView extends TextView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN && drawableRight != null) {
-            actionX = (int) event.getX();
-            actionY = (int) event.getY();
+            int actionX = (int) event.getX();
+            int actionY = (int) event.getY();
 
             int x, y;
             int extraTapArea = 13;
 
-            x = (int) (actionX + extraTapArea);
-            y = (int) (actionY - extraTapArea);
+            x = actionX + extraTapArea;
+            y = actionY - extraTapArea;
 
             x = getWidth() - x;
 

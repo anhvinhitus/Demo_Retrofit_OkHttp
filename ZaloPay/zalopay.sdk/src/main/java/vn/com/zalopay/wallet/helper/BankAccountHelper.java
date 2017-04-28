@@ -90,9 +90,7 @@ public class BankAccountHelper {
                 if (pReload) {
                     SharedPreferencesManager.getInstance().setBankAccountCheckSum(null);
                 }
-                BaseTask getBankAccount = new MapBankAccountListTask(pResponse -> {
-                    subscriber.onSuccess(pResponse);
-                });
+                BaseTask getBankAccount = new MapBankAccountListTask(subscriber::onSuccess);
                 getBankAccount.makeRequest();
 
             } catch (Exception e) {

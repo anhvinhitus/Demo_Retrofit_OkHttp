@@ -3,7 +3,6 @@ package vn.com.zalopay.wallet.message;
 import org.greenrobot.eventbus.EventBus;
 
 import vn.com.zalopay.wallet.business.behavior.gateway.PlatformInfoLoader;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;

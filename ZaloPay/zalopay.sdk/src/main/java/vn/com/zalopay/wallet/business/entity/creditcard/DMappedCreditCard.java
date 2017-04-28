@@ -2,7 +2,6 @@ package vn.com.zalopay.wallet.business.entity.creditcard;
 
 import android.text.TextUtils;
 
-import vn.com.zalopay.wallet.business.entity.base.BaseEntity;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
 public class DMappedCreditCard {

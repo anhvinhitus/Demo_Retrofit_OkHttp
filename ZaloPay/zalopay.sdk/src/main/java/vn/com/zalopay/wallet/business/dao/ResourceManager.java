@@ -134,28 +134,24 @@ public class ResourceManager extends SingletonBase {
         File file = new File(path);
 
         if (file.exists()) {
-            try {
-                InputStream inputStream = new FileInputStream(file);
-                if (inputStream != null) {
-                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            InputStream inputStream = new FileInputStream(file);
+            if (inputStream != null) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-                    String line;
-                    StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                StringBuilder stringBuilder = new StringBuilder();
 
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line);
-                        stringBuilder.append("\r\n");
-                    }
-
-                    bufferedReader.close();
-                    inputStreamReader.close();
-                    inputStream.close();
-
-                    result = stringBuilder.toString();
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line);
+                    stringBuilder.append("\r\n");
                 }
-            } catch (Exception ex) {
-                throw ex;
+
+                bufferedReader.close();
+                inputStreamReader.close();
+                inputStream.close();
+
+                result = stringBuilder.toString();
             }
         }
 
@@ -164,7 +160,7 @@ public class ResourceManager extends SingletonBase {
     }
 
     public static boolean isInit() {
-        return (mResourceCreated == true) && (mConfigFromServer != null);
+        return (mResourceCreated) && (mConfigFromServer != null);
     }
 
     public static synchronized Completable initResource() {

@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import vn.com.zalopay.wallet.R;
@@ -55,9 +54,8 @@ public class VietComBankAccountListViewAdapter extends ArrayAdapter<String> {
         if (pPosition >= 0) {
             mSelectedIndex = pPosition;
 
-            Iterator it = iconList.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
+            for (Object o : iconList.entrySet()) {
+                Map.Entry pair = (Map.Entry) o;
 
                 if (pair.getKey().toString().equals(String.valueOf(pPosition)))
                     ((ImageView) pair.getValue()).setVisibility(View.VISIBLE);

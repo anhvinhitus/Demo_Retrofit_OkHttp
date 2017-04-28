@@ -1,21 +1,17 @@
 package vn.com.zalopay.wallet.view.adapter;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.zalopay.ui.widget.dialog.listener.ZPWOnEventDialogListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.zalopay.wallet.R;
@@ -180,12 +176,9 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
 
                         //error map table from server, show dialog alert and quit sdk
                         if (iCheck == Constants.LEVELMAP_INVALID) {
-                            ((BasePaymentActivity) mActivity).showErrorDialog(new ZPWOnEventDialogListener() {
-                                @Override
-                                public void onOKevent() {
-                                    GlobalData.setResultInvalidInput();
-                                    ((PaymentGatewayActivity) mActivity).recycleActivity();
-                                }
+                            ((BasePaymentActivity) mActivity).showErrorDialog(() -> {
+                                GlobalData.setResultInvalidInput();
+                                ((PaymentGatewayActivity) mActivity).recycleActivity();
                             }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
 
                             SDKReportTask.makeReportError(SDKReportTask.INVALID_USERPROFILE, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));
@@ -204,12 +197,9 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
 
                         //error map table from server, show dialog alert and quit sdk
                         if (iCheck == Constants.LEVELMAP_INVALID) {
-                            ((BasePaymentActivity) mActivity).showErrorDialog(new ZPWOnEventDialogListener() {
-                                @Override
-                                public void onOKevent() {
-                                    GlobalData.setResultInvalidInput();
-                                    ((PaymentGatewayActivity) mActivity).recycleActivity();
-                                }
+                            ((BasePaymentActivity) mActivity).showErrorDialog(() -> {
+                                GlobalData.setResultInvalidInput();
+                                ((PaymentGatewayActivity) mActivity).recycleActivity();
                             }, GlobalData.getStringResource(RS.string.zingpaysdk_alert_input_error));
 
                             SDKReportTask.makeReportError(SDKReportTask.INVALID_USERPROFILE, GsonUtils.toJsonString(GlobalData.getPaymentInfo()));

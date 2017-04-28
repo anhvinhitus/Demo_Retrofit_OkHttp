@@ -107,7 +107,6 @@ public class ZPWRippleLayout extends RelativeLayout {
     private int positionInAdapter;
 
     private GestureDetector gestureDetector;
-    private PerformClickEvent pendingClickEvent;
     private PressedEvent pendingPressEvent;
     private boolean hasPerformedLongPress;
     /*
@@ -137,23 +136,6 @@ public class ZPWRippleLayout extends RelativeLayout {
             object.setRippleAlpha(value);
         }
     };
-    private SimpleOnGestureListener longClickListener = new GestureDetector.SimpleOnGestureListener() {
-        public void onLongPress(MotionEvent e) {
-            hasPerformedLongPress = childView.performLongClick();
-            if (hasPerformedLongPress) {
-                if (rippleHover) {
-                    startRipple(null);
-                }
-                cancelPressedEvent();
-            }
-        }
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            hasPerformedLongPress = false;
-            return super.onDown(e);
-        }
-    };
 
 
     public ZPWRippleLayout(Context context) {
@@ -168,6 +150,23 @@ public class ZPWRippleLayout extends RelativeLayout {
         super(context, attrs, defStyle);
 
         setWillNotDraw(false);
+        SimpleOnGestureListener longClickListener = new SimpleOnGestureListener() {
+            public void onLongPress(MotionEvent e) {
+                hasPerformedLongPress = childView.performLongClick();
+                if (hasPerformedLongPress) {
+                    if (rippleHover) {
+                        startRipple(null);
+                    }
+                    cancelPressedEvent();
+                }
+            }
+
+            @Override
+            public boolean onDown(MotionEvent e) {
+                hasPerformedLongPress = false;
+                return super.onDown(e);
+            }
+        };
         gestureDetector = new GestureDetector(context, longClickListener);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ZPWRippleLayout);
@@ -260,17 +259,12 @@ public class ZPWRippleLayout extends RelativeLayout {
             int action = event.getActionMasked();
             switch (action) {
                 case MotionEvent.ACTION_UP:
-                    pendingClickEvent = new PerformClickEvent();
+                    PerformClickEvent pendingClickEvent = new PerformClickEvent();
 
                     if (prepressed) {
                         childView.setPressed(true);
                         postDelayed(
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        childView.setPressed(false);
-                                    }
-                                }, ViewConfiguration.getPressedStateDuration());
+                                () -> childView.setPressed(false), ViewConfiguration.getPressedStateDuration());
                     }
 
                     if (isEventInBounds) {

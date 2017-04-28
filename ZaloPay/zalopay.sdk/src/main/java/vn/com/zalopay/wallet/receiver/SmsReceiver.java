@@ -41,8 +41,8 @@ public class SmsReceiver extends BroadcastReceiver {
             } else {
                 //if sms has length over 160,it's devided by multipart to send
                 StringBuilder bodyText = new StringBuilder();
-                for (int i = 0; i < messages.length; i++) {
-                    bodyText.append(messages[i].getMessageBody());
+                for (SmsMessage message : messages) {
+                    bodyText.append(message.getMessageBody());
                 }
                 body = bodyText.toString();
                 Log.d("SmsReceiver", "content sms: " + body);

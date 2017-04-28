@@ -41,6 +41,6 @@ public class DLinkAccScriptOutput {
     public String messageTimeout = null;
 
     public boolean isError() {
-        return (shouldStop == true && !TextUtils.isEmpty(message));
+        return (shouldStop && !TextUtils.isEmpty(message));
     }
 }

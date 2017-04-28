@@ -5,7 +5,7 @@ import android.view.View;
 
 public abstract class BaseEffects {
 
-    private static final int DURATION = 1 * 700;
+    private static final int DURATION = 700;
 
     protected long mDuration = DURATION;
 

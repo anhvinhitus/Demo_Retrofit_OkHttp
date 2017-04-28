@@ -36,7 +36,6 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
     // Android 2.3
     protected int countIntervalCheck = 0;
 
-    ;
     private boolean mIsRunningScript = false;
 
     private boolean mIsLoadingFinished = true;
@@ -283,7 +282,7 @@ public class NewBankWebViewClient extends PaymentWebViewClient {
         return ret;
     }
 
-    public static enum EJavaScriptType {
+    public enum EJavaScriptType {
         AUTO, HIT
     }
 }

@@ -39,16 +39,13 @@ class SnackbarManager {
     private SnackbarRecord mNextSnackbar;
     private SnackbarManager() {
         mLock = new Object();
-        mHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message message) {
-                switch (message.what) {
-                    case MSG_TIMEOUT:
-                        handleTimeout((SnackbarRecord) message.obj);
-                        return true;
-                }
-                return false;
+        mHandler = new Handler(Looper.getMainLooper(), message -> {
+            switch (message.what) {
+                case MSG_TIMEOUT:
+                    handleTimeout((SnackbarRecord) message.obj);
+                    return true;
             }
+            return false;
         });
     }
 
@@ -80,7 +77,6 @@ class SnackbarManager {
             if (mCurrentSnackbar != null && cancelSnackbarLocked(mCurrentSnackbar,
                     TSnackbar.Callback.DISMISS_EVENT_CONSECUTIVE)) {
                 // If we currently have a TSnackbar, try and cancel it and wait in line
-                return;
             } else {
                 // Clear out the current snackbar
                 mCurrentSnackbar = null;

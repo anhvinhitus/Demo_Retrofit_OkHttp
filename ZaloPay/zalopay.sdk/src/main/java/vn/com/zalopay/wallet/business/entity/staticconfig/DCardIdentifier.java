@@ -10,9 +10,7 @@ public class DCardIdentifier extends BaseEntity<DCardIdentifier> {
     public int max_length;
 
     public boolean isMatchMaxLengthCard(int pLength) {
-        if (max_length > 0 && pLength == max_length)
-            return true;
+        return max_length > 0 && pLength == max_length;
 
-        return false;
     }
 }

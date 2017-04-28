@@ -80,10 +80,8 @@ public class VPaymentDrawableEditText extends VPaymentEditText implements IDoAct
     public boolean isValidInput() {
         String input = getString();
 
-        if (TextUtils.isEmpty(input))
-            return true;
+        return TextUtils.isEmpty(input) || CardValidation.validCardName(input);
 
-        return CardValidation.validCardName(input);
     }
 
     /***

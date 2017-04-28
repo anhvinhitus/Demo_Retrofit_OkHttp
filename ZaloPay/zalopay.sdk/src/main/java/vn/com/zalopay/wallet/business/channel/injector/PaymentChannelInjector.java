@@ -5,17 +5,13 @@ import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
 public class PaymentChannelInjector extends BaseChannelInjector {
     @Override
     protected void detectChannel(ZPWOnGetChannelListener pListener) throws Exception {
-        try {
-            getMapBankAccount();
-            getMapCard();
-            getChannelFromConfig();
-            sortChannels();
-            if (pListener != null) {
-                pListener.onGetChannelComplete();
-            }
-
-        } catch (Exception ex) {
-            throw ex;
+        getMapBankAccount();
+        getMapCard();
+        getChannelFromConfig();
+        sortChannels();
+        if (pListener != null) {
+            pListener.onGetChannelComplete();
         }
+
     }
 }

@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -102,10 +101,9 @@ public class CShareData extends SingletonBase {
             List<BankConfig> bankConfigList = new ArrayList<>();
 
             if (BankLoader.mapBank != null) {
-                Iterator it = BankLoader.mapBank.entrySet().iterator();
 
-                while (it.hasNext()) {
-                    Map.Entry pair = (Map.Entry) it.next();
+                for (Object o : BankLoader.mapBank.entrySet()) {
+                    Map.Entry pair = (Map.Entry) o;
 
                     try {
                         BankConfig bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(String.valueOf(pair.getValue())), BankConfig.class);
@@ -223,7 +221,6 @@ public class CShareData extends SingletonBase {
         } else {
             //user link/unlink on vcb website, then zalopay server notify to app -> sdk (use not in sdk)
             try {
-                IReloadMapInfoListener reloadMapInfoListener = (IReloadMapInfoListener) pObject[1];
                 BankAccountHelper.loadBankAccountList(true);
             } catch (Exception ex) {
                 Log.e(this, ex);

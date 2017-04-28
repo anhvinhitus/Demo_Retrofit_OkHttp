@@ -98,13 +98,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
                 GlobalData.getTransactionType();
                 onSelectedChannel(baseChannelInjector.getChannelAtPosition(position));
 
-                new Handler().postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        mMoreClick = true;
-                    }
-                }, 1000);
+                new Handler().postDelayed(() -> mMoreClick = true, 1000);
             }
         }
     };
@@ -337,15 +331,11 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      */
     private void populateListView() {
         mChannelListViewAdapter = new GatewayChannelListViewAdapter(this, RS.getLayout(RS.layout.listview__item__channel__gateway),
-                (ArrayList<DPaymentChannelView>) baseChannelInjector.getChannelList());
+                baseChannelInjector.getChannelList());
         mChannelListView.setAdapter(mChannelListViewAdapter);
         mChannelListView.setOnItemClickListener(mChannelItemClick);
 
-        if (baseChannelInjector.isChannelUnique()) {
-            isUniqueChannel = true;
-        } else {
-            isUniqueChannel = false;
-        }
+        isUniqueChannel = baseChannelInjector.isChannelUnique();
         Log.d(this, "===show Channel===populateListView()");
     }
 
@@ -382,26 +372,22 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      * get all channel by this app + transaction
      */
     private void getPaymentChannel() throws Exception {
-        try {
-            Log.d(this, "===show Channel===getPaymentChannel()");
-            baseChannelInjector = BaseChannelInjector.createChannelInjector();
-            baseChannelInjector.getChannels(new ZPWOnGetChannelListener() {
-                @Override
-                public void onGetChannelComplete() {
-                    showChannelListView();
+        Log.d(this, "===show Channel===getPaymentChannel()");
+        baseChannelInjector = BaseChannelInjector.createChannelInjector();
+        baseChannelInjector.getChannels(new ZPWOnGetChannelListener() {
+            @Override
+            public void onGetChannelComplete() {
+                showChannelListView();
 
-                    showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
-                }
+                showProgress(false, GlobalData.getStringResource(RS.string.walletsdk_string_bar_title));
+            }
 
-                @Override
-                public void onGetChannelError(String pError) {
-                    onExit(pError, true);
-                }
-            });
+            @Override
+            public void onGetChannelError(String pError) {
+                onExit(pError, true);
+            }
+        });
 
-        } catch (Exception ex) {
-            throw ex;
-        }
     }
 
     @Override
@@ -627,7 +613,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     @Override
     public void onCallBackAction(boolean pIsShowDialog, String pMessage) {
         if (pIsShowDialog) {
-            showWarningDialog(() -> notifyToMerchant(), pMessage);
+            showWarningDialog(this::notifyToMerchant, pMessage);
 
         } else {
             notifyToMerchant();

@@ -85,7 +85,7 @@ public class SDKApplication extends Application {
         String checksumSDKV = null;
         try {
             checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return !SdkUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV);
     }

@@ -2,7 +2,6 @@ package vn.com.zalopay.wallet.configure;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-import vn.com.zalopay.wallet.business.data.Constants;
 
 public class SDKConfiguration {
     protected Builder mConfigBuilder;

@@ -38,7 +38,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/zpw_line_height"
-                android:background="@color/line"></View>
+                android:background="@color/line" />
 
             <TextView
                 android:id="@+id/support_button"
@@ -58,7 +58,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/zpw_line_height"
-                android:background="@color/line"></View>
+                android:background="@color/line" />
 
             <TextView
                 android:id="@+id/cancel_spview_button"

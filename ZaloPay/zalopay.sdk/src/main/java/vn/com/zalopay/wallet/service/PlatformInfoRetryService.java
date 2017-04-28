@@ -12,7 +12,6 @@ import vn.com.zalopay.wallet.business.data.Constants;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
-import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.business.data.Log;
 
 /***
@@ -88,7 +87,6 @@ public class PlatformInfoRetryService extends Service {
 
             mLoadGatewayInfoListener.onError(null);
 
-            return;
         }
 
        /* if (getGatewayInfoTask != null && getGatewayInfoTask.isProcessing()) {

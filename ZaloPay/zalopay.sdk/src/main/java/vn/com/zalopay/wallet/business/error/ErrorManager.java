@@ -67,16 +67,13 @@ public class ErrorManager {
     }
 
     public static boolean shouldShowDialog() {
-        if (GlobalData.getPaymentResult() != null &&
+        return GlobalData.getPaymentResult() != null &&
                 (GlobalData.getPaymentResult().paymentStatus != PaymentStatus.ZPC_TRANXSTATUS_TOKEN_INVALID
-                        && GlobalData.getPaymentResult().paymentStatus != PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER)) {
-            return true;
-        }
-        return false;
+                        && GlobalData.getPaymentResult().paymentStatus != PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER);
     }
 
     public static boolean needToTerminateTransaction() {
-        if (GlobalData.getPaymentResult() != null && (
+        return GlobalData.getPaymentResult() != null && (
                 GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_PROCESSING
                         || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_UPGRADE
                         || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT
@@ -85,10 +82,7 @@ public class ErrorManager {
                         || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_LOCK_USER
                         || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_MONEY_NOT_ENOUGH
                         || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_INPUT_INVALID
-                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE)) {
-            return true;
-        }
-        return false;
+                        || GlobalData.getPaymentResult().paymentStatus == PaymentStatus.ZPC_TRANXSTATUS_SERVICE_MAINTENANCE);
     }
 
     public static void updateTransactionResult(int pReturnCode) {

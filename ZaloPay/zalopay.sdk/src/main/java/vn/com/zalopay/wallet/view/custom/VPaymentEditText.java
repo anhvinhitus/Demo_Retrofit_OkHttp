@@ -164,9 +164,7 @@ public class VPaymentEditText extends TextInputEditText {
     }
 
     public boolean isInputMaxLength() {
-        if (getText().toString().length() == getMaxLength())
-            return true;
-        return false;
+        return getText().toString().length() == getMaxLength();
     }
 
     protected int getMaxLength() {
@@ -191,8 +189,8 @@ public class VPaymentEditText extends TextInputEditText {
              * BOUND. - this process help to increase the tappable area of
              * the rectangle.
              */
-            xTouch = (int) (actionX + extraTapArea);
-            yTouch = (int) (actionY - extraTapArea);
+            xTouch = actionX + extraTapArea;
+            yTouch = actionY - extraTapArea;
 
             /**Since this is right drawable subtract the value of x from the width
              * of view. so that width - tappedarea will result in x co-ordinate in drawable bound.

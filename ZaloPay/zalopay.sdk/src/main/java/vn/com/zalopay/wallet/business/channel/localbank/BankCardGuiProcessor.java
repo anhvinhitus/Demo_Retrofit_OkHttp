@@ -1,6 +1,5 @@
 package vn.com.zalopay.wallet.business.channel.localbank;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -9,11 +8,9 @@ import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,7 +21,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import vn.com.zalopay.wallet.R;
-import vn.com.zalopay.wallet.business.channel.base.AdapterBase;
 import vn.com.zalopay.wallet.business.channel.base.CardCheck;
 import vn.com.zalopay.wallet.business.channel.base.CardGuiProcessor;
 import vn.com.zalopay.wallet.business.data.Constants;
@@ -59,7 +55,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     private TextInputLayout mTextLayoutOtp, mTextLayoutToken;
 
-    private AppCompatRadioButton mRadioButtonSms, mRadioButtonToken;
+    private AppCompatRadioButton mRadioButtonToken;
 
     private View mRadioGroupAuthenSelectionView;
 
@@ -76,7 +72,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     public BankCardGuiProcessor(AdapterBankCard pAdapterLocalCard) {
         super();
-        mAdapter = new WeakReference<AdapterBase>(pAdapterLocalCard);
+        mAdapter = new WeakReference<>(pAdapterLocalCard);
         init();
     }
 
@@ -94,7 +90,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
         mRadioGroupAuthenSelectionView = getAdapter().getActivity().findViewById(R.id.linearlayout_selection_authen);
 
-        mRadioButtonSms = (AppCompatRadioButton) getAdapter().getActivity().findViewById(R.id.radioSelectionSmS);
+        AppCompatRadioButton mRadioButtonSms = (AppCompatRadioButton) getAdapter().getActivity().findViewById(R.id.radioSelectionSmS);
         mRadioButtonToken = (AppCompatRadioButton) getAdapter().getActivity().findViewById(R.id.radioSelectionToken);
 
         mRadioButtonSms.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -200,7 +196,6 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
     protected void setWebViewUserAgent() {
         if (mWebView != null) {
             mWebView.setUserAgent("Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36");
-            ;
         }
     }
 
@@ -223,9 +218,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
                     getCardView().visibleCardDate();
 
                     Log.d(this, "card number=" + getCardNumber() + " detected=" + isDetected + " cc=" + getBankCardFinder().getDetectedBankName());
-                    if (isInputBankMaintenance()) {
-                        return;
-                    }
+                    isInputBankMaintenance();
                 } else {
                     setDetectedCard();
                 }
@@ -373,24 +366,14 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
             mAccountListView.setAdapter(mAccountAdapter);
 
-            mAccountListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    mAccountAdapter.setSelectedIndex(position);
-                }
-            });
+            mAccountListView.setOnItemClickListener((parent, view, position, id) -> mAccountAdapter.setSelectedIndex(position));
 
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mAccountListView.getLayoutParams();
             params.height = (int) (pAccountList.size() * getAdapter().getActivity().getResources().getDimension(R.dimen.zpw_account_list_item_height));
             mAccountListView.requestLayout();
 
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mAccountAdapter.setSelectedIndex(0);
-                }
-            }, 500);
+            new Handler().postDelayed(() -> mAccountAdapter.setSelectedIndex(0), 500);
 
 
             getAdapter().getActivity().enableSubmitBtn(true);
@@ -504,10 +487,8 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
 
     public boolean isCoverBankInProcess() {
         View view = getAdapter().getActivity().findViewById(R.id.zpw_content_input_root_view_cover_bank);
-        if (view != null && view.getVisibility() == View.VISIBLE)
-            return true;
+        return view != null && view.getVisibility() == View.VISIBLE;
 
-        return false;
     }
 
     @Override
@@ -635,13 +616,7 @@ public class BankCardGuiProcessor extends CardGuiProcessor {
         StringBuilder sb = new StringBuilder();
         sb.append("<!DOCTYPE html><html><head></head><body style='margin:0;padding:0'><img src='").append(pUrl)
                 .append("' style='margin:0;padding:0;' width='120px' alt='' /></body>");
-        mCaptchaWebview.setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+        mCaptchaWebview.setOnTouchListener((v, event) -> true);
 
         WebSettings webSettings = mCaptchaWebview.getSettings();
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);

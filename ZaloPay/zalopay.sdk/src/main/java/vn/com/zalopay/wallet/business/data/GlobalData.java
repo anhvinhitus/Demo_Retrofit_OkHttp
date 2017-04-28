@@ -114,14 +114,11 @@ public class GlobalData {
     }
 
     public static boolean isUserInSDK() {
-        return BasePaymentActivity.getCurrentActivityCount() > 0 ? true : false;
+        return BasePaymentActivity.getCurrentActivityCount() > 0;
     }
 
     public static boolean isEnoughMoneyForTransaction(long pFee) {
-        if (GlobalData.getPaymentInfo() != null && GlobalData.getPaymentInfo().userInfo != null) {
-            return GlobalData.getPaymentInfo().userInfo.balance >= (GlobalData.getOrderAmount() + pFee);
-        }
-        return false;
+        return GlobalData.getPaymentInfo() != null && GlobalData.getPaymentInfo().userInfo != null && GlobalData.getPaymentInfo().userInfo.balance >= (GlobalData.getOrderAmount() + pFee);
     }
 
     public static boolean isNewUser() {
@@ -135,11 +132,8 @@ public class GlobalData {
             return true;
         }
 
-        if (TextUtils.isEmpty(userID) || !userID.equals(GlobalData.mPaymentInfo.userInfo.zaloPayUserId)) {
-            return true;
-        }
+        return TextUtils.isEmpty(userID) || !userID.equals(GlobalData.mPaymentInfo.userInfo.zaloPayUserId);
 
-        return false;
     }
 
     /***
@@ -176,19 +170,15 @@ public class GlobalData {
      * for checking user selected a map card channel.
      */
     public static boolean isMapCardChannel() {
-        if (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DMappedCard && !TextUtils.isEmpty(getPaymentInfo().mapBank.getFirstNumber())
-                && !TextUtils.isEmpty(getPaymentInfo().mapBank.getLastNumber()))
-            return true;
+        return getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DMappedCard && !TextUtils.isEmpty(getPaymentInfo().mapBank.getFirstNumber())
+                && !TextUtils.isEmpty(getPaymentInfo().mapBank.getLastNumber());
 
-        return false;
     }
 
     public static boolean isMapBankAccountChannel() {
-        if (getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DBankAccount && !TextUtils.isEmpty(getPaymentInfo().mapBank.getFirstNumber())
-                && !TextUtils.isEmpty(getPaymentInfo().mapBank.getLastNumber()))
-            return true;
+        return getPaymentInfo() != null && getPaymentInfo().mapBank instanceof DBankAccount && !TextUtils.isEmpty(getPaymentInfo().mapBank.getFirstNumber())
+                && !TextUtils.isEmpty(getPaymentInfo().mapBank.getLastNumber());
 
-        return false;
     }
 
     public static boolean isBankAccountLink() {
@@ -349,7 +339,7 @@ public class GlobalData {
         try {
             DAppInfo currentApp = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getAppById(String.valueOf(appID)), DAppInfo.class);
 
-            return (currentApp != null && currentApp.isAllow()) ? true : false;
+            return (currentApp != null && currentApp.isAllow());
 
         } catch (Exception e) {
             Log.e("isAllowApplication", e);
@@ -361,13 +351,13 @@ public class GlobalData {
      * this is red package channel
      */
     public static boolean isRedPacketChannel() {
-        long redPackageID = 0;
+        long redPackageID;
 
         try {
             redPackageID = Long.parseLong(GlobalData.getStringResource(RS.string.zpw_redpackage_app_id));
 
             return redPackageID == GlobalData.appID;
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         return false;
 
@@ -381,7 +371,7 @@ public class GlobalData {
             long zaloPayID = Long.parseLong(RS.string.zingpaysdk_conf_gwinfo_channel_zalopay);
 
             return zaloPayID == GlobalData.appID;
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
 
         }
         return false;
@@ -585,10 +575,7 @@ public class GlobalData {
     }
 
     public static boolean isForceChannel() {
-        if (getPaymentInfo() != null) {
-            return getPaymentInfo().isForceChannel();
-        }
-        return false;
+        return getPaymentInfo() != null && getPaymentInfo().isForceChannel();
     }
 
     public static long getOrderAmount() {
@@ -670,14 +657,14 @@ public class GlobalData {
         if (userProfile == null)
             return Constants.LEVELMAP_INVALID;
 
-        return userProfile.allow == true ? Constants.LEVELMAP_ALLOW : Constants.LEVELMAP_BAN;
+        return userProfile.allow ? Constants.LEVELMAP_ALLOW : Constants.LEVELMAP_BAN;
     }
 
     /***
      * check whether creditcard channel require otp?
      */
     public static int isRequireOtpCreditCard() {
-        BankConfig bankConfig = null;
+        BankConfig bankConfig;
         try {
             bankConfig = GsonUtils.fromJsonString(SharedPreferencesManager.getInstance().getBankConfig(Constants.CCCode), BankConfig.class);
 
@@ -734,7 +721,7 @@ public class GlobalData {
             Log.e("shouldNativeWebFlow",e);
         }
         return false;*/
-        return GlobalData.getStringResource(RS.string.sdk_vcb_flow_type).equals("1") ? true : false;
+        return GlobalData.getStringResource(RS.string.sdk_vcb_flow_type).equals("1");
     }
 
     @BankFunctionCode

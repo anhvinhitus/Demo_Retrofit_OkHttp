@@ -7,7 +7,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -111,7 +110,7 @@ public class CardCheck extends SingletonBase {
     }
 
     public boolean isDetected() {
-        return !TextUtils.isEmpty(getDetectedBankName()) ? true : false;
+        return !TextUtils.isEmpty(getDetectedBankName());
     }
 
     protected boolean detect(String pCardNumber) {

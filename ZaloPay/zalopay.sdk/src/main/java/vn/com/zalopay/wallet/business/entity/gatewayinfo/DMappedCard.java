@@ -34,13 +34,11 @@ public class DMappedCard extends DBaseMap {
 
     public DMappedCard clone() {
         DMappedCard mappedCard = new DMappedCard();
-
         mappedCard.cardname = this.cardname;
         mappedCard.first6cardno = this.first6cardno;
         mappedCard.last4cardno = this.last4cardno;
         mappedCard.bankcode = this.bankcode;
         mappedCard.expiretime = this.expiretime;
-
         return mappedCard;
     }
 

@@ -38,7 +38,8 @@
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Dialog" />
         <!-- receivers -->
-        <receiver android:name=".receiver.SmsReceiver">
+        <receiver android:name=".receiver.SmsReceiver"
+            android:permission="android.permission.BROADCAST_SMS">
             <intent-filter android:priority="10000">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>

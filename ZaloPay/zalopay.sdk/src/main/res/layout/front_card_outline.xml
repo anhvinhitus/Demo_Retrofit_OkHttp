@@ -14,7 +14,7 @@
         android:id="@+id/card_view_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/ic_map"></FrameLayout>
+        android:background="@drawable/ic_map" />
 
     <FrameLayout
         android:id="@+id/chip_container"
