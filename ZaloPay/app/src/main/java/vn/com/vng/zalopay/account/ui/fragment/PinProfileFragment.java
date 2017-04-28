@@ -303,13 +303,18 @@ public class PinProfileFragment extends BaseFragment implements IPinProfileView,
     }
 
     private void showIntro() {
+        if (getActivity() == null) {
+            return;
+        }
+
+        if (mPassCodeView == null || mPassCodeView.getEditText() == null) {
+            return;
+        }
+
         if (mIntroRunnable == null) {
             mIntroRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    if (getActivity() == null) {
-                        return;
-                    }
                     mPassCodeView.setError(null);
 
                     getActivity().getWindow().getDecorView().clearFocus();
