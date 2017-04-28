@@ -16,17 +16,12 @@ public enum PaymentError {
     ERR_CODE_USER_CANCEL(4),
     ERR_CODE_PROCESSING(5),
     ERR_CODE_SERVICE_MAINTENANCE(6),
-    ERR_CODE_MONEY_NOT_ENOUGH(7),
-    ERR_CODE_UPGRADE_PROFILE_LEVEL(8),
     ERR_TRANXSTATUS_NEED_LINKCARD(11),
     ERR_TRANXSTATUS_NO_INTERNET(12),
     ERR_CODE_TRANSACTION_NOT_LOADED(1000),
     ERR_CODE_SYSTEM(5000),
     ERR_CODE_USER_INFO(5001),
-    ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT(13),
-    ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT(14),
-    ZPC_UPLEVEL_AND_LINK_ACCOUNT_CONTINUE_PAYMENT(15)
-    ;
+    ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT(13);
 
     private int value;
 
@@ -53,12 +48,6 @@ public enum PaymentError {
                 break;
             case ERR_CODE_SERVICE_MAINTENANCE:
                 errorMessage = "Đang bảo trì hệ thống.";
-                break;
-            case ERR_CODE_MONEY_NOT_ENOUGH:
-                errorMessage = "Tài khoản không đủ để thực hiện giao dịch.";
-                break;
-            case ERR_CODE_UPGRADE_PROFILE_LEVEL:
-                errorMessage = "Hãy cập nhật thông tin để sử dụng tính năng này.";
                 break;
             case ERR_CODE_INPUT:
                 errorMessage = "Thông tin đầu vào thiếu hoặc không hợp lệ.";
