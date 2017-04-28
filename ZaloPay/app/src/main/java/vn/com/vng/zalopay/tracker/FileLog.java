@@ -1,5 +1,6 @@
 package vn.com.vng.zalopay.tracker;
 
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -9,6 +10,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -27,8 +29,8 @@ final class FileLog {
     static final FileLog Instance = new FileLog();
 
     private static final long INTERVAL_CREATE_FILE = 300000; //ms
-    private static final String MSG_FORMAT = "%s,%s,%s,%s";
-    private static final String FILE_NAME_FORMAT = "zalopay-logs-%s.txt";
+    private static final String MSG_FORMAT = "%s\t%s\t%s\t%s";
+    private static final String FILE_NAME_FORMAT = "zalopay-logs-events-%s.txt";
     private static final String PREF_CREATE_FILE_TIME = "file_log_create_time";
 
 
