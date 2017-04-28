@@ -1,24 +1,26 @@
 package vn.com.vng.zalopay.utils;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscription;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.zalopay.wallet.business.entity.base.ZPWNotification;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
-import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBanner;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.entities.WDMaintenance;
+import vn.com.zalopay.wallet.merchant.entities.ZPCard;
 import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 import vn.com.zalopay.wallet.merchant.listener.IGetWithDrawBankList;
 import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
@@ -30,9 +32,36 @@ import vn.com.zalopay.wallet.merchant.listener.IReloadMapInfoListener;
 
 public class CShareDataWrapper {
 
-    public static void getCardSupportList(UserInfo userInfo,
-                                          IGetCardSupportListListener listener) {
-        CShareData.getInstance().setUserInfo(userInfo).getCardSupportList(listener);
+    private static PublishSubject<List<ZPCard>> mCardSupportSubject = PublishSubject.create();
+
+    public static Subscription getCardSupportList(UserInfo userInfo, DefaultSubscriber<List<ZPCard>> subscriber) {
+        Timber.d("Call get support banks from PaymentSDK [%s]", subscriber);
+        Subscription subscription = mCardSupportSubject.subscribe(subscriber);
+
+        CShareData.getInstance().setUserInfo(userInfo).getCardSupportList(new IGetCardSupportListListener() {
+            @Override
+            public void onComplete(ArrayList<ZPCard> cardSupportArrayList) {
+                Timber.d("Get support banks from PaymentSDK completed [%s]", cardSupportArrayList);
+                mCardSupportSubject.onNext(cardSupportArrayList);
+            }
+
+            @Override
+            public void onProcess() {
+
+            }
+
+            @Override
+            public void onError(String pErrorMess) {
+                Timber.d("Get support banks from PaymentSDK error [%s]", pErrorMess);
+                mCardSupportSubject.onError(new Throwable(pErrorMess));
+            }
+
+            @Override
+            public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
+                // TODO: 4/27/17 - longlv: hiện tại đã ko còn dùng, chờ PaymentSDK remove
+            }
+        });
+        return subscription;
     }
 
     public static List<DMappedCard> getMappedCardList(String zaloPayId) {
@@ -100,13 +129,6 @@ public class CShareDataWrapper {
         card.first6cardno = first6cardno;
         params.mapCard = card;
         CShareData.getInstance().reloadMapCardList(params, listener);
-    }
-
-
-    @NonNull
-    public static List<DBanner> getBannerList() {
-        List<DBanner> list = CShareData.getInstance().getBannerList();
-        return list == null ? Collections.emptyList() : list;
     }
 
     public static void pushNotificationToSdk(User user, int notificationType, String message) {

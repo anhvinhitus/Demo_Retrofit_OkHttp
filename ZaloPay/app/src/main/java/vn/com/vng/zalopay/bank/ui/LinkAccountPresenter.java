@@ -22,6 +22,7 @@ import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
 import vn.com.vng.zalopay.event.LoadIconFontEvent;
@@ -32,7 +33,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.constants.CardType;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
-import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 /**
  * Created by longlv on 1/17/17.
@@ -66,9 +66,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     @Override
     public void resume() {
-        if (mView != null && mView.getUserVisibleHint()) {
-            refreshLinkedBankAccount();
-        }
     }
 
     private boolean linkedVcbAccount(List<BankAccount> listLinkedAccount) {
@@ -76,8 +73,9 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
             if (bankAccount == null || TextUtils.isEmpty(bankAccount.mBankCode)) {
                 continue;
             }
-            Timber.d("Check linked vcb, bankCode [%s]", bankAccount.mBankCode);
-            if (CardType.PVCB.equals(bankAccount.mBankCode)) {
+            boolean linkedVcbAccount = CardType.PVCB.equals(bankAccount.mBankCode);
+            Timber.d("Linked vcb [%s], bankCode [%s]", linkedVcbAccount, bankAccount.mBankCode);
+            if (linkedVcbAccount) {
                 return true;
             }
         }
@@ -102,19 +100,22 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         if (Lists.isEmptyOrNull(listLinkedAccount) || !linkedVcbAccount(listLinkedAccount)) {
             return;
         }
-        getListBankSupport(new IGetCardSupportListListener() {
+        getListBankSupport(new DefaultSubscriber<List<ZPCard>>() {
             @Override
-            public void onProcess() {
-                Timber.d("Get card support list to check support vcb only on process");
+            public void onCompleted() {
             }
 
             @Override
-            public void onComplete(ArrayList<ZPCard> cardSupportList) {
-                hideLoadingView();
+            public void onError(Throwable e) {
+                Timber.d("Get card support to check support vcb only error : message [%s]", e.getMessage());
+            }
+
+            @Override
+            public void onNext(List<ZPCard> cardList) {
                 if (mView == null) {
                     return;
                 }
-                List<ZPCard> banksSupportLinkAcc = getBanksSupportLinkAccount(cardSupportList);
+                List<ZPCard> banksSupportLinkAcc = getBanksSupportLinkAccount(cardList);
                 if (!Lists.isEmptyOrNull(banksSupportLinkAcc)
                         && banksSupportLinkAcc.size() == 1
                         && CardType.PVCB.equals(banksSupportLinkAcc.get(0).getCardCode())) {
@@ -122,17 +123,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                 } else {
                     mView.hideSupportVcbOnly();
                 }
-            }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Timber.d("Get card support to check support vcb only error : message [%s]", pErrorMess);
-                hideLoadingView();
-            }
-
-            @Override
-            public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
-                hideLoadingView();
             }
         });
     }
@@ -244,15 +234,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
     }
 
     @Override
-    void onUpdateVersion(boolean forceUpdate, String latestVersion, String message) {
-        if (mView == null) {
-            return;
-        }
-        mView.onUpdateVersion(forceUpdate, latestVersion, message);
-    }
-
-    @Override
-    void onGetCardSupportSuccess(ArrayList<ZPCard> cardSupportList) {
+    void onGetCardSupportSuccess(List<ZPCard> cardSupportList) {
         if (cardSupportList == null || cardSupportList.size() <= 0) {
             return;
         }
@@ -295,6 +277,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshBankAccount(RefreshBankAccountEvent event) {
+        Timber.d("Refresh bank account if PaymentSDk reload successfully [%s]", event.mIsError);
         if (!event.mIsError) {
             refreshLinkedBankAccount();
         }

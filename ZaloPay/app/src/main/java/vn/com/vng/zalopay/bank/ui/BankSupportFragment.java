@@ -57,9 +57,8 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
      *
      * @return A new instance of fragment CardSupportFragment.
      */
-    public static BankSupportFragment newInstance(boolean autoLoadData, LinkBankType bankType) {
+    public static BankSupportFragment newInstance(LinkBankType bankType) {
         Bundle args = new Bundle();
-        args.putBoolean(Constants.ARG_AUTO_LOAD_DATA, autoLoadData);
         args.putSerializable(Constants.ARG_LINK_BANK_TYPE, bankType);
         BankSupportFragment fragment = new BankSupportFragment();
         fragment.setArguments(args);
@@ -95,7 +94,7 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
         mBankRecyclerView.setAdapter(mAdapter);
         mBankRecyclerView.setFocusable(false);
 
-        mPresenter.getCardSupportIfNeed();
+        mPresenter.getCardSupport();
     }
 
     @Override

@@ -40,7 +40,6 @@ public interface Constants {
     String ARG_MESSAGE = "message";
     String ARG_TRANSFERRECENT = "TransferRecent";
     String ARG_URL = "url";
-    String ARG_AUTO_LOAD_DATA = "auto_load_data";
     String ARG_LINK_BANK_TYPE = "link_bank_type";
     String ARG_BANK_LIST = "auto_load_data";
     String ARG_BANK = "bank";

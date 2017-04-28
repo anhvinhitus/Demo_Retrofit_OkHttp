@@ -60,9 +60,6 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
 
     @Override
     public void resume() {
-        if (mView != null && mView.getUserVisibleHint()) {
-            getListCard();
-        }
     }
 
     void removeLinkCard(BankCard bankCard) {
@@ -257,15 +254,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     }
 
     @Override
-    void onUpdateVersion(boolean forceUpdate, String latestVersion, String message) {
-        if (mView == null) {
-            return;
-        }
-        mView.onUpdateVersion(forceUpdate, latestVersion, message);
-    }
-
-    @Override
-    void onGetCardSupportSuccess(ArrayList<ZPCard> cardSupportList) {
+    void onGetCardSupportSuccess(List<ZPCard> cardSupportList) {
         Timber.d("on Get Card Support Success");
         if (cardSupportList == null || cardSupportList.size() <= 0) {
             return;

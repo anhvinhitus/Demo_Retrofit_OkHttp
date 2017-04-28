@@ -50,7 +50,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     private Dialog mBottomSheetDialog;
     private BankCard mCurrentBankCard;
     private LinkCardAdapter mAdapter;
-//    private Bundle bundle;
 
     @BindView(R.id.layoutLinkCardEmpty)
     View mLayoutLinkCardEmpty;
@@ -170,7 +169,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     private void initBankSupportFragment() {
         if (getFragmentManager().findFragmentById(R.id.fragmentInLinkCard) == null) {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            BankSupportFragment bankSupportFragment = BankSupportFragment.newInstance(true, LinkBankType.LINK_BANK_CARD);
+            BankSupportFragment bankSupportFragment = BankSupportFragment.newInstance(LinkBankType.LINK_BANK_CARD);
             ft.replace(R.id.fragmentInLinkCard, bankSupportFragment);
             ft.commit();
         }
@@ -252,12 +251,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     public void onResume() {
         super.onResume();
         mPresenter.resume();
-//        bundle = getArguments();
-//        boolean yes = false;
-//        if (bundle != null)
-//            yes = bundle.getBoolean("QUICK_LINK_CARD_ACCESS");
-//        if (yes) mPresenter.addLinkCard();
-//        bundle = null;
     }
 
     @Override
@@ -287,7 +280,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     @Override
     public void refreshBanksSupport() {
-        Timber.d("refreshBanksSupport ");
+        Timber.d("Refresh support banks");
         Fragment fragment = getBankSupportFragment();
         if (fragment != null && fragment instanceof BankSupportFragment) {
             ((BankSupportFragment) fragment).notifyDataChanged();
@@ -341,11 +334,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     }
 
     @Override
-    public void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener) {
-
-    }
-
-    @Override
     public void showLoading() {
         super.showProgressDialog();
     }
@@ -359,7 +347,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     public void showError(String message) {
         showErrorDialog(message);
     }
-
 
     @Override
     public void onClickMenu(BankCard bankCard) {

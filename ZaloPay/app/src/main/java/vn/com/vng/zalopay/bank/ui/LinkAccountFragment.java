@@ -140,7 +140,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     private void initBankSupportFragment() {
         if (getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount) == null) {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            BankSupportFragment bankSupportFragment = BankSupportFragment.newInstance(true, LinkBankType.LINK_BANK_ACCOUNT);
+            BankSupportFragment bankSupportFragment = BankSupportFragment.newInstance(LinkBankType.LINK_BANK_ACCOUNT);
             ft.replace(R.id.fragmentInLinkAccount, bankSupportFragment);
             ft.commit();
         }
