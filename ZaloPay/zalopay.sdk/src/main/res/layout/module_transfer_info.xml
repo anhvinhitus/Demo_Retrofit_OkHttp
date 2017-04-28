@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/zpw_padding_app_info_left_right"
-        android:layout_marginTop="@dimen/zpw_padding_app_info_left_right"
+        android:layout_marginTop="@dimen/zpw_padding_15"
         android:orientation="vertical">
 
         <TextView
