@@ -2,7 +2,6 @@ package vn.com.vng.zalopay.bank.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -15,17 +14,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.BankAccount;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -38,7 +32,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
-import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 /**
  * Created by longlv on 1/17/17.
@@ -56,23 +49,22 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
     }
 
     void linkAccountIfNotExist(ZPCard zpCard) {
-        Subscription subscription = ObservableHelper.makeObservable(() -> {
-            List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
-            return transformBankAccount(mapCardLis);
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new LinkAccountIfNotLinkedSubscriber(zpCard));
-        mSubscription.add(subscription);
+        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        if (checkLinkedBankAccount(transformBankAccount(mapCardLis), zpCard.getCardCode())) {
+            showAccountHasLinked(zpCard);
+        } else {
+            linkAccount(zpCard);
+        }
     }
 
-    void getLinkedBankAccount() {
-        getLinkedBankAccount(new GetLinkedAccountSubscriber());
+    void refreshLinkedBankAccount() {
+        List<BankAccount> bankAccounts = getLinkedBankAccount();
+        mView.refreshLinkedAccount(bankAccounts);
+        checkSupportVcbOnly(bankAccounts);
     }
 
     @Override
     public void resume() {
-        if (mView != null && mView.getUserVisibleHint()) {
-            getLinkedBankAccount();
-        }
     }
 
     private boolean linkedVcbAccount(List<BankAccount> listLinkedAccount) {
@@ -80,8 +72,9 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
             if (bankAccount == null || TextUtils.isEmpty(bankAccount.mBankCode)) {
                 continue;
             }
-            Timber.d("Check linked vcb, bankCode [%s]", bankAccount.mBankCode);
-            if (ECardType.PVCB.toString().equals(bankAccount.mBankCode)) {
+            boolean linkedVcbAccount = ECardType.PVCB.toString().equals(bankAccount.mBankCode);
+            Timber.d("Linked vcb [%s], bankCode [%s]", linkedVcbAccount, bankAccount.mBankCode);
+            if (linkedVcbAccount) {
                 return true;
             }
         }
@@ -106,19 +99,22 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         if (Lists.isEmptyOrNull(listLinkedAccount) || !linkedVcbAccount(listLinkedAccount)) {
             return;
         }
-        getListBankSupport(new IGetCardSupportListListener() {
+        getListBankSupport(new DefaultSubscriber<List<ZPCard>>() {
             @Override
-            public void onProcess() {
-                Timber.d("Get card support list to check support vcb only on process");
+            public void onCompleted() {
             }
 
             @Override
-            public void onComplete(ArrayList<ZPCard> cardSupportList) {
-                hideLoadingView();
+            public void onError(Throwable e) {
+                Timber.d("Get card support to check support vcb only error : message [%s]", e.getMessage());
+            }
+
+            @Override
+            public void onNext(List<ZPCard> cardList) {
                 if (mView == null) {
                     return;
                 }
-                List<ZPCard> banksSupportLinkAcc = getBanksSupportLinkAccount(cardSupportList);
+                List<ZPCard> banksSupportLinkAcc = getBanksSupportLinkAccount(cardList);
                 if (!Lists.isEmptyOrNull(banksSupportLinkAcc)
                         && banksSupportLinkAcc.size() == 1
                         && ECardType.PVCB.toString().equals(banksSupportLinkAcc.get(0).getCardCode())) {
@@ -127,25 +123,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
                     mView.hideSupportVcbOnly();
                 }
             }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Timber.d("Get card support to check support vcb only error : message [%s]", pErrorMess);
-                hideLoadingView();
-            }
-
-            @Override
-            public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
-                hideLoadingView();
-            }
         });
-    }
-
-    private void onGetLinkedAccountSuccess(List<BankAccount> list) {
-        hideLoadingView();
-        mView.refreshLinkedAccount(list);
-
-        checkSupportVcbOnly(list);
     }
 
     void removeLinkAccount(BankAccount bankAccount) {
@@ -255,15 +233,7 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
     }
 
     @Override
-    void onUpdateVersion(boolean forceUpdate, String latestVersion, String message) {
-        if (mView == null) {
-            return;
-        }
-        mView.onUpdateVersion(forceUpdate, latestVersion, message);
-    }
-
-    @Override
-    void onGetCardSupportSuccess(ArrayList<ZPCard> cardSupportList) {
+    void onGetCardSupportSuccess(List<ZPCard> cardSupportList) {
         if (cardSupportList == null || cardSupportList.size() <= 0) {
             return;
         }
@@ -285,54 +255,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
     }
 
-    private void finishActivity() {
-        if (mView != null && mView.getActivity() != null && !mView.getActivity().isFinishing()) {
-            mView.getActivity().finish();
-        }
-    }
-
-    private void showRetryGetLinkedAccount() {
-        hideLoadingView();
-        if (mView == null || mView.getContext() == null) {
-            return;
-        }
-        mView.showRetryDialog(mView.getContext().getString(R.string.exception_get_linked_account_try_again),
-                new ZPWOnEventConfirmDialogListener() {
-                    @Override
-                    public void onCancelEvent() {
-                        finishActivity();
-                    }
-
-                    @Override
-                    public void onOKevent() {
-                        getLinkedBankAccount();
-                    }
-                });
-    }
-
-    private class GetLinkedAccountSubscriber extends DefaultSubscriber<List<BankAccount>> {
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-
-            Timber.e(e, "Get linked account throw exception.");
-            showRetryGetLinkedAccount();
-        }
-
-        @Override
-        public void onNext(List<BankAccount> bankAccounts) {
-            /*ArrayList<BankAccount> tmp = new ArrayList<>();
-            tmp.add(new BankAccount("A", "Nguyễn Văn", "0123456", "1231", "123PSCB"));
-            tmp.add(new BankAccount("B", "Nguyễn Văn", "098765", "4321", "ZPVCB"));
-            tmp.add(new BankAccount("C", "Nguyễn Văn", "054321", "6789", "123PVTB"));*/
-            onGetLinkedAccountSuccess(bankAccounts);
-        }
-    }
-
     private void showAccountHasLinked(ZPCard zpCard) {
         hideLoadingView();
         if (mView == null || mView.getContext() == null) {
@@ -342,38 +264,6 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         String message = String.format(mView.getContext().getString(R.string.bank_account_has_linked),
                 zpCard.getCardLogoName());
         mView.showError(message);
-    }
-
-    private class LinkAccountIfNotLinkedSubscriber extends DefaultSubscriber<List<BankAccount>> {
-        private ZPCard mZPCard;
-
-        LinkAccountIfNotLinkedSubscriber(@NonNull ZPCard zpCard) {
-            mZPCard = zpCard;
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-
-            Timber.e(e, "Get linked account before link throw exception.");
-            linkAccount(mZPCard);
-        }
-
-        @Override
-        public void onNext(List<BankAccount> bankAccounts) {
-            if (mZPCard == null) {
-                return;
-            }
-            if (checkLinkedBankAccount(bankAccounts, mZPCard.getCardCode())) {
-                showAccountHasLinked(mZPCard);
-            } else {
-                linkAccount(mZPCard);
-            }
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -386,8 +276,9 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshBankAccount(RefreshBankAccountEvent event) {
+        Timber.d("Refresh bank account if PaymentSDk reload successfully [%s]", event.mIsError);
         if (!event.mIsError) {
-            getLinkedBankAccount();
+            refreshLinkedBankAccount();
         }
     }
 }

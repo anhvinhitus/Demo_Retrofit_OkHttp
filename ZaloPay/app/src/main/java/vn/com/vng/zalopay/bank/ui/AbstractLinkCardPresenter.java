@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.List;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
@@ -24,7 +22,6 @@ import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
 import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
@@ -50,7 +47,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
-import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 /**
  * Created by longlv on 10/25/16.
@@ -60,7 +56,6 @@ import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     protected PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
-    private IGetCardSupportListListener mGetCardSupportListListener;
     boolean mPayAfterLinkAcc;
 
     User mUser;
@@ -89,9 +84,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     abstract void showRetryDialog(String message, ZPWOnEventConfirmDialogListener listener);
 
-    abstract void onUpdateVersion(boolean forceUpdate, String latestVersion, String message);
-
-    abstract void onGetCardSupportSuccess(ArrayList<ZPCard> cardSupportList);
+    abstract void onGetCardSupportSuccess(List<ZPCard> cardSupportList);
 
     AbstractLinkCardPresenter(ZaloPayRepository zaloPayRepository,
                               Navigator navigator,
@@ -108,44 +101,6 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
                 .setResponseListener(new PaymentResponseListener())
                 .setLinkCardListener(new LinkCardListener(this))
                 .build();
-
-        mGetCardSupportListListener = new IGetCardSupportListListener() {
-            @Override
-            public void onProcess() {
-                Timber.d("Get card support list on process");
-            }
-
-            @Override
-            public void onComplete(ArrayList<ZPCard> cardSupportList) {
-                Timber.d("Get card support onComplete : cardSupportList [%s]", cardSupportList);
-                hideLoadingView();
-                onGetCardSupportSuccess(cardSupportList);
-            }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Timber.d("Get card support error : message [%s]", pErrorMess);
-                hideLoadingView();
-                showRetryDialog(getContext().getString(R.string.exception_generic),
-                        new ZPWOnEventConfirmDialogListener() {
-                            @Override
-                            public void onCancelEvent() {
-
-                            }
-
-                            @Override
-                            public void onOKevent() {
-                                getListBankSupport();
-                            }
-                        });
-            }
-
-            @Override
-            public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
-                hideLoadingView();
-                onUpdateVersion(forceUpdate, latestVersion, message);
-            }
-        };
     }
 
     @Override
@@ -176,27 +131,52 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         mPayAfterLinkAcc = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_ACC);
     }
 
-    void getLinkedBankAccount(DefaultSubscriber<List<BankAccount>> subscriber) {
-        showLoadingView();
-        Subscription subscription = ObservableHelper.makeObservable(() -> {
-            List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
-            return transformBankAccount(mapCardLis);
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
-        mSubscription.add(subscription);
+    List<BankAccount> getLinkedBankAccount() {
+        List<DBankAccount> mapCardLis = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        return transformBankAccount(mapCardLis);
     }
 
-    void getListBankSupport(IGetCardSupportListListener listListener) {
-        showLoadingView();
+    void getListBankSupport(DefaultSubscriber<List<ZPCard>> subscriber) {
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;
-        CShareDataWrapper.getCardSupportList(userInfo, listListener);
+        Subscription subscription = CShareDataWrapper.getCardSupportList(userInfo, subscriber);
+        mSubscription.add(subscription);
     }
 
     void getListBankSupport() {
         Timber.d("Show list bank that support link account.");
-        getListBankSupport(mGetCardSupportListListener);
+        getListBankSupport(new DefaultSubscriber<List<ZPCard>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.d("Get card support error : message [%s]", e.getMessage());
+                hideLoadingView();
+                showRetryDialog(getContext().getString(R.string.exception_generic),
+                        new ZPWOnEventConfirmDialogListener() {
+                            @Override
+                            public void onCancelEvent() {
+
+                            }
+
+                            @Override
+                            public void onOKevent() {
+                                getListBankSupport();
+                            }
+                        });
+            }
+
+            @Override
+            public void onNext(List<ZPCard> cardList) {
+                Timber.d("Get card support onComplete : cardSupportList [%s]", cardList);
+                hideLoadingView();
+                onGetCardSupportSuccess(cardList);
+            }
+        });
     }
 
     void addLinkAccount() {
@@ -407,7 +387,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             userInfo.accessToken = mUser.accesstoken;
 
             try {
-                return CShareDataWrapper.detectCardType(userInfo, first6cardno).toString();
+                return CShareDataWrapper.detectCardType(userInfo, first6cardno);
             } catch (Exception e) {
                 Timber.w(e, "detectCardType exception [%s]", e.getMessage());
             }
@@ -415,7 +395,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         return ECardType.UNDEFINE.toString();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onLoadIconFontSuccess(LoadIconFontEvent event) {
         mEventBus.removeStickyEvent(LoadIconFontEvent.class);
         onLoadIconFontSuccess();

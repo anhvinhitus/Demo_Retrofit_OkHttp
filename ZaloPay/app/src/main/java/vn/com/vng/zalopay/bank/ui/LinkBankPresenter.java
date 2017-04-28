@@ -1,6 +1,5 @@
 package vn.com.vng.zalopay.bank.ui;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -9,7 +8,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-import vn.com.vng.zalopay.AndroidApplication;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
 import vn.com.vng.zalopay.data.util.Lists;
@@ -18,8 +16,6 @@ import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by longlv on 2/6/17.

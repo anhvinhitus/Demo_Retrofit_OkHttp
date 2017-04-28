@@ -12,21 +12,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.NetworkError;
-import vn.com.vng.zalopay.data.api.ResponseHelper;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
 import vn.com.vng.zalopay.data.util.Lists;
 import vn.com.vng.zalopay.data.util.NetworkHelper;
-import vn.com.vng.zalopay.data.util.ObservableHelper;
-import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.domain.repository.ZaloPayRepository;
@@ -59,25 +53,12 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     }
 
     void getListCard() {
-        showLoadingView();
-        Subscription subscription = ObservableHelper.makeObservable(() -> {
-            List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
-            return transformBankCard(mapCardLis);
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new LinkCardSubscriber());
-        mSubscription.add(subscription);
+        List<DMappedCard> mapCardLis = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
+        mView.setData(transformBankCard(mapCardLis));
     }
 
     @Override
     public void resume() {
-        if (mView != null && mView.getUserVisibleHint()) {
-            getListCard();
-        }
-    }
-
-    private void onGetLinkCardSuccess(List<BankCard> list) {
-        hideLoadingView();
-        mView.setData(list);
     }
 
     void removeLinkCard(BankCard bankCard) {
@@ -141,26 +122,6 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         }
     }
 
-    private final class LinkCardSubscriber extends DefaultSubscriber<List<BankCard>> {
-        LinkCardSubscriber() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            hideLoadingView();
-            if (ResponseHelper.shouldIgnoreError(e)) {
-                // simply ignore the error
-                // because it is handled from event subscribers
-                return;
-            }
-        }
-
-        @Override
-        public void onNext(List<BankCard> bankCards) {
-            LinkCardPresenter.this.onGetLinkCardSuccess(bankCards);
-        }
-    }
-
     @Override
     Activity getActivity() {
         if (mView == null) {
@@ -215,7 +176,22 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             return;
         }
         Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
-        getLinkedBankAccount(new GetLinkedBankAccSubscriber(bankInfo.bankcode));
+        List<BankAccount> bankAccounts = getLinkedBankAccount();
+        if (checkLinkedBankAccount(bankAccounts, bankInfo.bankcode)) {
+            String bankName = BankUtils.getBankName(bankInfo.bankcode);
+            String message;
+            if (!TextUtils.isEmpty(bankName)) {
+                message = String.format(getString(R.string.bank_account_has_linked),
+                        bankName);
+            } else {
+                message = getString(R.string.bank_account_has_linked_this_bank);
+            }
+            if (mView != null) {
+                mView.gotoTabLinkAccAndShowDialog(message);
+            }
+        } else {
+            linkAccount(bankInfo.bankcode);
+        }
     }
 
     @Override
@@ -277,15 +253,7 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     }
 
     @Override
-    void onUpdateVersion(boolean forceUpdate, String latestVersion, String message) {
-        if (mView == null) {
-            return;
-        }
-        mView.onUpdateVersion(forceUpdate, latestVersion, message);
-    }
-
-    @Override
-    void onGetCardSupportSuccess(ArrayList<ZPCard> cardSupportList) {
+    void onGetCardSupportSuccess(List<ZPCard> cardSupportList) {
         Timber.d("on Get Card Support Success");
         if (cardSupportList == null || cardSupportList.size() <= 0) {
             return;
@@ -303,41 +271,6 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
             if (mView != null) {
                 mView.showListBankSupportDialog(cards);
             }
-        }
-    }
-
-    private class GetLinkedBankAccSubscriber extends DefaultSubscriber<List<BankAccount>> {
-        private String mBankCode;
-
-        GetLinkedBankAccSubscriber(String bankCode) {
-            super();
-            mBankCode = bankCode;
-        }
-
-        @Override
-        public void onNext(List<BankAccount> bankAccounts) {
-            hideLoadingView();
-            if (checkLinkedBankAccount(bankAccounts, mBankCode)) {
-                String bankName = BankUtils.getBankName(mBankCode);
-                String message;
-                if (!TextUtils.isEmpty(bankName)) {
-                    message = String.format(getString(R.string.bank_account_has_linked),
-                            bankName);
-                } else {
-                    message = getString(R.string.bank_account_has_linked_this_bank);
-                }
-                if (mView != null) {
-                    mView.gotoTabLinkAccAndShowDialog(message);
-                }
-            } else {
-                linkAccount(mBankCode);
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            hideLoadingView();
-            linkAccount(mBankCode);
         }
     }
 

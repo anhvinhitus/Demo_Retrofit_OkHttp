@@ -56,10 +56,8 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
      *
      * @return A new instance of fragment CardSupportFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static BankSupportFragment newInstance(boolean autoLoadData, LinkBankType bankType) {
+    public static BankSupportFragment newInstance(LinkBankType bankType) {
         Bundle args = new Bundle();
-        args.putBoolean(Constants.ARG_AUTO_LOAD_DATA, autoLoadData);
         args.putSerializable(Constants.ARG_LINK_BANK_TYPE, bankType);
         BankSupportFragment fragment = new BankSupportFragment();
         fragment.setArguments(args);
@@ -95,20 +93,7 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
         mBankRecyclerView.setAdapter(mAdapter);
         mBankRecyclerView.setFocusable(false);
 
-        mPresenter.getCardSupportIfNeed();
-    }
-
-    public void getCardSupport() {
-        if (mPresenter != null) {
-            mPresenter.getCardSupport();
-        }
-    }
-
-    public int getCountCardSupport() {
-        if (mAdapter == null) {
-            return 0;
-        }
-        return mAdapter.getItemCount();
+        mPresenter.getCardSupport();
     }
 
     @Override
@@ -168,7 +153,9 @@ public class BankSupportFragment extends BaseFragment implements IBankSupportVie
     }
 
     public void notifyDataChanged() {
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

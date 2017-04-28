@@ -51,7 +51,6 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     private Dialog mBottomSheetDialog;
     private LinkAccountAdapter mAdapter;
-    private BankSupportFragment mBankSupportFragment;
 
     @BindView(R.id.layoutLinkAccountEmpty)
     View mLayoutLinkCardEmpty;
@@ -91,7 +90,6 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
      *
      * @return A new instance of fragment LinkAccountFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static LinkAccountFragment newInstance(Bundle bundle) {
         LinkAccountFragment fragment = new LinkAccountFragment();
         fragment.setArguments(bundle);
@@ -129,27 +127,26 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
         }
         mRecyclerView.setAdapter(mAdapter);
 
-        initBankSupportFragment();
-
         getLinkedBankAccount();
     }
 
     public void getLinkedBankAccount() {
         if (mPresenter != null) {
-            mPresenter.getLinkedBankAccount();
+            mPresenter.refreshLinkedBankAccount();
         }
     }
 
     private void initBankSupportFragment() {
         if (getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount) == null) {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            mBankSupportFragment = BankSupportFragment.newInstance(false, LinkBankType.LINK_BANK_ACCOUNT);
-            ft.replace(R.id.fragmentInLinkAccount, mBankSupportFragment);
+            BankSupportFragment bankSupportFragment = BankSupportFragment.newInstance(LinkBankType.LINK_BANK_ACCOUNT);
+            ft.replace(R.id.fragmentInLinkAccount, bankSupportFragment);
             ft.commit();
-        } else {
-            mBankSupportFragment = (BankSupportFragment)
-                    getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount);
         }
+    }
+
+    private Fragment getBankSupportFragment() {
+        return getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount);
     }
 
     @Override
@@ -177,9 +174,7 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     private void showLayoutEmpty() {
         Timber.d("Show layout link account empty.");
-        if (mBankSupportFragment.getCountCardSupport() <= 0) {
-            mBankSupportFragment.getCardSupport();
-        }
+        initBankSupportFragment();
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
         mLayoutContent.setVisibility(View.GONE);
     }
@@ -264,8 +259,9 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
 
     @Override
     public void refreshBanksSupport() {
-        if (mBankSupportFragment != null) {
-            mBankSupportFragment.notifyDataChanged();
+        Fragment fragment = getBankSupportFragment();
+        if (fragment != null && fragment instanceof BankSupportFragment) {
+            ((BankSupportFragment) fragment).notifyDataChanged();
         }
     }
 
@@ -326,16 +322,13 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
         View layoutRemoveLink = mBottomSheetDialog.findViewById(R.id.layoutRemoveLink);
         View verticalLine = mBottomSheetDialog.findViewById(R.id.line);
 
-        View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int itemId = v.getId();
-                if (itemId == R.id.layoutRemoveLink) {
-                    showConfirmRemoveSaveCard(bankAccount);
-                    ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
-                } else if (itemId == R.id.root) {
-                    mBottomSheetDialog.dismiss();
-                }
+        View.OnClickListener mOnClickListener = v -> {
+            int itemId = v.getId();
+            if (itemId == R.id.layoutRemoveLink) {
+                showConfirmRemoveSaveCard(bankAccount);
+                ZPAnalytics.trackEvent(ZPEvents.MANAGECARD_DELETECARD);
+            } else if (itemId == R.id.root) {
+                mBottomSheetDialog.dismiss();
             }
         };
 

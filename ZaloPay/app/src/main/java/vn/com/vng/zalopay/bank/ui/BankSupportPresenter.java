@@ -11,18 +11,19 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.data.util.Lists;
+import vn.com.vng.zalopay.domain.interactor.DefaultSubscriber;
 import vn.com.vng.zalopay.domain.model.User;
 import vn.com.vng.zalopay.ui.presenter.AbstractPresenter;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.user.UserInfo;
 import vn.com.zalopay.wallet.listener.ZPWOnEventConfirmDialogListener;
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
-import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 /**
  * Created by longlv on 1/16/17.
@@ -31,60 +32,50 @@ import vn.com.zalopay.wallet.merchant.listener.IGetCardSupportListListener;
 
 class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
 
-    private IGetCardSupportListListener mGetCardSupportListListener;
+    private final User mUser;
     private LinkBankType mBankType;
-    private boolean mAutoLoadData;
+    private DefaultSubscriber<List<ZPCard>> mGetSupportBankSubscriber;
 
     @Inject
-    User mUser;
+    BankSupportPresenter(User user) {
+        this.mUser = user;
+        mGetSupportBankSubscriber = new DefaultSubscriber<List<ZPCard>>() {
+            @Override
+            public void onCompleted() {
 
-    @Inject
-    BankSupportPresenter() {
+            }
 
+            @Override
+            public void onError(Throwable e) {
+                Timber.d("Get support bank type [%s] onError [%s]", mBankType, e.getMessage());
+                showRetryDialog();
+            }
+
+            @Override
+            public void onNext(List<ZPCard> cardList) {
+                Timber.d("Get support bank type [%s] onComplete list card [%s]", mBankType, cardList);
+                refreshListBank(cardList);
+            }
+        };
     }
 
     @Override
     public void attachView(IBankSupportView iSupportLinkAccView) {
         super.attachView(iSupportLinkAccView);
-        mGetCardSupportListListener = new IGetCardSupportListListener() {
-            @Override
-            public void onProcess() {
-            }
-
-            @Override
-            public void onComplete(ArrayList<ZPCard> cardSupportList) {
-                Timber.d("getCardSupportList onComplete cardSupportList[%s]", cardSupportList);
-                refreshListBank(cardSupportList);
-            }
-
-            @Override
-            public void onError(String pErrorMess) {
-                Timber.d("cardSupportHashMap onError [%s]", pErrorMess);
-                hideLoading();
-                showRetryDialog();
-            }
-
-            @Override
-            public void onUpVersion(boolean forceUpdate, String latestVersion, String message) {
-                if (mView != null) {
-                    mView.onEventUpdateVersion(forceUpdate, latestVersion, message);
-                }
-            }
-        };
     }
 
     void getCardSupport() {
-        showLoading();
+        Timber.d("Get list bank support %s", mBankType);
         UserInfo userInfo = new UserInfo();
         userInfo.zaloPayUserId = mUser.zaloPayId;
         userInfo.accessToken = mUser.accesstoken;
-        CShareDataWrapper.getCardSupportList(userInfo, mGetCardSupportListListener);
+        Subscription subscription = CShareDataWrapper.getCardSupportList(userInfo, mGetSupportBankSubscriber);
+        mSubscription.add(subscription);
     }
 
     @Override
     public void destroy() {
         super.destroy();
-        mGetCardSupportListListener = null;
     }
 
     private void showRetryDialog() {
@@ -167,14 +158,6 @@ class BankSupportPresenter extends AbstractPresenter<IBankSupportView> {
         if (bundle == null) {
             return;
         }
-        mAutoLoadData = bundle.getBoolean(Constants.ARG_AUTO_LOAD_DATA, false);
         mBankType = (LinkBankType) bundle.getSerializable(Constants.ARG_LINK_BANK_TYPE);
-        Timber.d("Get list bank support %s , auto load data: %s", mBankType, mAutoLoadData);
-    }
-
-    void getCardSupportIfNeed() {
-        if (mAutoLoadData) {
-            getCardSupport();
-        }
     }
 }

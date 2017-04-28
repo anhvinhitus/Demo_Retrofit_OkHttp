@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,7 +49,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     private Dialog mBottomSheetDialog;
     private BankCard mCurrentBankCard;
     private LinkCardAdapter mAdapter;
-    private BankSupportFragment mBankSupportFragment;
 
     @BindView(R.id.layoutLinkCardEmpty)
     View mLayoutLinkCardEmpty;
@@ -160,7 +160,6 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 //        mRecyclerView.addItemDecoration(new SpacesItemDecoration(AndroidUtils.dp(12), AndroidUtils.dp(8)));
         mRecyclerView.setAdapter(mAdapter);
 
-        initBankSupportFragment();
         initBottomSheet();
 
         mPresenter.getListCard();
@@ -169,13 +168,14 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
     private void initBankSupportFragment() {
         if (getFragmentManager().findFragmentById(R.id.fragmentInLinkCard) == null) {
             FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            mBankSupportFragment = BankSupportFragment.newInstance(false, LinkBankType.LINK_BANK_CARD);
-            ft.replace(R.id.fragmentInLinkCard, mBankSupportFragment);
+            BankSupportFragment bankSupportFragment = BankSupportFragment.newInstance(LinkBankType.LINK_BANK_CARD);
+            ft.replace(R.id.fragmentInLinkCard, bankSupportFragment);
             ft.commit();
-        } else {
-            mBankSupportFragment = (BankSupportFragment)
-                    getFragmentManager().findFragmentById(R.id.fragmentInLinkCard);
         }
+    }
+
+    private Fragment getBankSupportFragment() {
+        return getFragmentManager().findFragmentById(R.id.fragmentInLinkCard);
     }
 
     private void initBottomSheet() {
@@ -221,9 +221,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     private void showLinkCardEmpty() {
         Timber.d("Show layout link card empty.");
-        if (mBankSupportFragment.getCountCardSupport() <= 0) {
-            mBankSupportFragment.getCardSupport();
-        }
+        initBankSupportFragment();
         mLayoutLinkCardEmpty.setVisibility(View.VISIBLE);
         mLayoutContent.setVisibility(View.GONE);
     }
@@ -276,15 +274,15 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         mCurrentBankCard = null;
         // break circular link between this and mAdapter
         mAdapter = null;
-        mBankSupportFragment = null;
         super.onDestroy();
     }
 
     @Override
     public void refreshBanksSupport() {
-        Timber.d("refreshBanksSupport ");
-        if (mBankSupportFragment != null) {
-            mBankSupportFragment.notifyDataChanged();
+        Timber.d("Refresh support banks");
+        Fragment fragment = getBankSupportFragment();
+        if (fragment != null && fragment instanceof BankSupportFragment) {
+            ((BankSupportFragment) fragment).notifyDataChanged();
         }
     }
 
@@ -409,6 +407,7 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
 
     interface ILinkCardListener {
         void gotoTabLinkAccAndReloadLinkedAcc();
+
         void gotoTabLinkAccAndShowDialog(String message);
     }
 }
