@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.com.vng.zalopay.bank.models.BankAccount;
+import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 
 import vn.com.zalopay.wallet.merchant.entities.ZPCard;
@@ -36,7 +37,7 @@ interface ILinkAccountView extends ILoadDataView {
 
     boolean getUserVisibleHint();
 
-    void showConfirmPayAfterLinkAcc();
+    void showConfirmPayAfterLinkBank();
 
     void showSupportVcbOnly();
 

@@ -18,6 +18,7 @@ import timber.log.Timber;
 import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.BankAccount;
+import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.data.ServerErrorMessage;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.transaction.TransactionStore;
@@ -151,8 +152,14 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
         }
         if (mapBank instanceof DMappedCard) {
             mView.onAddCardSuccess(mapBank);
+            if (mPayAfterLinkBank) {
+                mView.showConfirmPayAfterLinkBank(LinkBankType.LINK_BANK_CARD);
+            }
         } else if (mapBank instanceof DBankAccount) {
             mView.gotoTabLinkAccAndReloadLinkedAcc();
+            if (mPayAfterLinkBank) {
+                mView.showConfirmPayAfterLinkBank(LinkBankType.LINK_BANK_ACCOUNT);
+            }
         }
     }
 

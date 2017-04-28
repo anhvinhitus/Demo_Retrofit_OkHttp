@@ -33,8 +33,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.listener.OnClickBankAccListener;
 import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
-import vn.com.vng.zalopay.utils.DialogHelper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.constants.CardType;
@@ -47,7 +45,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
  * Use the {@link LinkAccountFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LinkAccountFragment extends BaseFragment implements ILinkAccountView,
+public class LinkAccountFragment extends AbstractLinkBankFragment implements ILinkAccountView,
         OnClickBankAccListener {
 
     private Dialog mBottomSheetDialog;
@@ -226,24 +224,8 @@ public class LinkAccountFragment extends BaseFragment implements ILinkAccountVie
     }
 
     @Override
-    public void showConfirmPayAfterLinkAcc() {
-        DialogHelper.showNoticeDialog(getActivity(),
-                getString(R.string.confirm_continue_pay),
-                getString(R.string.btn_continue),
-                getString(R.string.btn_cancel_transaction),
-                new ZPWOnEventConfirmDialogListener() {
-                    @Override
-                    public void onCancelEvent() {
-                        getActivity().setResult(Constants.RESULT_END_PAYMENT);
-                        getActivity().finish();
-                    }
-
-                    @Override
-                    public void onOKevent() {
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
-                    }
-                });
+    public void showConfirmPayAfterLinkBank() {
+        super.showConfirmPayAfterLinkBank(LinkBankType.LINK_BANK_ACCOUNT);
     }
 
     @Override

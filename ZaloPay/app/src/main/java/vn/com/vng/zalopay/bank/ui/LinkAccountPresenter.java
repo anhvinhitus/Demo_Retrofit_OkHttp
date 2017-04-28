@@ -164,8 +164,8 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         DBankAccount dBankAccount = ((DBankAccount) mappedCreditCard);
         mView.insertData(transformBankAccount(dBankAccount));
 
-        if (mPayAfterLinkAcc) {
-            mView.showConfirmPayAfterLinkAcc();
+        if (mPayAfterLinkBank) {
+            mView.showConfirmPayAfterLinkBank();
         }
     }
 

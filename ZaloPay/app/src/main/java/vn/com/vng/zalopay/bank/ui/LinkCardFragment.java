@@ -33,7 +33,6 @@ import vn.com.vng.zalopay.R;
 import vn.com.vng.zalopay.bank.BankUtils;
 import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.domain.model.BankCard;
-import vn.com.vng.zalopay.ui.fragment.BaseFragment;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -43,7 +42,7 @@ import vn.com.zalopay.wallet.merchant.entities.ZPCard;
  * Created by AnhHieu on 5/10/16.
  * *
  */
-public class LinkCardFragment extends BaseFragment implements ILinkCardView,
+public class LinkCardFragment extends AbstractLinkBankFragment implements ILinkCardView,
         LinkCardAdapter.OnClickBankCardListener, View.OnClickListener {
 
     private ILinkCardListener mListener;
@@ -89,6 +88,11 @@ public class LinkCardFragment extends BaseFragment implements ILinkCardView,
         if (mListener != null) {
             mListener.gotoTabLinkAccAndShowDialog(message);
         }
+    }
+
+    @Override
+    public void showConfirmPayAfterLinkBank(LinkBankType linkBankType) {
+        super.showConfirmPayAfterLinkBank(linkBankType);
     }
 
     @OnClick(R.id.btn_add_card)

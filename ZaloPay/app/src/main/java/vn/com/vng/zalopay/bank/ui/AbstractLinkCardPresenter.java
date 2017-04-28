@@ -57,7 +57,7 @@ import vn.com.zalopay.wallet.message.SdkDownloadResourceMessage;
 abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
     protected PaymentWrapper paymentWrapper;
     private Navigator mNavigator;
-    boolean mPayAfterLinkAcc;
+    boolean mPayAfterLinkBank;
 
     User mUser;
 
@@ -129,7 +129,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
         if (bundle == null) {
             return;
         }
-        mPayAfterLinkAcc = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_ACC);
+        mPayAfterLinkBank = bundle.getBoolean(Constants.ARG_CONTINUE_PAY_AFTER_LINK_Bank);
     }
 
     List<BankAccount> getLinkedBankAccount() {

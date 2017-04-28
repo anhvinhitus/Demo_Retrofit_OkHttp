@@ -25,6 +25,10 @@ public interface INavigator {
 
     void startDepositForResultActivity(Fragment fragment);
 
+    void startLinkCardActivityForResult(Activity activity);
+
+    void startLinkCardActivityForResult(Fragment fragment);
+
     void startLinkAccountActivityForResult(Activity activity);
 
     void startLinkAccountActivityForResult(Fragment fragment);
