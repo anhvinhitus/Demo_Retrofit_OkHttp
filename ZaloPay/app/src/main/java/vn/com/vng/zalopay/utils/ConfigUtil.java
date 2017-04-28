@@ -83,7 +83,7 @@ public class ConfigUtil {
                 return true;
             }
         } catch (JsonSyntaxException e) {
-            Timber.w("Fail to load config with config: %s", jsonConfig);
+            Timber.w(e, "Fail to load config with config: %s", jsonConfig);
             return false;
         }
 
