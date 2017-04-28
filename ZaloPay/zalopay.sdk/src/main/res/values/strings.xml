@@ -522,7 +522,7 @@
     <string name="zpw_warning_unlink_bankaccount_invalid">Tài khoản của bạn chưa liên kết với ngân hàng</string>
 
     <string name="zpw_channelname_vietcombank_mapaccount">Tài khoản Vietcombank</string>
-
+    <string name="zpw_string_vcb_error_password">Mật khẩu hiện tại không đúng. Xin vui lòng kiểm tra lại</string>
     <string name="header_title">Chọn số tài khoản</string>
     <string name="footer_button_close">HỦY</string>
     <string name="footer_button_confirm">ĐỒNG Ý</string>

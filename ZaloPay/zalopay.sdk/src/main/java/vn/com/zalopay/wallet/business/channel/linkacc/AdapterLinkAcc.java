@@ -75,6 +75,7 @@ public class AdapterLinkAcc extends AdapterBase {
     private int COUNT_REFRESH_CAPTCHA_LOGIN = 1;
     private int COUNT_REFRESH_CAPTCHA_REGISTER = 1;
     private int COUNT_RETRY_GET_NUMBERPHONE = 1;
+    private int COUNT_UNREGISTER = 0;
     private LinkAccGuiProcessor linkAccGuiProcessor;
     private TreeMap<String, String> mHashMapWallet, mHashMapAccNum, mHashMapPhoneNum, mHashMapOTPValid;
     private TreeMap<String, String> mHashMapWalletUnReg, mHashMapPhoneNumUnReg;
@@ -86,7 +87,7 @@ public class AdapterLinkAcc extends AdapterBase {
             public void onCheckExistBankAccountComplete(boolean pExisted) {
                 hideLoadingDialog();
                 if (!pExisted) {
-                    unlinkAccSuccess();
+                     unlinkAccSuccess();
                 } else {
                     unlinkAccFail(GlobalData.getStringResource(RS.string.zpw_string_vcb_account_in_server), mTransactionID);
                     Log.d(this, "runnableWaitingNotifyUnLinkAcc==unlinkAccFail");
@@ -569,8 +570,9 @@ public class AdapterLinkAcc extends AdapterBase {
             showProgressBar(true, pMessage);
         }
     }
-    protected void hideLoadingDialog(){
-        showProgressBar(false,null);
+
+    protected void hideLoadingDialog() {
+        showProgressBar(false, null);
     }
 
     @Override
@@ -579,12 +581,12 @@ public class AdapterLinkAcc extends AdapterBase {
         if (pEventType == EEventType.ON_PROGRESSING) {
             // get value progress  &  show it
             int value = (int) pAdditionParams[0];
-            if(value < 100){
+            if (value < 100) {
                 linkAccGuiProcessor.setProgress(value);
                 if (!linkAccGuiProcessor.isProgressVisible()) {
                     linkAccGuiProcessor.visibleProgress();
                 }
-            }else{
+            } else {
                 linkAccGuiProcessor.hideProgress();
             }
             return null;
@@ -860,6 +862,28 @@ public class AdapterLinkAcc extends AdapterBase {
                 mIsExitWithoutConfirm = false;//mark that will show dialog confirm exit sdk
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
 
+                if (COUNT_UNREGISTER > 0) {
+                    String Message = (TextUtils.isEmpty(response.message)) ? GlobalData.getStringResource(RS.string.zpw_string_vcb_error_password) : response.message;
+                    if (COUNT_UNREGISTER >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+
+                        if (!TextUtils.isEmpty(response.messageResult)) {
+                            // SUCCESS. Success register
+                            // get & check bankaccount list
+                            checkUnlinkAccountList();
+                        } else {
+                            // FAIL. Fail register
+                            hideLoadingDialog();
+                            unlinkAccFail(Message, mTransactionID);
+                        }
+                        return null;
+                    }
+                    forceVirtualKeyboard();
+                    linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().setText(null);
+
+                    showMessage(null, Message, TSnackbar.LENGTH_LONG);
+                }
+                COUNT_UNREGISTER++;
+
                 if (GlobalData.shouldNativeWebFlow()) {
                     Log.d(this, "user following web flow, skip event login vcb");
                     return pAdditionParams;
@@ -965,7 +989,6 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Unregister Complete page
             if (page.equals(VCB_UNREGISTER_COMPLETE_PAGE)) {
-                Log.d(this, "Unregister Complete page");
                 DLinkAccScriptOutput response = (DLinkAccScriptOutput) pAdditionParams[0];
                 // set message
                 if (!TextUtils.isEmpty(response.messageResult)) {
@@ -974,24 +997,13 @@ public class AdapterLinkAcc extends AdapterBase {
                     checkUnlinkAccountList();
                 } else {
                     // FAIL. Fail register
-                    if (!TextUtils.isEmpty(response.message) && COUNT_ERROR_PASS >= Integer.parseInt(GlobalData.getStringResource(RS.string.zpw_string_number_retry_password))) {
+                    if (!TextUtils.isEmpty(response.message)) {
                         hideLoadingDialog();
                         String msgErr = response.message;
                         unlinkAccFail(msgErr, mTransactionID);
-                    } else {
-                        if (!TextUtils.isEmpty(response.messageTimeout)) {
-                            // code here if js time out.
-                            checkUnlinkAccountList();
-                        } else if (!GlobalData.shouldNativeWebFlow()) {
-                            showMessage(null, response.message, TSnackbar.LENGTH_LONG);
-                        }
-                        hideLoadingDialog();
-                        linkAccGuiProcessor.getUnregisterHolder().getEdtPassword().setText(null);
-                        forceVirtualKeyboard();
                     }
+                    return null;
                 }
-                COUNT_ERROR_PASS++;
-                return null;
             }
             return null;
         }
