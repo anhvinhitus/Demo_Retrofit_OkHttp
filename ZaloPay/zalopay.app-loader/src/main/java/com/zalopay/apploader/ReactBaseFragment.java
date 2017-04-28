@@ -121,7 +121,7 @@ public abstract class ReactBaseFragment extends Fragment implements DefaultHardw
     @Override
     public void onPause() {
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onHostPause(getActivity());
+            mReactInstanceManager.onHostPause();
         }
         super.onPause();
     }
