@@ -78,11 +78,17 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
         initDelayFilterSubject();
     }
 
-    synchronized private void initDelayFilterSubject() {
+    private void initDelayFilterSubject() {
         mDelaySubject = PublishSubject.create();
-        mDelaySubject.debounce(TIME_DELAY_SEARCH, TimeUnit.MILLISECONDS)
+        Subscription subscription = mDelaySubject.debounce(TIME_DELAY_SEARCH, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::doFilter);
+                .subscribe(new DefaultSubscriber<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        doFilter(s);
+                    }
+                });
+        mSubscription.add(subscription);
     }
 
     void getListAppResource() {
@@ -225,7 +231,7 @@ final class SearchCategoryPresenter extends AbsWithdrawConditionPresenter<ISearc
                 startWithdrawActivity();
                 break;
             case InsideApp.Constants.PAY_QR_CODE:
-                mNavigator.startScanToPayActivity((Activity) mView.getContext());
+                mNavigator.startScanToPayActivity(mView.getContext());
                 break;
             case InsideApp.Constants.PROFILE:
                 mNavigator.startProfileInfoActivity(mView.getContext());
