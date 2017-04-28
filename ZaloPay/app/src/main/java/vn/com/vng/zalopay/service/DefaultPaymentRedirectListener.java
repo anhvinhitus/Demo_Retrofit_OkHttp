@@ -50,6 +50,20 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
     }
 
     @Override
+    public void startLinkCardActivity() {
+        Object context = getContext();
+        Timber.d("startLinkCardActivity context [%s] navigator[%s]", context, mNavigator);
+        if (context == null || mNavigator == null) {
+            return;
+        }
+        if (context instanceof Fragment) {
+            mNavigator.startLinkCardActivityForResult((Fragment) context);
+        } else if (context instanceof Activity) {
+            mNavigator.startLinkCardActivityForResult((Activity) context);
+        }
+    }
+
+    @Override
     public void startLinkAccountActivity() {
         Object context = getContext();
         Timber.d("startLinkAccountActivity context [%s] navigator[%s]", context, mNavigator);
@@ -59,7 +73,7 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
         if (context instanceof Fragment) {
             mNavigator.startLinkAccountActivityForResult((Fragment) context);
         } else if (context instanceof Activity) {
-            mNavigator.startLinkAccountActivityForResult((Activity)context);
+            mNavigator.startLinkAccountActivityForResult((Activity) context);
         }
     }
 
@@ -73,7 +87,7 @@ public abstract class DefaultPaymentRedirectListener implements PaymentWrapper.I
         if (context instanceof Fragment) {
             mNavigator.startUpdateProfileLevelBeforeLinkAcc((Fragment) context);
         } else if (context instanceof Activity) {
-            mNavigator.startUpdateProfileLevelBeforeLinkAcc((Activity)context);
+            mNavigator.startUpdateProfileLevelBeforeLinkAcc((Activity) context);
         }
     }
 }

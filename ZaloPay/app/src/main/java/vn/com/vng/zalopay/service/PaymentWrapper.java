@@ -462,6 +462,14 @@ public class PaymentWrapper {
         mNavigator.startUpdateProfileLevelBeforeLinkAcc(mActivity);
     }
 
+    void startLinkCardActivity() {
+        if (mActivity == null) {
+            return;
+        }
+
+        mNavigator.startLinkCardActivityForResult(mActivity);
+    }
+
     void startLinkAccountActivity() {
         if (mActivity == null) {
             return;
@@ -478,6 +486,8 @@ public class PaymentWrapper {
         void startUpdateProfileLevel();
 
         void startDepositForResult();
+
+        void startLinkCardActivity();
 
         void startLinkAccountActivity();
 
@@ -533,6 +543,8 @@ public class PaymentWrapper {
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPGRADE) {
             return false;
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINK_ACCOUNT_BEFORE_PAYMENT) {
+            return false;
+        } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_NEED_LINKCARD_BEFORE_PAYMENT) {
             return false;
         } else if (resultStatus == EPaymentStatus.ZPC_TRANXSTATUS_UPLEVEL_AND_LINK_BANKACCOUNT_CONTINUE_PAYMENT) {
             return false;

@@ -5,6 +5,7 @@ import android.app.Activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.domain.model.BankCard;
 import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -44,4 +45,6 @@ interface ILinkCardView extends ILoadDataView {
     void gotoTabLinkAccAndReloadLinkedAcc();
 
     void gotoTabLinkAccAndShowDialog(String message);
+
+    void showConfirmPayAfterLinkBank(LinkBankType linkBankType);
 }

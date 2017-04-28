@@ -40,6 +40,7 @@ import vn.com.vng.zalopay.authentication.FingerprintSuggestDialog;
 import vn.com.vng.zalopay.authentication.FingerprintUtil;
 import vn.com.vng.zalopay.balancetopup.ui.activity.BalanceTopupActivity;
 import vn.com.vng.zalopay.bank.models.LinkBankPagerIndex;
+import vn.com.vng.zalopay.bank.models.LinkBankType;
 import vn.com.vng.zalopay.bank.ui.LinkBankActivity;
 import vn.com.vng.zalopay.bank.ui.NotificationLinkCardActivity;
 import vn.com.vng.zalopay.data.cache.UserConfig;
@@ -266,16 +267,20 @@ public class Navigator implements INavigator {
         startLinkCardActivity(context, bundle, false);
     }
 
-    @Override
-    public void startLinkAccountActivityForResult(final Activity activity) {
-        Timber.d("Start Link  bank for result, activity[%s]", activity);
+    private void startLinkBankActivityForResult(final Activity activity, LinkBankType linkBankType) {
+        Timber.d("Start Link  bank for result, type [%s] activity[%s]", linkBankType, activity);
         if (activity == null) {
             return;
         }
         if (!validUserBeforeLinkBank(activity)) {
             return;
         }
-        final Intent intent = intentLinkAccount(activity, true);
+        final Intent intent;
+        if (LinkBankType.LINK_BANK_CARD.equals(linkBankType)) {
+            intent = intentLinkCard(activity, true);
+        } else {
+            intent = intentLinkAccount(activity, true);
+        }
         if (hasLinkBank() && shouldShowPinDialog()) {
             showPinDialog(activity, new AuthenticationCallback() {
                 @Override
@@ -290,16 +295,20 @@ public class Navigator implements INavigator {
         }
     }
 
-    @Override
-    public void startLinkAccountActivityForResult(final Fragment fragment) {
-        Timber.d("Start Link  bank for result, fragment[%s]", fragment);
+    private void startLinkBankActivityForResult(final Fragment fragment, LinkBankType linkBankType) {
+        Timber.d("Start Link  bank for result, type [%s] fragment[%s]", linkBankType, fragment);
         if (fragment == null) {
             return;
         }
         if (!validUserBeforeLinkBank(fragment.getContext())) {
             return;
         }
-        final Intent intent = intentLinkAccount(fragment.getContext(), true);
+        final Intent intent;
+        if (LinkBankType.LINK_BANK_CARD.equals(linkBankType)) {
+            intent = intentLinkCard(fragment.getContext(), true);
+        } else {
+            intent = intentLinkAccount(fragment.getContext(), true);
+        }
         if (hasLinkBank() && shouldShowPinDialog()) {
             showPinDialog(fragment.getContext(), new AuthenticationCallback() {
                 @Override
@@ -312,6 +321,26 @@ public class Navigator implements INavigator {
         } else {
             fragment.startActivityForResult(intent, Constants.REQUEST_CODE_LINK_BANK);
         }
+    }
+
+    @Override
+    public void startLinkCardActivityForResult(final Activity activity) {
+        startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_CARD);
+    }
+
+    @Override
+    public void startLinkCardActivityForResult(Fragment fragment) {
+        startLinkBankActivityForResult(fragment, LinkBankType.LINK_BANK_CARD);
+    }
+
+    @Override
+    public void startLinkAccountActivityForResult(final Activity activity) {
+        startLinkBankActivityForResult(activity, LinkBankType.LINK_BANK_ACCOUNT);
+    }
+
+    @Override
+    public void startLinkAccountActivityForResult(final Fragment fragment) {
+        startLinkBankActivityForResult(fragment, LinkBankType.LINK_BANK_ACCOUNT);
     }
 
     private void startLinkCardActivity(Context context, Bundle bundle, boolean isFinishActivity) {
@@ -519,10 +548,17 @@ public class Navigator implements INavigator {
         return new Intent(context, LinkBankActivity.class);
     }
 
+    private Intent intentLinkCard(Context context, boolean continuePayment) {
+        Intent intent = intentLinkCard(context);
+        intent.putExtra(Constants.ARG_PAGE_INDEX, LinkBankPagerIndex.LINK_CARD.getValue());
+        intent.putExtra(Constants.ARG_CONTINUE_PAY_AFTER_LINK_Bank, continuePayment);
+        return intent;
+    }
+
     private Intent intentLinkAccount(Context context, boolean continuePayment) {
         Intent intent = intentLinkCard(context);
         intent.putExtra(Constants.ARG_PAGE_INDEX, LinkBankPagerIndex.LINK_ACCOUNT.getValue());
-        intent.putExtra(Constants.ARG_CONTINUE_PAY_AFTER_LINK_ACC, continuePayment);
+        intent.putExtra(Constants.ARG_CONTINUE_PAY_AFTER_LINK_Bank, continuePayment);
         return intent;
     }
 
