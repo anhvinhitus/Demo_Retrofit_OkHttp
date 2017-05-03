@@ -155,18 +155,20 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             public void onError(Throwable e) {
                 Timber.d("Get card support error : message [%s]", e.getMessage());
                 hideLoadingView();
-                showRetryDialog(getContext().getString(R.string.exception_generic),
-                        new ZPWOnEventConfirmDialogListener() {
-                            @Override
-                            public void onCancelEvent() {
+                if (getContext() != null) {
+                    showRetryDialog(getContext().getString(R.string.exception_generic),
+                            new ZPWOnEventConfirmDialogListener() {
+                                @Override
+                                public void onCancelEvent() {
 
-                            }
+                                }
 
-                            @Override
-                            public void onOKevent() {
-                                getListBankSupport();
-                            }
-                        });
+                                @Override
+                                public void onOKevent() {
+                                    getListBankSupport();
+                                }
+                            });
+                }
             }
 
             @Override
