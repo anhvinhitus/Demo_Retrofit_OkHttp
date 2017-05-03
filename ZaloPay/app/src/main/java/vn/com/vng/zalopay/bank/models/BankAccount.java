@@ -70,4 +70,18 @@ public class BankAccount {
         }
         return phoneNumber;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object instanceof BankAccount)) {
+            return false;
+        }
+        BankAccount bankAccount = (BankAccount) object;
+        return !(TextUtils.isEmpty(bankAccount.mFirstAccountNo)
+                || TextUtils.isEmpty(bankAccount.mLastAccountNo)
+                || TextUtils.isEmpty(bankAccount.mBankCode))
+                && bankAccount.mFirstAccountNo.equals(this.mFirstAccountNo)
+                && bankAccount.mLastAccountNo.equals(this.mLastAccountNo)
+                && bankAccount.mBankCode.equals(this.mBankCode);
+    }
 }
