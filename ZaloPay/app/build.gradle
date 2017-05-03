@@ -43,8 +43,8 @@ android {
         applicationId cfg.applicationId
         minSdkVersion minSdk
         targetSdkVersion cfg.targetSdk
-        versionCode 232
-        versionName "2.11.0"
+        versionCode 250
+        versionName "2.12.0"
 
         buildConfigField "boolean", "DOWNLOAD_APP_RESOURCE", "true"
         buildConfigField 'int', 'ZALOPAY_APP_ID', '1'
