@@ -879,7 +879,6 @@ public abstract class AdapterBase {
             mIsShowDialog = false;
             Log.d(this, "page name " + getPageName());
 
-
             SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
 
             //fail transaction

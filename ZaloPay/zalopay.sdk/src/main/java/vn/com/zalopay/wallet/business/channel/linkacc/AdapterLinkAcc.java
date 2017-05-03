@@ -621,6 +621,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
     @Override
     public Object onEvent(EEventType pEventType, Object... pAdditionParams) {
+        super.onEvent(pEventType, pAdditionParams);
         // show value progressing
         if (pEventType == EEventType.ON_PROGRESSING) {
             // get value progress  &  show it
