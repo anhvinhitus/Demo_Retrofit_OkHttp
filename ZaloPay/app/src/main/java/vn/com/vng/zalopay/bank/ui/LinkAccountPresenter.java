@@ -27,6 +27,8 @@ import vn.com.vng.zalopay.event.LoadIconFontEvent;
 import vn.com.vng.zalopay.event.RefreshBankAccountEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
+import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -155,7 +157,31 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
     }
 
     @Override
-    void onAddCardSuccess(DBaseMap mappedCreditCard) {
+    void onResponseSuccessFromSDK(ZPPaymentResult zpPaymentResult) {
+        ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
+        if (paymentInfo == null) {
+            Timber.d("PaymentSDK response success but paymentInfo null");
+            return;
+        }
+        if (paymentInfo.linkAccInfo != null) {
+            if (paymentInfo.linkAccInfo.isLinkAcc()) {
+                onAddAccountSuccess(paymentInfo.mapBank);
+            } else if (paymentInfo.linkAccInfo.isUnlinkAcc()) {
+                onRemoveAccountSuccess(paymentInfo.mapBank);
+            }
+        }
+    }
+
+    private void onRemoveAccountSuccess(DBaseMap bankAccount) {
+        if (mView == null || !(bankAccount instanceof DBankAccount)) {
+            return;
+        }
+
+        DBankAccount dBankAccount = ((DBankAccount) bankAccount);
+        mView.removeData(transformBankAccount(dBankAccount));
+    }
+
+    private void onAddAccountSuccess(DBaseMap mappedCreditCard) {
         if (mView == null || !(mappedCreditCard instanceof DBankAccount)) {
             return;
         }

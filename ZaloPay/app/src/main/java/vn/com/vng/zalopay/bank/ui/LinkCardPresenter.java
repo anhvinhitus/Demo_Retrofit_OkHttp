@@ -29,6 +29,8 @@ import vn.com.vng.zalopay.event.TokenPaymentExpiredEvent;
 import vn.com.vng.zalopay.navigation.Navigator;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.base.BaseResponse;
+import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
+import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.base.ZPWRemoveMapCardParams;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -145,7 +147,16 @@ public class LinkCardPresenter extends AbstractLinkCardPresenter<ILinkCardView> 
     }
 
     @Override
-    void onAddCardSuccess(DBaseMap mapBank) {
+    void onResponseSuccessFromSDK(ZPPaymentResult zpPaymentResult) {
+        ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
+        if (paymentInfo == null) {
+            Timber.d("PaymentSDK response success but paymentInfo null");
+            return;
+        }
+        onAddCardSuccess(paymentInfo.mapBank);
+    }
+
+    private void onAddCardSuccess(DBaseMap mapBank) {
         if (mView == null || mapBank == null) {
             return;
         }

@@ -39,7 +39,6 @@ import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 import vn.com.zalopay.wallet.business.entity.base.ZPPaymentResult;
-import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.enumeration.ECardType;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
@@ -68,7 +67,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
 
     abstract void onPreComplete();
 
-    abstract void onAddCardSuccess(DBaseMap mappedCreditCard);
+    abstract void onResponseSuccessFromSDK(ZPPaymentResult zpPaymentResult);
 
     abstract void onLoadIconFontSuccess();
 
@@ -261,12 +260,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             if (zpPaymentResult == null) {
                 return;
             }
-            ZPWPaymentInfo paymentInfo = zpPaymentResult.paymentInfo;
-            if (paymentInfo == null || paymentInfo.mapBank == null) {
-                Timber.d("On response success paymentInfo null");
-                return;
-            }
-            onAddCardSuccess(paymentInfo.mapBank);
+            onResponseSuccessFromSDK(zpPaymentResult);
         }
 
         @Override
