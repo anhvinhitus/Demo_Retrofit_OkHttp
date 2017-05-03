@@ -9,6 +9,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -187,8 +188,9 @@ class LinkAccountPresenter extends AbstractLinkCardPresenter<ILinkAccountView> {
         }
 
         DBankAccount dBankAccount = ((DBankAccount) mappedCreditCard);
-        mView.insertData(transformBankAccount(dBankAccount));
-
+        BankAccount bankAccount = transformBankAccount(dBankAccount);
+        mView.insertData(bankAccount);
+        checkSupportVcbOnly(Collections.singletonList(bankAccount));
         if (mPayAfterLinkBank) {
             mView.showConfirmPayAfterLinkBank();
         }
