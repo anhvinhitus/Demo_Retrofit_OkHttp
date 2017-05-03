@@ -124,7 +124,7 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
             }
         }
         mRecyclerView.setAdapter(mAdapter);
-
+        initBankSupportFragment();
         getLinkedBankAccount();
     }
 
@@ -135,11 +135,15 @@ public class LinkAccountFragment extends AbstractLinkBankFragment implements ILi
     }
 
     private void initBankSupportFragment() {
-        if (getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount) == null) {
-            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            BankSupportFragment bankSupportFragment = BankSupportFragment.newInstance(LinkBankType.LINK_BANK_ACCOUNT);
-            ft.replace(R.id.fragmentInLinkAccount, bankSupportFragment);
-            ft.commit();
+        try {
+            if (getFragmentManager().findFragmentById(R.id.fragmentInLinkAccount) == null) {
+                FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+                BankSupportFragment bankSupportFragment = BankSupportFragment.newInstance(LinkBankType.LINK_BANK_ACCOUNT);
+                ft.replace(R.id.fragmentInLinkAccount, bankSupportFragment);
+                ft.commit();
+            }
+        } catch (IllegalStateException e) {
+            Timber.w(e, "initBankSupportFragment exception [%s]", e.getMessage());
         }
     }
 
