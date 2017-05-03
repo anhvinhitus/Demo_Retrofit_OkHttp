@@ -346,7 +346,7 @@ abstract class AbstractLinkCardPresenter<View> extends AbstractPresenter<View> {
             return null;
         }
 
-        //bankCode [ZPVCB] cardKey[160525000004003ZPVCB] cardType[ZPVCB]
+        //bankCode [ZPVCB] firstaccountno[012240] lastaccountno[2165]
         return new BankAccount(dBankAccount.firstaccountno,
                 dBankAccount.lastaccountno,
                 dBankAccount.bankcode);
