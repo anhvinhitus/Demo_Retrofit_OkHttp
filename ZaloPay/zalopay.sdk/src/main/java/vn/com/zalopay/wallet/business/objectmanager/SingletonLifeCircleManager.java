@@ -8,10 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.datasource.DataRepository;
 import vn.com.zalopay.wallet.merchant.CShareData;
 import vn.com.zalopay.wallet.merchant.strategy.TaskBase;
-import vn.com.zalopay.wallet.business.data.Log;
 
 /**
  * This class is used to manage all static instance
@@ -25,9 +25,8 @@ public class SingletonLifeCircleManager {
      */
     public static synchronized void register(Class<?> pClassHasStaticAttr) {
         if (mClassHasStaticAttrList == null) {
-            mClassHasStaticAttrList = new HashSet<>();
+            mClassHasStaticAttrList = new HashSet<Class<?>>();
         }
-
         mClassHasStaticAttrList.add(pClassHasStaticAttr);
     }
 
@@ -37,11 +36,10 @@ public class SingletonLifeCircleManager {
     public static synchronized void disposeAll() {
         dispose(GlobalData.class);
         dispose(DialogManager.class);
-
         if (mClassHasStaticAttrList != null) {
-
-            mClassHasStaticAttrList.forEach(SingletonLifeCircleManager::dispose);
-
+            for (Class<?> clazz : mClassHasStaticAttrList) {
+                dispose(clazz);
+            }
             mClassHasStaticAttrList = null;
         }
     }
@@ -65,21 +63,15 @@ public class SingletonLifeCircleManager {
      */
     private static void dispose(Class<?> clazz) {
         Log.i("RELEASE_STATIC_OBJ", "======== Considering to :" + clazz.getName());
-
         Field[] fields = clazz.getDeclaredFields();
-
         for (Field field : fields) {
-
             if (Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers())
                     && !field.getType().isPrimitive()) {
                 try {
-
                     if (Modifier.isPrivate(field.getModifiers())) {
                         field.setAccessible(true);
                     }
-
                     field.set(null, null);
-
                     Log.i("RELEASE_STATIC_OBJ", "**** Release " + field.getName());
                 } catch (Exception e) {
                     Log.d("RELEASE_STATIC_OBJ", e);
@@ -90,20 +82,14 @@ public class SingletonLifeCircleManager {
 
     private static void disposeNoStaticObject(Class<?> clazz) {
         Log.i("RELEASE_OBJ", "======== Considering to :" + clazz.getName());
-
         Field[] fields = clazz.getDeclaredFields();
-
         for (Field field : fields) {
-
             if (!Modifier.isFinal(field.getModifiers()) && !field.getType().isPrimitive()) {
                 try {
-
                     if (Modifier.isPrivate(field.getModifiers())) {
                         field.setAccessible(true);
                     }
-
                     field.set(null, null);
-
                     Log.i("RELEASE_OBJ", "**** Release " + field.getName());
                 } catch (Exception e) {
                     Log.d("RELEASE_OBJ", e);

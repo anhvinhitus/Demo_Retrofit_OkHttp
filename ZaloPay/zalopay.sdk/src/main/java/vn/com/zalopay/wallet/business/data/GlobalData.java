@@ -125,15 +125,11 @@ public class GlobalData {
         String userID;
         try {
             userID = SharedPreferencesManager.getInstance().getCurrentUserID();
-
         } catch (Exception e) {
             Log.e("isNewUser", e);
-
             return true;
         }
-
         return TextUtils.isEmpty(userID) || !userID.equals(GlobalData.mPaymentInfo.userInfo.zaloPayUserId);
-
     }
 
     /***

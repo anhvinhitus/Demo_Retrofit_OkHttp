@@ -231,7 +231,7 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
         System.gc();
 
-        Log.d(this, "====== onDestroy ======");
+        Log.d(this, "on destroy");
     }
 
     @Override

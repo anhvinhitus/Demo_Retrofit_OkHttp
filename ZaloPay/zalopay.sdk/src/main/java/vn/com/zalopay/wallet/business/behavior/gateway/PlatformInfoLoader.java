@@ -4,17 +4,17 @@ import android.text.TextUtils;
 
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
 import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.DownloadResourceTask;
 import vn.com.zalopay.wallet.datasource.task.PlatformInfoTask;
-import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
+import vn.com.zalopay.wallet.message.PaymentEventBus;
 import vn.com.zalopay.wallet.message.SdkResourceInitMessage;
 import vn.com.zalopay.wallet.message.SdkUpVersionMessage;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.view.component.activity.BasePaymentActivity;
 
 public class PlatformInfoLoader extends SingletonBase {
@@ -28,8 +28,7 @@ public class PlatformInfoLoader extends SingletonBase {
         @Override
         public void onSuccess() {
             Log.d(this, "get platforminfo success, continue initialize resource to memory");
-            if(BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity)
-            {
+            if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
                 ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
             }
         }
@@ -50,8 +49,7 @@ public class PlatformInfoLoader extends SingletonBase {
         public void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage) {
             Log.d(this, "need to up version from getplatforminfo");
             if (!pForceUpdate) {
-                if(BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity)
-                {
+                if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
                     ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
                 }
             }
@@ -103,8 +101,7 @@ public class PlatformInfoLoader extends SingletonBase {
         //resource existed  and need to load into memory
         else if (!ResourceManager.isInit()) {
             Log.d(this, "===resource was downloaded but not init===init resource now");
-            if(BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity)
-            {
+            if (BasePaymentActivity.getCurrentActivity() instanceof BasePaymentActivity) {
                 ((BasePaymentActivity) BasePaymentActivity.getCurrentActivity()).initializeResource();
             }
         }
@@ -135,18 +132,19 @@ public class PlatformInfoLoader extends SingletonBase {
     private void retryLoadResource(String pUrl, String pResourceVersion) {
         DownloadResourceTask downloadResourceTask = new DownloadResourceTask(pUrl, pResourceVersion);
         downloadResourceTask.makeRequest();
-        Log.d(this, "starting retry loading resource");
+        Log.d(this, "starting retry download resource " + pUrl);
     }
 
     //retry load platform info
     private void retryLoadGateway(boolean pForceReload) {
         BaseTask getPlatformInfo = new PlatformInfoTask(mLoadGatewayInfoListener, pForceReload);
         getPlatformInfo.makeRequest();
-        Log.d(this, "need to retry load platforminfo again force "+pForceReload);
+        Log.d(this, "need to retry load platforminfo again force " + pForceReload);
     }
 
     public interface onCheckResourceStaticListener {
         void onCheckResourceStaticComplete(boolean isSuccess, String pError);
+
         void onUpVersion(boolean pForceUpdate, String pVersion, String pMessage);
     }
 }

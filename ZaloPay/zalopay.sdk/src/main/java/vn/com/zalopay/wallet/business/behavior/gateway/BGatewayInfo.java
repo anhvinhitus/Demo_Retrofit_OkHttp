@@ -8,6 +8,7 @@ import java.io.File;
 import vn.com.zalopay.wallet.business.dao.ResourceManager;
 import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
+import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPlatformInfo;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
 import vn.com.zalopay.wallet.business.objectmanager.SingletonBase;
@@ -15,7 +16,6 @@ import vn.com.zalopay.wallet.datasource.task.BaseTask;
 import vn.com.zalopay.wallet.datasource.task.PlatformInfoTask;
 import vn.com.zalopay.wallet.listener.ZPWGatewayInfoCallback;
 import vn.com.zalopay.wallet.listener.ZPWGetGatewayInfoListener;
-import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.utils.SdkUtils;
 
 /**
@@ -92,9 +92,8 @@ public class BGatewayInfo extends SingletonBase {
         long currentTime = System.currentTimeMillis();
         long expiredTime = SharedPreferencesManager.getInstance().getPlatformInfoExpriedTime();
         String checksumSDKV = SharedPreferencesManager.getInstance().getChecksumSDKversion();
-        String userID = SharedPreferencesManager.getInstance().getCurrentUserID();
         boolean isNewUser = GlobalData.isNewUser();
-        Log.d("isNeedToGetPlatformInfo", "user id " + userID);
+        Log.d("isNeedToGetPlatformInfo", "is new user " + isNewUser);
         return currentTime > expiredTime || !SdkUtils.getAppVersion(GlobalData.getAppContext()).equals(checksumSDKV) || !isValidConfig() || isNewUser;
     }
 
@@ -116,6 +115,7 @@ public class BGatewayInfo extends SingletonBase {
     public boolean isProcessing() {
         return mProcessing;
     }
+
     /***
      * call get platform info
      *

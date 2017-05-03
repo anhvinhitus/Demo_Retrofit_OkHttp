@@ -139,11 +139,11 @@ public class PlatformInfoTask extends BaseTask<DPlatformInfo> {
          * 2.resource version on cached client and resource version server return is different.This case user no need to update app.
          */
         String resrcVer = SharedPreferencesManager.getInstance().getResourceVersion();
-        if (!mNoDownloadResource && pResponse.resource != null && (pResponse.isupdateresource || (!TextUtils.isEmpty(resrcVer)
-                && !pResponse.resource.rsversion.equals(resrcVer)))) {
+        if (pResponse.resource != null && (pResponse.isupdateresource || (!TextUtils.isEmpty(resrcVer) && !pResponse.resource.rsversion.equals(resrcVer)))) {
             SharedPreferencesManager.getInstance().setResourceVersion(pResponse.resource.rsversion);
             SharedPreferencesManager.getInstance().setResourceDownloadUrl(pResponse.resource.rsurl);
             //downloading resource
+            Log.d(this,"start download sdk resource "+ pResponse.resource.rsurl);
             DownloadResourceTask downloadResourceTask = new DownloadResourceTask(pResponse.resource.rsurl, pResponse.resource.rsversion);
             downloadResourceTask.makeRequest();
         }
