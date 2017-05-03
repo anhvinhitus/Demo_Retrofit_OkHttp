@@ -439,15 +439,7 @@ public class AdapterLinkAcc extends AdapterBase {
     @Override
     public void autoFillOtp(String pSender, String pOtp) {
         Log.d(this, "sender " + pSender + " otp " + pOtp);
-        if (GlobalData.shouldNativeWebFlow()) {
-            Log.d(this, "user following web flow, skip auto fill otp");
-            return;
-        }
-        /*if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !GlobalData.shouldNativeWebFlow()) {
-            Log.d(this, "user is not in otp phase, skip auto fill otp");
-            return;
-        }*/
-        if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase()) {
+        if (!((LinkAccGuiProcessor) getGuiProcessor()).isLinkAccOtpPhase() && !GlobalData.shouldNativeWebFlow()) {
             Log.d(this, "user is not in otp phase, skip auto fill otp");
             return;
         }
@@ -474,13 +466,12 @@ public class AdapterLinkAcc extends AdapterBase {
                         if ((!otpReceiverPattern.isdigit && TextUtils.isDigitsOnly(otp)) || (otpReceiverPattern.isdigit && !TextUtils.isDigitsOnly(otp))) {
                             continue;
                         }
-                        linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
-                        /*if (GlobalData.shouldNativeWebFlow()) {
+                        if (GlobalData.shouldNativeWebFlow()) {
                             mWebViewProcessor.fillOtpOnWebFlow(otp);
                             Log.d(this, "fill otp into website vcb directly");
                         } else {
                             linkAccGuiProcessor.getConfirmOTPHolder().getEdtConfirmOTP().setText(otp);
-                        }*/
+                        }
                         break;
                     }
                 }
