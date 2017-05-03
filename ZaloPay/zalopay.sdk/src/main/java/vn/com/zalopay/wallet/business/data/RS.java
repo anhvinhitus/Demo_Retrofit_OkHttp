@@ -168,6 +168,7 @@ public class RS {
         public static final String zpw_string_alert_loading_bank = "zpw_string_alert_loading_bank";
 
         public static final String zpw_string_fee_label = "zpw_string_fee_label";
+        public static final String zpw_string_fee_format = "zpw_string_fee_format";
 
         public static final String zpw_string_vnd = "zpw_string_vnd";
 

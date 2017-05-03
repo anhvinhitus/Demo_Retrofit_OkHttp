@@ -3,15 +3,18 @@ package vn.com.zalopay.wallet.view.component.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 
 import com.zalopay.ui.widget.dialog.DialogManager;
 import com.zalopay.ui.widget.dialog.listener.ZPWOnEventConfirmDialogListener;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -24,22 +27,23 @@ import vn.com.zalopay.wallet.business.dao.SharedPreferencesManager;
 import vn.com.zalopay.wallet.business.data.GlobalData;
 import vn.com.zalopay.wallet.business.data.Log;
 import vn.com.zalopay.wallet.business.data.RS;
-import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.business.entity.base.ZPWPaymentInfo;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DPaymentChannelView;
 import vn.com.zalopay.wallet.business.error.ErrorManager;
+import vn.com.zalopay.wallet.constants.BankFunctionCode;
 import vn.com.zalopay.wallet.datasource.task.SDKReportTask;
 import vn.com.zalopay.wallet.listener.IChannelActivityCallBack;
 import vn.com.zalopay.wallet.listener.ILoadBankListListener;
 import vn.com.zalopay.wallet.listener.IMoveToChannel;
 import vn.com.zalopay.wallet.listener.ZPWOnGetChannelListener;
+import vn.com.zalopay.wallet.message.SdkSelectedChannelMessage;
 import vn.com.zalopay.wallet.utils.ConnectionUtil;
 import vn.com.zalopay.wallet.utils.GsonUtils;
 import vn.com.zalopay.wallet.utils.StringUtil;
-import vn.com.zalopay.wallet.view.adapter.GatewayChannelListViewAdapter;
-import vn.com.zalopay.wallet.view.custom.overscroll.OverScrollDecoratorHelper;
+import vn.com.zalopay.wallet.view.adapter.ChannelAdapter;
+import vn.com.zalopay.wallet.view.adapter.RecyclerTouchListener;
 
 /***
  * payment channel list screen.
@@ -71,11 +75,11 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             }
         }
     };
+    protected ChannelAdapter mChannelAdapter;
     //region variable
     //injector for channel
     private BaseChannelInjector baseChannelInjector;
-    private ListView mChannelListView;
-    private GatewayChannelListViewAdapter mChannelListViewAdapter = null;
+    private RecyclerView mChannelRecyclerView;
 
     //endregion
     //prevent click duplicate
@@ -84,24 +88,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      * exit click
      */
     private View.OnClickListener mOnClickExitListener = v -> recycleActivity();
-    /***
-     * click item on channel listview
-     */
-    private AdapterView.OnItemClickListener mChannelItemClick = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //prevent so many click on channel.
-            if (mMoreClick) {
-                mMoreClick = false;
-
-                //reset transtype and bank func type
-                GlobalData.getTransactionType();
-                onSelectedChannel(baseChannelInjector.getChannelAtPosition(position));
-
-                new Handler().postDelayed(() -> mMoreClick = true, 1000);
-            }
-        }
-    };
     private ILoadBankListListener mLoadBankListListener = new ILoadBankListListener() {
         @Override
         public void onProcessing() {
@@ -167,35 +153,48 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
 
         setContentView(RS.getLayout(RS.layout.screen__gateway));
 
-        try {
+        //mChannelListView = (ListView) findViewById(R.id.zpw_channel_listview);
+        mChannelRecyclerView = (RecyclerView) findViewById(R.id.channel_recycler_view);
 
-            mChannelListView = (ListView) findViewById(R.id.zpw_channel_listview);
+        initializeChannelRecycleView();
 
-            //support over swipe to listview
-            OverScrollDecoratorHelper.setUpOverScroll(mChannelListView);
+        showAmount();
 
-            showAmount();
+        showDisplayInfo();
 
-            showDisplayInfo();
+        setListener();
 
-            setListener();
+        setToolBarTitle();
 
-            setToolBarTitle();
+        setTitle();
 
-            setTitle();
+        //validate user level
+        if (!checkUserLevelValid()) {
+            confirmUpgradeLevel();
+            return;
+        }
+        checkAppInfo(); //check app info whether this transaction is allowed or not
+    }
 
-            //validate user level
-            if (!checkUserLevelValid()) {
-                confirmUpgradeLevel();
-                return;
-            }
+    protected void initializeChannelRecycleView() {
+        baseChannelInjector = BaseChannelInjector.createChannelInjector();
+        mChannelAdapter = new ChannelAdapter(getApplicationContext(), baseChannelInjector.getChannelList());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mChannelRecyclerView.setHasFixedSize(true);
+        mChannelRecyclerView.setLayoutManager(mLayoutManager);
+        mChannelRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mChannelRecyclerView.setAdapter(mChannelAdapter);
+        mChannelRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), mChannelRecyclerView));
+    }
 
-            //check app info whether this transaction is allowed or not
-            checkAppInfo();
-
-        } catch (Exception ex) {
-            Log.e(this, ex);
-            onReturnCancel(GlobalData.getStringResource(RS.string.zingpaysdk_alert_network_error));
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnSelectChannelEvent(SdkSelectedChannelMessage pMessage) {
+        if (mMoreClick) {   //prevent so many click on channel.
+            mMoreClick = false;
+            GlobalData.getTransactionType();//reset transtype and bank func type
+            GlobalData.selectBankFunctionByTransactionType();
+            onSelectedChannel(baseChannelInjector.getChannelAtPosition(pMessage.position));
+            new Handler().postDelayed(() -> mMoreClick = true, 1000);
         }
     }
 
@@ -218,19 +217,14 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         DialogManager.dismiss();
-
         //release callback from payment channel activity
         GlobalData.setChannelActivityCallBack(null);
 
-        if (mChannelListViewAdapter != null) {
-            mChannelListViewAdapter.clear();
-            mChannelListViewAdapter = null;
+        if (mChannelAdapter != null) {
+            mChannelAdapter = null;
         }
-
         System.gc();
-
         Log.d(this, "on destroy");
     }
 
@@ -270,13 +264,11 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     @Override
     protected void setListener() {
         super.setListener();
-
         findViewById(R.id.zpsdk_exit_ctl).setOnClickListener(this.mOnClickExitListener);
     }
 
     private void showChannelListView() {
         //force to some channel from client
-
         Log.d(this, "start show channel to listview");
         if (GlobalData.isForceChannel()) {
             baseChannelInjector.filterForceChannel(GlobalData.getPaymentInfo().forceChannelIds);
@@ -323,20 +315,12 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
             }
         }
 
-        populateListView();
+        refreshChannelRecyclerView();
     }
 
-    /***
-     * fill channel to listview
-     */
-    private void populateListView() {
-        mChannelListViewAdapter = new GatewayChannelListViewAdapter(this, RS.getLayout(RS.layout.listview__item__channel__gateway),
-                baseChannelInjector.getChannelList());
-        mChannelListView.setAdapter(mChannelListViewAdapter);
-        mChannelListView.setOnItemClickListener(mChannelItemClick);
-
+    private void refreshChannelRecyclerView() {
+        mChannelAdapter.notifyDataSetChanged();
         isUniqueChannel = baseChannelInjector.isChannelUnique();
-        Log.d(this, "===show Channel===populateListView()");
     }
 
     /***
@@ -373,7 +357,6 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
      */
     private void getPaymentChannel() throws Exception {
         Log.d(this, "===show Channel===getPaymentChannel()");
-        baseChannelInjector = BaseChannelInjector.createChannelInjector();
         baseChannelInjector.getChannels(new ZPWOnGetChannelListener() {
             @Override
             public void onGetChannelComplete() {
@@ -630,7 +613,5 @@ public class PaymentGatewayActivity extends BasePaymentActivity implements IChan
     public IMoveToChannel getMoveToChannelListener() {
         return mMoveToChannel;
     }
-
-
     //endregion
 }

@@ -1343,7 +1343,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     /***
      * show special view for wallet tranfer and withdraw
      */
-    protected void showUserInfoWalletTransfer() throws Exception {
+    protected void showUserInfoWalletTransfer() {
         if (!GlobalData.isTranferMoneyChannel())
             return;
 
@@ -1438,7 +1438,7 @@ public abstract class BasePaymentActivity extends FragmentActivity {
     /***
      * show header text
      */
-    protected void showDisplayInfo() throws Exception {
+    protected void showDisplayInfo() {
         //linkcard channel
         if (GlobalData.isLinkCardChannel()) {
 

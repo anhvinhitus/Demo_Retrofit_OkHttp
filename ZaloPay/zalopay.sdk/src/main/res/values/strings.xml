@@ -361,6 +361,8 @@
 
     <string name="zpw_string_fee_label">Phí:</string>
 
+    <string name="zpw_string_fee_format"><![CDATA[Phí: %1$s VND]]></string>
+
     <string name="zpw_string_exit_without_pin">Để giao dịch an toàn, chúng tôi cần bạn nhập mật khẩu thanh toán.\nBạn có muốn tiếp tục giao dịch?</string>
 
     <string name="zpw_string_error_layout">Lỗi khởi tạo dữ liệu.\nVui lòng thử lại</string>

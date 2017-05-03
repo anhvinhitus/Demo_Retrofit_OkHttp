@@ -81,7 +81,7 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
 
     public View getView(int position, View convertView, ViewGroup parent) {
         SimpleDraweeView channelIconImageView, nextIconImageView;
-        TextView channelNameTextView, channelFeeTextview, currencyUnitTextView;
+        TextView channelNameTextView, channelFeeTextview, currencyUnitTextView = null;
         View lineView;
 
         ZPWItemChannelHolder holder;
@@ -96,14 +96,14 @@ public class GatewayChannelListViewAdapter extends ArrayAdapter<DPaymentChannelV
             channelNameTextView = (TextView) convertView.findViewById(R.id.zpw_channel_name_textview);
             channelFeeTextview = (TextView) convertView.findViewById(R.id.zpw_channel_fee);
             lineView = convertView.findViewById(R.id.zpw_line_view);
-            currencyUnitTextView = (TextView) convertView.findViewById(R.id.zpw_title_vnd);
+            //currencyUnitTextView = (TextView) convertView.findViewById(R.id.zpw_title_vnd);
             //save to holder for using later
             holder.channelIconImageView = channelIconImageView;
             holder.nextIconImageView = nextIconImageView;
             holder.channelNameTextView = channelNameTextView;
             holder.channelFeeTextView = channelFeeTextview;
             holder.lineView = lineView;
-            holder.currencyUnitTextView = currencyUnitTextView;
+            holder.currencyUnitTextView = null;
             convertView.setTag(holder);
         } else {
             holder = (ZPWItemChannelHolder) convertView.getTag();
