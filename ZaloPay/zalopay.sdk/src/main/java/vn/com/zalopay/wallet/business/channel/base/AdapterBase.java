@@ -870,20 +870,20 @@ public abstract class AdapterBase {
         try {
             mIsShowDialog = false;
             Log.d(this, "page name " + getPageName());
-            Log.d(this, "payment result " + GsonUtils.toJsonString(GlobalData.getPaymentResult()));
+
 
             SdkUtils.hideSoftKeyboard(GlobalData.getAppContext(), getActivity());
 
             //fail transaction
             if (isTransactionFail()) {
                 terminate(null, true);
-
+                Log.d(this, "payment result Fail" + GsonUtils.toJsonString(GlobalData.getPaymentResult()));
                 return;
             }
             //pay successfully
             if (isTransactionSuccess()) {
                 finishTransaction(null);
-
+                Log.d(this, "payment result Success" + GsonUtils.toJsonString(GlobalData.getPaymentResult()));
                 return;
             }
 

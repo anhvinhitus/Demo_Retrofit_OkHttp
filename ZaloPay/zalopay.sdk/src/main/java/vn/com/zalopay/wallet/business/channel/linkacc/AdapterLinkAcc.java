@@ -97,7 +97,9 @@ public class AdapterLinkAcc extends AdapterBase {
     private TreeMap<String, String> mHashMapPhoneNum;
     private TreeMap<String, String> mHashMapPhoneNumUnReg;
     private LinkAccWebViewClient mWebViewProcessor = null;
-    protected final Runnable runnableWaitingNotifyUnLinkAcc = () -> {
+
+    private List<DBankAccount> mBankAccountList = null;
+    protected Runnable runnableWaitingNotifyUnLinkAcc = () -> {
         // get & check bankaccount list
         BankAccountHelper.existBankAccount(true, new ICheckExistBankAccountListener() {
             @Override
@@ -276,6 +278,12 @@ public class AdapterLinkAcc extends AdapterBase {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_link_acc));
         } else if (GlobalData.isUnLinkAccFlow()) {
             getActivity().setBarTitle(GlobalData.getStringResource(RS.string.zpw_string_unlink_acc));
+            try {
+                mBankAccountList = SharedPreferencesManager.getInstance().getBankAccountList(GlobalData.getPaymentInfo().userInfo.zaloPayUserId);
+            } catch (Exception e) {
+                Log.e(this, e);
+            }
+
         } else {
             throw new Exception(GlobalData.getStringResource(RS.string.zpw_error_paymentinfo));
         }
@@ -454,6 +462,10 @@ public class AdapterLinkAcc extends AdapterBase {
             getActivity().findViewById(R.id.zpw_threesecurity_webview).setVisibility(View.GONE); // disable webview
             getActivity().findViewById(R.id.ll_test_rootview).setVisibility(View.VISIBLE); // enable web parse
         }
+        if (mBankAccountList != null && mBankAccountList.size() > 0) {
+            GlobalData.getPaymentInfo().mapBank = mBankAccountList.get(0);
+        }
+
     }
 
     /***
@@ -892,6 +904,7 @@ public class AdapterLinkAcc extends AdapterBase {
 
             // Unregister page
             if (page.equals(VCB_UNREGISTER_PAGE)) {
+                // get bankaccount from cache callback to app
                 Log.d(this, "event on unregister page complete");
                 hideLoadingDialog();
                 mPageCode = PAGE_VCB_CONFIRM_UNLINK;
