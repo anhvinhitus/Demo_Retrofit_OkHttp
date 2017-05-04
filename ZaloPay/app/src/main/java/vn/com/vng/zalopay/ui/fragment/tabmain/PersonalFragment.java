@@ -31,14 +31,14 @@ import vn.com.zalopay.analytics.ZPEvents;
  */
 
 public class PersonalFragment extends BaseFragment implements IPersonalView, FragmentLifecycle {
-    @BindView(R.id.tab_personal_iv_avatar)
+    @BindView(R.id.profile_iv_avatar)
     SimpleDraweeView ivAvatar;
 
-    @BindView(R.id.tab_personal_tv_name)
+    @BindView(R.id.profile_tv_name)
     TextView tvName;
 
-    @BindView(R.id.tab_personal_tv_zalopayid)
-    TextView tvZaloPayId;
+    @BindView(R.id.profile_tv_zalopay_name)
+    TextView tvZaloPayName;
 
     @BindView(R.id.tab_personal_tv_balance_value)
     TextView tvBalance;
@@ -113,11 +113,11 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
 
     @Override
     public void setZaloPayName(String zaloPayName) {
-        if (tvZaloPayId != null) {
+        if (tvZaloPayName != null) {
             if (TextUtils.isEmpty(zaloPayName)) {
-                tvZaloPayId.setText(getString(R.string.zalopay_name_not_update));
+                tvZaloPayName.setText(getString(R.string.zalopay_name_not_update));
             } else {
-                tvZaloPayId.setText(String.format(getString(R.string.leftmenu_zalopayid), zaloPayName));
+                tvZaloPayName.setText(String.format(getString(R.string.leftmenu_zalopayid), zaloPayName));
             }
         }
     }
@@ -149,7 +149,7 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
         }
     }
 
-    @OnClick(R.id.tab_personal_rl_info)
+    @OnClick(R.id.personal_profile_header_info)
     public void onProfileInfoClick() {
         ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_PROFILE);
         navigator.startProfileInfoActivity(getContext());

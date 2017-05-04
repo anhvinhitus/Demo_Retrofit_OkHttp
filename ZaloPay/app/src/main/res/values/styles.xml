@@ -290,4 +290,16 @@
         <item name="tabMode">fixed</item>
         <item name="tabMaxWidth">0dp</item>
     </style>
+
+    <style name="TextView.Personal.Item" parent="android:Widget.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/personal_menu_item_height</item>
+        <item name="android:paddingLeft">@dimen/personal_margin_12</item>
+        <item name="android:paddingRight">@dimen/personal_margin_12</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@drawable/default_white_selector</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/personal_text</item>
+        <item name="android:textSize">@dimen/personal_iconfont_text</item>
+    </style>
 </resources>

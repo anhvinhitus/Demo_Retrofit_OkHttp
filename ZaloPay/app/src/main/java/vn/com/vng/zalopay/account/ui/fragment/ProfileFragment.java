@@ -66,8 +66,8 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     @BindView(R.id.tvAccountName)
     TextView mAccountNameView;
 
-    @BindView(R.id.layoutChangePin)
-    View layoutChangePin;
+//    @BindView(R.id.layoutChangePin)
+//    View layoutChangePin;
 
     @Override
     protected void setupFragmentComponent() {
@@ -258,17 +258,17 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         mPresenter.updateZaloPayID();
     }
 
-    @OnClick(R.id.layoutChangePin)
-    public void onClickChangePin() {
-        navigator.startProtectAccount(getActivity());
-    }
+//    @OnClick(R.id.layoutChangePin)
+//    public void onClickChangePin() {
+//        navigator.startProtectAccount(getActivity());
+//    }
 
     @Override
     public void showHideChangePinView(boolean isShow) {
         if (isShow) {
-            layoutChangePin.setVisibility(View.VISIBLE);
+//            layoutChangePin.setVisibility(View.VISIBLE);
         } else {
-            layoutChangePin.setVisibility(View.GONE);
+//            layoutChangePin.setVisibility(View.GONE);
         }
     }
 }
