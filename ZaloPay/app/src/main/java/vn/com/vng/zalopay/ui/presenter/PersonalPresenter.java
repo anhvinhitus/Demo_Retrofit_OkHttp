@@ -8,6 +8,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,6 +19,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 import vn.com.vng.zalopay.Constants;
+import vn.com.vng.zalopay.bank.BankUtils;
+import vn.com.vng.zalopay.bank.models.BankAccount;
 import vn.com.vng.zalopay.data.balance.BalanceStore;
 import vn.com.vng.zalopay.data.cache.UserConfig;
 import vn.com.vng.zalopay.data.eventbus.ChangeBalanceEvent;
@@ -40,6 +44,7 @@ import vn.com.vng.zalopay.ui.view.ILoadDataView;
 import vn.com.vng.zalopay.ui.view.IPersonalView;
 import vn.com.vng.zalopay.utils.CShareDataWrapper;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBankAccount;
+import vn.com.zalopay.wallet.business.entity.gatewayinfo.DBaseMap;
 import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 
 /**
@@ -50,8 +55,6 @@ import vn.com.zalopay.wallet.business.entity.gatewayinfo.DMappedCard;
 public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private User mUser;
     private EventBus mEventBus;
-    private UserConfig mUserConfig;
-    private Context context;
     private BalanceStore.Repository mBalanceRepository;
     private PassportRepository mPassportRepository;
     private ZaloPayRepository mZaloPayRepository;
@@ -59,6 +62,15 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
     private PaymentWrapper paymentWrapper;
     private ZaloSdkApi mZaloSdkApi;
     private Navigator mNavigator;
+    private int linkBankStatus;
+
+    public int getLinkBankStatus() {
+        return linkBankStatus;
+    }
+
+    private void setLinkBankStatus(int linkBankStatus) {
+        this.linkBankStatus = linkBankStatus;
+    }
 
     @Inject
     PersonalPresenter(User user
@@ -68,13 +80,10 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
             , PassportRepository passportRepository
             , ZaloPayRepository zaloPayRepository
             , TransactionStore.Repository transactionRepository
-            , Context context
             , ZaloSdkApi zaloSdkApi
             , Navigator navigator) {
         this.mUser = user;
         this.mEventBus = eventBus;
-        this.mUserConfig = userConfig;
-        this.context = context;
         this.mBalanceRepository = balanceRepository;
         this.mPassportRepository = passportRepository;
         this.mZaloPayRepository = zaloPayRepository;
@@ -205,16 +214,6 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
 
     }
 
-    public int getLinkBankStatus() {
-        return linkBankStatus;
-    }
-
-    private void setLinkBankStatus(int linkBankStatus) {
-        this.linkBankStatus = linkBankStatus;
-    }
-
-    private int linkBankStatus;
-
     private void checkLinkCardStatus() {
         List<DMappedCard> mapCardList = CShareDataWrapper.getMappedCardList(mUser.zaloPayId);
         List<DBankAccount> mapAccList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
@@ -246,6 +245,14 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
         paymentWrapper.linkCard(activity);
     }
 
+    void linkAccount(String bankCode) {
+        if (paymentWrapper == null || mView == null || TextUtils.isEmpty(bankCode)) {
+            return;
+        }
+        Timber.d("Link account, card code [%s]", bankCode);
+        paymentWrapper.linkAccount(getActivity(), bankCode);
+    }
+
     private PaymentWrapper getPaymentWrapper() {
         return new PaymentWrapperBuilder()
                 .setBalanceRepository(mBalanceRepository)
@@ -264,7 +271,83 @@ public class PersonalPresenter extends AbstractPresenter<IPersonalView> {
                             mNavigator.startLinkAccountActivity(getActivity());
                         }
                     }
-                }).build();
+                })
+                .setLinkCardListener(new LinkCardListener())
+                .build();
     }
 
+    private class LinkCardListener implements PaymentWrapper.ILinkCardListener {
+        @Override
+        public void onErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+            handleErrorLinkCardButInputBankAccount(bankInfo);
+        }
+    }
+
+    private void handleErrorLinkCardButInputBankAccount(DBaseMap bankInfo) {
+        if (bankInfo == null) {
+            return;
+        }
+        Timber.d("Start LinkAccount with bank code [%s]", bankInfo.bankcode);
+        List<BankAccount> bankAccounts = getLinkedBankAccount();
+
+        if (checkLinkedBankAccount(bankAccounts, bankInfo.bankcode)) {
+            String bankName = BankUtils.getBankName(bankInfo.bankcode);
+            String message;
+            if (!TextUtils.isEmpty(bankName)) {
+//                message = String.format(getString(R.string.bank_account_has_linked),
+//                        bankName);
+            } else {
+//                message = getString(R.string.bank_account_has_linked_this_bank);
+            }
+            if (mView != null) {
+//                mView.gotoTabLinkAccAndShowDialog(message);
+            }
+        } else {
+            linkAccount(bankInfo.bankcode);
+        }
+    }
+
+    private boolean checkLinkedBankAccount(List<BankAccount> listBankAccount, String bankCode) {
+        if (Lists.isEmptyOrNull(listBankAccount)) {
+            return false;
+        }
+        for (BankAccount bankAccount : listBankAccount) {
+            if (bankAccount == null || TextUtils.isEmpty(bankAccount.mBankCode)) {
+                continue;
+            }
+            if (bankAccount.mBankCode.equalsIgnoreCase(bankCode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<BankAccount> getLinkedBankAccount() {
+        List<DBankAccount> mapCardList = CShareDataWrapper.getMapBankAccountList(mUser.zaloPayId);
+        return transformBankAccount(mapCardList);
+    }
+
+    private List<BankAccount> transformBankAccount(List<DBankAccount> bankAccounts) {
+        if (Lists.isEmptyOrNull(bankAccounts)) return Collections.emptyList();
+
+        List<BankAccount> list = new ArrayList<>();
+        for (DBankAccount dBankAccount : bankAccounts) {
+            BankAccount bankAccount = transformBankAccount(dBankAccount);
+            if (bankAccount != null) {
+                list.add(bankAccount);
+            }
+        }
+        return list;
+    }
+
+    private BankAccount transformBankAccount(DBankAccount dBankAccount) {
+        if (dBankAccount == null) {
+            return null;
+        }
+
+        //bankCode [ZPVCB] firstaccountno[012240] lastaccountno[2165]
+        return new BankAccount(dBankAccount.firstaccountno,
+                dBankAccount.lastaccountno,
+                dBankAccount.bankcode);
+    }
 }

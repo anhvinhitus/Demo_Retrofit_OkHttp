@@ -26,7 +26,8 @@ import vn.com.zalopay.analytics.ZPAnalytics;
 import vn.com.zalopay.analytics.ZPEvents;
 
 /**
- * Created by Duke on 3/27/17.
+ * Created by datnt10 on 3/27/17.
+ * Tab personal UI
  */
 
 public class PersonalFragment extends BaseFragment implements IPersonalView, FragmentLifecycle {
@@ -168,7 +169,6 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
 
     @OnClick(R.id.tab_personal_tv_bank_link_now)
     public void onBankLinkNowClick() {
-        showToast("Quick link bank clicked");
         switch (presenter.getLinkBankStatus()) {
             case Constants.LINK_BANK_NONE:
                 ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BANK_QUICKACTION);
@@ -183,22 +183,22 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
         }
     }
 
-    @OnClick(R.id.tab_personal_rl_bill)
-    public void onBillClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BILLING);
-    }
-
-    @OnClick(R.id.tab_personal_tv_bill_detail)
-    public void onBillDetailClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BILLING_QUICKACTION);
-        showToast("Bill detail clicked");
-    }
-
-    @OnClick(R.id.tab_personal_rl_transaction_history)
-    public void onTransHistoryClick() {
-        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_TRANSACTIONS);
-        navigator.startTransactionHistoryList(getContext());
-    }
+//    @OnClick(R.id.tab_personal_rl_bill)
+//    public void onBillClick() {
+//        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BILLING);
+//    }
+//
+//    @OnClick(R.id.tab_personal_tv_bill_detail)
+//    public void onBillDetailClick() {
+//        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_BILLING_QUICKACTION);
+//        showToast("Bill detail clicked");
+//    }
+//
+//    @OnClick(R.id.tab_personal_rl_transaction_history)
+//    public void onTransHistoryClick() {
+//        ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_TRANSACTIONS);
+//        navigator.startTransactionHistoryList(getContext());
+//    }
 
     @OnClick(R.id.tab_personal_tv_support_center)
     public void onSupportCenterClick() {
@@ -217,7 +217,7 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
         navigator.startMiniAppActivity(getActivity(), ModuleName.ABOUT);
     }
 
-    @OnClick(R.id.tab_personal_tv_logout)
+    @OnClick(R.id.tab_personal_rl_logout)
     public void onLogOutClick() {
         ZPAnalytics.trackEvent(ZPEvents.TOUCH_ME_LOGOUT);
         showConfirmSignOut();
@@ -232,7 +232,6 @@ public class PersonalFragment extends BaseFragment implements IPersonalView, Fra
                 .setConfirmClickListener((SweetAlertDialog sweetAlertDialog) -> {
                     sweetAlertDialog.dismiss();
                     presenter.logout();
-//                    ZPAnalytics.trackEvent(ZPEvents.TAPLEFTMENULOGOUT);
                 })
                 .show();
     }
